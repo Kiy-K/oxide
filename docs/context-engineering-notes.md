@@ -53,3 +53,26 @@
   by running each repo's verification script. Metrics: solve rate, tests
   passed, injected context size, wall latency, edit footprint, tool-call
   proxy (shell commands executed), relevant-symbol recall vs ground truth.
+
+## Evaluation pivot: ContextBench (official)
+
+Per user direction, SWE-bench is out (training-data contamination) and the
+handcrafted task suite is demoted to harness smoke-testing. Primary evidence now
+comes from **ContextBench** (Li et al., NJU/UCL, arXiv:2602.05892, Apache-2.0):
+1,136 issue-resolution tasks with human-annotated gold contexts (file + block
+line ranges), including 512 Python and 119 TypeScript tasks — exactly OXIDE's
+language scope. Metrics are computed with their evaluator code
+(`contextbench.metrics.compute_granularity_metrics`) so numbers use official
+definitions: coverage (recall) and precision at file/symbol/span/line
+granularity, plus tokens consumed per condition.
+
+Conditions compared per task (issue text drives retrieval):
+1. lexical-only (`oxide search --mode lexical`)
+2. vector-only (`--mode semantic`, Qwen3-Embedding-0.6B via llama.cpp)
+3. hybrid (default fusion)
+4. budgeted pack (`oxide context --task ... --budget-tokens 4096`)
+
+A second tier re-runs a small subset through the same headless coding agent
+(opencode, fixed model) under stock-tools vs injected-context conditions,
+measuring tool-call count, wall time, unnecessary edits, and gold-file
+utilization of the final diff.
