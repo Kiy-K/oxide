@@ -270,13 +270,29 @@ impl TsExtractor {
             Some(p) => format!("{p}.{name}"),
             None => name.to_string(),
         };
-        // Decorated definitions span from the first decorator line.
-        let span_node = match node.parent() {
+        // Decorators: python wraps them (decorated_definition); TS grammars put
+        // them as preceding sibling nodes of the declaration.
+        let mut span_node = match node.parent() {
             Some(p) if p.kind() == "decorated_definition" => p,
             _ => node,
         };
+        if let Some(p) = node.parent() {
+            let mut cur = p.walk();
+            let mut last_decorator: Option<Node> = None;
+            for sib in p.children(&mut cur) {
+                if sib.id() == node.id() {
+                    break;
+                }
+                if sib.kind() == "decorator" {
+                    last_decorator = Some(sib);
+                }
+            }
+            if let Some(d) = last_decorator {
+                span_node = d;
+            }
+        }
         let start = span_node.start_position().row as u32 + 1;
-        let end = span_node.end_position().row as u32 + 1;
+        let end = node.end_position().row as u32 + 1;
         let body_src = span_lines(src, start, end);
         out.push(Symbol {
             qualified_name: qualified.clone(),
