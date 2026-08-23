@@ -312,7 +312,7 @@ impl<'a> RelationGraph<'a> {
             .collect()
     }
 
-    fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
+    pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
         let mut out: Vec<(String, &'a Symbol)> = Vec::new();
         if let Some(p) = &seed.parent {
             if let Some(parent_sym) = self.by_qualified.get(p.as_str()) {
