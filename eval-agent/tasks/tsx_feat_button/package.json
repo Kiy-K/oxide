@@ -1,0 +1,10 @@
+{
+  "name": "tsx-feat-button",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@testing-library/react": "^16.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  }
+}

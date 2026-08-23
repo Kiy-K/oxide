@@ -11,6 +11,12 @@ pub trait EmbeddingProvider: Sync {
     fn name(&self) -> &str;
     fn dim(&self) -> usize;
     fn embed(&self, text: &str) -> Vec<f32>;
+
+    /// Embed many texts; providers with batch endpoints should override.
+    /// Default preserves order via per-text calls.
+    fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        texts.iter().map(|t| self.embed(t)).collect()
+    }
 }
 
 /// Shared source-text tokenizer used by lexical search and embeddings:
@@ -200,7 +206,7 @@ impl HttpEmbedder {
             name: format!("http:{model}@{endpoint}"),
             healthy: std::sync::atomic::AtomicBool::new(true),
         };
-        let probe = e.embed_batch(vec!["dimension probe".to_string()])?;
+        let probe = e.embed_batch_raw(vec!["dimension probe".to_string()])?;
         e.dim = probe
             .first()
             .map(|v| v.len())
@@ -208,7 +214,7 @@ impl HttpEmbedder {
         Ok(e)
     }
 
-    fn embed_batch(&self, inputs: Vec<String>) -> anyhow::Result<Vec<Vec<f32>>> {
+    fn embed_batch_raw(&self, inputs: Vec<String>) -> anyhow::Result<Vec<Vec<f32>>> {
         use std::sync::atomic::Ordering;
         let n = inputs.len();
         let body = serde_json::json!({
@@ -264,10 +270,26 @@ impl EmbeddingProvider for HttpEmbedder {
 
     fn embed(&self, text: &str) -> Vec<f32> {
         // Single input per call keeps ordering trivially correct.
-        self.embed_batch(vec![text.to_string()])
+        self.embed_batch_raw(vec![text.to_string()])
             .ok()
             .and_then(|mut v| (!v.is_empty()).then(|| v.remove(0)))
             .unwrap_or_default()
+    }
+
+    /// Server round-trips dominate indexing latency; one request per BATCH
+    /// items, preserving input order.
+    fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        const BATCH: usize = 64;
+        let mut out = Vec::with_capacity(texts.len());
+        for chunk in texts.chunks(BATCH) {
+            let mut part = self.embed_batch_raw(chunk.to_vec()).unwrap_or_default();
+            // Pad a malformed partial response so order/count stay aligned.
+            while part.len() < chunk.len() {
+                part.push(Vec::new());
+            }
+            out.extend(part.into_iter().take(chunk.len()));
+        }
+        out
     }
 }
 

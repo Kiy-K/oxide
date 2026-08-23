@@ -512,29 +512,42 @@ pub fn update_index(
         })
         .collect();
     let chunk_size = to_embed.len().div_ceil(workers.max(1));
-    let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
-        let mut handles = Vec::new();
-        for chunk in to_embed.chunks(chunk_size.max(1)) {
-            handles.push(scope.spawn(|| {
-                chunk
-                    .iter()
-                    .map(|s| (s.id(), embedder.embed(&embed_text(s))))
-                    .collect::<Vec<_>>()
-            }));
+    // Batched path: providers with batch endpoints (HTTP) get one request per
+    // chunk; the thread pool stays useful for per-text providers.
+    if to_embed.len() < 8 || std::env::var("OXIDE_EMBED_URL").is_ok() {
+        for chunk in to_embed.chunks(64) {
+            let texts: Vec<String> = chunk.iter().map(|s| embed_text(s)).collect();
+            let vectors = embedder.embed_batch(&texts);
+            for (s, vec) in chunk.iter().zip(vectors) {
+                store.put_embedding(s.id(), &vec)?;
+                report.embedded_symbols += 1;
+            }
         }
-        let mut out = Vec::new();
-        for h in handles {
-            out.push(
-                h.join()
-                    .map_err(|_| anyhow::anyhow!("embed worker panicked"))?,
-            );
-        }
-        Ok::<_, anyhow::Error>(out)
-    })?;
-    for part in computed {
-        for (id, vec) in part {
-            store.put_embedding(id, &vec)?;
-            report.embedded_symbols += 1;
+    } else {
+        let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
+            let mut handles = Vec::new();
+            for chunk in to_embed.chunks(chunk_size.max(1)) {
+                handles.push(scope.spawn(|| {
+                    chunk
+                        .iter()
+                        .map(|s| (s.id(), embedder.embed(&embed_text(s))))
+                        .collect::<Vec<_>>()
+                }));
+            }
+            let mut out = Vec::new();
+            for h in handles {
+                out.push(
+                    h.join()
+                        .map_err(|_| anyhow::anyhow!("embed worker panicked"))?,
+                );
+            }
+            Ok::<_, anyhow::Error>(out)
+        })?;
+        for part in computed {
+            for (id, vec) in part {
+                store.put_embedding(id, &vec)?;
+                report.embedded_symbols += 1;
+            }
         }
     }
 
