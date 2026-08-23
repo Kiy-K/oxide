@@ -191,7 +191,15 @@ fn cmd_search(
         mode,
         expand,
     };
-    let hits = engine.search(query, &opts)?;
+    let mut hits = engine.search(query, &opts)?;
+    for h in &mut hits {
+        h.snippet = crate::retrieval::read_snippet(
+            &root.join(&h.symbol.file),
+            h.symbol.start_line,
+            h.symbol.end_line,
+            40,
+        );
+    }
     if json {
         println!("{}", serde_json::to_string_pretty(&hits)?);
         return Ok(());

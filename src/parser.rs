@@ -1,6 +1,7 @@
 //! Tree-sitter plumbing and the per-language extraction interface.
 
 use crate::symbols::{Language, Symbol};
+use std::collections::HashSet;
 
 /// A grammar-backed extractor producing declaration symbols for one language.
 /// Adding a language = implementing this trait + registering below.
@@ -33,6 +34,11 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
     let ext = extractor_for(lang);
     let imports = ext.collect_imports(src);
     let mut syms = ext.extract(file, src, &imports);
+    // Stable ids are (file, qualified_name); duplicate qualified names in one
+    // file (overloads, conditional defs) would violate the primary key. Keep
+    // the first declaration per name.
+    let mut seen: HashSet<String> = HashSet::new();
+    syms.retain(|s| seen.insert(s.qualified_name.clone()));
     // File-level module symbol spanning the whole file. Its hash deliberately
     // ignores body edits (imports + first line only): otherwise every file
     // edit would re-embed the module blob alongside the truly-changed symbol.
@@ -69,4 +75,30 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
         references: Vec::new(),
     });
     syms
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::symbols::Language;
+
+    #[test]
+    fn duplicate_qualified_names_are_deduped() {
+        // Conditional defs with the same name appear twice in the tree.
+        let src = "def f():\n    return 1\n\nif x:\n    def f():\n        return 2\n";
+        let syms = parse_file("a.py", src, Language::Python);
+        let count = syms.iter().filter(|s| s.name == "f").count();
+        assert_eq!(count, 1, "{:?}", syms.iter().map(|s| s.qualified_name.clone()).collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn ts_overloads_do_not_crash_ids() {
+        let src = "interface Foo { bar(x: string): void; bar(x: number): void; }\n\
+                   function helper(): void {}\n";
+        let syms = parse_file("b.ts", src, Language::TypeScript);
+        let mut ids: Vec<u64> = syms.iter().map(|s| s.id()).collect();
+        ids.sort();
+        ids.dedup();
+        assert_eq!(ids.len(), syms.len());
+    }
 }
