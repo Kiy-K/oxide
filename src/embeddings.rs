@@ -176,38 +176,6 @@ pub fn symbol_embed_text(s: &Symbol) -> String {
     )
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn tokenizer_splits_cases_and_drops_stopwords() {
-        assert_eq!(
-            tokenize("RetryPolicy.handle_request"),
-            vec!["retry", "policy", "handle", "request"]
-        );
-        assert_eq!(tokenize("the self a"), Vec::<String>::new());
-        assert!(tokenize("src/authService.ts refresh_token").contains(&"refresh".to_string()));
-    }
-
-    #[test]
-    fn embeddings_are_deterministic_normalized_and_discriminating() {
-        let e = HashedEmbedder::default();
-        let a1 = e.embed("retry failed http requests");
-        let a2 = e.embed("retry failed http requests");
-        let b = e.embed("parse yaml config file");
-        assert_eq!(a1, a2);
-        let dot: f32 = a1.iter().zip(&b).map(|(x, y)| x * y).sum();
-        let self_dot: f32 = a1.iter().map(|x| x * x).sum();
-        assert!((self_dot - 1.0).abs() < 1e-5);
-        assert!(
-            dot < 0.5,
-            "unrelated texts should not collide strongly: {dot}"
-        );
-        assert_eq!(a1.len(), e.dim());
-    }
-}
-
 /// Embedder backed by any OpenAI-compatible `/v1/embeddings` HTTP endpoint
 /// (llama.cpp's server by default). OXIDE ships no model code: it POSTs JSON.
 ///
@@ -315,5 +283,37 @@ pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn Embedding
             Ok(Box::new(HttpEmbedder::new(&u, &model)?))
         }
         _ => Ok(Box::new(HashedEmbedder::default())),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tokenizer_splits_cases_and_drops_stopwords() {
+        assert_eq!(
+            tokenize("RetryPolicy.handle_request"),
+            vec!["retry", "policy", "handle", "request"]
+        );
+        assert_eq!(tokenize("the self a"), Vec::<String>::new());
+        assert!(tokenize("src/authService.ts refresh_token").contains(&"refresh".to_string()));
+    }
+
+    #[test]
+    fn embeddings_are_deterministic_normalized_and_discriminating() {
+        let e = HashedEmbedder::default();
+        let a1 = e.embed("retry failed http requests");
+        let a2 = e.embed("retry failed http requests");
+        let b = e.embed("parse yaml config file");
+        assert_eq!(a1, a2);
+        let dot: f32 = a1.iter().zip(&b).map(|(x, y)| x * y).sum();
+        let self_dot: f32 = a1.iter().map(|x| x * x).sum();
+        assert!((self_dot - 1.0).abs() < 1e-5);
+        assert!(
+            dot < 0.5,
+            "unrelated texts should not collide strongly: {dot}"
+        );
+        assert_eq!(a1.len(), e.dim());
     }
 }

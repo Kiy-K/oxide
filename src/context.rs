@@ -467,7 +467,7 @@ mod tests {
             .replace_file("src/a.py", 1, &[m.clone(), f.clone()])
             .unwrap();
         store
-            .replace_file("src/other.py", 1, &[other.clone()])
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other))
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in [&m, &f, &other] {
