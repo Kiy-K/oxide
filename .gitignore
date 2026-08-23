@@ -1,1 +1,3 @@
 /target
+eval-agent/third_party/
+eval-agent/.venv/
