@@ -88,7 +88,14 @@ mod tests {
         let src = "def f():\n    return 1\n\nif x:\n    def f():\n        return 2\n";
         let syms = parse_file("a.py", src, Language::Python);
         let count = syms.iter().filter(|s| s.name == "f").count();
-        assert_eq!(count, 1, "{:?}", syms.iter().map(|s| s.qualified_name.clone()).collect::<Vec<_>>());
+        assert_eq!(
+            count,
+            1,
+            "{:?}",
+            syms.iter()
+                .map(|s| s.qualified_name.clone())
+                .collect::<Vec<_>>()
+        );
     }
 
     #[test]

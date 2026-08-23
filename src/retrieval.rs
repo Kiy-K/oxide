@@ -54,12 +54,17 @@ pub struct LexicalIndex {
 }
 
 impl LexicalIndex {
-    pub fn build(symbols: &[Symbol]) -> Self {
+    /// `root` enables body-text indexing: gold-context evaluations showed
+    /// bugfix targets hide behind local identifiers that only exist in symbol
+    /// bodies (weight 1 vs 4 for names keeps precision).
+    pub fn build(symbols: &[Symbol], root: Option<&std::path::Path>) -> Self {
         // Capacity heuristic: ~20 weighted postings per symbol keeps the
         // posting maps from rehashing during the build.
         let mut postings: HashMap<String, HashMap<u64, u32>> =
-            HashMap::with_capacity(symbols.len() * 12);
+            HashMap::with_capacity(symbols.len() * 24);
         let mut doc_len: HashMap<u64, f32> = HashMap::new();
+        // Body slices come from disk; cache per file so each file is read once.
+        let mut body_cache: HashMap<&str, String> = HashMap::new();
         for s in symbols {
             let id = s.id();
             let mut total_weight = 0u32;
@@ -86,6 +91,18 @@ impl LexicalIndex {
             }
             for i in &s.imports {
                 add(i, 1);
+            }
+            if let Some(root) = root {
+                let body = body_cache.entry(&s.file).or_insert_with(|| {
+                    std::fs::read_to_string(root.join(&s.file)).unwrap_or_default()
+                });
+                let start = (s.start_line as usize).saturating_sub(1);
+                let lines: Vec<&str> = body.lines().collect();
+                if start < lines.len() {
+                    let end = (s.end_line as usize).min(lines.len());
+                    let slice = lines[start..end].join("\n");
+                    add(&slice, 1);
+                }
             }
             doc_len.insert(id, total_weight as f32);
         }
@@ -139,7 +156,12 @@ pub struct RetrievalEngine<'a> {
 impl<'a> RetrievalEngine<'a> {
     pub fn new(store: &'a dyn IndexBackend, embedder: &'a dyn EmbeddingProvider) -> Self {
         let symbols = store.all_symbols().unwrap_or_default();
-        let lexical = LexicalIndex::build(&symbols);
+        let root = store
+            .get_meta("root")
+            .ok()
+            .flatten()
+            .map(std::path::PathBuf::from);
+        let lexical = LexicalIndex::build(&symbols, root.as_deref());
         let by_id = symbols
             .iter()
             .enumerate()
