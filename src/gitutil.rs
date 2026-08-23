@@ -39,16 +39,14 @@ fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
-/// Parse `git diff --unified=0` for a range into per-file deltas of added
-/// lines (new-file coordinates). `range` empty = worktree vs HEAD; `X` = X vs
-/// parent; `A..B` explicit.
+/// Parse `git diff --unified=0` into per-file deltas of added lines
+/// (new-file coordinates). `range` empty = worktree vs HEAD; `A..B` explicit;
+/// a single rev `R` means "everything since R" (`git diff R`).
 pub fn diff_files(repo: &Path, range: &str) -> Result<Vec<FileDelta>> {
     let text = if range.is_empty() {
         run_git(repo, &["diff", "--unified=0", "--no-color", "HEAD"])?
-    } else if range.contains("..") {
-        run_git(repo, &["diff", "--unified=0", "--no-color", range])?
     } else {
-        run_git(repo, &["diff", "--unified=0", "--no-color", &format!("{range}^"), range])?
+        run_git(repo, &["diff", "--unified=0", "--no-color", range])?
     };
     Ok(parse_unified(&text))
 }

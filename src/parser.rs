@@ -33,7 +33,10 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
     let ext = extractor_for(lang);
     let imports = ext.collect_imports(src);
     let mut syms = ext.extract(file, src, &imports);
-    // File-level module symbol spanning the whole file.
+    // File-level module symbol spanning the whole file. Its hash deliberately
+    // ignores body edits (imports + first line only): otherwise every file
+    // edit would re-embed the module blob alongside the truly-changed symbol.
+    // # ponytail: coarse module identity; per-region hashing if staleness hurts
     syms.push(Symbol {
         qualified_name: format!("{file}:__module__"),
         name: "__module__".into(),
@@ -42,7 +45,14 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
         file: file.to_string(),
         start_line: 1,
         end_line: src.lines().count().max(1) as u32,
-        content_hash: crate::symbols::content_hash(src),
+        content_hash: crate::symbols::content_hash(&format!(
+            "{}\n{}",
+            syms.first().map(|s| s.imports.join(",")).unwrap_or_default(),
+            src.lines()
+                .find(|l| !l.trim().is_empty())
+                .unwrap_or("")
+                .trim()
+        )),
         signature: src
             .lines()
             .find(|l| !l.trim().is_empty())
