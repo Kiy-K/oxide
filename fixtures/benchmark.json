@@ -1,0 +1,92 @@
+{
+  "k": 5,
+  "repos": {
+    "py": "fixtures/py_repo",
+    "ts": "fixtures/ts_repo"
+  },
+  "queries": [
+    {
+      "id": "py-exact-retrypolicy",
+      "repo": "py",
+      "task": "exact-symbol",
+      "text": "RetryPolicy",
+      "relevant": ["oxidepy/retry.py#RetryPolicy"]
+    },
+    {
+      "id": "py-semantic-http-retries",
+      "repo": "py",
+      "task": "semantic",
+      "text": "where failed HTTP requests are retried",
+      "relevant": [
+        "oxidepy/retry.py#RetryPolicy.should_retry",
+        "oxidepy/http_client.py#HttpClient.fetch"
+      ]
+    },
+    {
+      "id": "py-crossfile-token-refresh",
+      "repo": "py",
+      "task": "cross-file",
+      "text": "refresh the auth token after it expires",
+      "relevant": ["oxidepy/auth.py#AuthService.refresh_token"]
+    },
+    {
+      "id": "py-related-test-gives-up",
+      "repo": "py",
+      "task": "related-test",
+      "text": "gives up after exhausting every retry attempt",
+      "relevant": ["tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts"]
+    },
+    {
+      "id": "py-ttl-cache-expiry",
+      "repo": "py",
+      "task": "exact-symbol",
+      "text": "TTLCache",
+      "relevant": ["oxidepy/cache.py#TTLCache"]
+    },
+    {
+      "id": "ts-exact-versionedstore",
+      "repo": "ts",
+      "task": "exact-symbol",
+      "text": "VersionedStore",
+      "relevant": ["src/cache/versioned_store.ts#VersionedStore"]
+    },
+    {
+      "id": "ts-semantic-backoff",
+      "repo": "ts",
+      "task": "semantic",
+      "text": "retrying api requests with exponential backoff delay",
+      "relevant": [
+        "src/net/retry.ts#ExponentialBackoff",
+        "src/net/client.ts#ApiClient.request"
+      ]
+    },
+    {
+      "id": "ts-crossfile-decode-jwt",
+      "repo": "ts",
+      "task": "cross-file",
+      "text": "decode json web token payload claims",
+      "relevant": ["src/auth/service.ts#decodeJwt"]
+    },
+    {
+      "id": "tsx-button-component",
+      "repo": "ts",
+      "task": "tsx",
+      "text": "button component that calls the click handler when pressed",
+      "relevant": ["src/ui/Button.tsx#Button"]
+    },
+    {
+      "id": "ts-related-test-button-click",
+      "repo": "ts",
+      "task": "related-test",
+      "text": "test asserts clicking invokes the handler",
+      "relevant": ["src/ui/__tests__/Button.test.tsx#src/ui/__tests__/Button.test.tsx:__module__"]
+    },
+    {
+      "id": "ts-default-policy-const",
+      "repo": "ts",
+      "task": "exported-declaration",
+      "text": "defaultRetryPolicy configuration used by clients",
+      "relevant": ["src/net/retry.ts#defaultRetryPolicy"]
+    }
+  ]
+}

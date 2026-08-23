@@ -195,6 +195,7 @@ impl<'a> RetrievalEngine<'a> {
         hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
 
         // ---- structural expansion ----
+        let mut base_scores = rrf.clone();
         if opts.expand && !hits.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
             let strong: Vec<&Symbol> = hits
@@ -228,25 +229,56 @@ impl<'a> RetrievalEngine<'a> {
                     *rrf.entry(id).or_insert(0.0) += boost;
                     reasons.entry(id).or_default().extend(whys);
                 }
-                hits = rrf
-                    .iter()
-                    .filter_map(|(id, score)| {
-                        let s = by_id.get(id)?;
-                        Some(SearchHit {
-                            symbol: (*s).clone(),
-                            score: *score,
-                            reasons: reasons.get(id).cloned().unwrap_or_default(),
-                            snippet: String::new(),
-                        })
-                    })
-                    .collect();
-                hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
             }
         }
+
+        // Direct hits (lexical/semantic evidence) always outrank expansion-only
+        // context, and both lists are ordered by their PRE-expansion score so
+        // expansion supplements without reordering real matches.
+        let has_direct = |id: u64| -> bool {
+            reasons
+                .get(&id)
+                .map(|rs| rs.iter().any(|r| r.starts_with("lexical") || r.starts_with("semantic")))
+                .unwrap_or(false)
+        };
+        let mut direct_hits: Vec<SearchHit> = Vec::new();
+        let mut expanded_hits: Vec<SearchHit> = Vec::new();
+        for (id, score) in &rrf {
+            let Some(s) = by_id.get(id) else { continue };
+            let base = base_scores.get(id).copied().unwrap_or(0.0);
+            let hit = SearchHit {
+                symbol: (*s).clone(),
+                // Expansion-only context ranks by its expansion score; real
+                // matches keep their stable pre-expansion score.
+                score: if base > 0.0 { base } else { *score },
+                reasons: reasons.get(id).cloned().unwrap_or_default(),
+                snippet: String::new(),
+            };
+            if base > 0.0 || has_direct(*id) {
+                direct_hits.push(hit);
+            } else {
+                expanded_hits.push(hit);
+            }
+        }
+        direct_hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        expanded_hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        hits.clear();
+        hits.extend(direct_hits);
+        hits.extend(expanded_hits);
 
         hits.truncate(opts.limit);
         Ok(hits)
     }
+}
+
+/// Slice `start..end` (1-based inclusive) from a file, capped at `cap` lines.
+pub fn read_snippet(path: &std::path::Path, start: u32, end: u32, cap: usize) -> String {
+    let Ok(src) = std::fs::read_to_string(path) else { return String::new() };
+    src.lines()
+        .skip(start.saturating_sub(1) as usize)
+        .take(((end.saturating_sub(start - 1)) as usize).min(cap))
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 
 /// High-confidence structural relations used for expansion.
