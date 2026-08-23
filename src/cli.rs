@@ -1,6 +1,5 @@
 //! CLI: index / search / review / stats / eval.
 
-use crate::embeddings::HashedEmbedder;
 use crate::index::{update_index, SqliteStore};
 use crate::retrieval::{read_snippet, RetrievalEngine, SearchMode, SearchOptions};
 use std::path::{Path, PathBuf};
@@ -18,6 +17,10 @@ pub enum Cmd {
     Index {
         /// Repository path.
         path: Option<String>,
+        /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
+        /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
+        #[arg(long)]
+        embedder: Option<String>,
     },
     /// Search the index.
     Search {
@@ -45,6 +48,17 @@ pub enum Cmd {
     },
     /// Show index statistics.
     Stats,
+    /// Build a compact, ordered, budgeted context pack for a coding task.
+    Context {
+        /// Natural-language task description (also drives lexical retrieval).
+        #[arg(short = 't', long)]
+        task: String,
+        /// Token budget for the pack (estimate: chars/4).
+        #[arg(long, default_value_t = 4096)]
+        budget_tokens: usize,
+        #[arg(long)]
+        json: bool,
+    },
     /// Run the committed retrieval benchmark.
     Eval {
         #[arg(long, default_value = "fixtures/benchmark.json")]
@@ -75,7 +89,7 @@ fn open_index(root: &Path) -> anyhow::Result<SqliteStore> {
 
 pub fn run(args: Args) -> anyhow::Result<()> {
     match args.cmd {
-        Cmd::Index { path } => cmd_index(path.as_deref()),
+        Cmd::Index { path, embedder } => cmd_index(path.as_deref(), embedder.as_deref()),
         Cmd::Search {
             query,
             limit,
@@ -93,15 +107,20 @@ pub fn run(args: Args) -> anyhow::Result<()> {
         }
         Cmd::Review { diff, json } => cmd_review(&diff, json),
         Cmd::Stats => cmd_stats(),
+        Cmd::Context {
+            task,
+            budget_tokens,
+            json,
+        } => cmd_context(&task, budget_tokens, json),
         Cmd::Eval { config, json } => crate::eval::cmd_eval(&config, json),
     }
 }
 
-fn cmd_index(path: Option<&str>) -> anyhow::Result<()> {
+fn cmd_index(path: Option<&str>, embedder_url: Option<&str>) -> anyhow::Result<()> {
     let root = find_repo_root(path)?;
     let mut store = open_index(&root)?;
-    let embedder = HashedEmbedder::default();
-    let report = update_index(&root, &mut store, &embedder)?;
+    let embedder = crate::embeddings::open_embedder(embedder_url)?;
+    let report = update_index(&root, &mut store, embedder.as_ref())?;
     println!(
         "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed",
         root.display(),
@@ -126,6 +145,10 @@ fn load_engine() -> anyhow::Result<(PathBuf, SqliteStore)> {
     let root = find_repo_root(None)?;
     let store = open_index(&root)?;
     Ok((root, store))
+}
+
+fn default_embedder() -> anyhow::Result<Box<dyn crate::embeddings::EmbeddingProvider>> {
+    crate::embeddings::open_embedder(None)
 }
 
 fn render_hit(root: &Path, h: &crate::retrieval::SearchHit) -> String {
@@ -161,8 +184,8 @@ fn cmd_search(
     json: bool,
 ) -> anyhow::Result<()> {
     let (root, store) = load_engine()?;
-    let embedder = HashedEmbedder::default();
-    let engine = RetrievalEngine::new(&store, &embedder);
+    let embedder = default_embedder()?;
+    let engine = RetrievalEngine::new(&store, embedder.as_ref());
     let opts = SearchOptions {
         limit,
         mode,
@@ -185,8 +208,8 @@ fn cmd_search(
 
 fn cmd_review(diff: &str, json: bool) -> anyhow::Result<()> {
     let (root, store) = load_engine()?;
-    let embedder = HashedEmbedder::default();
-    let ctx = crate::review::build_review_context(&root, &store, &embedder, diff)?;
+    let embedder = default_embedder()?;
+    let ctx = crate::review::build_review_context(&root, &store, embedder.as_ref(), diff)?;
     if json {
         println!("{}", serde_json::to_string_pretty(&ctx)?);
         return Ok(());
@@ -234,5 +257,51 @@ fn cmd_stats() -> anyhow::Result<()> {
     println!("files:      {}", stats.files);
     println!("symbols:    {}", stats.symbols);
     println!("embeddings: {}", stats.embeddings);
+    Ok(())
+}
+
+fn cmd_context(task: &str, budget_tokens: usize, json: bool) -> anyhow::Result<()> {
+    use crate::context::{build_context, ContextOptions};
+    let (root, store) = load_engine()?;
+    let embedder = default_embedder()?;
+    let opts = ContextOptions {
+        budget_tokens,
+        ..ContextOptions::default()
+    };
+    let pack = build_context(&root, &store, embedder.as_ref(), task, &opts)?;
+
+    if json {
+        println!("{}", serde_json::to_string_pretty(&pack)?);
+        return Ok(());
+    }
+    println!(
+        "context for: {}\nembedder: {}  |  budget {} tok, used {} tok, {} items\n",
+        pack.task,
+        pack.embedder,
+        pack.budget_tokens,
+        pack.used_tokens,
+        pack.items.len()
+    );
+    for (i, item) in pack.items.iter().enumerate() {
+        println!(
+            "{:>2}. [{:?}] {} [{}] {}:{}-{}  (~{} tok)\n    why: {}",
+            i + 1,
+            item.role,
+            item.symbol.qualified_name,
+            item.symbol.kind,
+            item.symbol.file,
+            item.symbol.start_line,
+            item.symbol.end_line,
+            item.est_tokens,
+            item.reasons.join("; ")
+        );
+    }
+    if !pack.omitted.is_empty() {
+        println!("\nomitted:");
+        for o in &pack.omitted {
+            println!("  - {}: {}", o.id, o.why);
+        }
+    }
+    println!("\n{}", pack.tail_summary());
     Ok(())
 }

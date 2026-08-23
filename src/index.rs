@@ -30,6 +30,9 @@ pub trait IndexBackend {
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
     /// All embeddings in one shot (avoids per-symbol queries in retrieval).
     fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
+    /// Drop every vector (used when the embedding provider changed: vectors
+    /// from different models are not comparable).
+    fn clear_embeddings(&mut self) -> Result<()>;
     fn drop_embeddings_without_symbols(&mut self) -> Result<()>;
 }
 
@@ -266,6 +269,11 @@ impl IndexBackend for SqliteStore {
         Ok(out)
     }
 
+    fn clear_embeddings(&mut self) -> Result<()> {
+        self.conn.execute("DELETE FROM embeddings", [])?;
+        Ok(())
+    }
+
     fn drop_embeddings_without_symbols(&mut self) -> Result<()> {
         self.conn.execute(
             "DELETE FROM embeddings WHERE symbol_id NOT IN (SELECT id FROM symbols)",
@@ -472,6 +480,20 @@ pub fn update_index(
             }
         }
         store.replace_file(&pf.file, pf.hash, &pf.symbols)?;
+    }
+
+    // Vectors from a different provider are not comparable: wipe them once so
+    // everything below re-embeds under the current model.
+    match store.get_meta("embedder")? {
+        Some(prev) if !prev.is_empty() && prev != embedder.name() => {
+            eprintln!(
+                "oxide: embedder changed ({} -> {}); re-embedding all symbols",
+                prev,
+                embedder.name()
+            );
+            store.clear_embeddings()?;
+        }
+        _ => {}
     }
 
     // Embed only symbols whose embedding is missing or whose content changed;

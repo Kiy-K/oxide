@@ -1,4 +1,5 @@
 pub mod cli;
+pub mod context;
 pub mod embeddings;
 pub mod eval;
 pub mod gitutil;

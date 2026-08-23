@@ -8,7 +8,7 @@ use crate::symbols::Symbol;
 use std::collections::HashMap;
 
 pub trait EmbeddingProvider: Sync {
-    fn name(&self) -> &'static str;
+    fn name(&self) -> &str;
     fn dim(&self) -> usize;
     fn embed(&self, text: &str) -> Vec<f32>;
 }
@@ -129,7 +129,7 @@ impl Default for HashedEmbedder {
 }
 
 impl EmbeddingProvider for HashedEmbedder {
-    fn name(&self) -> &'static str {
+    fn name(&self) -> &str {
         "hashed-bow-256"
     }
 
@@ -205,5 +205,115 @@ mod tests {
             "unrelated texts should not collide strongly: {dot}"
         );
         assert_eq!(a1.len(), e.dim());
+    }
+}
+
+/// Embedder backed by any OpenAI-compatible `/v1/embeddings` HTTP endpoint
+/// (llama.cpp's server by default). OXIDE ships no model code: it POSTs JSON.
+///
+/// Query/document asymmetry (Qwen3 protocol): callers pass instruction-prefixed
+/// query text; documents are embedded verbatim.
+pub struct HttpEmbedder {
+    endpoint: String,
+    model: String,
+    dim: usize,
+    /// Distinguishes instances so index meta invalidates across endpoints.
+    name: String,
+    healthy: std::sync::atomic::AtomicBool,
+}
+
+impl HttpEmbedder {
+    /// Probe the endpoint with a tiny input to learn the vector dimension.
+    pub fn new(endpoint: &str, model: &str) -> anyhow::Result<Self> {
+        let mut e = Self {
+            endpoint: endpoint.trim_end_matches('/').to_string(),
+            model: model.to_string(),
+            dim: 0,
+            name: format!("http:{model}@{endpoint}"),
+            healthy: std::sync::atomic::AtomicBool::new(true),
+        };
+        let probe = e.embed_batch(vec!["dimension probe".to_string()])?;
+        e.dim = probe
+            .first()
+            .map(|v| v.len())
+            .ok_or_else(|| anyhow::anyhow!("embedding endpoint returned no vectors: {endpoint}"))?;
+        Ok(e)
+    }
+
+    fn embed_batch(&self, inputs: Vec<String>) -> anyhow::Result<Vec<Vec<f32>>> {
+        use std::sync::atomic::Ordering;
+        let n = inputs.len();
+        let body = serde_json::json!({
+            "model": self.model,
+            "input": inputs,
+        });
+        let fail = |msg: String| -> anyhow::Result<Vec<Vec<f32>>> {
+            if self.healthy.swap(false, Ordering::Relaxed) {
+                eprintln!("oxide: embedding endpoint failed ({msg}); vectors will be empty until it recovers");
+            }
+            Ok(vec![Vec::new(); n])
+        };
+        let response = match ureq::post(&self.endpoint)
+            .timeout(std::time::Duration::from_secs(120))
+            .send_json(body)
+        {
+            Ok(r) => r,
+            Err(e) => return fail(e.to_string()),
+        };
+        let resp: serde_json::Value = match response.into_json() {
+            Ok(v) => v,
+            Err(e) => return fail(e.to_string()),
+        };
+        self.healthy.store(true, Ordering::Relaxed);
+        let Some(items) = resp["data"].as_array() else {
+            anyhow::bail!("malformed embeddings response from {}", self.endpoint);
+        };
+        let mut out = Vec::with_capacity(n);
+        for item in items {
+            out.push(
+                item["embedding"]
+                    .as_array()
+                    .map(|a| {
+                        a.iter()
+                            .filter_map(|x| x.as_f64().map(|f| f as f32))
+                            .collect()
+                    })
+                    .unwrap_or_default(),
+            );
+        }
+        Ok(out)
+    }
+}
+
+impl EmbeddingProvider for HttpEmbedder {
+    fn name(&self) -> &str {
+        &self.name
+    }
+
+    fn dim(&self) -> usize {
+        self.dim
+    }
+
+    fn embed(&self, text: &str) -> Vec<f32> {
+        // Single input per call keeps ordering trivially correct.
+        self.embed_batch(vec![text.to_string()])
+            .ok()
+            .and_then(|mut v| (!v.is_empty()).then(|| v.remove(0)))
+            .unwrap_or_default()
+    }
+}
+
+/// Provider factory: explicit URL wins, then `OXIDE_EMBED_URL`, else the
+/// offline hashed embedder. OXIDE stays fully useful without any server.
+pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn EmbeddingProvider>> {
+    let url = explicit
+        .map(str::to_string)
+        .or_else(|| std::env::var("OXIDE_EMBED_URL").ok());
+    match url {
+        Some(u) if !u.is_empty() => {
+            let model = std::env::var("OXIDE_EMBED_MODEL").unwrap_or_default();
+            Ok(Box::new(HttpEmbedder::new(&u, &model)?))
+        }
+        _ => Ok(Box::new(HashedEmbedder::default())),
     }
 }
