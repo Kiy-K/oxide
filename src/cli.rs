@@ -76,7 +76,13 @@ fn open_index(root: &Path) -> anyhow::Result<SqliteStore> {
 pub fn run(args: Args) -> anyhow::Result<()> {
     match args.cmd {
         Cmd::Index { path } => cmd_index(path.as_deref()),
-        Cmd::Search { query, limit, mode, no_expand, json } => {
+        Cmd::Search {
+            query,
+            limit,
+            mode,
+            no_expand,
+            json,
+        } => {
             let m = match mode.as_str() {
                 "lexical" => SearchMode::LexicalOnly,
                 "semantic" | "vector" => SearchMode::VectorOnly,
@@ -86,7 +92,7 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             cmd_search(&query, limit, m, !no_expand, json)
         }
         Cmd::Review { diff, json } => cmd_review(&diff, json),
-        Cmd::Stats {} => cmd_stats(),
+        Cmd::Stats => cmd_stats(),
         Cmd::Eval { config, json } => crate::eval::cmd_eval(&config, json),
     }
 }
@@ -123,7 +129,12 @@ fn load_engine() -> anyhow::Result<(PathBuf, SqliteStore)> {
 }
 
 fn render_hit(root: &Path, h: &crate::retrieval::SearchHit) -> String {
-    let snippet = read_snippet(&root.join(&h.symbol.file), h.symbol.start_line, h.symbol.end_line, 24);
+    let snippet = read_snippet(
+        &root.join(&h.symbol.file),
+        h.symbol.start_line,
+        h.symbol.end_line,
+        24,
+    );
     format!(
         "{}:{}-{} [{}] {} {}\n  score {:.4}  why: {}\n{}",
         h.symbol.file,
@@ -142,11 +153,21 @@ fn render_hit(root: &Path, h: &crate::retrieval::SearchHit) -> String {
     )
 }
 
-fn cmd_search(query: &str, limit: usize, mode: SearchMode, expand: bool, json: bool) -> anyhow::Result<()> {
+fn cmd_search(
+    query: &str,
+    limit: usize,
+    mode: SearchMode,
+    expand: bool,
+    json: bool,
+) -> anyhow::Result<()> {
     let (root, store) = load_engine()?;
     let embedder = HashedEmbedder::default();
     let engine = RetrievalEngine::new(&store, &embedder);
-    let opts = SearchOptions { limit, mode, expand };
+    let opts = SearchOptions {
+        limit,
+        mode,
+        expand,
+    };
     let hits = engine.search(query, &opts)?;
     if json {
         println!("{}", serde_json::to_string_pretty(&hits)?);
@@ -192,11 +213,16 @@ fn cmd_review(diff: &str, json: bool) -> anyhow::Result<()> {
             r.symbol.start_line,
             r.symbol.end_line,
             r.reasons.join("; "),
-            read_snippet(&root.join(&r.symbol.file), r.symbol.start_line, r.symbol.end_line, 16)
-                .lines()
-                .map(|l| format!("  │ {l}"))
-                .collect::<Vec<_>>()
-                .join("\n")
+            read_snippet(
+                &root.join(&r.symbol.file),
+                r.symbol.start_line,
+                r.symbol.end_line,
+                16
+            )
+            .lines()
+            .map(|l| format!("  │ {l}"))
+            .collect::<Vec<_>>()
+            .join("\n")
         );
     }
     Ok(())

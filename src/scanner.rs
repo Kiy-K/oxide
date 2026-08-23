@@ -59,7 +59,14 @@ const DENYLIST_FILES: &[&str] = &[
 ];
 
 /// Filename suffixes marking minified/generated output.
-const DENYLIST_SUFFIXES: &[&str] = &[".min.js", ".min.css", ".min.mjs", ".d.ts", ".generated.", "-gen.py"];
+const DENYLIST_SUFFIXES: &[&str] = &[
+    ".min.js",
+    ".min.css",
+    ".min.mjs",
+    ".d.ts",
+    ".generated.",
+    "-gen.py",
+];
 
 fn is_denied(path: &Path, is_dir: bool) -> bool {
     let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
@@ -103,7 +110,9 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
             let tx = tx_builder.clone();
             let root = walker_root.clone();
             Box::new(move |entry| {
-                let Ok(entry) = entry else { return WalkState::Continue };
+                let Ok(entry) = entry else {
+                    return WalkState::Continue;
+                };
                 let path = entry.path();
                 let is_dir = entry.file_type().map(|f| f.is_dir()).unwrap_or(false);
                 if path == root.as_path() {
@@ -120,7 +129,9 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
                 if language_for_path(path).is_none() {
                     return WalkState::Continue;
                 }
-                let Ok(meta) = std::fs::metadata(path) else { return WalkState::Continue };
+                let Ok(meta) = std::fs::metadata(path) else {
+                    return WalkState::Continue;
+                };
                 if meta.len() > 1_500_000 {
                     return WalkState::Continue;
                 }
@@ -172,10 +183,7 @@ mod tests {
         write(&root.join("public/app.min.js"), "var a=1;");
         write(&root.join("README.md"), "# hi\n");
         write(&root.join("package-lock.json"), "{}");
-        write(
-            &root.join(".gitignore"),
-            "/ignored/\n*.log\n",
-        );
+        write(&root.join(".gitignore"), "/ignored/\n*.log\n");
         write(&root.join("debug.log"), "noise");
 
         std::process::Command::new("git")

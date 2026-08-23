@@ -47,7 +47,9 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
         end_line: src.lines().count().max(1) as u32,
         content_hash: crate::symbols::content_hash(&format!(
             "{}\n{}",
-            syms.first().map(|s| s.imports.join(",")).unwrap_or_default(),
+            syms.first()
+                .map(|s| s.imports.join(","))
+                .unwrap_or_default(),
             src.lines()
                 .find(|l| !l.trim().is_empty())
                 .unwrap_or("")

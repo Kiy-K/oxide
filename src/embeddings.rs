@@ -34,8 +34,28 @@ pub fn tokenize(text: &str) -> Vec<String> {
 }
 
 const STOPWORDS: &[&str] = &[
-    "the", "and", "for", "with", "this", "that", "from", "into", "self", "none", "null",
-    "undefined", "true", "false", "fn", "func", "def", "let", "var", "const", "return", "import",
+    "the",
+    "and",
+    "for",
+    "with",
+    "this",
+    "that",
+    "from",
+    "into",
+    "self",
+    "none",
+    "null",
+    "undefined",
+    "true",
+    "false",
+    "fn",
+    "func",
+    "def",
+    "let",
+    "var",
+    "const",
+    "return",
+    "import",
 ];
 
 fn split_identifier(raw: &str) -> Vec<String> {
@@ -96,9 +116,13 @@ impl EmbeddingProvider for HashedEmbedder {
         }
         let mut vec = vec![0f32; self.dim];
         for (b, tf) in counts {
-            vec[b] = (1.0 + tf.ln()) as f32;
+            vec[b] = 1.0 + tf.ln();
         }
-        let norm = vec.iter().map(|v| (*v as f64) * (*v as f64)).sum::<f64>().sqrt();
+        let norm = vec
+            .iter()
+            .map(|v| (*v as f64) * (*v as f64))
+            .sum::<f64>()
+            .sqrt();
         if norm > 0.0 {
             for v in &mut vec {
                 *v /= norm as f32;
@@ -145,7 +169,10 @@ mod tests {
         let dot: f32 = a1.iter().zip(&b).map(|(x, y)| x * y).sum();
         let self_dot: f32 = a1.iter().map(|x| x * x).sum();
         assert!((self_dot - 1.0).abs() < 1e-5);
-        assert!(dot < 0.5, "unrelated texts should not collide strongly: {dot}");
+        assert!(
+            dot < 0.5,
+            "unrelated texts should not collide strongly: {dot}"
+        );
         assert_eq!(a1.len(), e.dim());
     }
 }

@@ -113,10 +113,7 @@ fn prepare(config: &BenchConfig) -> Result<std::collections::HashMap<String, Ind
         let (dir, tmp) = materialize_repo(fixture)?;
         let mut store = SqliteStore::open(Path::new(":memory:"))?;
         update_index(&dir, &mut store, &HashedEmbedder::default())?;
-        out.insert(
-            name.clone(),
-            IndexedRepo { _dir: tmp, store },
-        );
+        out.insert(name.clone(), IndexedRepo { _dir: tmp, store });
         let _ = dir;
     }
     Ok(out)
@@ -125,8 +122,8 @@ fn prepare(config: &BenchConfig) -> Result<std::collections::HashMap<String, Ind
 pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
     let text = std::fs::read_to_string(config_path)
         .with_context(|| format!("read {}", config_path.display()))?;
-    let config: BenchConfig = serde_json::from_str(&text)
-        .with_context(|| format!("parse {}", config_path.display()))?;
+    let config: BenchConfig =
+        serde_json::from_str(&text).with_context(|| format!("parse {}", config_path.display()))?;
     let k = config.k;
     let repos = prepare(&config)?;
 
@@ -136,11 +133,18 @@ pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
             .get(&q.repo)
             .with_context(|| format!("unknown repo key {} in query {}", q.repo, q.id))?;
         let root_dir = repo._dir.path().join("repo");
-        for (mode_name, mode) in [("vector-only", SearchMode::VectorOnly), ("hybrid", SearchMode::Hybrid)] {
+        for (mode_name, mode) in [
+            ("vector-only", SearchMode::VectorOnly),
+            ("hybrid", SearchMode::Hybrid),
+        ] {
             let embedder = HashedEmbedder::default();
             let engine = RetrievalEngine::new(&repo.store, &embedder);
             let expand = mode == SearchMode::Hybrid;
-            let opts = SearchOptions { limit: k, mode, expand };
+            let opts = SearchOptions {
+                limit: k,
+                mode,
+                expand,
+            };
             let hits = engine.search(&q.text, &opts)?;
             let relevant: std::collections::HashSet<&str> =
                 q.relevant.iter().map(|s| s.as_str()).collect();
@@ -154,10 +158,17 @@ pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
                 if relevant.contains(id.as_str()) {
                     matched += 1;
                 }
-                if h.symbol.kind == crate::symbols::SymbolKind::Module && !relevant.contains(id.as_str()) {
+                if h.symbol.kind == crate::symbols::SymbolKind::Module
+                    && !relevant.contains(id.as_str())
+                {
                     fp_modules += 1;
                 }
-                bytes += span_bytes(&root_dir, &h.symbol.file, h.symbol.start_line, h.symbol.end_line);
+                bytes += span_bytes(
+                    &root_dir,
+                    &h.symbol.file,
+                    h.symbol.start_line,
+                    h.symbol.end_line,
+                );
             }
             let denom_recall = relevant.len().max(1) as f32;
             let denom_prec = hits.len().min(k).max(1) as f32;
@@ -188,7 +199,11 @@ pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
         });
     }
 
-    Ok(BenchmarkReport { k, per_query, aggregate })
+    Ok(BenchmarkReport {
+        k,
+        per_query,
+        aggregate,
+    })
 }
 
 pub fn cmd_eval(config: &str, json: bool) -> Result<()> {
@@ -211,7 +226,13 @@ pub fn cmd_eval(config: &str, json: bool) -> Result<()> {
     for a in &report.aggregate {
         println!(
             "{:<12} recall@{} {:.3}  precision@{} {:.3}  avg returned {:.1}  avg ctx {:.0}B",
-            a.mode, report.k, a.mean_recall_at_k, report.k, a.mean_precision_at_k, a.avg_returned, a.avg_context_bytes
+            a.mode,
+            report.k,
+            a.mean_recall_at_k,
+            report.k,
+            a.mean_precision_at_k,
+            a.avg_returned,
+            a.avg_context_bytes
         );
     }
     Ok(())

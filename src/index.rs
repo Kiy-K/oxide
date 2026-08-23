@@ -32,8 +32,8 @@ impl SqliteStore {
         if let Some(dir) = path.parent() {
             std::fs::create_dir_all(dir)?;
         }
-        let conn = Connection::open(path)
-            .with_context(|| format!("open index at {}", path.display()))?;
+        let conn =
+            Connection::open(path).with_context(|| format!("open index at {}", path.display()))?;
         conn.execute_batch(
             r#"
             PRAGMA journal_mode = WAL;
@@ -89,7 +89,9 @@ impl IndexBackend for SqliteStore {
 
     fn file_hashes(&self) -> Result<HashMap<String, u64>> {
         let mut stmt = self.conn.prepare("SELECT path, content_hash FROM files")?;
-        let rows = stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as u64)))?;
+        let rows = stmt.query_map([], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as u64))
+        })?;
         Ok(rows.collect::<std::result::Result<HashMap<_, _>, _>>()?)
     }
 
@@ -105,7 +107,12 @@ impl IndexBackend for SqliteStore {
                  JOIN symbols s ON s.id = e.symbol_id WHERE s.file = ?1",
             )?;
             let rows = stmt.query_map([file], |r| {
-                Ok((r.get::<_, i64>(0)? as u64, r.get::<_, i64>(1)? as u64, r.get::<_, i32>(2)?, r.get::<_, Vec<u8>>(3)?))
+                Ok((
+                    r.get::<_, i64>(0)? as u64,
+                    r.get::<_, i64>(1)? as u64,
+                    r.get::<_, i32>(2)?,
+                    r.get::<_, Vec<u8>>(3)?,
+                ))
             })?;
             for row in rows {
                 kept.push(row?);
@@ -186,11 +193,16 @@ impl IndexBackend for SqliteStore {
             .conn
             .prepare("SELECT content_hash FROM symbols WHERE id = ?1")?;
         let mut rows = stmt.query([id as i64])?;
-        Ok(rows.next()?.map(|r| r.get::<_, i64>(0).map(|v| v as u64)).transpose()?)
+        Ok(rows
+            .next()?
+            .map(|r| r.get::<_, i64>(0).map(|v| v as u64))
+            .transpose()?)
     }
 
     fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()> {
-        let Some(chash) = self.symbol_hash(symbol_id)? else { return Ok(()) };
+        let Some(chash) = self.symbol_hash(symbol_id)? else {
+            return Ok(());
+        };
         let bytes: Vec<u8> = vec.iter().flat_map(|f| f.to_le_bytes()).collect();
         self.conn.execute(
             "INSERT OR REPLACE INTO embeddings(symbol_id, content_hash, dim, vec)
@@ -205,7 +217,9 @@ impl IndexBackend for SqliteStore {
             .conn
             .prepare("SELECT content_hash, dim, vec FROM embeddings WHERE symbol_id = ?1")?;
         let mut rows = stmt.query([symbol_id as i64])?;
-        let Some(row) = rows.next()? else { return Ok(None) };
+        let Some(row) = rows.next()? else {
+            return Ok(None);
+        };
         let chash: u64 = row.get::<_, i64>(0)? as u64;
         let dim: i32 = row.get(1)?;
         let bytes: Vec<u8> = row.get(2)?;
@@ -231,7 +245,10 @@ fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
         file: r.get(0)?,
         qualified_name: r.get(1)?,
         name: r.get(2)?,
-        kind: r.get::<_, String>(3)?.parse().unwrap_or(crate::symbols::SymbolKind::Function),
+        kind: r
+            .get::<_, String>(3)?
+            .parse()
+            .unwrap_or(crate::symbols::SymbolKind::Function),
         language: match r.get::<_, String>(4)?.as_str() {
             "python" => Language::Python,
             "tsx" => Language::Tsx,
@@ -302,16 +319,26 @@ pub fn update_index(
         .iter()
         .filter_map(|p| {
             let rel = p.display().to_string();
-            std::fs::read(root.join(p)).ok().map(|b| (rel, crate::symbols::fnv1a64_iter([&b])))
+            std::fs::read(root.join(p))
+                .ok()
+                .map(|b| (rel, crate::symbols::fnv1a64_iter([&b])))
         })
         .collect();
 
     let stored = store.file_hashes()?;
 
     // Deletions and stale entries.
-    let removed: Vec<String> = stored.keys().filter(|f| !current.contains_key(*f)).cloned().collect();
+    let removed: Vec<String> = stored
+        .keys()
+        .filter(|f| !current.contains_key(*f))
+        .cloned()
+        .collect();
     if !removed.is_empty() {
-        let doomed = store.all_symbols()?.iter().filter(|s| removed.contains(&s.file)).count();
+        let doomed = store
+            .all_symbols()?
+            .iter()
+            .filter(|s| removed.contains(&s.file))
+            .count();
         store.remove_files(&removed)?;
         report.deleted_symbols += doomed;
         report.removed_files = removed.len();
@@ -410,7 +437,7 @@ fn extract_references(s: &Symbol, src: &str, known: &HashSet<String>) -> Vec<Str
     let body: String = src
         .lines()
         .skip(s.start_line.saturating_sub(1) as usize)
-        .take(s.end_line.saturating_sub(s.start_line - 1).max(0) as usize + 1)
+        .take(s.end_line.saturating_sub(s.start_line - 1) as usize + 1)
         .collect::<Vec<_>>()
         .join("\n");
     let mut refs: HashSet<String> = HashSet::new();
@@ -434,6 +461,11 @@ fn extract_references(s: &Symbol, src: &str, known: &HashSet<String>) -> Vec<Str
 pub fn embed_text(s: &Symbol) -> String {
     format!(
         "{} {} {} {} {} {}",
-        s.file, s.kind, s.qualified_name, s.signature, s.imports.join(" "), s.references.join(" ")
+        s.file,
+        s.kind,
+        s.qualified_name,
+        s.signature,
+        s.imports.join(" "),
+        s.references.join(" ")
     )
 }

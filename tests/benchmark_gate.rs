@@ -14,14 +14,7 @@ fn benchmark_runs_and_hybrid_matches_or_beats_vector_only() {
         assert!(r.recall_at_k >= 0.0 && r.recall_at_k <= 1.0);
     }
 
-    let get = |mode: &str| {
-        report
-            .aggregate
-            .iter()
-            .find(|a| a.mode == mode)
-            .unwrap()
-            .clone()
-    };
+    let get = |mode: &str| report.aggregate.iter().find(|a| a.mode == mode).unwrap();
     let vec_only = get("vector-only");
     let hybrid = get("hybrid");
 

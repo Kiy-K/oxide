@@ -100,7 +100,11 @@ pub struct Symbol {
 impl Symbol {
     /// Stable identity for persistence: path + qualified name.
     pub fn id(&self) -> u64 {
-        fnv1a64_iter([self.file.as_bytes(), [0].as_slice(), self.qualified_name.as_bytes()])
+        fnv1a64_iter([
+            self.file.as_bytes(),
+            [0].as_slice(),
+            self.qualified_name.as_bytes(),
+        ])
     }
 
     pub fn span_text<'a>(&self, src: &'a str) -> &'a str {

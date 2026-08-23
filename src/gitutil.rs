@@ -65,7 +65,9 @@ pub fn parse_unified(text: &str) -> Vec<FileDelta> {
                         file: target.clone(),
                         added: vec![],
                     });
-                    entry.added.push((new_start.max(1), (new_start + new_count - 1).max(1)));
+                    entry
+                        .added
+                        .push((new_start.max(1), (new_start + new_count - 1).max(1)));
                 }
             }
         }
@@ -134,11 +136,26 @@ new file mode 100644
         std::fs::write(root.join("a.py"), "def one():\n    pass\n").unwrap();
         git(root, &["init", "-q"]);
         git(root, &["add", "."]);
-        git(root, &["-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "init"]);
-        std::fs::write(root.join("a.py"), "def one():\n    pass\n\ndef two():\n    return 2\n").unwrap();
+        git(
+            root,
+            &[
+                "-c",
+                "user.email=t@t",
+                "-c",
+                "user.name=t",
+                "commit",
+                "-qm",
+                "init",
+            ],
+        );
+        std::fs::write(
+            root.join("a.py"),
+            "def one():\n    pass\n\ndef two():\n    return 2\n",
+        )
+        .unwrap();
         let deltas = diff_files(root, "").unwrap();
         let d = deltas.iter().find(|d| d.file == "a.py").expect("delta");
-        assert!(d.added.windows(2).any(|w| w[0].1 + 1 == w[1].0) || d.added.len() >= 1);
+        assert!(d.added.windows(2).any(|w| w[0].1 + 1 == w[1].0) || !d.added.is_empty());
     }
 
     fn git(dir: &std::path::Path, args: &[&str]) {

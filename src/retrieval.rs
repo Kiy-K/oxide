@@ -23,7 +23,11 @@ pub struct SearchOptions {
 
 impl Default for SearchOptions {
     fn default() -> Self {
-        Self { limit: 10, mode: SearchMode::Hybrid, expand: true }
+        Self {
+            limit: 10,
+            mode: SearchMode::Hybrid,
+            expand: true,
+        }
     }
 }
 
@@ -81,7 +85,11 @@ impl LexicalIndex {
                 postings.values().filter_map(|d| d.get(&id)).sum::<u32>() as f32,
             );
         }
-        Self { postings, doc_len, doc_count: symbols.len() }
+        Self {
+            postings,
+            doc_len,
+            doc_count: symbols.len(),
+        }
     }
 
     /// BM25 scores for the query terms.
@@ -89,7 +97,9 @@ impl LexicalIndex {
         let avg_len = self.doc_len.values().sum::<f32>() / self.doc_count.max(1) as f32;
         let mut scores: HashMap<u64, (f32, usize)> = HashMap::new();
         for tok in tokenize(query) {
-            let Some(docs) = self.postings.get(&tok) else { continue };
+            let Some(docs) = self.postings.get(&tok) else {
+                continue;
+            };
             let df = docs.len() as f32;
             let n = self.doc_count.max(1) as f32;
             let idf = ((n - df + 0.5) / (df + 0.5)).max(0.0).ln_1p();
@@ -145,12 +155,15 @@ impl<'a> RetrievalEngine<'a> {
         let mut rrf: HashMap<u64, f32> = HashMap::new();
         let mut reasons: HashMap<u64, Vec<String>> = HashMap::new();
         let note = |rrf: &mut HashMap<u64, f32>,
-                        reasons: &mut HashMap<u64, Vec<String>>,
-                        ranked: Vec<(u64, f32, String)>,
-                        weight: f32| {
+                    reasons: &mut HashMap<u64, Vec<String>>,
+                    ranked: Vec<(u64, f32, String)>,
+                    weight: f32| {
             for (rank, (id, score, why)) in ranked.into_iter().enumerate() {
                 *rrf.entry(id).or_insert(0.0) += weight / (RRF_K + rank as f32 + 1.0);
-                reasons.entry(id).or_default().push(format!("{why}={score:.3}"));
+                reasons
+                    .entry(id)
+                    .or_default()
+                    .push(format!("{why}={score:.3}"));
             }
         };
 
@@ -158,24 +171,48 @@ impl<'a> RetrievalEngine<'a> {
             SearchMode::LexicalOnly => {
                 let mut ranked: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
                 ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-                note(&mut rrf, &mut reasons, ranked.into_iter().take(200).map(|(id, s)| (id, s, "lexical".into())).collect(), 1.0);
+                note(
+                    &mut rrf,
+                    &mut reasons,
+                    ranked
+                        .into_iter()
+                        .take(200)
+                        .map(|(id, s)| (id, s, "lexical".into()))
+                        .collect(),
+                    1.0,
+                );
             }
             SearchMode::VectorOnly => {
                 let mut ranked: Vec<_> = vec_scores.clone().into_iter().collect();
                 ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-                note(&mut rrf, &mut reasons, ranked.into_iter().take(200).map(|(id, s)| (id, s, "semantic".into())).collect(), 1.0);
+                note(
+                    &mut rrf,
+                    &mut reasons,
+                    ranked
+                        .into_iter()
+                        .take(200)
+                        .map(|(id, s)| (id, s, "semantic".into()))
+                        .collect(),
+                    1.0,
+                );
             }
             SearchMode::Hybrid => {
                 let mut lr: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
                 lr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-                let lrr: Vec<(u64, f32, String)> =
-                    lr.into_iter().take(200).map(|(id, s)| (id, s, "lexical".into())).collect();
+                let lrr: Vec<(u64, f32, String)> = lr
+                    .into_iter()
+                    .take(200)
+                    .map(|(id, s)| (id, s, "lexical".into()))
+                    .collect();
                 note(&mut rrf, &mut reasons, lrr, LEX_WEIGHT);
 
                 let mut vr: Vec<_> = vec_scores.iter().map(|(id, s)| (*id, *s)).collect();
                 vr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
-                let vrr: Vec<(u64, f32, String)> =
-                    vr.into_iter().take(200).map(|(id, s)| (id, s, "semantic".into())).collect();
+                let vrr: Vec<(u64, f32, String)> = vr
+                    .into_iter()
+                    .take(200)
+                    .map(|(id, s)| (id, s, "semantic".into()))
+                    .collect();
                 note(&mut rrf, &mut reasons, vrr, VEC_WEIGHT);
             }
         }
@@ -192,10 +229,14 @@ impl<'a> RetrievalEngine<'a> {
                 })
             })
             .collect();
-        hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        hits.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
         // ---- structural expansion ----
-        let mut base_scores = rrf.clone();
+        let base_scores = rrf.clone();
         if opts.expand && !hits.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
             let strong: Vec<&Symbol> = hits
@@ -203,7 +244,10 @@ impl<'a> RetrievalEngine<'a> {
                 .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
                 .filter_map(|h| by_id.get(&h.symbol.id()).copied())
                 .filter(|s| {
-                    lex_scores.get(&s.id()).map(|(sc, _)| *sc >= max_lex * STRONG_SEED_FRAC).unwrap_or(false)
+                    lex_scores
+                        .get(&s.id())
+                        .map(|(sc, _)| *sc >= max_lex * STRONG_SEED_FRAC)
+                        .unwrap_or(false)
                         && max_lex > 0.0
                 })
                 .take(3)
@@ -238,7 +282,10 @@ impl<'a> RetrievalEngine<'a> {
         let has_direct = |id: u64| -> bool {
             reasons
                 .get(&id)
-                .map(|rs| rs.iter().any(|r| r.starts_with("lexical") || r.starts_with("semantic")))
+                .map(|rs| {
+                    rs.iter()
+                        .any(|r| r.starts_with("lexical") || r.starts_with("semantic"))
+                })
                 .unwrap_or(false)
         };
         let mut direct_hits: Vec<SearchHit> = Vec::new();
@@ -260,8 +307,16 @@ impl<'a> RetrievalEngine<'a> {
                 expanded_hits.push(hit);
             }
         }
-        direct_hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
-        expanded_hits.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        direct_hits.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        expanded_hits.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
         hits.clear();
         hits.extend(direct_hits);
         hits.extend(expanded_hits);
@@ -273,7 +328,9 @@ impl<'a> RetrievalEngine<'a> {
 
 /// Slice `start..end` (1-based inclusive) from a file, capped at `cap` lines.
 pub fn read_snippet(path: &std::path::Path, start: u32, end: u32, cap: usize) -> String {
-    let Ok(src) = std::fs::read_to_string(path) else { return String::new() };
+    let Ok(src) = std::fs::read_to_string(path) else {
+        return String::new();
+    };
     src.lines()
         .skip(start.saturating_sub(1) as usize)
         .take(((end.saturating_sub(start - 1)) as usize).min(cap))
@@ -301,8 +358,7 @@ fn is_test_symbol(s: &Symbol) -> bool {
         || f.contains("\\tests\\")
         || n.starts_with("test_")
         || n.ends_with("_test")
-        || n.ends_with("test")
-            && (matches!(s.kind, SymbolKind::Function | SymbolKind::Method))
+        || n.ends_with("test") && (matches!(s.kind, SymbolKind::Function | SymbolKind::Method))
 }
 
 impl<'a> RelationGraph<'a> {
@@ -320,7 +376,13 @@ impl<'a> RelationGraph<'a> {
             }
             files.insert(s.file.as_str());
         }
-        Self { symbols, by_qualified, children_of, defs_by_name, files }
+        Self {
+            symbols,
+            by_qualified,
+            children_of,
+            defs_by_name,
+            files,
+        }
     }
 
     /// Resolve an import string from a file to concrete symbols, when the
@@ -354,7 +416,12 @@ impl<'a> RelationGraph<'a> {
                 out.push(("sibling".into(), *c));
             }
         }
-        for c in self.children_of.get(seed.qualified_name.as_str()).into_iter().flatten() {
+        for c in self
+            .children_of
+            .get(seed.qualified_name.as_str())
+            .into_iter()
+            .flatten()
+        {
             out.push(("child".into(), *c));
         }
         // References from this symbol to known definitions.
@@ -388,8 +455,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
     let norm = module.trim_start_matches("@/");
     let joined = if let Some(rest) = norm.strip_prefix("./").or_else(|| norm.strip_prefix("../")) {
         let ups = norm.matches("../").count();
-        let mut parts: std::collections::VecDeque<&str> =
-            from_file.split('/').collect();
+        let mut parts: std::collections::VecDeque<&str> = from_file.split('/').collect();
         parts.pop_back(); // drop file name
         for _ in 0..ups.min(parts.len()) {
             parts.pop_back();
@@ -430,7 +496,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{SqliteStore, IndexBackend};
+    use crate::index::{IndexBackend, SqliteStore};
     use crate::symbols::{content_hash, SymbolKind};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str, refs: &[&str]) -> Symbol {
@@ -439,7 +505,11 @@ mod tests {
             qualified_name: qname.into(),
             name,
             kind,
-            language: if file.ends_with(".py") { crate::symbols::Language::Python } else { crate::symbols::Language::TypeScript },
+            language: if file.ends_with(".py") {
+                crate::symbols::Language::Python
+            } else {
+                crate::symbols::Language::TypeScript
+            },
             file: file.into(),
             start_line: 1,
             end_line: 5,
@@ -460,15 +530,31 @@ mod tests {
     #[test]
     fn exact_identifier_search_works_without_embeddings() {
         let mut store = seed_store();
-        let syms = vec![
-            sym("src/retry.py", "RetryPolicy", SymbolKind::Class, "class RetryPolicy:", &[]),
-            sym("src/auth.py", "refresh_token", SymbolKind::Function, "def refresh_token():", &[]),
+        let syms = [
+            sym(
+                "src/retry.py",
+                "RetryPolicy",
+                SymbolKind::Class,
+                "class RetryPolicy:",
+                &[],
+            ),
+            sym(
+                "src/auth.py",
+                "refresh_token",
+                SymbolKind::Function,
+                "def refresh_token():",
+                &[],
+            ),
         ];
         store.replace_file("src/retry.py", 1, &syms[..1]).unwrap();
         store.replace_file("src/auth.py", 1, &syms[1..]).unwrap();
         let emb = HashedEmbedder::default();
         let engine = RetrievalEngine::new(&store, &emb);
-        let opts = SearchOptions { limit: 5, mode: SearchMode::LexicalOnly, expand: false };
+        let opts = SearchOptions {
+            limit: 5,
+            mode: SearchMode::LexicalOnly,
+            expand: false,
+        };
         let hits = engine.search("RetryPolicy", &opts).unwrap();
         assert_eq!(hits[0].symbol.qualified_name, "RetryPolicy");
         assert!(hits[0].reasons.iter().any(|r| r.starts_with("lexical")));
@@ -477,14 +563,29 @@ mod tests {
     #[test]
     fn semantic_search_finds_related_without_name_overlap() {
         let mut store = seed_store();
-        let s1 = sym("src/http/backoff.py", "BackoffScheduler", SymbolKind::Class, "class BackoffScheduler: retry schedule for failed requests", &[]);
-        store.replace_file("src/http/backoff.py", 1, &[s1.clone()]).unwrap();
+        let s1 = sym(
+            "src/http/backoff.py",
+            "BackoffScheduler",
+            SymbolKind::Class,
+            "class BackoffScheduler: retry schedule for failed requests",
+            &[],
+        );
+        store
+            .replace_file("src/http/backoff.py", 1, std::slice::from_ref(&s1))
+            .unwrap();
         let emb = HashedEmbedder::default();
-        for s in &[&s1] {
-            store.put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s))).unwrap();
+        {
+            let s = &(&s1);
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
-        let opts = SearchOptions { limit: 3, mode: SearchMode::VectorOnly, expand: false };
+        let opts = SearchOptions {
+            limit: 3,
+            mode: SearchMode::VectorOnly,
+            expand: false,
+        };
         let hits = engine.search("retrying failed http calls", &opts).unwrap();
         assert!(!hits.is_empty());
         assert!(hits[0].reasons.iter().any(|r| r.starts_with("semantic")));
@@ -493,33 +594,74 @@ mod tests {
     #[test]
     fn hybrid_expands_to_referenced_definition_and_test() {
         let mut store = seed_store();
-        let client = sym("src/net/client.py", "HttpClient.fetch", SymbolKind::Method, "def fetch(self, url): uses retry_policy", &["retry_policy"]);
-        let policy = sym("src/net/retry.py", "RetryPolicy", SymbolKind::Class, "class RetryPolicy:", &[]);
-        let test = sym("tests/test_retry.py", "test_retry_policy_expires", SymbolKind::Function, "def test_retry_policy_expires():", &["RetryPolicy"]);
-        store.replace_file("src/net/client.py", 1, &[client.clone()]).unwrap();
-        store.replace_file("src/net/retry.py", 1, &[policy.clone()]).unwrap();
-        store.replace_file("tests/test_retry.py", 1, &[test.clone()]).unwrap();
+        let client = sym(
+            "src/net/client.py",
+            "HttpClient.fetch",
+            SymbolKind::Method,
+            "def fetch(self, url): uses retry_policy",
+            &["retry_policy"],
+        );
+        let policy = sym(
+            "src/net/retry.py",
+            "RetryPolicy",
+            SymbolKind::Class,
+            "class RetryPolicy:",
+            &[],
+        );
+        let test = sym(
+            "tests/test_retry.py",
+            "test_retry_policy_expires",
+            SymbolKind::Function,
+            "def test_retry_policy_expires():",
+            &["RetryPolicy"],
+        );
+        store
+            .replace_file("src/net/client.py", 1, std::slice::from_ref(&client))
+            .unwrap();
+        store
+            .replace_file("src/net/retry.py", 1, std::slice::from_ref(&policy))
+            .unwrap();
+        store
+            .replace_file("tests/test_retry.py", 1, std::slice::from_ref(&test))
+            .unwrap();
         let emb = HashedEmbedder::default();
         for s in &[&client, &policy, &test] {
-            store.put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s))).unwrap();
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
-        let opts = SearchOptions { limit: 8, mode: SearchMode::LexicalOnly, expand: true };
+        let opts = SearchOptions {
+            limit: 8,
+            mode: SearchMode::LexicalOnly,
+            expand: true,
+        };
         let hits = engine.search("RetryPolicy", &opts).unwrap();
-        let names: Vec<&str> = hits.iter().map(|h| h.symbol.qualified_name.as_str()).collect();
+        let names: Vec<&str> = hits
+            .iter()
+            .map(|h| h.symbol.qualified_name.as_str())
+            .collect();
         assert!(names.contains(&"RetryPolicy"), "{names:?}");
         assert!(
             names.contains(&"test_retry_policy_expires"),
             "expansion should surface related test: {names:?}"
         );
-        assert!(names.contains(&"HttpClient.fetch"), "expansion should surface referrer: {names:?}");
-        let test_hit = hits.iter().find(|h| h.symbol.name == "test_retry_policy_expires").unwrap();
+        assert!(
+            names.contains(&"HttpClient.fetch"),
+            "expansion should surface referrer: {names:?}"
+        );
+        let test_hit = hits
+            .iter()
+            .find(|h| h.symbol.name == "test_retry_policy_expires")
+            .unwrap();
         assert!(test_hit.reasons.iter().any(|r| r.contains("test←")));
     }
 
     #[test]
     fn module_resolution_probes_extensions_and_indexes() {
-        let files: HashSet<&str> = ["src/utils/token.py", "pkg/api/index.ts"].into_iter().collect();
+        let files: HashSet<&str> = ["src/utils/token.py", "pkg/api/index.ts"]
+            .into_iter()
+            .collect();
         assert_eq!(
             resolve_module("./token", "src/utils/auth.py", &files).as_deref(),
             Some("src/utils/token.py")

@@ -29,9 +29,7 @@ impl TsExtractor {
 
     fn parse(&self, src: &str) -> Option<tree_sitter::Tree> {
         let mut parser = Parser::new();
-        parser
-            .set_language(&self.ts_language())
-            .ok()?;
+        parser.set_language(&self.ts_language()).ok()?;
         parser.parse(src, None)
     }
 
@@ -58,7 +56,9 @@ impl LanguageExtractor for TsExtractor {
     }
 
     fn collect_imports(&self, src: &str) -> Vec<String> {
-        let Some(tree) = self.parse(src) else { return Vec::new() };
+        let Some(tree) = self.parse(src) else {
+            return Vec::new();
+        };
         let mut out = Vec::new();
         Self::collect_from(tree.root_node(), src, &mut out);
         out.sort();
@@ -67,7 +67,9 @@ impl LanguageExtractor for TsExtractor {
     }
 
     fn extract(&self, file: &str, src: &str, imports: &[String]) -> Vec<Symbol> {
-        let Some(tree) = self.parse(src) else { return Vec::new() };
+        let Some(tree) = self.parse(src) else {
+            return Vec::new();
+        };
         let mut symbols = Vec::new();
         Self::visit(
             tree.root_node(),
@@ -116,7 +118,17 @@ impl TsExtractor {
     ) {
         match node.kind() {
             "function_declaration" | "generator_function_declaration" => {
-                Self::push(node, file, src, lang, imports, stack, exported, SymbolKind::Function, out);
+                Self::push(
+                    node,
+                    file,
+                    src,
+                    lang,
+                    imports,
+                    stack,
+                    exported,
+                    SymbolKind::Function,
+                    out,
+                );
                 return;
             }
             "class_declaration" | "abstract_class_declaration" => {
@@ -138,15 +150,45 @@ impl TsExtractor {
                 return;
             }
             "interface_declaration" => {
-                Self::push(node, file, src, lang, imports, stack, exported, SymbolKind::Interface, out);
+                Self::push(
+                    node,
+                    file,
+                    src,
+                    lang,
+                    imports,
+                    stack,
+                    exported,
+                    SymbolKind::Interface,
+                    out,
+                );
                 return;
             }
             "type_alias_declaration" => {
-                Self::push(node, file, src, lang, imports, stack, exported, SymbolKind::TypeAlias, out);
+                Self::push(
+                    node,
+                    file,
+                    src,
+                    lang,
+                    imports,
+                    stack,
+                    exported,
+                    SymbolKind::TypeAlias,
+                    out,
+                );
                 return;
             }
             "enum_declaration" => {
-                Self::push(node, file, src, lang, imports, stack, exported, SymbolKind::Enum, out);
+                Self::push(
+                    node,
+                    file,
+                    src,
+                    lang,
+                    imports,
+                    stack,
+                    exported,
+                    SymbolKind::Enum,
+                    out,
+                );
                 return;
             }
             "lexical_declaration" | "variable_declaration" => {
@@ -202,7 +244,7 @@ impl TsExtractor {
         src: &str,
         lang: Language,
         imports: &[String],
-        stack: &mut Vec<(String, bool)>,
+        stack: &mut [(String, bool)],
         exported: bool,
         out: &mut Vec<Symbol>,
     ) {
@@ -212,8 +254,13 @@ impl TsExtractor {
         ) else {
             return;
         };
-        let Ok(name) = name_node.utf8_text(src.as_bytes()) else { return };
-        if !name.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '$') {
+        let Ok(name) = name_node.utf8_text(src.as_bytes()) else {
+            return;
+        };
+        if !name
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '$')
+        {
             return; // skip destructured patterns
         }
         let kind = if matches!(
@@ -322,9 +369,15 @@ impl TsExtractor {
         stack: &[(String, bool)],
         out: &mut Vec<Symbol>,
     ) {
-        let Some(name_node) = node.child_by_field_name("name") else { return };
-        let Ok(name) = name_node.utf8_text(src.as_bytes()) else { return };
-        let Some(parent) = stack.last().map(|(n, _)| n.clone()) else { return };
+        let Some(name_node) = node.child_by_field_name("name") else {
+            return;
+        };
+        let Ok(name) = name_node.utf8_text(src.as_bytes()) else {
+            return;
+        };
+        let Some(parent) = stack.last().map(|(n, _)| n.clone()) else {
+            return;
+        };
         let qualified = format!("{parent}.{name}");
         let start = node.start_position().row as u32 + 1;
         let end = node.end_position().row as u32 + 1;
@@ -414,10 +467,16 @@ function helper(x: number) {
         assert_eq!(find("refreshToken").kind, SymbolKind::Function);
         assert!(find("refreshToken").exported);
         assert_eq!(find("AuthService.login").kind, SymbolKind::Method);
-        assert_eq!(find("AuthService.login").parent.as_deref(), Some("AuthService"));
+        assert_eq!(
+            find("AuthService.login").parent.as_deref(),
+            Some("AuthService")
+        );
         assert_eq!(find("helper").kind, SymbolKind::Function);
         assert_eq!(
-            syms.iter().find(|s| s.name == "__module__").unwrap().imports,
+            syms.iter()
+                .find(|s| s.name == "__module__")
+                .unwrap()
+                .imports,
             vec!["@nestjs/common".to_string(), "axios".to_string()]
         );
         // Decorator line included in class span.

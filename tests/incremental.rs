@@ -47,7 +47,10 @@ fn changing_one_symbol_only_reembeds_that_symbol() {
     write(&root.join("src/thing.py"), FOO_V2); // only foo()'s body changed
     let r = update_index(root, &mut store, &emb).unwrap();
 
-    assert_eq!(r.reparsed_files, 1, "file content changed so it must reparse");
+    assert_eq!(
+        r.reparsed_files, 1,
+        "file content changed so it must reparse"
+    );
     assert_eq!((r.changed_symbols, r.new_symbols), (1, 0));
     assert_eq!(
         r.embedded_symbols, 1,
@@ -87,7 +90,12 @@ fn deleted_files_and_symbols_are_removed_from_persistent_index() {
     assert_eq!(r.removed_files, 1);
     assert_eq!(r.deleted_symbols, 2);
 
-    let names: Vec<String> = store.all_symbols().unwrap().into_iter().map(|s| s.name).collect();
+    let names: Vec<String> = store
+        .all_symbols()
+        .unwrap()
+        .into_iter()
+        .map(|s| s.name)
+        .collect();
     assert!(!names.contains(&"gone".to_string()));
     assert!(names.contains(&"stays".to_string()));
 
@@ -114,6 +122,11 @@ fn index_survives_reopen_from_disk() {
     let r = update_index(&src_root, &mut store, &emb).unwrap();
     assert_eq!(r.unchanged_files, 1);
     assert_eq!(r.reused_embeddings, 2);
-    let names: Vec<String> = store.all_symbols().unwrap().into_iter().map(|s| s.name).collect();
+    let names: Vec<String> = store
+        .all_symbols()
+        .unwrap()
+        .into_iter()
+        .map(|s| s.name)
+        .collect();
     assert!(names.contains(&"persist_me".to_string()));
 }

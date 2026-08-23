@@ -51,8 +51,9 @@ fn review_finds_changed_symbols_and_related_test() {
     let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
     update_index(root, &mut store, &HashedEmbedder::default()).unwrap();
 
-    let ctx = oxide::review::build_review_context(root, &store, &HashedEmbedder::default(), "HEAD~1")
-        .unwrap();
+    let ctx =
+        oxide::review::build_review_context(root, &store, &HashedEmbedder::default(), "HEAD~1")
+            .unwrap();
 
     let changed: Vec<&str> = ctx
         .changed_symbols
@@ -60,7 +61,10 @@ fn review_finds_changed_symbols_and_related_test() {
         .map(|c| c.symbol.qualified_name.as_str())
         .collect();
     assert!(changed.contains(&"RetryPolicy.should_retry"), "{changed:?}");
-    assert!(!changed.contains(&"ApiClient.get"), "unchanged symbol must not be flagged: {changed:?}");
+    assert!(
+        !changed.contains(&"ApiClient.get"),
+        "unchanged symbol must not be flagged: {changed:?}"
+    );
 
     let related: Vec<&str> = ctx
         .related

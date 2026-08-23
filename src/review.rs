@@ -1,10 +1,10 @@
 //! Review context assembly: git changes become retrieval seeds; the output is
 //! a compact, explainable context pack for a downstream model or human.
 
+use crate::embeddings::EmbeddingProvider;
 use crate::gitutil::diff_files;
 use crate::index::IndexBackend;
-use crate::retrieval::{RelationGraph, SearchHit, SearchOptions, SearchMode, RetrievalEngine};
-use crate::embeddings::EmbeddingProvider;
+use crate::retrieval::{RelationGraph, RetrievalEngine, SearchHit, SearchMode, SearchOptions};
 use crate::symbols::Symbol;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -44,8 +44,16 @@ pub fn build_review_context(
     let mut changed_symbols: Vec<ChangedSymbol> = Vec::new();
     let mut seen_seeds: Vec<u64> = Vec::new();
     for d in &deltas {
-        for s in symbols.iter().filter(|s| s.file == d.file && s.kind != crate::symbols::SymbolKind::Module) {
-            if let Some(overlap) = d.added.iter().map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line)).max() {
+        for s in symbols
+            .iter()
+            .filter(|s| s.file == d.file && s.kind != crate::symbols::SymbolKind::Module)
+        {
+            if let Some(overlap) = d
+                .added
+                .iter()
+                .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
+                .max()
+            {
                 if overlap > 0 {
                     seen_seeds.push(s.id());
                     changed_symbols.push(ChangedSymbol {
@@ -84,17 +92,23 @@ pub fn build_review_context(
         .collect::<Vec<_>>()
         .join(" ");
     if !query.trim().is_empty() {
-        let opts = SearchOptions { limit: 12, mode: SearchMode::VectorOnly, expand: false };
+        let opts = SearchOptions {
+            limit: 12,
+            mode: SearchMode::VectorOnly,
+            expand: false,
+        };
         if let Ok(hits) = engine.search(&query, &opts) {
             for h in hits {
                 if !seen_seeds.contains(&h.symbol.id()) {
-                    let e = related_ids.entry(h.symbol.id()).or_insert((0.0, Vec::new()));
+                    let e = related_ids
+                        .entry(h.symbol.id())
+                        .or_insert((0.0, Vec::new()));
                     e.0 += h.score;
                     let why = "semantic-neighbor".to_string();
                     if !e.1.contains(&why) {
                         e.1.push(why);
                     }
-                    if h.reasons.first().is_some() {
+                    if !h.reasons.is_empty() {
                         e.1.push(h.reasons[0].clone());
                     }
                 }
@@ -114,11 +128,19 @@ pub fn build_review_context(
             })
         })
         .collect();
-    related.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+    related.sort_by(|a, b| {
+        b.score
+            .partial_cmp(&a.score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     related.truncate(15);
 
     Ok(ReviewContext {
-        range: if range.is_empty() { "HEAD".into() } else { range.into() },
+        range: if range.is_empty() {
+            "HEAD".into()
+        } else {
+            range.into()
+        },
         changed_files: deltas.iter().map(|d| d.file.clone()).collect(),
         changed_symbols,
         related,
@@ -129,5 +151,9 @@ pub fn build_review_context(
 fn overlap_len(a1: u32, a2: u32, b1: u32, b2: u32) -> u32 {
     let lo = a1.max(b1);
     let hi = a2.min(b2);
-    if hi >= lo { hi - lo + 1 } else { 0 }
+    if hi >= lo {
+        hi - lo + 1
+    } else {
+        0
+    }
 }

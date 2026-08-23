@@ -26,7 +26,9 @@ impl LanguageExtractor for PythonExtractor {
     }
 
     fn collect_imports(&self, src: &str) -> Vec<String> {
-        let Some(tree) = self.parse(src) else { return Vec::new() };
+        let Some(tree) = self.parse(src) else {
+            return Vec::new();
+        };
         let mut out = Vec::new();
         collect_from(tree.root_node(), src, &mut out);
         out.sort();
@@ -35,7 +37,9 @@ impl LanguageExtractor for PythonExtractor {
     }
 
     fn extract(&self, file: &str, src: &str, imports: &[String]) -> Vec<Symbol> {
-        let Some(tree) = self.parse(src) else { return Vec::new() };
+        let Some(tree) = self.parse(src) else {
+            return Vec::new();
+        };
         let mut symbols = Vec::new();
         visit(
             tree.root_node(),
@@ -110,8 +114,12 @@ fn visit(
     match node.kind() {
         "function_definition" | "class_definition" => {
             let is_class = node.kind() == "class_definition";
-            let Some(name_node) = node.child_by_field_name("name") else { return };
-            let Ok(name) = name_node.utf8_text(src.as_bytes()) else { return };
+            let Some(name_node) = node.child_by_field_name("name") else {
+                return;
+            };
+            let Ok(name) = name_node.utf8_text(src.as_bytes()) else {
+                return;
+            };
             let kind = if is_class {
                 SymbolKind::Class
             } else if matches!(stack.last(), Some((_, true))) {
@@ -210,16 +218,28 @@ def module_level():
         assert!(names.contains(&"module_level.inner"), "{names:?}");
         assert!(names.contains(&"src/store.py:__module__"));
 
-        let cls = syms.iter().find(|s| s.qualified_name == "VersionedStore").unwrap();
+        let cls = syms
+            .iter()
+            .find(|s| s.qualified_name == "VersionedStore")
+            .unwrap();
         assert_eq!(cls.kind, SymbolKind::Class);
         // Span starts at the decorator line.
         assert_eq!(cls.start_line, 4);
-        let get = syms.iter().find(|s| s.qualified_name == "VersionedStore.get").unwrap();
+        let get = syms
+            .iter()
+            .find(|s| s.qualified_name == "VersionedStore.get")
+            .unwrap();
         assert_eq!(get.kind, SymbolKind::Method);
         assert_eq!((get.start_line, get.end_line), (7, 8));
-        assert_eq!(get.span_text(SRC), "    def get(self, key):\n        return self.data[key]");
+        assert_eq!(
+            get.span_text(SRC),
+            "    def get(self, key):\n        return self.data[key]"
+        );
 
-        let inner = syms.iter().find(|s| s.qualified_name == "module_level.inner").unwrap();
+        let inner = syms
+            .iter()
+            .find(|s| s.qualified_name == "module_level.inner")
+            .unwrap();
         assert_eq!(inner.kind, SymbolKind::Function); // nested under function, not class
         let m = syms.iter().find(|s| s.name == "__module__").unwrap();
         assert_eq!(m.imports, vec!["collections".to_string(), "os".to_string()]);
