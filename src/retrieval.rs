@@ -407,7 +407,7 @@ mod tests {
             qualified_name: qname.into(),
             name,
             kind,
-            language: if file.ends_with(".py") { Language::Python } else { Language::TypeScript },
+            language: if file.ends_with(".py") { crate::symbols::Language::Python } else { crate::symbols::Language::TypeScript },
             file: file.into(),
             start_line: 1,
             end_line: 5,
