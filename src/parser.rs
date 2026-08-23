@@ -54,6 +54,7 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
         imports,
         exported: false,
         parent: None,
+        references: Vec::new(),
     });
     syms
 }

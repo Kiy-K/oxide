@@ -247,6 +247,7 @@ impl TsExtractor {
             imports: imports.to_vec(),
             exported,
             parent,
+            references: Vec::new(),
         });
     }
 
@@ -307,6 +308,7 @@ impl TsExtractor {
             imports: imports.to_vec(),
             exported,
             parent,
+            references: Vec::new(),
         });
         Some(qualified)
     }
@@ -340,6 +342,7 @@ impl TsExtractor {
             imports: imports.to_vec(),
             exported: false,
             parent: Some(parent),
+            references: Vec::new(),
         });
     }
 }

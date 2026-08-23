@@ -35,6 +35,24 @@ pub enum SymbolKind {
     Import,
 }
 
+impl std::str::FromStr for SymbolKind {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "module" => SymbolKind::Module,
+            "class" => SymbolKind::Class,
+            "function" => SymbolKind::Function,
+            "method" => SymbolKind::Method,
+            "interface" => SymbolKind::Interface,
+            "type_alias" => SymbolKind::TypeAlias,
+            "enum" => SymbolKind::Enum,
+            "constant" => SymbolKind::Constant,
+            "import" => SymbolKind::Import,
+            _ => anyhow::bail!("unknown kind: {s}"),
+        })
+    }
+}
+
 impl fmt::Display for SymbolKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
@@ -74,6 +92,9 @@ pub struct Symbol {
     pub exported: bool,
     /// Parent symbol qualified name within the same file, if nested.
     pub parent: Option<String>,
+    /// Resolved references to other known symbols (filled by the indexer).
+    #[serde(default)]
+    pub references: Vec<String>,
 }
 
 impl Symbol {
@@ -154,6 +175,7 @@ mod tests {
             imports: vec![],
             exported: false,
             parent: None,
+            references: Vec::new(),
         };
         assert_eq!(mk("a.py", "f").id(), mk("a.py", "f").id());
         assert_ne!(mk("a.py", "f").id(), mk("b.py", "f").id());
@@ -176,6 +198,7 @@ mod tests {
             imports: vec![],
             exported: false,
             parent: None,
+            references: Vec::new(),
         };
         assert_eq!(sym.span_text(src), "def bar():\n    pass");
     }
