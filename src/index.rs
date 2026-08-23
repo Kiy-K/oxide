@@ -10,6 +10,14 @@ use std::path::Path;
 
 /// Storage abstraction. Small by design: swap SQLite for something else by
 /// implementing this trait.
+/// One parsed file: (repo-relative path, content hash, source text, symbols).
+pub struct ParsedFile {
+    pub file: String,
+    pub hash: u64,
+    pub src: String,
+    pub symbols: Vec<Symbol>,
+}
+
 pub trait IndexBackend {
     fn get_meta(&self, key: &str) -> Result<Option<String>>;
     fn set_meta(&mut self, key: &str, value: &str) -> Result<()>;
@@ -20,6 +28,8 @@ pub trait IndexBackend {
     fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
     fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()>;
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
+    /// All embeddings in one shot (avoids per-symbol queries in retrieval).
+    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
     fn drop_embeddings_without_symbols(&mut self) -> Result<()>;
 }
 
@@ -231,6 +241,31 @@ impl IndexBackend for SqliteStore {
         Ok(Some((chash, floats)))
     }
 
+    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT symbol_id, content_hash, dim, vec FROM embeddings")?;
+        let rows = stmt.query_map([], |r| {
+            Ok((
+                r.get::<_, i64>(0)? as u64,
+                r.get::<_, i64>(1)? as u64,
+                r.get::<_, i32>(2)?,
+                r.get::<_, Vec<u8>>(3)?,
+            ))
+        })?;
+        let mut out = HashMap::new();
+        for row in rows {
+            let (id, chash, dim, bytes) = row?;
+            let floats: Vec<f32> = bytes
+                .chunks_exact(4)
+                .map(|c| f32::from_le_bytes([c[0], c[1], c[2], c[3]]))
+                .take(dim as usize)
+                .collect();
+            out.insert(id, (chash, floats));
+        }
+        Ok(out)
+    }
+
     fn drop_embeddings_without_symbols(&mut self) -> Result<()> {
         self.conn.execute(
             "DELETE FROM embeddings WHERE symbol_id NOT IN (SELECT id FROM symbols)",
@@ -315,17 +350,24 @@ pub fn update_index(
     let files = scanner::scan_repo(root)?;
     report.scanned_files = files.len();
 
-    let current: HashMap<String, u64> = files
-        .iter()
-        .filter_map(|p| {
-            let rel = p.display().to_string();
-            std::fs::read(root.join(p))
-                .ok()
-                .map(|b| (rel, crate::symbols::fnv1a64_iter([&b])))
-        })
-        .collect();
+    // Single read per file: bytes → UTF-8 string → hash + parse reuse it.
+    let mut current: HashMap<String, String> = HashMap::with_capacity(files.len());
+    for p in &files {
+        let rel = p.display().to_string();
+        match std::fs::read_to_string(root.join(p)) {
+            Ok(src) => {
+                current.insert(rel, src);
+            }
+            Err(_) => continue, // unreadable/non-UTF8: skip
+        }
+    }
 
     let stored = store.file_hashes()?;
+
+    // One snapshot reused for deletions, change detection and name matching.
+    let existing = store.all_symbols()?;
+    let before_symbols: HashMap<u64, u64> =
+        existing.iter().map(|s| (s.id(), s.content_hash)).collect();
 
     // Deletions and stale entries.
     let removed: Vec<String> = stored
@@ -334,8 +376,7 @@ pub fn update_index(
         .cloned()
         .collect();
     if !removed.is_empty() {
-        let doomed = store
-            .all_symbols()?
+        let doomed = existing
             .iter()
             .filter(|s| removed.contains(&s.file))
             .count();
@@ -345,45 +386,70 @@ pub fn update_index(
     }
 
     // Changed or new files.
-    let to_parse: Vec<&String> = current
+    let to_parse: Vec<(&String, u64)> = current
         .iter()
-        .filter(|(f, h)| stored.get(*f).copied() != Some(**h))
-        .map(|(f, _)| f)
+        .map(|(f, src)| (f, crate::symbols::content_hash(src)))
+        .filter(|(f, h)| stored.get(*f).copied() != Some(*h))
         .collect();
     report.reparsed_files = to_parse.len();
     report.unchanged_files = files.len() - to_parse.len();
 
-    let before_symbols: HashMap<u64, u64> = store
-        .all_symbols()?
-        .into_iter()
-        .map(|s| (s.id(), s.content_hash))
-        .collect();
-
     // Parse all changed files first so reference matching sees both old
-    // definitions and everything added in this run.
-    let mut parsed: Vec<(String, u64, Vec<Symbol>)> = Vec::new();
-    for rel in &to_parse {
-        let src = match std::fs::read_to_string(root.join(rel)) {
-            Ok(s) => s,
-            Err(_) => continue,
-        };
-        let lang = match scanner::language_for_path(Path::new(rel)) {
-            Some(l) => l,
-            None => continue,
-        };
-        let syms = crate::parser::parse_file(rel, &src, lang);
-        parsed.push(((*rel).clone(), current[*rel], syms));
+    // definitions and everything added in this run. Keep the source alive for
+    // reference extraction instead of re-reading from disk.
+    // Parsing is pure CPU over independent files: fan out across a small
+    // bounded pool (laptop-friendly cap) and collect in order.
+    let workers = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1)
+        .clamp(1, 4);
+    let chunk_size = to_parse.len().div_ceil(workers.max(1));
+    let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
+    let mut results: Vec<Vec<ParsedFile>> = Vec::with_capacity(workers);
+    std::thread::scope(|scope| {
+        let mut handles = Vec::new();
+        for (w, chunk) in to_parse.chunks(chunk_size.max(1)).enumerate() {
+            let current = &current;
+            results.push(Vec::new());
+            handles.push(scope.spawn(move || {
+                let mut out = Vec::with_capacity(chunk.len());
+                for (rel, hash) in chunk {
+                    let lang = match scanner::language_for_path(Path::new(rel)) {
+                        Some(l) => l,
+                        None => continue,
+                    };
+                    let src = &current[*rel];
+                    let syms = crate::parser::parse_file(rel, src, lang);
+                    out.push(ParsedFile {
+                        file: (*rel).clone(),
+                        hash: *hash,
+                        src: src.clone(),
+                        symbols: syms,
+                    });
+                }
+                (w, out)
+            }));
+        }
+        for h in handles {
+            let (w, out) = h
+                .join()
+                .map_err(|_| anyhow::anyhow!("parse worker panicked"))?;
+            results[w] = out;
+        }
+        Ok::<(), anyhow::Error>(())
+    })?;
+    for mut part in results {
+        parsed.append(&mut part);
     }
 
     // Known bare definition names across the project (for reference matching).
-    let mut known_names: HashSet<String> = store
-        .all_symbols()?
-        .into_iter()
+    let mut known_names: HashSet<String> = existing
+        .iter()
         .filter(|s| s.kind != crate::symbols::SymbolKind::Module)
-        .map(|s| s.name)
+        .map(|s| s.name.clone())
         .collect();
-    for (_, _, syms) in &parsed {
-        for s in syms {
+    for pf in &parsed {
+        for s in &pf.symbols {
             if s.kind != crate::symbols::SymbolKind::Module {
                 known_names.insert(s.name.clone());
             }
@@ -391,36 +457,62 @@ pub fn update_index(
     }
     // # ponytail: identifier-name intersection only; no scope analysis. Upgrade
     // path: per-language scoped resolution if false positives hurt retrieval.
-    for (_, _, syms) in &mut parsed {
-        let src = std::fs::read_to_string(root.join(&syms[0].file)).unwrap_or_default();
-        for s in &mut *syms {
-            s.references = extract_references(s, &src, &known_names);
+    for pf in &mut parsed {
+        for s in &mut pf.symbols {
+            s.references = extract_references(s, &pf.src, &known_names);
         }
     }
 
-    for (rel, hash, syms) in &parsed {
-        for s in syms {
+    for pf in &parsed {
+        for s in &pf.symbols {
             match before_symbols.get(&s.id()) {
                 None => report.new_symbols += 1,
                 Some(old) if *old != s.content_hash => report.changed_symbols += 1,
                 Some(_) => {}
             }
         }
-        store.replace_file(rel, *hash, syms)?;
+        store.replace_file(&pf.file, pf.hash, &pf.symbols)?;
     }
 
-    // Embed only symbols whose embedding is missing or whose content changed.
+    // Embed only symbols whose embedding is missing or whose content changed;
+    // everything else reuses its stored vector untouched. Vector computation
+    // is pure CPU: fan out over the same bounded pool, write serially after.
+    let embeddings = store.all_embeddings()?;
     let all = store.all_symbols()?;
-    for s in &all {
-        match store.embedding_with_hash(s.id())? {
-            Some((old_hash, _)) if old_hash == s.content_hash => {
+    let to_embed: Vec<&Symbol> = all
+        .iter()
+        .filter(|s| match embeddings.get(&s.id()) {
+            Some((old_hash, _)) if *old_hash == s.content_hash => {
                 report.reused_embeddings += 1;
+                false
             }
-            _ => {
-                let text = embed_text(s);
-                store.put_embedding(s.id(), &embedder.embed(&text))?;
-                report.embedded_symbols += 1;
-            }
+            _ => true,
+        })
+        .collect();
+    let chunk_size = to_embed.len().div_ceil(workers.max(1));
+    let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
+        let mut handles = Vec::new();
+        for chunk in to_embed.chunks(chunk_size.max(1)) {
+            handles.push(scope.spawn(|| {
+                chunk
+                    .iter()
+                    .map(|s| (s.id(), embedder.embed(&embed_text(s))))
+                    .collect::<Vec<_>>()
+            }));
+        }
+        let mut out = Vec::new();
+        for h in handles {
+            out.push(
+                h.join()
+                    .map_err(|_| anyhow::anyhow!("embed worker panicked"))?,
+            );
+        }
+        Ok::<_, anyhow::Error>(out)
+    })?;
+    for part in computed {
+        for (id, vec) in part {
+            store.put_embedding(id, &vec)?;
+            report.embedded_symbols += 1;
         }
     }
 

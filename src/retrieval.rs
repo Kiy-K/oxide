@@ -47,27 +47,34 @@ const VEC_WEIGHT: f32 = 0.4;
 /// seeds for expansion.
 const STRONG_SEED_FRAC: f32 = 0.55;
 
-pub struct RetrievalEngine<'a> {
-    store: &'a dyn IndexBackend,
-    embedder: &'a dyn EmbeddingProvider,
-}
-
-struct LexicalIndex {
+pub struct LexicalIndex {
     postings: HashMap<String, HashMap<u64, u32>>, // term -> doc -> weighted tf
     doc_len: HashMap<u64, f32>,
     doc_count: usize,
 }
 
 impl LexicalIndex {
-    fn build(symbols: &[Symbol]) -> Self {
-        let mut postings: HashMap<String, HashMap<u64, u32>> = HashMap::new();
+    pub fn build(symbols: &[Symbol]) -> Self {
+        // Capacity heuristic: ~20 weighted postings per symbol keeps the
+        // posting maps from rehashing during the build.
+        let mut postings: HashMap<String, HashMap<u64, u32>> =
+            HashMap::with_capacity(symbols.len() * 12);
         let mut doc_len: HashMap<u64, f32> = HashMap::new();
         for s in symbols {
             let id = s.id();
+            let mut total_weight = 0u32;
             let mut add = |field: &str, weight: u32| {
-                for tok in tokenize(field) {
-                    *postings.entry(tok).or_default().entry(id).or_insert(0) += weight;
-                }
+                crate::embeddings::tokenize_into(field, &mut |tok| {
+                    let entry = match postings.get_mut(tok) {
+                        Some(docs) => docs,
+                        None => {
+                            postings.insert(tok.to_string(), HashMap::new());
+                            postings.get_mut(tok).unwrap()
+                        }
+                    };
+                    *entry.entry(id).or_insert(0) += weight;
+                    total_weight += weight;
+                });
             };
             // Qualified names dominate; signature next; context fields last.
             add(&s.qualified_name, 4);
@@ -80,10 +87,7 @@ impl LexicalIndex {
             for i in &s.imports {
                 add(i, 1);
             }
-            doc_len.insert(
-                id,
-                postings.values().filter_map(|d| d.get(&id)).sum::<u32>() as f32,
-            );
+            doc_len.insert(id, total_weight as f32);
         }
         Self {
             postings,
@@ -117,32 +121,72 @@ impl LexicalIndex {
     }
 }
 
+/// Hybrid retrieval engine. Construction builds the lexical index once from a
+/// store snapshot; searches reuse it (batch vector loads, no per-symbol SQL).
+/// Vectors are loaded lazily on first semantic query and cached for the
+/// engine's lifetime, so multi-query sessions pay the load exactly once.
+pub struct RetrievalEngine<'a> {
+    store: &'a dyn IndexBackend,
+    embedder: &'a dyn EmbeddingProvider,
+    /// Snapshot of indexed symbols taken at construction time.
+    symbols: Vec<Symbol>,
+    /// symbol id -> position in `symbols`.
+    by_id: HashMap<u64, usize>,
+    lexical: LexicalIndex,
+    vectors: std::cell::RefCell<Option<HashMap<u64, Vec<f32>>>>,
+}
+
 impl<'a> RetrievalEngine<'a> {
     pub fn new(store: &'a dyn IndexBackend, embedder: &'a dyn EmbeddingProvider) -> Self {
-        Self { store, embedder }
+        let symbols = store.all_symbols().unwrap_or_default();
+        let lexical = LexicalIndex::build(&symbols);
+        let by_id = symbols
+            .iter()
+            .enumerate()
+            .map(|(i, s)| (s.id(), i))
+            .collect();
+        Self {
+            store,
+            embedder,
+            symbols,
+            by_id,
+            lexical,
+            vectors: std::cell::RefCell::new(None),
+        }
     }
 
     pub fn search(&self, query: &str, opts: &SearchOptions) -> anyhow::Result<Vec<SearchHit>> {
-        let symbols = self.store.all_symbols()?;
-        if symbols.is_empty() {
+        if self.symbols.is_empty() {
             return Ok(Vec::new());
         }
-        let by_id: HashMap<u64, &Symbol> = symbols.iter().map(|s| (s.id(), s)).collect();
+        let lookup =
+            |id: &u64| -> Option<&Symbol> { self.by_id.get(id).map(|&i| &self.symbols[i]) };
 
         // ---- lexical stage ----
-        let lex = LexicalIndex::build(&symbols);
-        let lex_scores = lex.search(query, 1.5, 0.75);
+        let lex_scores = self.lexical.search(query, 1.5, 0.75);
 
         // ---- semantic stage ----
         let vec_scores = if opts.mode != SearchMode::LexicalOnly {
             let qv = self.embedder.embed(query);
-            let mut out = HashMap::new();
-            for s in &symbols {
-                if let Some((_, v)) = self.store.embedding_with_hash(s.id())? {
+            let mut cache = self.vectors.borrow_mut();
+            if cache.is_none() {
+                // One batched load instead of one query per symbol.
+                *cache = Some(
+                    self.store
+                        .all_embeddings()?
+                        .into_iter()
+                        .map(|(id, (_, v))| (id, v))
+                        .collect(),
+                );
+            }
+            let embeddings = cache.as_ref().expect("just populated");
+            let mut out = HashMap::with_capacity(embeddings.len());
+            for s in &self.symbols {
+                if let Some(v) = embeddings.get(&s.id()) {
                     if v.len() != qv.len() || v.is_empty() {
                         continue;
                     }
-                    let dot: f32 = qv.iter().zip(&v).map(|(a, b)| a * b).sum();
+                    let dot: f32 = qv.iter().zip(v.iter()).map(|(a, b)| a * b).sum();
                     out.insert(s.id(), dot);
                 }
             }
@@ -220,9 +264,9 @@ impl<'a> RetrievalEngine<'a> {
         let mut hits: Vec<SearchHit> = rrf
             .iter()
             .filter_map(|(id, score)| {
-                let s = by_id.get(id)?;
+                let s = lookup(id)?;
                 Some(SearchHit {
-                    symbol: (*s).clone(),
+                    symbol: s.clone(),
                     score: *score,
                     reasons: reasons.get(id).cloned().unwrap_or_default(),
                     snippet: String::new(),
@@ -242,7 +286,7 @@ impl<'a> RetrievalEngine<'a> {
             let strong: Vec<&Symbol> = hits
                 .iter()
                 .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
-                .filter_map(|h| by_id.get(&h.symbol.id()).copied())
+                .filter_map(|h| lookup(&h.symbol.id()))
                 .filter(|s| {
                     lex_scores
                         .get(&s.id())
@@ -253,7 +297,7 @@ impl<'a> RetrievalEngine<'a> {
                 .take(3)
                 .collect();
             if !strong.is_empty() {
-                let graph = RelationGraph::build(&symbols);
+                let graph = RelationGraph::build(&self.symbols);
                 let mut expansions: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
                 for seed in strong {
                     let boost_base = rrf.get(&seed.id()).copied().unwrap_or(0.001);
@@ -291,10 +335,10 @@ impl<'a> RetrievalEngine<'a> {
         let mut direct_hits: Vec<SearchHit> = Vec::new();
         let mut expanded_hits: Vec<SearchHit> = Vec::new();
         for (id, score) in &rrf {
-            let Some(s) = by_id.get(id) else { continue };
+            let Some(s) = lookup(id) else { continue };
             let base = base_scores.get(id).copied().unwrap_or(0.0);
             let hit = SearchHit {
-                symbol: (*s).clone(),
+                symbol: s.clone(),
                 // Expansion-only context ranks by its expansion score; real
                 // matches keep their stable pre-expansion score.
                 score: if base > 0.0 { base } else { *score },

@@ -60,11 +60,6 @@ pub struct BenchmarkReport {
     pub aggregate: Vec<Aggregate>,
 }
 
-struct IndexedRepo {
-    _dir: tempfile::TempDir,
-    store: SqliteStore,
-}
-
 fn materialize_repo(fixture_rel: &str) -> Result<(PathBuf, tempfile::TempDir)> {
     let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let src = manifest.join(fixture_rel);
@@ -105,84 +100,78 @@ fn span_bytes(root: &Path, file: &str, start: u32, end: u32) -> usize {
         .unwrap_or((end - start + 1) as usize * 40)
 }
 
-/// Index every referenced fixture once; returns ready engines keyed by repo.
-fn prepare(config: &BenchConfig) -> Result<std::collections::HashMap<String, IndexedRepo>> {
-    let mut out = std::collections::HashMap::new();
-    for name in config.repos.keys() {
-        let fixture = &config.repos[name];
-        let (dir, tmp) = materialize_repo(fixture)?;
-        let mut store = SqliteStore::open(Path::new(":memory:"))?;
-        update_index(&dir, &mut store, &HashedEmbedder::default())?;
-        out.insert(name.clone(), IndexedRepo { _dir: tmp, store });
-        let _ = dir;
-    }
-    Ok(out)
-}
-
 pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
     let text = std::fs::read_to_string(config_path)
         .with_context(|| format!("read {}", config_path.display()))?;
     let config: BenchConfig =
         serde_json::from_str(&text).with_context(|| format!("parse {}", config_path.display()))?;
     let k = config.k;
-    let repos = prepare(&config)?;
 
+    // Materialize and index each fixture repo once.
+    let mut repos: Vec<(String, tempfile::TempDir, SqliteStore)> = Vec::new();
+    for name in config.repos.keys() {
+        let (dir, tmp) = materialize_repo(&config.repos[name])?;
+        let mut store = SqliteStore::open(Path::new(":memory:"))?;
+        update_index(&dir, &mut store, &HashedEmbedder::default())?;
+        repos.push((name.clone(), tmp, store));
+    }
+
+    // One engine per repo (lexicon built once), reused across queries × modes.
     let mut per_query: Vec<QueryResult> = Vec::new();
-    for q in &config.queries {
-        let repo = repos
-            .get(&q.repo)
-            .with_context(|| format!("unknown repo key {} in query {}", q.repo, q.id))?;
-        let root_dir = repo._dir.path().join("repo");
-        for (mode_name, mode) in [
-            ("vector-only", SearchMode::VectorOnly),
-            ("hybrid", SearchMode::Hybrid),
-        ] {
-            let embedder = HashedEmbedder::default();
-            let engine = RetrievalEngine::new(&repo.store, &embedder);
-            let expand = mode == SearchMode::Hybrid;
-            let opts = SearchOptions {
-                limit: k,
-                mode,
-                expand,
-            };
-            let hits = engine.search(&q.text, &opts)?;
-            let relevant: std::collections::HashSet<&str> =
-                q.relevant.iter().map(|s| s.as_str()).collect();
-            let mut matched = 0usize;
-            let mut bytes = 0usize;
-            let mut fp_modules = 0usize;
-            let mut hit_ids = Vec::new();
-            for h in &hits {
-                let id = format!("{}#{}", h.symbol.file, h.symbol.qualified_name);
-                hit_ids.push(id.clone());
-                if relevant.contains(id.as_str()) {
-                    matched += 1;
+    for (repo_name, tmp, store) in &repos {
+        let embedder = HashedEmbedder::default();
+        let engine = RetrievalEngine::new(store, &embedder);
+        let root_dir = tmp.path().join("repo");
+        for q in config.queries.iter().filter(|q| q.repo == *repo_name) {
+            for (mode_name, mode) in [
+                ("vector-only", SearchMode::VectorOnly),
+                ("hybrid", SearchMode::Hybrid),
+            ] {
+                let expand = mode == SearchMode::Hybrid;
+                let opts = SearchOptions {
+                    limit: k,
+                    mode,
+                    expand,
+                };
+                let hits = engine.search(&q.text, &opts)?;
+                let relevant: std::collections::HashSet<&str> =
+                    q.relevant.iter().map(|s| s.as_str()).collect();
+                let mut matched = 0usize;
+                let mut bytes = 0usize;
+                let mut fp_modules = 0usize;
+                let mut hit_ids = Vec::new();
+                for h in &hits {
+                    let id = format!("{}#{}", h.symbol.file, h.symbol.qualified_name);
+                    hit_ids.push(id.clone());
+                    if relevant.contains(id.as_str()) {
+                        matched += 1;
+                    }
+                    if h.symbol.kind == crate::symbols::SymbolKind::Module
+                        && !relevant.contains(id.as_str())
+                    {
+                        fp_modules += 1;
+                    }
+                    bytes += span_bytes(
+                        &root_dir,
+                        &h.symbol.file,
+                        h.symbol.start_line,
+                        h.symbol.end_line,
+                    );
                 }
-                if h.symbol.kind == crate::symbols::SymbolKind::Module
-                    && !relevant.contains(id.as_str())
-                {
-                    fp_modules += 1;
-                }
-                bytes += span_bytes(
-                    &root_dir,
-                    &h.symbol.file,
-                    h.symbol.start_line,
-                    h.symbol.end_line,
-                );
+                let denom_recall = relevant.len().max(1) as f32;
+                let denom_prec = hits.len().min(k).max(1) as f32;
+                per_query.push(QueryResult {
+                    id: q.id.clone(),
+                    task: q.task.clone(),
+                    mode: mode_name.into(),
+                    recall_at_k: matched as f32 / denom_recall,
+                    precision_at_k: matched as f32 / denom_prec,
+                    returned: hits.len(),
+                    context_bytes: bytes,
+                    obvious_false_positives: fp_modules,
+                    hits: hit_ids,
+                });
             }
-            let denom_recall = relevant.len().max(1) as f32;
-            let denom_prec = hits.len().min(k).max(1) as f32;
-            per_query.push(QueryResult {
-                id: q.id.clone(),
-                task: q.task.clone(),
-                mode: mode_name.into(),
-                recall_at_k: matched as f32 / denom_recall,
-                precision_at_k: matched as f32 / denom_prec,
-                returned: hits.len(),
-                context_bytes: bytes,
-                obvious_false_positives: fp_modules,
-                hits: hit_ids,
-            });
         }
     }
 

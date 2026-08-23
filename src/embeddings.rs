@@ -18,19 +18,30 @@ pub trait EmbeddingProvider: Sync {
 /// lowercases, drops stopwords and single characters.
 pub fn tokenize(text: &str) -> Vec<String> {
     let mut out = Vec::new();
+    tokenize_into(text, &mut |t| out.push(t.to_string()));
+    out
+}
+
+/// Allocation-light tokenizer core: emits each token to `emit` without building
+/// intermediate vectors. Tokens are borrowed slices of `text` whenever no case
+/// folding is needed (the common case for code identifiers).
+pub fn tokenize_into(text: &str, emit: &mut dyn FnMut(&str)) {
     for raw in text.split(|c: char| !(c.is_alphanumeric() || c == '_')) {
         if raw.is_empty() {
             continue;
         }
-        for part in split_identifier(raw) {
-            let t = part.to_lowercase();
-            if t.len() < 2 || STOPWORDS.contains(&t.as_str()) {
-                continue;
+        split_identifier_into(raw, &mut |part: &str, needs_lower: bool| {
+            // Fast path: already-lowercase tokens pass through borrowed.
+            if needs_lower {
+                let t = part.to_lowercase();
+                if t.len() >= 2 && !STOPWORDS.contains(&t.as_str()) {
+                    emit(&t);
+                }
+            } else if part.len() >= 2 && !STOPWORDS.contains(&part) {
+                emit(part);
             }
-            out.push(t);
-        }
+        });
     }
-    out
 }
 
 const STOPWORDS: &[&str] = &[
@@ -58,25 +69,45 @@ const STOPWORDS: &[&str] = &[
     "import",
 ];
 
-fn split_identifier(raw: &str) -> Vec<String> {
-    let mut parts = Vec::new();
-    let mut cur = String::new();
-    let chars: Vec<char> = raw.chars().collect();
-    for (i, c) in chars.iter().enumerate() {
-        if *c == '_' || *c == '-' || *c == '.' {
-            if !cur.is_empty() {
-                parts.push(std::mem::take(&mut cur));
+/// Splits snake_case / kebab-case / camelCase identifiers, emitting subtokens.
+/// `needs_lower` tells the caller whether the slice contains uppercase chars.
+fn split_identifier_into(raw: &str, emit: &mut dyn FnMut(&str, bool)) {
+    let bytes = raw.as_bytes();
+    let mut seg_start = 0usize;
+    let mut seg_upper = false;
+    for i in 0..bytes.len() {
+        let b = bytes[i];
+        if b == b'_' || b == b'-' || b == b'.' {
+            if i > seg_start {
+                emit(&raw[seg_start..i], seg_upper);
             }
+            seg_start = i + 1;
+            seg_upper = false;
             continue;
         }
-        if c.is_uppercase() && !cur.is_empty() && !chars[i - 1].is_uppercase() {
-            parts.push(std::mem::take(&mut cur));
+        // camelCase boundary: lowercase→Upper starts a new token.
+        if b.is_ascii_uppercase() && i > seg_start && !bytes[i - 1].is_ascii_uppercase() {
+            emit(&raw[seg_start..i], seg_upper);
+            seg_start = i;
+            seg_upper = false;
         }
-        cur.push(*c);
+        seg_upper |= b.is_ascii_uppercase();
     }
-    if !cur.is_empty() {
-        parts.push(cur);
+    if raw.len() > seg_start {
+        emit(&raw[seg_start..], seg_upper);
     }
+}
+
+#[allow(dead_code)]
+fn split_identifier(raw: &str) -> Vec<String> {
+    let mut parts = Vec::new();
+    split_identifier_into(raw, &mut |p, lower| {
+        parts.push(if lower {
+            p.to_lowercase()
+        } else {
+            p.to_string()
+        })
+    });
     parts
 }
 
