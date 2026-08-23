@@ -76,3 +76,21 @@ A second tier re-runs a small subset through the same headless coding agent
 (opencode, fixed model) under stock-tools vs injected-context conditions,
 measuring tool-call count, wall time, unnecessary edits, and gold-file
 utilization of the final diff.
+
+## Interim ContextBench results (20 tasks, 14 py + 6 ts, small-repo subset)
+
+Mean over tasks; R=coverage(recall), P=precision, F1 harmonic; tokens = est.
+
+| condition | file R/P/F1     | line R/P/F1     | tokens |
+|-----------|-----------------|-----------------|--------:|
+| lexical   | .637/.204/.309  | .583/.027/.052  | 3105    |
+| vec       | .479/.203/.285  | .266/.104/.150  | **1545**|
+| hybrid    | .679/**.239**/**.354** | .578/.035/.066 | 2837 |
+| budgeted  | **.767**/.141/.238 | .500/.047/.087 | 4087   |
+
+Reading (honest): hybrid has the best balanced file-level F1; the budgeted
+pack trades precision for the widest file coverage; pure vectors are the most
+token-efficient and precise per symbol but miss files on hard NL tasks. TS
+subset is weak everywhere (huge-file repos, small gold blocks) — headroom for
+the pack's ordering/role weighting. N is small; treat as directional. Tier-B
+agent-in-loop runs are wired (`tierb_agent_run.py`) but not yet executed.

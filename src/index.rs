@@ -344,6 +344,10 @@ pub struct IndexReport {
     pub embedded_symbols: usize,
     pub reused_embeddings: usize,
     pub duration_ms: u128,
+    /// Symbols whose embedding came back empty (endpoint failure): skipped,
+    /// not stored, so a later healthy run re-embeds them.
+    #[serde(default)]
+    pub embed_failures: usize,
 }
 
 /// Run incremental indexing of the repo at `root` into `store`.
@@ -519,6 +523,10 @@ pub fn update_index(
             let texts: Vec<String> = chunk.iter().map(|s| embed_text(s)).collect();
             let vectors = embedder.embed_batch(&texts);
             for (s, vec) in chunk.iter().zip(vectors) {
+                if vec.iter().all(|f| *f == 0.0) || vec.is_empty() {
+                    report.embed_failures += 1;
+                    continue;
+                }
                 store.put_embedding(s.id(), &vec)?;
                 report.embedded_symbols += 1;
             }
