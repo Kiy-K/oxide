@@ -16,6 +16,11 @@ cargo build --release          # binary at target/release/oxide
 
 Requires Rust 1.75+ and a `git` binary on PATH (used only for `review`).
 
+Semantic search runs fully local via llama.cpp: `scripts/embedder.sh start`
+(starts an OpenAI-compatible embeddings endpoint, ~0.3 GB RSS), then
+`export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings OXIDE_EMBED_MODEL=qwen3-Q8_0`.
+Without it OXIDE uses the offline hashed embedder.
+
 ## Usage
 
 ```bash

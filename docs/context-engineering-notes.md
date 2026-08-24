@@ -94,3 +94,20 @@ token-efficient and precise per symbol but miss files on hard NL tasks. TS
 subset is weak everywhere (huge-file repos, small gold blocks) — headroom for
 the pack's ordering/role weighting. N is small; treat as directional. Tier-B
 agent-in-loop runs are wired (`tierb_agent_run.py`) but not yet executed.
+
+## Embedder resource profile (laptop)
+
+Measured on this machine (16C CPU, no GPU):
+
+| config                        | RAM    | short-text throughput | quality gate      |
+|-------------------------------|--------|----------------------:|-------------------|
+| Q8_0, threads=16, ub=8192     | 4.7 GB | 14.2/s                | hybrid R@5=.909   |
+| **Q8_0, threads=8, ub=2048**  | **0.3 GB** | 9-16/s            | hybrid R@5=.909   |
+| community Q4_K_M              | n/a    | pathological (<1/s)   | rejected          |
+
+The win was configuration, not quantization: `--ub 2048 --parallel 1` cuts
+resident memory ~94%, bounded nice'd threads keep the laptop responsive at a
+modest throughput cost, and retrieval quality is bit-identical on the committed
+benchmark. Manage with `scripts/embedder.sh start|stop|status` (`stop` frees
+everything when idle). Third-party Q4_K_M quants showed broken batching here;
+official repo only ships Q8_0/f16.
