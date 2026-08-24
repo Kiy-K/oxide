@@ -1,0 +1,77 @@
+
+---STDERR---
+[0m
+> build · x-preview-f-free
+[0m
+[0m$ [0mls && cat package.json | head -40
+Cargo.lock
+Cargo.toml
+docs
+eval-agent
+fixtures
+README.md
+scripts
+src
+target
+tests
+cat: package.json: No such file or directory
+[0m
+[0m✱ [0mGrep "corePlugins"[90m in /home/khoi/Projects/oxide/src · 0 matches[0m
+[0m
+[0m$ [0mcat Cargo.toml && ls src tests fixtures
+[package]
+name = "oxide"
+version = "0.1.0"
+edition = "2021"
+description = "Fast local incremental structure-aware code index and retrieval engine"
+license = "MIT"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+ignore = "0.4"
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ureq = { version = "2", features = ["json"] }
+tempfile = "3"
+tree-sitter = "0.24"
+tree-sitter-python = "0.23"
+tree-sitter-typescript = "0.23"
+
+[dev-dependencies]
+
+[profile.release]
+debug = false
+lto = "thin"
+codegen-units = 1
+fixtures:
+benchmark.json
+py_repo
+ts_repo
+
+src:
+cli.rs
+context.rs
+embeddings.rs
+eval.rs
+gitutil.rs
+index.rs
+languages
+lib.rs
+main.rs
+parser.rs
+retrieval.rs
+review.rs
+scanner.rs
+symbols.rs
+
+tests:
+benchmark_gate.rs
+incremental.rs
+review_e2e.rs
+[0m
+[0m✱ [0mGrep "corePlugins|core_plugins"[90m in /home/khoi/Projects/oxide · 12 matches[0m
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/.cache/oxide-contextbench/repos/tailwindcss/*); auto-rejecting
+[0m✗ [0mls /home/khoi/.cache/oxide-contextbench/repos/tailwindcss && cd /home/khoi/.cache/oxide-contextbench/repos/tailwindcss && git log --oneline -3 && git status --short failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

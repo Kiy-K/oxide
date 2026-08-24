@@ -1,0 +1,49 @@
+Found the Tailwind repo at `/home/khoi/.cache/oxide-contextbench/repos/tailwindcss` (v0.x era, HEAD includes PR #849 which added `corePlugins: false`). Let me look at how corePlugins is handled.
+
+---STDERR---
+ ["tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts"]
+    },
+    {
+      "id": "py-ttl-cache-expiry",
+[0m
+[0m$ [0mfind /home/khoi -maxdepth 6 \( -name ".git" -prune \) -o -type d -iname "*tailwind*" -print 2>/dev/null | head; find /tmp/opencode -maxdepth 4 -type d 2>/dev/null | head -20
+/home/khoi/.cache/pnpm/v11/metadata/registry.npmjs.org/@tailwindcss
+/home/khoi/.cache/oxide-contextbench/repos/tailwindcss
+/home/khoi/triex/frontend/node_modules/tailwind-merge
+/home/khoi/.bun/install/global/node_modules/@tailwindcss
+/home/khoi/.bun/install/global/node_modules/tailwindcss
+/home/khoi/.bun/install/cache/@tailwindcss
+/home/khoi/.bun/install/cache/tailwindcss@4.3.3@@@1
+/home/khoi/.bun/install/cache/tailwindcss
+/tmp/opencode
+/tmp/opencode/qcheck
+/tmp/opencode/qcheck/.oxide
+/tmp/opencode/qcheck/tests
+/tmp/opencode/qcheck/oxidepy
+[0m
+[0m$ [0mls /home/khoi/.cache/oxide-contextbench/repos/tailwindcss && git -C /home/khoi/.cache/oxide-contextbench/repos/tailwindcss log --oneline -3 2>/dev/null
+base.css
+components.css
+defaultConfig.js
+defaultTheme.js
+dist
+jest
+LICENSE
+package.json
+README.md
+src
+stubs
+tailwind.css
+__tests__
+utilities.css
+yarn.lock
+daea6623 Merge pull request #852 from tailwindcss/global-variants
+f0bc35a8 Support configuring a single list of variants to apply to all relevant plugins
+43f63bf2 Merge pull request #849 from tailwindcss/disable-all-core-plugins
+[0m
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/.cache/oxide-contextbench/repos/tailwindcss/src/*); auto-rejecting
+[0m✗ [0mGrep "corePlugins" failed[90m in /home/khoi/.cache/oxide-contextbench/repos/tailwindcss/src[0m
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/.cache/oxide-contextbench/repos/tailwindcss/*); auto-rejecting
+[0m✗ [0mls src src/util __tests__ 2>/dev/null failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

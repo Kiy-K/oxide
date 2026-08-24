@@ -1,0 +1,71 @@
+This workspace doesn't contain Tailwind CSS — it's `oxide`, a Rust code-index/retrieval engine (src/context.rs, src/retrieval.rs, etc.). There's no `corePlugins` config handling anywhere to extend; the only "plugins" matches are in an eval fixture's node_modules. The `corePlugins: { only: [...] }` change belongs in the tailwindcss repo, not this one — say the word if you want me pointed at that checkout and I'll implement it there.
+
+---STDERR---
+dex.rs
+languages
+lib.rs
+main.rs
+parser.rs
+retrieval.rs
+review.rs
+scanner.rs
+symbols.rs
+
+tests:
+benchmark_gate.rs
+incremental.rs
+review_e2e.rs
+[package]
+name = "oxide"
+version = "0.1.0"
+edition = "2021"
+description = "Fast local incremental structure-aware code index and retrieval engine"
+license = "MIT"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+ignore = "0.4"
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ureq = { version = "2", features = ["json"] }
+tempfile = "3"
+tree-sitter = "0.24"
+tree-sitter-python = "0.23"
+tree-sitter-typescript = "0.23"
+
+[dev-dependencies]
+
+[profile.release]
+debug = false
+lto = "thin"
+codegen-units = 1
+[0m
+[0m✱ [0mGrep "tailwind|corePlugins|core_plugins"[90m 1 match[0m
+[0m
+[0m$ [0mls fixtures eval-agent docs 2>/dev/null | head -40; rg -l "plugins" --type js --type ts -g '!target' 2>/dev/null | head
+docs:
+context-engineering-notes.md
+superpowers
+
+eval-agent:
+results
+tasks
+third_party
+
+fixtures:
+benchmark.json
+py_repo
+ts_repo
+eval-agent/tasks/tsx_feat_button/node_modules/pretty-format/build/types.d.ts
+eval-agent/tasks/tsx_feat_button/node_modules/@testing-library/dom/dist/DOMElementFilter.js
+eval-agent/tasks/tsx_feat_button/node_modules/@testing-library/dom/dist/pretty-dom.js
+eval-agent/tasks/tsx_feat_button/node_modules/pretty-format/build/index.d.ts
+eval-agent/tasks/tsx_feat_button/node_modules/pretty-format/build/index.js
+eval-agent/tasks/tsx_feat_button/node_modules/@testing-library/dom/dist/@testing-library/dom.umd.min.js
+eval-agent/tasks/tsx_feat_button/node_modules/@testing-library/dom/dist/@testing-library/dom.umd.js
+eval-agent/tasks/tsx_feat_button/node_modules/react-dom/umd/react-dom-server-legacy.browser.development.js
+eval-agent/tasks/tsx_feat_button/node_modules/react-dom/umd/react-dom-test-utils.development.js
+eval-agent/tasks/tsx_feat_button/node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js
+[0m

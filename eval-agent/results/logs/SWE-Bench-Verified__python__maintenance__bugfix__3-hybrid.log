@@ -1,0 +1,22 @@
+
+---STDERR---
+e.scales import Scale, Boolean, Continuous, Nominal, Temporal
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:70:            return Nominal()
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:181:            return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:183:            return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:192:        if isinstance(scale, Nominal):
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:218:    def _get_nominal_mapping(self, scale: Nominal, data: Series) -> Mapping:
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:348:        return Boolean() if var_type == "boolean" else Nominal()
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:352:        return Boolean(arg) if var_type == "boolean" else Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:597:            return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:604:                return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:620:            return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:625:            return Nominal(arg)
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:631:        if isinstance(scale, Nominal):
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:668:    def _get_nominal_mapping(self, scale: Nominal, data: Series) -> Mapping:
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:739:        return Boolean() if var_type == "boolean" else Nominal()
+/home/khoi/Projects/seaborn/seaborn/_core/properties.py:743:        return Boolean(arg) if var_type == "boolean" else Nominal(arg)
+[0m
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/Projects/seaborn/seaborn/_core/*); auto-rejecting
+[0m✗ [0mRead /home/khoi/Projects/seaborn/seaborn/_core/plot.py failed[90m [limit=120, offset=1740][0m
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -81,6 +82,8 @@ def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> d
     fixture_repo = ensure_repo_checkout(task["repo_url"], task["base_commit"])
     index_repo(fixture_repo, os.environ.get("OXIDE_EMBED_URL", ""))
     repo = workdir / f'{task["instance_id"][:40]}-{condition}'
+    if repo.exists():
+        shutil.rmtree(repo)
     shutil.copytree(fixture_repo, repo, ignore=shutil.ignore_patterns(".oxide"))
 
     ctx_text, ctx_tokens, _ = ("", 0, set())
@@ -98,7 +101,9 @@ def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> d
     prompt += "\n\nWhen done, reply with DONE."
 
     start = time.time()
-    r = sh(["timeout", "900", "opencode", "run", "-m", MODEL, prompt], cwd=repo, timeout=960)
+    # opencode (node) trusts $PWD over getcwd(): pin it to the task repo.
+    r = sh(["timeout", "900", "opencode", "run", "-m", MODEL, prompt],
+           cwd=repo, timeout=960, env={"PWD": str(repo)})
     wall = time.time() - start
     log = log_dir / f'{task["instance_id"][:50]}-{condition}.log'
     log.write_text((r.stdout or "")[-20000:] + "\n---STDERR---\n" + (r.stderr or "")[-2000:])
@@ -157,6 +162,7 @@ def main() -> None:
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "logs").mkdir(parents=True, exist_ok=True)
     results_path = out_dir / "agent_results.jsonl"
     done = set()
     if results_path.exists():

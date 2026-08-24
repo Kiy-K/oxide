@@ -1,0 +1,52 @@
+I'll use the **test-driven-development** skill for this — it's a feature implementation, so red-green-refactor fits. (Brainstorming is skipped: the issue already pins down requirements and implementation direction.)
+Using **test-driven-development**: write the failing test first, then minimal implementation.
+Found the seaborn checkout at `/home/khoi/Projects/seaborn`. Checking its state:
+
+---STDERR---
+rical behaviors
+[ ] RED: write failing test for nominal axis limits/grid/inversion
+[ ] GREEN: minimal implementation of the three behaviors
+[ ] Verify: new tests pass + existing suites unaffected
+[0m
+[0m✗ [0mRead /home/khoi/Projects/oxide/seaborn/_core/scales.py failed
+[91m[1mError: [0mFile not found: /home/khoi/Projects/oxide/seaborn/_core/scales.py
+[0m✗ [0mGrep "grid\(|invert|sticky|margin" failed[90m in /home/khoi/Projects/oxide/seaborn/categorical.py[0m
+[91m[1mError: [0mripgrep execution failed
+[0m
+[0m$ [0mls /home/khoi/Projects/oxide && git -C /home/khoi/Projects/oxide log --oneline -3
+Cargo.lock
+Cargo.toml
+docs
+eval-agent
+fixtures
+README.md
+scripts
+src
+target
+tests
+fc279ee docs: ContextBench evaluation section in README
+f143a3a embedder: managed start/stop script, laptop-friendly defaults (-94% RAM, capped threads); docs
+2c61e76 eval: ContextBench interim results (20 tasks), summarizer, embed-failure guard
+[0m
+[0m$ [0mls /home/khoi/Projects/oxide/fixtures /home/khoi/Projects/oxide/eval-agent 2>/dev/null; find /home/khoi/Projects -maxdepth 3 -iname "*seaborn*" -not -path "*/target/*" 2>/dev/null | head
+/home/khoi/Projects/oxide/eval-agent:
+results
+tasks
+third_party
+
+/home/khoi/Projects/oxide/fixtures:
+benchmark.json
+py_repo
+ts_repo
+/home/khoi/Projects/seaborn
+/home/khoi/Projects/seaborn/seaborn
+[0m
+[0m$ [0mgit -C /home/khoi/Projects/seaborn status --short --branch && git -C /home/khoi/Projects/seaborn log --oneline -3
+## master...origin/master
+f04b6cd Tweak the docs homepage style (#3960)
+92d1a7e Fix histplot weights with array bins (#3944)
+886c4a2 Fix invisible unfilled markers (e.g. 'x') in relplot legend (#3959)
+[0m
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/Projects/seaborn/seaborn/*); auto-rejecting
+[0m✗ [0mGrep "grid\(|invert|sticky|margin|_adjust_cat_axis" failed[90m in /home/khoi/Projects/seaborn/seaborn/categorical.py[0m
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

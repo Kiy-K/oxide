@@ -1,16 +1,16 @@
-tasks=20 langs=['python', 'typescript']
+tasks=21 langs=['python', 'typescript']
 
 condition    file_R   file_P  file_F1 symbol_R symbol_P symbol_F1   line_R   line_P  line_F1     tok  items
-budgeted      0.767    0.141    0.238    0.602    0.055    0.101    0.500    0.047    0.087    4087   15.3
-hybrid        0.679    0.239    0.354    0.667    0.042    0.078    0.578    0.035    0.066    2836   10.0
-lexical       0.637    0.204    0.309    0.654    0.031    0.060    0.583    0.027    0.052    3105   10.0
-vec           0.479    0.203    0.285    0.360    0.124    0.185    0.266    0.104    0.150    1545   10.0
+budgeted      0.746    0.140    0.236    0.580    0.053    0.097    0.482    0.045    0.083    4087   15.0
+hybrid        0.647    0.228    0.337    0.636    0.040    0.075    0.551    0.034    0.063    2843   10.0
+lexical       0.607    0.195    0.295    0.622    0.030    0.057    0.555    0.026    0.049    3106   10.0
+vec           0.472    0.203    0.284    0.357    0.124    0.184    0.259    0.102    0.147    1546   10.0
 
--- python (16 tasks) --
-  budgeted  file_R=0.771 line_R=0.618 line_P=0.058 line_F1=0.106 tok=4087
-  hybrid    file_R=0.708 line_R=0.698 line_P=0.043 line_F1=0.081 tok=2807
-  lexical   file_R=0.625 line_R=0.660 line_P=0.032 line_F1=0.062 tok=3100
-  vec       file_R=0.552 line_R=0.301 line_P=0.124 line_F1=0.176 tok=1526
+-- python (17 tasks) --
+  budgeted  file_R=0.745 line_R=0.589 line_P=0.055 line_F1=0.101 tok=4087
+  hybrid    file_R=0.667 line_R=0.656 line_P=0.041 line_F1=0.076 tok=2817
+  lexical   file_R=0.588 line_R=0.621 line_P=0.030 line_F1=0.058 tok=3102
+  vec       file_R=0.539 line_R=0.291 line_P=0.120 line_F1=0.170 tok=1528
 
 -- typescript (4 tasks) --
   budgeted  file_R=0.750 line_R=0.028 line_P=0.004 line_F1=0.007 tok=4088
