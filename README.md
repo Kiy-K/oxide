@@ -112,27 +112,40 @@ Every hit lists why it was selected. Import resolution probes relative paths
 and extension/index conventions against indexed files; unresolvable imports
 are dropped rather than guessed.
 
-## Benchmark
+## Benchmarks
 
-Committed fixtures (`fixtures/py_repo`, `fixtures/ts_repo`) plus ground truth
-in `fixtures/benchmark.json`. Run:
+### Official: ContextBench gold contexts (external tasks)
+
+`scripts/agent_eval/contextbench_run.py` samples issue-resolution tasks from
+[ContextBench](https://arxiv.org/abs/2602.05892) (Apache-2.0), indexes each
+repository at its base commit, retrieves context for the real issue text, and
+scores against human-annotated gold contexts using ContextBench's own metric
+code. Interim results (20 tasks, Python+TypeScript, small-repo subset):
+
+| condition | file R/P/F1          | line R/P/F1     | tokens |
+|-----------|----------------------|-----------------|-------:|
+| lexical   | .637/.204/.309       | .583/.027/.052  | 3105   |
+| vec-only  | .479/.203/.285       | .266/**.104**/**.150** | **1545** |
+| hybrid    | .679/**.239**/**.354** | .578/.035/.066 | 2837   |
+| budgeted  | **.767**/.141/.238   | .500/.047/.087  | 4087   |
+
+Honest reading: hybrid has the best balanced file-level F1; the budgeted pack
+trades precision for widest file coverage; pure vectors are the most
+token-efficient. Full methodology: `docs/context-engineering-notes.md`.
+
+### Committed regression fixture (`fixtures/benchmark.json`)
 
 ```bash
 oxide eval --config fixtures/benchmark.json
 ```
 
-Latest results (Recall@5, K=5):
+| mode        | mean recall@5 | mean precision@5 |
+|-------------|---------------|------------------|
+| vector-only | 0.818         | 0.182            |
+| hybrid      | **0.909**     | **0.200**        |
 
-| mode        | mean recall@5 | mean precision@5 | avg ctx bytes |
-|-------------|---------------|------------------|---------------|
-| vector-only | 0.818         | 0.182            | ~1770 B       |
-| hybrid      | **0.909**     | **0.200**        | ~2160 B       |
-
-Hybrid wins on aggregate evidence, driven by structural expansion (e.g. it is
-the only mode retrieving the TSX related-test). Semantic tasks still miss one
-of two targets each — see limitations. A CI gate
-(`tests/benchmark_gate.rs`) fails if a ranking change drops hybrid below
-vector-only.
+A CI gate (`tests/benchmark_gate.rs`) fails if a ranking change drops hybrid
+below vector-only.
 
 ## Tests
 
