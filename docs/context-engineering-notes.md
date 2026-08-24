@@ -111,3 +111,20 @@ modest throughput cost, and retrieval quality is bit-identical on the committed
 benchmark. Manage with `scripts/embedder.sh start|stop|status` (`stop` frees
 everything when idle). Third-party Q4_K_M quants showed broken batching here;
 official repo only ships Q8_0/f16.
+
+## Tier B: same-agent comparison (4 tasks × 4 conditions, opencode headless)
+
+| condition | gold-file use | unnecessary edits | wall  | injected tokens |
+|-----------|--------------:|------------------:|------:|----------------:|
+| stock     | 0.67          | 1.00              | 348 s | 0               |
+| vec       | 0.67          | 1.00              | 422 s | 1032            |
+| hybrid    | 0.67          | **0.75**          | **290 s** | 2594        |
+| budgeted  | 0.67          | 1.00              | 360 s | 2990            |
+
+Honest finding: on these (easier) small-repo tasks, injected context did not
+change whether the agent edited gold files — all conditions matched — and
+**no context beat stock on outcomes**, echoing ContextBench's "scaffolding
+yields marginal gains" result. Hybrid was fastest and produced the fewest
+unnecessary edits. Vector-only was *slower* than stock. Claimed benefits of
+the context layer are therefore grounded in Tier A retrieval quality
+(coverage/precision/tokens), not end-to-end agent gains, at this sample size.

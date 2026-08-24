@@ -131,7 +131,10 @@ code. Interim results (20 tasks, Python+TypeScript, small-repo subset):
 
 Honest reading: hybrid has the best balanced file-level F1; the budgeted pack
 trades precision for widest file coverage; pure vectors are the most
-token-efficient. Full methodology: `docs/context-engineering-notes.md`.
+token-efficient. Same-agent tier (headless opencode, 4 tasks x 4 conditions): no condition
+beats stock on gold-file utilization at this sample size; hybrid is fastest
+(290s vs 348s stock) with fewest unnecessary edits. Full methodology:
+`docs/context-engineering-notes.md`.
 
 ### Committed regression fixture (`fixtures/benchmark.json`)
 

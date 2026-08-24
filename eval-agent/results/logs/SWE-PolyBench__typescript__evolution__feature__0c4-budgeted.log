@@ -1,77 +1,70 @@
+Using test-driven-development to guide the feature implementation.
+Now I understand the structure. TDD: write the failing test first.
+**RED** — write the failing test:
+RED verified. **GREEN** — minimal implementation:
+Full suite to confirm no regressions:
+All 148 tests pass, lint clean. 
+
+`src/util/configurePlugins.js:1` now honors `corePlugins: { only: [...] }` as a whitelist; existing behavior (`false`, per-plugin toggles) unchanged. Verified RED→GREEN via `__tests__/configurePlugins.test.js`.
+
+DONE
 
 ---STDERR---
-[0m
-> build · x-preview-f-free
-[0m
-[0m$ [0mls && cat package.json | head -40
-Cargo.lock
-Cargo.toml
-docs
-eval-agent
-fixtures
-README.md
-scripts
-src
-target
-tests
-cat: package.json: No such file or directory
-[0m
-[0m✱ [0mGrep "corePlugins"[90m in /home/khoi/Projects/oxide/src · 0 matches[0m
-[0m
-[0m$ [0mcat Cargo.toml && ls src tests fixtures
-[package]
-name = "oxide"
-version = "0.1.0"
-edition = "2021"
-description = "Fast local incremental structure-aware code index and retrieval engine"
-license = "MIT"
+   ^
+      47 | })
+      48 | 
 
-[dependencies]
-anyhow = "1"
-clap = { version = "4", features = ["derive"] }
-ignore = "0.4"
-rusqlite = { version = "0.32", features = ["bundled"] }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-ureq = { version = "2", features = ["json"] }
-tempfile = "3"
-tree-sitter = "0.24"
-tree-sitter-python = "0.23"
-tree-sitter-typescript = "0.23"
+      at Object.toEqual (__tests__/configurePlugins.test.js:46:29)
+      at processTicksAndRejections (node:internal/process/task_queues:104:5)
 
-[dev-dependencies]
-
-[profile.release]
-debug = false
-lto = "thin"
-codegen-units = 1
-fixtures:
-benchmark.json
-py_repo
-ts_repo
-
-src:
-cli.rs
-context.rs
-embeddings.rs
-eval.rs
-gitutil.rs
-index.rs
-languages
-lib.rs
-main.rs
-parser.rs
-retrieval.rs
-review.rs
-scanner.rs
-symbols.rs
-
-tests:
-benchmark_gate.rs
-incremental.rs
-review_e2e.rs
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.45s
+Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
 [0m
-[0m✱ [0mGrep "corePlugins|core_plugins"[90m in /home/khoi/Projects/oxide · 12 matches[0m
-[93m[1m! [0mpermission requested: external_directory (/home/khoi/.cache/oxide-contextbench/repos/tailwindcss/*); auto-rejecting
-[0m✗ [0mls /home/khoi/.cache/oxide-contextbench/repos/tailwindcss && cd /home/khoi/.cache/oxide-contextbench/repos/tailwindcss && git log --oneline -3 && git status --short failed
-[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[0m← [0mEdit src/util/configurePlugins.js
+Index: /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
+===================================================================
+--- /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
++++ /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
+@@ -1,8 +1,16 @@
+ export default function(pluginConfig, plugins) {
+   return Object.keys(plugins)
+     .filter(pluginName => {
+-      return pluginConfig !== false && pluginConfig[pluginName] !== false
++      if (pluginConfig === false) {
++        return false
++      }
++
++      if (Array.isArray(pluginConfig.only)) {
++        return pluginConfig.only.includes(pluginName)
++      }
++
++      return pluginConfig[pluginName] !== false
+     })
+     .map(pluginName => {
+       return plugins[pluginName]()
+     })
+
+[0m
+[0m$ [0mnpx jest __tests__/configurePlugins.test.js 2>&1 | tail -8
+✓ passing only false removes all plugins
+  ✓ an "only" array whitelists specific plugins
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.421s, estimated 1s
+Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
+[0m
+[0m$ [0mnpx jest 2>&1 | tail -8 && npx eslint src/util/configurePlugins.js __tests__/configurePlugins.test.js
+Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`
+
+
+Test Suites: 24 passed, 24 total
+Tests:       148 passed, 148 total
+Snapshots:   0 total
+Time:        2.97s
+Ran all test suites.
+[0m

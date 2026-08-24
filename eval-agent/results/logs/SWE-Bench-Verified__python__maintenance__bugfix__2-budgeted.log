@@ -1,0 +1,74 @@
+Pre-existing failures (57 errors on unmodified checkout too — env DeprecationWarning config), unrelated to this change. Direct verification passes.
+
+`src/flask/blueprints.py:193` — added empty-name guard next to the existing dot check:
+
+```python
+if not name:
+    raise ValueError("'name' may not be empty.")
+```
+
+Skipped: validating names at `register_blueprint` time (constructor is where all names originate); add there if renamed registrations ever need it.
+
+---STDERR---
+189,11 @@
+     template_folder=template_folder,
+     root_path=root_path,
+ )
+ 
++if not name:
++    raise ValueError("'name' may not be empty.")
++
+ if "." in name:
+     raise ValueError("'name' may not contain a dot '.' character.")
+ 
+ self.name = name
+
+[0m
+[0m$ [0mpython -c "
+from flask import Blueprint
+try:
+    Blueprint('', __name__)
+except ValueError as e:
+    print('OK:', e)
+Blueprint('valid', __name__)
+print('non-empty OK')
+"
+/bin/bash: line 1: python: command not found
+[0m
+[0m$ [0mpython3 -c "
+from flask import Blueprint
+try:
+    Blueprint('', __name__)
+    print('FAIL: no error')
+except ValueError as e:
+    print('OK:', e)
+Blueprint('valid', __name__)
+print('non-empty OK')
+"
+OK: 'name' may not be empty.
+non-empty OK
+[0m
+[0m$ [0mpython3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -3
+ERROR tests/test_blueprints.py::test_self_registration - DeprecationWarning: ...
+ERROR tests/test_blueprints.py::test_blueprint_renaming - DeprecationWarning:...
+1 failed, 1 passed, 57 errors in 2.09s
+[0m
+[0m$ [0mpython3 -m pytest tests/test_blueprints.py -q 2>&1 | grep -m3 "DeprecationWarning\|Error" | head -5; python3 -m pytest tests/test_blueprints.py::test_empty_name -q 2>&1 | tail -2
+RuntimeError is raised if *remove* specifies a major/minor tuple older than
+            raise RuntimeError(msg)
+>           warn(msg, DeprecationWarning, stacklevel=3)
+
+no tests ran in 0.01s
+[0m
+[0m$ [0mgit stash && python3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -1 && git stash pop
+Saved working directory and index state WIP on (no branch): 7ee9ceb7 Merge branch '2.2.x'
+1 failed, 1 passed, 57 errors in 2.00s
+HEAD detached at 7ee9ceb7
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/flask/blueprints.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (e36dc63e3a9b3e1539b5b90ecac596145452e6a1)
+[0m

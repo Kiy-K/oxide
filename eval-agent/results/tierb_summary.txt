@@ -1,0 +1,7 @@
+16 runs (4 tasks x 4 conditions), same agent/model
+
+condition   gold_use  bad_edits  files   wall_s  ctx_tok
+stock           0.67       1.00   2.25   348.4s        0
+vec             0.67       1.00   2.25   421.6s     1032
+hybrid          0.67       0.75   2.00   289.8s     2594
+budgeted        0.67       1.00   2.25   360.4s     2990
