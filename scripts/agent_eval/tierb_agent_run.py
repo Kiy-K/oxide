@@ -68,7 +68,7 @@ def render_pack_context(indexed: Path, problem: str) -> tuple[str, int, set[str]
         f = it["file"]
         files.add(f)
         lang = f.rsplit(".", 1)[-1]
-        header = (f"[{it['role']}] `{f}#{it['qualified_name']}` ({it['symbol']['kind']}, "
+        header = (f"[{it['role']}] `{f}#{it['qualified_name']}` ({it['kind']}, "
                   f"lines {it['start_line']}-{it['end_line']}) why: {'; '.join(it['reasons'])}")
         parts.append(f"{header}\n```{lang}\n{it['snippet']}\n```")
     text = "\n\n".join(parts)

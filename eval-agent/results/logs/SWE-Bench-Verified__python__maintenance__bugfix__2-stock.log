@@ -1,0 +1,56 @@
+Using test-driven-development to guide the implementation of this validation feature.
+Found it — `Blueprint.__init__` in src/flask/blueprints.py:193 already rejects dots. Now let me find the existing test for that validation.
+RED phase: writing the failing test first. Let me check existing ValueError tests in this file for placement.
+Adding the failing test (RED):
+Older pytest needed for this era of the codebase:
+RED confirmed — fails because the feature is missing. Now GREEN, minimal fix next to the existing dot check:
+GREEN. Full suite to verify nothing else broke:
+Both failures are pre-existing on the clean checkout (Python 3.13 environment quirks), unrelated to this change.
+
+- `src/flask/blueprints.py:196` — raises `ValueError("name may not be empty")` in `Blueprint.__init__`
+- `tests/test_blueprints.py` — `test_empty_name` watched failing, then passing; 60/60 blueprint tests pass
+
+DONE
+
+---STDERR---
+======
+--- /tmp/oxide-tierb-syv_erqh/SWE-Bench-Verified__python__maintenance_-stock/src/flask/blueprints.py
++++ /tmp/oxide-tierb-syv_erqh/SWE-Bench-Verified__python__maintenance_-stock/src/flask/blueprints.py
+@@ -192,8 +192,11 @@
+ 
+ if "." in name:
+     raise ValueError("'name' may not contain a dot '.' character.")
+ 
++if name == "":
++    raise ValueError("name may not be empty")
++
+ self.name = name
+ self.url_prefix = url_prefix
+ self.subdomain = subdomain
+ self.deferred_functions: t.List[DeferredSetupFunction] = []
+
+[0m
+[0m$ [0m/tmp/opencode/flask-venv/bin/python -m pytest tests/test_blueprints.py -q -W "ignore::DeprecationWarning" 2>&1 | tail -3
+............................................................             [100%]
+60 passed in 0.20s
+[0m
+[0m$ [0m/tmp/opencode/flask-venv/bin/python -m pytest tests/ -q -W "ignore::DeprecationWarning" -p no:cacheprovider 2>&1 | tail -3
+FAILED tests/test_basic.py::test_max_cookie_size - assert 6 == 1
+FAILED tests/test_instance_config.py::test_egg_installed_paths - subprocess.C...
+2 failed, 462 passed, 14 skipped in 1.75s
+[0m
+[0m$ [0mgit stash && /tmp/opencode/flask-venv/bin/python -m pytest tests/test_basic.py::test_max_cookie_size "tests/test_instance_config.py::test_egg_installed_paths" -q -W "ignore::DeprecationWarning" -p no:cacheprovider 2>&1 | tail -3; git stash pop
+Saved working directory and index state WIP on (no branch): 7ee9ceb7 Merge branch '2.2.x'
+FAILED tests/test_basic.py::test_max_cookie_size - assert 6 == 1
+FAILED tests/test_instance_config.py::test_egg_installed_paths - subprocess.C...
+2 failed in 0.11s
+HEAD detached at 7ee9ceb7
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/flask/blueprints.py
+	modified:   tests/test_blueprints.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (93a2f767574e858d9712da0d6e9a94d57e263b5c)
+[0m
