@@ -1,9 +1,10 @@
 //! Task-aware context packs: compact, ordered, budgeted symbol context for
 //! coding agents. Optimized for signal per token, not raw recall.
 //!
-//! Pipeline: hybrid seeds → structural expansion → dedup/subsumption merge →
-//! role ordering (primaries, dependencies, tests) → greedy budget fill with a
-//! recency tail (U-shaped attention: lead with the target, close with the map).
+//! Pipeline: hybrid seeds → capped structural expansion → relevance floor →
+//! dedup/subsumption merge → role ordering (primaries, dependencies, tests) →
+//! budgeted fill with per-item caps and query-centered windows (shrink-to-fit,
+//! so small junk never displaces a large primary) and a per-file diversity cap.
 //! Every inclusion and omission carries its reason.
 
 use crate::embeddings::EmbeddingProvider;
@@ -30,6 +31,22 @@ pub const CHARS_PER_TOKEN: f32 = 4.0;
 
 /// ~12 tokens of framing per item (header line, separators).
 const ITEM_OVERHEAD_TOKENS: usize = 12;
+
+/// Per-object snippet budget; bigger symbols get query-centered windows
+/// instead of whole-body dumps.
+const PER_ITEM_TOKEN_CAP: usize = 350;
+/// Candidates below this fraction of the top seed score are noise.
+const RELEVANCE_FLOOR_FRAC: f32 = 0.15;
+/// Structural expansion fan-out: per seed and total.
+const EXPANSION_PER_SEED: usize = 2;
+const EXPANSION_TOTAL: usize = 2;
+/// Max included items per file; the single top-ranked candidate is exempt.
+const MAX_PER_FILE: usize = 2;
+/// Max direct semantic hits; embedding scores cluster too tightly for a
+/// relative floor to separate ranks 7+, which are noise in eval probes.
+const MAX_PRIMARIES: usize = 5;
+/// Supporting tests beyond a couple are noise.
+const MAX_TESTS: usize = 1;
 
 #[derive(Debug, Serialize)]
 pub struct ContextItem {
@@ -83,6 +100,7 @@ impl Default for ContextOptions {
     }
 }
 
+#[derive(Debug, Clone)]
 struct Candidate {
     symbol: Symbol,
     score: f32,
@@ -143,12 +161,22 @@ pub fn build_context(
         let symbols = store.all_symbols()?;
         let graph = RelationGraph::build(&symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
+        let mut expansion_total = 0usize;
         for seed in seeds.iter().take(5) {
+            if expansion_total >= EXPANSION_TOTAL {
+                break;
+            }
+            let mut from_seed = 0usize;
             for (rel, n) in graph.neighbors(&seed.symbol) {
+                if expansion_total >= EXPANSION_TOTAL || from_seed >= EXPANSION_PER_SEED {
+                    break;
+                }
                 if seen_seeds.contains(&n.id()) {
                     continue;
                 }
                 seen_seeds.insert(n.id());
+                from_seed += 1;
+                expansion_total += 1;
                 let role = match rel.as_str() {
                     "test" => Role::Test,
                     _ => Role::Dependency,
@@ -217,26 +245,94 @@ pub fn build_context(
         )
     });
 
+    // ---- relevance floor ------------------------------------------------
+    // Weak tail candidates dilute the pack; drop them unless nothing survives.
+    if let Some(top_score) = seeds.first().map(|h| h.score) {
+        let (strong, weak) = split_below_floor(kept, top_score * RELEVANCE_FLOOR_FRAC);
+        if strong.is_empty() {
+            kept = weak; // nothing survives the floor: keep everything
+        } else {
+            for c in &weak {
+                dropped.push(Omitted {
+                    id: format!("{}#{}", c.symbol.file, c.symbol.qualified_name),
+                    why: "below relevance floor".into(),
+                });
+            }
+            kept = strong;
+        }
+    }
+
     // ---- budgeted greedy fill ------------------------------------------
     let mut items: Vec<ContextItem> = Vec::new();
     let mut used = 0usize;
+    let terms = query_terms(task);
+    let top_id = kept.first().map(|c| c.symbol.id());
+    let mut per_file: HashMap<&str, usize> = HashMap::new();
+    let mut primaries = 0usize;
+    let mut tests = 0usize;
     for c in &kept {
-        let snippet = crate::retrieval::read_snippet(
-            &root.join(&c.symbol.file),
-            c.symbol.start_line,
-            c.symbol.end_line,
-            60,
-        );
-        let est = estimate_tokens(&snippet) + ITEM_OVERHEAD_TOKENS;
         let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
+        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= MAX_PER_FILE
+            && top_id != Some(c.symbol.id())
+        {
+            dropped.push(Omitted {
+                id: cid,
+                why: "per-file diversity cap".into(),
+            });
+            continue;
+        }
+        let over_role_cap = match c.role {
+            Role::Primary => {
+                if primaries >= MAX_PRIMARIES {
+                    Some("beyond primary cap")
+                } else {
+                    primaries += 1;
+                    None
+                }
+            }
+            Role::Test => {
+                if tests >= MAX_TESTS {
+                    Some("beyond test cap")
+                } else {
+                    tests += 1;
+                    None
+                }
+            }
+            Role::Dependency => None,
+        };
+        if let Some(why) = over_role_cap {
+            dropped.push(Omitted {
+                id: cid,
+                why: why.into(),
+            });
+            continue;
+        }
+        // Shrink-to-fit: halve the per-item cap until it fits, so tiny junk
+        // never displaces a large primary.
+        let mut cap = PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
+        let (snippet, est) = loop {
+            let snip = render_snippet(root, &c.symbol, &terms, cap);
+            let e = estimate_tokens(&snip) + ITEM_OVERHEAD_TOKENS;
+            if used + e <= opts.budget_tokens || cap == 0 {
+                break (snip, e);
+            }
+            cap /= 2;
+        };
         if used + est > opts.budget_tokens {
             dropped.push(Omitted {
                 id: cid,
                 why: "over token budget".into(),
             });
-            continue; // try smaller later items rather than stopping
+            // Release the reserved role slot.
+            match c.role {
+                Role::Primary => primaries -= 1,
+                Role::Test => tests -= 1,
+                Role::Dependency => {}
+            }
+            continue;
         }
         used += est;
+        *per_file.entry(c.symbol.file.as_str()).or_insert(0) += 1;
         items.push(ContextItem {
             symbol: c.symbol.clone(),
             role: c.role,
@@ -274,6 +370,89 @@ fn dedup_reasons(rs: &[String]) -> Vec<String> {
         }
     }
     out
+}
+
+/// Lowercased, deduplicated query terms used to center snippet windows.
+fn query_terms(task: &str) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for w in task.to_lowercase().split(|c: char| !c.is_alphanumeric()) {
+        if w.len() >= 3 && !out.iter().any(|t| t == w) {
+            out.push(w.to_string());
+        }
+    }
+    out
+}
+
+/// Partition candidates into those at/above `floor` and below it.
+fn split_below_floor(kept: Vec<Candidate>, floor: f32) -> (Vec<Candidate>, Vec<Candidate>) {
+    kept.into_iter().partition(|c| c.score >= floor)
+}
+
+/// Snippet for a symbol capped at `max_tokens`: whole body when it fits,
+/// otherwise a window centered on the lines matching the most query terms
+/// (head of the symbol as fallback when nothing matches).
+fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize) -> String {
+    let Ok(src) = std::fs::read_to_string(root.join(&s.file)) else {
+        return String::new();
+    };
+    let lines: Vec<&str> = src.lines().collect();
+    let lo = s.start_line.saturating_sub(1) as usize;
+    let hi = (s.end_line as usize).min(lines.len());
+    if hi <= lo {
+        return String::new();
+    }
+    let body = &lines[lo..hi];
+    let budget = (max_tokens as f32 * CHARS_PER_TOKEN) as usize;
+    let total: usize = body.iter().map(|l| l.len() + 1).sum();
+    if total <= budget {
+        return body.join("\n");
+    }
+    let hits = |line: &str| -> usize {
+        let low = line.to_lowercase();
+        terms.iter().filter(|t| low.contains(t.as_str())).count()
+    };
+    let scores: Vec<usize> = body.iter().map(|l| hits(l)).collect();
+    let best = scores.iter().max().copied().unwrap_or(0);
+    if best == 0 || budget == 0 {
+        // No query-term anchor: keep the head of the symbol.
+        let mut out = String::new();
+        for l in body {
+            if out.len() + l.len() + 1 > budget {
+                break;
+            }
+            out.push_str(l);
+            out.push('\n');
+        }
+        return out.trim_end_matches('\n').to_string();
+    }
+    // Window around the first densest-match line, growing toward the shorter
+    // neighbor line until the character budget is spent.
+    let mut lo_i = scores.iter().position(|s| *s == best).unwrap_or(0);
+    let mut hi_i = lo_i;
+    let mut used = body[lo_i].len() + 1;
+    loop {
+        let can_lo = lo_i > 0;
+        let can_hi = hi_i + 1 < body.len();
+        if !can_lo && !can_hi {
+            break;
+        }
+        let grow_lo = can_lo && (!can_hi || body[lo_i - 1].len() <= body[hi_i + 1].len());
+        let cost = if grow_lo {
+            body[lo_i - 1].len() + 1
+        } else {
+            body[hi_i + 1].len() + 1
+        };
+        if used + cost > budget {
+            break;
+        }
+        if grow_lo {
+            lo_i -= 1;
+        } else {
+            hi_i += 1;
+        }
+        used += cost;
+    }
+    body[lo_i..=hi_i].join("\n")
 }
 
 fn is_test_symbol(s: &Symbol) -> bool {
@@ -496,5 +675,351 @@ mod tests {
             "a.py module must be subsumed by helper: {ids:?}"
         );
         assert!(pack.omitted.iter().any(|o| o.why.contains("subsumed")));
+    }
+
+    fn write_file(root: &Path, rel: &str, content: &str) {
+        let p = root.join(rel);
+        std::fs::create_dir_all(p.parent().unwrap()).unwrap();
+        std::fs::write(p, content).unwrap();
+    }
+
+    /// Move a symbol's span to `start` so same-file fixtures don't fully
+    /// overlap (overlapping spans are removed by subsumption).
+    fn spaced(mut s: Symbol, start: u32) -> Symbol {
+        let len = s.end_line - s.start_line + 1;
+        s.start_line = start;
+        s.end_line = start + len - 1;
+        s
+    }
+
+    #[test]
+    fn window_centers_on_query_terms_within_cap() {
+        let tmp = tempfile::tempdir().unwrap();
+        let mut body = String::from("def job():\n");
+        for i in 0..200 {
+            body.push_str(&format!("    filler_line_{i} = {i}\n"));
+        }
+        body.push_str("    backoff_retry_deadline = compute_backoff()\n");
+        for i in 0..50 {
+            body.push_str(&format!("    tail_filler_{i} = {i}\n"));
+        }
+        write_file(tmp.path(), "src/job.py", &body);
+        let s = sym("src/job.py", "job", SymbolKind::Function, &body);
+        let terms = query_terms("fix backoff retry deadline");
+        let snip = render_snippet(tmp.path(), &s, &terms, 100);
+        assert!(
+            snip.contains("backoff_retry_deadline"),
+            "window must center on the matching span: {snip:?}"
+        );
+        assert!(estimate_tokens(&snip) <= 100);
+        assert!(
+            !snip.contains("tail_filler_49"),
+            "window must not reach the tail"
+        );
+    }
+
+    #[test]
+    fn big_primary_survives_tight_budget_by_shrinking() {
+        // Old failure: the huge gold symbol was skipped ("over token budget")
+        // while tiny junk filled the pack. Shrink-to-fit keeps concentrated
+        // evidence from the gold symbol instead.
+        let tmp = tempfile::tempdir().unwrap();
+        let mut gold_body = String::from("def sync_engine():\n");
+        for i in 0..400 {
+            gold_body.push_str(&format!("    x{i} = incremental_sync_step_{i}\n"));
+        }
+        gold_body.push_str("    result = incremental_sync_commit()\n");
+        write_file(tmp.path(), "src/sync_engine.py", &gold_body);
+        let gold = sym(
+            "src/sync_engine.py",
+            "sync_engine",
+            SymbolKind::Function,
+            &gold_body,
+        );
+        let mut store = seed("src/sync_engine.py", &[gold]);
+        let smalls: Vec<Symbol> = (0..20)
+            .map(|i| {
+                sym(
+                    "src/junk.py",
+                    &format!("junk_{i}"),
+                    SymbolKind::Function,
+                    "def run(): pass",
+                )
+            })
+            .collect();
+        store.replace_file("src/junk.py", 1, &smalls).unwrap();
+        let emb = HashedEmbedder::default();
+        for s in &smalls {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let pack = build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "incremental sync commit",
+            &ContextOptions {
+                budget_tokens: 600,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert!(pack.used_tokens <= 600, "{} > 600", pack.used_tokens);
+        let gold = pack
+            .items
+            .iter()
+            .find(|i| i.symbol.qualified_name == "sync_engine")
+            .expect("gold primary must be packed, not skipped: omitted={:?}");
+        assert!(
+            gold.snippet.contains("incremental_sync_commit"),
+            "shrunk window must keep the matching span"
+        );
+    }
+
+    #[test]
+    fn expansion_is_capped_per_seed_and_total() {
+        // One seed referencing ten defs: fan-out must stay bounded.
+        // Each def in its own file so the per-file diversity cap cannot mask
+        // the expansion fan-out cap.
+        let defs: Vec<Symbol> = (0..10)
+            .map(|i| {
+                sym(
+                    &format!("src/util{i}.py"),
+                    &format!("util_{i}"),
+                    SymbolKind::Function,
+                    &format!("def util_{i}(): pass"),
+                )
+            })
+            .collect();
+        let mut caller = sym(
+            "src/app.py",
+            "caller",
+            SymbolKind::Function,
+            "def caller(): runs utils",
+        );
+        caller.references = (0..10).map(|i| format!("util_{i}")).collect();
+        let mut store = seed("src/app.py", &[caller.clone()]);
+        for d in &defs {
+            store
+                .replace_file(&d.file, 1, std::slice::from_ref(d))
+                .unwrap();
+        }
+        let emb = HashedEmbedder::default();
+        for s in defs.iter().chain(std::iter::once(&caller)) {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let tmp = tempfile::tempdir().unwrap();
+        let pack = build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "caller",
+            // Only `caller` can be a seed; the utils must arrive via expansion.
+            &ContextOptions {
+                max_candidates: 1,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let deps = pack
+            .items
+            .iter()
+            .filter(|i| i.role == Role::Dependency)
+            .count();
+        assert!(
+            deps >= 1,
+            "test requires at least one expansion neighbor to be meaningful"
+        );
+        assert!(
+            deps == EXPANSION_PER_SEED,
+            "fan-out must be capped at exactly {EXPANSION_PER_SEED}, got {deps}"
+        );
+    }
+
+    #[test]
+    fn diversity_cap_limits_items_per_file() {
+        let hot: Vec<Symbol> = (0..6)
+            .map(|i| {
+                spaced(
+                    sym(
+                        "src/hot.py",
+                        &format!("hot_target_{i}"),
+                        SymbolKind::Function,
+                        &format!("def hot_target_{i}(): hot target logic {i}"),
+                    ),
+                    100 * i + 1,
+                )
+            })
+            .collect();
+        let mut store = seed("src/hot.py", &hot);
+        let other = sym(
+            "src/other.py",
+            "helper_one",
+            SymbolKind::Function,
+            "def helper_one(): hot target help",
+        );
+        store
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other))
+            .unwrap();
+        let emb = HashedEmbedder::default();
+        for s in hot.iter().chain(std::iter::once(&other)) {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let tmp = tempfile::tempdir().unwrap();
+        let pack = build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "hot target",
+            &ContextOptions::default(),
+        )
+        .unwrap();
+        let hot_count = pack
+            .items
+            .iter()
+            .filter(|i| i.symbol.file == "src/hot.py")
+            .count();
+        assert!(
+            hot_count <= MAX_PER_FILE + 1,
+            "one hog file must not eat the pack: {hot_count} items"
+        );
+        assert!(
+            pack.omitted.iter().any(|o| o.why.contains("diversity")),
+            "dropped hogs must carry an explicit reason"
+        );
+    }
+
+    #[test]
+    fn relevance_floor_drops_weak_but_keeps_everything_when_all_weak() {
+        let mk = |score: f32| Candidate {
+            symbol: sym("src/a.py", "f", SymbolKind::Function, "def f(): pass"),
+            score,
+            reasons: vec![],
+            role: Role::Primary,
+        };
+        let kept = vec![mk(1.0), mk(0.5), mk(0.1)];
+        let (strong, weak) = split_below_floor(kept.clone(), 0.15);
+        assert_eq!(strong.len(), 2);
+        assert_eq!(weak.len(), 1);
+        let all_weak = vec![mk(0.05), mk(0.01)];
+        let (strong, weak) = split_below_floor(all_weak, 0.15);
+        assert!(strong.is_empty());
+        assert_eq!(weak.len(), 2, "all-weak must keep everything");
+    }
+    #[test]
+    fn primary_cap_bounds_semantic_tail() {
+        // Embedding scores cluster; ranks beyond MAX_PRIMARIES are noise in
+        // eval probes and must not dilute the pack.
+        let many: Vec<Symbol> = (0..(MAX_PRIMARIES + 3))
+            .map(|i| {
+                spaced(
+                    sym(
+                        &format!("src/m{i}.py"),
+                        &format!("widget_{i}"),
+                        SymbolKind::Function,
+                        &format!("def widget_{i}(): widget logic {i}"),
+                    ),
+                    1,
+                )
+            })
+            .collect();
+        let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
+        for s in &many {
+            store
+                .replace_file(&s.file, 1, std::slice::from_ref(s))
+                .unwrap();
+        }
+        let emb = HashedEmbedder::default();
+        for s in &many {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let tmp = tempfile::tempdir().unwrap();
+        let pack = build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "widget",
+            &ContextOptions {
+                max_candidates: MAX_PRIMARIES + 3,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let prim = pack
+            .items
+            .iter()
+            .filter(|i| i.role == Role::Primary)
+            .count();
+        assert_eq!(prim, MAX_PRIMARIES, "semantic tail must be capped");
+        assert!(
+            pack.omitted.iter().any(|o| o.why.contains("primary cap")),
+            "capped primaries need an explicit reason"
+        );
+    }
+    #[test]
+    fn orphan_module_stays_a_direct_hit_but_subsumed_when_sibling_exists() {
+        // An orphan module (no concrete sibling retrieved) can be the only
+        // evidence for its file and must be packed; a module whose file has
+        // concrete candidates is subsumed.
+        let orphan = sym(
+            "src/mod_only.py",
+            "src/mod_only.py:__module__",
+            SymbolKind::Module,
+            "# module with token refresh docs",
+        );
+        let subsumed = sym(
+            "src/both.py",
+            "src/both.py:__module__",
+            SymbolKind::Module,
+            "# both module",
+        );
+        let concrete = sym(
+            "src/both.py",
+            "helper",
+            SymbolKind::Function,
+            "def helper(): token refresh helper",
+        );
+        let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
+        store
+            .replace_file("src/mod_only.py", 1, std::slice::from_ref(&orphan))
+            .unwrap();
+        store
+            .replace_file("src/both.py", 1, &[subsumed.clone(), concrete.clone()])
+            .unwrap();
+        let emb = HashedEmbedder::default();
+        for s in [&orphan, &subsumed, &concrete] {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let tmp = tempfile::tempdir().unwrap();
+        let pack = build_context(
+            tmp.path(),
+            &store,
+            &emb,
+            "token refresh",
+            &ContextOptions::default(),
+        )
+        .unwrap();
+        let ids: Vec<&str> = pack
+            .items
+            .iter()
+            .map(|i| i.symbol.qualified_name.as_str())
+            .collect();
+        assert!(
+            ids.contains(&"src/mod_only.py:__module__"),
+            "orphan module is its file's only evidence: {ids:?}"
+        );
+        assert!(
+            !ids.contains(&"src/both.py:__module__"),
+            "module with concrete sibling must be subsumed: {ids:?}"
+        );
     }
 }

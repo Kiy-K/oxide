@@ -237,8 +237,10 @@ impl IndexBackend for SqliteStore {
         let dim: i32 = row.get(1)?;
         let bytes: Vec<u8> = row.get(2)?;
         let floats: Vec<f32> = bytes
-            .chunks_exact(4)
-            .map(|c| f32::from_le_bytes([c[0], c[1], c[2], c[3]]))
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|c| f32::from_le_bytes(*c))
             .take(dim as usize)
             .collect();
         Ok(Some((chash, floats)))
@@ -260,8 +262,10 @@ impl IndexBackend for SqliteStore {
         for row in rows {
             let (id, chash, dim, bytes) = row?;
             let floats: Vec<f32> = bytes
-                .chunks_exact(4)
-                .map(|c| f32::from_le_bytes([c[0], c[1], c[2], c[3]]))
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .map(|c| f32::from_le_bytes(*c))
                 .take(dim as usize)
                 .collect();
             out.insert(id, (chash, floats));

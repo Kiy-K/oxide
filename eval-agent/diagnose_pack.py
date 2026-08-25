@@ -14,8 +14,15 @@ ROOT = cb.ROOT
 OX = ROOT / "target/release/oxide"
 ENV = {"OXIDE_EMBED_URL": os.environ.get("OXIDE_EMBED_URL", "")}
 
-tasks = [t for t in cb.load_tasks() if cb.REPO_CACHE / t["repo"].split("/")[-1] in [
-    p for p in cb.REPO_CACHE.iterdir()]]
+# Pin to the exact recorded Tier A set (see results/tier_a_instances.txt).
+# limit_per_repo sampling is NOT reproducible: upstream dataset drift drops
+# 6/21 pinned ids through it.
+_PIN = Path(__file__).resolve().parents[0] / "results/tier_a_instances.txt"
+_ALLOW = {i.strip() for i in _PIN.read_text().splitlines() if i.strip()}
+tasks = [t for t in cb.load_tasks() if t["instance_id"] in _ALLOW and
+         cb.REPO_CACHE / t["repo"].split("/")[-1] in [p for p in cb.REPO_CACHE.iterdir()]]
+missing = _ALLOW - {t["instance_id"] for t in tasks}
+assert not missing, f"pinned instances unavailable/cached-out: {sorted(missing)}"
 
 def f1(g):
     p, c = g["precision"], g["coverage"]

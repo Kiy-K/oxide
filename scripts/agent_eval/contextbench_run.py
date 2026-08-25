@@ -211,6 +211,11 @@ def main() -> None:
         default="",
         help="comma-separated owner/name allowlist; empty = all",
     )
+    ap.add_argument(
+        "--instances",
+        default="",
+        help="path to newline-separated instance_id allowlist; empty = all",
+    )
     ap.add_argument("--out", default=str(ROOT / "eval-agent/results"))
     args = ap.parse_args()
 
@@ -218,10 +223,23 @@ def main() -> None:
     embedder_url = os.environ.get("OXIDE_EMBED_URL", "")
     assert embedder_url, "set OXIDE_EMBED_URL (llama.cpp embeddings server)"
 
-    tasks = load_tasks(tuple(args.langs.split(",")), args.limit_per_repo)
-    if args.repos:
-        allow = {r.strip() for r in args.repos.split(",") if r.strip()}
-        tasks = [t for t in tasks if t["repo"] in allow]
+    if args.instances:
+        # Pin mode: load unbounded, then filter; per-repo sampling would
+        # truncate the pin (dataset drift drops 6/21 ids through it).
+        allow = {
+            i.strip()
+            for i in Path(args.instances).read_text().splitlines()
+            if i.strip()
+        }
+        tasks = [t for t in load_tasks(tuple(args.langs.split(","))) if t["instance_id"] in allow]
+        found = {t["instance_id"] for t in tasks}
+        missing = allow - found
+        assert not missing, f"pinned instances missing from dataset: {sorted(missing)}"
+    else:
+        tasks = load_tasks(tuple(args.langs.split(",")), args.limit_per_repo)
+        if args.repos:
+            allow = {r.strip() for r in args.repos.split(",") if r.strip()}
+            tasks = [t for t in tasks if t["repo"] in allow]
     print(f"{len(tasks)} tasks sampled")
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -1,3 +1,7 @@
-/target
+eval-agent/results/agent_results.jsonl
+eval-agent/results/cb_results.jsonl
 eval-agent/third_party/
 eval-agent/.venv/
+.oxide/
+__pycache__
+/target

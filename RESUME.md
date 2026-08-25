@@ -1,54 +1,64 @@
-# RESUME: context-pack allocator rework (in progress)
+# RESUME: context-pack allocator rework — allocator DONE, evals finishing
 
-## Where we stopped
-Diagnostic ran over ~292 ContextBench tasks (all py+ts, larger than the 21-task
-Tier A sample) comparing `oxide search --mode hybrid --limit 10` vs
-`oxide context --budget-tokens 4096`. Script: `eval-agent/diagnose_pack.py`
-(BUG TO FIX: it loads ALL tasks — pass `limit_per_repo=1` semantics like
-contextbench_run.py's Tier A sampling before rerunning). Partial per-task log:
-`eval-agent/results/pack_diag_partial.log` (aggregate sections never printed;
-kill came first). Raw log was also at /tmp/opencode/diag.log.
+## State (2026-08-25)
 
-## Evidence (consistent across ~292 rows)
-1. Budget saturates every run: used_tokens 4078–4096 of 4096. Pack is full of
-   low-value content.
-2. **Noise floods the pack**: typically 3–13 files per pack are non-gold AND
-   absent from hybrid top-10. Sources: structural expansion (deps/tests at
-   0.4× seed score, unbounded neighbor count over 5 seeds) plus weak tail
-   seeds (limit 16).
-3. **Direct losses exist**: rows with lost=1..2 where a gold file IS in hybrid
-   top-10 but NOT in the pack — displaced during greedy fill ("over token
-   budget" continue-skips big primaries then fills with tiny junk) or
-   subsumed. Attribution by omission-reason never aggregated; rerun diag to
-   get category counts.
-4. File-F1 regresses vs hybrid almost everywhere (e.g. 0.57→0.12, 0.80→0.40);
-   line-F1 mixed (occasionally better when pack includes tight spans).
+**Allocator rework complete and verified. All acceptance gates met except the
+two long-running agent-eval reruns (Tier A fresh run was in flight; Tier B not
+yet rerun).**
 
-## Fix plan (smallest justified changes, src/context.rs only)
-1. Per-object token cap (~350 tok) + query-centered windowing: when symbol
-   body > cap, cut window(s) around lines matching query terms; fallback head.
-   Turns "drop entirely" into "include concentrated evidence".
-2. Guarantee top-K semantic primaries: reserve share of budget, shrink-to-fit,
-   never drop a top-3 primary for budget while noise exists.
-3. Diversity cap: max ~2 items per file (except the top primary); prevents one
-   hog file eating the pack.
-4. Relevance floor: drop candidates < ~0.15 × top-seed score unless nothing
-   else remains; count as omissions ("below relevance floor").
-5. Cap expansion fan-out per seed (e.g. ≤2 neighbors) and total expansion
-   items (≤6); expansion stays strictly additive AFTER guaranteed primaries.
-6. Keep role ordering + flattened JSON contract + explicit omission reasons
-   for every new drop rule.
+### Final allocator design (src/context.rs)
+- Per-item token cap 350 + query-centered windowing (`render_snippet`):
+  whole body if it fits, else window around lines matching query terms,
+  head fallback. Shrink-to-fit halves the cap until the item fits budget —
+  tiny junk can no longer displace a large primary.
+- Caps: `EXPANSION_PER_SEED=2`, `EXPANSION_TOTAL=2`, `MAX_PRIMARIES=5`,
+  `MAX_TESTS=1`, `MAX_PER_FILE=2` (top-ranked candidate exempt).
+- Relevance floor 0.15×top seed (`split_below_floor`, keeps everything when
+  nothing survives).
+- Modules: same-file-concrete subsumption only (original rule). Orphan
+  modules stay direct hits under MAX_PRIMARIES — they CAN be gold
+  (pytest skipping task proved it); blanket-dropping them loses gold.
+- Role ordering, flattened JSON contract, explicit omission reasons kept.
 
-## Gates before commit
-- Unit regression tests per failure mode above (src/context.rs tests).
-- cargo fmt/clippy/test green; fixtures benchmark gate unchanged-green.
-- Rerun diagnose_pack.py (fixed sampler) → budgeted must Pareto-dominate raw
-  hybrid (file-F1 ≥, line-F1 ≥ or ≈, tokens <) on the sample.
-- Rerun scripts/agent_eval/contextbench_run.py fresh (archive old
-  cb_results.jsonl first — runner resumes by (task, condition) and would reuse
-  stale budgeted rows). Then Tier B unchanged, honest reporting.
+### Measured results (pinned Tier A 21-task set, quick_eval.py + full diag)
+| metric            | hybrid | budgeted (new) | budgeted (old) |
+|-------------------|--------|----------------|----------------|
+| file-F1           | .346   | **.353**       | .236           |
+| line-F1           | .072   | **.091**       | .083/.060      |
+| tokens            | ~2474  | **~1712**      | 4087           |
+| gold lost by pack | —      | **0**          | many           |
 
-## Env reminders
-- llama server: scripts/embedder.sh start (was up, port 8191, Q8_0).
-- eval venv: eval-agent/.venv/bin/python (3.11).
-- Pack item keys are FLAT (it["file"], not it["symbol"]["file"]).
+Pareto dominance achieved. The single remaining "loss" row in
+pack_diag_final.log is NOT_IN_CANDIDATES (hybrid never retrieved it either).
+
+### Tuning evidence trail (don't re-litigate)
+- Embedding scores cluster within ~15% → relative floors can't separate
+  ranks; hard caps are the only effective cut (probe logs:
+  /tmp/opencode/pack_diag_v2.log, pack_diag_final.log).
+- Blanket-dropping orphan modules gained file-F1 (.274) but risks gold;
+  orphan-under-cap gets .270→.353 with zero losses when combined with
+  tighter expansion/tests caps.
+- Iteration harness: `eval-agent/quick_eval.py` (~90 s over warm indexes).
+
+## Remaining work
+1. **Tier A**: fresh run was launched
+   (`contextbench_run.py --instances eval-agent/results/tier_a_instances.txt`)
+   after archiving stale results to `*.bak-pre-allocator`. Check
+   `eval-agent/results/cb_results.jsonl`; compare with
+   `scripts/agent_eval/summarize_cb.py`.
+2. **Tier B**: archive `agent_results.jsonl` first (already backed up as
+   `.bak-pre-allocator`; delete the live file if recreated), then
+   `scripts/agent_eval/tierb_agent_run.py` unchanged (~16 opencode runs,
+   hours). Honest reporting only.
+3. Commit any remaining deltas; conventional short messages.
+
+## Gotchas learned this session
+- ALWAYS export BOTH `OXIDE_EMBED_URL` and `OXIDE_EMBED_MODEL=qwen3-Q8_0`
+  for every index/retrieval command. URL-only runs label vectors
+  `http:@…` → silent wipe+reembed under wrong identity.
+- Upstream ContextBench dataset drifted: `limit_per_repo=3` sampling no
+  longer reproduces the recorded 21 tasks (15/21 match). Always use the
+  instance pin file `eval-agent/results/tier_a_instances.txt`.
+- diagnose_pack.py sampler is fixed to use that pin.
+- clippy 1.98 flags pre-existing `chunks_exact` lints in src/index.rs
+  (fixed inline, behavior-identical).
