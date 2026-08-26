@@ -1,69 +1,59 @@
-Using test-driven-development to implement the `corePlugins.only` feature properly.
-Structure is clear: `src/util/configurePlugins.js` filters plugins based on config. Now RED — add a failing test first.
-Local deps aren't installed — npx fetched a mismatched jest. Installing project dependencies:
-RED confirmed — fails because `only` is ignored. Now GREEN:
-All 148 tests pass, eslint clean. Checking if the config stub documents this option:
-DONE.
+Full suite green: 24 suites, 148 tests passing, eslint clean.
 
-- `__tests__/configurePlugins.test.js`: new test watched failing first, then passing
-- `src/util/configurePlugins.js:8`: when config has an `only` array, only those plugins are kept; `false`, per-plugin booleans, and `{}` behave exactly as before
+**Change** (`src/util/configurePlugins.js`): when `corePlugins` is an object with an `only` array, only whitelisted plugins run; `false` and per-plugin `{ name: false }` still work as before.
 
-Skipped: none — the diff is 5 lines plus test. All 148 tests pass, eslint clean.
+**Test** (`__tests__/configurePlugins.test.js`): added a whitelist case verifying non-listed plugins are excluded.
+
+DONE
 
 ---STDERR---
-:   0 total
-Time:        0.456s
-Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
+s matching __tests__/configurePlugins.test.js.
 [0m
-[0m← [0mEdit src/util/configurePlugins.js
-Index: /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-stock/src/util/configurePlugins.js
-===================================================================
---- /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-stock/src/util/configurePlugins.js
-+++ /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-stock/src/util/configurePlugins.js
-@@ -1,8 +1,16 @@
- export default function(pluginConfig, plugins) {
-   return Object.keys(plugins)
-     .filter(pluginName => {
--      return pluginConfig !== false && pluginConfig[pluginName] !== false
-+      if (pluginConfig === false) {
-+        return false
-+      }
-+
-+      if (Array.isArray(pluginConfig.only)) {
-+        return pluginConfig.only.includes(pluginName)
-+      }
-+
-+      return pluginConfig[pluginName] !== false
-     })
-     .map(pluginName => {
-       return plugins[pluginName]()
-     })
+[0m$ [0mls node_modules/.bin/jest 2>/dev/null; yarn jest __tests__/configurePlugins.test.js 2>&1 | tail -12
+/usr/bin/bash: line 1: yarn: command not found
+[0m
+[0m$ [0mls node_modules 2>/dev/null | head -3; npm test -- __tests__/configurePlugins.test.js 2>&1 | tail -12
+> tailwindcss@1.0.0-beta.4 test
+> jest && eslint . __tests__/configurePlugins.test.js
 
+sh: line 1: jest: command not found
 [0m
-[0m$ [0mnpx jest __tests__/configurePlugins.test.js 2>&1 | tail -8
-✓ passing only false removes all plugins
-  ✓ only whitelists specific plugins
+[0m$ [0mnpm install --no-audit --no-fund 2>&1 | tail -5
+npm error code 1
+npm error path /tmp/oxide-tierb-cvc35xlv/SWE-PolyBench__typescript__evolution__fe-stock
+npm error command failed
+npm error command sh -c npm run babelify && babel-node src/build.js
+npm error A complete log of this run can be found in: /home/khoi/.npm/_logs/2026-08-26T10_48_15_392Z-debug-0.log
+[0m
+[0m$ [0mls node_modules/.bin/ | grep -E "^jest|^eslint" ; npm install --no-audit --no-fund --ignore-scripts 2>&1 | tail -3
+eslint
+eslint-config-prettier-check
+jest
+jest-runtime
+
+up to date in 568ms
+[0m
+[0m$ [0mnode_modules/.bin/jest __tests__/configurePlugins.test.js 2>&1 | tail -12
+(node:188595) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS __tests__/configurePlugins.test.js
+  ✓ setting a plugin to false removes it (4ms)
+  ✓ passing only false removes all plugins
+  ✓ only whitelisted plugins are enabled (1ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       3 passed, 3 total
 Snapshots:   0 total
-Time:        0.429s, estimated 1s
+Time:        0.429s
 Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
 [0m
-[0m# [0mTodos
-[✓] Explore how corePlugins option is currently handled
-[✓] Write failing test for corePlugins.only whitelist
-[✓] Implement corePlugins.only support
-[•] Run full test suite + lint
-[0m
-[0m$ [0mnpx jest 2>&1 | tail -8 && npx eslint src/util/configurePlugins.js __tests__/configurePlugins.test.js
+[0m$ [0mnode_modules/.bin/jest 2>&1 | tail -8 && node_modules/.bin/eslint src/util/configurePlugins.js __tests__/configurePlugins.test.js
 Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`
 
 
 Test Suites: 24 passed, 24 total
 Tests:       148 passed, 148 total
 Snapshots:   0 total
-Time:        3.019s
+Time:        2.843s
 Ran all test suites.
 [0m
-[0m→ [0mRead stubs/defaultConfig.stub.js[90m [limit=20, offset=435][0m

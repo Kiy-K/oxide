@@ -1,61 +1,40 @@
-Pre-existing Python 3.13/old-Flask incompat (pkgutil DeprecationWarning → error). Run tests bypassing that:
-Clean tree fails identically (1 failed, 11 passed, 47 errors) — all pre-existing env incompatibilities (werkzeug too new), not my change. Adding the matching test:
-`app` fixture is broken by the env's werkzeug (pre-existing, affects all tests). Verifying the new test logic directly without the fixture:
+The dotted-name check at src/flask/blueprints.py:193 is the spot. Minimal fix:
+The test-suite errors are pre-existing (conftest breaks against the installed werkzeug — fails identically on unmodified code). Verifying the fix directly:
 DONE
 
-- `src/flask/blueprints.py:193` — `Blueprint.__init__` raises `ValueError("'name' may not be empty.")` for empty names, before the existing dot check.
-- Added `test_empty_name_not_allowed` in tests/test_blueprints.py:258.
-- Verified directly; full suite can't run in this env (werkzeug/Python 3.13 incompatibilities fail identically on a clean tree).
+- `Blueprint.__init__` now raises `ValueError("'name' may not be empty.")` for empty names (src/flask/blueprints.py:196), next to the existing dot check.
+- Added `test_empty_name_not_allowed` in tests/test_blueprints.py:259.
+- Verified via direct check; pytest itself is blocked by a pre-existing werkzeug/conftest incompatibility that fails identically on unmodified code.
 
 ---STDERR---
-arning" 2>&1 | grep -m2 AttributeError; git stash -q && python3 -m pytest tests/test_blueprints.py -q -W "ignore::DeprecationWarning" 2>&1 | tail -1; git stash pop -q
-E       AttributeError: module 'werkzeug' has no attribute '__version__'
-src/flask/testing.py:117: AttributeError
-1 failed, 11 passed, 47 errors in 0.91s
+ad
+ERROR tests/test_blueprints.py::test_blueprint_renaming - DeprecationWarning: 'pkgutil.get_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+1 failed, 1 passed, 58 errors in 2.03s
 [0m
-[0m→ [0mRead tests/test_blueprints.py[90m [limit=6, offset=252][0m
+[0m$ [0mpython3 -m pytest tests/test_blueprints.py -q -W ignore::DeprecationWarning 2>&1 | tail -3
+ERROR tests/test_blueprints.py::test_self_registration - AttributeError: module 'werkzeug' has no attribute '__version__'
+ERROR tests/test_blueprints.py::test_blueprint_renaming - AttributeError: module 'werkzeug' has no attribute '__version__'
+1 failed, 11 passed, 48 errors in 0.84s
 [0m
-[0m← [0mEdit tests/test_blueprints.py
-Index: /tmp/oxide-tierb-syv_erqh/SWE-Bench-Verified__python__maintenance_-vec/tests/test_blueprints.py
-===================================================================
---- /tmp/oxide-tierb-syv_erqh/SWE-Bench-Verified__python__maintenance_-vec/tests/test_blueprints.py
-+++ /tmp/oxide-tierb-syv_erqh/SWE-Bench-Verified__python__maintenance_-vec/tests/test_blueprints.py
-@@ -255,8 +255,13 @@
-     with pytest.raises(ValueError):
-         flask.Blueprint("app.ui", __name__)
- 
- 
-+def test_empty_name_not_allowed(app, client):
-+    with pytest.raises(ValueError):
-+        flask.Blueprint("", __name__)
-+
-+
- def test_dotted_names_from_app(app, client):
-     test = flask.Blueprint("test", __name__)
- 
-     @app.route("/")
-
-[0m
-[0m$ [0mpython3 -m pytest tests/test_blueprints.py::test_empty_name_not_allowed tests/test_blueprints.py::test_dotted_name_not_allowed -q -W "ignore::DeprecationWarning" 2>&1 | tail -1
-2 errors in 0.14s
-[0m
-[0m$ [0mpython3 -m pytest tests/test_blueprints.py::test_empty_name_not_allowed -W "ignore::DeprecationWarning" 2>&1 | grep -B2 -m1 Error
->           "HTTP_USER_AGENT": f"werkzeug/{werkzeug.__version__}",
-        }
-E       AttributeError: module 'werkzeug' has no attribute '__version__'
+[0m$ [0mpython3 -m pytest tests/test_blueprints.py::test_empty_name_not_allowed tests/test_blueprints.py::test_dotted_name_not_allowed tests/test_blueprints.py::test_unique_blueprint_names -q -W ignore 2>&1 | tail -5; git stash -q; python3 -m pytest tests/test_blueprints.py::test_self_registration -q -W ignore 2>&1 | tail -2; git stash pop -q
+=========================== short test summary info ============================
+ERROR tests/test_blueprints.py::test_empty_name_not_allowed - AttributeError: module 'werkzeug' has no attribute '__version__'
+ERROR tests/test_blueprints.py::test_dotted_name_not_allowed - AttributeError: module 'werkzeug' has no attribute '__version__'
+ERROR tests/test_blueprints.py::test_unique_blueprint_names - AttributeError: module 'werkzeug' has no attribute '__version__'
+3 errors in 0.06s
+ERROR tests/test_blueprints.py::test_self_registration - AttributeError: module 'werkzeug' has no attribute '__version__'
+1 error in 0.09s
 [0m
 [0m$ [0mpython3 -c "
-import pytest, flask
-
-def test_empty_name_not_allowed():
-    with pytest.raises(ValueError):
-        flask.Blueprint('', __name__)
-    with pytest.raises(ValueError):
-        flask.Blueprint('app.ui', __name__)
-    flask.Blueprint('bp', __name__)
-
-test_empty_name_not_allowed()
-print('pass')
+import sys; sys.path.insert(0, 'src')
+import flask
+for name, should_fail in [('bp', False), ('', True), ('a.b', True)]:
+    try:
+        flask.Blueprint(name, __name__)
+        assert not should_fail, name
+    except ValueError as e:
+        assert should_fail, (name, e)
+print('OK: empty and dotted names raise ValueError')
 "
-pass
+OK: empty and dotted names raise ValueError
 [0m

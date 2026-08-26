@@ -1,70 +1,53 @@
-Using test-driven-development to guide the feature implementation.
-Now I understand the structure. TDD: write the failing test first.
-**RED** — write the failing test:
-RED verified. **GREEN** — minimal implementation:
-Full suite to confirm no regressions:
-All 148 tests pass, lint clean. 
-
-`src/util/configurePlugins.js:1` now honors `corePlugins: { only: [...] }` as a whitelist; existing behavior (`false`, per-plugin toggles) unchanged. Verified RED→GREEN via `__tests__/configurePlugins.test.js`.
-
+Using ponytail (active) for the minimal diff; task is fully specified by the issue. Let me find how `corePlugins` is resolved today.
 DONE
 
----STDERR---
-   ^
-      47 | })
-      48 | 
+- `src/util/configurePlugins.js`: plugins are filtered by `corePlugins.only` when it's an array; existing `false`/per-plugin behavior untouched.
+- Test added in `__tests__/configurePlugins.test.js`; full suite passes (148/148), lint clean.
 
-      at Object.toEqual (__tests__/configurePlugins.test.js:46:29)
-      at processTicksAndRejections (node:internal/process/task_queues:104:5)
+---STDERR---
+me/khoi/.npm/_npx/b8d86e6551a4f492/node_modules/@jest/transform/build/index.js:551:19)
 
 Test Suites: 1 failed, 1 total
-Tests:       1 failed, 2 passed, 3 total
+Tests:       0 total
 Snapshots:   0 total
-Time:        0.45s
-Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
+Time:        0.114 s
+Ran all test suites matching __tests__/configurePlugins.test.js.
 [0m
-[0m← [0mEdit src/util/configurePlugins.js
-Index: /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
-===================================================================
---- /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
-+++ /tmp/oxide-tierb-syv_erqh/SWE-PolyBench__typescript__evolution__fe-budgeted/src/util/configurePlugins.js
-@@ -1,8 +1,16 @@
- export default function(pluginConfig, plugins) {
-   return Object.keys(plugins)
-     .filter(pluginName => {
--      return pluginConfig !== false && pluginConfig[pluginName] !== false
-+      if (pluginConfig === false) {
-+        return false
-+      }
-+
-+      if (Array.isArray(pluginConfig.only)) {
-+        return pluginConfig.only.includes(pluginName)
-+      }
-+
-+      return pluginConfig[pluginName] !== false
-     })
-     .map(pluginName => {
-       return plugins[pluginName]()
-     })
+[0m$ [0mgrep -A6 '"scripts"' package.json && ls node_modules/.bin/jest 2>/dev/null
+"scripts": {
+    "prebabelify": "rimraf lib",
+    "babelify": "babel src --out-dir lib --copy-files",
+    "prepare": "npm run babelify && babel-node src/build.js",
+    "style": "eslint .",
+    "test": "jest && eslint ."
+  },
+[0m
+[0m$ [0mls node_modules/.bin/ | grep -i -E 'jest|eslint' ; ls node_modules 2>/dev/null | head -3
+ls: cannot access 'node_modules/.bin/': No such file or directory
+[0m
+[0m$ [0myarn install --frozen-lockfile --ignore-scripts 2>&1 | tail -3
+/usr/bin/bash: line 1: yarn: command not found
+[0m
+[0m$ [0mnpm install --no-audit --no-fund --ignore-scripts 2>&1 | tail -3
+npm warn deprecated core-js@2.6.5: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
 
+added 696 packages in 3s
 [0m
 [0m$ [0mnpx jest __tests__/configurePlugins.test.js 2>&1 | tail -8
-✓ passing only false removes all plugins
-  ✓ an "only" array whitelists specific plugins
+✓ passing only false removes all plugins (1ms)
+  ✓ passing a list of plugins via "only" whitelists them
 
 Test Suites: 1 passed, 1 total
 Tests:       3 passed, 3 total
 Snapshots:   0 total
-Time:        0.421s, estimated 1s
+Time:        0.434s
 Ran all test suites matching /__tests__\/configurePlugins.test.js/i.
 [0m
-[0m$ [0mnpx jest 2>&1 | tail -8 && npx eslint src/util/configurePlugins.js __tests__/configurePlugins.test.js
-Browserslist: caniuse-lite is outdated. Please run next command `yarn upgrade`
-
-
+[0m$ [0mnpx jest 2>&1 | tail -5 && npx eslint src/util/configurePlugins.js __tests__/configurePlugins.test.js
 Test Suites: 24 passed, 24 total
 Tests:       148 passed, 148 total
 Snapshots:   0 total
-Time:        2.97s
+Time:        2.732s
 Ran all test suites.
 [0m
+[0m✱ [0mGrep "corePlugins"[90m 0 matches[0m

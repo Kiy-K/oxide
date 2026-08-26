@@ -1,27 +1,29 @@
-Pre-existing failures (57 errors on unmodified checkout too — env DeprecationWarning config), unrelated to this change. Direct verification passes.
+Added the guard in `Blueprint.__init__` (src/flask/blueprints.py:196):
 
-`src/flask/blueprints.py:193` — added empty-name guard next to the existing dot check:
-
-```python
-if not name:
+```py
+if name == "":
     raise ValueError("'name' may not be empty.")
 ```
 
-Skipped: validating names at `register_blueprint` time (constructor is where all names originate); add there if renamed registrations ever need it.
+Verified `Blueprint("", __name__)` raises; the pytest errors are pre-existing (identical counts with the change stashed — DeprecationWarning-as-error in this env's old test helpers).
+
+DONE
 
 ---STDERR---
-189,11 @@
-     template_folder=template_folder,
-     root_path=root_path,
- )
+-cvc35xlv/SWE-Bench-Verified__python__maintenance_-budgeted/src/flask/blueprints.py
++++ /tmp/oxide-tierb-cvc35xlv/SWE-Bench-Verified__python__maintenance_-budgeted/src/flask/blueprints.py
+@@ -192,8 +192,11 @@
  
-+if not name:
-+    raise ValueError("'name' may not be empty.")
-+
  if "." in name:
      raise ValueError("'name' may not contain a dot '.' character.")
  
++if name == "":
++    raise ValueError("'name' may not be empty.")
++
  self.name = name
+ self.url_prefix = url_prefix
+ self.subdomain = subdomain
+ self.deferred_functions: t.List[DeferredSetupFunction] = []
 
 [0m
 [0m$ [0mpython -c "
@@ -30,39 +32,24 @@ try:
     Blueprint('', __name__)
 except ValueError as e:
     print('OK:', e)
-Blueprint('valid', __name__)
-print('non-empty OK')
-"
-/bin/bash: line 1: python: command not found
+" && python -m pytest tests/test_blueprints.py -q -x 2>&1 | tail -3
+/usr/bin/bash: line 1: python: command not found
 [0m
 [0m$ [0mpython3 -c "
 from flask import Blueprint
 try:
     Blueprint('', __name__)
-    print('FAIL: no error')
 except ValueError as e:
     print('OK:', e)
-Blueprint('valid', __name__)
-print('non-empty OK')
-"
+" && python3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -3
 OK: 'name' may not be empty.
-non-empty OK
+ERROR tests/test_blueprints.py::test_self_registration - DeprecationWarning: 'pkgutil.get_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+ERROR tests/test_blueprints.py::test_blueprint_renaming - DeprecationWarning: 'pkgutil.get_loader' is deprecated and slated for removal in Python 3.14; use importlib.util.find_spec() instead
+1 failed, 1 passed, 57 errors in 1.98s
 [0m
-[0m$ [0mpython3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -3
-ERROR tests/test_blueprints.py::test_self_registration - DeprecationWarning: ...
-ERROR tests/test_blueprints.py::test_blueprint_renaming - DeprecationWarning:...
-1 failed, 1 passed, 57 errors in 2.09s
-[0m
-[0m$ [0mpython3 -m pytest tests/test_blueprints.py -q 2>&1 | grep -m3 "DeprecationWarning\|Error" | head -5; python3 -m pytest tests/test_blueprints.py::test_empty_name -q 2>&1 | tail -2
-RuntimeError is raised if *remove* specifies a major/minor tuple older than
-            raise RuntimeError(msg)
->           warn(msg, DeprecationWarning, stacklevel=3)
-
-no tests ran in 0.01s
-[0m
-[0m$ [0mgit stash && python3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -1 && git stash pop
+[0m$ [0mgit stash && python3 -m pytest tests/test_blueprints.py -q 2>&1 | tail -1; git stash pop
 Saved working directory and index state WIP on (no branch): 7ee9ceb7 Merge branch '2.2.x'
-1 failed, 1 passed, 57 errors in 2.00s
+1 failed, 1 passed, 57 errors in 1.94s
 HEAD detached at 7ee9ceb7
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
@@ -70,5 +57,5 @@ Changes not staged for commit:
 	modified:   src/flask/blueprints.py
 
 no changes added to commit (use "git add" and/or "git commit -a")
-Dropped refs/stash@{0} (e36dc63e3a9b3e1539b5b90ecac596145452e6a1)
+Dropped refs/stash@{0} (77973958261e9b659ab07ed732f37027b0592341)
 [0m
