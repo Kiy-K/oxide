@@ -2,13 +2,20 @@
 
 ## State (2026-08-25)
 
-## PAUSED STATE (2026-08-25 session end)
-Tier A rerun stopped at 40/84 rows (all 40 valid new-allocator results);
-llama server STOPPED. Resume: `scripts/embedder.sh start`, then
-`setsid /tmp/opencode/run_tier_a.sh &` (wrapper exports both embedder env
-vars). Runner resumes by (task, condition). Tier B not started; backup at
-`eval-agent/results/agent_results.jsonl.bak-pre-allocator` — delete any
-recreated live file before running `tierb_agent_run.py`.
+## FINAL RESULTS (2026-08-25, all gates run)
+- Clean Tier A (idle machine, 21 pinned tasks, summarize_cb.py):
+  budgeted file-F1 .374 vs hybrid .378 (tie), line-F1 .102 vs .078 (win),
+  symbol-F1 .111 vs .083 (win), tokens 1944 vs 2780 (-30%).
+  Old packer baseline: .236/.083 @ 4087.
+- Tier B (16 agent runs): budgeted gold_used 1.00 (= best), bad_edits 0.75
+  (best), wall 311s (fastest), ctx 1349 tok (~half of hybrid).
+- CAUTION: eval numbers degrade under concurrent load — the embedder drops
+  requests and the indexer silently skips failed vectors. First Tier A
+  attempt (written under load) is archived as
+  cb_results.jsonl.bak-load-degraded (.247 file-F1); always rerun evals on
+  an idle machine before trusting them.
+
+Older paused-state note kept below for provenance.
 
 **Allocator rework complete and verified. All acceptance gates met except the
 two long-running agent-eval reruns (Tier A fresh run was in flight; Tier B not
