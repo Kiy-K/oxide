@@ -2,6 +2,14 @@
 
 ## State (2026-08-25)
 
+## PAUSED STATE (2026-08-25 session end)
+Tier A rerun stopped at 40/84 rows (all 40 valid new-allocator results);
+llama server STOPPED. Resume: `scripts/embedder.sh start`, then
+`setsid /tmp/opencode/run_tier_a.sh &` (wrapper exports both embedder env
+vars). Runner resumes by (task, condition). Tier B not started; backup at
+`eval-agent/results/agent_results.jsonl.bak-pre-allocator` — delete any
+recreated live file before running `tierb_agent_run.py`.
+
 **Allocator rework complete and verified. All acceptance gates met except the
 two long-running agent-eval reruns (Tier A fresh run was in flight; Tier B not
 yet rerun).**
