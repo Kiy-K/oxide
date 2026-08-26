@@ -77,23 +77,27 @@ A second tier re-runs a small subset through the same headless coding agent
 measuring tool-call count, wall time, unnecessary edits, and gold-file
 utilization of the final diff.
 
-## Interim ContextBench results (20 tasks, 14 py + 6 ts, small-repo subset)
+## ContextBench results (21-task pinned sample, post-allocator-rework)
 
-Mean over tasks; R=coverage(recall), P=precision, F1 harmonic; tokens = est.
+Instance IDs pinned in `eval-agent/results/tier_a_instances.txt` (upstream
+dataset drift makes limit_per_repo sampling non-reproducible). Idle-machine
+run; eval numbers degrade under load because failed embedding requests are
+silently skipped. Mean over tasks; R=coverage(recall), P=precision, F1
+harmonic; tokens = est.
 
 | condition | file R/P/F1     | line R/P/F1     | tokens |
-|-----------|-----------------|-----------------|--------:|
-| lexical   | .637/.204/.309  | .583/.027/.052  | 3105    |
-| vec       | .479/.203/.285  | .266/.104/.150  | **1545**|
-| hybrid    | .679/**.239**/**.354** | .578/.035/.066 | 2837 |
-| budgeted  | **.767**/.141/.238 | .500/.047/.087 | 4087   |
+|-----------|-----------------|-----------------|--------|
+| lexical   | .607/.195/.295  | .555/.026/.049  | 3106   |
+| vec       | .631/.282/.390  | .385/.163/.229  | **1508**|
+| hybrid    | .670/.264/.378  | .547/.042/.078  | 2780   |
+| budgeted  | **.766**/.248/.374 | .422/.058/.102 | 1944   |
 
-Reading (honest): hybrid has the best balanced file-level F1; the budgeted
-pack trades precision for the widest file coverage; pure vectors are the most
-token-efficient and precise per symbol but miss files on hard NL tasks. TS
-subset is weak everywhere (huge-file repos, small gold blocks) — headroom for
-the pack's ordering/role weighting. N is small; treat as directional. Tier-B
-agent-in-loop runs are wired (`tierb_agent_run.py`) but not yet executed.
+Reading (honest): budgeted reaches hybrid-level file F1 at 30% fewer tokens
+and wins line/symbol F1 — the allocator rework traded tail recall for
+precision and budget discipline. vec-only keeps the best precision per token.
+N is small (21); treat as directional. Historical pre-rework snapshot
+(20 tasks, small-repo subset: hybrid .354 / budgeted .238 @ 4087 tok) is
+preserved in git history at this file's earlier revisions.
 
 ## Embedder resource profile (laptop)
 

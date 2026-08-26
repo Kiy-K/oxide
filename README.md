@@ -120,20 +120,27 @@ are dropped rather than guessed.
 [ContextBench](https://arxiv.org/abs/2602.05892) (Apache-2.0), indexes each
 repository at its base commit, retrieves context for the real issue text, and
 scores against human-annotated gold contexts using ContextBench's own metric
-code. Interim results (20 tasks, Python+TypeScript, small-repo subset):
+code.
+
+Results (21-task Tier A sample, Python+TypeScript, instance IDs pinned in
+`eval-agent/results/tier_a_instances.txt`; run on an idle machine — eval
+numbers degrade under concurrent load because failed embedding requests are
+silently skipped):
 
 | condition | file R/P/F1          | line R/P/F1     | tokens |
 |-----------|----------------------|-----------------|-------:|
-| lexical   | .637/.204/.309       | .583/.027/.052  | 3105   |
-| vec-only  | .479/.203/.285       | .266/**.104**/**.150** | **1545** |
-| hybrid    | .679/**.239**/**.354** | .578/.035/.066 | 2837   |
-| budgeted  | **.767**/.141/.238   | .500/.047/.087  | 4087   |
+| lexical   | .607/.195/.295       | .555/.026/.049  | 3106   |
+| vec-only  | .631/.282/**.390**   | .385/.163/**.229** | **1508** |
+| hybrid    | .670/**.264**/.378   | .547/.042/.078  | 2780   |
+| budgeted  | **.766**/.248/.374   | .422/.058/.102  | 1944   |
 
-Honest reading: hybrid has the best balanced file-level F1; the budgeted pack
-trades precision for widest file coverage; pure vectors are the most
-token-efficient. Same-agent tier (headless opencode, 4 tasks x 4 conditions): no condition
-beats stock on gold-file utilization at this sample size; hybrid is fastest
-(290s vs 348s stock) with fewest unnecessary edits. Full methodology:
+Honest reading: budgeted reaches hybrid-level file F1 at 30% fewer tokens
+and wins line/symbol F1; vec-only keeps the best precision-per-token; hybrid
+keeps the best line recall. Same-agent tier (headless opencode,
+`opencode/x-preview-f-free`, 4 tasks x 4 conditions): all context conditions
+reach gold-file utilization 1.00 vs stock 0.80; budgeted has the fewest
+unnecessary edits (0.75) and fastest wall time (311s) at ~half of hybrid's
+injected tokens. n is too small for causal claims. Full methodology:
 `docs/context-engineering-notes.md`.
 
 ### Committed regression fixture (`fixtures/benchmark.json`)
