@@ -1,5 +1,24 @@
 # RESUME: context-pack allocator rework — allocator DONE, evals finishing
 
+
+## BENCHMARK PROGRAM (2026-08-25, in progress — resume here)
+Anthropic-style comparison benchmark running in `eval-agent/benchmark/`
+(no OXIDE source changes; commits separate).
+- DONE: ranking metrics (`results/ranking_metrics.txt`) — budgeted wins R@1,
+  MRR, nDCG@10 at 1.7k tok; grep whole-file baseline has file-F1 .144 at
+  ~100k tok; budgeted `grep` arm added to `tierb_agent_run.py` (validated,
+  not run).
+- DONE: failure-overlap matrix (`results/failure_matrix.txt`): of 46
+  gold-file instances, 18 are found by no condition (retrieval ceiling);
+  budgeted has only 3 attributed misses (1 allocation, 1 lexical-only
+  dropped, 1 semantic-only dropped). The binding constraint is upstream
+  retrieval, not allocation.
+- NEXT: launch Tier-B grep arms on an idle embedder
+  (`tierb_agent_run.py --conditions grep`), measure cold/reindex/query
+  latency/memory after the embedder is idle, then write the final report:
+  where OXIDE wins/loses, who retrieves more but uses it less efficiently,
+  unique failures, and which fixes move the quality-per-token frontier.
+  Leading candidate: DiffContext-style gap cutoff instead of hard caps.
 ## State (2026-08-25)
 
 ## FINAL RESULTS (2026-08-25, all gates run)

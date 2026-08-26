@@ -78,6 +78,59 @@ def render_pack_context(indexed: Path, problem: str) -> tuple[str, int, set[str]
     return text, pack["used_tokens"], files
 
 
+def render_grep_context(indexed: Path, problem: str, budget_tokens: int = 4000) -> tuple[str, int, set[str]]:
+    """Budgeted lexical arm: rank files by case-insensitive term hits, then
+    emit windows around densest matches until the token budget is spent.
+    Comparable treatment to other arms (same budget/prompt); NOT whole-file dumps."""
+    import re as _re
+    stop = set("the this that with from into when what then they them their there these those have been will would could should your about which where while also more most some such only over under between because however therefore thus hence other another each every just like even ever never always often here does done doing being was were has had having its don didn won isn aren".split())
+    words = [w.lower() for w in _re.split(r"[^a-zA-Z0-9]+", problem)]
+    terms = [w for w in dict.fromkeys(words) if len(w) >= 4 and w not in stop][:24]
+    counts: dict[str, int] = {}
+    for t in terms:
+        r = sh(["git", "grep", "-c", "-i", "-F", t, "--", "*.py", "*.ts", "*.tsx"], cwd=indexed)
+        for line in r.stdout.splitlines():
+            fname, _, cnt = line.rpartition(":")
+            if cnt.isdigit():
+                counts[fname] = counts.get(fname, 0) + int(cnt)
+    ranked = [f for f, _ in sorted(counts.items(), key=lambda kv: -kv[1])[:8]]
+    parts, files, used = [], set(), 0
+    char_budget = budget_tokens * 4
+    for f in ranked:
+        src_f = indexed / f
+        if not src_f.exists():
+            continue
+        lines = src_f.read_text(errors="ignore").splitlines()
+        scored = sorted(
+            range(len(lines)),
+            key=lambda i: sum(1 for t in terms if t in lines[i].lower()),
+            reverse=True,
+        )
+        window: list[int] = []
+        chars = 0
+        for i in scored:
+            lo, hi = max(0, i - 3), min(len(lines), i + 4)
+            block = lines[lo:hi]
+            cost = sum(len(x) + 1 for x in block) + 40
+            if used + chars + cost > char_budget:
+                continue
+            if not window or lo > max(window) + 1 or hi < min(window):
+                window.extend(range(lo, hi))
+                chars += cost
+        if not window:
+            continue
+        window = sorted(set(window))
+        snippet = "\n".join(f"{i+1}: {lines[i]}" for i in window)
+        lang = f.rsplit(".", 1)[-1]
+        parts.append(f"`{f}` (matching lines)\n```{lang}\n{snippet}\n```")
+        files.add(f)
+        used += chars
+        if used >= char_budget:
+            break
+    text = "\n\n".join(parts)
+    return text, est_tokens(text), files
+
+
 def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> dict:
     fixture_repo = ensure_repo_checkout(task["repo_url"], task["base_commit"])
     index_repo(fixture_repo, os.environ.get("OXIDE_EMBED_URL", ""))
@@ -90,6 +143,8 @@ def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> d
     if condition != "stock":
         if condition == "budgeted":
             ctx_text, ctx_tokens, _ = render_pack_context(fixture_repo, task["problem_statement"])
+        elif condition == "grep":
+            ctx_text, ctx_tokens, _ = render_grep_context(fixture_repo, task["problem_statement"])
         else:
             ctx_text, ctx_tokens, _ = render_search_context(fixture_repo, condition,
                                                             task["problem_statement"])
