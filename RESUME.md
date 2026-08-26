@@ -4,8 +4,9 @@
 
 ## FINAL RESULTS (2026-08-25, all gates run)
 - Clean Tier A (idle machine, 21 pinned tasks, summarize_cb.py):
-  budgeted file-F1 .374 vs hybrid .378 (tie), line-F1 .102 vs .078 (win),
-  symbol-F1 .111 vs .083 (win), tokens 1944 vs 2780 (-30%).
+  budgeted file-F1 .374 vs hybrid .378 (summarize) / .338 vs .349
+  (mean-per-task) — PARITY WITHIN NOISE, NOT A WIN. line-F1 .102 vs .078
+  (win), symbol-F1 .111 vs .083 (win), tokens 1944 vs 2780 (-30%).
   Old packer baseline: .236/.083 @ 4087.
 - Tier B (16 agent runs): budgeted gold_used 1.00 (= best), bad_edits 0.75
   (best), wall 311s (fastest), ctx 1349 tok (~half of hybrid).
