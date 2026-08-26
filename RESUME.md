@@ -1,4 +1,4 @@
-# RESUME: context-pack allocator rework — allocator DONE, evals finishing
+# RESUME: OXIDE context allocator + comparison benchmark
 
 
 ## BENCHMARK PROGRAM (2026-08-25, in progress — resume here)
@@ -19,7 +19,7 @@ Anthropic-style comparison benchmark running in `eval-agent/benchmark/`
   where OXIDE wins/loses, who retrieves more but uses it less efficiently,
   unique failures, and which fixes move the quality-per-token frontier.
   Leading candidate: DiffContext-style gap cutoff instead of hard caps.
-## State (2026-08-25)
+## Current state
 
 ## FINAL RESULTS (2026-08-25, all gates run)
 - Clean Tier A (idle machine, 21 pinned tasks, summarize_cb.py):
@@ -37,9 +37,10 @@ Anthropic-style comparison benchmark running in `eval-agent/benchmark/`
 
 Older paused-state note kept below for provenance.
 
-**Allocator rework complete and verified. All acceptance gates met except the
-two long-running agent-eval reruns (Tier A fresh run was in flight; Tier B not
-yet rerun).**
+Historical note from before Tier A/Tier B completion; superseded by the
+final-results section above. The allocator gates and both required eval reruns
+are complete. The comparison benchmark still has the explicitly listed
+follow-ups under “BENCHMARK PROGRAM”.
 
 ### Final allocator design (src/context.rs)
 - Per-item token cap 350 + query-centered windowing (`render_snippet`):
