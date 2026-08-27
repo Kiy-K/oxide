@@ -39,9 +39,17 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
     // the first declaration per name.
     let mut seen: HashSet<String> = HashSet::new();
     syms.retain(|s| seen.insert(s.qualified_name.clone()));
+    // Structure-preserving fallback: when normal extraction yields nothing
+    // (e.g., test file with only imports/comments or parse failure), keep a
+    // file-level module symbol so the file remains discoverable. Otherwise
+    // the file would be invisible to lexical/semantic search despite being
+    // a valid gold target. Hash for empty-extraction files uses full source
+    // to avoid collisions across empty files.
+    let empty_before_module = syms.is_empty();
     // File-level module symbol spanning the whole file. Its hash deliberately
-    // ignores body edits (imports + first line only): otherwise every file
-    // edit would re-embed the module blob alongside the truly-changed symbol.
+    // ignores body edits when concrete symbols exist (imports + first line
+    // only): otherwise every file edit would re-embed the module blob
+    // alongside the truly-changed symbol.
     // # ponytail: coarse module identity; per-region hashing if staleness hurts
     syms.push(Symbol {
         qualified_name: format!("{file}:__module__"),
@@ -51,16 +59,20 @@ pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
         file: file.to_string(),
         start_line: 1,
         end_line: src.lines().count().max(1) as u32,
-        content_hash: crate::symbols::content_hash(&format!(
-            "{}\n{}",
-            syms.first()
-                .map(|s| s.imports.join(","))
-                .unwrap_or_default(),
-            src.lines()
-                .find(|l| !l.trim().is_empty())
-                .unwrap_or("")
-                .trim()
-        )),
+        content_hash: if empty_before_module {
+            crate::symbols::content_hash(src)
+        } else {
+            crate::symbols::content_hash(&format!(
+                "{}\n{}",
+                syms.first()
+                    .map(|s| s.imports.join(","))
+                    .unwrap_or_default(),
+                src.lines()
+                    .find(|l| !l.trim().is_empty())
+                    .unwrap_or("")
+                    .trim()
+            ))
+        },
         signature: src
             .lines()
             .find(|l| !l.trim().is_empty())
@@ -95,6 +107,30 @@ mod tests {
             syms.iter()
                 .map(|s| s.qualified_name.clone())
                 .collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn empty_file_yields_module_fallback() {
+        // Source/test file with no declarations must still be indexed via
+        // structure-preserving module fallback so gold files remain discoverable.
+        let syms = parse_file(
+            "tests/test_empty.py",
+            "# just a comment\n",
+            Language::Python,
+        );
+        assert_eq!(syms.len(), 1, "empty file must yield fallback module");
+        assert_eq!(syms[0].file, "tests/test_empty.py");
+        assert!(syms[0].qualified_name.ends_with(":__module__"));
+        // fallback hash uses full source, not coarse imports+first-line
+        let syms2 = parse_file(
+            "tests/test_empty2.py",
+            "# different comment\n",
+            Language::Python,
+        );
+        assert_ne!(
+            syms[0].content_hash, syms2[0].content_hash,
+            "empty files must hash distinctly"
         );
     }
 
