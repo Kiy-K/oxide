@@ -1,0 +1,32 @@
+# File-level lexical discovery channel — negative (reverted)
+Date: 2026-08-27  model qwen3-Q8_0  tasks 21 pinned  hash d1076f5.. (reverted, file channel removed)
+Canonical baseline (reverted production, no file channel, ranking_metrics.py fresh):
+  lexical     0.321 0.540 0.599 0.647 MRR 0.558 nDCG 0.540 tok3014
+  vec         0.226 0.413 0.460 0.472 MRR 0.460 nDCG 0.399 tok1258
+  hybrid      0.310 0.579 0.663 0.679 MRR 0.597 nDCG 0.560 tok2663
+  budgeted    0.405 0.532 0.619 0.679 MRR 0.599 nDCG 0.582 tok1849
+
+File-level implementation (smallest Rust-native, no git grep, no new model):
+  FileLexicalIndex whole-file BM25 per file (postings term->file, doc_len=file token count), built at RetrievalEngine::new from file_hashes keys + root file reads (139 files seaborn, 7 repos ~5000 files total). Incremental: file content read at engine construction from current filesystem, deleted files disappear (skip empty read), no generated/vendor (files table respects scanner). Canonicalized to representative symbol per file (best symbol by symbol lexical score in that file, fallback to earliest). Fusion as RRF candidate with FILE_LEX_WEIGHT, discovery only (never injects whole file).
+
+Fusion policies tested (all Hybrid only, allocator unchanged):
+  A safety-net 0.35/3/0.6 (covered check, limit3): hybrid 0.310/0.579/0.663/0.679 budgeted 0.405 — no change, no rescue
+  B aggressive 0.35/5/0.5 (no covered, limit5): hybrid 0.353/0.532/0.583/0.702 MRR 0.609 tok2788, budgeted 0.206/0.464/0.627/0.659 MRR 0.463 nDCG0.486 tok2199 — hybrid +0.043 R@1 but budgeted -0.199 R@1 collapse
+  C aggressive 0.35/best-symbol 0.35/5/0.5: hybrid 0.353 budgeted 0.206 — same collapse, best-symbol did not help
+  D aggressive 0.25/2/0.4 limit2: hybrid 0.274/0.563/0.687/0.702 MRR0.560 tok2717, budgeted 0.266/0.508/0.607/0.619 MRR0.552 — both degrade
+
+All file-level variants either no rescue (safety-net) or rescue hybrid (+0.04 R@1, distributions at rank 3 vs not in top20) but damage budgeted early ranking (R@1 -0.14 to -0.20, MRR -0.09 to -0.14, nDCG -0.07 to -0.10) and increase tokens (+250-350). No variant meets acceptance: materially reduce route-loss/universal misses while keeping R@1/MRR/nDCG and File-F1 and ~1.7-1.9k tokens.
+
+Failure overlap for 6 prior whole-file-lexical rescues (external benchmark):
+  seaborn/_core/plot.py (36989b6d) — previously missed hybrid, grep rank3. With file channel B: discovered (lexical:file 241.6) at hybrid rank 6, budgeted rank still outside top (file rep is __module__-like, snippet low value) — not usefully emitted.
+  seaborn/distributions.py (36989b6d) — route loss, grep8. With B: hybrid rank 8 (rescued, lexical:file 236), budgeted still misses (rep is plot_univariate_histogram but allocator packs __module__? actually best symbol is _DistributionPlotter... but still not in budgeted top 6 due to role ordering)
+  requests/utils.py (1fdd) — fusion loss, grep6. With B: hybrid rescued at 9, budgeted still misses
+  pylint/checkers/variables.py (10750) — route loss, grep4. With B: hybrid rescued at 7, budgeted still misses (file rep dummy)
+  pylint/utils/utils.py (da598) — route loss, repomap9. With B: hybrid rescued at 12, budgeted misses
+  testing/test_skipping.py (60068) — allocation loss, grep4. With B: hybrid already hit, budgeted still misses (file rep not primary)
+
+Only 1-2 of 6 rescued files appear in budgeted top 6 with useful snippet; 4 remain outside budgeted due to allocator role ordering and low snippet value of file rep. New regressions: 3 previously hit files dropped out of budgeted top 3 due to file candidates displacing (e.g., pylint/checkers/similar.py, flask/blueprints.py).
+
+Overhead: cold indexing unchanged (file index built at query time, no DB migration), no-change reindex unchanged, query latency +15-20ms (file BM25 over 5000 files), memory + ~2MB postings, index size unchanged (no persisted file table).
+
+Conclusion: file-level lexical discovery increases hybrid recall (+0.04 R@1, +0.02 R@10) but does not translate to budgeted quality-per-token; it displaces stronger symbol evidence and adds ~300 tokens for lower-value file reps. No Pareto frontier move. Reverted per acceptance (keep only if reduces route-loss AND preserves R@1/MRR/nDCG/File-F1 and ~1.8k tokens). Baseline preserved, negative committed.
