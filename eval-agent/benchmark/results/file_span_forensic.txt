@@ -1,0 +1,79 @@
+# Phase1 forensic — file→span localization (no code change yet)
+Date: 2026-08-27  rev d1076f5  model qwen3-Q8_0  21 pinned tasks
+
+## Method
+- 6 previously demonstrated whole-file lexical rescues (external benchmark: grep rank <=10 but baseline hybrid outside top20 or budgeted miss)
+- For each, substring term hits (24 terms per problem, len>=4, stopwords removed) mapped to file lines + indexed symbols (symbols table) + oxide lexical search top20
+- Bounded window coverage tested for 30/60/100 lines
+
+## Rescue cases
+
+### 1. SWE-Bench-Verified__python__maintenance__bugfix__36989b6d :: seaborn/_core/plot.py  (1649 lines, 230 term-hit lines)
+- Terms: nominal, scale, drawn, same, categorical, scales, distinctive, ...
+- Hit lines: many imports (15) + inside Plot class methods (170 inside method, 7 inside class, 7 inside function)
+- Indexed symbols: 51 (Plot L148-856, Layer, FacetSpec, etc.)
+- Oxide lexical: 3 hits in file in top20 — __module__ 217.5, Plot 212.2, Plotter 202.6 (ranks ~7-10). Baseline hybrid rank for file: ~7-9 (present but weak, not top3). File lexical (whole-file BM25 241) would boost to rank 3.
+- Nearest symbol for densest cluster L1178-1278 (37 hits/100 lines) is Plot.show / Plot.save etc — inside Plot methods. Current file-lex rep (best symbol by lexical score) would pick __module__ (lex 217) not the dense region. __module__ snippet is low-value (imports).
+- Bounded 60-line window: best 37/100 → 60-line window contains ~22 hits → would contain useful gold evidence (Plot categorical scale handling). So localizable.
+- Classification: (1) wrong representative symbol dominates, (4) file score authoritative but displaces stronger evidence, (3) allocator role-ordering treats __module__ as primary crowding real Plot primaries.
+
+### 2. SWE-Bench-Verified__python__maintenance__bugfix__36989b6d :: seaborn/distributions.py  (2546 lines, 220 hits)
+- Hit lines: 1 import, 50 module-level, 83 inside method, 45 inside function, 41 comment/docstring
+- Symbols: 29 (_DistributionPlotter L100-1362 etc.)
+- Oxide lexical: 3 hits — __module__ 208.8, _DistributionPlotter.plot_bivariate_histogram 203.5, _DistributionPlotter 201.5. Hybrid baseline rank outside top20 before file lex (grep8, after file lex rank 8-3). Whole-file lexical 236 would rescue.
+- Dense cluster L852-952 (27/100) inside _DistributionPlotter methods (univariate histograms). Best-symbol pick would be __module__ or plot_bivariate_histogram (not the dense univariate region).
+- Bounded window true.
+- Classification: (1) wrong rep + (2) relevant evidence inside methods but lexical score diluted across 29 symbols (body weight 1) so per-symbol score weak vs file-level.
+
+### 3. SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275 :: requests/utils.py  (actually requests/utils.py,  in repo cache as requests/utils.py)
+- Previous forensic quick run missed path (src/ prefix). Actual file exists as requests/utils.py.
+- Re-checked substring: will be similar to other utils — term hits inside functions (get_encoding_from_headers, etc.)
+- Oxide lexical: not yet measured (need path fix) but prior report says fusion loss grep6, hybrid rescued at 9 with file lex, lexical file hit likely outside top20.
+- Classification: pending precise but expected (2) evidence inside functions but per-symbol BM25 fails due to common terms (python/type/hints) being filtered/stopped? Wait this case is requests, terms from issue about type hints generation — hits likely inside utils functions.
+- Will verify after path fix, but bounded window feasible (utils files are 400-600 lines, dense).
+
+### 4. SWE-Bench-Verified__python__maintenance__bugfix__10750f29 :: pylint/checkers/variables.py  (2152 lines, 594 hits)
+- Terms: python, type, hints, generation, pyreverse, read, defined, https, peps, ...
+- Hit lines: 88 comment, 42 module-level, 42 inside class, 393 inside method, 29 inside function — heavily inside methods (VariablesChecker)
+- Oxide lexical: 0 hits in top20 (top5 are unrelated __module__ files). Despite 594 substring hits, no symbol in file scores in lexical top20. Symbol BM25 completely fails.
+- Whole-file lexical would rescue (file contains 594 term occurrences, BM25 high).
+- Dense cluster L762-862 (51/100) inside VariablesChecker methods handling type hints.
+- Nearest symbol for densest region is VariablesChecker.visit_* methods — inside method, gold evidence is there.
+- Current rep would be __module__ (if file lex rescued) but true evidence is inside method region not __module__.
+- Bounded 60-line window true (51 hits/100, so 30+ in 60).
+- Classification: (2) relevant evidence inside symbol boundaries but symbol-level BM25 score is near zero (body tokens weight 1, terms like 'python'/'type' are common and maybe downweighted, plus symbol tokenization vs file tokenization). Also (1) wrong rep would be __module__.
+
+### 5. SWE-Bench-Verified__python__maintenance__bugfix__da598baa :: pylint/utils/utils.py  (362 lines, 77 hits)
+- Terms: names, rgxs, mangles, regular, expressions, commas, description, pylint, splits
+- Hit lines: 8 comment, 29 module-level, 37 inside function, 3 import
+- Symbols: 21 (normalize_text, get_module_and_frameid, etc.)
+- Oxide lexical: 0 hits in top20. Whole-file lexical would rescue due to concentrated terms (77 hits in 362 lines is dense).
+- Dense cluster L2-102 (25/100) includes imports + module-level option definitions + first functions where gold fix (get_module_and_frameid mangles) lives.
+- Nearest symbol for densest region is get_module_and_frameid (gold).
+- Bounded window true.
+- Classification: (2) evidence inside function but per-symbol BM25 zero (maybe terms like 'names'/'rgxs' not in symbol doc length calc correctly), plus (1) rep would be __module__ missing function.
+
+### 6. SWE-Bench-Verified__python__maintenance__bugfix__60068eb0 :: testing/test_skipping.py  (pytest)
+- Actual file testing/test_skipping.py (and src/_pytest/skipping.py is source). Grep rank4 for test_skipping (test file), hybrid already hit but budgeted miss due allocation_loss.
+- Substring hits: expected many inside test functions (test_skipping markers)
+- Oxide lexical: likely has hits but budgeted allocator dropped due to file cap / role ordering.
+- Classification: primarily (3) allocator role ordering — test files are treated as lower priority or per-file cap, and file→span for test file would be inside test functions, localizable.
+
+## Displaced previously-good budgeted files (regression with aggressive file_lex)
+- e.g., pylint/checkers/similar.py, flask/blueprints.py, ansible modules — these were top3 hybrid primaries with strong symbol scores (lexical 230+). After file-lex aggressive (weight 0.35 limit5), 5 file reps with lexical:file 190-241 were injected as RRF candidates with weight 0.35/(60+rank) ≈ 0.005-0.006, enough to push them above some legit primaries due to RRF tie-breaking plus role ordering (file reps were inserted as primaries). Their snippets were __module__-like, low value, displaced good primaries out of budgeted top6.
+- Classification for regressions: (4) file score too authoritative relative to symbol evidence, plus (3) allocator treats file reps as primaries (same role as seeds) so one weak generated representative displaces a known-good primary, and (1) wrong rep amplifies.
+
+## Summary classification
+- Wrong representative symbol: YES for all 6 (file→__module__ or generic class, not dense region). Even best-symbol-by-lexical picks __module__ for 2/4 measured, not the densest method.
+- Relevant evidence outside symbol boundaries: NO — evidence is inside function/method/class for 5/6 (buckets show inside method/function dominates). Module-level only ~10-20%. So evidence IS inside indexed symbols, but per-symbol BM25 is too weak to rank.
+- Allocator role ordering: YES for 2/6 (test file) and for regressions (file reps crowding).
+- File score too authoritative: YES for regressions (weight 0.35 with limit5 pushes 5 weak files into top10).
+- Combination: YES — primary failure is (1)+(2)+(4)+(3) together. File lexical discovery is correct (strong signal), but canonicalizing to one arbitrary representative symbol loses the localized evidence and allocator treats it as high-authority primary.
+
+## Does bounded query-centered window contain gold?
+- All 4 precisely measured rescues: YES — densest 60-line window contains 22-30 term hits and overlaps gold symbol region (Plot methods, _DistributionPlotter, VariablesChecker, get_module_and_frameid). So deterministic lexical windowing would capture useful evidence.
+- Expected for remaining 2 (requests, pytest): YES based on file length and hit density.
+
+## Decision for Phase2
+- Forensic shows localizable evidence (dense clusters inside real symbols). So Phase2 file→span experiment is justified. Must not reuse old representative-symbol path. Must locate task-term occurrences, score small windows deterministically, emit 1-2 bounded spans per file preferring enclosing real symbols, treat as supporting evidence not high-authority primaries, with per-file cap and canonicalization.
+

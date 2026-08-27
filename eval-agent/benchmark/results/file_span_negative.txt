@@ -1,0 +1,48 @@
+# File->span hierarchical discovery — negative (reverted)
+Date: 2026-08-27  rev d1076f5  model qwen3-Q8_0  21 pinned tasks  budget 4096
+Canonical (stashed, no file span, current index): 
+  lexical 0.321/0.468/0.560/0.607  hybrid 0.286/0.579/0.687/0.702  budgeted 0.405/0.556/0.643/0.702 MRR 0.599 nDCG 0.597 tok1782 items6.5
+  fileF1 0.330 lineF1 0.090 (budgeted, via cb.evaluate_task)
+  (canonical docs still 0.405/0.532/0.619/0.679 tok1849 from earlier frozen 0.6B run; current stashed run shows 0.702/1782 due to index/embedder drift but same code)
+
+File->span implementation (deterministic, no embedding, no whole-file dump):
+  FileLexicalIndex simple hit count (distinct*10+hits) over query_terms, built from file_hashes + root reads per context call (incremental, no DB). Search ranks files by term coverage.
+  For each strong file (top3, score>=max*0.35, not already covered) generate bounded query-centered spans:
+    - line scores = distinct query terms per line
+    - sliding windows FILE_SPAN_WINDOW=30 (and 40 tested), step10, score=sum line_scores
+    - pick top window(s) per file, up to FILE_SPAN_PER_FILE=1, require >=0.5*best, non-overlapping
+    - prefer enclosing real symbol when window inside single symbol, else module-level span
+    - emit as synthetic Symbol File:span:start-end kind Function, role Dependency (so never displaces primaries), score=file_score*0.4, provenance lexical:file->span, per-file cap 2 files max, canonicalize overlap>0.8
+  No new embedding, no PR/gold, span selection depends only on task text + base repo contents. Incremental: reads current filesystem, no persisted file table.
+
+Forensic (phase1) showed all 6 rescue files have dense term clusters inside real symbols (inside method/function dominates, 60-line window would contain 22-30 hits and gold). So localization is feasible in principle.
+
+Experiment results (2/30/0.35, also tested 3/40/0.5):
+  - 6 prior whole-file rescues: simple hit-count file discovery rescued 5/6 files in hybrid (file rank), but after span generation only 3/6 survived into budgeted via span:
+      seaborn/distributions.py (36989b6d) hit True via span 1831-1860 (2645) but window is tail (2546-line file), not gold cluster 852-952 — file hit but line not gold
+      seaborn/_core/plot.py still miss (plot not in top2 files, score <0.35*max)
+      pylint/checkers/variables.py (10750f29) hit True via span 1241-1270 (3011) — rescue, but line 1241 not forensic dense 762-862
+      pylint/utils/utils.py (da598baa) still miss (gold utils not top2, variables/typecheck rank higher)
+      requests/utils.py hit True via direct (already hit, not span)
+      testing/test_skipping.py still miss (gold test file not top2, fixtures rank higher)
+    Only 2/6 spans were at useful gold lines; 1 was tail noise.
+
+  Overall 21-task ranking (current code with spans vs stashed without):
+    with spans (2/30/0.35): budgeted 0.405/0.556/0.639/0.717 MRR0.605 nDCG0.604 tok2363 items8.4  fileF1 0.272 lineF1 0.081
+    without spans (stashed): budgeted 0.405/0.556/0.643/0.702 MRR0.599 nDCG0.597 tok1782 items6.5  fileF1 0.330 lineF1 0.090
+    -> R@10 +0.015, nDCG +0.007, but tokens +581 (+33%), FileF1 -0.058 (-18%), LineF1 -0.009, items +1.9
+
+  With 3/40/0.5: budgeted 0.405/0.556/0.639/0.729 tok2632 fileF1 0.272 (same drop), R@10 +0.027 but tokens +850 (+48%).
+
+  All variants: R@1 0.405 unchanged (no early ranking loss), but overall File-F1 degraded due to spans added for wrong files (non-gold files rank higher than gold due to common terms). BM25 variant for file discovery also failed (variables 0 hits, utils 0 hits, lexical top5 unrelated).
+
+Classification of failure (from forensic + experiment):
+  - Wrong representative symbol: fixed by spans (no longer single __module__), but window selection still picks wrong region (tail vs dense cluster).
+  - Relevant evidence outside symbol boundaries: no, evidence is inside symbols.
+  - Allocator role ordering: mitigated by Dependency role (no displacement of primaries observed).
+  - File score too authoritative: mitigated by limit 2 and threshold 0.35, but still adds noise for tasks where gold file not top-ranked.
+  - Combination: file discovery ranking is not discriminative enough — simple hit count ranks non-gold files (variables, lint/run, fixtures) above gold (utils, plot, test_skipping) due to common term frequencies; BM25 with idf also fails (0 hits). So discovery itself is noisy, and span windowing based on distinct term hits picks highest-density window which may be comments/tail, not gold.
+
+Overhead: query latency +15-25ms (file reads + window scoring over 5000 files, 24 terms), memory + ~0 (no persisted index), index size unchanged, incremental correct (reads current filesystem).
+
+Conclusion: file-level lexical discovery does find 5/6 files in hybrid ranking, but deterministic within-file lexical windowing (distinct term hits, 30-40 lines, step10) does not reliably locate gold evidence — picks high-density tail/comment regions, and overall adds tokens without improving File-F1/Line-F1. No Pareto frontier move. Per acceptance, revert and document boundary: file discovery works, but deterministic localization without embedding or gold cannot identify useful spans. Keep canonical baseline (0.405 budgeted, ~1.8K tokens).
