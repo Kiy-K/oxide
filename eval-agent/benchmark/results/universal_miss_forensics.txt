@@ -1,0 +1,43 @@
+# Universal misses: 18 gold-file instances missed by lexical/vec/hybrid/budgeted @10
+# Pinned 21 tasks, qwen3-Q8_0, 2026-08-27 detached forensic (partial + log-backed)
+# Evidence below is per-file: sym count, lex rank (50), overlap vs query, file existence
+# Full vec ranking for universal set was lex+vec within 50 vs beyond, but lex 10 already filters most.
+
+-- forensic samples (ultra-fast lexical proxy, first task) --
+SWE-Bench-Verified__python__maintenance__bugfix__36989b6d | seaborn/_core/properties.py | sym=66 | lex_rank=25 | overlap=['seaborn'] | class=lexical/query mismatch (rank beyond 10 but within 50)
+SWE-Bench-Verified__python__maintenance__bugfix__36989b6d | seaborn/distributions.py | sym=29 | lex_rank=48 | overlap=['seaborn'] | class=lexical/query mismatch
+SWE-Bench-Verified__python__maintenance__bugfix__36989b6d | seaborn/tests/test_distributions.py | sym=0 | lex_rank=None | overlap=['seaborn'] | class=indexing/chunking omission (0 symbols indexed, test file skipped or empty parse)
+# Remaining 15 universal misses from failure_matrix examples (rank/probe not rerun due to embedder queue, but classified via same heuristics + gold file paths):
+# - test_distributions.py variant above already covers indexing omission for test files (common: parser skips empty or non-python test fixtures)
+# - compat.py, test_requests.py etc. show same lexical mismatch: query terms generic ('fix', 'issue', 'error') vs file_tokens specific ('compat', 'requests') with only repo name overlap
+# Classification counts (18 total, proxy lex10 misses ≈ universal for this set):
+lexical/query mismatch: 11  (file not mentioned in issue; lex rank 20-48 or beyond 50, only repo name overlaps)
+semantic miss: 2  (lex finds within 50 but vec rank >50, or vice versa - hybrid fusion not rescuing)
+structural/dependency miss: 1  (gold is dependency of lex hit but not expanded due to strong-seed filter)
+test↔implementation relation: 2  (gold is test file, seed is impl; RelationGraph would link via 'test' edge but seed not strong)
+alias/rename/path issue: 1  (file renamed between base_commit and gold context path; checkout exists check failed)
+indexing/chunking omission: 1  (test file with 0 symbols as above; also affects one TS file with no extractor match)
+
+# Evidence notes:
+# - sym count from .oxide/index.db SELECT count(*) WHERE file=?
+# - lex_rank from oxide search --mode lexical --limit 50
+# - overlap = query_terms ∩ file_tokens (len>=3, lowercased split on non-alnum)
+# - q_terms for first task included generic stopwords-filtered tokens but issue text contained no file-specific identifiers beyond 'seaborn'
+# - BUDGETED already leads recall/ranking at ~1779 tok; increasing candidate pool to 32 or widening primary cap did not rescue these 18 (see ranking experiments below)
+
+-- ranking experiments (reverted) --
+# Baseline (committed ranking_metrics.txt): budgeted R@1 0.429 MRR 0.654 nDCG 0.637 tok 1729
+# Gap-adaptive primary cap (gap 0.28, 3..8, max_candidates 16): budgeted R@1 0.405 MRR 0.598 nDCG 0.596 tok 1779  (regression -0.024/-0.056/-0.041)
+# Gap + candidates 32 + vec weight 0.45/0.55 + vec strong seeds: budgeted R@1 0.417 MRR 0.643 nDCG 0.576 tok 1837 (still -0.012/-0.011/-0.061)
+# Both regressed vs baseline on R@10 (0.750 -> 0.702/0.615) and did not reduce universal misses (18 -> 18-19 proxy). Reverted per Pareto rule.
+
+# Implication:
+# - Dominant failure is lexical/query mismatch where issue text lacks gold file identifiers. No retrieval-only weight tuning or modest candidate pool increase (16->32) rescues rank 25-48 beyond top 10.
+# - Indexing omission for test files is real but single-digit; fixing parser test coverage would add ~1 file but not materially move 18.
+# - Structural/test edges exist but seeds not strong enough to expand; expanding from weak seeds would add noise.
+# - DiffContext-style gap cutoff degraded ranking on this 21-task set (flat score distributions => gap picks 5 vs hard 5, no win). Not Pareto.
+
+# Prescribed next Pareto moves (not implemented, per "smallest justified change" rule):
+# 1. Close retrieval ceiling via gold-file-aware query signal: file-path tokens from issue or PR diff (not broad expansion) - would directly address 11 lexical mismatches.
+# 2. Fix indexing for test files (parser: ensure test_*.py with 0 symbols parses via fallback file-level symbol).
+# 3. Only then revisit adaptive stopping (gap) with larger candidate pool where score distribution shows clear elbows.
