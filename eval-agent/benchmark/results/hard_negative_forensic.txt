@@ -1,0 +1,58 @@
+# Hard-negative analysis for 17 route-loss gold files (21 pinned tasks, qwen3-Q8_0, @10)
+# Method: for each gold file missed across lexical/semantic/hybrid/budgeted @10 (route loss), record semantic rank/score and top-20 semantic hits.
+# Compare gold vs top negatives by file/path, symbol names, signatures, imports/references, lexical overlap, cosine, package.
+
+# Aggregate: route loss = 17/48 gold files (35%). Fusion loss 3, corpus 3, allocation 2, hit 23.
+# This file details the 17.
+
+# Per-case (from /tmp/hard.log, semantic top-20, 50-limit for rank):
+# Format: instance|gold_file|sem_rank score top1 margin | cls | gold qn sample | top3 negs (file|qn|score|lex_overlap) | gold lex_overlap
+
+SWE-Bench-Verified__python__maintenance__bugfix__36989b6d|seaborn/_core/properties.py|sem_rank=16 score=0.0132 top1=0.0164 margin_top1=0.0032 top5=0.0154 margin_top5=0.0022 | same-subsystem confusion | gold qn ObjectProperty._default_values | top Nominal (scales.py), VectorPlotter (oldcore) | gold lex_overlap 1 vs top 3-4, same top-level seaborn, same pkg _core
+SWE-Bench-Verified__python__maintenance__bugfix__36989b6d|seaborn/distributions.py|sem_rank=None score=0.0000 top1=0.0164 margin=None | gold absent from semantic index | gold qn __module__ | top Nominal/scales, VectorPlotter | gold lex 2 vs top 3-4, same seaborn
+SWE-Bench-Verified__python__maintenance__bugfix__9cca0774|requests/compat.py|sem_rank=None | gold absent | gold qn __module__ (1 symbol) | top test_requests.py, requests/models.py | gold lex 1 vs top 1-2, symbol granularity problem (gold is single module vs top have many functions)
+SWE-Bench-Verified__python__maintenance__bugfix__10750f29|pylint/checkers/variables.py|sem_rank=None | gold absent | gold qn _detect_global_scope | top conftest.py, class_checker | gold lex 5 vs top 1-3, same top-level pylint but different subsystem (checkers vs pyreverse/tests)
+SWE-Bench-Verified__python__maintenance__bugfix__10750f29|pylint/extensions/docparams.py|sem_rank=None | gold absent | etc.
+SWE-Bench-Verified__python__maintenance__bugfix__10750f29|pylint/pyreverse/diagrams.py|sem_rank=None | gold absent | gold qn ClassDiagram.object_from_node | top conftest, class_checker | gold lex 6 vs top 1-3
+... (15 more similar, see /tmp/hard.log for full 17; all but one have sem_rank None even @50)
+
+# Score margins (for the single with rank):
+# properties.py: top1 0.0164 vs gold 0.0132 margin 0.0032 (>0.002, not flat), top5 0.0154 vs 0.0132 margin 0.0022
+# For 16 absent: top1 0.0164 vs gold ~0 (margin ~0.016) -> not near-tied, genuinely wrong ordering
+
+# Classification into requested buckets (17 cases):
+# - semantically plausible hard negatives: 10 (top negatives have lexical overlap 1-8 with task, plausible but wrong file, e.g., pylint/checkers/variables.py vs class_checker)
+# - same-subsystem confusion: 4 (gold and top share same top-level package and often same subdir, e.g., seaborn/_core vs seaborn/_core, requests/compat vs requests/models)
+# - missing behavioral vocabulary: 5 (gold lex_overlap 0-1 but body contains behavioral terms not in embed, e.g., distributions body has 67 task tokens vs embed 10)
+# - path/module ambiguity: 1 (package.json is not a source file, file-level view missing)
+# - symbol granularity problem: 3 (gold is single __module__ with 1-4 symbols, top negatives are function/class heavy; e.g., compat.py 1 vs models.py 39)
+# - score crowding / flat: 0 (margins 0.002-0.016, not <0.002)
+# - gold absent from semantic index: 16 (sem_rank None even @50, not just @10 - gold not in top-50 semantic at all)
+# - other: 1 (properties.py same-subsystem but also has rank 16, so borderline)
+
+# Note: categories overlap; primary per file assigned as above, but many have multiple.
+
+# File/path, symbol names, signatures, imports/references, lexical overlap, cosine, package:
+# - file/path: gold and top negatives often share top-level package (seaborn, pylint, requests) but not exact path
+# - symbol names: gold qn often generic (__module__, register, Linker) vs top negs have more distinctive names (Nominal, VectorPlotter, puml_config) with higher lexical overlap
+# - signatures: gold sig often empty or generic, top negs have richer signatures
+# - imports/references: gold imports are few (compat, collections) vs top negs have more
+# - lexical overlap: gold lex_overlap 1-11, top negs 1-8, not discriminative (gold sometimes higher, sometimes lower)
+# - cosine: gold 0.0-0.013 vs top 0.016, margin 0.003-0.016
+# - package/module location: gold and top often same top-level, not discriminative
+
+# Determination of route loss cause:
+# A. genuinely wrong semantic ordering: YES for 16/17 (gold absent, top scores 0.016 vs 0.0, not near-tie)
+# B. many near-tied candidates: NO (margins 0.003-0.016 >0.002, not flat; top scores are not crowded around gold)
+# C. missing non-semantic signal: PARTIAL (body contains more lexical tokens than embed for 16/17, but lexical route also misses @10 for most, so non-semantic lexical alone not enough)
+# D. indexing/corpus problem: NO for 14/17 (sym_cnt>0, exists True, file is indexed), YES for 3 corpus mismatch (already separate bucket)
+
+# Smallest retrieval signal that could distinguish gold from hard negatives:
+# No single small deterministic signal cleanly separates. Tested candidates:
+# - lexical overlap alone: gold 1-11 vs top 1-8, overlap, not discriminative (both have similar)
+# - path/bonus for same package: both gold and top share same package, not discriminative
+# - symbol granularity (file with many symbols vs single module): gold often single module (1-4 symbols) vs top with many, but boosting file-level view was already tested as multi-view body and failed (universal 20->20, R@1 down).
+# - score crowding: not flat, so not.
+# The only pattern with some signal is "gold absent from semantic index even @50" - i.e., semantic route completely fails to surface gold, while lexical sometimes surfaces within @50 (e.g., properties lex 21, distributions lex 12). So lexical provides weak signal where semantic fails, but fusion with fixed 0.6/0.4 suppressed it (fusion loss 3). For the 16 route-loss where both miss @50, neither route provides signal.
+
+# Conclusion: For the 17 route losses, the dominant cause is A (genuinely wrong ordering) with gold absent from semantic top-50, and lexical also weak (often >20 or absent). No small deterministic lexical/path/symbol signal distinguishes gold from hard negatives without gold leakage. Per constraints (no larger model, no LLM, no gold leakage), no minimal retrieval signal is justified. Preserve baseline, document negative, and note that stronger embedding model diagnostic is the next warranted step (per prior gate), but is blocked by hardware per latest instruction - keep 0.6B as production constraint and do not attempt.
