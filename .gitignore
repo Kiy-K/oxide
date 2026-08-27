@@ -5,3 +5,5 @@ eval-agent/.venv/
 .oxide/
 __pycache__
 /target
+# backup of failed model run
+eval-agent/results/tierb_expanded.20260827-2055.bak/

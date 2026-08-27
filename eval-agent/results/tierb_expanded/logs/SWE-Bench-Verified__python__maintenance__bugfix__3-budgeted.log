@@ -1,0 +1,59 @@
+I'll start by understanding the task and exploring the relevant code.
+Let me start by understanding the repository structure and exploring the relevant code.
+Now let me look at the existing categorical code to understand the pattern:
+Now let me look at how `Plotter._finalize_figure` works in the new core:
+Let me look at the start of the file:
+Let me look at the Plotter class to understand _setup_scales and how scales are attached:
+Now I need to look at `_finalize_figure` and how the axes are set up:
+Now let's look at the tests for scale_categorical and Nominal to understand expected behavior:
+Let me look for any tests of `Plot` with categorical that test the existing behavior:
+Let me look at the limits test to understand how limits are set:
+Now let me look at how the `Plot` class works and where the categorical scale is used:
+Now let me look at the existing test that checks the limits for the categorical axis:
+Let me look at how the existing tests check axis limits and grids, and let me run a quick experiment to see what currently happens:
+OK so currently with a Plot on `x=['a', 'b', 'c']`, the x axis is collapsed to 0 since no data is plotted. Let me try with a real mark:
+Pandas compatibility issue, not the right pandas version. Let me check what version we have:
+The current pandas is too new. Let me check the install:
+Old pandas won't build. Let me try monkey-patching the pandas option or check for a virtual env:
+
+---STDERR---
+s/_in_process/_in_process.py", line 389, in <module>
+          main()
+          ~~~~^^
+        File "/usr/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 373, in main
+          json_out["return_val"] = hook(**hook_input["kwargs"])
+                                   ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.13/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 175, in prepare_metadata_for_build_wheel
+          return hook(metadata_directory, config_settings)
+        File "/usr/lib/python3.13/site-packages/setuptools/build_meta.py", line 374, in prepare_metadata_for_build_wheel
+          self.run_setup()
+          ~~~~~~~~~~~~~~^^
+        File "/usr/lib/python3.13/site-packages/setuptools/build_meta.py", line 512, in run_setup
+          super().run_setup(setup_script=setup_script)
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/usr/lib/python3.13/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())
+          ~~~~^^^^^^^^^^^^^^^^
+        File "<string>", line 664, in <module>
+        File "<string>", line 415, in maybe_cythonize
+      RuntimeError: Cannot cythonize without Cython installed.
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> pandas
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+[0m
+[0m$ [0mls /home/khoi/.local/share/virtualenvs 2>/dev/null || echo "no virtualenvs"
+which pytest 2>&1
+no virtualenvs
+/home/khoi/.local/bin/pytest
+[0m
+[93m[1m! [0mpermission requested: external_directory (/home/khoi/.local/bin/*); auto-rejecting
+[0m✗ [0mcat /home/khoi/.local/bin/pytest 2>&1 | head -3
+file /home/khoi/.local/bin/pytest failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

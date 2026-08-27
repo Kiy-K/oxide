@@ -1,100 +1,43 @@
-# RESUME: OXIDE context allocator + comparison benchmark
+# RESUME: Tier B downstream evidence (in progress)
 
+## What we did (2026-08-27)
+- `d1076f5` frozen (canonical `0.405 R@1 / 1849 tok`, hybrid `0.310`, no file-span, no tuning)
+- Tier A: 21 tasks (default `limit_per_repo=3` × 7 repos), 84 runs paused
+- Tier B 4-task paired (`eval-agent/results/agent_results.jsonl`, 16 recs):
+  `stock 1.00/1.00/451s` -> `budgeted 1.25/0.75/310s` (+0.25 gold, -0.25 bad, -31% wall, 1349 vs 2594 tok)
+- Tier B 25-task expanded launched, **reverted** when `opencode/x-preview-f-free` was found
+  to return `Model x-preview-f-free is not supported` for every run
+- Switched model to `cline-pass/cline-pass/minimax-m3` (working, smoke test passed)
+- Restarted Tier B 13-task small expanded (8 repos x 2; skipping large repos for now)
+  -- results appending to `eval-agent/results/tierb_expanded/agent_results.jsonl`
 
-## BENCHMARK PROGRAM (2026-08-25, in progress — resume here)
-Anthropic-style comparison benchmark running in `eval-agent/benchmark/`
-(no OXIDE source changes; commits separate).
-- DONE: ranking metrics (`results/ranking_metrics.txt`) — budgeted wins R@1,
-  MRR, nDCG@10 at 1.7k tok; grep whole-file baseline has file-F1 .144 at
-  ~100k tok; budgeted `grep` arm added to `tierb_agent_run.py` (validated,
-  not run).
-- DONE: failure-overlap matrix (`results/failure_matrix.txt`): of 46
-  gold-file instances, 18 are found by no condition (retrieval ceiling);
-  budgeted has only 3 attributed misses (1 allocation, 1 lexical-only
-  dropped, 1 semantic-only dropped). The binding constraint is upstream
-  retrieval, not allocation.
-- NEXT: launch Tier-B grep arms on an idle embedder
-  (`tierb_agent_run.py --conditions grep`), measure cold/reindex/query
-  latency/memory after the embedder is idle, then write the final report:
-  where OXIDE wins/loses, who retrieves more but uses it less efficiently,
-  unique failures, and which fixes move the quality-per-token frontier.
-  Leading candidate: DiffContext-style gap cutoff instead of hard caps.
-## Current state
+## State
+- Runner PID alive (setsid bash /tmp/run_tierb_small.sh)
+- 1/26 runs done (~206s each on first run, faster than the 600s original since model is fast)
+- `tierb_expanded.20260827-2055.bak/` preserved (the bad-model attempt)
+- `tierb_4task_orig/agent_results.jsonl` preserved (4-task evidence on old model)
 
-## FINAL RESULTS (2026-08-25, all gates run)
-- Clean Tier A (idle machine, 21 pinned tasks, summarize_cb.py):
-  budgeted file-F1 .374 vs hybrid .378 (summarize) / .338 vs .349
-  (mean-per-task) — PARITY WITHIN NOISE, NOT A WIN. line-F1 .102 vs .078
-  (win), symbol-F1 .111 vs .083 (win), tokens 1944 vs 2780 (-30%).
-  Old packer baseline: .236/.083 @ 4087.
-- Tier B (16 agent runs): budgeted gold_used 1.00 (= best), bad_edits 0.75
-  (best), wall 311s (fastest), ctx 1349 tok (~half of hybrid).
-- CAUTION: eval numbers degrade under concurrent load — the embedder drops
-  requests and the indexer silently skips failed vectors. First Tier A
-  attempt (written under load) is archived as
-  cb_results.jsonl.bak-load-degraded (.247 file-F1); always rerun evals on
-  an idle machine before trusting them.
+## What to do tomorrow
+1. Wait for the 13-task run to finish (~26 × ~200-400s ≈ 90-180 min)
+2. Aggregate `gold_used`/`bad`/`wall`/`ctx` by condition
+3. Re-run `summarize_cb.py` to refresh Tier A summary
+4. Compare: did the new model + new evidence change the 7 answers?
+   - If expanded 25 confirms wall/bad v without gold v and lineF1 holds ->
+     prioritize integration/product reliability (fix tool_calls/time-to-first-edit/
+     ignored context, add test-pass evaluator)
+   - If null -> investigate context consumption / prompt interface
+   - If regress -> noisy context / allocation / prompt
 
-Older paused-state note kept below for provenance.
+## Evidence so far (mixed-model, comparable metrics)
+- 4-task: stock 1.00/1.00/451s -> budgeted 1.25/0.75/310s (+0.25 gold, -31% wall, -0.25 bad)
+- 1 new-model seaborn: stock 1/6, bad=2, wall=206.8s (faster wall, more bad than 4-task avg;
+  model difference or per-task variance)
+- `tool_calls_proxy` = 0.0 throughout (harness counts "\n$ " which current opencode doesn't
+  emit; need to parse JSON log to fix)
+- Retrieval frozen, no further tuning. Embedder live (qwen3-Q8_0 @ :8191)
 
-Historical note from before Tier A/Tier B completion; superseded by the
-final-results section above. The allocator gates and both required eval reruns
-are complete. The comparison benchmark still has the explicitly listed
-follow-ups under “BENCHMARK PROGRAM”.
-
-### Final allocator design (src/context.rs)
-- Per-item token cap 350 + query-centered windowing (`render_snippet`):
-  whole body if it fits, else window around lines matching query terms,
-  head fallback. Shrink-to-fit halves the cap until the item fits budget —
-  tiny junk can no longer displace a large primary.
-- Caps: `EXPANSION_PER_SEED=2`, `EXPANSION_TOTAL=2`, `MAX_PRIMARIES=5`,
-  `MAX_TESTS=1`, `MAX_PER_FILE=2` (top-ranked candidate exempt).
-- Relevance floor 0.15×top seed (`split_below_floor`, keeps everything when
-  nothing survives).
-- Modules: same-file-concrete subsumption only (original rule). Orphan
-  modules stay direct hits under MAX_PRIMARIES — they CAN be gold
-  (pytest skipping task proved it); blanket-dropping them loses gold.
-- Role ordering, flattened JSON contract, explicit omission reasons kept.
-
-### Measured results (pinned Tier A 21-task set, quick_eval.py + full diag)
-| metric            | hybrid | budgeted (new) | budgeted (old) |
-|-------------------|--------|----------------|----------------|
-| file-F1           | .346   | **.353**       | .236           |
-| line-F1           | .072   | **.091**       | .083/.060      |
-| tokens            | ~2474  | **~1712**      | 4087           |
-| gold lost by pack | —      | **0**          | many           |
-
-Pareto dominance achieved. The single remaining "loss" row in
-pack_diag_final.log is NOT_IN_CANDIDATES (hybrid never retrieved it either).
-
-### Tuning evidence trail (don't re-litigate)
-- Embedding scores cluster within ~15% → relative floors can't separate
-  ranks; hard caps are the only effective cut (probe logs:
-  /tmp/opencode/pack_diag_v2.log, pack_diag_final.log).
-- Blanket-dropping orphan modules gained file-F1 (.274) but risks gold;
-  orphan-under-cap gets .270→.353 with zero losses when combined with
-  tighter expansion/tests caps.
-- Iteration harness: `eval-agent/quick_eval.py` (~90 s over warm indexes).
-
-## Remaining work
-1. **Tier A**: fresh run was launched
-   (`contextbench_run.py --instances eval-agent/results/tier_a_instances.txt`)
-   after archiving stale results to `*.bak-pre-allocator`. Check
-   `eval-agent/results/cb_results.jsonl`; compare with
-   `scripts/agent_eval/summarize_cb.py`.
-2. **Tier B**: archive `agent_results.jsonl` first (already backed up as
-   `.bak-pre-allocator`; delete the live file if recreated), then
-   `scripts/agent_eval/tierb_agent_run.py` unchanged (~16 opencode runs,
-   hours). Honest reporting only.
-3. Commit any remaining deltas; conventional short messages.
-
-## Gotchas learned this session
-- ALWAYS export BOTH `OXIDE_EMBED_URL` and `OXIDE_EMBED_MODEL=qwen3-Q8_0`
-  for every index/retrieval command. URL-only runs label vectors
-  `http:@…` → silent wipe+reembed under wrong identity.
-- Upstream ContextBench dataset drifted: `limit_per_repo=3` sampling no
-  longer reproduces the recorded 21 tasks (15/21 match). Always use the
-  instance pin file `eval-agent/results/tier_a_instances.txt`.
-- diagnose_pack.py sampler is fixed to use that pin.
-- clippy 1.98 flags pre-existing `chunks_exact` lints in src/index.rs
-  (fixed inline, behavior-identical).
+## Known gaps
+- Test-pass evaluator not implemented (Tier B measures diff utilization, not solve)
+- 4-task sample too small for solve superiority claims
+- Tool-call counting broken (cosmetic for now; doesn't affect gold/bad/wall/ctx)
+- Tier A still in-progress (40/84 at last check)

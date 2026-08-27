@@ -1,1 +1,3 @@
-25 agent tasks x conditions stock,budgeted
+13 agent tasks x conditions stock,budgeted
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/6 tools=  0 wall= 206.8s ctx=    0 bad=2
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 0/6 tools=  0 wall= 184.9s ctx= 1895 bad=0

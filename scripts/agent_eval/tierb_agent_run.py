@@ -32,7 +32,7 @@ from contextbench_run import (  # noqa: E402
     est_tokens,
 )
 
-MODEL = "opencode/x-preview-f-free"
+MODEL = "cline-pass/cline-pass/minimax-m3"
 
 
 def sh(cmd, cwd=None, env=None, timeout=900):
