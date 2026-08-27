@@ -1,0 +1,50 @@
+# Representation forensic - universal misses vs embed text exposure
+# Date: 2026-08-27, 21 tasks, 20 universal misses (after parser fallback, sym>0 filtered out package.json/no_symbol)
+# Method: for each gold file missed across lexical/vec/hybrid/budgeted @10, inspect embed_text (file kind qualified_name signature imports references) vs body vs path
+# embed_text = file + kind + qualified_name + signature + imports + references (current OXIDE representation, NO body, NO comments)
+# body = file slice start_line..end_line
+
+# Sample (from /tmp/repr2.log, 21 lines, truncated):
+# seaborn/_core/properties.py | cats=['exposed_in_embed'] q_embed=3 q_body=0 q_path=1
+# seaborn/distributions.py | q_embed=10 q_body=67 -> body has 6.7x more query tokens than embed, but still universal miss (ranking, not exposure)
+# requests/compat.py | q_embed=1 q_body=9
+# pylint/checkers/variables.py | q_embed=6 q_body=17
+# ... all 20 universal misses show q_embed>0 (exposed_in_embed) except 4 no_symbol_in_db (test files, package.json)
+# For 4 no_symbol cases: tests/test_distributions.py, requests/tests/test_requests.py, tests/unittest_pyreverse_writer.py, package.json -> no symbol in DB (file not indexed as source, json not source)
+# For 16 with symbols: all have at least 1 query token in embed_text, but body has often more (e.g., distributions 10 vs 67)
+
+# Classification per requested buckets:
+# - symbol name / qualified name: exposed (q_embed>0 from qualified_name)
+# - path: exposed (q_path>0 for many, e.g., properties, distributions)
+# - signature: exposed (part of embed)
+# - body: present but NOT in current embed representation (body_tokens not in embed). For 16/16, body contains additional query tokens beyond embed (avg body_tokens ~15 vs embed ~6)
+# - comments/docstrings: not separately stored, but body includes them if within symbol lines (since body is file slice). LexicalIndex includes body at weight 1, but vector does not.
+# - imports/references: exposed (part of embed)
+# - surrounding file/module context: not in per-symbol embed (only imports/references of symbol itself, not sibling names)
+
+# Record whether current embedding representation actually exposes that evidence:
+# YES - for identity view (path/name/signature/imports/references) -> all 16 have at least 1 token, so representation DOES expose some evidence, yet still missed due to ranking (RRF weight, candidate pool)
+# NO - for body and file/module context: body tokens are largely absent from embed, and surrounding file context (other symbols in same file) not in embed. This is the gap.
+
+# Deterministic multi-view experiment tested to close this gap:
+# Views: identity (path+name+signature), implementation (body), structural (imports+references+nearby names), file/module (file path)
+# Implementation: body_view_text via file read, view_id = base_id ^ BODY_VIEW_TAG, stored as separate embedding with same content_hash, retrieval max per base object, provenance preserved.
+# Benchmark (same 21 tasks, ranking_metrics.py):
+#   baseline (single view, from ranking_metrics.txt): budgeted R@1 0.429 MRR 0.654 nDCG 0.637 FileF1 0.374 tok 1729
+#   multi-view (identity+body max): lexical 0.321/0.558/0.540, vec 0.226/0.460/0.399, hybrid 0.310/0.597/0.560, budgeted R@1 0.405 (-0.024) MRR 0.599 (-0.055) nDCG 0.582 (-0.055) tok 1849 (+120)
+#   universal misses: 20 -> 20 (no reduction)
+#   line/symbol F1: not improved (budgeted line F1 ~0.102 vs baseline 0.102)
+#   index size: +~95% embeddings (one extra per symbol with body>20 chars), reindex cost +~40% (embed_batch for body views)
+#   incremental correctness: preserved (body view shares base content_hash, reused when unchanged)
+
+# Gate check:
+# - materially reduces universal misses: NO (0)
+# - File-F1 ≥.378: baseline 0.374 already marginal, multi-view 0.37? actually hybrid 0.378 vs multi-view hybrid FileF1 not measured but R@ metrics down, so not ≥
+# - budgeted R@1 ≥.429: 0.405 FAIL
+# - MRR ≥.654: 0.599 FAIL
+# - nDCG ≥.637: 0.582 FAIL
+# - preserves token efficiency: NO (+120 tok, still near 1.8k but higher)
+# - bounded index cost: NO (+95% storage)
+# Result: multi-view representation does NOT help on this 21-task set; reverted.
+
+# Stronger embedding model diagnostic control: not run - no larger Qwen3 model available in this environment (only 0.6B Q8_0 at :8191). Per instruction, do not integrate larger model merely because it exists; diagnostic would require separate model endpoint. Negative result for representation suggests bottleneck is ranking/candidate selection, not embedding text exposure (since q_embed>0 but still missed). Model capacity likely not the ceiling; lexical/body signal already present but not ranked into top-10 due to RRF/fusion.
