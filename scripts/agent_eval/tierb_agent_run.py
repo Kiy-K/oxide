@@ -32,7 +32,7 @@ from contextbench_run import (  # noqa: E402
     est_tokens,
 )
 
-MODEL = "cline-pass/cline-pass/minimax-m3"
+MODEL = "opencode/muse-spark-1.2-contributor-free"
 
 
 def sh(cmd, cwd=None, env=None, timeout=900):

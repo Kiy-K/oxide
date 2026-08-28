@@ -1,43 +1,64 @@
-# RESUME: Tier B downstream evidence (in progress)
+# RESUME: Tier B downstream evidence (paused for refactor)
 
-## What we did (2026-08-27)
-- `d1076f5` frozen (canonical `0.405 R@1 / 1849 tok`, hybrid `0.310`, no file-span, no tuning)
-- Tier A: 21 tasks (default `limit_per_repo=3` × 7 repos), 84 runs paused
-- Tier B 4-task paired (`eval-agent/results/agent_results.jsonl`, 16 recs):
-  `stock 1.00/1.00/451s` -> `budgeted 1.25/0.75/310s` (+0.25 gold, -0.25 bad, -31% wall, 1349 vs 2594 tok)
-- Tier B 25-task expanded launched, **reverted** when `opencode/x-preview-f-free` was found
-  to return `Model x-preview-f-free is not supported` for every run
-- Switched model to `cline-pass/cline-pass/minimax-m3` (working, smoke test passed)
-- Restarted Tier B 13-task small expanded (8 repos x 2; skipping large repos for now)
-  -- results appending to `eval-agent/results/tierb_expanded/agent_results.jsonl`
+## Where we stopped (2026-08-28)
+- All Tier B / harness smoke runs were killed or invalidated; nothing live.
+- Switched MODEL to `opencode/muse-spark-1.2-contributor-free` in
+  `scripts/agent_eval/tierb_agent_run.py` (uncommitted) — earlier smokes with
+  this model had valid opencode output but baseline was `dead_test` due to
+  missing repo-specific test deps.
+- Earlier `cline-pass/cline-pass/minimax-m3` 13-task small expanded was
+  killed; its partial workdirs and logs remain under
+  `eval-agent/results/tierb_expanded/` (preserved).
 
-## State
-- Runner PID alive (setsid bash /tmp/run_tierb_small.sh)
-- 1/26 runs done (~206s each on first run, faster than the 600s original since model is fast)
-- `tierb_expanded.20260827-2055.bak/` preserved (the bad-model attempt)
-- `tierb_4task_orig/agent_results.jsonl` preserved (4-task evidence on old model)
+## What's known to be broken / missing
+- `scripts/agent_eval/tierb_solver.py::run_pytest` previously returned
+  `no_tests` (None,None) on repos without `git ls-files tests/ test/`
+  hits; now always runs `pytest -x`. Verified by re-anchored read.
+- eval venv at `eval-agent/.venv` is missing pytest entirely; installed via
+  `uv pip install --python eval-agent/.venv/bin/python pytest pytest-timeout`.
+- Per-repo test deps are not pre-installed: matplotlib for seaborn, astroid
+  + isort for pylint, etc. Without these, `baseline_pytest` is `dead_test`
+  on every task for those repos.
+- Clinepass (opencode model) hits "Error 429: monthly Clinepass limit" on
+  some tasks; detected as `provider_failed` in
+  `scripts/agent_eval/tierb_solver.py:128-130` (added 2026-08-27).
 
-## What to do tomorrow
-1. Wait for the 13-task run to finish (~26 × ~200-400s ≈ 90-180 min)
-2. Aggregate `gold_used`/`bad`/`wall`/`ctx` by condition
-3. Re-run `summarize_cb.py` to refresh Tier A summary
-4. Compare: did the new model + new evidence change the 7 answers?
-   - If expanded 25 confirms wall/bad v without gold v and lineF1 holds ->
-     prioritize integration/product reliability (fix tool_calls/time-to-first-edit/
-     ignored context, add test-pass evaluator)
-   - If null -> investigate context consumption / prompt interface
-   - If regress -> noisy context / allocation / prompt
+## Negative results (preserve)
+- `psf/requests` is dead_test on Python 3.11 (uses `collections.MutableMapping`,
+  removed in 3.10). Use a different task or 3.9 venv.
+- `mwaskom/seaborn`: even with `matplotlib/pandas/numpy` installed, full
+  `pytest tests/ -x` collection error in `tests/test_core.py`
+  (`Marks cannot be applied to fixtures` on pytest 9.1.1). `dead_test`
+  on the actual solver's full-suite run; the `--ignore=tests/test_core.py`
+  preflight is NOT solver evidence.
+- `pylint-dev/pylint` requires pinned `astroid<2.7` + `isort`; latest
+  astroid is 4.3.1. Don't treat the env's latest-astroid preflight as
+  baseline evidence.
 
-## Evidence so far (mixed-model, comparable metrics)
-- 4-task: stock 1.00/1.00/451s -> budgeted 1.25/0.75/310s (+0.25 gold, -31% wall, -0.25 bad)
-- 1 new-model seaborn: stock 1/6, bad=2, wall=206.8s (faster wall, more bad than 4-task avg;
-  model difference or per-task variance)
-- `tool_calls_proxy` = 0.0 throughout (harness counts "\n$ " which current opencode doesn't
-  emit; need to parse JSON log to fix)
-- Retrieval frozen, no further tuning. Embedder live (qwen3-Q8_0 @ :8191)
+## What to do when refactor lands
+1. Pick a Tier B candidate repo where the eval venv can run the baseline
+   pytest to completion. `astropy`, `django`, `sympy`, `transformers`
+   were not yet preflighted; check first.
+2. Stage only the intended refactor commits — do not commit
+   `tierb_solver_smoke*` logs or workdirs.
+3. The MODEL change in `scripts/agent_eval/tierb_agent_run.py` is
+   uncommitted; verify whether the new model is still valid before
+   re-running, or revert to `cline-pass/cline-pass/minimax-m3`.
+4. After picking a runnable repo, launch 13-task small expanded the same
+   way (counterbalanced, seed=42) and append to
+   `eval-agent/results/tierb_expanded/agent_results.jsonl` (resume-safe
+   by `(task, condition)`).
+5. `tool_calls_proxy` is still 0.0 because the harness counts "\n$ "
+   which current opencode doesn't emit; not a blocker for gold/bad/wall/ctx.
 
-## Known gaps
-- Test-pass evaluator not implemented (Tier B measures diff utilization, not solve)
-- 4-task sample too small for solve superiority claims
-- Tool-call counting broken (cosmetic for now; doesn't affect gold/bad/wall/ctx)
-- Tier A still in-progress (40/84 at last check)
+## Env reminders
+- llama server: `scripts/embedder.sh start` (was up, port 8191, Q8_0).
+- eval venv: `eval-agent/.venv/bin/python` (3.11).
+- Tier B SOLVE runner: `scripts/agent_eval/tierb_solver.py`
+  (`--limit-per-repo N --repos ... --conditions stock,budgeted --out ...`).
+- Kill stale process groups: `pkill -f tierb_solver` is enough for the
+  Python parent; orphaned `timeout`+`opencode` children need explicit
+  `kill -9 <pid>` or `kill -- -<pgid>`.
+- Background jobs: `setsid ... &` via wrapper script; kill by exact PID
+  (`pgrep -fa` + kill), never `pkill -f <pattern>` (self-match kills own shell).
+- Laptop resource-conscious: `-j 2` everywhere.
