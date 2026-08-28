@@ -14,21 +14,29 @@
   2 conditions, old model, no `solve_status` field — diff-utilization
   only, not solve-rate evidence).
 
-## Deferred until after refactor (intentionally NOT done today)
-- `scripts/agent_eval/tierb_solver.py` committed at `ef6f9df` is the
-  pytest + dead_test detect scaffold; it does NOT yet:
-  - retain the agent's git diff (no Jaccard-vs-gold fallback)
-  - wire 3 condition-counterbalanced reps (only 1 run per (task,cond))
-  - classify `solve_status` via pytest pass/fail on the patched worktree
-    (current fields: gold_files_utilized, files_touched, wall_s,
-    ctx_tokens, tool_calls_proxy)
-- No Tier B verification smoke on a known-good task (flask 2e76c8cd).
-- No 13-task × 2-condition run producing a paired solve_rate table.
-- No aggregation of solve/pass/incomplete separately.
-- No 7-brief-question answers backed by solve-rate data.
-- No committed `eval-agent/results/tierb_expanded/downstream_report.md`
-  refresh — the existing file is pre-refactor narrative; do not treat it
-  as current.
+## Solver status (committed at `ef6f9df`)
+`scripts/agent_eval/tierb_solver.py` already:
+- writes `*.diff` files per run (line 117)
+- classifies `solve_status` from baseline/patched pytest rc
+  (lines 134-149)
+- detects `provider_failed` / `incomplete` / `no_eval` /
+  `dead_test` / `pass` / `fail`
+
+What it does NOT yet do (intentionally deferred until after
+refactor; do not relaunch today):
+- Jaccard-vs-gold diff similarity scoring (current signal is
+  only `gold_files_utilized` set membership, not line-level).
+- 3 condition-counterbalanced reps per (task, cond); current run
+  is a single rep, so per-task variance dominates.
+- Verification smoke on a known-good task (e.g. flask
+  `2e76c8cd`) to confirm the runner end-to-end before a full
+  13-task × 2-condition launch.
+- 13-task × 2-condition launch producing a paired solve_rate
+  table.
+- Aggregation of solve/pass/incomplete separately.
+- 7-brief-question answers backed by solve-rate data.
+- Refresh of `eval-agent/results/tierb_expanded/downstream_report.md`;
+  the existing file is pre-refactor narrative, not current.
 
 ## What's known to be broken / missing
 - `scripts/agent_eval/tierb_solver.py::run_pytest` previously returned
