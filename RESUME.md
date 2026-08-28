@@ -3,9 +3,9 @@
 ## Where we stopped (2026-08-28)
 - All Tier B / harness smoke runs were killed or invalidated; nothing live.
 - Switched MODEL to `opencode/muse-spark-1.2-contributor-free` in
-  `scripts/agent_eval/tierb_agent_run.py` (uncommitted) — earlier smokes with
-  this model had valid opencode output but baseline was `dead_test` due to
-  missing repo-specific test deps.
+  `scripts/agent_eval/tierb_agent_run.py` (committed `0a134ca`) — earlier
+  smokes with this model had valid opencode output but baseline was
+  `dead_test` due to missing repo-specific test deps.
 - Earlier `cline-pass/cline-pass/minimax-m3` 13-task small expanded was
   killed; its partial workdirs and logs remain under
   `eval-agent/results/tierb_expanded/` (preserved).
@@ -14,8 +14,9 @@
 - `scripts/agent_eval/tierb_solver.py::run_pytest` previously returned
   `no_tests` (None,None) on repos without `git ls-files tests/ test/`
   hits; now always runs `pytest -x`. Verified by re-anchored read.
-- eval venv at `eval-agent/.venv` is missing pytest entirely; installed via
-  `uv pip install --python eval-agent/.venv/bin/python pytest pytest-timeout`.
+- eval venv at `eval-agent/.venv` was missing pytest entirely; installed
+  via `uv pip install --python eval-agent/.venv/bin/python pytest
+  pytest-timeout` (uncommitted side-effect on the venv, not the repo).
 - Per-repo test deps are not pre-installed: matplotlib for seaborn, astroid
   + isort for pylint, etc. Without these, `baseline_pytest` is `dead_test`
   on every task for those repos.
@@ -41,9 +42,9 @@
    were not yet preflighted; check first.
 2. Stage only the intended refactor commits — do not commit
    `tierb_solver_smoke*` logs or workdirs.
-3. The MODEL change in `scripts/agent_eval/tierb_agent_run.py` is
-   uncommitted; verify whether the new model is still valid before
-   re-running, or revert to `cline-pass/cline-pass/minimax-m3`.
+3. Verify the new model is still valid; otherwise revert
+   `scripts/agent_eval/tierb_agent_run.py::MODEL` to
+   `cline-pass/cline-pass/minimax-m3` (the value before `0a134ca`).
 4. After picking a runnable repo, launch 13-task small expanded the same
    way (counterbalanced, seed=42) and append to
    `eval-agent/results/tierb_expanded/agent_results.jsonl` (resume-safe
