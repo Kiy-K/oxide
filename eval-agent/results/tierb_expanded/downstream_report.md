@@ -79,22 +79,35 @@ pre-registered follow-up.
 3. **Reduce unnecessary edits / tool calls?** Bad edits −0.09, small.
    `tool_calls_proxy` is `0.0` throughout — harness counts `"\n$ "` that
    current opencode doesn't emit; need to parse JSON log to actually
-   measure tool-call reduction. Not gating.
-4. **Do agents use correct context?** **Mixed.** Wins: pack lands agent on
-   right function fast. Losses: pack can over-surface tests or miss
-   hidden helpers. No "pack caused agent to write wrong code" failure
-   observed in the 11 non-loss runs.
-5. **Benefit most?** Tasks where the gold is a single high-confidence
-   primary symbol (`1409977d`, `9f3a5677`, `88e1ffd3` — all flask /
-   requests). Pack's windowing + 350 tok/item cap keeps gold visible.
-6. **Harmed?** `10750f29` (pylint) and `42165c4e` (code-server). Both
-   recoverable: (a) test-file penalty in `why` reasons, (b) better
+4. **Do agents use correct context?** **Mixed across the 5 wins + 5 ties.**
+   Wins (all same-gold, faster-or-equal): `07f7e78f` (requests, −29 s),
+   `88e1ffd3` (requests, −22 s), `9f3a5677` (pytest, −121 s, −1 bad),
+   `abb9b8b0` (pytest, −46 s), `0c4f6bb2` (PolyBench, −17 s).
+   Ties: `2fb50735` (multi-swe, −3 s, wash), `8d780f70` (multi-swe, +3 s, wash),
+   `41cd3842` (PolyBench, −54 s but both-zero gold), `1409977d` (pylint, −60 s but
+   `2e76c8cd`-adjacent wash), `2e76c8cd` (flask, +25 s +1 bad).
+   Losses: `10750f29` (pylint, d_bad=+2 triggers the loss rule; d_gold=+5 is the
+   reason the qualitative story disagrees with the rule), `36989b6d` (seaborn,
+   d_gold=−1 triggers loss), `42165c4e` (code-server, d_gold=−2 triggers loss).
+5. **Benefit most?** Tasks where the gold file is a single high-confidence
+   primary symbol: pytest (`9f3a5677`, `abb9b8b0`) and requests
+   (`88e1ffd3`, `07f7e78f`). Pack's windowing + 350 tok/item cap keeps
+   gold visible; both repos are small/medium, so the per-object cap
+   doesn't truncate the gold. Flask contributed only the wash tie
+   (`2e76c8cd`), not a clear win.
+6. **Harmed?** `10750f29` (pylint pyreverse), `36989b6d` (seaborn 0.13 nominal),
+   `42165c4e` (code-server 2-instance).
+   - `10750f29` is a label-only loss: d_bad=+2 trips the rule even though d_gold=+5.
+     A cost-weighted rule would call it net-positive.
+   - `36989b6d` and `42165c4e` are real misses — pack surfaced the wrong target.
+   All three are recoverable: (a) test-file penalty in `why` reasons, (b) better
    `__module__`-level ranking for singleton helpers.
-7. **Useful enough to ship?** **Borderline, with two targeted fixes.** Wall
-−27% with `5/13` wins is meaningful; the 2 losses are not stochastic —
-   they're predictable failure modes. **Recommend:** add test-file
-   penalty + `__module__`-aware rank, then re-evaluate; if `9/13 → 11/13`,
-   ship.
+7. **Useful enough to ship?** **Inconclusive under the strict rule; promising under a
+   cost-weighted one.** Wall −27% holds regardless of label scheme; that's the
+   load-bearing signal. The rule's "5 wins" undercounts because `10750f29` (+5 gold)
+   is forced into loss. With cost weighting (gold − 0.3·bad − 0.01·wall), 7/13
+   would be net-positive. **Recommend:** before shipping, pre-register a cost-weighted
+   rule and re-run a held-out 10 tasks; if ≥7/10 net-positive, ship the ranker.
 
 ## What's needed before claiming solve-quality
 
