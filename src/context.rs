@@ -7,6 +7,12 @@
 //! so small junk never displaces a large primary) and a per-file diversity cap.
 //! Every inclusion and omission carries its reason.
 
+use crate::config::{
+    CONTEXT_CHARS_PER_TOKEN, CONTEXT_DEFAULT_BUDGET_TOKENS, CONTEXT_EXPANSION_PER_SEED,
+    CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS, CONTEXT_MAX_CANDIDATES,
+    CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
+    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
+};
 use crate::embeddings::EmbeddingProvider;
 use crate::index::IndexBackend;
 use crate::retrieval::{RelationGraph, RetrievalEngine, SearchMode, SearchOptions};
@@ -27,26 +33,7 @@ pub enum Role {
     Test,
 }
 
-pub const CHARS_PER_TOKEN: f32 = 4.0;
-
-/// ~12 tokens of framing per item (header line, separators).
-const ITEM_OVERHEAD_TOKENS: usize = 12;
-
-/// Per-object snippet budget; bigger symbols get query-centered windows
-/// instead of whole-body dumps.
-const PER_ITEM_TOKEN_CAP: usize = 350;
-/// Candidates below this fraction of the top seed score are noise.
-const RELEVANCE_FLOOR_FRAC: f32 = 0.15;
-/// Structural expansion fan-out: per seed and total.
-const EXPANSION_PER_SEED: usize = 2;
-const EXPANSION_TOTAL: usize = 2;
-/// Max included items per file; the single top-ranked candidate is exempt.
-const MAX_PER_FILE: usize = 2;
-/// Max direct semantic hits; embedding scores cluster too tightly for a
-/// relative floor to separate ranks 7+, which are noise in eval probes.
-const MAX_PRIMARIES: usize = 5;
-/// Supporting tests beyond a couple are noise.
-const MAX_TESTS: usize = 1;
+pub const CHARS_PER_TOKEN: f32 = CONTEXT_CHARS_PER_TOKEN;
 
 #[derive(Debug, Serialize)]
 pub struct ContextItem {
@@ -94,8 +81,8 @@ impl Default for ContextOptions {
     fn default() -> Self {
         // Research guidance puts implementation-task context around 1-4k tokens.
         Self {
-            budget_tokens: 4096,
-            max_candidates: 16,
+            budget_tokens: CONTEXT_DEFAULT_BUDGET_TOKENS,
+            max_candidates: CONTEXT_MAX_CANDIDATES,
         }
     }
 }
@@ -163,12 +150,14 @@ pub fn build_context(
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
         for seed in seeds.iter().take(5) {
-            if expansion_total >= EXPANSION_TOTAL {
+            if expansion_total >= CONTEXT_EXPANSION_TOTAL {
                 break;
             }
             let mut from_seed = 0usize;
             for (rel, n) in graph.neighbors(&seed.symbol) {
-                if expansion_total >= EXPANSION_TOTAL || from_seed >= EXPANSION_PER_SEED {
+                if expansion_total >= CONTEXT_EXPANSION_TOTAL
+                    || from_seed >= CONTEXT_EXPANSION_PER_SEED
+                {
                     break;
                 }
                 if seen_seeds.contains(&n.id()) {
@@ -248,7 +237,7 @@ pub fn build_context(
     // ---- relevance floor ------------------------------------------------
     // Weak tail candidates dilute the pack; drop them unless nothing survives.
     if let Some(top_score) = seeds.first().map(|h| h.score) {
-        let (strong, weak) = split_below_floor(kept, top_score * RELEVANCE_FLOOR_FRAC);
+        let (strong, weak) = split_below_floor(kept, top_score * CONTEXT_RELEVANCE_FLOOR_FRACTION);
         if strong.is_empty() {
             kept = weak; // nothing survives the floor: keep everything
         } else {
@@ -272,7 +261,7 @@ pub fn build_context(
     let mut tests = 0usize;
     for c in &kept {
         let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
-        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= MAX_PER_FILE
+        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= CONTEXT_MAX_ITEMS_PER_FILE
             && top_id != Some(c.symbol.id())
         {
             dropped.push(Omitted {
@@ -283,7 +272,7 @@ pub fn build_context(
         }
         let over_role_cap = match c.role {
             Role::Primary => {
-                if primaries >= MAX_PRIMARIES {
+                if primaries >= CONTEXT_MAX_PRIMARIES {
                     Some("beyond primary cap")
                 } else {
                     primaries += 1;
@@ -291,7 +280,7 @@ pub fn build_context(
                 }
             }
             Role::Test => {
-                if tests >= MAX_TESTS {
+                if tests >= CONTEXT_MAX_TESTS {
                     Some("beyond test cap")
                 } else {
                     tests += 1;
@@ -309,10 +298,10 @@ pub fn build_context(
         }
         // Shrink-to-fit: halve the per-item cap until it fits, so tiny junk
         // never displaces a large primary.
-        let mut cap = PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
+        let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
         let (snippet, est) = loop {
             let snip = render_snippet(root, &c.symbol, &terms, cap);
-            let e = estimate_tokens(&snip) + ITEM_OVERHEAD_TOKENS;
+            let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
             if used + e <= opts.budget_tokens || cap == 0 {
                 break (snip, e);
             }
@@ -834,8 +823,8 @@ mod tests {
             "test requires at least one expansion neighbor to be meaningful"
         );
         assert!(
-            deps == EXPANSION_PER_SEED,
-            "fan-out must be capped at exactly {EXPANSION_PER_SEED}, got {deps}"
+            deps == CONTEXT_EXPANSION_PER_SEED,
+            "fan-out must be capped at exactly {CONTEXT_EXPANSION_PER_SEED}, got {deps}"
         );
     }
 
@@ -885,7 +874,7 @@ mod tests {
             .filter(|i| i.symbol.file == "src/hot.py")
             .count();
         assert!(
-            hot_count <= MAX_PER_FILE + 1,
+            hot_count <= CONTEXT_MAX_ITEMS_PER_FILE + 1,
             "one hog file must not eat the pack: {hot_count} items"
         );
         assert!(
@@ -913,9 +902,9 @@ mod tests {
     }
     #[test]
     fn primary_cap_bounds_semantic_tail() {
-        // Embedding scores cluster; ranks beyond MAX_PRIMARIES are noise in
+        // Embedding scores cluster; ranks beyond the primary cap are noise in
         // eval probes and must not dilute the pack.
-        let many: Vec<Symbol> = (0..(MAX_PRIMARIES + 3))
+        let many: Vec<Symbol> = (0..(CONTEXT_MAX_PRIMARIES + 3))
             .map(|i| {
                 spaced(
                     sym(
@@ -947,7 +936,7 @@ mod tests {
             &HashedEmbedder::default(),
             "widget",
             &ContextOptions {
-                max_candidates: MAX_PRIMARIES + 3,
+                max_candidates: CONTEXT_MAX_PRIMARIES + 3,
                 ..Default::default()
             },
         )
@@ -957,7 +946,7 @@ mod tests {
             .iter()
             .filter(|i| i.role == Role::Primary)
             .count();
-        assert_eq!(prim, MAX_PRIMARIES, "semantic tail must be capped");
+        assert_eq!(prim, CONTEXT_MAX_PRIMARIES, "semantic tail must be capped");
         assert!(
             pack.omitted.iter().any(|o| o.why.contains("primary cap")),
             "capped primaries need an explicit reason"

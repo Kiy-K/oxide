@@ -1,9 +1,14 @@
 eval-agent/results/agent_results.jsonl
 eval-agent/results/cb_results.jsonl
+eval-agent/results/*.bak*
+eval-agent/results/*_summary.txt
+eval-agent/results/pack_diag*.log
+eval-agent/results/logs/
+eval-agent/results/tierb_*/
+eval-agent/benchmark/results/
 eval-agent/third_party/
 eval-agent/.venv/
 .oxide/
+.codebase-memory/
 __pycache__
 /target
-# backup of failed model run
-eval-agent/results/tierb_expanded.20260827-2055.bak/

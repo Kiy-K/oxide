@@ -2,6 +2,10 @@
 //! rank fusion, followed by structural expansion. Every hit carries the
 //! evidence that selected it.
 
+use crate::config::{
+    EXPANSION_STRONG_SEED_FRACTION, FUSION_CANDIDATE_LIMIT, FUSION_LEXICAL_WEIGHT, FUSION_RRF_K,
+    FUSION_SEMANTIC_WEIGHT,
+};
 use crate::embeddings::{tokenize, EmbeddingProvider};
 use crate::index::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
@@ -39,13 +43,6 @@ pub struct SearchHit {
     pub reasons: Vec<String>,
     pub snippet: String,
 }
-
-const RRF_K: f32 = 60.0;
-const LEX_WEIGHT: f32 = 0.6;
-const VEC_WEIGHT: f32 = 0.4;
-/// Hits scoring at least this fraction of the best lexical score are "strong"
-/// seeds for expansion.
-const STRONG_SEED_FRAC: f32 = 0.55;
 
 pub struct LexicalIndex {
     postings: HashMap<String, HashMap<u64, u32>>, // term -> doc -> weighted tf
@@ -225,7 +222,7 @@ impl<'a> RetrievalEngine<'a> {
                     ranked: Vec<(u64, f32, String)>,
                     weight: f32| {
             for (rank, (id, score, why)) in ranked.into_iter().enumerate() {
-                *rrf.entry(id).or_insert(0.0) += weight / (RRF_K + rank as f32 + 1.0);
+                *rrf.entry(id).or_insert(0.0) += weight / (FUSION_RRF_K + rank as f32 + 1.0);
                 reasons
                     .entry(id)
                     .or_default()
@@ -242,7 +239,7 @@ impl<'a> RetrievalEngine<'a> {
                     &mut reasons,
                     ranked
                         .into_iter()
-                        .take(200)
+                        .take(FUSION_CANDIDATE_LIMIT)
                         .map(|(id, s)| (id, s, "lexical".into()))
                         .collect(),
                     1.0,
@@ -256,7 +253,7 @@ impl<'a> RetrievalEngine<'a> {
                     &mut reasons,
                     ranked
                         .into_iter()
-                        .take(200)
+                        .take(FUSION_CANDIDATE_LIMIT)
                         .map(|(id, s)| (id, s, "semantic".into()))
                         .collect(),
                     1.0,
@@ -267,19 +264,19 @@ impl<'a> RetrievalEngine<'a> {
                 lr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
                 let lrr: Vec<(u64, f32, String)> = lr
                     .into_iter()
-                    .take(200)
+                    .take(FUSION_CANDIDATE_LIMIT)
                     .map(|(id, s)| (id, s, "lexical".into()))
                     .collect();
-                note(&mut rrf, &mut reasons, lrr, LEX_WEIGHT);
+                note(&mut rrf, &mut reasons, lrr, FUSION_LEXICAL_WEIGHT);
 
                 let mut vr: Vec<_> = vec_scores.iter().map(|(id, s)| (*id, *s)).collect();
                 vr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
                 let vrr: Vec<(u64, f32, String)> = vr
                     .into_iter()
-                    .take(200)
+                    .take(FUSION_CANDIDATE_LIMIT)
                     .map(|(id, s)| (id, s, "semantic".into()))
                     .collect();
-                note(&mut rrf, &mut reasons, vrr, VEC_WEIGHT);
+                note(&mut rrf, &mut reasons, vrr, FUSION_SEMANTIC_WEIGHT);
             }
         }
 
@@ -312,7 +309,7 @@ impl<'a> RetrievalEngine<'a> {
                 .filter(|s| {
                     lex_scores
                         .get(&s.id())
-                        .map(|(sc, _)| *sc >= max_lex * STRONG_SEED_FRAC)
+                        .map(|(sc, _)| *sc >= max_lex * EXPANSION_STRONG_SEED_FRACTION)
                         .unwrap_or(false)
                         && max_lex > 0.0
                 })

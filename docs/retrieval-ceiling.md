@@ -1,6 +1,6 @@
 # Retrieval ceiling — frozen OXIDE 0.6B stack
 
-Status: **frozen** at `qwen3-Q8_0` (0.6B Q8) `RRF_K 60 LEX0.6/VEC0.4`, `HashedEmbedder` offline.
+Status: **frozen** at `qwen3-Q8_0` (0.6B Q8) with the settings in [`src/config.rs`](../src/config.rs), `HashedEmbedder` offline.
 Do not change `src/retrieval.rs` / `src/context.rs` / `src/index.rs` / `src/lexical.rs` without new evidence.
 
 ## Measured ceiling (21 pinned tasks, 48 gold files)
@@ -23,7 +23,7 @@ Universal misses (all routes miss @10): ~20, gap experiments reverted.
 
 `semantic / retrieval-route ceiling — stronger or task-specialized retriever diagnostic deferred`
 
-The 17 route losses are not candidates near the cap whose gap cutoff would rescue them; they are not retrieved by any route at all (16 absent @50). Per advisory diagnose-first: dominant class is **route loss (genuinely wrong ordering, A)**, not "ranks just below cap" or score crowding (flat 0). A `MAX_PRIMARIES`→gap-cutoff swap would not move universal-miss count.
+The 17 route losses are not candidates near the cap whose gap cutoff would rescue them; they are not retrieved by any route at all (16 absent @50). Per advisory diagnose-first: dominant class is **route loss (genuinely wrong ordering, A)**, not "ranks just below cap" or score crowding (flat 0). Replacing the primary cap with a gap cutoff would not move universal-miss count.
 
 ## Production constraint
 

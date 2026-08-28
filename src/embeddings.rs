@@ -105,18 +105,6 @@ fn split_identifier_into(raw: &str, emit: &mut dyn FnMut(&str, bool)) {
 }
 
 #[allow(dead_code)]
-fn split_identifier(raw: &str) -> Vec<String> {
-    let mut parts = Vec::new();
-    split_identifier_into(raw, &mut |p, lower| {
-        parts.push(if lower {
-            p.to_lowercase()
-        } else {
-            p.to_string()
-        })
-    });
-    parts
-}
-
 /// Hashed bag-of-tokens with sublinear tf weighting, L2-normalized.
 pub struct HashedEmbedder {
     dim: usize,
