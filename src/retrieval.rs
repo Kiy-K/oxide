@@ -35,6 +35,25 @@ impl Default for SearchOptions {
     }
 }
 
+/// Score-descending order with a stable tie-break on symbol id. `HashMap`
+/// iteration order is randomized per process, so without this, results tied
+/// on score (a common outcome of the discrete RRF/BM25 formulas) would sort
+/// differently across otherwise-identical runs — read-only search/context
+/// must be deterministic for the same index and query.
+fn cmp_score_id(a: &(u64, f32), b: &(u64, f32)) -> std::cmp::Ordering {
+    b.1.partial_cmp(&a.1)
+        .unwrap_or(std::cmp::Ordering::Equal)
+        .then_with(|| a.0.cmp(&b.0))
+}
+
+/// Same tie-break as [`cmp_score_id`], applied to assembled hits.
+fn cmp_hit(a: &SearchHit, b: &SearchHit) -> std::cmp::Ordering {
+    b.score
+        .partial_cmp(&a.score)
+        .unwrap_or(std::cmp::Ordering::Equal)
+        .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SearchHit {
     #[serde(flatten)]
@@ -233,7 +252,7 @@ impl<'a> RetrievalEngine<'a> {
         match opts.mode {
             SearchMode::LexicalOnly => {
                 let mut ranked: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
-                ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+                ranked.sort_by(cmp_score_id);
                 note(
                     &mut rrf,
                     &mut reasons,
@@ -247,7 +266,7 @@ impl<'a> RetrievalEngine<'a> {
             }
             SearchMode::VectorOnly => {
                 let mut ranked: Vec<_> = vec_scores.clone().into_iter().collect();
-                ranked.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+                ranked.sort_by(cmp_score_id);
                 note(
                     &mut rrf,
                     &mut reasons,
@@ -261,7 +280,7 @@ impl<'a> RetrievalEngine<'a> {
             }
             SearchMode::Hybrid => {
                 let mut lr: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
-                lr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+                lr.sort_by(cmp_score_id);
                 let lrr: Vec<(u64, f32, String)> = lr
                     .into_iter()
                     .take(FUSION_CANDIDATE_LIMIT)
@@ -270,7 +289,7 @@ impl<'a> RetrievalEngine<'a> {
                 note(&mut rrf, &mut reasons, lrr, FUSION_LEXICAL_WEIGHT);
 
                 let mut vr: Vec<_> = vec_scores.iter().map(|(id, s)| (*id, *s)).collect();
-                vr.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+                vr.sort_by(cmp_score_id);
                 let vrr: Vec<(u64, f32, String)> = vr
                     .into_iter()
                     .take(FUSION_CANDIDATE_LIMIT)
@@ -292,11 +311,7 @@ impl<'a> RetrievalEngine<'a> {
                 })
             })
             .collect();
-        hits.sort_by(|a, b| {
-            b.score
-                .partial_cmp(&a.score)
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
+        hits.sort_by(cmp_hit);
 
         // ---- structural expansion ----
         let base_scores = rrf.clone();
@@ -370,16 +385,8 @@ impl<'a> RetrievalEngine<'a> {
                 expanded_hits.push(hit);
             }
         }
-        direct_hits.sort_by(|a, b| {
-            b.score
-                .partial_cmp(&a.score)
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
-        expanded_hits.sort_by(|a, b| {
-            b.score
-                .partial_cmp(&a.score)
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
+        direct_hits.sort_by(cmp_hit);
+        expanded_hits.sort_by(cmp_hit);
         hits.clear();
         hits.extend(direct_hits);
         hits.extend(expanded_hits);

@@ -198,6 +198,37 @@ fn unavailable_embedder_is_a_nonzero_structured_failure() {
 }
 
 #[test]
+fn search_json_is_deterministic_across_process_runs_with_tied_scores() {
+    // Two symbols with identical bodies/signatures tie on both lexical and
+    // semantic score. Without a stable secondary sort key, their relative
+    // order in the output depends on HashMap iteration order, which is
+    // reseeded per process -- this must not flap across separate `oxide`
+    // invocations against the same unchanged index.
+    let tmp = tempfile::tempdir().unwrap();
+    write(
+        tmp.path(),
+        "src/one.py",
+        "def widget_one():\n    return do_widget_thing()\n",
+    );
+    write(
+        tmp.path(),
+        "src/two.py",
+        "def widget_two():\n    return do_widget_thing()\n",
+    );
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    let args = ["search", "widget", "--limit", "10", "--json"];
+    let first = json_stdout(&run(tmp.path(), &args));
+    for _ in 0..4 {
+        let next = json_stdout(&run(tmp.path(), &args));
+        assert_eq!(
+            first, next,
+            "search order must not flap across process runs"
+        );
+    }
+}
+
+#[test]
 fn context_json_is_deterministic_for_same_index_and_configuration() {
     let tmp = tempfile::tempdir().unwrap();
     write(
