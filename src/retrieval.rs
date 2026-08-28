@@ -476,6 +476,25 @@ impl<'a> RelationGraph<'a> {
             .collect()
     }
 
+    /// Provenance audit (Phase 1.1, deliberately not a type): every `reasons`
+    /// tag this engine emits falls into one of three confidence tiers. This
+    /// is documentation for a future structural-relationship phase to hook
+    /// into, not a data model change — no `Provenance` enum exists because
+    /// nothing here is currently ambiguous enough to need one.
+    ///
+    /// - **Direct** — the query matched this symbol itself: `lexical=`,
+    ///   `semantic=` tags from [`RetrievalEngine::search`].
+    /// - **Resolved** — a relation backed by parsed structure or a concrete
+    ///   file match, with ambiguous cases dropped rather than guessed:
+    ///   `parent←`/`child←`/`sibling←` (from the parser's own `Symbol.parent`
+    ///   field) and `imported-definition←` (import string resolved to one
+    ///   unambiguous indexed file via [`resolve_module`]; see its doc comment
+    ///   and the README's "Import resolution" note).
+    /// - **Heuristic** — identifier-name intersection with no scope analysis
+    ///   (see `# ponytail` note in `index.rs::extract_references`), so two
+    ///   unrelated symbols sharing a name can produce a false link:
+    ///   `uses←` (this symbol references a same-named definition) and
+    ///   `test←` (from [`RelationGraph::related_tests`]).
     pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
         let mut out: Vec<(String, &'a Symbol)> = Vec::new();
         if let Some(p) = &seed.parent {
