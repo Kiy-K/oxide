@@ -41,7 +41,27 @@ SWE-PolyBench__typescript__maintenance__bugfix__42165c4e                  -2    
 
 1. **`10750f29` pylint pyreverse — over-exploration from helpful pack.**
    Stock 0/7 (gave up after long wall). Budgeted 5/7 + 2 bad + +244s.
-   Pack surfaced test files; agent followed them, edited test scaffolding
+**wins = 6, ties = 4, losses = 3 (n=13)** — post-hoc classification,
+rule written **after** the 26 runs were inspected. Treat as exploratory, not confirmatory.
+
+Decision rule (gold-file count is the only hard signal; wall/bad are soft):
+```
+loss  := d_gold < 0
+      OR d_bad > +1
+      OR (d_wall > +60s AND d_gold <= 0)
+win   := d_gold > 0
+      OR (d_gold == 0 AND d_bad <= 0 AND d_wall <= 0 AND NOT both-zero)
+tie   := otherwise  (includes both-zero: stock and budgeted both failed to use gold)
+```
+Mixed-tradeoff rows (e.g. `2e76c8cd` same gold, +1 bad, +25s; `36989b6d` -1 gold, -2 bad, -22s)
+land in `tie` or `loss`, never `win`.
+
+Caveat: with this rule, `10750f29` (+5 gold, +2 bad, +244s) and `36989b6d` (-1 gold, -2 bad, -22s)
+are both `loss` — the first clearly is not one. A purely gold-count rule is too coarse; a
+cost-weighted rule (e.g. `gold − 0.3·bad − 0.01·wall`) would land `10750f29` in `win` and
+`36989b6d` in `loss`, which is closer to the qualitative story. **Not applied here** to
+keep the count reproducible from the row table; the cost-weighted count is left for a
+pre-registered follow-up.
    not just the pyreverse module. Better gold, but more noise.
 
 2. **`42165c4e` code-server 2-instance bug — pack missed lock helper.**
