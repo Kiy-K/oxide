@@ -21,7 +21,7 @@ Read commands never create an index. Status can describe a missing index; search
 
 ## Freshness
 
-Status compares the indexed file hash map against the current scanner result and file contents, and checks embedding completeness/provider identity. It reports stored embedder identity and a fixed schema version. This is a read-only check; it does not probe or mutate the embedder.
+Status compares the indexed file hash map against the current scanner result and file contents, and checks embedding completeness/provider identity. It reports stored embedder identity and a fixed schema version. The index is opened with `SQLITE_OPEN_READ_ONLY` and `PRAGMA query_only = ON`; it does not probe or mutate the embedder and does not write to the index file.
 
 ## Provider failures
 

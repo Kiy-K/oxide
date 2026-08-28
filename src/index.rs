@@ -83,6 +83,16 @@ impl SqliteStore {
         )?;
         Ok(Self { conn })
     }
+
+    /// Open an existing index without mutating the database file. Schema
+    /// setup is skipped; an incompatible index surfaces as `index_unreadable`.
+    pub fn open_read_only(path: &Path) -> Result<Self> {
+        let conn = Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .with_context(|| format!("open index at {}", path.display()))?;
+        conn.execute_batch("PRAGMA query_only = ON;")
+            .with_context(|| format!("set query_only on {}", path.display()))?;
+        Ok(Self { conn })
+    }
 }
 
 impl IndexBackend for SqliteStore {

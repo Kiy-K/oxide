@@ -249,3 +249,47 @@ fn invalid_repository_path_is_structured() {
     let error: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(error["error"]["code"], "repository_not_found");
 }
+
+#[test]
+fn read_only_index_does_not_create_wal_or_schema_artifacts() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    let db = tmp.path().join(".oxide").join("index.db");
+    let wal = tmp.path().join(".oxide").join("index.db-wal");
+    let shm = tmp.path().join(".oxide").join("index.db-shm");
+    let size_before = std::fs::metadata(&db).unwrap().len();
+    let mtime_before = std::fs::metadata(&db).unwrap().modified().unwrap();
+    let _ = std::fs::metadata(&wal);
+    let _ = std::fs::metadata(&shm);
+
+    std::thread::sleep(std::time::Duration::from_millis(50));
+    json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
+    json_stdout(&run(
+        tmp.path(),
+        &["search", "thing", "--mode", "lexical", "--json"],
+    ));
+    json_stdout(&run(
+        tmp.path(),
+        &[
+            "context",
+            "--task",
+            "thing",
+            "--budget-tokens",
+            "64",
+            "--json",
+        ],
+    ));
+
+    let size_after = std::fs::metadata(&db).unwrap().len();
+    let mtime_after = std::fs::metadata(&db).unwrap().modified().unwrap();
+    assert_eq!(
+        size_before, size_after,
+        "index file size changed during reads"
+    );
+    assert_eq!(
+        mtime_before, mtime_after,
+        "index file mtime changed during reads"
+    );
+}

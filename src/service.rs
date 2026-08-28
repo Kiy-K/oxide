@@ -439,7 +439,8 @@ impl RepositoryService {
                 ),
             ));
         }
-        SqliteStore::open(&path).map_err(|e| ServiceError::from_error("index_unreadable", e))
+        SqliteStore::open_read_only(&path)
+            .map_err(|e| ServiceError::from_error("index_unreadable", e))
     }
 }
 

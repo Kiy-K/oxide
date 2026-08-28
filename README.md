@@ -213,7 +213,9 @@ Stable JSON contracts:
   `omitted[]`; items use the same evidence fields plus `role` and
   `est_tokens`. The internal instruction-prefixed retrieval query is omitted.
 - Runtime JSON failures are `{ \"error\": { \"code\", \"message\" } }` with exit
-  1. Clap usage errors exit 2. Read commands do not create missing indexes.
+  1. Clap usage errors exit 2. Read commands open the index with
+  `SQLITE_OPEN_READ_ONLY` and `PRAGMA query_only = ON`; they never create
+  the index, never write to it, and never probe the embedder.
 - `src/service.rs` is the shared application boundary. A future MCP adapter
   can call it directly without duplicating CLI behavior.
 
