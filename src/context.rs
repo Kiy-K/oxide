@@ -187,6 +187,7 @@ pub fn build_context(
         b.score
             .partial_cmp(&a.score)
             .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
     let files_with_concrete: HashSet<String> = ranked
@@ -227,11 +228,14 @@ pub fn build_context(
         }
     }
     kept.sort_by(|a, b| {
-        rank(a.role).cmp(&rank(b.role)).then(
-            b.score
-                .partial_cmp(&a.score)
-                .unwrap_or(std::cmp::Ordering::Equal),
-        )
+        rank(a.role)
+            .cmp(&rank(b.role))
+            .then(
+                b.score
+                    .partial_cmp(&a.score)
+                    .unwrap_or(std::cmp::Ordering::Equal),
+            )
+            .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
     // ---- relevance floor ------------------------------------------------
@@ -333,11 +337,14 @@ pub fn build_context(
     }
     // Stable output: keep the ranked order we filled in.
     items.sort_by(|a, b| {
-        rank(a.role).cmp(&rank(b.role)).then(
-            b.score
-                .partial_cmp(&a.score)
-                .unwrap_or(std::cmp::Ordering::Equal),
-        )
+        rank(a.role)
+            .cmp(&rank(b.role))
+            .then(
+                b.score
+                    .partial_cmp(&a.score)
+                    .unwrap_or(std::cmp::Ordering::Equal),
+            )
+            .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
     Ok(ContextPack {

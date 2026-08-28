@@ -24,19 +24,25 @@ Without it OXIDE uses the offline hashed embedder.
 ## Usage
 
 ```bash
+oxide status --json
+oxide index . --json
+oxide search "where is authentication handled?" --json
+oxide context --task "fix refresh token validation" --budget-tokens 4096 --json
+
 oxide index .                       # index or incrementally update a repo
+oxide status .                      # show index freshness and counts
 oxide search RetryPolicy            # hybrid lexical+semantic+structural
-oxide search "authentication token refresh" --limit 8
 oxide search RetryPolicy --mode lexical   # exact identifier, no embeddings involved
-oxide search "where failed requests are retried" --mode semantic
 oxide review --diff HEAD~1          # review context from a git diff
 oxide stats
 oxide eval --config fixtures/benchmark.json   # committed benchmark
 ```
 
-Search output per hit: path, symbol, kind, line range, score, retrieval
-reason (`lexical=…; semantic=…; uses←X; test←Y`), and a source snippet.
-`--json` emits machine-readable output for agent integration.
+Agent-facing commands use `--json` and write only the result to stdout. Runtime
+failures return a JSON object with `error.code` and `error.message`, exit 1,
+and leave human diagnostics on stderr. Malformed command-line invocations are
+handled by Clap with exit 2. Read commands require an existing index; run
+`oxide index PATH --json` first.
 
 ## What gets indexed
 
@@ -59,8 +65,9 @@ src/
 ├── parser       tree-sitter plumbing + LanguageExtractor trait
 ├── languages    python.rs, typescript.rs (TS + TSX grammars)
 ├── symbols      core model, stable FNV-1a hashing
-├── index        SQLite storage behind IndexBackend trait + incremental pipeline
-├── embeddings   EmbeddingProvider trait + offline hashed embedder (256-dim)
+├── index        SQLite storage + incremental indexing pipeline
+├── embeddings   provider abstraction + offline hashed embedder
+├── service      stable repository/application boundary for CLI and future MCP
 ├── retrieval    BM25 lexical + cosine semantic fused via RRF + structural expansion
 ├── gitutil      unified-diff parsing (git CLI)
 ├── review       diff → changed symbols → related context pack
@@ -166,21 +173,66 @@ cargo fmt --check && cargo clippy --all-targets
 
 ## Using OXIDE from a coding agent
 
-OXIDE is designed as a context supplier for agents. Stable interfaces:
+OXIDE is designed as a context supplier for coding agents. The normal flow
+needs no retrieval-specific orchestration:
 
-- **Symbol identity**: `path#QualifiedName` (e.g. `src/net/retry.ts#ExponentialBackoff`)
-  — the same key used in benchmark ground truth and review output.
-- `oxide search "query" --json` → array of hits with flattened symbol metadata
-  (`file`, `qualified_name`, `kind`, `start_line`, `end_line`, …), `score`,
-  `reasons[]` (machine-readable evidence), and `snippet`.
-- `oxide review --diff HEAD~1 --json` → `{ range, changed_files[],
-  changed_symbols[], related[] }`; feed it straight into a model prompt or a
-  human reviewer.
-- Keep a process warm and call retrieval repeatedly: the lexical index and
-  vector cache are built once per engine instance, so follow-up queries skip
-  index construction.
+```bash
+oxide status --json
+oxide index . --json
+oxide search "where is authentication handled?" --json
+oxide context --task "fix refresh token validation" --budget-tokens 4096 --json
+```
 
-Guiding principle: fewer symbols with stronger evidence beats more code.
+Example machine-readable outputs:
+
+```json
+{"root":"/repo","index_exists":true,"is_current":true,"embedder_current":true,"files":42,"symbols":318,"embeddings":318,"embedder":"hashed-bow-256","supported_languages":["python","typescript","tsx"],"schema_version":1}
+```
+
+```json
+{"scanned_files":42,"changed_files":0,"reused_files":42,"removed_files":0,"new_symbols":0,"changed_symbols":0,"deleted_symbols":0,"embedded_symbols":0,"reused_embeddings":318,"embed_failures":0}
+```
+
+```json
+[{"id":"src/auth.py#AuthService.refresh_token","file":"src/auth.py","qualified_name":"AuthService.refresh_token","name":"refresh_token","kind":"method","language":"python","start_line":20,"end_line":42,"score":0.0312,"reasons":["lexical=1.234"],"snippet":"def refresh_token(token):"}]
+```
+
+```json
+{"task":"fix refresh token validation","budget_tokens":4096,"used_tokens":38,"items":[],"omitted":[]}
+```
+
+Stable JSON contracts:
+
+- `status` reports `root`, `index_exists`, `is_current`, `embedder_current`, indexed
+  counts, `embedder`, `supported_languages`, and `schema_version`.
+- `index` reports incremental scan/reuse/removal, symbol, and embedding counts.
+- `search` returns an array of compact evidence records. Each record uses
+  `id = path#qualified_name`, repository-relative `file`, symbol/name/kind,
+  language/location, score, `reasons[]`, and `snippet`.
+- `context` returns `task`, `budget_tokens`, `used_tokens`, `items[]`, and
+  `omitted[]`; items use the same evidence fields plus `role` and
+  `est_tokens`. The internal instruction-prefixed retrieval query is omitted.
+- Runtime JSON failures are `{ \"error\": { \"code\", \"message\" } }` with exit
+  1. Clap usage errors exit 2. Read commands do not create missing indexes.
+- `src/service.rs` is the shared application boundary. A future MCP adapter
+  can call it directly without duplicating CLI behavior.
+
+`review --json` remains `{ range, changed_files[], changed_symbols[], related[] }`
+for compatibility. Fewer symbols with stronger evidence beats more code.
+
+### JSON migration note
+
+Search JSON keeps its array shape and documented fields, and adds stable
+`id`/`name`/`language` fields. It no longer serializes internal `Symbol`
+fields such as `content_hash`, `imports`, `parent`, or `references`.
+Context JSON keeps its pack shape but omits `query_used`, which was an internal
+instruction-prefixed query; use `task` and each item's `reasons` instead.
+
+### Future MCP reuse audit
+
+An MCP adapter can call `RepositoryService` and reuse `StatusResult`,
+`IndexResult`, `Evidence`, and `ContextResult` directly. It should not reuse
+Clap parsing, human renderers, or duplicate index/retrieval orchestration.
 
 ## Limitations
 

@@ -1,8 +1,8 @@
-//! CLI: index / search / review / stats / eval.
+//! CLI: index / status / search / review / stats / context / eval.
 
-use crate::index::{update_index, SqliteStore};
-use crate::retrieval::{read_snippet, RetrievalEngine, SearchMode, SearchOptions};
-use std::path::{Path, PathBuf};
+use crate::retrieval::read_snippet;
+use crate::retrieval::SearchMode;
+use crate::service::{Evidence, RepositoryService, SearchRequest, ServiceError, StatusResult};
 
 #[derive(clap::Parser)]
 #[command(name = "oxide", about = "Local incremental code index and retrieval")]
@@ -21,6 +21,17 @@ pub enum Cmd {
         /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
         #[arg(long)]
         embedder: Option<String>,
+        /// Emit JSON.
+        #[arg(long)]
+        json: bool,
+    },
+    /// Report repository/index freshness and serving state.
+    Status {
+        /// Repository path.
+        path: Option<String>,
+        /// Emit JSON.
+        #[arg(long)]
+        json: bool,
     },
     /// Search the index.
     Search {
@@ -68,28 +79,47 @@ pub enum Cmd {
     },
 }
 
-fn find_repo_root(explicit: Option<&str>) -> anyhow::Result<PathBuf> {
-    if let Some(p) = explicit {
-        return Ok(PathBuf::from(p));
+#[derive(Debug)]
+pub struct CliError {
+    pub code: String,
+    pub message: String,
+    pub json: bool,
+}
+
+impl CliError {
+    fn new(code: impl Into<String>, message: impl Into<String>, json: bool) -> Self {
+        Self {
+            code: code.into(),
+            message: message.into(),
+            json,
+        }
     }
-    let mut cur = std::env::current_dir()?;
-    loop {
-        if cur.join(".git").exists() || cur.join(".oxide").exists() {
-            return Ok(cur);
-        }
-        if !cur.pop() {
-            anyhow::bail!("not inside a repository; pass a path");
-        }
+
+    fn service(error: ServiceError, json: bool) -> Self {
+        Self::new(error.code(), error.message(), json)
+    }
+
+    fn generic(error: impl std::fmt::Display, json: bool) -> Self {
+        Self::new("command_failed", error.to_string(), json)
     }
 }
 
-fn open_index(root: &Path) -> anyhow::Result<SqliteStore> {
-    SqliteStore::open(&root.join(".oxide").join("index.db"))
+impl std::fmt::Display for CliError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.message)
+    }
 }
 
-pub fn run(args: Args) -> anyhow::Result<()> {
+impl std::error::Error for CliError {}
+
+pub fn run(args: Args) -> Result<(), CliError> {
     match args.cmd {
-        Cmd::Index { path, embedder } => cmd_index(path.as_deref(), embedder.as_deref()),
+        Cmd::Index {
+            path,
+            embedder,
+            json,
+        } => cmd_index(path.as_deref(), embedder.as_deref(), json),
+        Cmd::Status { path, json } => cmd_status(path.as_deref(), json),
         Cmd::Search {
             query,
             limit,
@@ -97,13 +127,27 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             no_expand,
             json,
         } => {
-            let m = match mode.as_str() {
+            let mode = match mode.as_str() {
                 "lexical" => SearchMode::LexicalOnly,
                 "semantic" | "vector" => SearchMode::VectorOnly,
                 "hybrid" => SearchMode::Hybrid,
-                other => anyhow::bail!("unknown mode {other}; use lexical|semantic|hybrid"),
+                other => {
+                    return Err(CliError::new(
+                        "invalid_configuration",
+                        format!("unknown mode {other}; use lexical|semantic|hybrid"),
+                        json,
+                    ))
+                }
             };
-            cmd_search(&query, limit, m, !no_expand, json)
+            cmd_search(
+                &query,
+                SearchRequest {
+                    limit,
+                    mode,
+                    expand: !no_expand,
+                },
+                json,
+            )
         }
         Cmd::Review { diff, json } => cmd_review(&diff, json),
         Cmd::Stats => cmd_stats(),
@@ -112,204 +156,237 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             budget_tokens,
             json,
         } => cmd_context(&task, budget_tokens, json),
-        Cmd::Eval { config, json } => crate::eval::cmd_eval(&config, json),
+        Cmd::Eval { config, json } => {
+            crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
+        }
     }
 }
 
-fn cmd_index(path: Option<&str>, embedder_url: Option<&str>) -> anyhow::Result<()> {
-    let root = find_repo_root(path)?;
-    let mut store = open_index(&root)?;
-    let embedder = crate::embeddings::open_embedder(embedder_url)?;
-    let report = update_index(&root, &mut store, embedder.as_ref())?;
-    println!(
-        "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed",
-        root.display(),
-        report.scanned_files,
-        report.unchanged_files,
-        report.reparsed_files,
-        report.removed_files
-    );
-    println!(
-        "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused",
-        report.new_symbols,
-        report.changed_symbols,
-        report.deleted_symbols,
-        report.embedded_symbols,
-        report.reused_embeddings
-    );
-    println!("took {}ms", report.duration_ms);
+fn cmd_index(path: Option<&str>, embedder_url: Option<&str>, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
+    let result = service
+        .index(embedder_url)
+        .map_err(|e| CliError::service(e, json))?;
+    if json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&result).map_err(|e| CliError::generic(e, true))?
+        );
+    } else {
+        println!(
+            "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed",
+            service.root().display(),
+            result.scanned_files,
+            result.reused_files,
+            result.changed_files,
+            result.removed_files
+        );
+        println!(
+            "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused",
+            result.new_symbols,
+            result.changed_symbols,
+            result.deleted_symbols,
+            result.embedded_symbols,
+            result.reused_embeddings
+        );
+        println!("took {}ms", result.duration_ms);
+    }
     Ok(())
 }
 
-fn load_engine() -> anyhow::Result<(PathBuf, SqliteStore)> {
-    let root = find_repo_root(None)?;
-    let store = open_index(&root)?;
-    Ok((root, store))
+fn cmd_status(path: Option<&str>, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
+    let status = service.status().map_err(|e| CliError::service(e, json))?;
+    if json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&status).map_err(|e| CliError::generic(e, true))?
+        );
+    } else {
+        render_status(&status);
+    }
+    Ok(())
 }
 
-fn default_embedder() -> anyhow::Result<Box<dyn crate::embeddings::EmbeddingProvider>> {
-    crate::embeddings::open_embedder(None)
-}
-
-fn render_hit(root: &Path, h: &crate::retrieval::SearchHit) -> String {
-    let snippet = read_snippet(
-        &root.join(&h.symbol.file),
-        h.symbol.start_line,
-        h.symbol.end_line,
-        24,
+fn render_status(status: &StatusResult) {
+    println!("repository: {}", status.root);
+    println!(
+        "index:      {} ({})",
+        if status.index_exists {
+            "present"
+        } else {
+            "missing"
+        },
+        if status.is_current {
+            "current"
+        } else {
+            "stale"
+        }
     );
+    println!(
+        "files:      {}  symbols: {}  embeddings: {}",
+        status.files, status.symbols, status.embeddings
+    );
+    println!(
+        "embedder:   {}",
+        status.embedder.as_deref().unwrap_or("not indexed")
+    );
+    println!(
+        "languages:  {}",
+        status
+            .supported_languages
+            .iter()
+            .map(crate::symbols::Language::as_str)
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
+}
+
+fn cmd_search(query: &str, request: SearchRequest, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+    let hits = service
+        .search(query, request)
+        .map_err(|e| CliError::service(e, json))?;
+    if json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&hits).map_err(|e| CliError::generic(e, true))?
+        );
+    } else {
+        for hit in &hits {
+            println!("{}", render_evidence(hit));
+            println!();
+        }
+        if hits.is_empty() {
+            eprintln!("no results");
+        }
+    }
+    Ok(())
+}
+
+fn render_evidence(hit: &Evidence) -> String {
     format!(
-        "{}:{}-{} [{}] {} {}\n  score {:.4}  why: {}\n{}",
-        h.symbol.file,
-        h.symbol.start_line,
-        h.symbol.end_line,
-        h.symbol.kind,
-        h.symbol.qualified_name,
-        if h.symbol.exported { "(exported)" } else { "" },
-        h.score,
-        h.reasons.join("; "),
-        snippet
+        "{}:{}-{} [{}] {}\n  score {:.4}  why: {}\n{}",
+        hit.file,
+        hit.start_line,
+        hit.end_line,
+        hit.kind,
+        hit.qualified_name,
+        hit.score,
+        hit.reasons.join("; "),
+        hit.snippet
             .lines()
-            .map(|l| format!("  │ {l}"))
+            .map(|line| format!("  │ {line}"))
             .collect::<Vec<_>>()
             .join("\n")
     )
 }
 
-fn cmd_search(
-    query: &str,
-    limit: usize,
-    mode: SearchMode,
-    expand: bool,
-    json: bool,
-) -> anyhow::Result<()> {
-    let (root, store) = load_engine()?;
-    let embedder = default_embedder()?;
-    let engine = RetrievalEngine::new(&store, embedder.as_ref());
-    let opts = SearchOptions {
-        limit,
-        mode,
-        expand,
-    };
-    let mut hits = engine.search(query, &opts)?;
-    for h in &mut hits {
-        h.snippet = crate::retrieval::read_snippet(
-            &root.join(&h.symbol.file),
-            h.symbol.start_line,
-            h.symbol.end_line,
-            40,
-        );
-    }
+fn cmd_review(diff: &str, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+    let ctx = service
+        .review(diff)
+        .map_err(|e| CliError::service(e, json))?;
     if json {
-        println!("{}", serde_json::to_string_pretty(&hits)?);
-        return Ok(());
-    }
-    for h in &hits {
-        println!("{}", render_hit(&root, h));
-        println!();
-    }
-    if hits.is_empty() {
-        eprintln!("no results");
-    }
-    Ok(())
-}
-
-fn cmd_review(diff: &str, json: bool) -> anyhow::Result<()> {
-    let (root, store) = load_engine()?;
-    let embedder = default_embedder()?;
-    let ctx = crate::review::build_review_context(&root, &store, embedder.as_ref(), diff)?;
-    if json {
-        println!("{}", serde_json::to_string_pretty(&ctx)?);
-        return Ok(());
-    }
-    println!("review context for {} ({})", root.display(), ctx.range);
-    println!("changed files: {}", ctx.changed_files.join(", "));
-    for c in &ctx.changed_symbols {
         println!(
-            "\n● changed: {} [{}] {}:{}-{} (+{})",
-            c.symbol.qualified_name,
-            c.symbol.kind,
-            c.symbol.file,
-            c.symbol.start_line,
-            c.symbol.end_line,
-            c.added_lines
+            "{}",
+            serde_json::to_string_pretty(&ctx).map_err(|e| CliError::generic(e, true))?
         );
-    }
-    for r in &ctx.related {
+    } else {
         println!(
-            "\n◇ related: {} [{}] {}:{}-{}\n  why: {}\n{}",
-            r.symbol.qualified_name,
-            r.symbol.kind,
-            r.symbol.file,
-            r.symbol.start_line,
-            r.symbol.end_line,
-            r.reasons.join("; "),
-            read_snippet(
-                &root.join(&r.symbol.file),
+            "review context for {} ({})",
+            service.root().display(),
+            ctx.range
+        );
+        println!("changed files: {}", ctx.changed_files.join(", "));
+        for c in &ctx.changed_symbols {
+            println!(
+                "\n● changed: {} [{}] {}:{}-{} (+{})",
+                c.symbol.qualified_name,
+                c.symbol.kind,
+                c.symbol.file,
+                c.symbol.start_line,
+                c.symbol.end_line,
+                c.added_lines
+            );
+        }
+        for r in &ctx.related {
+            println!(
+                "\n◇ related: {} [{}] {}:{}-{}\n  why: {}\n{}",
+                r.symbol.qualified_name,
+                r.symbol.kind,
+                r.symbol.file,
                 r.symbol.start_line,
                 r.symbol.end_line,
-                16
-            )
-            .lines()
-            .map(|l| format!("  │ {l}"))
-            .collect::<Vec<_>>()
-            .join("\n")
-        );
+                r.reasons.join("; "),
+                read_snippet(
+                    &service.root().join(&r.symbol.file),
+                    r.symbol.start_line,
+                    r.symbol.end_line,
+                    16
+                )
+                .lines()
+                .map(|line| format!("  │ {line}"))
+                .collect::<Vec<_>>()
+                .join("\n")
+            );
+        }
     }
     Ok(())
 }
 
-fn cmd_stats() -> anyhow::Result<()> {
-    let (_root, store) = load_engine()?;
-    let stats = store.stats()?;
+fn cmd_stats() -> Result<(), CliError> {
+    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, false))?;
+    let stats = service.stats().map_err(|e| CliError::service(e, false))?;
     println!("files:      {}", stats.files);
     println!("symbols:    {}", stats.symbols);
     println!("embeddings: {}", stats.embeddings);
     Ok(())
 }
 
-fn cmd_context(task: &str, budget_tokens: usize, json: bool) -> anyhow::Result<()> {
-    use crate::context::{build_context, ContextOptions};
-    let (root, store) = load_engine()?;
-    let embedder = default_embedder()?;
-    let opts = ContextOptions {
-        budget_tokens,
-        ..ContextOptions::default()
-    };
-    let pack = build_context(&root, &store, embedder.as_ref(), task, &opts)?;
-
+fn cmd_context(task: &str, budget_tokens: usize, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+    let pack = service
+        .context(task, budget_tokens)
+        .map_err(|e| CliError::service(e, json))?;
     if json {
-        println!("{}", serde_json::to_string_pretty(&pack)?);
-        return Ok(());
-    }
-    println!(
-        "context for: {}\nembedder: {}  |  budget {} tok, used {} tok, {} items\n",
-        pack.task,
-        pack.embedder,
-        pack.budget_tokens,
-        pack.used_tokens,
-        pack.items.len()
-    );
-    for (i, item) in pack.items.iter().enumerate() {
         println!(
-            "{:>2}. [{:?}] {} [{}] {}:{}-{}  (~{} tok)\n    why: {}",
-            i + 1,
-            item.role,
-            item.symbol.qualified_name,
-            item.symbol.kind,
-            item.symbol.file,
-            item.symbol.start_line,
-            item.symbol.end_line,
-            item.est_tokens,
-            item.reasons.join("; ")
+            "{}",
+            serde_json::to_string_pretty(&pack).map_err(|e| CliError::generic(e, true))?
+        );
+    } else {
+        println!(
+            "context for: {}\nembedder: {}  |  budget {} tok, used {} tok, {} items\n",
+            pack.task,
+            pack.embedder,
+            pack.budget_tokens,
+            pack.used_tokens,
+            pack.items.len()
+        );
+        for (i, item) in pack.items.iter().enumerate() {
+            println!(
+                "{:>2}. [{:?}] {} [{}] {}:{}-{}  (~{} tok)\n    why: {}",
+                i + 1,
+                item.role,
+                item.evidence.qualified_name,
+                item.evidence.kind,
+                item.evidence.file,
+                item.evidence.start_line,
+                item.evidence.end_line,
+                item.est_tokens,
+                item.evidence.reasons.join("; ")
+            );
+        }
+        if !pack.omitted.is_empty() {
+            println!("\nomitted:");
+            for omitted in &pack.omitted {
+                println!("  - {}: {}", omitted.id, omitted.why);
+            }
+        }
+        println!(
+            "\nused {} of {} token budget",
+            pack.used_tokens, pack.budget_tokens
         );
     }
-    if !pack.omitted.is_empty() {
-        println!("\nomitted:");
-        for o in &pack.omitted {
-            println!("  - {}: {}", o.id, o.why);
-        }
-    }
-    println!("\n{}", pack.tail_summary());
     Ok(())
 }

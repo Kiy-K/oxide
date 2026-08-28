@@ -12,6 +12,11 @@ pub trait EmbeddingProvider: Sync {
     fn dim(&self) -> usize;
     fn embed(&self, text: &str) -> Vec<f32>;
 
+    /// Whether the provider has observed a successful request recently.
+    fn is_available(&self) -> bool {
+        true
+    }
+
     /// Embed many texts; providers with batch endpoints should override.
     /// Default preserves order via per-text calls.
     fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
@@ -199,6 +204,10 @@ impl HttpEmbedder {
             .first()
             .map(|v| v.len())
             .ok_or_else(|| anyhow::anyhow!("embedding endpoint returned no vectors: {endpoint}"))?;
+        anyhow::ensure!(
+            e.dim > 0,
+            "embedding endpoint returned empty vectors: {endpoint}"
+        );
         Ok(e)
     }
 
@@ -278,6 +287,24 @@ impl EmbeddingProvider for HttpEmbedder {
             out.extend(part.into_iter().take(chunk.len()));
         }
         out
+    }
+    fn is_available(&self) -> bool {
+        use std::sync::atomic::Ordering;
+        self.healthy.load(Ordering::Relaxed)
+    }
+}
+
+/// Return the configured provider identity without probing a network endpoint.
+pub fn configured_provider_name(explicit: Option<&str>) -> String {
+    let url = explicit
+        .map(str::to_string)
+        .or_else(|| std::env::var("OXIDE_EMBED_URL").ok());
+    match url {
+        Some(u) if !u.is_empty() => {
+            let model = std::env::var("OXIDE_EMBED_MODEL").unwrap_or_default();
+            format!("http:{model}@{u}")
+        }
+        _ => "hashed-bow-256".into(),
     }
 }
 

@@ -10,4 +10,5 @@ pub mod parser;
 pub mod retrieval;
 pub mod review;
 pub mod scanner;
+pub mod service;
 pub mod symbols;
