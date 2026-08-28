@@ -1,5 +1,28 @@
 13 agent tasks x conditions stock,budgeted
-SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/6 tools=  0 wall= 206.8s ctx=    0 bad=2
-SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 0/6 tools=  0 wall= 184.9s ctx= 1895 bad=0
-SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/1 tools=  0 wall=  65.6s ctx=    0 bad=0
-SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 1/1 tools=  0 wall=  90.7s ctx= 1579 bad=1
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/1 tools=  0 wall=  62.1s ctx=    0 bad=0
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 1/1 tools=  0 wall=  40.3s ctx= 1763 bad=0
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/1 tools=  0 wall=  42.8s ctx=    0 bad=0
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 1/1 tools=  0 wall=  14.2s ctx= 2057 bad=0
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 0/7 tools=  0 wall= 118.6s ctx=    0 bad=0
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 5/7 tools=  0 wall= 362.8s ctx= 2139 bad=2
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 0/3 tools=  0 wall=  81.3s ctx=    0 bad=0
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 0/3 tools=  0 wall=  21.7s ctx= 1400 bad=0
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/1 tools=  0 wall= 175.2s ctx=    0 bad=1
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 1/1 tools=  0 wall=  54.5s ctx=  494 bad=0
+SWE-Bench-Verified__python__maintenance__bug   stock     gold 1/1 tools=  0 wall= 121.7s ctx=    0 bad=2
+SWE-Bench-Verified__python__maintenance__bug   budgeted  gold 1/1 tools=  0 wall=  76.0s ctx= 1763 bad=2
+SWE-PolyBench__typescript__evolution__featur   stock     gold 2/4 tools=  0 wall= 127.9s ctx=    0 bad=1
+SWE-PolyBench__typescript__evolution__featur   budgeted  gold 2/4 tools=  0 wall= 110.7s ctx=    0 bad=1
+SWE-PolyBench__typescript__evolution__featur   stock     gold 0/2 tools=  0 wall=  67.7s ctx=    0 bad=1
+SWE-PolyBench__typescript__evolution__featur   budgeted  gold 0/2 tools=  0 wall=  13.8s ctx= 2453 bad=1
+SWE-PolyBench__typescript__maintenance__bugf   stock     gold 2/4 tools=  0 wall= 313.4s ctx=    0 bad=3
+SWE-PolyBench__typescript__maintenance__bugf   budgeted  gold 0/4 tools=  0 wall=  74.4s ctx= 2544 bad=1
+Multi-SWE-Bench__typescript__maintenance__bu   stock     gold 0/1 tools=  0 wall=  77.0s ctx=    0 bad=0
+Multi-SWE-Bench__typescript__maintenance__bu   budgeted  gold 0/1 tools=  0 wall=  74.4s ctx= 1828 bad=0
+Multi-SWE-Bench__typescript__maintenance__bu   stock     gold 0/4 tools=  0 wall=  73.3s ctx=    0 bad=0
+Multi-SWE-Bench__typescript__maintenance__bu   budgeted  gold 0/4 tools=  0 wall=  75.9s ctx= 1629 bad=0
+
+=== aggregate ===
+condition   gold_used  bad_edits   tools     wall     ctx
+stock            0.62       0.73     0.0   114.6s       0
+budgeted         0.69       0.64     0.0    83.5s    1643
