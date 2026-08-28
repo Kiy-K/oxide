@@ -1,14 +1,20 @@
 # Tier B Downstream Evaluation - OXIDE Frozen Production (d1076f5)
 
-**Date:** 2026-08-27 → 2026-08-28
-**Retrieval:** frozen canonical `d1076f5318587fa4deb7e3d329f0f844a6f26cf5`
-(RRF_K 60, LEX 0.6 / VEC 0.4, budget 4096 tok, ~1.8K tokens, no file-span, no tuning)
-**Embedder:** `qwen3-Q8_0` @ `http://127.0.0.1:8191/v1/embeddings`
-**Model:** `cline-pass/cline-pass/minimax-m3` (`opencode/x-preview-f-free` retired 503 mid-run)
-**Task set:** 13 tasks × 2 conditions (`stock`, `budgeted`) = 26 runs, paired
-**Repos:** `pallets/flask, mwaskom/seaborn, psf/requests, pylint-dev/pylint, pytest-dev/pytest, darkreader/darkreader, coder/code-server, tailwindlabs/tailwindcss`
-**Limit:** `2 per repo` (default)
+> **Scope: this is an exploratory utilization report, NOT the final
+> downstream-value conclusion requested by the task brief.** The brief
+> asks for solve/pass/regression/incomplete evaluation under
+> `Cancelled / provider-failed / dead-test / incomplete` = "no evidence".
+> This report only measures *utilization* (gold-file usage, unnecessary
+> edits, wall time, context tokens). It has **no test-pass evaluator**,
+> so it cannot answer question 1 (does OXIDE improve task success?)
+> or claim a solve-rate delta. The 5/5/3 classification below mixes
+> zero-diff runs into the count — exactly what the brief says to
+> exclude. Treat all numbers here as wall-time / utilization
+> exploratory only; the real downstream conclusion is left for a
+> follow-up run that adds a pytest-based solve evaluator and
+> re-aggregates the same 26 runs by `pass/fail/incomplete`.
 
+**Date:** 2026-08-27 → 2026-08-28
 ## Aggregate (26 runs)
 
 | cond      | gold_used | bad_edits | wall_avg | ctx_avg |
@@ -122,24 +128,42 @@ pre-registered follow-up.
    would be net-positive. **Recommend:** before shipping, pre-register a cost-weighted
    rule and re-run a held-out 10 tasks; if ≥7/10 net-positive, ship the ranker.
 
-## What's needed before claiming solve-quality
-
-- Fix `tool_calls_proxy` (parse `~/.local/share/opencode/log/opencode.log`
-  JSON events for `tool_use`).
-- Add test-pass evaluator (run `pytest` post-run on the diff; current
-  measurement is gold-file utilization, not solve rate).
-- The 4-task `x-preview-f-free` evidence is preserved at
-  `eval-agent/results/tierb_4task_orig/`. Headline numbers from that
-  small sample (`+0.25 gold, -0.25 bad, -31% wall`) are within range of
-  the 13-task numbers but should NOT be combined — different model.
 
 ## Known gaps
 
+### Gaps relative to the task brief
+
+These are the dimensions the brief asks for that this report does NOT measure:
+
+- **Solve / pass rate**: not measured. Tier B has no pytest post-run evaluator.
+  Q1 (does OXIDE improve task success?) cannot be answered from this data.
+- **Regression failures / incomplete / invalid changes**: not measured. The
+  `unnecessary_edit_files` field counts edits to non-gold files, which is a
+  *proxy* for "invalid" — not the same thing. Q1's regression dimension is
+  uncovered.
+- **Cancelled / provider-failed / dead-test filtering**: the 26 recs have
+  no `failed` field; per-run logs (in `logs/`) were not inspected for provider
+  errors. Zero-diff runs (e.g. `36989b6d` budgeted `files_touched=0`) are
+  included in the win/tie/loss count. The brief says those are "no evidence"
+  — they are NOT excluded here.
+- **Time to first relevant file / edit**: not measured. Requires parsing
+  `opencode.log` events, not done.
+- **Agent-generated tokens / cost**: not measured (no token logs).
+- **Files opened / read**: not measured (no `read` tool event parsing).
+- **Agent ignored OXIDE context?**: not measured. Would require comparing
+  which retrieved symbols the agent actually opened.
+
+### Other gaps
+
 - `tool_calls_proxy` = 0 throughout (cosmetic; doesn't affect gold/bad/wall/ctx).
-- Test-pass evaluator not implemented (Tier B measures diff utilization, not solve).
+  Harness counts `"\n$ "` which current opencode doesn't emit; needs JSON log
+  parsing.
 - 13-task sample is small for solve superiority claims; trend is robust, effect size is not.
 - Model changed mid-research (`x-preview-f-free` 503) — only Tier B is on the new model.
-
+- 4-task `x-preview-f-free` evidence is preserved at
+  `eval-agent/results/tierb_4task_orig/`. Headline numbers from that
+  small sample (`+0.25 gold, -0.25 bad, -31% wall`) are within range of
+  the 13-task numbers but should NOT be combined — different model.
 ## Raw data
 
 - `eval-agent/results/tierb_expanded/agent_results.jsonl` (26 recs, paired)
