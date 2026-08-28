@@ -15,7 +15,6 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-pub const INDEX_SCHEMA_VERSION: u32 = 1;
 const MAX_SEARCH_RESULTS: usize = 100;
 
 #[derive(Debug)]
@@ -72,6 +71,7 @@ pub struct IndexResult {
     pub embedded_symbols: usize,
     pub reused_embeddings: usize,
     pub embed_failures: usize,
+    pub errored_files: usize,
     #[serde(skip)]
     pub duration_ms: u128,
 }
@@ -89,6 +89,7 @@ impl From<IndexReport> for IndexResult {
             embedded_symbols: r.embedded_symbols,
             reused_embeddings: r.reused_embeddings,
             embed_failures: r.embed_failures,
+            errored_files: r.errored_files,
             duration_ms: r.duration_ms,
         }
     }
@@ -229,7 +230,7 @@ impl RepositoryService {
                 embeddings: 0,
                 embedder: None,
                 supported_languages: supported_languages(),
-                schema_version: INDEX_SCHEMA_VERSION,
+                schema_version: crate::index::SCHEMA_VERSION,
             });
         }
         let store = self.open_index_for_read()?;
@@ -261,7 +262,7 @@ impl RepositoryService {
             embeddings: stats.embeddings,
             embedder,
             supported_languages: supported_languages(),
-            schema_version: INDEX_SCHEMA_VERSION,
+            schema_version: crate::index::SCHEMA_VERSION,
         })
     }
 
@@ -278,7 +279,7 @@ impl RepositoryService {
         };
         self.validate_index(
             &store,
-            (request.mode != SearchMode::LexicalOnly).then_some(provider.name()),
+            (request.mode != SearchMode::LexicalOnly).then_some((provider.name(), provider.dim())),
         )?;
         let engine = RetrievalEngine::new(&store, provider.as_ref());
         let hits = engine
@@ -316,7 +317,7 @@ impl RepositoryService {
         let store = self.open_index_for_read()?;
         let provider =
             open_embedder(None).map_err(|e| ServiceError::from_error("embedder_unavailable", e))?;
-        self.validate_index(&store, Some(provider.name()))?;
+        self.validate_index(&store, Some((provider.name(), provider.dim())))?;
         let pack = build_context(
             &self.root,
             &store,
@@ -369,7 +370,7 @@ impl RepositoryService {
         let store = self.open_index_for_read()?;
         let provider =
             open_embedder(None).map_err(|e| ServiceError::from_error("embedder_unavailable", e))?;
-        self.validate_index(&store, Some(provider.name()))?;
+        self.validate_index(&store, Some((provider.name(), provider.dim())))?;
         let context = build_review_context(&self.root, &store, provider.as_ref(), diff)
             .map_err(|e| ServiceError::from_error("review_failed", e))?;
         if !provider.is_available() {
@@ -381,10 +382,15 @@ impl RepositoryService {
         Ok(context)
     }
 
+    /// `expected_embedder` is `(provider name, provider dimension)`: both must
+    /// match what is stored, not just the name — a server that changes
+    /// dimension while keeping the same name/URL would otherwise silently
+    /// drop every semantic hit (vectors of mismatched length are skipped by
+    /// the retrieval engine) instead of failing explicitly.
     fn validate_index(
         &self,
         store: &SqliteStore,
-        expected_embedder: Option<&str>,
+        expected_embedder: Option<(&str, usize)>,
     ) -> Result<(), ServiceError> {
         let indexed_root = store
             .get_meta("root")
@@ -395,6 +401,29 @@ impl RepositoryService {
                 "index belongs to a different repository; run `oxide index PATH`",
             ));
         }
+        // A version mismatch means this binary must not guess how to read the
+        // index; a missing meta key means the index predates version
+        // tracking and is treated as compatible (schema/extraction have not
+        // actually changed since v1, so no reindex is forced on upgrade).
+        for (key, current) in [
+            ("schema_version", crate::index::SCHEMA_VERSION),
+            ("extraction_version", crate::index::EXTRACTION_VERSION),
+        ] {
+            if let Some(stored) = store
+                .get_meta(key)
+                .map_err(|e| ServiceError::from_error("index_unreadable", e))?
+            {
+                let stored: u32 = stored.parse().unwrap_or(0);
+                if stored != current {
+                    return Err(ServiceError::new(
+                        "index_incompatible",
+                        format!(
+                            "index {key} {stored} is incompatible with this binary (expects {current}); delete .oxide and reindex"
+                        ),
+                    ));
+                }
+            }
+        }
         let stats = store
             .stats()
             .map_err(|e| ServiceError::from_error("index_unreadable", e))?;
@@ -404,14 +433,25 @@ impl RepositoryService {
                 "index contains no searchable symbols; run `oxide index PATH`",
             ));
         }
-        if let Some(expected) = expected_embedder {
+        if let Some((expected_name, expected_dim)) = expected_embedder {
             let indexed_embedder = store
                 .get_meta("embedder")
                 .map_err(|e| ServiceError::from_error("index_unreadable", e))?;
-            if indexed_embedder.as_deref() != Some(expected) || stats.embeddings != stats.symbols {
+            let indexed_dim = store
+                .get_meta("dim")
+                .map_err(|e| ServiceError::from_error("index_unreadable", e))?;
+            let name_matches = indexed_embedder.as_deref() == Some(expected_name);
+            let dim_matches = indexed_dim.as_deref() == Some(expected_dim.to_string().as_str());
+            if !name_matches || !dim_matches {
+                return Err(ServiceError::new(
+                    "provider_mismatch",
+                    "index embeddings were built with a different embedding provider or dimension; run `oxide index PATH`",
+                ));
+            }
+            if stats.embeddings != stats.symbols {
                 return Err(ServiceError::new(
                     "index_stale",
-                    "index embeddings do not match the configured provider; run `oxide index PATH`",
+                    "index embeddings are incomplete for the current provider; run `oxide index PATH`",
                 ));
             }
         }

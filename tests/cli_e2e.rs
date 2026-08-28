@@ -251,6 +251,74 @@ fn invalid_repository_path_is_structured() {
 }
 
 #[test]
+fn search_context_review_and_stats_accept_an_explicit_repository_path() {
+    // cwd for every invocation is an unrelated, non-repository directory:
+    // if any command silently fell back to discovering from cwd instead of
+    // honoring an explicit path, it would fail here rather than accidentally
+    // succeed against the wrong repository.
+    let elsewhere = tempfile::tempdir().unwrap();
+    let repo = tempfile::tempdir().unwrap();
+    write(repo.path(), "src/thing.py", "def thing():\n    return 1\n");
+    for args in [
+        vec!["init", "-q"],
+        vec!["add", "."],
+        vec![
+            "-c",
+            "user.email=t@t",
+            "-c",
+            "user.name=t",
+            "commit",
+            "-qm",
+            "init",
+        ],
+    ] {
+        let status = std::process::Command::new("git")
+            .args(&args)
+            .current_dir(repo.path())
+            .status()
+            .unwrap();
+        assert!(status.success(), "git {args:?}");
+    }
+
+    let repo_str = repo.path().to_str().unwrap();
+    json_stdout(&run(elsewhere.path(), &["index", repo_str, "--json"]));
+
+    let search = json_stdout(&run(
+        elsewhere.path(),
+        &["search", "thing", "--path", repo_str, "--json"],
+    ));
+    assert!(!search.as_array().unwrap().is_empty());
+
+    let context = json_stdout(&run(
+        elsewhere.path(),
+        &[
+            "context",
+            "--path",
+            repo_str,
+            "--task",
+            "understand thing",
+            "--budget-tokens",
+            "128",
+            "--json",
+        ],
+    ));
+    assert!(!context["items"].as_array().unwrap().is_empty());
+
+    let review = json_stdout(&run(
+        elsewhere.path(),
+        &["review", "--path", repo_str, "--diff", "HEAD", "--json"],
+    ));
+    assert!(review.get("changed_files").is_some());
+
+    // Stats has no --json flag; assert it runs cleanly and reports non-zero
+    // counts against the explicit repo rather than the unrelated cwd.
+    let stats_out = run(elsewhere.path(), &["stats", repo_str]);
+    assert!(stats_out.status.success(), "{stats_out:?}");
+    let stdout = String::from_utf8_lossy(&stats_out.stdout);
+    assert!(stdout.contains("files:      1"), "{stdout}");
+}
+
+#[test]
 fn read_only_index_does_not_create_wal_or_schema_artifacts() {
     let tmp = tempfile::tempdir().unwrap();
     write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
@@ -261,8 +329,10 @@ fn read_only_index_does_not_create_wal_or_schema_artifacts() {
     let shm = tmp.path().join(".oxide").join("index.db-shm");
     let size_before = std::fs::metadata(&db).unwrap().len();
     let mtime_before = std::fs::metadata(&db).unwrap().modified().unwrap();
-    let _ = std::fs::metadata(&wal);
-    let _ = std::fs::metadata(&shm);
+    assert!(
+        !wal.exists() && !shm.exists(),
+        "a clean index write must not leave WAL/SHM artifacts behind"
+    );
 
     std::thread::sleep(std::time::Duration::from_millis(50));
     json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
@@ -291,5 +361,174 @@ fn read_only_index_does_not_create_wal_or_schema_artifacts() {
     assert_eq!(
         mtime_before, mtime_after,
         "index file mtime changed during reads"
+    );
+    assert!(
+        !wal.exists() && !shm.exists(),
+        "read-only status/search/context must not create WAL/SHM artifacts"
+    );
+}
+
+fn spawn_indexers(root: &Path, n: usize) -> Vec<Output> {
+    let children: Vec<_> = (0..n)
+        .map(|_| {
+            Command::new(env!("CARGO_BIN_EXE_oxide"))
+                .args(["index", ".", "--json"])
+                .current_dir(root)
+                .stdout(std::process::Stdio::piped())
+                .stderr(std::process::Stdio::piped())
+                .spawn()
+                .unwrap()
+        })
+        .collect();
+    children
+        .into_iter()
+        .map(|c| c.wait_with_output().unwrap())
+        .collect()
+}
+
+#[test]
+fn concurrent_reindexing_of_an_existing_index_all_succeed() {
+    // Every writer takes an IMMEDIATE transaction and shares a busy_timeout,
+    // so once an index already exists, concurrent re-indexers are expected
+    // to succeed serially rather than fail with SQLITE_BUSY: this is the
+    // realistic repeated-indexing scenario (an agent or a periodic job
+    // re-running `oxide index` while another instance is doing the same).
+    let tmp = tempfile::tempdir().unwrap();
+    for i in 0..20 {
+        write(
+            tmp.path(),
+            &format!("src/m{i}.py"),
+            &format!("def f{i}():\n    return {i}\n"),
+        );
+    }
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    let outputs = spawn_indexers(tmp.path(), 4);
+    for o in &outputs {
+        let stderr = String::from_utf8_lossy(&o.stderr);
+        assert!(!stderr.contains("panicked"), "must not panic: {stderr}");
+    }
+    for o in &outputs {
+        assert!(
+            o.status.success(),
+            "concurrent re-index of an existing index must succeed: stdout={} stderr={}",
+            String::from_utf8_lossy(&o.stdout),
+            String::from_utf8_lossy(&o.stderr)
+        );
+    }
+
+    let status = json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
+    assert_eq!(status["files"], 20);
+    assert_eq!(status["is_current"], true);
+}
+
+#[test]
+fn concurrent_first_time_indexing_never_panics_or_corrupts_state() {
+    // Racing several *first-ever* indexers against a brand-new `.oxide`
+    // directory is a narrower, harsher scenario than re-indexing an existing
+    // one: creating the WAL-mode file and its schema for the first time can
+    // still occasionally lose a race to a clean, structured "database is
+    // locked" error even with busy_timeout + IMMEDIATE transactions (SQLite
+    // does not retry every busy variant). This is not claimed to always
+    // succeed, only to never panic, never silently corrupt the index, and to
+    // always leave the loser with a clear, structured, retryable error.
+    let tmp = tempfile::tempdir().unwrap();
+    for i in 0..20 {
+        write(
+            tmp.path(),
+            &format!("src/m{i}.py"),
+            &format!("def f{i}():\n    return {i}\n"),
+        );
+    }
+
+    let outputs = spawn_indexers(tmp.path(), 4);
+    let mut any_success = false;
+    for o in &outputs {
+        let stderr = String::from_utf8_lossy(&o.stderr);
+        assert!(!stderr.contains("panicked"), "must not panic: {stderr}");
+        if o.status.success() {
+            any_success = true;
+        } else {
+            // A loser must fail with a well-formed structured error on
+            // stdout, not garbage, a silent empty success, or a crash.
+            let stdout = String::from_utf8_lossy(&o.stdout);
+            let parsed: Value = serde_json::from_str(&stdout)
+                .unwrap_or_else(|e| panic!("non-JSON failure output: {stdout} ({e})"));
+            assert!(parsed["error"]["code"].is_string(), "{stdout}");
+        }
+    }
+    assert!(any_success, "at least one concurrent first-index must win");
+
+    // A follow-up run must always converge to a consistent, fully-indexed
+    // state regardless of how the race above played out.
+    let after = json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+    assert_eq!(after["scanned_files"], 20);
+    assert_eq!(after["errored_files"], 0);
+    let status = json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
+    assert_eq!(status["files"], 20);
+    assert_eq!(status["is_current"], true);
+}
+
+#[test]
+fn search_succeeds_while_another_process_is_indexing() {
+    let tmp = tempfile::tempdir().unwrap();
+    for i in 0..30 {
+        write(
+            tmp.path(),
+            &format!("src/m{i}.py"),
+            &format!("def target_{i}():\n    return {i}\n"),
+        );
+    }
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    // Touch every file so the next index has real reparse/embed work to do,
+    // widening the window a concurrent read could land inside.
+    for i in 0..30 {
+        write(
+            tmp.path(),
+            &format!("src/m{i}.py"),
+            &format!("def target_{i}():\n    return {}\n", i + 1),
+        );
+    }
+    let indexer = Command::new(env!("CARGO_BIN_EXE_oxide"))
+        .args(["index", ".", "--json"])
+        .current_dir(tmp.path())
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .unwrap();
+
+    for i in 0..30 {
+        let out = run(tmp.path(), &["search", &format!("target_{i}"), "--json"]);
+        assert!(
+            out.status.success(),
+            "read must succeed while a writer is indexing: {}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+    }
+
+    let indexer_out = indexer.wait_with_output().unwrap();
+    assert!(indexer_out.status.success(), "{indexer_out:?}");
+}
+
+#[test]
+fn repository_path_with_spaces_and_unicode_is_indexable_and_readable() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("repo with spaces and é");
+    write(&root, "src/thing.py", "def thing():\n    return 1\n");
+
+    json_stdout(&run(&root, &["index", ".", "--json"]));
+    let status = json_stdout(&run(&root, &["status", ".", "--json"]));
+    assert_eq!(status["index_exists"], true);
+
+    let search = json_stdout(&run(&root, &["search", "thing", "--json"]));
+    assert!(!search.as_array().unwrap().is_empty());
+
+    let wal = root.join(".oxide").join("index.db-wal");
+    let shm = root.join(".oxide").join("index.db-shm");
+    assert!(
+        !wal.exists() && !shm.exists(),
+        "spaces/unicode in the path must not break the read-only URI encoding \
+         path or silently fall back to creating WAL/SHM artifacts"
     );
 }

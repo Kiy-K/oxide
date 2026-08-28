@@ -36,6 +36,9 @@ pub enum Cmd {
     /// Search the index.
     Search {
         query: String,
+        /// Repository path. Defaults to discovering from the current directory.
+        #[arg(long)]
+        path: Option<String>,
         /// Max results.
         #[arg(short, long, default_value_t = 10)]
         limit: usize,
@@ -51,6 +54,9 @@ pub enum Cmd {
     },
     /// Assemble review context for a git diff.
     Review {
+        /// Repository path. Defaults to discovering from the current directory.
+        #[arg(long)]
+        path: Option<String>,
         /// Diff range (commit, A..B). Empty means worktree vs HEAD.
         #[arg(long, default_value = "HEAD~1")]
         diff: String,
@@ -58,9 +64,15 @@ pub enum Cmd {
         json: bool,
     },
     /// Show index statistics.
-    Stats,
+    Stats {
+        /// Repository path. Defaults to discovering from the current directory.
+        path: Option<String>,
+    },
     /// Build a compact, ordered, budgeted context pack for a coding task.
     Context {
+        /// Repository path. Defaults to discovering from the current directory.
+        #[arg(long)]
+        path: Option<String>,
         /// Natural-language task description (also drives lexical retrieval).
         #[arg(short = 't', long)]
         task: String,
@@ -122,6 +134,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
         Cmd::Status { path, json } => cmd_status(path.as_deref(), json),
         Cmd::Search {
             query,
+            path,
             limit,
             mode,
             no_expand,
@@ -140,6 +153,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                 }
             };
             cmd_search(
+                path.as_deref(),
                 &query,
                 SearchRequest {
                     limit,
@@ -149,13 +163,14 @@ pub fn run(args: Args) -> Result<(), CliError> {
                 json,
             )
         }
-        Cmd::Review { diff, json } => cmd_review(&diff, json),
-        Cmd::Stats => cmd_stats(),
+        Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json),
+        Cmd::Stats { path } => cmd_stats(path.as_deref()),
         Cmd::Context {
+            path,
             task,
             budget_tokens,
             json,
-        } => cmd_context(&task, budget_tokens, json),
+        } => cmd_context(path.as_deref(), &task, budget_tokens, json),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }
@@ -174,12 +189,13 @@ fn cmd_index(path: Option<&str>, embedder_url: Option<&str>, json: bool) -> Resu
         );
     } else {
         println!(
-            "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed",
+            "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed, {} errored",
             service.root().display(),
             result.scanned_files,
             result.reused_files,
             result.changed_files,
-            result.removed_files
+            result.removed_files,
+            result.errored_files
         );
         println!(
             "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused",
@@ -242,8 +258,13 @@ fn render_status(status: &StatusResult) {
     );
 }
 
-fn cmd_search(query: &str, request: SearchRequest, json: bool) -> Result<(), CliError> {
-    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+fn cmd_search(
+    path: Option<&str>,
+    query: &str,
+    request: SearchRequest,
+    json: bool,
+) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let hits = service
         .search(query, request)
         .map_err(|e| CliError::service(e, json))?;
@@ -282,8 +303,8 @@ fn render_evidence(hit: &Evidence) -> String {
     )
 }
 
-fn cmd_review(diff: &str, json: bool) -> Result<(), CliError> {
-    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+fn cmd_review(path: Option<&str>, diff: &str, json: bool) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let ctx = service
         .review(diff)
         .map_err(|e| CliError::service(e, json))?;
@@ -335,8 +356,8 @@ fn cmd_review(diff: &str, json: bool) -> Result<(), CliError> {
     Ok(())
 }
 
-fn cmd_stats() -> Result<(), CliError> {
-    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, false))?;
+fn cmd_stats(path: Option<&str>) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, false))?;
     let stats = service.stats().map_err(|e| CliError::service(e, false))?;
     println!("files:      {}", stats.files);
     println!("symbols:    {}", stats.symbols);
@@ -344,8 +365,13 @@ fn cmd_stats() -> Result<(), CliError> {
     Ok(())
 }
 
-fn cmd_context(task: &str, budget_tokens: usize, json: bool) -> Result<(), CliError> {
-    let service = RepositoryService::discover(None).map_err(|e| CliError::service(e, json))?;
+fn cmd_context(
+    path: Option<&str>,
+    task: &str,
+    budget_tokens: usize,
+    json: bool,
+) -> Result<(), CliError> {
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let pack = service
         .context(task, budget_tokens)
         .map_err(|e| CliError::service(e, json))?;

@@ -106,6 +106,52 @@ fn deleted_files_and_symbols_are_removed_from_persistent_index() {
 }
 
 #[test]
+fn unreadable_file_is_counted_as_errored_not_silently_dropped() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(&root.join("src/good.py"), "def good():\n    return 1\n");
+    // 0xFF is never a valid UTF-8 lead byte, so read_to_string fails on this
+    // file; it contains no NUL byte so the scanner's binary sniff still
+    // accepts it (it must reach the indexing pipeline to exercise the bug).
+    std::fs::write(root.join("src/bad.py"), b"def bad():\n    x = \xff\n").unwrap();
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    let r = update_index(root, &mut store, &emb).unwrap();
+
+    assert_eq!(r.scanned_files, 2, "both files must be discovered");
+    assert_eq!(
+        r.errored_files, 1,
+        "the unreadable file must be counted, not silently folded into unchanged"
+    );
+    assert_eq!(r.reparsed_files, 1, "only the readable new file is parsed");
+    assert_eq!(
+        r.scanned_files,
+        r.unchanged_files + r.reparsed_files + r.errored_files,
+        "accounting invariant must hold: discovered == unchanged + reparsed + errored"
+    );
+
+    let names: Vec<String> = store
+        .all_symbols()
+        .unwrap()
+        .into_iter()
+        .map(|s| s.name)
+        .collect();
+    assert!(names.contains(&"good".to_string()));
+    assert!(
+        !names.iter().any(|n| n == "bad"),
+        "unreadable file must not silently appear in the index"
+    );
+
+    // A later run over an unchanged unreadable file keeps reporting it as
+    // errored (not unchanged): it was never actually indexed.
+    let r2 = update_index(root, &mut store, &emb).unwrap();
+    assert_eq!(r2.errored_files, 1);
+    assert_eq!(r2.reparsed_files, 0);
+    assert_eq!(r2.unchanged_files, 1);
+}
+
+#[test]
 fn index_survives_reopen_from_disk() {
     let tmp = tempfile::tempdir().unwrap();
     let db = tmp.path().join(".oxide/index.db");

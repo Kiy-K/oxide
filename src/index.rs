@@ -8,6 +8,15 @@ use rusqlite::Connection;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
+/// SQLite table/column layout version. Bump when the physical schema changes
+/// in a way that is not purely additive (existing `CREATE TABLE IF NOT
+/// EXISTS` statements would not pick up the change on their own).
+pub const SCHEMA_VERSION: u32 = 1;
+/// Symbol-extraction semantics version: id composition, hashing, or which
+/// fields feed comparisons. Bump when a change would make an old index's
+/// stored symbols not directly comparable to freshly-parsed ones.
+pub const EXTRACTION_VERSION: u32 = 1;
+
 /// Storage abstraction. Small by design: swap SQLite for something else by
 /// implementing this trait.
 /// One parsed file: (repo-relative path, content hash, source text, symbols).
@@ -47,6 +56,7 @@ impl SqliteStore {
         }
         let conn =
             Connection::open(path).with_context(|| format!("open index at {}", path.display()))?;
+        conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.execute_batch(
             r#"
             PRAGMA journal_mode = WAL;
@@ -86,13 +96,42 @@ impl SqliteStore {
 
     /// Open an existing index without mutating the database file. Schema
     /// setup is skipped; an incompatible index surfaces as `index_unreadable`.
+    ///
+    /// Opened via the `immutable=1` URI parameter: a plain
+    /// `SQLITE_OPEN_READ_ONLY` connection to a WAL-mode database still
+    /// creates `-wal`/`-shm` files on first use (it needs the shared-memory
+    /// index to read consistently even though it writes nothing itself).
+    /// `immutable=1` tells SQLite the file will not change for the life of
+    /// the connection, skipping that setup entirely.
     pub fn open_read_only(path: &Path) -> Result<Self> {
-        let conn = Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
-            .with_context(|| format!("open index at {}", path.display()))?;
+        let uri = format!("file:{}?immutable=1", uri_encode_path(path));
+        let conn = Connection::open_with_flags(
+            &uri,
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_URI,
+        )
+        .with_context(|| format!("open index at {}", path.display()))?;
         conn.execute_batch("PRAGMA query_only = ON;")
             .with_context(|| format!("set query_only on {}", path.display()))?;
         Ok(Self { conn })
     }
+}
+
+/// Percent-encode a filesystem path for use inside a `file:` SQLite URI.
+/// Keeps ordinary path characters literal and escapes everything else
+/// (spaces, `%`, `?`, `#`, non-ASCII bytes) so unusual repository paths do
+/// not corrupt URI parsing.
+fn uri_encode_path(path: &Path) -> String {
+    let mut out = String::new();
+    for &b in path.to_string_lossy().as_bytes() {
+        let safe =
+            b.is_ascii_alphanumeric() || matches!(b, b'/' | b'.' | b'_' | b'-' | b':' | b'~');
+        if safe {
+            out.push(b as char);
+        } else {
+            out.push_str(&format!("%{b:02X}"));
+        }
+    }
+    out
 }
 
 impl IndexBackend for SqliteStore {
@@ -119,7 +158,13 @@ impl IndexBackend for SqliteStore {
     }
 
     fn replace_file(&mut self, file: &str, hash: u64, symbols: &[Symbol]) -> Result<()> {
-        let tx = self.conn.transaction()?;
+        // IMMEDIATE: acquire the write lock up front. A deferred
+        // transaction that reads before it writes can hit SQLITE_BUSY on
+        // the read->write lock upgrade, which busy_timeout does NOT retry
+        // (observed directly by racing indexers against the same repo).
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
         // Embeddings cascade-delete with their symbols; unchanged symbols are
         // re-inserted below and their embeddings restored by the indexer only
         // when needed. To preserve them across a rewrite we snapshot first.
@@ -191,7 +236,13 @@ impl IndexBackend for SqliteStore {
     }
 
     fn remove_files(&mut self, files: &[String]) -> Result<()> {
-        let tx = self.conn.transaction()?;
+        // IMMEDIATE: acquire the write lock up front. A deferred
+        // transaction that reads before it writes can hit SQLITE_BUSY on
+        // the read->write lock upgrade, which busy_timeout does NOT retry
+        // (observed directly by racing indexers against the same repo).
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
         for f in files {
             tx.execute("DELETE FROM symbols WHERE file = ?1", [f])?;
             tx.execute("DELETE FROM files WHERE path = ?1", [f])?;
@@ -362,6 +413,12 @@ pub struct IndexReport {
     /// not stored, so a later healthy run re-embeds them.
     #[serde(default)]
     pub embed_failures: usize,
+    /// Discovered files that could not be read/decoded (non-UTF8, IO error) or
+    /// whose language resolution failed unexpectedly during parsing. Not
+    /// stored; a later run retries them. Every discovered file must land in
+    /// exactly one of unchanged_files + reparsed_files + errored_files.
+    #[serde(default)]
+    pub errored_files: usize,
 }
 
 /// Run incremental indexing of the repo at `root` into `store`.
@@ -378,13 +435,14 @@ pub fn update_index(
 
     // Single read per file: bytes → UTF-8 string → hash + parse reuse it.
     let mut current: HashMap<String, String> = HashMap::with_capacity(files.len());
+    let mut unreadable_files: usize = 0;
     for p in &files {
         let rel = p.display().to_string();
         match std::fs::read_to_string(root.join(p)) {
             Ok(src) => {
                 current.insert(rel, src);
             }
-            Err(_) => continue, // unreadable/non-UTF8: skip
+            Err(_) => unreadable_files += 1, // non-UTF8/IO error: accounted as errored below
         }
     }
 
@@ -417,8 +475,10 @@ pub fn update_index(
         .map(|(f, src)| (f, crate::symbols::content_hash(src)))
         .filter(|(f, h)| stored.get(*f).copied() != Some(*h))
         .collect();
-    report.reparsed_files = to_parse.len();
-    report.unchanged_files = files.len() - to_parse.len();
+    // Unchanged is relative to files we could actually read; unreadable files
+    // are accounted separately below so the totals never silently disagree
+    // with `scanned_files`.
+    report.unchanged_files = current.len() - to_parse.len();
 
     // Parse all changed files first so reference matching sees both old
     // definitions and everything added in this run. Keep the source alive for
@@ -431,18 +491,25 @@ pub fn update_index(
         .clamp(1, 4);
     let chunk_size = to_parse.len().div_ceil(workers.max(1));
     let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
-    let mut results: Vec<Vec<ParsedFile>> = Vec::with_capacity(workers);
+    let mut results: Vec<(Vec<ParsedFile>, usize)> = Vec::with_capacity(workers);
     std::thread::scope(|scope| {
         let mut handles = Vec::new();
         for (w, chunk) in to_parse.chunks(chunk_size.max(1)).enumerate() {
             let current = &current;
-            results.push(Vec::new());
+            results.push((Vec::new(), 0));
             handles.push(scope.spawn(move || {
                 let mut out = Vec::with_capacity(chunk.len());
+                // Files reaching here were already language-filtered by the
+                // scanner; `unresolved` should stay 0 in practice, but a
+                // future scanner bug must be counted, never silently dropped.
+                let mut unresolved = 0usize;
                 for (rel, hash) in chunk {
                     let lang = match scanner::language_for_path(Path::new(rel)) {
                         Some(l) => l,
-                        None => continue,
+                        None => {
+                            unresolved += 1;
+                            continue;
+                        }
                     };
                     let src = &current[*rel];
                     let syms = crate::parser::parse_file(rel, src, lang);
@@ -453,20 +520,24 @@ pub fn update_index(
                         symbols: syms,
                     });
                 }
-                (w, out)
+                (w, out, unresolved)
             }));
         }
         for h in handles {
-            let (w, out) = h
+            let (w, out, unresolved) = h
                 .join()
                 .map_err(|_| anyhow::anyhow!("parse worker panicked"))?;
-            results[w] = out;
+            results[w] = (out, unresolved);
         }
         Ok::<(), anyhow::Error>(())
     })?;
-    for mut part in results {
+    let mut parse_unresolved: usize = 0;
+    for (mut part, unresolved) in results {
         parsed.append(&mut part);
+        parse_unresolved += unresolved;
     }
+    report.reparsed_files = parsed.len();
+    report.errored_files = unreadable_files + parse_unresolved;
 
     // Known bare definition names across the project (for reference matching).
     let mut known_names: HashSet<String> = existing
@@ -576,7 +647,20 @@ pub fn update_index(
     store.set_meta("root", &root.display().to_string())?;
     store.set_meta("embedder", embedder.name())?;
     store.set_meta("dim", &embedder.dim().to_string())?;
+    store.set_meta("schema_version", &SCHEMA_VERSION.to_string())?;
+    store.set_meta("extraction_version", &EXTRACTION_VERSION.to_string())?;
     report.duration_ms = started.elapsed().as_millis();
+
+    // Every discovered file must land in exactly one accounted state; a
+    // mismatch means a file silently vanished somewhere in the pipeline.
+    anyhow::ensure!(
+        report.scanned_files == report.unchanged_files + report.reparsed_files + report.errored_files,
+        "index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {}",
+        report.scanned_files,
+        report.unchanged_files,
+        report.reparsed_files,
+        report.errored_files
+    );
     Ok(report)
 }
 
