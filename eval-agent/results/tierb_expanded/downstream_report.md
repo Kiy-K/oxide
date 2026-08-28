@@ -41,7 +41,7 @@ SWE-PolyBench__typescript__maintenance__bugfix__42165c4e                  -2    
 
 1. **`10750f29` pylint pyreverse — over-exploration from helpful pack.**
    Stock 0/7 (gave up after long wall). Budgeted 5/7 + 2 bad + +244s.
-**wins = 6, ties = 4, losses = 3 (n=13)** — post-hoc classification,
+**wins = 5, ties = 5, losses = 3 (n=13)** — post-hoc classification,
 rule written **after** the 26 runs were inspected. Treat as exploratory, not confirmatory.
 
 Decision rule (gold-file count is the only hard signal; wall/bad are soft):
@@ -71,10 +71,10 @@ pre-registered follow-up.
 
 ## 7 final answers
 
-1. **Task success (gold_used) overall?** +0.07 average, `9/13` paired wins, 2 clear
+1. **Task success (gold_used) overall?** +0.07 average, `5/13` paired wins, 2 clear
    losses with traceable attribution. **Null-to-small positive**, signal is in
    the *variance* (some tasks benefit, some regress), not in mean shift.
-2. **Reduce exploration?** **Yes — wall −27%** aggregate; `9/13` paired wins on
+2. **Reduce exploration?** **Yes — wall −27%** aggregate; `5/13` paired wins on
    wall. `9f3a5677` saved 121 s. Budget is real exploration efficiency, not noise.
 3. **Reduce unnecessary edits / tool calls?** Bad edits −0.09, small.
    `tool_calls_proxy` is `0.0` throughout — harness counts `"\n$ "` that
