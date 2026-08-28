@@ -35,14 +35,27 @@ SWE-PolyBench__typescript__evolution__feature__41cd3842                    +0   
 SWE-PolyBench__typescript__maintenance__bugfix__42165c4e                  -2    -2   -239   2544  ⚠ LOSS (pack missed lock helper)
 ```
 
-**wins = 9, ties = 2, losses = 2 (n=13)**
+**wins = 5, ties = 5, losses = 3 (n=13)** — post-hoc classification, rule
+written after the 26 runs were inspected. Treat as exploratory, not confirmatory.
 
-## Failure attribution (2 losses)
+## Failure attribution (3 losses; 1 is label-only)
 
-1. **`10750f29` pylint pyreverse — over-exploration from helpful pack.**
-   Stock 0/7 (gave up after long wall). Budgeted 5/7 + 2 bad + +244s.
-**wins = 5, ties = 5, losses = 3 (n=13)** — post-hoc classification,
-rule written **after** the 26 runs were inspected. Treat as exploratory, not confirmatory.
+
+1. **`10750f29` pylint pyreverse — label-only loss.** d_bad=+2 trips the rule even
+   though d_gold=+5. Stock 0/7 (gave up after long wall). Budgeted 5/7 + 2 bad +
+   +244s. The agent followed surfaced test files into scaffolding; better gold but
+   more noise. A cost-weighted rule would call this net-positive.
+2. **`36989b6d` seaborn 0.13 nominal — agent produced no diff.** d_gold=−1, d_bad=−2, d_wall=−22s.
+   Stock touched 3 files, used 1/6 gold (plus 2 unnecessary: `doc/whatsnew/...`,
+   `tests/_core/test_plot.py`). Budgeted touched 0 files at all — `files_touched=0`,
+   `unnecessary=0`, `gold=0/6`. The agent stopped without writing a patch. Whether
+   the pack caused the no-op is not evidenced by the harness (no `agent_output_excerpt`
+   beyond the last 300 chars); the count says only that budgeted finished faster
+   with no edit and no gold hit.
+3. **`42165c4e` code-server 2-instance — pack missed lock helper.** d_gold=−2.
+   Stock 2/4 (lock file via search); budgeted 0/4 (pack ranked the wrapper
+   functions, missed the `cli.ts` lock-singleton that actually holds the
+   bug). Faster but wrong target.
 
 Decision rule (gold-file count is the only hard signal; wall/bad are soft):
 ```
