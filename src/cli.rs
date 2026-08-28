@@ -2,7 +2,9 @@
 
 use crate::retrieval::read_snippet;
 use crate::retrieval::SearchMode;
-use crate::service::{Evidence, RepositoryService, SearchRequest, ServiceError, StatusResult};
+use crate::service::{
+    ErrorAction, Evidence, RepositoryService, SearchRequest, ServiceError, StatusResult,
+};
 
 #[derive(clap::Parser)]
 #[command(name = "oxide", about = "Local incremental code index and retrieval")]
@@ -94,25 +96,35 @@ pub enum Cmd {
 #[derive(Debug)]
 pub struct CliError {
     pub code: String,
+    pub action: ErrorAction,
     pub message: String,
     pub json: bool,
 }
 
 impl CliError {
-    fn new(code: impl Into<String>, message: impl Into<String>, json: bool) -> Self {
+    fn new(
+        code: impl Into<String>,
+        action: ErrorAction,
+        message: impl Into<String>,
+        json: bool,
+    ) -> Self {
         Self {
             code: code.into(),
+            action,
             message: message.into(),
             json,
         }
     }
 
     fn service(error: ServiceError, json: bool) -> Self {
-        Self::new(error.code(), error.message(), json)
+        Self::new(error.code(), error.action(), error.message(), json)
     }
 
+    /// Malformed CLI invocation or a wire-serialization failure: neither maps
+    /// to an `ErrorCode`, so there is nothing retryable to hint at beyond
+    /// fixing the input.
     fn generic(error: impl std::fmt::Display, json: bool) -> Self {
-        Self::new("command_failed", error.to_string(), json)
+        Self::new("command_failed", ErrorAction::Stop, error.to_string(), json)
     }
 }
 
@@ -147,6 +159,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                 other => {
                     return Err(CliError::new(
                         "invalid_configuration",
+                        ErrorAction::Stop,
                         format!("unknown mode {other}; use lexical|semantic|hybrid"),
                         json,
                     ))

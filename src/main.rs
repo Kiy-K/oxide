@@ -8,6 +8,7 @@ fn main() {
                 serde_json::json!({
                     "error": {
                         "code": e.code,
+                        "action": e.action.as_str(),
                         "message": e.message,
                     }
                 })

@@ -39,8 +39,10 @@ oxide eval --config fixtures/benchmark.json   # committed benchmark
 ```
 
 Agent-facing commands use `--json` and write only the result to stdout. Runtime
-failures return a JSON object with `error.code` and `error.message`, exit 1,
-and leave human diagnostics on stderr. Malformed command-line invocations are
+failures return a JSON object with `error.code`, `error.action`, and
+`error.message`, exit 1, and leave human diagnostics on stderr. `action` is
+one of `index`, `repair`, `retry`, `fall_back`, `stop` — what to do next
+without parsing `message`. Malformed command-line invocations are
 handled by Clap with exit 2. Read commands require an existing index; run
 `oxide index PATH --json` first.
 
@@ -212,10 +214,20 @@ Stable JSON contracts:
 - `context` returns `task`, `budget_tokens`, `used_tokens`, `items[]`, and
   `omitted[]`; items use the same evidence fields plus `role` and
   `est_tokens`. The internal instruction-prefixed retrieval query is omitted.
-- Runtime JSON failures are `{ \"error\": { \"code\", \"message\" } }` with exit
-  1. Clap usage errors exit 2. Read commands open the index with
-  `SQLITE_OPEN_READ_ONLY` and `PRAGMA query_only = ON`; they never create
-  the index, never write to it, and never probe the embedder.
+- Runtime JSON failures are `{ \"error\": { \"code\", \"action\", \"message\" } }`
+  with exit 1. `code` is one of a small stable set (`repository_not_found`,
+  `no_source_files`, `index_missing`, `index_empty`, `index_stale`,
+  `index_incompatible`, `index_unreadable`, `provider_mismatch`,
+  `embedder_unavailable`, `index_failed`, `search_failed`, `context_failed`,
+  `review_failed`, `status_failed`); `action` is one of `index`, `repair`,
+  `retry`, `fall_back`, `stop` so a caller can decide what to do next without
+  parsing `message`. Clap usage errors exit 2. Read commands open the index
+  via the `immutable=1` SQLite URI parameter (never `SQLITE_OPEN_READ_ONLY`
+  alone, which still creates `-wal`/`-shm` files against a WAL-mode
+  database); they never create the index, never write to it, and never probe
+  the embedder. Writes use `BEGIN IMMEDIATE` plus a shared `busy_timeout` so
+  concurrent `oxide index` runs against an existing index serialize instead
+  of racing.
 - `src/service.rs` is the shared application boundary. A future MCP adapter
   can call it directly without duplicating CLI behavior.
 

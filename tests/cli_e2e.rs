@@ -271,6 +271,62 @@ fn stale_status_and_no_source_error_are_explicit() {
 }
 
 #[test]
+fn json_errors_carry_a_machine_actionable_action_alongside_the_code() {
+    let tmp = tempfile::tempdir().unwrap();
+    let missing = tmp.path().join("does-not-exist");
+    let output = run(tmp.path(), &["status", missing.to_str().unwrap(), "--json"]);
+    let error: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(error["error"]["code"], "repository_not_found");
+    assert_eq!(
+        error["error"]["action"], "stop",
+        "a bad path is not retryable without changing the input"
+    );
+
+    std::fs::create_dir(tmp.path().join(".git")).unwrap();
+    write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
+    let output = run(tmp.path(), &["search", "thing", "--json"]);
+    let error: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(error["error"]["code"], "index_missing");
+    assert_eq!(error["error"]["action"], "index");
+}
+
+#[test]
+fn corrupt_index_file_is_a_structured_error_not_a_panic() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    // Overwrite the real SQLite file with garbage bytes.
+    std::fs::write(
+        tmp.path().join(".oxide").join("index.db"),
+        b"not a database",
+    )
+    .unwrap();
+
+    for args in [
+        vec!["status", ".", "--json"],
+        vec!["search", "thing", "--json"],
+        vec![
+            "context",
+            "--task",
+            "thing",
+            "--budget-tokens",
+            "64",
+            "--json",
+        ],
+    ] {
+        let output = run(tmp.path(), &args);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(!stderr.contains("panicked"), "{args:?}: {stderr}");
+        assert!(!output.status.success(), "{args:?}");
+        let error: Value = serde_json::from_slice(&output.stdout)
+            .unwrap_or_else(|e| panic!("{args:?}: non-JSON output ({e}): {output:?}"));
+        assert_eq!(error["error"]["code"], "index_unreadable", "{args:?}");
+        assert_eq!(error["error"]["action"], "repair", "{args:?}");
+    }
+}
+
+#[test]
 fn invalid_repository_path_is_structured() {
     let tmp = tempfile::tempdir().unwrap();
     let missing = tmp.path().join("does-not-exist");
