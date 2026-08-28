@@ -235,8 +235,25 @@ def main() -> None:
                     continue
                 try:
                     rec = run_condition(t, cond, tmp, out_dir / "logs")
+                except subprocess.TimeoutExpired as e:
+                    # Index/opencode wall-cap hit. Preserve the attempt so condition
+                    # denominators stay honest; mark it failed (gold=0, bad=0).
+                    gctx = json.loads(t["gold_context"]) if isinstance(t["gold_context"], str) else t["gold_context"]
+                    gold_n = len({g.get("file") for g in gctx})
+                    kind = "index_timeout" if "index" in str(e.cmd) else "opencode_timeout"
+                    rec = {
+                        "task": t["instance_id"], "repo": t["repo"], "language": t["language"],
+                        "condition": cond, "ctx_tokens": 0, "wall_s": float(e.timeout or 0),
+                        "tool_calls_proxy": 0, "files_touched": 0, "gold_files_utilized": 0,
+                        "gold_files_total": gold_n, "unnecessary_edit_files": 0,
+                        "unnecessary_list": [], "agent_output_excerpt": "",
+                        "failed": True, "failure_class": kind,
+                    }
+                    print(f"FAIL {t['instance_id'][:40]} {cond}: {kind} ({e.timeout}s)")
                 except Exception as e:
-                    print(f"FAIL {t['instance_id'][:40]} {cond}: {e}")
+                    print(f"FAIL {t['instance_id'][:40]} {cond}: {type(e).__name__}: {e}")
+                    # No record -> denominator drops. Acceptable for one-off errors,
+                    # but caller should re-run to fill the gap if seen in aggregate.
                     continue
                 sink.write(json.dumps(rec) + "\n")
                 sink.flush()
