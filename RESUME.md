@@ -9,6 +9,26 @@
 - Earlier `cline-pass/cline-pass/minimax-m3` 13-task small expanded was
   killed; its partial workdirs and logs remain under
   `eval-agent/results/tierb_expanded/` (preserved).
+- Exploratory 26-record JSONL preserved at
+  `eval-agent/results/tierb_expanded/agent_results.jsonl` (13 tasks ×
+  2 conditions, old model, no `solve_status` field — diff-utilization
+  only, not solve-rate evidence).
+
+## Deferred until after refactor (intentionally NOT done today)
+- `scripts/agent_eval/tierb_solver.py` committed at `ef6f9df` is the
+  pytest + dead_test detect scaffold; it does NOT yet:
+  - retain the agent's git diff (no Jaccard-vs-gold fallback)
+  - wire 3 condition-counterbalanced reps (only 1 run per (task,cond))
+  - classify `solve_status` via pytest pass/fail on the patched worktree
+    (current fields: gold_files_utilized, files_touched, wall_s,
+    ctx_tokens, tool_calls_proxy)
+- No Tier B verification smoke on a known-good task (flask 2e76c8cd).
+- No 13-task × 2-condition run producing a paired solve_rate table.
+- No aggregation of solve/pass/incomplete separately.
+- No 7-brief-question answers backed by solve-rate data.
+- No committed `eval-agent/results/tierb_expanded/downstream_report.md`
+  refresh — the existing file is pre-refactor narrative; do not treat it
+  as current.
 
 ## What's known to be broken / missing
 - `scripts/agent_eval/tierb_solver.py::run_pytest` previously returned
