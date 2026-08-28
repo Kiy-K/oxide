@@ -91,7 +91,7 @@ pre-registered follow-up.
    recoverable: (a) test-file penalty in `why` reasons, (b) better
    `__module__`-level ranking for singleton helpers.
 7. **Useful enough to ship?** **Borderline, with two targeted fixes.** Wall
-   −27% with `9/13` wins is meaningful; the 2 losses are not stochastic —
+−27% with `5/13` wins is meaningful; the 2 losses are not stochastic —
    they're predictable failure modes. **Recommend:** add test-file
    penalty + `__module__`-aware rank, then re-evaluate; if `9/13 → 11/13`,
    ship.
