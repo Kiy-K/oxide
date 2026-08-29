@@ -118,10 +118,16 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
                 if path == root.as_path() {
                     return WalkState::Continue;
                 }
-                // The walker descends into gitignored dirs only if configured to
-                // not skip; with git_ignore enabled they are pruned already.
+                // Denylisted directories (node_modules, venv, vendor, build, ...)
+                // must not just be excluded from results but pruned from descent:
+                // otherwise any source file underneath (e.g. venv/lib/*/site-packages/*.py)
+                // still gets walked and indexed as noise.
                 if is_dir {
-                    return WalkState::Continue;
+                    return if is_denied(path, true) {
+                        WalkState::Skip
+                    } else {
+                        WalkState::Continue
+                    };
                 }
                 if is_denied(path, false) {
                     return WalkState::Continue;
@@ -181,6 +187,18 @@ mod tests {
         write(&root.join("node_modules/pkg/index.js"), "q\n");
         write(&root.join("__pycache__/app.cpython-311.pyc"), "\x00\x01");
         write(&root.join("public/app.min.js"), "var a=1;");
+        // Non-hidden denylisted dirs containing real supported-extension
+        // files: these are only pruned by DENYLIST_DIRS (not by extension
+        // filtering or dotfile hiding), so they exercise directory pruning
+        // specifically rather than the extension whitelist.
+        write(
+            &root.join("venv/lib/python3.11/site-packages/pkg/mod.py"),
+            "def vendored():\n    return 1\n",
+        );
+        write(
+            &root.join("vendor/thirdparty/lib.py"),
+            "def vendored2():\n    return 1\n",
+        );
         write(&root.join("README.md"), "# hi\n");
         write(&root.join("package-lock.json"), "{}");
         write(&root.join(".gitignore"), "/ignored/\n*.log\n");
@@ -199,6 +217,8 @@ mod tests {
         assert!(names.contains(&"lib/comp.tsx".to_string()));
         assert!(!names.iter().any(|n| n.contains("node_modules")));
         assert!(!names.iter().any(|n| n.contains("__pycache__")));
+        assert!(!names.iter().any(|n| n.contains("venv")));
+        assert!(!names.iter().any(|n| n.contains("vendor")));
         assert!(!names.iter().any(|n| n.ends_with(".min.js")));
         assert!(!names.iter().any(|n| n.contains("ignored")));
         assert!(!names.iter().any(|n| n.ends_with(".md")));

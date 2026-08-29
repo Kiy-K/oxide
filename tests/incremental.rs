@@ -106,6 +106,43 @@ fn deleted_files_and_symbols_are_removed_from_persistent_index() {
 }
 
 #[test]
+fn renaming_a_symbol_within_a_still_present_file_counts_as_deleted() {
+    // A symbol can disappear without its file being deleted -- e.g. a
+    // rename, or a function removed while its siblings stay. `replace_file`
+    // deletes the whole file's symbol rows and reinserts the fresh set, so
+    // this is a real deletion, not just a "changed" symbol; the report must
+    // count it under deleted_symbols, not silently fold it into new_symbols.
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(&root.join("src/thing.py"), FOO_V1); // foo, bar
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+
+    write(
+        &root.join("src/thing.py"),
+        "def foo_renamed():\n    return 1\n\ndef bar():\n    return foo_renamed() + 1\n",
+    );
+    let r = update_index(root, &mut store, &emb).unwrap();
+
+    assert_eq!(r.new_symbols, 1, "foo_renamed is a new symbol id");
+    assert_eq!(
+        r.deleted_symbols, 1,
+        "the old foo symbol id is gone, not just changed"
+    );
+
+    let names: Vec<String> = store
+        .all_symbols()
+        .unwrap()
+        .into_iter()
+        .map(|s| s.name)
+        .collect();
+    assert!(!names.contains(&"foo".to_string()));
+    assert!(names.contains(&"foo_renamed".to_string()));
+}
+
+#[test]
 fn unreadable_file_is_counted_as_errored_not_silently_dropped() {
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();

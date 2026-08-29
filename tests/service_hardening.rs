@@ -94,10 +94,11 @@ fn incompatible_index_version_is_a_structured_error_not_a_guess() {
 }
 
 #[test]
-fn legacy_index_without_version_meta_stays_compatible() {
-    // An index written before version tracking existed carries no
-    // schema_version/extraction_version meta keys at all; it must remain
-    // usable without forcing every existing user to reindex on upgrade.
+fn index_without_version_meta_is_incompatible_not_legacy_compatible() {
+    // v0.1 has no installed base to preserve compatibility for. An index
+    // missing schema_version/extraction_version meta (corrupt write, or a
+    // hypothetical pre-tracking binary) must fail explicit and force a
+    // reindex rather than being silently trusted.
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     write(&root.join("src/thing.py"), "def thing():\n    return 1\n");
@@ -116,7 +117,7 @@ fn legacy_index_without_version_meta_stays_compatible() {
     }
 
     let service = RepositoryService::discover(Some(root.to_str().unwrap())).unwrap();
-    let hits = service
+    let err = service
         .search(
             "thing",
             SearchRequest {
@@ -125,6 +126,7 @@ fn legacy_index_without_version_meta_stays_compatible() {
                 expand: false,
             },
         )
-        .unwrap();
-    assert!(!hits.is_empty());
+        .unwrap_err();
+    assert_eq!(err.code(), "index_incompatible");
+    assert_eq!(err.action(), oxide::service::ErrorAction::Repair);
 }

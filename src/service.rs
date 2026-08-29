@@ -508,27 +508,35 @@ impl RepositoryService {
                 format!("{reason}; run `oxide index PATH`"),
             ));
         }
-        // A version mismatch means this binary must not guess how to read the
-        // index; a missing meta key means the index predates version
-        // tracking and is treated as compatible (schema/extraction have not
-        // actually changed since v1, so no reindex is forced on upgrade).
+        // v0.1 has no installed base to stay backward-compatible with, so a
+        // version mismatch OR a missing meta key both mean this binary must
+        // not guess how to read the index: reindex is the unambiguous fix
+        // in either case.
         for (key, current) in [
             ("schema_version", crate::index::SCHEMA_VERSION),
             ("extraction_version", crate::index::EXTRACTION_VERSION),
         ] {
-            if let Some(stored) = store
+            let stored = store
                 .get_meta(key)
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-            {
-                let stored: u32 = stored.parse().unwrap_or(0);
-                if stored != current {
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+            let stored: u32 = match stored {
+                Some(s) => s.parse().unwrap_or(0),
+                None => {
                     return Err(ServiceError::new(
                         ErrorCode::IndexIncompatible,
                         format!(
-                            "index {key} {stored} is incompatible with this binary (expects {current}); delete .oxide and reindex"
+                            "index is missing {key} metadata and cannot be trusted; delete .oxide and reindex"
                         ),
-                    ));
+                    ))
                 }
+            };
+            if stored != current {
+                return Err(ServiceError::new(
+                    ErrorCode::IndexIncompatible,
+                    format!(
+                        "index {key} {stored} is incompatible with this binary (expects {current}); delete .oxide and reindex"
+                    ),
+                ));
             }
         }
         let stats = store

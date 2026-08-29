@@ -2,7 +2,7 @@
 name = "oxide"
 version = "0.1.0"
 edition = "2021"
-description = "Fast local incremental structure-aware code index and retrieval engine"
+description = "A local Context Engine for coding agents, powered by Selective Code Indexing"
 license = "MIT"
 
 [dependencies]

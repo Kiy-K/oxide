@@ -665,13 +665,31 @@ pub fn update_index(
         }
     }
 
+    // `replace_file` deletes every existing symbol row for a changed file and
+    // reinserts the freshly parsed set, so a symbol removed or renamed within
+    // an otherwise-still-present file (not just a whole-file deletion) is a
+    // real deletion too. Group the pre-edit snapshot by file so that delta is
+    // counted, not just symbols new/changed_symbols above it.
+    let mut existing_ids_by_file: HashMap<&str, HashSet<u64>> = HashMap::new();
+    for s in &existing {
+        existing_ids_by_file
+            .entry(s.file.as_str())
+            .or_default()
+            .insert(s.id());
+    }
+
     for pf in &parsed {
+        let mut new_ids: HashSet<u64> = HashSet::with_capacity(pf.symbols.len());
         for s in &pf.symbols {
+            new_ids.insert(s.id());
             match before_symbols.get(&s.id()) {
                 None => report.new_symbols += 1,
                 Some(old) if *old != s.content_hash => report.changed_symbols += 1,
                 Some(_) => {}
             }
+        }
+        if let Some(old_ids) = existing_ids_by_file.get(pf.file.as_str()) {
+            report.deleted_symbols += old_ids.difference(&new_ids).count();
         }
         store.replace_file(&pf.file, pf.hash, &pf.symbols)?;
     }

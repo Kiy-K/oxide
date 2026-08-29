@@ -1,12 +1,16 @@
 # OXIDE
 
-Fast local, incremental, structure-aware code index and retrieval engine.
-Given a repository, OXIDE indexes code at the **symbol level** (Tree-sitter)
-and returns the smallest useful set of relevant symbols — for search, review
-context, debugging, and downstream coding agents.
+A **Context Engine for coding agents**, powered by **Selective Code
+Indexing**: given a repository, OXIDE indexes code at the symbol level and
+returns the smallest useful, bounded working set of relevant code for a
+task — not every byte reachable from the project root.
 
-Not an LLM wrapper. The product is the code intelligence and retrieval layer.
-Works fully offline; the default embedder is deterministic and needs no model.
+OXIDE is not a vector database, not a code graph, not a Tree-sitter indexer,
+and not a RAG framework — those are layered implementation components
+underneath it (see Architecture below), not what it is. It is not an LLM
+wrapper either; the product is the context-supply layer a coding agent
+calls before it starts reading and editing. Works fully offline; the
+default embedder is deterministic and needs no model.
 
 ## Install
 
@@ -61,6 +65,35 @@ imports, references, parent — enough to reconstruct context later.
 
 ## Architecture
 
+Conceptually, a request flows through one pipeline regardless of which
+transport (CLI today; MCP in a future phase) initiates it:
+
+```text
+Repository
+   |
+Selective Code Indexing
+   |-- syntax evidence      (Tree-sitter: symbols, spans, signatures)
+   |-- lexical evidence     (BM25 over names/signatures/paths/bodies)
+   |-- semantic evidence    (embedding provider; offline hashed by default)
+   `-- structural evidence  (parent/child, imports, references, tests)
+       |
+Evidence retrieval
+       |
+ranking / canonicalization   (RRF fusion, deterministic tie-break)
+       |
+context allocation           (token-budgeted pack, direct hits kept, omitted[] explains cuts)
+       |
+bounded coding working set
+       |
+coding agent
+```
+
+Tree-sitter, the embedding provider, SQLite storage, and the RRF fusion
+math are implementation details of "Selective Code Indexing" and "ranking /
+canonicalization" above — swappable, and not the thing an agent needs to
+know about to use OXIDE (see `docs/agent-usage-policy.md`). The module
+layout below maps onto that pipeline directly:
+
 ```text
 src/
 ├── scanner      repo discovery & filtering (ignore crate + denylists)
@@ -90,15 +123,19 @@ Deletions purge symbols and stale embeddings in the same pass.
 ### Performance
 
 Measured by `scripts/perf.sh` (release build, deterministic synthetic repo,
-this machine, warm OS cache — treat as relative indicators, not absolutes):
+this machine, warm OS cache — treat as relative indicators, not absolutes).
+Full baseline with peak RSS, index size, context latency, hardware, and
+regression thresholds: [`docs/perf-baseline-v0.1.md`](docs/perf-baseline-v0.1.md).
 
 | repo size              | cold index | no-change reindex | single-symbol edit | hybrid search |
 |------------------------|-----------:|------------------:|-------------------:|--------------:|
-| 804 files / 3,211 sym  | ~300 ms    | ~32 ms            | ~48 ms             | ~40 ms        |
-| 2,404 files / 9,611 sym| ~880 ms    | ~106 ms           | ~121 ms            | ~120 ms       |
+| 804 files / 3,211 sym  | ~378 ms    | ~40 ms            | ~41 ms             | ~60 ms        |
+| 2,404 files / 9,611 sym| ~1,069 ms  | ~126 ms           | ~153 ms            | ~170 ms       |
+| 6,004 files / 24,011 sym| ~2,614 ms | ~385 ms           | ~314 ms            | ~430 ms       |
 
-A one-symbol edit rewrites exactly its own embedding (3,209/3,211 reused at
-the small scale). Optimizations that produced these numbers:
+A one-symbol edit rewrites exactly its own embedding plus its enclosing
+module (2 changed symbols; 24,009/24,011 embeddings reused at the largest
+scale). Optimizations that produced these numbers:
 
 - single read per changed file (hash + parse + references share the buffer)
 - batched embedding loads (one SQL query, not N) with lazy per-engine cache
