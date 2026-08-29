@@ -1,4 +1,4 @@
-# Agent context overhead audit (sections J/K)
+# Agent context overhead audit (Phase 2 + 2.1)
 
 The failure mode this guards against: *OXIDE saves N repository tokens but
 costs more than N explaining itself.* Two costs to measure separately —
@@ -20,11 +20,11 @@ per-call cost of every response it returns.
 
 The actual compact MCP surface is larger than the earlier "well under 200"
 schema estimate because each tool includes its typed input object and safety
-constraints. It remains a small recurring cost: approximately 223 tokens for
+constraints. It remains a small recurring cost: approximately 217 tokens for
 the two schemas plus initialization instructions, measured as chars/4 from
-the real `tools/list` and `initialize` responses. The hypothetical full
-surface estimate includes the existing seven CLI operations and their current
-argument definitions; those tools are not exposed.
+the real `tools/list` and `initialize` responses.
+The hypothetical full-surface estimate includes the existing seven CLI
+operations and their current argument definitions; those tools are not exposed.
 
 The skill's one-time ~800 tokens is spent once per session, not per call — a
 single `context` response at typical budget (README's official benchmark:
@@ -55,11 +55,8 @@ review only.
 | `est_tokens` (context only) | useful for navigation | yes — lets an agent reason about the pack's budget usage |
 | `omitted[].id`/`.why` (context only) | useful for navigation | yes — tells the agent what didn't fit and why, so it knows to broaden rather than assume completeness |
 
-No field fell into "diagnostic-only" or "redundant." This matches what
-Phase 1.1 already did in the JSON-contract work (`README.md`'s "JSON
-migration note": internal `Symbol` fields like `content_hash`, `imports`,
-`parent`, `references`, and the internal `query_used` string were already
-stripped from wire output before this phase started). The conclusion of
-this audit is that no further trimming is needed, not that trimming was
-skipped — recorded here so the audit itself is on record, not just its
-absence of findings.
+No field fell into "diagnostic-only" or "redundant" in the Phase 2 audit.
+Phase 2.1's smaller real-agent sample classified path/location/symbol/snippet
+as observably useful, ranking/provenance fields as possibly useful, and token
+accounting as apparently unused in that sample. This is not enough evidence
+to change the frozen DTO; see `docs/evals/phase-2.1/results.md`.

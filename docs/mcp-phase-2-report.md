@@ -1,5 +1,8 @@
 # OXIDE v0.1 MCP Phase 2 Report
 
+Phase 2.1 real-agent integration results supersede the early behavioral
+sample in section 6; see `docs/evals/phase-2.1/`.
+
 ## 1. Architecture and footprint
 
 The MCP transport is a short newline-delimited JSON-RPC adapter in

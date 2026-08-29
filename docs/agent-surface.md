@@ -36,9 +36,9 @@ not duplicated retrieval logic.
 | `eval` | **DIAGNOSTIC/INTERNAL** | The committed benchmark is for maintainers and CI. |
 
 The CLI retains every human/admin command. Only the agent-facing MCP tool list
-is scoped to `context` and `search`, based on the Phase 1.2 evaluation in
-`docs/compact-toolset-evaluation.md` and the Phase 2 evaluation in
-`docs/mcp-phase-2-report.md`.
+is scoped to `context` and `search`, based on the Phase 1.2 evaluation,
+the Phase 2 transport report, and the Phase 2.1 real-agent evaluation in
+`docs/evals/phase-2.1/`.
 
 ## MCP adapter contract
 

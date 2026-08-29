@@ -55,8 +55,9 @@ handled by Clap with exit 2. Read commands require an existing index; run
 `context(task, path?, token_budget?)` and `search(query, path?, limit?)`, both
 backed directly by `RepositoryService`. Read tools never index or repair:
 service errors retain their `{ code, action, message }` semantics in an MCP
-tool error. See `docs/mcp-phase-2-report.md` for measured overhead and client
-evaluation.
+tool error. Phase 2.1 real-agent evaluation is recorded in
+`docs/evals/phase-2.1/` and found model-sensitive OXIDE activation; it does
+not claim token savings when native exploration telemetry is unavailable.
 
 ## What gets indexed
 
@@ -268,12 +269,11 @@ Stable JSON contracts:
   `review_failed`, `status_failed`); `action` is one of `index`, `repair`,
   `retry`, `fall_back`, `stop` so a caller can decide what to do next without
   parsing `message`. Clap usage errors exit 2. Read commands open the index
-  via the `immutable=1` SQLite URI parameter (never `SQLITE_OPEN_READ_ONLY`
-  alone, which still creates `-wal`/`-shm` files against a WAL-mode
-  database); they never create the index, never write to it, and never probe
-  the embedder. Writes use `BEGIN IMMEDIATE` plus a shared `busy_timeout` so
-  concurrent `oxide index` runs against an existing index serialize instead
-  of racing.
+  with plain `SQLITE_OPEN_READ_ONLY`; they never create the index, never write
+  database content, or probe the embedder. A WAL reader may create or touch
+  `-wal`/`-shm` coordination files. Writes use `BEGIN IMMEDIATE` plus a shared
+  `busy_timeout` so concurrent `oxide index` runs against an existing index
+  serialize instead of racing.
 - `src/service.rs` is the shared application boundary used by both CLI and the
   MCP adapter; neither transport duplicates index or retrieval behavior.
 
