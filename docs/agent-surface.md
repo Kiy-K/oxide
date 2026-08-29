@@ -39,7 +39,7 @@ agent calls tools reflexively?
 | operation | class | why |
 |-----------|-------|-----|
 | `context` | **AGENT CORE** | The default entry point for unfamiliar-task discovery — one call returns a budgeted, ranked, deduplicated working set. This is the operation the "Context Engine" framing is built around. |
-| `search` | **AGENT CORE** | Narrower follow-up once a context pack exists and one specific question remains (e.g. "where else is this called"). Distinct from `context`: different budget shape, no allocation/omission bookkeeping. Whether it's worth a *second* tool (vs. folding into `context`) is exactly what section I's experiment tests — see `docs/context-engineering-notes.md` / eval results for the empirical call. |
+| `search` | **AGENT CORE** | Narrower follow-up once a context pack exists and one specific question remains (e.g. "where else is this called"). Distinct from `context`: different budget shape, no allocation/omission bookkeeping. Confirmed empirically, not assumed: section I's evaluation (`docs/compact-toolset-evaluation.md`) found the correct call for a follow-up-question task shape was `search`, not `context`, in every condition — `context` alone is not a sufficient agent surface. |
 | `index` | **AGENT CORE (rare, reactive)** | Unavoidable bootstrap: `context`/`search` refuse to run on a missing/stale index by design (read commands never index, repair, or mutate — see `docs/agent-usage-policy.md`). An agent only needs to call `index` reactively, when a prior `context`/`search` call fails with `index_missing`/`index_stale` and `action: "index"` — never proactively, never per-query. This keeps it in the agent set without making it a repeat-call tool. |
 | `status` | **HUMAN/ADMIN** | Every scenario where an agent might be tempted to call `status` first ("is the index current?") is already answered more cheaply by just calling `context`/`search` and reading the structured error's `code`/`action` if it fails. `status` is fully subsumed for agent purposes; it remains valuable for a human checking freshness, debugging, or scripting. |
 | `stats` | **HUMAN/ADMIN** | Pure count introspection (files/symbols/embeddings) with no coding decision attached — a subset of `status`'s fields with a different (non-JSON, human) renderer. No agent workflow needs raw counts. |
@@ -49,15 +49,14 @@ agent calls tools reflexively?
 No command was removed from the CLI as a result of this audit — `status`,
 `stats`, `review`, and `eval` remain fully available for humans, scripts,
 and CI. Only the *agent-facing* surface (Skill instructions today; an MCP
-tool list in Phase 2) is scoped down to `context` (+ `search`, pending the
-Phase 1.2 evaluation).
+tool list in Phase 2) is scoped down to `context` + `search`, per the
+Phase 1.2 evaluation in `docs/compact-toolset-evaluation.md`.
 
 ## What this means for a future MCP adapter
 
-A Phase 2 MCP server should expose exactly the AGENT CORE row(s) above as
-tools — `context`, and `search` if the evaluation in section I supports it
-— calling `RepositoryService` directly (per the "Future MCP reuse audit" in
-`README.md`). `index` is reachable only as the reactive action named in a
+A Phase 2 MCP server should expose exactly the AGENT CORE rows above as
+tools — `context` and `search` — calling `RepositoryService` directly (per
+the "Future MCP reuse audit" in `README.md`). `index` is reachable only as the reactive action named in a
 structured error, not as a proactively-offered tool, to avoid an agent
 treating "reindex the whole repo" as a routine step. `status`/`stats`/
 `review`/`eval` stay CLI-only unless a concrete future agent persona (e.g. a
