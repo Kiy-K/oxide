@@ -90,15 +90,19 @@ Deletions purge symbols and stale embeddings in the same pass.
 ### Performance
 
 Measured by `scripts/perf.sh` (release build, deterministic synthetic repo,
-this machine, warm OS cache — treat as relative indicators, not absolutes):
+this machine, warm OS cache — treat as relative indicators, not absolutes).
+Full baseline with peak RSS, index size, context latency, hardware, and
+regression thresholds: [`docs/perf-baseline-v0.1.md`](docs/perf-baseline-v0.1.md).
 
 | repo size              | cold index | no-change reindex | single-symbol edit | hybrid search |
 |------------------------|-----------:|------------------:|-------------------:|--------------:|
-| 804 files / 3,211 sym  | ~300 ms    | ~32 ms            | ~48 ms             | ~40 ms        |
-| 2,404 files / 9,611 sym| ~880 ms    | ~106 ms           | ~121 ms            | ~120 ms       |
+| 804 files / 3,211 sym  | ~378 ms    | ~40 ms            | ~41 ms             | ~60 ms        |
+| 2,404 files / 9,611 sym| ~1,069 ms  | ~126 ms           | ~153 ms            | ~170 ms       |
+| 6,004 files / 24,011 sym| ~2,614 ms | ~385 ms           | ~314 ms            | ~430 ms       |
 
-A one-symbol edit rewrites exactly its own embedding (3,209/3,211 reused at
-the small scale). Optimizations that produced these numbers:
+A one-symbol edit rewrites exactly its own embedding plus its enclosing
+module (2 changed symbols; 24,009/24,011 embeddings reused at the largest
+scale). Optimizations that produced these numbers:
 
 - single read per changed file (hash + parse + references share the buffer)
 - batched embedding loads (one SQL query, not N) with lazy per-engine cache
