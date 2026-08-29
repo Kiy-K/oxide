@@ -114,3 +114,31 @@ reading/editing when the task doesn't need discovery.
   same-named symbols. Weight your trust in a result accordingly.
 - It never edits code, runs tests, or verifies its own output. That
   responsibility never leaves the agent.
+
+## Recommended AGENTS.md snippet
+
+A consumer project wiring OXIDE into a coding agent's persistent
+instructions (its own `AGENTS.md`, `CLAUDE.md`, or equivalent) should
+paste this snippet verbatim rather than write a new one — it is a
+restatement of this document, kept intentionally small, and should not be
+expanded with example CLI syntax (that belongs in `README.md`'s
+"Using OXIDE from a coding agent" section and the bundled
+`skills/oxide-code-context/SKILL.md`, not in always-resident context):
+
+```markdown
+## OXIDE
+
+For unfamiliar repository work where the implementation path is not
+already known, use `oxide context` before broad grep/read exploration.
+Use `oxide search` for focused follow-up discovery. For exact known-file
+or literal tasks, use normal tools directly. Read source before editing.
+```
+
+This exact wording was chosen over several tested alternatives —
+including a version spelling out literal command syntax and a version
+rewording only the bundled Skill's activation description — in a
+real-agent evaluation comparing activation behavior across variants; see
+`docs/evals/phase-2.3/recommendation.md` for the evidence and
+`docs/evals/phase-2.3/policy-variants.md` for what was tried and
+rejected. Do not hand-edit this snippet's wording without similar
+evidence that a change helps.
