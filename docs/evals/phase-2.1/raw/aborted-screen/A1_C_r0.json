@@ -1,0 +1,19 @@
+{
+  "task": "A1",
+  "bucket": "A",
+  "repo": "py_repo",
+  "condition": "C",
+  "rep": 0,
+  "wall": 73.72774958610535,
+  "calls": {
+    "context": 0,
+    "search": 0,
+    "native_search": 0,
+    "reads": 0,
+    "total": 0
+  },
+  "tools": [],
+  "tokens": null
+}
+---raw---
+{"type":"error","timestamp":1787981917467,"sessionID":"ses_fb3fa2ba9ffet3xdeWwiwnO7Ar","error":{"name":"APIError","data":{"message":"Error 429: You have reached your monthly Clinepass limit. The limit resets in 8d 21h, please try again later.","statusCode":429,"isRetryable":true,"responseHeaders":{"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-length":"163","content-security-policy":"default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'; font-src 'self'; connect-src 'self' https://api.cline.bot; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content; report-uri /csp-report; report-to csp-endpoint","content-type":"application/json","date":"Sat, 29 Aug 2026 05:38:37 GMT","no-retry":"true","reporting-endpoints":"csp-endpoint=\"/csp-report\"","strict-transport-security":"max-age=31536000; includeSubDomains","vary":"Origin","via":"1.1 google","x-content-type-options":"nosniff","x-frame-options":"SAMEORIGIN","x-request-id":"jKpjArXVcmODQksOOKFmYfSungAivPHq"},"responseBody":"{\"error\":{\"code\":\"INFERENCE_CAP_ERROR\",\"message\":\"Error 429: You have reached your monthly Clinepass limit. The limit resets in 8d 21h, please try again later.\"}}\n","metadata":{"url":"https://api.cline.bot/api/v1/chat/completions"}}}}

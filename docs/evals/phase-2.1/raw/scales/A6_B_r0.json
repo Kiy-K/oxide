@@ -1,0 +1,103 @@
+{
+  "task": "A6",
+  "bucket": "A",
+  "repo": "deepseek",
+  "condition": "B",
+  "rep": 0,
+  "repo_path": "/tmp/tmpkyi7hkce/repo",
+  "wall": 30.03214931488037,
+  "status": "timeout",
+  "calls": {
+    "context": 1,
+    "search": 0,
+    "native_search": 6,
+    "reads": 3,
+    "total": 10
+  },
+  "tools": [
+    {
+      "tool": "grep",
+      "input": {
+        "pattern": "extends|inherit|model.*config|config.*model|parent.*child|child.*parent",
+        "include": "*.ts",
+        "path": "/tmp/tmpkyi7hkce/repo"
+      }
+    },
+    {
+      "tool": "oxide_context",
+      "input": {
+        "task": "Find TypeScript configuration inheritance for model settings",
+        "path": "/tmp/tmpkyi7hkce/repo",
+        "token_budget": 5000
+      }
+    },
+    {
+      "tool": "glob",
+      "input": {
+        "path": "/tmp/tmpkyi7hkce/repo",
+        "pattern": "**/tsconfig*.json"
+      }
+    },
+    {
+      "tool": "grep",
+      "input": {
+        "include": "*.json",
+        "path": "/tmp/tmpkyi7hkce/repo",
+        "pattern": "\"extends\"|model|preset"
+      }
+    },
+    {
+      "tool": "grep",
+      "input": {
+        "pattern": "resolveModel|modelPolicy|model.*setting|setting.*model",
+        "include": "*.ts",
+        "path": "/tmp/tmpkyi7hkce/repo"
+      }
+    },
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/tmp/tmpkyi7hkce/repo/packages/core/agent-default-model/src/index.ts"
+      }
+    },
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/tmp/tmpkyi7hkce/repo/packages/core/agent-default-model/tests/agent-default-model.spec.ts"
+      }
+    },
+    {
+      "tool": "glob",
+      "input": {
+        "path": "/tmp/tmpkyi7hkce/repo",
+        "pattern": "**/cordis.yml"
+      }
+    },
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/tmp/tmpkyi7hkce/repo/packages/preset/agent-presets"
+      }
+    },
+    {
+      "tool": "glob",
+      "input": {
+        "path": "/tmp/tmpkyi7hkce/repo/packages/preset/agent-presets",
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "tokens": {
+    "total": 55139,
+    "input": 4682,
+    "output": 53,
+    "reasoning": 57,
+    "cache": {
+      "write": 0,
+      "read": 50347
+    }
+  }
+}
+---raw---
+{"type":"step_start","timestamp":1787983891600,"sessionID":"ses_fb3db0476ffeDPPIS6B91l1fvm","part":{"id":"prt_04c250c79001NK6m3k6UJ5vP2V","messageID":"msg_04c24fce5001PTg4jUcppLmN8W","sessionID":"ses_fb3db0476ffeDPPIS6B91l1fvm","type":"step-start"}}
+{"type":"tool_use","timestamp":1787983892738,"sessionID":"ses_fb3db0476ffeDPPIS6B91l1fvm","part":{"type":"tool","tool":"grep","callID":"call_f3f2fcd5d454420bbaf2e22f","state":{"status":"completed","input":{"pattern":"extends|inherit|model.*config|config.*model|parent.*child|child.*parent","include":"*.ts","path":"/tmp/tmpkyi7hkce/repo"},"output":"Found 100 matches (more matches available)\n/tmp/tmpkyi7hkce/repo/packages/acp/acp/src/content.ts:\n  Line 25: export class AcpContentError extends Error {\n\n  Line 87:  * @param model - configured exact model id used for newly created sessions.\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal-round-driver/src/index.ts:\n  Line 29: interface RoundAttempt extends RoundIdentity {\n\n  Line 416:     // Loading a lifecycle driver over existing agents never inherits hidden\n\n\n/tmp/tmpkyi7hkce/repo/packages/jobs/jobs-local/src/index.ts:\n  Line 91: export class LocalJobRegistry extends JobRegistry {\n\n\n/tmp/tmpkyi7hkce/repo/packages/acp/acp/src/index.ts:\n  Line 70: /** Plugin config: the provider/model selection used for each ACP-created agent. */\n\n  Line 119:  * @param config - Initial provider/model selection and optional test transport.\n\n  Line 293:         imagePromptEnabled = await supportsAcpImagePrompts(ctx, config.provider, config.model)\n\n  Line 528:  * @param config - ACP provider/model configuration.\n\n  Line 531: function agentOptions(config: AcpConfig): { provider?: string; model?: string } {\n\n  Line 534:     ...config.model !== undefined ? { model: config.model } : {},\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:\n  Line 18: class ScriptedAdapter extends LlmAdapter {\n\n\n/tmp/tmpkyi7hkce/repo/packages/jobs/jobs-local/tests/jobs.spec.ts:\n  Line 130:     // job controls. The second must not inherit the first's open gate.\n\n\n/tmp/tmpkyi7hkce/repo/packages/session-query/session-query-sqlite/src/index.ts:\n  Line 89: export interface Config extends SessionQueryConfig {\n\n  Line 98:    * search, or `never` to disable full-text search: the inherited exact\n\n  Line 112:   /** Maximum concurrent persisted-log inspections in one inherited batch read. Defaults to 4. */\n\n  Line 174: interface SearchRow extends SessionHeaderRow {\n\n  Line 196: export class SqliteSessionQueryEngine extends SessionQueryEngine {\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal/src/index.ts:\n  Line 183: export class GoalService extends TypertRemoteService {\n\n\n/tmp/tmpkyi7hkce/repo/packages/compaction/command-compact/tests/command-compact.spec.ts:\n  Line 31: class StubCompactionEngine extends CompactionEngine {\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal/src/runtime.ts:\n  Line 20: export class GoalError extends HarnessError {\n\n\n/tmp/tmpkyi7hkce/repo/packages/compaction/command-compact/tests/loader-composition.spec.ts:\n  Line 35: class LoaderCompactionEngine extends CompactionEngine {\n\n\n/tmp/tmpkyi7hkce/repo/packages/jobs/jobs/src/index.ts:\n  Line 62: export abstract class JobRegistry extends Service {\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal/src/types.ts:\n  Line 59: export interface GoalSnapshot extends GoalRef {\n\n  Line 74: export interface GoalView extends GoalSnapshot {\n\n\n/tmp/tmpkyi7hkce/repo/packages/acp/acp/tests/bridge.spec.ts:\n  Line 70:     harness = await makeBridgeHarness({ config: { provider: undefined, model: undefined } })\n\n\n/tmp/tmpkyi7hkce/repo/packages/credentials/credentials-local/src/index.ts:\n  Line 6:  * inherited process environment      (read-only, wins)\n\n  Line 12:  * The inherited environment wins because `DEEPSEEK_API_KEY=… dsh`, a CI\n\n  Line 207: export class LocalCredentialProvider extends CredentialProvider {\n\n  Line 249:   /** The inherited-environment value for a reference, or `undefined` when empty or unset. */\n\n  Line 250:   private inherited(ref: CredentialRef): string | undefined {\n\n  Line 310:     const inherited = this.inherited(ref)\n\n  Line 311:     if (inherited !== undefined) return Promise.resolve({ value: inherited, source: 'env' })\n\n  Line 320:     // Only the inherited environment is unwritable: it is the one layer this\n\n  Line 323:     if (this.inherited(ref) !== undefined) {\n\n  Line 406:    * Reject a write the inherited environment would shadow into apparent\n\n  Line 411:     if (this.inherited(ref) !== undefined) {\n\n\n/tmp/tmpkyi7hkce/repo/packages/jobs/jobs/tests/service.spec.ts:\n  Line 14: class StubJobRegistry extends JobRegistry {\n\n  Line 87:     class SecondJobRegistry extends StubJobRegistry {}\n\n\n/tmp/tmpkyi7hkce/repo/packages/session-query/session-query-sqlite/tests/sqlite.spec.ts:\n  Line 69: class TestPersistence extends SessionPersistence {\n\n  Line 234:   it('refuses search in never mode while inherited reads and traces keep working', async () => {\n\n  Line 245:     ctx.sessions.create(child, { meta: { parentSession: parent, createdAt: 20 } })\n\n  Line 253:       .toEqual([child, parent])\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/goal/tests/goal.spec.ts:\n  Line 168:   it('inherits the completed-turn goal prefix through SessionStore.fork with child activation disarmed', async () => {\n\n  Line 175:     const goal = ctx.goals.create(parent.agent, { objective: 'inherit through fork', maxGoalRounds: 5 })\n\n  Line 178:     const child = stubAgentForSession(ctx.sessions.fork(parent.session))\n\n  Line 186:     expect(child.session.header.parentSession).toBe(parent.session.id)\n\n  Line 187:     expect(child.session.header.seedLength).toBe(parent.session.seq)\n\n\n/tmp/tmpkyi7hkce/repo/apps/cli/src/plugin.ts:\n  Line 131:     stdio: 'inherit',\n\n\n/tmp/tmpkyi7hkce/repo/packages/compaction/compaction-basic/src/config.ts:\n  Line 52: export class TargetPressureConfigError extends Error {\n\n  Line 77:   const modelPolicies = resolveModelPolicies(config.modelPolicies)\n\n  Line 109:   const override = config.modelPolicies.find(policy => (\n\n  Line 112:   const inheritedRetention: ResolvedRetention = config.retainTokens === undefined\n\n  Line 118:     ...resolveRetention(override ?? {}, inheritedRetention),\n\n  Line 169: /** Choose an explicit retention form or inherit the already-resolved fallback. */\n\n  Line 260:   const model = config.summarizationModel\n\n\n/tmp/tmpkyi7hkce/repo/packages/credentials/credentials-local/tests/local.spec.ts:\n  Line 110:   // inherited process env > .credentials.yaml > $DSH_HOME/.env, and the\n\n  Line 212:   it('lets only the inherited environment shadow the store, read-only', async () => {\n\n\n/tmp/tmpkyi7hkce/repo/packages/acp/acp/tests/harness.ts:\n  Line 24: class MockAdapter extends LlmAdapter {\n\n  Line 89: class MemoryAttachmentStore extends AttachmentStore {\n\n  Line 234:   if (!(options.config && 'model' in options.config)) config.model = 'mock'\n\n\n/tmp/tmpkyi7hkce/repo/packages/session-query/session-query/src/config.ts:\n  Line 11: /** Backend-independent configuration inherited by every session-query implementation. */\n\n  Line 40: export class SessionQueryError extends HarnessError {\n\n\n/tmp/tmpkyi7hkce/repo/packages/credentials/credentials-local/tests/watcher.spec.ts:\n  Line 38:   class FakeWatcher extends EventEmitter {\n\n\n/tmp/tmpkyi7hkce/repo/packages/compaction/compaction-basic/src/index.ts:\n  Line 56:   if (config === undefined || config.provider.length === 0 || config.model.length === 0) {\n\n  Line 59:   return { provider: config.provider, model: config.model }\n\n  Line 103: export class BasicCompactionEngine extends CompactionEngine {\n\n  Line 300:         + 'configure contextWindow on that adapter model',\n\n\n/tmp/tmpkyi7hkce/repo/packages/goal/tool-goal/src/authority.ts:\n  Line 68:  * producers must supply their own source rather than in
