@@ -6,6 +6,7 @@ pub mod eval;
 pub mod gitutil;
 pub mod index;
 pub mod languages;
+pub mod mcp;
 pub mod parser;
 pub mod retrieval;
 pub mod review;

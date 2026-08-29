@@ -50,6 +50,14 @@ without parsing `message`. Malformed command-line invocations are
 handled by Clap with exit 2. Read commands require an existing index; run
 `oxide index PATH --json` first.
 
+## MCP
+
+`context(task, path?, token_budget?)` and `search(query, path?, limit?)`, both
+backed directly by `RepositoryService`. Read tools never index or repair:
+service errors retain their `{ code, action, message }` semantics in an MCP
+tool error. See `docs/mcp-phase-2-report.md` for measured overhead and client
+evaluation.
+
 ## What gets indexed
 
 - **Python**: modules, classes, functions, methods (decorator spans included), imports
@@ -65,8 +73,8 @@ imports, references, parent — enough to reconstruct context later.
 
 ## Architecture
 
-Conceptually, a request flows through one pipeline regardless of which
-transport (CLI today; MCP in a future phase) initiates it:
+Conceptually, a request flows through one pipeline regardless of transport
+(human CLI or coding-agent MCP):
 
 ```text
 Repository
@@ -102,11 +110,12 @@ src/
 ├── symbols      core model, stable FNV-1a hashing
 ├── index        SQLite storage + incremental indexing pipeline
 ├── embeddings   provider abstraction + offline hashed embedder
-├── service      stable repository/application boundary for CLI and future MCP
+├── service      stable repository/application boundary for CLI and MCP
 ├── retrieval    BM25 lexical + cosine semantic fused via RRF + structural expansion
 ├── gitutil      unified-diff parsing (git CLI)
 ├── review       diff → changed symbols → related context pack
 ├── eval         committed benchmark harness
+├── mcp          minimal stdio JSON-RPC adapter for context/search
 └── cli          clap-based CLI
 ```
 
@@ -265,8 +274,8 @@ Stable JSON contracts:
   the embedder. Writes use `BEGIN IMMEDIATE` plus a shared `busy_timeout` so
   concurrent `oxide index` runs against an existing index serialize instead
   of racing.
-- `src/service.rs` is the shared application boundary. A future MCP adapter
-  can call it directly without duplicating CLI behavior.
+- `src/service.rs` is the shared application boundary used by both CLI and the
+  MCP adapter; neither transport duplicates index or retrieval behavior.
 
 `review --json` remains `{ range, changed_files[], changed_symbols[], related[] }`
 for compatibility. Fewer symbols with stronger evidence beats more code.
@@ -279,11 +288,11 @@ fields such as `content_hash`, `imports`, `parent`, or `references`.
 Context JSON keeps its pack shape but omits `query_used`, which was an internal
 instruction-prefixed query; use `task` and each item's `reasons` instead.
 
-### Future MCP reuse audit
+### MCP reuse boundary
 
-An MCP adapter can call `RepositoryService` and reuse `StatusResult`,
-`IndexResult`, `Evidence`, and `ContextResult` directly. It should not reuse
-Clap parsing, human renderers, or duplicate index/retrieval orchestration.
+`oxide mcp` delegates only discovery and calls to `RepositoryService`; it
+reuses `Evidence` and `ContextResult` as tool payloads. It never reuses Clap
+parsing or human renderers, and exposes no admin commands.
 
 ## Limitations
 
