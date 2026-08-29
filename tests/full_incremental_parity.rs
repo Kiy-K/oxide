@@ -1,19 +1,21 @@
 //! Full-rebuild vs incremental-update parity: for the same final repository
-//! state, a clean full rebuild and an existing index walked through an
-//! edit/add/delete/rename sequence must reach the same logical index state.
+//! state, a clean full rebuild and an existing index walked through a long
+//! mutation sequence (add / edit / edit again / rename / move / delete /
+//! recreate) must reach the same logical index state.
 //!
-//! Deliberately NOT compared: embedding vector *values*. The module symbol's
-//! content_hash intentionally ignores body edits (imports + first non-empty
-//! line only, see `parser.rs` / AGENTS.md), so a body-only edit that adds a
-//! new in-file reference can change what the module *would* embed without
-//! changing the hash that gates re-embedding. Incremental correctly reuses
-//! the old module vector in that case while a full rebuild computes a fresh
-//! one from empty state — a real, documented, and intentional divergence.
-//! Presence of an embedding for a given symbol id is compared instead.
+//! Every field that participates in indexed identity, staleness detection,
+//! or the embedding cache key is compared, including embedding *vector
+//! values* themselves (not just which symbol ids carry one) — now that the
+//! module content_hash bug (Phase 1.1 item 1: a body-only edit could change
+//! a module's `references`, and therefore its embedding input, without
+//! changing the coarse hash gating re-embedding) is fixed, incremental and
+//! full-rebuild vectors are expected to be byte-identical for every symbol
+//! under the deterministic offline embedder. Ignored: SQLite row order/
+//! layout, which carries no logical meaning.
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexBackend, SqliteStore};
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::path::Path;
 
 fn write(path: &Path, content: &str) {
@@ -21,6 +23,9 @@ fn write(path: &Path, content: &str) {
     std::fs::write(path, content).unwrap();
 }
 
+/// Asserts full logical parity between two independently-built indexes of
+/// the same repository state: same files, same symbol identities and
+/// content, same references, same embedded vectors, same provider metadata.
 fn assert_parity(incremental: &SqliteStore, full: &SqliteStore) {
     assert_eq!(
         incremental.file_hashes().unwrap(),
@@ -32,7 +37,13 @@ fn assert_parity(incremental: &SqliteStore, full: &SqliteStore) {
     let mut b = full.all_symbols().unwrap();
     a.sort_by_key(|s| s.id());
     b.sort_by_key(|s| s.id());
-    assert_eq!(a.len(), b.len(), "symbol count must match");
+    assert_eq!(
+        a.len(),
+        b.len(),
+        "symbol count must match: incremental={:?} full={:?}",
+        a.iter().map(|s| &s.qualified_name).collect::<Vec<_>>(),
+        b.iter().map(|s| &s.qualified_name).collect::<Vec<_>>(),
+    );
     for (x, y) in a.iter().zip(b.iter()) {
         assert_eq!(x.id(), y.id(), "symbol id mismatch");
         assert_eq!(x.file, y.file);
@@ -53,37 +64,63 @@ fn assert_parity(incremental: &SqliteStore, full: &SqliteStore) {
         assert_eq!(x.parent, y.parent);
         assert_eq!(
             x.references, y.references,
-            "references mismatch for {}",
+            "references (supported structural evidence) mismatch for {}",
             x.qualified_name
         );
     }
 
-    let embedded_a: HashSet<u64> = incremental
-        .all_embeddings()
-        .unwrap()
-        .keys()
-        .copied()
-        .collect();
-    let embedded_b: HashSet<u64> = full.all_embeddings().unwrap().keys().copied().collect();
+    let embeddings_a: HashMap<u64, (u64, Vec<f32>)> = incremental.all_embeddings().unwrap();
+    let embeddings_b: HashMap<u64, (u64, Vec<f32>)> = full.all_embeddings().unwrap();
     assert_eq!(
-        embedded_a, embedded_b,
-        "the SET of symbols carrying an embedding must match (not vector values)"
+        embeddings_a
+            .keys()
+            .collect::<std::collections::HashSet<_>>(),
+        embeddings_b
+            .keys()
+            .collect::<std::collections::HashSet<_>>(),
+        "the SET of symbols carrying an embedding must match"
     );
+    for (id, (hash_a, vec_a)) in &embeddings_a {
+        let (hash_b, vec_b) = &embeddings_b[id];
+        assert_eq!(
+            hash_a, hash_b,
+            "embedding-input hash mismatch for symbol id {id}"
+        );
+        assert_eq!(
+            vec_a, vec_b,
+            "embedding vector value mismatch for symbol id {id} (embedding staleness bug)"
+        );
+    }
 
-    for key in ["embedder", "dim", "schema_version", "extraction_version"] {
+    for key in [
+        "root",
+        "embedder",
+        "dim",
+        "schema_version",
+        "extraction_version",
+    ] {
         assert_eq!(
             incremental.get_meta(key).unwrap(),
             full.get_meta(key).unwrap(),
             "meta {key} must match"
         );
     }
+
+    let stats_a = incremental.stats().unwrap();
+    let stats_b = full.stats().unwrap();
+    assert_eq!(stats_a.files, stats_b.files);
+    assert_eq!(stats_a.symbols, stats_b.symbols);
+    assert_eq!(stats_a.embeddings, stats_b.embeddings);
 }
 
 #[test]
-fn incremental_edit_add_delete_rename_matches_clean_full_rebuild() {
+fn incremental_mutation_sequence_matches_clean_full_rebuild() {
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
+    let emb = HashedEmbedder::default();
+    let mut incremental = SqliteStore::open(Path::new(":memory:")).unwrap();
 
+    // --- initial state ---
     write(
         &root.join("src/util.py"),
         "def helper():\n    return 1\n\ndef other():\n    return 2\n",
@@ -96,40 +133,81 @@ fn incremental_edit_add_delete_rename_matches_clean_full_rebuild() {
         &root.join("lib/keep.ts"),
         "export function keep(): number {\n  return 1;\n}\n",
     );
-
-    let emb = HashedEmbedder::default();
-    let mut incremental = SqliteStore::open(Path::new(":memory:")).unwrap();
+    write(&root.join("src/mover.py"), "def moved():\n    return 7\n");
+    write(
+        &root.join("src/recreated.py"),
+        "def first_life():\n    return 1\n",
+    );
+    // A name that does not yet appear anywhere in util.py, so referencing it
+    // later is a genuinely new in-file reference rather than a token that
+    // was already present (e.g. the definition of a sibling function).
+    write(
+        &root.join("src/refhelper.py"),
+        "def refhelper():\n    return 99\n",
+    );
     update_index(root, &mut incremental, &emb).unwrap();
 
-    // Body-only edit adding a new in-file reference; the file's first
-    // non-empty line is unchanged, so the module symbol's coarse content_hash
-    // does not change even though its `references` set does.
-    write(
-        &root.join("src/util.py"),
-        "def helper():\n    return other()\n\ndef other():\n    return 2\n",
-    );
-    std::fs::remove_file(root.join("src/gone.py")).unwrap();
+    // --- add ---
     write(
         &root.join("src/new_file.py"),
         "def brand_new():\n    return 42\n",
     );
-    // Rename: same content under a different path.
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.reparsed_files, 1, "only the new file");
+
+    // --- edit: body-only, adds a genuinely new in-file reference (a name
+    // not previously present anywhere in the file); first line and imports
+    // are untouched, exercising exactly the module-staleness bug ---
+    write(
+        &root.join("src/util.py"),
+        "def helper():\n    return refhelper()\n\ndef other():\n    return 2\n",
+    );
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.reparsed_files, 1);
+
+    // --- edit again: a second, independent edit to the same file, keeping
+    // the refhelper() reference from the previous edit in place so the
+    // final on-disk state still carries it through to the parity check ---
+    write(
+        &root.join("src/util.py"),
+        "def helper():\n    return refhelper()\n\ndef other():\n    return 3\n",
+    );
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.reparsed_files, 1);
+
+    // --- rename: same content, new path ---
     std::fs::remove_file(root.join("lib/keep.ts")).unwrap();
     write(
         &root.join("lib/kept.ts"),
         "export function keep(): number {\n  return 1;\n}\n",
     );
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.removed_files, 1);
+    assert_eq!(r.reparsed_files, 1);
 
-    let report = update_index(root, &mut incremental, &emb).unwrap();
-    assert_eq!(
-        report.removed_files, 2,
-        "gone.py and the pre-rename keep.ts"
+    // --- move: same content, different directory ---
+    std::fs::remove_file(root.join("src/mover.py")).unwrap();
+    write(&root.join("lib/mover.py"), "def moved():\n    return 7\n");
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.removed_files, 1);
+    assert_eq!(r.reparsed_files, 1);
+
+    // --- delete ---
+    std::fs::remove_file(root.join("src/gone.py")).unwrap();
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.removed_files, 1);
+
+    // --- recreate: delete then re-add at the same path with different
+    // content (must be treated as a fresh file, not a stale cache hit) ---
+    std::fs::remove_file(root.join("src/recreated.py")).unwrap();
+    update_index(root, &mut incremental, &emb).unwrap();
+    write(
+        &root.join("src/recreated.py"),
+        "def second_life():\n    return 2\n",
     );
-    assert_eq!(
-        report.reparsed_files, 3,
-        "util.py (edited), new_file.py (new), kept.ts (new path)"
-    );
-    assert_eq!(report.errored_files, 0);
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.reparsed_files, 1);
+    assert_eq!(r.new_symbols, 2, "module + second_life, as if never seen");
 
     // A completely independent full rebuild of the same final on-disk state.
     let mut full = SqliteStore::open(Path::new(":memory:")).unwrap();

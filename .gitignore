@@ -12,3 +12,4 @@ eval-agent/.venv/
 .codebase-memory/
 __pycache__
 /target
+CLAUDE.local.md

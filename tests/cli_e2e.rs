@@ -406,20 +406,38 @@ fn search_context_review_and_stats_accept_an_explicit_repository_path() {
 }
 
 #[test]
-fn read_only_index_does_not_create_wal_or_schema_artifacts() {
+fn clean_index_write_leaves_no_wal_or_schema_artifacts() {
+    // The writer side of the concurrency contract: after `oxide index`
+    // closes its connection cleanly, WAL auto-checkpoints and removes its
+    // -wal/-shm files. This is unrelated to read-only opening (below) and
+    // must hold regardless of it.
+    let tmp = tempfile::tempdir().unwrap();
+    write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    let wal = tmp.path().join(".oxide").join("index.db-wal");
+    let shm = tmp.path().join(".oxide").join("index.db-shm");
+    assert!(
+        !wal.exists() && !shm.exists(),
+        "a clean index write must not leave WAL/SHM artifacts behind"
+    );
+}
+
+#[test]
+fn read_only_commands_never_modify_index_db_content() {
+    // Concurrency contract (Phase 1.1 item 3): read-only OXIDE commands are
+    // safe during concurrent indexing and never modify the database
+    // themselves, but SQLite may create/touch normal WAL/SHM state as any
+    // WAL reader does (see `SqliteStore::open_read_only`'s doc comment for
+    // why `immutable=1` was dropped). What must hold is that `index.db`'s
+    // own indexed *content* is byte-identical before and after any number
+    // of read-only commands — presence of -wal/-shm is no longer asserted.
     let tmp = tempfile::tempdir().unwrap();
     write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
     json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
 
     let db = tmp.path().join(".oxide").join("index.db");
-    let wal = tmp.path().join(".oxide").join("index.db-wal");
-    let shm = tmp.path().join(".oxide").join("index.db-shm");
-    let size_before = std::fs::metadata(&db).unwrap().len();
-    let mtime_before = std::fs::metadata(&db).unwrap().modified().unwrap();
-    assert!(
-        !wal.exists() && !shm.exists(),
-        "a clean index write must not leave WAL/SHM artifacts behind"
-    );
+    let bytes_before = std::fs::read(&db).unwrap();
 
     std::thread::sleep(std::time::Duration::from_millis(50));
     json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
@@ -439,19 +457,10 @@ fn read_only_index_does_not_create_wal_or_schema_artifacts() {
         ],
     ));
 
-    let size_after = std::fs::metadata(&db).unwrap().len();
-    let mtime_after = std::fs::metadata(&db).unwrap().modified().unwrap();
+    let bytes_after = std::fs::read(&db).unwrap();
     assert_eq!(
-        size_before, size_after,
-        "index file size changed during reads"
-    );
-    assert_eq!(
-        mtime_before, mtime_after,
-        "index file mtime changed during reads"
-    );
-    assert!(
-        !wal.exists() && !shm.exists(),
-        "read-only status/search/context must not create WAL/SHM artifacts"
+        bytes_before, bytes_after,
+        "index.db content must be byte-identical after read-only commands"
     );
 }
 
@@ -514,11 +523,14 @@ fn concurrent_first_time_indexing_never_panics_or_corrupts_state() {
     // Racing several *first-ever* indexers against a brand-new `.oxide`
     // directory is a narrower, harsher scenario than re-indexing an existing
     // one: creating the WAL-mode file and its schema for the first time can
-    // still occasionally lose a race to a clean, structured "database is
-    // locked" error even with busy_timeout + IMMEDIATE transactions (SQLite
-    // does not retry every busy variant). This is not claimed to always
-    // succeed, only to never panic, never silently corrupt the index, and to
-    // always leave the loser with a clear, structured, retryable error.
+    // hit a "database is locked" error even with busy_timeout set (SQLite's
+    // busy handler does not retry every SQLITE_BUSY/LOCKED variant).
+    // `SqliteStore::open` now retries schema init with a short bounded
+    // backoff specifically for this case (Phase 1.1 item 4), so this is not
+    // claimed to always succeed for every racer, but a loser must always
+    // get a documented *retryable* structured error (`action: "retry"`, not
+    // "repair" — this is transient contention, not corruption), never
+    // panic, and never leave a partial/corrupt schema behind.
     let tmp = tempfile::tempdir().unwrap();
     for i in 0..20 {
         write(
@@ -536,12 +548,18 @@ fn concurrent_first_time_indexing_never_panics_or_corrupts_state() {
         if o.status.success() {
             any_success = true;
         } else {
-            // A loser must fail with a well-formed structured error on
-            // stdout, not garbage, a silent empty success, or a crash.
+            // A loser must fail with a well-formed, retryable structured
+            // error on stdout, not garbage, a silent empty success, a
+            // crash, or a "go delete your index" repair verdict over what
+            // is really just lock contention.
             let stdout = String::from_utf8_lossy(&o.stdout);
             let parsed: Value = serde_json::from_str(&stdout)
                 .unwrap_or_else(|e| panic!("non-JSON failure output: {stdout} ({e})"));
             assert!(parsed["error"]["code"].is_string(), "{stdout}");
+            assert_eq!(
+                parsed["error"]["action"], "retry",
+                "a cold-start lock loser must be told to retry, not repair: {stdout}"
+            );
         }
     }
     assert!(any_success, "at least one concurrent first-index must win");
@@ -611,11 +629,92 @@ fn repository_path_with_spaces_and_unicode_is_indexable_and_readable() {
     let search = json_stdout(&run(&root, &["search", "thing", "--json"]));
     assert!(!search.as_array().unwrap().is_empty());
 
-    let wal = root.join(".oxide").join("index.db-wal");
-    let shm = root.join(".oxide").join("index.db-shm");
-    assert!(
-        !wal.exists() && !shm.exists(),
-        "spaces/unicode in the path must not break the read-only URI encoding \
-         path or silently fall back to creating WAL/SHM artifacts"
-    );
+    let context = json_stdout(&run(
+        &root,
+        &[
+            "context",
+            "--task",
+            "thing",
+            "--budget-tokens",
+            "64",
+            "--json",
+        ],
+    ));
+    assert!(!context["items"].as_array().unwrap().is_empty());
+}
+
+#[test]
+fn sustained_concurrent_read_write_stress_never_corrupts_or_panics() {
+    // Item 3 stress gate: repeatedly interleave a live writer (`oxide
+    // index`, doing real reparse/embed work each round) with bursts of
+    // concurrent readers (`status`/`search`), across several rounds, to
+    // widen the scheduling window beyond a single lucky pass. Plain
+    // `SQLITE_OPEN_READ_ONLY` WAL readers must never block on, corrupt, or
+    // be corrupted by the writer, and must never panic.
+    let tmp = tempfile::tempdir().unwrap();
+    for i in 0..15 {
+        write(
+            tmp.path(),
+            &format!("src/m{i}.py"),
+            &format!("def target_{i}():\n    return {i}\n"),
+        );
+    }
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    for round in 0..6 {
+        // Touch every file so this round's writer has real reparse/embed
+        // work, not a fast no-op that closes before readers can race it.
+        for i in 0..15 {
+            write(
+                tmp.path(),
+                &format!("src/m{i}.py"),
+                &format!("def target_{i}():\n    return {}\n", i + round),
+            );
+        }
+        let writer = Command::new(env!("CARGO_BIN_EXE_oxide"))
+            .args(["index", ".", "--json"])
+            .current_dir(tmp.path())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
+            .unwrap();
+
+        let readers: Vec<_> = (0..8)
+            .map(|i| {
+                let root = tmp.path().to_path_buf();
+                std::thread::spawn(move || {
+                    run(&root, &["search", &format!("target_{i}"), "--json"])
+                })
+            })
+            .collect();
+        for (i, r) in readers.into_iter().enumerate() {
+            let out = r.join().unwrap();
+            let stderr = String::from_utf8_lossy(&out.stderr);
+            assert!(
+                !stderr.contains("panicked"),
+                "round {round} reader {i}: {stderr}"
+            );
+            assert!(
+                out.status.success(),
+                "round {round} reader {i} must succeed against a live writer: {stderr}"
+            );
+        }
+
+        let writer_out = writer.wait_with_output().unwrap();
+        let stderr = String::from_utf8_lossy(&writer_out.stderr);
+        assert!(
+            !stderr.contains("panicked"),
+            "round {round} writer: {stderr}"
+        );
+        assert!(
+            writer_out.status.success(),
+            "round {round} writer: {stderr}"
+        );
+    }
+
+    // The index must still be fully consistent and readable after the
+    // stress: correct file count and no leftover writer-side lock state.
+    let status = json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
+    assert_eq!(status["files"], 15);
+    assert_eq!(status["is_current"], true);
 }

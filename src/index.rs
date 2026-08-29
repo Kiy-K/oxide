@@ -30,6 +30,14 @@ pub struct ParsedFile {
 pub trait IndexBackend {
     fn get_meta(&self, key: &str) -> Result<Option<String>>;
     fn set_meta(&mut self, key: &str, value: &str) -> Result<()>;
+    /// Set several meta keys as one atomic transaction: either all of them
+    /// land or none do. `update_index` uses this for its closing
+    /// root/embedder/dim/schema_version/extraction_version writes so a
+    /// process interrupted mid-write can never leave a torn subset behind —
+    /// `validate_index`'s "index predates version tracking" fallback for a
+    /// missing `schema_version` key would otherwise treat that torn state
+    /// as a compatible legacy index instead of an incomplete one.
+    fn set_meta_all(&mut self, pairs: &[(&str, &str)]) -> Result<()>;
     fn file_hashes(&self) -> Result<HashMap<String, u64>>;
     fn replace_file(&mut self, file: &str, hash: u64, symbols: &[Symbol]) -> Result<()>;
     fn remove_files(&mut self, files: &[String]) -> Result<()>;
@@ -49,6 +57,69 @@ pub struct SqliteStore {
     conn: Connection,
 }
 
+/// Cold-start schema init retry: bounded to give a losing concurrent
+/// first-time indexer a real chance to proceed once the winner finishes
+/// initializing, without ever waiting indefinitely (see `open`'s doc
+/// comment for why `busy_timeout` alone is not enough here).
+const SCHEMA_INIT_MAX_RETRIES: u32 = 10;
+const SCHEMA_INIT_RETRY_DELAY: std::time::Duration = std::time::Duration::from_millis(50);
+
+const SCHEMA_SQL: &str = r#"
+    PRAGMA journal_mode = WAL;
+    CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS files(
+        path TEXT PRIMARY KEY,
+        content_hash INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS symbols(
+        id INTEGER PRIMARY KEY,
+        file TEXT NOT NULL,
+        qualified_name TEXT NOT NULL,
+        name TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        language TEXT NOT NULL,
+        start_line INTEGER NOT NULL,
+        end_line INTEGER NOT NULL,
+        content_hash INTEGER NOT NULL,
+        signature TEXT NOT NULL,
+        imports_json TEXT NOT NULL,
+        exported INTEGER NOT NULL,
+        parent TEXT,
+        references_json TEXT NOT NULL DEFAULT '[]'
+    );
+    CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file);
+    CREATE INDEX IF NOT EXISTS idx_symbols_name ON symbols(name);
+    CREATE TABLE IF NOT EXISTS embeddings(
+        symbol_id INTEGER PRIMARY KEY REFERENCES symbols(id) ON DELETE CASCADE,
+        content_hash INTEGER NOT NULL,
+        dim INTEGER NOT NULL,
+        vec BLOB NOT NULL
+    );
+"#;
+
+fn is_locked(e: &rusqlite::Error) -> bool {
+    matches!(
+        e,
+        rusqlite::Error::SqliteFailure(inner, _)
+            if matches!(
+                inner.code,
+                rusqlite::ErrorCode::DatabaseBusy | rusqlite::ErrorCode::DatabaseLocked
+            )
+    )
+}
+
+/// Whether an error returned by [`SqliteStore::open`] is transient lock
+/// contention (the bounded cold-start retry above was exhausted, or the
+/// underlying `Connection::open` itself hit a lock) rather than genuine
+/// corruption. Callers use this to pick a retryable error code instead of
+/// telling the caller to delete and rebuild the index over a condition that
+/// resolves itself once the other writer finishes.
+pub fn is_locked_error(e: &anyhow::Error) -> bool {
+    e.chain()
+        .filter_map(|c| c.downcast_ref::<rusqlite::Error>())
+        .any(is_locked)
+}
+
 impl SqliteStore {
     pub fn open(path: &Path) -> Result<Self> {
         if let Some(dir) = path.parent() {
@@ -57,81 +128,75 @@ impl SqliteStore {
         let conn =
             Connection::open(path).with_context(|| format!("open index at {}", path.display()))?;
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
-        conn.execute_batch(
-            r#"
-            PRAGMA journal_mode = WAL;
-            CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS files(
-                path TEXT PRIMARY KEY,
-                content_hash INTEGER NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS symbols(
-                id INTEGER PRIMARY KEY,
-                file TEXT NOT NULL,
-                qualified_name TEXT NOT NULL,
-                name TEXT NOT NULL,
-                kind TEXT NOT NULL,
-                language TEXT NOT NULL,
-                start_line INTEGER NOT NULL,
-                end_line INTEGER NOT NULL,
-                content_hash INTEGER NOT NULL,
-                signature TEXT NOT NULL,
-                imports_json TEXT NOT NULL,
-                exported INTEGER NOT NULL,
-                parent TEXT,
-                references_json TEXT NOT NULL DEFAULT '[]'
-            );
-            CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file);
-            CREATE INDEX IF NOT EXISTS idx_symbols_name ON symbols(name);
-            CREATE TABLE IF NOT EXISTS embeddings(
-                symbol_id INTEGER PRIMARY KEY REFERENCES symbols(id) ON DELETE CASCADE,
-                content_hash INTEGER NOT NULL,
-                dim INTEGER NOT NULL,
-                vec BLOB NOT NULL
-            );
-            "#,
-        )?;
+        // Cold-start race: two processes creating the very first index.db
+        // concurrently can still hit `database is locked` while switching
+        // journal_mode / creating the schema, even with busy_timeout set —
+        // SQLite's busy handler does not retry every SQLITE_BUSY/LOCKED
+        // variant (the same underlying class of gotcha that motivated the
+        // IMMEDIATE-transaction fix in `replace_file`/`remove_files`, here
+        // hit during first-ever schema setup instead of a read->write lock
+        // upgrade). Retry with a short bounded backoff so a loser waits for
+        // the winner to finish initializing instead of failing outright;
+        // this is not infinite — a persistent lock still surfaces as a
+        // real, structured, retryable error after ~1.5s of total backoff.
+        let mut attempt = 0u32;
+        loop {
+            match conn.execute_batch(SCHEMA_SQL) {
+                Ok(()) => break,
+                Err(e) if is_locked(&e) && attempt < SCHEMA_INIT_MAX_RETRIES => {
+                    attempt += 1;
+                    std::thread::sleep(SCHEMA_INIT_RETRY_DELAY * attempt);
+                }
+                Err(e) => {
+                    return Err(e)
+                        .with_context(|| format!("initialize schema at {}", path.display()))
+                }
+            }
+        }
         Ok(Self { conn })
     }
 
-    /// Open an existing index without mutating the database file. Schema
-    /// setup is skipped; an incompatible index surfaces as `index_unreadable`.
+    /// Open an existing index without mutating the database file's own
+    /// content. Schema setup is skipped; an incompatible index surfaces as
+    /// `index_unreadable`.
     ///
-    /// Opened via the `immutable=1` URI parameter: a plain
-    /// `SQLITE_OPEN_READ_ONLY` connection to a WAL-mode database still
-    /// creates `-wal`/`-shm` files on first use (it needs the shared-memory
-    /// index to read consistently even though it writes nothing itself).
-    /// `immutable=1` tells SQLite the file will not change for the life of
-    /// the connection, skipping that setup entirely.
+    /// # Concurrency contract
+    ///
+    /// This is a plain `SQLITE_OPEN_READ_ONLY` connection — deliberately
+    /// *not* opened with the `immutable=1` URI parameter. `immutable=1`
+    /// tells SQLite the file will never change for the life of the
+    /// connection, which disables WAL/locking consistency checks entirely.
+    /// SQLite's own docs are explicit that this is unsafe when the file
+    /// *can* change: "can result in incorrect query results and/or
+    /// SQLITE_CORRUPT errors if the database file is changed by another
+    /// process." OXIDE cannot promise that — `oxide index` can start from
+    /// another process at any time — so `immutable=1` must not be used here.
+    ///
+    /// A plain read-only WAL connection is the mode WAL was designed for:
+    /// one writer plus any number of concurrent readers, none of which
+    /// block each other, each reader seeing a consistent snapshot as of
+    /// when its read transaction started. The tradeoff versus `immutable=1`
+    /// is that this connection may need to create (or read) the writer's
+    /// `-wal`/`-shm` coordination files if they do not already exist — a
+    /// normal, harmless side effect of participating correctly in WAL, not
+    /// a modification of `index.db`'s own indexed content. The accepted
+    /// contract is: **read-only OXIDE commands are safe during concurrent
+    /// indexing and never modify the database themselves, but SQLite may
+    /// create/touch normal WAL/SHM state as any WAL reader does.** See
+    /// `tests/cli_e2e.rs` for the tests proving this (index.db content is
+    /// untouched by reads; reads succeed correctly against a live writer).
     pub fn open_read_only(path: &Path) -> Result<Self> {
-        let uri = format!("file:{}?immutable=1", uri_encode_path(path));
-        let conn = Connection::open_with_flags(
-            &uri,
-            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_URI,
-        )
-        .with_context(|| format!("open index at {}", path.display()))?;
+        let conn = Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .with_context(|| format!("open index at {}", path.display()))?;
+        // WAL readers essentially never block on a writer, but the very
+        // first reader to observe a given database creates the -shm
+        // wal-index; a busy_timeout is a cheap safety net for that narrow
+        // window, matching the writer's own connection setup.
+        conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.execute_batch("PRAGMA query_only = ON;")
             .with_context(|| format!("set query_only on {}", path.display()))?;
         Ok(Self { conn })
     }
-}
-
-/// Percent-encode a filesystem path for use inside a `file:` SQLite URI.
-/// Keeps ordinary path characters literal and escapes everything else
-/// (spaces, `%`, `?`, `#`, non-ASCII bytes) so unusual repository paths do
-/// not corrupt URI parsing.
-fn uri_encode_path(path: &Path) -> String {
-    let mut out = String::new();
-    for &b in path.to_string_lossy().as_bytes() {
-        let safe =
-            b.is_ascii_alphanumeric() || matches!(b, b'/' | b'.' | b'_' | b'-' | b':' | b'~');
-        if safe {
-            out.push(b as char);
-        } else {
-            out.push_str(&format!("%{b:02X}"));
-        }
-    }
-    out
 }
 
 impl IndexBackend for SqliteStore {
@@ -146,6 +211,20 @@ impl IndexBackend for SqliteStore {
             "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
             [key, value],
         )?;
+        Ok(())
+    }
+
+    fn set_meta_all(&mut self, pairs: &[(&str, &str)]) -> Result<()> {
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        for (key, value) in pairs {
+            tx.execute(
+                "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
+                [*key, *value],
+            )?;
+        }
+        tx.commit()?;
         Ok(())
     }
 
@@ -555,8 +634,34 @@ pub fn update_index(
     // # ponytail: identifier-name intersection only; no scope analysis. Upgrade
     // path: per-language scoped resolution if false positives hurt retrieval.
     for pf in &mut parsed {
+        // Whether this file's module symbol used the coarse "imports +
+        // first line" hash (parser.rs) rather than the full-source hash:
+        // parser.rs only takes the full-source path when there are no
+        // concrete (non-Module) symbols at all — see `empty_before_module`
+        // there. That full-source hash already changes on ANY body edit
+        // (including comment-only edits with no declarations to anchor to,
+        // where the module symbol is the file's only index representation)
+        // and must be left alone; only the coarse formula needs the fix
+        // below.
+        let used_coarse_module_hash = pf
+            .symbols
+            .iter()
+            .any(|s| s.kind != crate::symbols::SymbolKind::Module);
         for s in &mut pf.symbols {
             s.references = extract_references(s, &pf.src, &known_names);
+            // The coarse module hash covers only imports + first line, but
+            // its embedding input (embed_text) also includes `references`,
+            // which are resolved here — one stage later, once whole-project
+            // known names exist. A body-only edit that adds/removes an
+            // in-file reference therefore changes embed_text without the
+            // parser hash noticing. Recompute the module's content_hash as
+            // the literal hash of its own embed_text now that references
+            // are final, so the cache-invalidation key can never drift from
+            // the actual embedding input (see AGENTS.md invariant) — but
+            // only where the coarse formula was actually used.
+            if s.kind == crate::symbols::SymbolKind::Module && used_coarse_module_hash {
+                s.content_hash = crate::symbols::content_hash(&embed_text(s));
+            }
         }
     }
 
@@ -644,11 +749,17 @@ pub fn update_index(
         }
     }
 
-    store.set_meta("root", &root.display().to_string())?;
-    store.set_meta("embedder", embedder.name())?;
-    store.set_meta("dim", &embedder.dim().to_string())?;
-    store.set_meta("schema_version", &SCHEMA_VERSION.to_string())?;
-    store.set_meta("extraction_version", &EXTRACTION_VERSION.to_string())?;
+    let root_str = root.display().to_string();
+    let dim_str = embedder.dim().to_string();
+    let schema_str = SCHEMA_VERSION.to_string();
+    let extraction_str = EXTRACTION_VERSION.to_string();
+    store.set_meta_all(&[
+        ("root", root_str.as_str()),
+        ("embedder", embedder.name()),
+        ("dim", dim_str.as_str()),
+        ("schema_version", schema_str.as_str()),
+        ("extraction_version", extraction_str.as_str()),
+    ])?;
     report.duration_ms = started.elapsed().as_millis();
 
     // Every discovered file must land in exactly one accounted state; a
@@ -701,4 +812,37 @@ pub fn embed_text(s: &Symbol) -> String {
         s.imports.join(" "),
         s.references.join(" ")
     )
+}
+
+#[cfg(test)]
+mod error_classification_tests {
+    use super::is_locked_error;
+
+    fn sqlite_error(result_code: std::ffi::c_int) -> anyhow::Error {
+        let inner = rusqlite::ffi::Error::new(result_code);
+        anyhow::Error::new(rusqlite::Error::SqliteFailure(inner, None))
+    }
+
+    #[test]
+    fn classifies_busy_and_locked_as_transient() {
+        assert!(is_locked_error(&sqlite_error(rusqlite::ffi::SQLITE_BUSY)));
+        assert!(is_locked_error(&sqlite_error(rusqlite::ffi::SQLITE_LOCKED)));
+    }
+
+    #[test]
+    fn does_not_classify_other_errors_as_transient() {
+        assert!(!is_locked_error(&sqlite_error(
+            rusqlite::ffi::SQLITE_CORRUPT
+        )));
+        assert!(!is_locked_error(&anyhow::anyhow!("unrelated io error")));
+    }
+
+    #[test]
+    fn sees_through_context_wrapping() {
+        // `open`/`open_read_only` wrap the underlying rusqlite::Error with
+        // `.with_context(...)`; the classifier must still find it via the
+        // error chain, not just the outermost layer.
+        let wrapped = sqlite_error(rusqlite::ffi::SQLITE_BUSY).context("open index at /some/path");
+        assert!(is_locked_error(&wrapped));
+    }
 }

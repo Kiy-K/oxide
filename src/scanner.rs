@@ -220,4 +220,31 @@ mod tests {
         let files = scan_repo(root).unwrap();
         assert!(files.is_empty(), "{files:?}");
     }
+
+    #[test]
+    fn dangling_symlink_does_not_crash_the_scan_and_siblings_are_still_found() {
+        // Item 6: a symlink whose target disappears (or never existed)
+        // between directory listing and `std::fs::metadata` following it is
+        // a scanner-level race distinct from update_index's file-hash
+        // accounting. `scan_repo` must degrade gracefully (skip the broken
+        // entry, never panic or error the whole walk) rather than lose
+        // visibility into the rest of the repository.
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        write(&root.join("src/real.py"), "def real():\n    return 1\n");
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(
+            root.join("src/does_not_exist.py"),
+            root.join("src/dangling.py"),
+        )
+        .unwrap();
+
+        let files = scan_repo(root).unwrap();
+        let names: Vec<String> = files.iter().map(|p| p.display().to_string()).collect();
+        assert!(names.contains(&"src/real.py".to_string()), "{names:?}");
+        assert!(
+            !names.iter().any(|n| n.contains("dangling")),
+            "a dangling symlink must not appear as a discovered file: {names:?}"
+        );
+    }
 }

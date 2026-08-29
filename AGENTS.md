@@ -40,6 +40,37 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 - `LexicalIndex::build` reads bodies from the repo root recorded in index meta
   (`get_meta("root")`) — engine construction needs an indexed store, not just
   symbols.
+- An embedding's cache-invalidation key must always equal (a hash of)
+  `index::embed_text(symbol)` exactly — never a proxy for it. The module
+  symbol's `content_hash` is intentionally coarse at parse time (imports +
+  first line, `parser.rs`), but `update_index` overwrites it once `references`
+  are resolved (`content_hash(&embed_text(s))`) — references are part of
+  `embed_text` but aren't known until after parsing. This override is scoped
+  to files that used the coarse formula (`used_coarse_module_hash` in
+  `update_index`); the empty-file fallback module symbol already hashes full
+  source and must keep doing so, or comment-only files silently stop
+  reporting edits (`tests/embedding_staleness.rs` pins both).
+- Cross-file, same-run reference staleness is a known, accepted gap: if file A
+  adds a name that a symbol in unrelated, already-reparsed file B's body
+  happens to textually match, B's `references` can lag until B itself is next
+  reparsed. Fixing it needs real dependency tracking (a graph), which is out
+  of scope by design (see `docs/agent-usage-policy.md`-adjacent "no new
+  architecture" note in the Phase 1.1 report). Don't "fix" this with a
+  targeted patch; it needs an architecture discussion first.
+- `SqliteStore::open_read_only` must stay a plain `SQLITE_OPEN_READ_ONLY`
+  connection, never `immutable=1`: that flag disables WAL/locking
+  consistency checks and SQLite's own docs call it unsafe when the file can
+  change concurrently, which `index.db` always can (`oxide index` runs from
+  any process at any time). The accepted contract: reads never modify
+  `index.db` content, but may create/touch the writer's `-wal`/`-shm` files
+  like any WAL reader (`tests/cli_e2e.rs::read_only_commands_never_modify_index_db_content`).
+- `update_index`'s closing meta writes (root/embedder/dim/schema_version/
+  extraction_version) must land as one atomic transaction
+  (`IndexBackend::set_meta_all`), never as separate statements. A process
+  killed between separate writes could leave `root` set without
+  `schema_version`, and `validate_index`'s "missing schema_version means a
+  pre-versioning legacy index" fallback would then wave a torn, incomplete
+  index through as healthy (`tests/interrupted_index_recovery.rs`).
 
 ## Embeddings / providers
 

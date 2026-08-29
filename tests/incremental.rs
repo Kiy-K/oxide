@@ -176,3 +176,49 @@ fn index_survives_reopen_from_disk() {
         .collect();
     assert!(names.contains(&"persist_me".to_string()));
 }
+
+#[test]
+fn file_deleted_between_scan_and_read_is_accounted_not_silently_dropped() {
+    // Item 6: a file discovered by the scanner (exists at scan time) can be
+    // deleted by a concurrent process before `update_index` gets around to
+    // reading it. This must land in `errored_files`, not vanish from the
+    // scanned/unchanged/reparsed/errored accounting invariant, and must
+    // never panic. The race window is tiny, so this repeats several racing
+    // attempts to give the delete a real chance to land inside it; every
+    // attempt is checked, not just a lucky one.
+    for attempt in 0..25 {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        write(&root.join("src/stable.py"), "def stable():\n    return 1\n");
+        let racy = root.join("src/racy.py");
+        write(&racy, "def racy():\n    return 1\n");
+
+        let deleter = {
+            let racy = racy.clone();
+            std::thread::spawn(move || {
+                let _ = std::fs::remove_file(&racy);
+            })
+        };
+
+        let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+        let emb = HashedEmbedder::default();
+        let report = update_index(root, &mut store, &emb);
+        deleter.join().unwrap();
+
+        let report = report.unwrap_or_else(|e| panic!("attempt {attempt}: {e}"));
+        assert_eq!(
+            report.scanned_files,
+            report.unchanged_files + report.reparsed_files + report.errored_files,
+            "attempt {attempt}: accounting invariant violated"
+        );
+        // Whether or not this attempt actually won the race, the winning
+        // outcome (racy.py errored) must be internally consistent: either
+        // it was read successfully (reparsed) or it was not (errored), but
+        // never both, and never silently absent from either.
+        assert!(
+            report.scanned_files == 1 || report.scanned_files == 2,
+            "attempt {attempt}: unexpected scanned_files={}",
+            report.scanned_files
+        );
+    }
+}

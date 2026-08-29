@@ -491,9 +491,21 @@ impl RepositoryService {
             .get_meta("root")
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
         if indexed_root.as_deref() != Some(self.root.to_string_lossy().as_ref()) {
+            // A missing `root` key means every closing meta write in
+            // `update_index` was skipped (they land atomically as one
+            // group, see `set_meta_all`) — most often an index whose first
+            // build was interrupted before completing, not literally a
+            // different repository. The action (Repair: reindex) is the
+            // same either way, but the message should not mislead whoever
+            // reads it while debugging.
+            let reason = if indexed_root.is_none() {
+                "index has no recorded root (likely an interrupted or never-completed build)"
+            } else {
+                "index belongs to a different repository"
+            };
             return Err(ServiceError::new(
                 ErrorCode::IndexIncompatible,
-                "index belongs to a different repository; run `oxide index PATH`",
+                format!("{reason}; run `oxide index PATH`"),
             ));
         }
         // A version mismatch means this binary must not guess how to read the
@@ -558,8 +570,19 @@ impl RepositoryService {
     }
 
     fn open_index_for_write(&self) -> Result<SqliteStore, ServiceError> {
-        SqliteStore::open(&self.index_path())
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))
+        SqliteStore::open(&self.index_path()).map_err(|e| {
+            // A cold-start indexing race can exhaust the bounded schema-init
+            // retry (see `SqliteStore::open`) and surface as "database is
+            // locked". That is transient contention with another writer,
+            // not corruption: mapping it to `IndexCorrupt` would tell the
+            // caller to delete and rebuild the index over a condition that
+            // resolves itself once the other writer finishes.
+            if crate::index::is_locked_error(&e) {
+                ServiceError::from_error(ErrorCode::IndexFailed, e)
+            } else {
+                ServiceError::from_error(ErrorCode::IndexCorrupt, e)
+            }
+        })
     }
 
     fn open_index_for_read(&self) -> Result<SqliteStore, ServiceError> {
@@ -574,8 +597,20 @@ impl RepositoryService {
                 ),
             ));
         }
-        SqliteStore::open_read_only(&path)
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))
+        SqliteStore::open_read_only(&path).map_err(|e| {
+            // Symmetric with `open_index_for_write`: extreme lock
+            // contention on open is transient, not corruption. This helper
+            // is shared by every read operation (status/search/context/
+            // stats/review), so the code must not name one of them —
+            // `IndexFailed` (Retry) is the same transient-contention code
+            // the write path already uses for the identical underlying
+            // condition.
+            if crate::index::is_locked_error(&e) {
+                ServiceError::from_error(ErrorCode::IndexFailed, e)
+            } else {
+                ServiceError::from_error(ErrorCode::IndexCorrupt, e)
+            }
+        })
     }
 }
 
