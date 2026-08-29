@@ -1,12 +1,16 @@
 # OXIDE
 
-Fast local, incremental, structure-aware code index and retrieval engine.
-Given a repository, OXIDE indexes code at the **symbol level** (Tree-sitter)
-and returns the smallest useful set of relevant symbols — for search, review
-context, debugging, and downstream coding agents.
+A **Context Engine for coding agents**, powered by **Selective Code
+Indexing**: given a repository, OXIDE indexes code at the symbol level and
+returns the smallest useful, bounded working set of relevant code for a
+task — not every byte reachable from the project root.
 
-Not an LLM wrapper. The product is the code intelligence and retrieval layer.
-Works fully offline; the default embedder is deterministic and needs no model.
+OXIDE is not a vector database, not a code graph, not a Tree-sitter indexer,
+and not a RAG framework — those are layered implementation components
+underneath it (see Architecture below), not what it is. It is not an LLM
+wrapper either; the product is the context-supply layer a coding agent
+calls before it starts reading and editing. Works fully offline; the
+default embedder is deterministic and needs no model.
 
 ## Install
 
@@ -60,6 +64,35 @@ Each symbol stores file, language, kind, line span, content hash, signature,
 imports, references, parent — enough to reconstruct context later.
 
 ## Architecture
+
+Conceptually, a request flows through one pipeline regardless of which
+transport (CLI today; MCP in a future phase) initiates it:
+
+```text
+Repository
+   |
+Selective Code Indexing
+   |-- syntax evidence      (Tree-sitter: symbols, spans, signatures)
+   |-- lexical evidence     (BM25 over names/signatures/paths/bodies)
+   |-- semantic evidence    (embedding provider; offline hashed by default)
+   `-- structural evidence  (parent/child, imports, references, tests)
+       |
+Evidence retrieval
+       |
+ranking / canonicalization   (RRF fusion, deterministic tie-break)
+       |
+context allocation           (token-budgeted pack, direct hits kept, omitted[] explains cuts)
+       |
+bounded coding working set
+       |
+coding agent
+```
+
+Tree-sitter, the embedding provider, SQLite storage, and the RRF fusion
+math are implementation details of "Selective Code Indexing" and "ranking /
+canonicalization" above — swappable, and not the thing an agent needs to
+know about to use OXIDE (see `docs/agent-usage-policy.md`). The module
+layout below maps onto that pipeline directly:
 
 ```text
 src/
