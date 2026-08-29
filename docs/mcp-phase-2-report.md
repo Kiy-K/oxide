@@ -5,10 +5,23 @@ sample in section 6; see `docs/evals/phase-2.1/`.
 
 ## 1. Architecture and footprint
 
-The MCP transport is a short newline-delimited JSON-RPC adapter in
-`src/mcp.rs`, registered as `oxide mcp`. It owns framing, MCP initialization,
+**Update (Phase 2.4):** the hand-written JSON-RPC transport described below
+was replaced with the official `rmcp` SDK (pinned `=3.1.4`) after an audit
+found the ownership tradeoff acceptable for long-term maintenance. `src/mcp.rs`
+now owns only argument/result conversion between MCP tool calls and
+`RepositoryService`; framing, lifecycle, and protocol-version negotiation are
+`rmcp`'s. Two behaviors changed as a result: `initialize` must now precede any
+`tools/call` (previously accepted without it), and `initialize` echoes back
+whichever client-requested protocol version it recognizes instead of always
+returning a hardcoded `2024-11-05`. See the migration notes in this repo's
+history (`src/mcp.rs`, `tests/mcp_e2e.rs`) for the parity tests this preserved.
+The paragraph below describes the pre-migration adapter for historical
+context; the footprint and dependency claims in it no longer hold.
+
+The MCP transport was a short newline-delimited JSON-RPC adapter in
+`src/mcp.rs`, registered as `oxide mcp`. It owned framing, MCP initialization,
 tool discovery, boundary validation, and conversion of service failures to MCP
-tool results. It does not own repository discovery, index validation, ranking,
+tool results. It did not own repository discovery, index validation, ranking,
 structural expansion, context allocation, or embedding behavior.
 
 Both tools call `RepositoryService` directly:
@@ -18,9 +31,9 @@ context (namespace `oxide`) -> RepositoryService::discover -> RepositoryService:
 search  (namespace `oxide`) -> RepositoryService::discover -> RepositoryService::search
 ```
 
-The human CLI remains unchanged apart from the `oxide mcp` server entry point.
-No MCP dependency, watcher, daemon, auto-indexing, session state, or recovery
-logic was added.
+This call path is unchanged post-migration. The human CLI remains unchanged
+apart from the `oxide mcp` server entry point, which now builds a tokio
+runtime only inside that command's execution path.
 
 ## 2. Exposed tools
 
@@ -144,9 +157,11 @@ justified by this evidence.
 - empty result payloads
 - concurrent read processes
 
-The server is short-lived, reads one JSON request per line, writes one response
-per line, ignores supported notifications, and never indexes or mutates a read
-request's repository/index.
+The server is short-lived and never indexes or mutates a read request's
+repository/index. Post-migration (Phase 2.4), `rmcp` enforces the MCP
+lifecycle strictly — `initialize` must precede any other request, including
+`tools/call` — and handles framing and notification dispatch; `oxide` no
+longer parses JSON-RPC lines by hand.
 
 ## 8. Risks and freeze decision
 

@@ -1,278 +1,236 @@
-//! Minimal stdio MCP transport for coding-agent context discovery.
+//! stdio MCP server for coding-agent context discovery.
 //!
-//! This module owns JSON-RPC/MCP framing and input validation only. Repository
-//! discovery, index validation, retrieval, context allocation, and error
-//! classification remain in [`crate::service::RepositoryService`].
+//! Protocol framing, lifecycle, and version negotiation are owned by `rmcp`.
+//! This module owns only argument/result conversion between MCP tool calls
+//! and [`crate::service::RepositoryService`]: it does not own repository
+//! discovery, index validation, retrieval, context allocation, or embedding
+//! behavior.
+//!
+//! Argument validation is hand-rolled on the raw [`JsonObject`] rather than
+//! going through rmcp's `Parameters<T>` auto-extractor. rmcp's own extractor
+//! is convenient but deliberately downgrades shape errors (wrong type,
+//! unknown field) into `isError: true` tool results instead of JSON-RPC
+//! errors (see `into_tool_argument_error` in rmcp's tool router) so an agent
+//! can self-correct without a client that hides protocol errors. OXIDE's
+//! contract is the opposite and predates this server: malformed arguments
+//! are a JSON-RPC `-32602`, distinct from `RepositoryService` failures
+//! (`isError: true` with structured `{code, action, message}`). Hand-rolling
+//! keeps that distinction exact instead of depending on rmcp's internal
+//! error-message prefix to *not* match.
 
 use crate::retrieval::SearchMode;
 use crate::service::{RepositoryService, SearchRequest, ServiceError};
-use serde_json::{json, Map, Value};
-use std::io::{self, BufRead, Write};
+use rmcp::model::{
+    CallToolResult, ContentBlock, Implementation, JsonObject, ServerCapabilities, ServerInfo,
+};
+use rmcp::{tool, tool_handler, tool_router, ErrorData as McpError, ServerHandler};
+use serde_json::{json, Value};
 
-const PROTOCOL_VERSION: &str = "2024-11-05";
 const SERVER_INSTRUCTIONS: &str = "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits.";
 const DEFAULT_CONTEXT_BUDGET: usize = 4096;
 const DEFAULT_SEARCH_LIMIT: usize = 10;
 
-/// Serve newline-delimited JSON-RPC requests on stdin and responses on stdout.
-pub fn serve() -> anyhow::Result<()> {
-    let stdin = io::stdin();
-    let mut stdout = io::BufWriter::new(io::stdout().lock());
-    for line in stdin.lock().lines() {
-        let line = line?;
-        if line.trim().is_empty() {
-            continue;
-        }
-        if let Some(response) = handle_message(&line) {
-            serde_json::to_writer(&mut stdout, &response)?;
-            stdout.write_all(b"\n")?;
-            stdout.flush()?;
-        }
-    }
+/// Serve MCP over stdio until the client disconnects (EOF on stdin).
+pub async fn serve() -> anyhow::Result<()> {
+    let service = rmcp::serve_server(OxideServer::new(), rmcp::transport::stdio()).await?;
+    service.waiting().await?;
     Ok(())
 }
 
-fn handle_message(line: &str) -> Option<Value> {
-    let request: Value = match serde_json::from_str(line) {
-        Ok(value) => value,
-        Err(error) => return Some(json_rpc_error(Value::Null, -32700, error.to_string())),
-    };
-    let object = match request.as_object() {
-        Some(object) => object,
-        None => {
-            return Some(json_rpc_error(
-                Value::Null,
-                -32600,
-                "request must be an object",
-            ))
-        }
-    };
-    if object.get("jsonrpc").and_then(Value::as_str) != Some("2.0") {
-        return Some(json_rpc_error(
-            object.get("id").cloned().unwrap_or(Value::Null),
-            -32600,
-            "jsonrpc must be \"2.0\"",
-        ));
-    }
-    let id = object.get("id").cloned().unwrap_or(Value::Null);
-    let notification = !object.contains_key("id");
-    let method = match object.get("method").and_then(Value::as_str) {
-        Some(method) => method,
-        None => {
-            return (!notification)
-                .then(|| json_rpc_error(id, -32600, "request method is required"))
-        }
-    };
+#[derive(Clone, Default)]
+pub struct OxideServer;
 
-    match method {
-        "initialize" => Some(json_rpc_result(id, initialize_result())),
-        "notifications/initialized" | "notifications/cancelled" => None,
-        "tools/list" => Some(json_rpc_result(id, json!({"tools": tool_definitions()}))),
-        "tools/call" => {
-            if notification {
-                return None;
-            }
-            let params = match object.get("params").and_then(Value::as_object) {
-                Some(params) => params,
-                None => {
-                    return Some(json_rpc_error(
-                        id,
-                        -32602,
-                        "tools/call params must be an object",
-                    ))
-                }
+impl OxideServer {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+fn context_input_schema() -> JsonObject {
+    object(json!({
+        "type": "object",
+        "properties": {
+            "task": {"type": "string"},
+            "path": {"type": "string"},
+            "token_budget": {"type": "integer", "minimum": 0},
+        },
+        "required": ["task"],
+        "additionalProperties": false,
+    }))
+}
+
+fn search_input_schema() -> JsonObject {
+    object(json!({
+        "type": "object",
+        "properties": {
+            "query": {"type": "string"},
+            "path": {"type": "string"},
+            "limit": {"type": "integer", "minimum": 0, "maximum": 100},
+        },
+        "required": ["query"],
+        "additionalProperties": false,
+    }))
+}
+
+fn object(value: Value) -> JsonObject {
+    match value {
+        Value::Object(object) => object,
+        _ => unreachable!("tool schemas are always JSON objects"),
+    }
+}
+
+#[tool_router]
+impl OxideServer {
+    #[tool(
+        name = "context",
+        description = "Build a bounded working set for an unfamiliar coding task.",
+        input_schema = context_input_schema()
+    )]
+    async fn context(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
+        reject_unknown(&arguments, &["task", "path", "token_budget"])?;
+        let task = required_string(&arguments, "task")?.to_string();
+        let path = optional_string(&arguments, "path")?.map(str::to_string);
+        let budget = optional_usize(&arguments, "token_budget")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
+        run_blocking(move || {
+            let service = match RepositoryService::discover(path.as_deref()) {
+                Ok(service) => service,
+                Err(error) => return Ok(service_error_result(error)),
             };
-            match call_tool(params) {
-                Ok(result) => Some(json_rpc_result(id, result)),
-                Err(CallError::Invalid(message)) => Some(json_rpc_error(id, -32602, message)),
-                Err(CallError::Service(error)) => {
-                    Some(json_rpc_result(id, service_error_result(error)))
-                }
-                Err(CallError::Internal(message)) => Some(json_rpc_error(id, -32603, message)),
+            match service.context(&task, budget) {
+                Ok(result) => tool_success(result),
+                Err(error) => Ok(service_error_result(error)),
             }
-        }
-        _ if notification => None,
-        _ => Some(json_rpc_error(
-            id,
-            -32601,
-            format!("method not found: {method}"),
-        )),
+        })
+        .await
+    }
+
+    #[tool(
+        name = "search",
+        description = "Find repository code relevant to a focused implementation question.",
+        input_schema = search_input_schema()
+    )]
+    async fn search(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
+        reject_unknown(&arguments, &["query", "path", "limit"])?;
+        let query = required_string(&arguments, "query")?.to_string();
+        let path = optional_string(&arguments, "path")?.map(str::to_string);
+        let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);
+        run_blocking(move || {
+            let service = match RepositoryService::discover(path.as_deref()) {
+                Ok(service) => service,
+                Err(error) => return Ok(service_error_result(error)),
+            };
+            let result = service.search(
+                &query,
+                SearchRequest {
+                    limit,
+                    mode: SearchMode::Hybrid,
+                    expand: true,
+                },
+            );
+            match result {
+                Ok(hits) => tool_success(hits),
+                Err(error) => Ok(service_error_result(error)),
+            }
+        })
+        .await
     }
 }
 
-fn initialize_result() -> Value {
-    json!({
-        "protocolVersion": PROTOCOL_VERSION,
-        "capabilities": {"tools": {}},
-        "serverInfo": {"name": "oxide", "version": env!("CARGO_PKG_VERSION")},
-        "instructions": SERVER_INSTRUCTIONS,
-    })
-}
-
-fn tool_definitions() -> Vec<Value> {
-    vec![
-        json!({
-            "name": "context",
-            "description": "Build a bounded working set for an unfamiliar coding task.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "task": {"type": "string"},
-                    "path": {"type": "string"},
-                    "token_budget": {"type": "integer", "minimum": 0},
-                },
-                "required": ["task"],
-                "additionalProperties": false,
-            },
-        }),
-        json!({
-            "name": "search",
-            "description": "Find repository code relevant to a focused implementation question.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "query": {"type": "string"},
-                    "path": {"type": "string"},
-                    "limit": {"type": "integer", "minimum": 0, "maximum": 100},
-                },
-                "required": ["query"],
-                "additionalProperties": false,
-            },
-        }),
-    ]
-}
-
-enum CallError {
-    Invalid(String),
-    Service(ServiceError),
-    Internal(String),
-}
-
-fn call_tool(params: &Map<String, Value>) -> Result<Value, CallError> {
-    let name = params
-        .get("name")
-        .and_then(Value::as_str)
-        .ok_or_else(|| CallError::Invalid("tools/call name must be a string".into()))?;
-    let arguments = match params.get("arguments") {
-        None => Map::new(),
-        Some(Value::Object(arguments)) => arguments.clone(),
-        Some(_) => {
-            return Err(CallError::Invalid(
-                "tools/call arguments must be an object".into(),
-            ))
-        }
-    };
-    match name {
-        "context" => context(arguments),
-        "search" => search(arguments),
-        _ => Err(CallError::Invalid(format!("unknown tool: {name}"))),
+#[tool_handler]
+impl ServerHandler for OxideServer {
+    fn get_info(&self) -> ServerInfo {
+        ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
+            .with_server_info(Implementation::new("oxide", env!("CARGO_PKG_VERSION")))
+            .with_instructions(SERVER_INSTRUCTIONS)
     }
 }
 
-fn reject_unknown(arguments: &Map<String, Value>, allowed: &[&str]) -> Result<(), CallError> {
+/// Run blocking `RepositoryService`/SQLite/HTTP work off the async runtime's
+/// worker thread. `f` itself never returns `Err`: `ServiceError` is folded
+/// into `Ok(CallToolResult::structured_error(..))` inside the closure so it
+/// stays an `isError: true` tool result rather than a JSON-RPC error. `Err`
+/// here is reserved for genuinely internal failures (the blocking task
+/// panicking or being cancelled).
+async fn run_blocking<F>(f: F) -> Result<CallToolResult, McpError>
+where
+    F: FnOnce() -> Result<CallToolResult, McpError> + Send + 'static,
+{
+    match tokio::task::spawn_blocking(f).await {
+        Ok(result) => result,
+        Err(join_error) => Err(McpError::internal_error(join_error.to_string(), None)),
+    }
+}
+
+fn reject_unknown(arguments: &JsonObject, allowed: &[&str]) -> Result<(), McpError> {
     if let Some(key) = arguments
         .keys()
         .find(|key| !allowed.iter().any(|allowed| allowed == key))
     {
-        return Err(CallError::Invalid(format!("unknown argument: {key}")));
+        return Err(McpError::invalid_params(
+            format!("unknown argument: {key}"),
+            None,
+        ));
     }
     Ok(())
 }
 
-fn context(arguments: Map<String, Value>) -> Result<Value, CallError> {
-    reject_unknown(&arguments, &["task", "path", "token_budget"])?;
-    let task = required_string(&arguments, "task")?;
-    let path = optional_string(&arguments, "path")?;
-    let budget = optional_usize(&arguments, "token_budget")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
-    let service = RepositoryService::discover(path).map_err(CallError::Service)?;
-    let result = service.context(task, budget).map_err(CallError::Service)?;
-    tool_success(
-        serde_json::to_value(result).map_err(|error| CallError::Internal(error.to_string()))?,
-    )
-}
-
-fn search(arguments: Map<String, Value>) -> Result<Value, CallError> {
-    reject_unknown(&arguments, &["query", "path", "limit"])?;
-    let query = required_string(&arguments, "query")?;
-    let path = optional_string(&arguments, "path")?;
-    let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);
-    let service = RepositoryService::discover(path).map_err(CallError::Service)?;
-    let result = service
-        .search(
-            query,
-            SearchRequest {
-                limit,
-                mode: SearchMode::Hybrid,
-                expand: true,
-            },
-        )
-        .map_err(CallError::Service)?;
-    tool_success(
-        serde_json::to_value(result).map_err(|error| CallError::Internal(error.to_string()))?,
-    )
-}
-
-fn required_string<'a>(arguments: &'a Map<String, Value>, key: &str) -> Result<&'a str, CallError> {
+fn required_string<'a>(arguments: &'a JsonObject, key: &str) -> Result<&'a str, McpError> {
     match arguments.get(key).and_then(Value::as_str) {
         Some(value) if !value.trim().is_empty() => Ok(value),
-        Some(_) => Err(CallError::Invalid(format!("{key} must not be empty"))),
-        None => Err(CallError::Invalid(format!("{key} must be a string"))),
+        Some(_) => Err(McpError::invalid_params(
+            format!("{key} must not be empty"),
+            None,
+        )),
+        None => Err(McpError::invalid_params(
+            format!("{key} must be a string"),
+            None,
+        )),
     }
 }
 
-fn optional_string<'a>(
-    arguments: &'a Map<String, Value>,
-    key: &str,
-) -> Result<Option<&'a str>, CallError> {
+fn optional_string<'a>(arguments: &'a JsonObject, key: &str) -> Result<Option<&'a str>, McpError> {
     match arguments.get(key) {
         None => Ok(None),
         Some(Value::String(value)) if !value.trim().is_empty() => Ok(Some(value)),
-        Some(Value::String(_)) => Err(CallError::Invalid(format!("{key} must not be empty"))),
-        Some(_) => Err(CallError::Invalid(format!("{key} must be a string"))),
+        Some(Value::String(_)) => Err(McpError::invalid_params(
+            format!("{key} must not be empty"),
+            None,
+        )),
+        Some(_) => Err(McpError::invalid_params(
+            format!("{key} must be a string"),
+            None,
+        )),
     }
 }
 
-fn optional_usize(arguments: &Map<String, Value>, key: &str) -> Result<Option<usize>, CallError> {
+fn optional_usize(arguments: &JsonObject, key: &str) -> Result<Option<usize>, McpError> {
     let Some(value) = arguments.get(key) else {
         return Ok(None);
     };
     let Some(value) = value.as_u64() else {
-        return Err(CallError::Invalid(format!(
-            "{key} must be a non-negative integer"
-        )));
+        return Err(McpError::invalid_params(
+            format!("{key} must be a non-negative integer"),
+            None,
+        ));
     };
-    let value =
-        usize::try_from(value).map_err(|_| CallError::Invalid(format!("{key} is too large")))?;
+    let value = usize::try_from(value)
+        .map_err(|_| McpError::invalid_params(format!("{key} is too large"), None))?;
     Ok(Some(value))
 }
 
-fn tool_success(payload: Value) -> Result<Value, CallError> {
-    let text =
-        serde_json::to_string(&payload).map_err(|error| CallError::Internal(error.to_string()))?;
-    Ok(json!({"content": [{"type": "text", "text": text}], "isError": false}))
+fn tool_success(payload: impl serde::Serialize) -> Result<CallToolResult, McpError> {
+    let text = serde_json::to_string(&payload)
+        .map_err(|error| McpError::internal_error(error.to_string(), None))?;
+    Ok(CallToolResult::success(vec![ContentBlock::text(text)]))
 }
 
-fn service_error_result(error: ServiceError) -> Value {
-    let payload = json!({
+fn service_error_result(error: ServiceError) -> CallToolResult {
+    let payload: Value = json!({
         "error": {
             "code": error.code(),
             "action": error.action().as_str(),
             "message": error.message(),
         }
     });
-    let text = serde_json::to_string(&payload)
-        .unwrap_or_else(|_| "{\"error\":{\"code\":\"service_error\"}}".into());
-    json!({
-        "content": [{"type": "text", "text": text}],
-        "structuredContent": payload,
-        "isError": true,
-    })
-}
-
-fn json_rpc_result(id: Value, result: Value) -> Value {
-    json!({"jsonrpc": "2.0", "id": id, "result": result})
-}
-
-fn json_rpc_error(id: Value, code: i64, message: impl Into<String>) -> Value {
-    json!({"jsonrpc": "2.0", "id": id, "error": {"code": code, "message": message.into()}})
+    CallToolResult::structured_error(payload)
 }

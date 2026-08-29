@@ -186,7 +186,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             budget_tokens,
             json,
         } => cmd_context(path.as_deref(), &task, budget_tokens, json),
-        Cmd::Mcp => crate::mcp::serve().map_err(|e| CliError::generic(e, false)),
+        Cmd::Mcp => run_mcp(),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }
@@ -370,6 +370,18 @@ fn cmd_review(path: Option<&str>, diff: &str, json: bool) -> Result<(), CliError
         }
     }
     Ok(())
+}
+
+/// Build a tokio runtime only for the `mcp` subcommand, so every other CLI
+/// command stays fully synchronous and pays no async runtime startup cost.
+fn run_mcp() -> Result<(), CliError> {
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|e| CliError::generic(e, false))?;
+    runtime
+        .block_on(crate::mcp::serve())
+        .map_err(|e| CliError::generic(e, false))
 }
 
 fn cmd_stats(path: Option<&str>) -> Result<(), CliError> {

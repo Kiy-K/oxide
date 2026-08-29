@@ -7,40 +7,54 @@ struct McpProcess {
     child: Child,
     input: ChildStdin,
     output: BufReader<ChildStdout>,
+    /// The `initialize` response captured during the mandatory MCP lifecycle
+    /// handshake every `start*` constructor performs before returning, so
+    /// callers don't have to re-send it (rmcp, unlike the old hand-rolled
+    /// server, enforces that `initialize` precedes any other request).
+    init_result: Value,
 }
 
 impl McpProcess {
     fn start(root: &Path) -> Self {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_oxide"))
-            .arg("mcp")
-            .current_dir(root)
-            .stdin(std::process::Stdio::piped())
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .unwrap();
-        Self {
-            input: child.stdin.take().unwrap(),
-            output: BufReader::new(child.stdout.take().unwrap()),
-            child,
-        }
+        Self::spawn(root, None)
     }
 
     fn start_with_embedder_url(root: &Path, url: &str) -> Self {
-        let mut child = Command::new(env!("CARGO_BIN_EXE_oxide"))
+        Self::spawn(root, Some(url))
+    }
+
+    fn spawn(root: &Path, embedder_url: Option<&str>) -> Self {
+        let mut command = Command::new(env!("CARGO_BIN_EXE_oxide"));
+        command
             .arg("mcp")
             .current_dir(root)
-            .env("OXIDE_EMBED_URL", url)
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .unwrap();
-        Self {
+            .stderr(std::process::Stdio::piped());
+        if let Some(url) = embedder_url {
+            command.env("OXIDE_EMBED_URL", url);
+        }
+        let mut child = command.spawn().unwrap();
+        let mut process = Self {
             input: child.stdin.take().unwrap(),
             output: BufReader::new(child.stdout.take().unwrap()),
             child,
-        }
+            init_result: Value::Null,
+        };
+        process.init_result = process.request(json!({
+            "jsonrpc": "2.0",
+            "id": "handshake",
+            "method": "initialize",
+            "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
+        }));
+        writeln!(
+            process.input,
+            "{}",
+            json!({"jsonrpc": "2.0", "method": "notifications/initialized"})
+        )
+        .unwrap();
+        process.input.flush().unwrap();
+        process
     }
 
     fn request(&mut self, request: Value) -> Value {
@@ -94,15 +108,12 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
     let root = tempfile::tempdir().unwrap();
     let mut server = McpProcess::start(root.path());
 
-    let initialized = server.request(json!({
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "initialize",
-        "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "test", "version": "0"}}
-    }));
-    assert_eq!(initialized["result"]["protocolVersion"], "2024-11-05");
+    assert_eq!(
+        server.init_result["result"]["protocolVersion"],
+        "2024-11-05"
+    );
     assert!(
-        initialized["result"]["instructions"]
+        server.init_result["result"]["instructions"]
             .as_str()
             .unwrap()
             .len()
