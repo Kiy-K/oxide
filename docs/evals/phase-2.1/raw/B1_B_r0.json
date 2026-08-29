@@ -1,0 +1,59 @@
+{
+  "task": "B1",
+  "bucket": "B",
+  "repo": "py_repo",
+  "condition": "B",
+  "rep": 0,
+  "repo_path": "/tmp/tmpjhb6aixp/repo",
+  "wall": 10.635210514068604,
+  "status": "ok",
+  "calls": {
+    "context": 0,
+    "search": 0,
+    "native_search": 2,
+    "reads": 1,
+    "total": 3
+  },
+  "tools": [
+    {
+      "tool": "grep",
+      "input": {
+        "pattern": "TTLCache"
+      }
+    },
+    {
+      "tool": "glob",
+      "input": {
+        "pattern": "**/oxidepy/cache*"
+      }
+    },
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/tmp/tmpjhb6aixp/repo/oxidepy/cache.py"
+      }
+    }
+  ],
+  "tokens": {
+    "total": 29710,
+    "input": 357,
+    "output": 188,
+    "reasoning": 17,
+    "cache": {
+      "write": 0,
+      "read": 29148
+    }
+  }
+}
+---raw---
+{"type":"step_start","timestamp":1787983320785,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c56c6001Rv0nxwtsdoyRMQ","messageID":"msg_04c1c4790001mTjo8BtqVudcYB","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-start"}}
+{"type":"tool_use","timestamp":1787983320966,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"type":"tool","tool":"grep","callID":"call_e8ffc012ee3944fa97b39e63","state":{"status":"completed","input":{"pattern":"TTLCache"},"output":"Found 3 matches\n/tmp/tmpjhb6aixp/repo/oxidepy/__init__.py:\n  Line 2: from .cache import TTLCache\n\n  Line 6: __all__ = [\"AuthService\", \"TokenStore\", \"TTLCache\", \"HttpClient\", \"RetryPolicy\"]\n\n\n/tmp/tmpjhb6aixp/repo/oxidepy/cache.py:\n  Line 6: class TTLCache:\n","metadata":{"matches":3,"truncated":false},"title":"TTLCache","time":{"start":1787983320924,"end":1787983320961}},"id":"prt_04c1c573100196gtsy6rD2x7IL","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","messageID":"msg_04c1c4790001mTjo8BtqVudcYB"}}
+{"type":"tool_use","timestamp":1787983320966,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"type":"tool","tool":"glob","callID":"call_9e42ef89a4fa48c0bf391ac8","state":{"status":"completed","input":{"pattern":"**/oxidepy/cache*"},"output":"/tmp/tmpjhb6aixp/repo/oxidepy/cache.py","metadata":{"count":1,"truncated":false},"title":"tmp/tmpjhb6aixp/repo","time":{"start":1787983320946,"end":1787983320964}},"id":"prt_04c1c5760001gSmf902W5YyIlj","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","messageID":"msg_04c1c4790001mTjo8BtqVudcYB"}}
+{"type":"text","timestamp":1787983321111,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c575f001o4gvsLLuQbwp0Z","messageID":"msg_04c1c4790001mTjo8BtqVudcYB","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"text","text":"\n","time":{"start":1787983320927,"end":1787983321085}}}
+{"type":"step_finish","timestamp":1787983321111,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c5800001KyEIQLcboLbGuE","reason":"tool-calls","messageID":"msg_04c1c4790001mTjo8BtqVudcYB","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-finish","tokens":{"total":28959,"input":28894,"output":32,"reasoning":33,"cache":{"write":0,"read":0}},"cost":0}}
+{"type":"step_start","timestamp":1787983322624,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c5dfa001B6Q06I3iTGftk7","messageID":"msg_04c1c5807001n2VyurpAVLaSte","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-start"}}
+{"type":"tool_use","timestamp":1787983322864,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"type":"tool","tool":"read","callID":"call_cb16f199649f456abd3d5a08","state":{"status":"completed","input":{"filePath":"/tmp/tmpjhb6aixp/repo/oxidepy/cache.py"},"output":"<path>/tmp/tmpjhb6aixp/repo/oxidepy/cache.py</path>\n<type>file</type>\n<content>\n1: \"\"\"Tiny in-memory TTL cache.\"\"\"\n2: \n3: import time\n4: \n5: \n6: class TTLCache:\n7:     \"\"\"Caches values until their time-to-live expires.\"\"\"\n8: \n9:     def __init__(self, ttl_seconds: float = 60.0):\n10:         self.ttl_seconds = ttl_seconds\n11:         self._entries = {}\n12: \n13:     def get_or_set(self, key: str, producer):\n14:         \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n15:         hit = self._entries.get(key)\n16:         now = time.monotonic()\n17:         if hit is not None and (now - hit[1]) < self.ttl_seconds:\n18:             return hit[0]\n19:         value = producer()\n20:         self._entries[key] = (value, now)\n21:         return value\n22: \n23:     def invalidate(self, key: str) -> None:\n24:         \"\"\"Drop a single expired or unwanted entry.\"\"\"\n25:         self._entries.pop(key, None)\n\n(End of file - total 25 lines)\n</content>","metadata":{"preview":"\"\"\"Tiny in-memory TTL cache.\"\"\"\n\nimport time\n\n\nclass TTLCache:\n    \"\"\"Caches values until their time-to-live expires.\"\"\"\n\n    def __init__(self, ttl_seconds: float = 60.0):\n        self.ttl_seconds = ttl_seconds\n        self._entries = {}\n\n    def get_or_set(self, key: str, producer):\n        \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n        hit = self._entries.get(key)\n        now = time.monotonic()\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\n            return hit[0]\n        value = producer()\n        self._entries[key] = (value, now)","truncated":false,"loaded":[],"display":{"type":"file","path":"/tmp/tmpjhb6aixp/repo/oxidepy/cache.py","text":"\"\"\"Tiny in-memory TTL cache.\"\"\"\n\nimport time\n\n\nclass TTLCache:\n    \"\"\"Caches values until their time-to-live expires.\"\"\"\n\n    def __init__(self, ttl_seconds: float = 60.0):\n        self.ttl_seconds = ttl_seconds\n        self._entries = {}\n\n    def get_or_set(self, key: str, producer):\n        \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n        hit = self._entries.get(key)\n        now = time.monotonic()\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\n            return hit[0]\n        value = producer()\n        self._entries[key] = (value, now)\n        return value\n\n    def invalidate(self, key: str) -> None:\n        \"\"\"Drop a single expired or unwanted entry.\"\"\"\n        self._entries.pop(key, None)","lineStart":1,"lineEnd":25,"totalLines":25,"truncated":false}},"title":"tmp/tmpjhb6aixp/repo/oxidepy/cache.py","time":{"start":1787983322854,"end":1787983322861}},"id":"prt_04c1c5e61001Ilr13z15eFl2uC","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","messageID":"msg_04c1c5807001n2VyurpAVLaSte"}}
+{"type":"step_finish","timestamp":1787983322947,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c5f2d001Z9MpMLxlInwY7g","reason":"tool-calls","messageID":"msg_04c1c5807001n2VyurpAVLaSte","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-finish","tokens":{"total":29148,"input":205,"output":26,"reasoning":23,"cache":{"write":0,"read":28894}},"cost":0}}
+{"type":"step_start","timestamp":1787983324791,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c6664001Vh25rkEIkyorDT","messageID":"msg_04c1c5f330017xBjfKBqJLu4fX","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-start"}}
+{"type":"text","timestamp":1787983326020,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c6672001Bs5byzYzeWFDl5","messageID":"msg_04c1c5f330017xBjfKBqJLu4fX","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"text","text":"**File:** `oxidepy/cache.py`\n\n**Expiry logic — `get_or_set` method (line 17):**\n\n```python\nif hit is not None and (now - hit[1]) < self.ttl_seconds:\n    return hit[0]\n```\n\nThe TTLCache expiry check compares `time.monotonic() - hit[1]` (elapsed seconds since the entry was cached) against `self.ttl_seconds`. If the elapsed time is still less than the TTL, the cached value (`hit[0]`) is returned as a hit; otherwise the entry is considered expired and falls through to `producer()` to recompute and re-cache it.\n\nThe internal structure stores tuples `(value, timestamp)` in `self._entries`, where `timestamp` is set via `time.monotonic()` on insertion (line 20).","time":{"start":1787983324786,"end":1787983326002}}}
+{"type":"step_finish","timestamp":1787983326020,"sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","part":{"id":"prt_04c1c6b37001braR8aK0q8zdxE","reason":"stop","messageID":"msg_04c1c5f330017xBjfKBqJLu4fX","sessionID":"ses_fb3e3b9ceffe4EGPJ4uR0NxXkN","type":"step-finish","tokens":{"total":29710,"input":357,"output":188,"reasoning":17,"cache":{"write":0,"read":29148}},"cost":0}}

@@ -1,0 +1,49 @@
+{
+  "task": "B1",
+  "bucket": "B",
+  "repo": "py_repo",
+  "condition": "A",
+  "rep": 1,
+  "wall": 39.89758014678955,
+  "calls": {
+    "context": 0,
+    "search": 0,
+    "native_search": 1,
+    "reads": 1,
+    "total": 2
+  },
+  "tools": [
+    {
+      "tool": "glob",
+      "input": {
+        "pattern": "**/oxidepy/cache.py"
+      }
+    },
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/tmp/tmpxaurms2t/repo/oxidepy/cache.py"
+      }
+    }
+  ],
+  "tokens": {
+    "total": 28833,
+    "input": 6969,
+    "output": 234,
+    "reasoning": 30,
+    "cache": {
+      "write": 0,
+      "read": 21600
+    }
+  }
+}
+---raw---
+{"type":"step_start","timestamp":1787982792816,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c144868001bnc47iPoNjq1k4","messageID":"msg_04c13d70000104w66NbuI1Q92R","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-start"}}
+{"type":"tool_use","timestamp":1787982793895,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"type":"tool","tool":"glob","callID":"call-bc5adf3a-411a-49aa-833d-6423b4f42be6","state":{"status":"completed","input":{"pattern":"**/oxidepy/cache.py"},"output":"/tmp/tmpxaurms2t/repo/oxidepy/cache.py","metadata":{"count":1,"truncated":false},"title":"tmp/tmpxaurms2t/repo","time":{"start":1787982793841,"end":1787982793861}},"id":"prt_04c144c68001FuZG4NpNi9445T","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","messageID":"msg_04c13d70000104w66NbuI1Q92R"}}
+{"type":"step_finish","timestamp":1787982793895,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c144c8a001MCYKpKjb77EybJ","reason":"tool-calls","messageID":"msg_04c13d70000104w66NbuI1Q92R","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-finish","tokens":{"total":28148,"input":28051,"output":20,"reasoning":77,"cache":{"write":0,"read":0}},"cost":0}}
+{"type":"step_start","timestamp":1787982796498,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c1456cb001X6WylYhQTDxpMC","messageID":"msg_04c144c94001jLDT7LrLK23u02","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-start"}}
+{"type":"tool_use","timestamp":1787982796840,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"type":"tool","tool":"read","callID":"call-d4b0d94a-ddaf-4d86-a641-f958eab5208c","state":{"status":"completed","input":{"filePath":"/tmp/tmpxaurms2t/repo/oxidepy/cache.py"},"output":"<path>/tmp/tmpxaurms2t/repo/oxidepy/cache.py</path>\n<type>file</type>\n<content>\n1: \"\"\"Tiny in-memory TTL cache.\"\"\"\n2: \n3: import time\n4: \n5: \n6: class TTLCache:\n7:     \"\"\"Caches values until their time-to-live expires.\"\"\"\n8: \n9:     def __init__(self, ttl_seconds: float = 60.0):\n10:         self.ttl_seconds = ttl_seconds\n11:         self._entries = {}\n12: \n13:     def get_or_set(self, key: str, producer):\n14:         \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n15:         hit = self._entries.get(key)\n16:         now = time.monotonic()\n17:         if hit is not None and (now - hit[1]) < self.ttl_seconds:\n18:             return hit[0]\n19:         value = producer()\n20:         self._entries[key] = (value, now)\n21:         return value\n22: \n23:     def invalidate(self, key: str) -> None:\n24:         \"\"\"Drop a single expired or unwanted entry.\"\"\"\n25:         self._entries.pop(key, None)\n\n(End of file - total 25 lines)\n</content>","metadata":{"preview":"\"\"\"Tiny in-memory TTL cache.\"\"\"\n\nimport time\n\n\nclass TTLCache:\n    \"\"\"Caches values until their time-to-live expires.\"\"\"\n\n    def __init__(self, ttl_seconds: float = 60.0):\n        self.ttl_seconds = ttl_seconds\n        self._entries = {}\n\n    def get_or_set(self, key: str, producer):\n        \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n        hit = self._entries.get(key)\n        now = time.monotonic()\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\n            return hit[0]\n        value = producer()\n        self._entries[key] = (value, now)","truncated":false,"loaded":[],"display":{"type":"file","path":"/tmp/tmpxaurms2t/repo/oxidepy/cache.py","text":"\"\"\"Tiny in-memory TTL cache.\"\"\"\n\nimport time\n\n\nclass TTLCache:\n    \"\"\"Caches values until their time-to-live expires.\"\"\"\n\n    def __init__(self, ttl_seconds: float = 60.0):\n        self.ttl_seconds = ttl_seconds\n        self._entries = {}\n\n    def get_or_set(self, key: str, producer):\n        \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n        hit = self._entries.get(key)\n        now = time.monotonic()\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\n            return hit[0]\n        value = producer()\n        self._entries[key] = (value, now)\n        return value\n\n    def invalidate(self, key: str) -> None:\n        \"\"\"Drop a single expired or unwanted entry.\"\"\"\n        self._entries.pop(key, None)","lineStart":1,"lineEnd":25,"totalLines":25,"truncated":false}},"title":"tmp/tmpxaurms2t/repo/oxidepy/cache.py","time":{"start":1787982796816,"end":1787982796838}},"id":"prt_04c145805001O5TB3I2Y2qfKYL","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","messageID":"msg_04c144c94001jLDT7LrLK23u02"}}
+{"type":"step_finish","timestamp":1787982796869,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c14582f001APB1Li9Vi3Kw78","reason":"tool-calls","messageID":"msg_04c144c94001jLDT7LrLK23u02","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-finish","tokens":{"total":28238,"input":28181,"output":41,"reasoning":16,"cache":{"write":0,"read":0}},"cost":0}}
+{"type":"step_start","timestamp":1787982800385,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c1465fd001hV0PA7Qt46aDrL","messageID":"msg_04c1458350011Bxa5gHzaEusjq","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-start"}}
+{"type":"text","timestamp":1787982802395,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c1467340010wFH27sgpvI073","messageID":"msg_04c1458350011Bxa5gHzaEusjq","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"text","text":"**File:** `/tmp/tmpxaurms2t/repo/oxidepy/cache.py:13-21`\n\n**TTLCache expiry handling** is in the `get_or_set` method (lines 13-21):\n\n```python\ndef get_or_set(self, key: str, producer):\n    \"\"\"Return cached `key`, or compute it with `producer` and cache it.\"\"\"\n    hit = self._entries.get(key)\n    now = time.monotonic()\n    if hit is not None and (now - hit[1]) < self.ttl_seconds:\n        return hit[0]\n    value = producer()\n    self._entries[key] = (value, now)\n    return value\n```\n\n**Logic:** On each `get_or_set` call, it checks if the cached entry's timestamp (`hit[1]`) is within `ttl_seconds` of `time.monotonic()`. If expired, it calls `producer()` to compute a fresh value and updates the cache with `(value, now)`. There's no background eviction — expiry is checked lazily on access.","time":{"start":1787982800692,"end":1787982802375}}}
+{"type":"step_finish","timestamp":1787982802395,"sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","part":{"id":"prt_04c146dcb001jdGWmSK4ok4465","reason":"stop","messageID":"msg_04c1458350011Bxa5gHzaEusjq","sessionID":"ses_fb3ec2a66ffe64Iq5Ia0L4ETjr","type":"step-finish","tokens":{"total":28833,"input":6969,"output":234,"reasoning":30,"cache":{"write":0,"read":21600}},"cost":0}}

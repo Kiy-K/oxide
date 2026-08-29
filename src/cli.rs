@@ -91,6 +91,8 @@ pub enum Cmd {
         #[arg(long)]
         json: bool,
     },
+    /// Run the minimal stdio MCP server for coding agents.
+    Mcp,
 }
 
 #[derive(Debug)]
@@ -184,6 +186,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             budget_tokens,
             json,
         } => cmd_context(path.as_deref(), &task, budget_tokens, json),
+        Cmd::Mcp => crate::mcp::serve().map_err(|e| CliError::generic(e, false)),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }

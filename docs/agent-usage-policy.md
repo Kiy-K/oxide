@@ -1,7 +1,7 @@
 # OXIDE Agent Usage Policy
 
 This is the single source of truth for how a coding agent should use OXIDE.
-It is transport-independent: the CLI Agent Skill, a future MCP server's
+It is transport-independent: the CLI Agent Skill, the MCP server's
 instructions, AGENTS.md snippets, and any installer-generated integration
 must all be restatements of this document, not independent copies of OXIDE
 philosophy.

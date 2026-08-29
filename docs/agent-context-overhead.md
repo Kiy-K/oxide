@@ -1,4 +1,4 @@
-# Agent context overhead audit (sections J/K)
+# Agent context overhead audit (Phase 2 + 2.1)
 
 The failure mode this guards against: *OXIDE saves N repository tokens but
 costs more than N explaining itself.* Two costs to measure separately —
@@ -11,26 +11,28 @@ per-call cost of every response it returns.
 |------|-----:|-----------|
 | `skills/oxide-code-context/SKILL.md` (what actually loads into context today) | ~800 tokens (3,211 chars / 4) | once, when the skill is triggered |
 | `docs/agent-usage-policy.md` (referenced, not force-loaded) | ~1,290 tokens | only if the agent/human explicitly reads it |
-| a future 2-tool MCP schema (`context`, `search` — name + one-line description + a handful of typed params each, no prose) | estimated well under 200 tokens | every turn (MCP tool schemas are typically resident in the system prompt) |
+| actual `context` MCP schema (namespace `oxide`) | 285 chars / ~71 tokens | every turn |
+| actual `search` MCP schema (namespace `oxide`) | 302 chars / ~76 tokens | every turn |
+| server instructions | 278 chars / ~70 tokens | every initialization/context load |
+| compact MCP persistent total | 868 chars / **~217 tokens** | every turn |
+| hypothetical seven-operation CLI/admin schema | 1,501 chars / ~375 tokens | estimated, every turn |
+| compact savings vs. full schema estimate | ~911 chars / **~228 tokens** | estimated, every turn |
+
+The actual compact MCP surface is larger than the earlier "well under 200"
+schema estimate because each tool includes its typed input object and safety
+constraints. It remains a small recurring cost: approximately 217 tokens for
+the two schemas plus initialization instructions, measured as chars/4 from
+the real `tools/list` and `initialize` responses.
+The hypothetical full-surface estimate includes the existing seven CLI
+operations and their current argument definitions; those tools are not exposed.
 
 The skill's one-time ~800 tokens is spent once per session, not per call — a
 single `context` response at typical budget (README's official benchmark:
 budgeted mode averages ~1,944 tokens; this repo's own smoke test returned
 416 tokens against a 2,048 budget for a 43-symbol fixture) already exceeds
-that one-time cost, and a session makes many `context`/`search` calls
-against a single skill load. The 7-command full-CLI framing (all of
-`index`/`status`/`search`/`review`/`stats`/`context`/`eval` explained) would
-cost meaningfully more to describe and, per the section G/H audit, does not
-buy proportionally more useful behavior — `status`/`stats`/`review`/`eval`
-have no normal-implementation use case (see `docs/agent-surface.md`).
-
-Recurring per-turn cost is what actually matters for an MCP transport,
-since tool schemas sit in the system prompt on every turn of a session, not
-just once. That is the strongest argument for the compact surface over the
-full CLI: `context`+`search` schemas are two short entries; all 7 commands'
-schemas (index's embedder/path/json flags, search's mode/limit/no_expand,
-review's diff range, etc.) would be several times larger and paid every
-turn, not once.
+that one-time cost, and a session makes many `context`/`search` calls against a
+single skill load. The recurring MCP cost is what matters for this transport,
+since tool schemas sit in the system prompt on every turn.
 
 ## K — context/search response field audit
 
@@ -53,11 +55,8 @@ review only.
 | `est_tokens` (context only) | useful for navigation | yes — lets an agent reason about the pack's budget usage |
 | `omitted[].id`/`.why` (context only) | useful for navigation | yes — tells the agent what didn't fit and why, so it knows to broaden rather than assume completeness |
 
-No field fell into "diagnostic-only" or "redundant." This matches what
-Phase 1.1 already did in the JSON-contract work (`README.md`'s "JSON
-migration note": internal `Symbol` fields like `content_hash`, `imports`,
-`parent`, `references`, and the internal `query_used` string were already
-stripped from wire output before this phase started). The conclusion of
-this audit is that no further trimming is needed, not that trimming was
-skipped — recorded here so the audit itself is on record, not just its
-absence of findings.
+No field fell into "diagnostic-only" or "redundant" in the Phase 2 audit.
+Phase 2.1's smaller real-agent sample classified path/location/symbol/snippet
+as observably useful, ranking/provenance fields as possibly useful, and token
+accounting as apparently unused in that sample. This is not enough evidence
+to change the frozen DTO; see `docs/evals/phase-2.1/results.md`.

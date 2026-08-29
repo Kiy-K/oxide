@@ -1,0 +1,40 @@
+{
+  "task": "C1",
+  "bucket": "C",
+  "repo": "py_repo",
+  "condition": "B",
+  "rep": 0,
+  "repo_path": "/tmp/tmpbexpguhk/repo",
+  "wall": 5.714679479598999,
+  "status": "ok",
+  "calls": {
+    "context": 0,
+    "search": 0,
+    "native_search": 0,
+    "reads": 1,
+    "total": 1
+  },
+  "tools": [
+    {
+      "tool": "read",
+      "input": {
+        "filePath": "/oxidepy/retry.py"
+      }
+    }
+  ],
+  "tokens": {
+    "total": 28930,
+    "input": 28895,
+    "output": 15,
+    "reasoning": 20,
+    "cache": {
+      "write": 0,
+      "read": 0
+    }
+  }
+}
+---raw---
+{"type":"step_start","timestamp":1787983609475,"sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","part":{"id":"prt_04c20be73001hZBJiSj6OZbbiS","messageID":"msg_04c20b0a0001HvaQjRqygJVsBk","sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","type":"step-start"}}
+{"type":"tool_use","timestamp":1787983609599,"sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","part":{"type":"tool","tool":"read","callID":"call_89c0ef80749c49f3b500d83b","state":{"status":"error","input":{"filePath":"/oxidepy/retry.py"},"error":"The user rejected permission to use this specific tool call.","time":{"start":1787983609581,"end":1787983609597}},"id":"prt_04c20bed50010B0v672qJeoqZY","sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","messageID":"msg_04c20b0a0001HvaQjRqygJVsBk"}}
+{"type":"step_finish","timestamp":1787983610085,"sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","part":{"id":"prt_04c20c0d5001XlViEDG1n8Pydq","reason":"tool-calls","messageID":"msg_04c20b0a0001HvaQjRqygJVsBk","sessionID":"ses_fb3df50bcffeOYu3qaArF8C95N","type":"step-finish","tokens":{"total":28930,"input":28895,"output":15,"reasoning":20,"cache":{"write":0,"read":0}},"cost":0}}
+[93m[1m! [0mpermission requested: external_directory (/oxidepy/*); auto-rejecting
