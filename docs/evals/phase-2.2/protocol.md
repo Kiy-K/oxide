@@ -1,5 +1,33 @@
 # Phase 2.2 — Activation-layer evaluation protocol
 
+## Errata (added at merge time, after §0 below was written)
+
+Section 0 below states "no MCP server exists in this repository or its
+history" and treats the brief's cited "Phase 2.1" MCP findings as
+unfounded. **That was true of this branch's git history at the time it
+was written, but is not true of the project.** A parallel workstream —
+`mcp: freeze minimal Phase 2 surface (context+search adapter)` plus
+`eval: measure real-agent MCP behavior in Phase 2.1` — landed on `main`
+from the same base commit (`d14943b`) this branch diverged from, and had
+already merged there by the time this branch was ready to merge back.
+`main` now has a real hand-written MCP adapter (`src/mcp.rs`,
+`tests/mcp_e2e.rs`) and a real Phase 2.1 agent evaluation
+(`docs/evals/phase-2.1/`, `docs/mcp-phase-2-report.md`) — both entirely
+independent of this phase's CLI-transport work.
+
+**Do not read §0's "invalidated" framing as applying to that real
+evaluation.** The original Phase 2.2 brief's references to Phase 2.1
+findings were not fabricated — they describe real work that existed on
+`main`, just not yet in this branch when it was written. That
+evaluation's own conclusions (`docs/mcp-phase-2-report.md` §6: near-zero
+OXIDE activation for the tested model across conditions, known-file
+controls correctly not activating, `search` "weakly revalidated" after
+one context→search follow-up) are complementary MCP-transport evidence,
+not superseded claims — read alongside, not instead of, this phase's
+CLI-transport findings. The rest of this document (the CLI+Skill+
+AGENTS.md evaluation actually run in this phase) stands unchanged; only
+the "nothing was ever measured" framing in §0 needed correcting.
+
 ## 0. Correction to the phase brief: no MCP exists in this repo
 
 The Phase 2.2 brief as originally drafted assumes an MCP server, an

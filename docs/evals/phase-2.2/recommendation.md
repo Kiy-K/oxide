@@ -4,6 +4,38 @@ Governing rule (unchanged from the brief): **use the weakest instruction
 layer that makes OXIDE reliably useful without turning OXIDE itself into
 context pollution.**
 
+## Errata (added at merge time): §6 and §7 below are stale
+
+§6 and §7 were written against this branch's git history, which had no
+MCP implementation. By the time this branch merged back to `main`, a
+parallel workstream had already shipped one there (`src/mcp.rs`,
+`tests/mcp_e2e.rs`, frozen per `docs/mcp-phase-2-report.md` §8) and run a
+real Phase 2.1 agent evaluation (`docs/evals/phase-2.1/`) — see
+`protocol.md`'s own errata for the full explanation. Two corrections:
+
+- **§6 ("all conclusions invalidated") is wrong as a claim about the
+  project.** It was accurate about this branch's history, not about
+  whether real MCP evidence existed anywhere. It did, on `main`, merged
+  from a sibling branch off the same base commit. Read `docs/mcp-phase-2-
+  report.md` §6 for the real MCP-transport agent-behavior findings
+  instead of treating the original brief's Phase 2.1 citations as
+  baseless.
+- **§7's premise — "use `rmcp` rather than a hand-written adapter" for a
+  future MCP pass — is moot.** A hand-written adapter already exists,
+  already passes a real protocol/lifecycle test suite
+  (`tests/mcp_e2e.rs`), and was already evaluated against real agents
+  (OpenCode connected and called both tools correctly; Claude Code and
+  Codex CLI verified at the transport/config level). `docs/mcp-phase-2-
+  report.md` §8 explicitly recommends freezing it as-is. Any future
+  decision to migrate to `rmcp` should weigh that migration's cost
+  against a working, tested, already-shipped adapter — not start from
+  "build one with `rmcp`" as if nothing exists yet. §7's other bullets
+  (reuse `RepositoryService`, keep the tool count at 2, pair tool
+  descriptions with persistent instructions, re-run rather than port
+  activation numbers) are still reasonable general guidance and happen to
+  match what the real adapter already does, but were derived without
+  knowing that.
+
 ## 1. Which instruction layer produced the best appropriate activation
 
 **E — `SKILL.md` + tiny `AGENTS.md`.** 54% Bucket-A activation, 72%
