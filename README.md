@@ -18,7 +18,8 @@ default embedder is deterministic and needs no model.
 cargo build --release          # binary at target/release/oxide
 ```
 
-Requires Rust 1.75+ and a `git` binary on PATH (used only for `review`).
+Requires Rust 1.98.0 (pinned in `rust-toolchain.toml`) and a `git` binary on
+PATH (used only for `review`).
 
 Semantic search runs fully local via llama.cpp: `scripts/embedder.sh start`
 (starts an OpenAI-compatible embeddings endpoint, ~0.3 GB RSS), then
@@ -219,6 +220,10 @@ below vector-only.
 cargo test            # unit + integration (incremental, review e2e, benchmark gate)
 cargo fmt --check && cargo clippy --all-targets
 ```
+
+See [`docs/testing/ci.md`](docs/testing/ci.md) for the full reproducible CI
+gate and [`docs/testing/coverage-baseline-v0.1.md`](docs/testing/coverage-baseline-v0.1.md)
+for the risk-focused coverage baseline.
 
 ## Using OXIDE from a coding agent
 
