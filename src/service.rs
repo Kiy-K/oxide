@@ -374,7 +374,7 @@ impl RepositoryService {
         };
         self.validate_index(
             &store,
-            (request.mode != SearchMode::LexicalOnly).then_some((provider.name(), provider.dim())),
+            (request.mode != SearchMode::LexicalOnly).then_some(provider.as_ref()),
         )?;
         let engine = RetrievalEngine::new(&store, provider.as_ref());
         let hits = engine
@@ -412,7 +412,7 @@ impl RepositoryService {
         let store = self.open_index_for_read()?;
         let provider = open_embedder(None)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
-        self.validate_index(&store, Some((provider.name(), provider.dim())))?;
+        self.validate_index(&store, Some(provider.as_ref()))?;
         let pack = build_context(
             &self.root,
             &store,
@@ -465,7 +465,7 @@ impl RepositoryService {
         let store = self.open_index_for_read()?;
         let provider = open_embedder(None)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
-        self.validate_index(&store, Some((provider.name(), provider.dim())))?;
+        self.validate_index(&store, Some(provider.as_ref()))?;
         let context = build_review_context(&self.root, &store, provider.as_ref(), diff)
             .map_err(|e| ServiceError::from_error(ErrorCode::ReviewFailed, e))?;
         if !provider.is_available() {
@@ -485,7 +485,7 @@ impl RepositoryService {
     fn validate_index(
         &self,
         store: &SqliteStore,
-        expected_embedder: Option<(&str, usize)>,
+        expected_embedder: Option<&dyn EmbeddingProvider>,
     ) -> Result<(), ServiceError> {
         let indexed_root = store
             .get_meta("root")
@@ -548,16 +548,30 @@ impl RepositoryService {
                 "index contains no searchable symbols; run `oxide index PATH`",
             ));
         }
-        if let Some((expected_name, expected_dim)) = expected_embedder {
-            let indexed_embedder = store
-                .get_meta("embedder")
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-            let indexed_dim = store
-                .get_meta("dim")
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-            let name_matches = indexed_embedder.as_deref() == Some(expected_name);
-            let dim_matches = indexed_dim.as_deref() == Some(expected_dim.to_string().as_str());
-            if !name_matches || !dim_matches {
+        if let Some(expected) = expected_embedder {
+            // Fingerprint (Phase 3.3 item 3) is the real contract when the
+            // index has one; name+dim is the fallback for indices that
+            // predate it, so upgrading OXIDE doesn't strand every existing
+            // index behind a spurious ProviderMismatch.
+            let stored_fp: Option<crate::embeddings::EmbeddingSpaceFingerprint> = store
+                .get_meta("embedding_fingerprint")
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+                .filter(|s| !s.is_empty())
+                .and_then(|s| serde_json::from_str(&s).ok());
+            let compatible = match stored_fp {
+                Some(prev) => prev == expected.fingerprint(),
+                None => {
+                    let indexed_embedder = store
+                        .get_meta("embedder")
+                        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+                    let indexed_dim = store
+                        .get_meta("dim")
+                        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+                    indexed_embedder.as_deref() == Some(expected.name())
+                        && indexed_dim.as_deref() == Some(expected.dim().to_string().as_str())
+                }
+            };
+            if !compatible {
                 return Err(ServiceError::new(
                     ErrorCode::ProviderMismatch,
                     "index embeddings were built with a different embedding provider or dimension; run `oxide index PATH`",
@@ -679,6 +693,189 @@ fn compare_context_evidence(a: &ContextEvidence, b: &ContextEvidence) -> Orderin
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::embeddings::EmbeddingSpaceFingerprint;
+
+    /// Reports a caller-supplied fingerprint regardless of name/dim, so
+    /// tests can construct two providers that are indistinguishable by the
+    /// legacy name+dim check but differ in exactly one semantic-profile field.
+    struct FingerprintOnlyProvider {
+        name: String,
+        dim: usize,
+        fp: EmbeddingSpaceFingerprint,
+    }
+
+    impl EmbeddingProvider for FingerprintOnlyProvider {
+        fn name(&self) -> &str {
+            &self.name
+        }
+        fn dim(&self) -> usize {
+            self.dim
+        }
+        fn embed(&self, _text: &str) -> Vec<f32> {
+            // Non-zero: an all-zero vector is treated as an embed failure
+            // and dropped (`update_index` would then report the index as
+            // incomplete, masking the fingerprint comparison this test
+            // exists to exercise).
+            vec![1.0; self.dim]
+        }
+        fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
+            self.fp.clone()
+        }
+    }
+
+    fn base_fingerprint(query_profile: &str) -> EmbeddingSpaceFingerprint {
+        EmbeddingSpaceFingerprint {
+            schema_version: crate::embeddings::EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
+            model: "test-model".into(),
+            artifact_revision: String::new(),
+            quantization: String::new(),
+            representation: "dense".into(),
+            dimension: 4,
+            query_profile: query_profile.into(),
+            document_profile: "raw".into(),
+            pooling: "mean".into(),
+            normalization: "l2".into(),
+            similarity: "cosine".into(),
+        }
+    }
+
+    fn seed_repo(root: &Path) {
+        let src = root.join("src/thing.py");
+        std::fs::create_dir_all(src.parent().unwrap()).unwrap();
+        std::fs::write(&src, "def thing():\n    return 1\n").unwrap();
+    }
+
+    #[test]
+    fn fingerprint_catches_semantic_mismatch_that_name_and_dim_alone_would_miss() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+
+        // Same name, same dim — a legacy name+dim check would call these
+        // compatible. Only the query_profile field differs.
+        let indexed = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("bare"),
+        };
+        let configured = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("gemma-code-retrieval"),
+        };
+        assert_eq!(indexed.name(), configured.name());
+        assert_eq!(indexed.dim(), configured.dim());
+        assert_ne!(indexed.fingerprint(), configured.fingerprint());
+
+        {
+            let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+            update_index(&root, &mut store, &indexed).unwrap();
+        }
+
+        let service = RepositoryService { root: root.clone() };
+        let store = service.open_index_for_read().unwrap();
+        let err = service
+            .validate_index(&store, Some(&configured))
+            .unwrap_err();
+        assert_eq!(err.code(), "provider_mismatch");
+
+        // And the identical fingerprint must validate cleanly.
+        let same = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("bare"),
+        };
+        service.validate_index(&store, Some(&same)).unwrap();
+    }
+
+    #[test]
+    fn legacy_index_without_a_stored_fingerprint_falls_back_to_name_and_dim() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+
+        let provider = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("bare"),
+        };
+        let db_path = root.join(".oxide").join("index.db");
+        {
+            let mut store = SqliteStore::open(&db_path).unwrap();
+            update_index(&root, &mut store, &provider).unwrap();
+        }
+        // Simulate an index written before the fingerprint field existed.
+        {
+            let conn = rusqlite::Connection::open(&db_path).unwrap();
+            conn.execute("DELETE FROM meta WHERE key = 'embedding_fingerprint'", [])
+                .unwrap();
+        }
+
+        let service = RepositoryService { root: root.clone() };
+        let store = service.open_index_for_read().unwrap();
+        // A provider with the same name+dim but a different fingerprint
+        // still validates: no stored fingerprint means the fallback (name+dim
+        // only) decides, exactly as it did before this field existed.
+        let different_profile = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("gemma-code-retrieval"),
+        };
+        service
+            .validate_index(&store, Some(&different_profile))
+            .unwrap();
+
+        // A name/dim mismatch still fails, as it always has.
+        let different_dim = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 8,
+            fp: base_fingerprint("bare"),
+        };
+        let err = service
+            .validate_index(&store, Some(&different_dim))
+            .unwrap_err();
+        assert_eq!(err.code(), "provider_mismatch");
+    }
+
+    #[test]
+    fn update_index_reembeds_on_a_fingerprint_only_change_same_name_and_dim() {
+        // Write-side counterpart to the read-side test above: `update_index`
+        // itself must clear and recompute vectors when only the semantic
+        // profile changed, not just when name/dim did.
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+
+        let first = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("bare"),
+        };
+        let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+        let report1 = update_index(&root, &mut store, &first).unwrap();
+        assert_eq!(report1.reused_embeddings, 0);
+        assert!(report1.embedded_symbols > 0);
+        let symbol_count = report1.embedded_symbols;
+
+        // Re-running with the identical provider reuses every vector.
+        let report2 = update_index(&root, &mut store, &first).unwrap();
+        assert_eq!(report2.reused_embeddings, symbol_count);
+        assert_eq!(report2.embedded_symbols, 0);
+
+        // Same name, same dim, different query_profile: must invalidate and
+        // recompute, not silently reuse an incompatible vector.
+        let second = FingerprintOnlyProvider {
+            name: "same-name".into(),
+            dim: 4,
+            fp: base_fingerprint("gemma-code-retrieval"),
+        };
+        let report3 = update_index(&root, &mut store, &second).unwrap();
+        assert_eq!(
+            report3.reused_embeddings, 0,
+            "fingerprint change must force a full re-embed even though name+dim are unchanged"
+        );
+        assert_eq!(report3.embedded_symbols, symbol_count);
+    }
 
     #[test]
     fn evidence_id_is_repository_relative_symbol_identity() {

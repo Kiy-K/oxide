@@ -63,14 +63,6 @@ pub struct ContextPack {
     pub omitted: Vec<Omitted>,
 }
 
-/// Qwen3-style instruction prefix; improves NL→PL retrieval 1-5% per model card.
-pub fn instructed_query(task: &str) -> String {
-    format!(
-        "Instruct: Given a coding task, retrieve repository symbols that are \
-         relevant to understand or change to complete it\nQuery: {task}"
-    )
-}
-
 pub struct ContextOptions {
     pub budget_tokens: usize,
     /// Candidate pool before packing.
@@ -105,13 +97,16 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
-    let query = instructed_query(task);
+    // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
+    // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
+    // `task` reaches both the lexical scorer and the embedder unmodified.
+    let query = task;
     let seed_opts = SearchOptions {
         limit: opts.max_candidates,
         mode: SearchMode::Hybrid,
         expand: false,
     };
-    let seeds = engine.search(&query, &seed_opts)?;
+    let seeds = engine.search(query, &seed_opts)?;
 
     let mut candidates: HashMap<u64, Candidate> = HashMap::new();
     let mut order_note = |c: Candidate| {
@@ -349,7 +344,9 @@ pub fn build_context(
 
     Ok(ContextPack {
         task: task.to_string(),
-        query_used: query,
+        // Query formatting is now internal to the provider (`embed_query`),
+        // so the text reaching lexical/embedding stages is `task` itself.
+        query_used: query.to_string(),
         embedder: embedder.name().to_string(),
         budget_tokens: opts.budget_tokens,
         used_tokens: used,
@@ -520,6 +517,71 @@ mod tests {
         }
     }
 
+    /// Records the exact text `build_context` hands to `embed_query`, so the
+    /// refactor that moved query formatting out of this module can be
+    /// falsified if a future change reintroduces caller-side prefixing.
+    /// Vector production delegates to a real `HashedEmbedder` so retrieval
+    /// still runs end to end.
+    struct QuerySpy {
+        inner: HashedEmbedder,
+        recorded_queries: std::sync::Mutex<Vec<String>>,
+    }
+
+    impl QuerySpy {
+        fn new() -> Self {
+            Self {
+                inner: HashedEmbedder::default(),
+                recorded_queries: std::sync::Mutex::new(Vec::new()),
+            }
+        }
+    }
+
+    impl EmbeddingProvider for QuerySpy {
+        fn name(&self) -> &str {
+            "query-spy"
+        }
+        fn dim(&self) -> usize {
+            self.inner.dim()
+        }
+        fn embed(&self, text: &str) -> Vec<f32> {
+            self.inner.embed(text)
+        }
+        fn embed_query(&self, text: &str) -> Vec<f32> {
+            self.recorded_queries.lock().unwrap().push(text.to_string());
+            self.inner.embed(text)
+        }
+    }
+
+    #[test]
+    fn build_context_routes_raw_task_through_embed_query_unprefixed() {
+        let store = seed(
+            "src/a.py",
+            &[sym(
+                "src/a.py",
+                "Foo",
+                SymbolKind::Function,
+                "def foo(): pass",
+            )],
+        );
+        let spy = QuerySpy::new();
+        let tmp = tempfile::tempdir().unwrap();
+        build_context(
+            tmp.path(),
+            &store,
+            &spy,
+            "fix backoff",
+            &ContextOptions::default(),
+        )
+        .unwrap();
+
+        // Exactly the raw task, once — no Qwen instruction prefix, no
+        // mutation. Query formatting is the provider's job now.
+        assert_eq!(
+            spy.recorded_queries.lock().unwrap().as_slice(),
+            ["fix backoff"]
+        );
+    }
+
     fn seed(file: &str, syms: &[Symbol]) -> SqliteStore {
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store.replace_file(file, 1, syms).unwrap();
@@ -530,13 +592,6 @@ mod tests {
                 .unwrap();
         }
         store
-    }
-
-    #[test]
-    fn instructed_query_uses_qwen3_protocol() {
-        let q = instructed_query("fix backoff");
-        assert!(q.starts_with("Instruct: "));
-        assert!(q.contains("Query: fix backoff"));
     }
 
     #[test]

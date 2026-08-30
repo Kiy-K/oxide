@@ -694,18 +694,48 @@ pub fn update_index(
         store.replace_file(&pf.file, pf.hash, &pf.symbols)?;
     }
 
-    // Vectors from a different provider are not comparable: wipe them once so
-    // everything below re-embeds under the current model.
-    match store.get_meta("embedder")? {
-        Some(prev) if !prev.is_empty() && prev != embedder.name() => {
+    // Vectors from a different vector space are not comparable: wipe them
+    // once so everything below re-embeds under the current model. The
+    // structured fingerprint (Phase 3.3 item 3) is the real contract when
+    // both sides have one; the plain `embedder` name string is the fallback
+    // for indices/providers that predate it, so upgrading OXIDE doesn't
+    // force every existing index to reindex on the next run.
+    let current_fp = embedder.fingerprint();
+    let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
+        .get_meta("embedding_fingerprint")?
+        .filter(|s| !s.is_empty())
+        .map(|s| serde_json::from_str(&s).ok());
+    match stored_fp {
+        // Both sides have a fingerprint: it alone decides. A stored value
+        // that fails to parse (older/foreign schema) is conservatively
+        // treated as incompatible rather than guessed at.
+        Some(Some(prev)) if prev != current_fp => {
             eprintln!(
-                "oxide: embedder changed ({} -> {}); re-embedding all symbols",
-                prev,
-                embedder.name()
+                "oxide: embedding space changed ({} -> {}); re-embedding all symbols",
+                prev.model, current_fp.model
             );
             store.clear_embeddings()?;
         }
-        _ => {}
+        Some(Some(_)) => {}
+        Some(None) => {
+            eprintln!(
+                "oxide: stored embedding fingerprint is unreadable; re-embedding all symbols"
+            );
+            store.clear_embeddings()?;
+        }
+        // No fingerprint stored (legacy index): fall back to the name check
+        // this codebase has always used.
+        None => match store.get_meta("embedder")? {
+            Some(prev) if !prev.is_empty() && prev != embedder.name() => {
+                eprintln!(
+                    "oxide: embedder changed ({} -> {}); re-embedding all symbols",
+                    prev,
+                    embedder.name()
+                );
+                store.clear_embeddings()?;
+            }
+            _ => {}
+        },
     }
 
     // Embed only symbols whose embedding is missing or whose content changed;
@@ -729,7 +759,7 @@ pub fn update_index(
     if to_embed.len() < 8 || std::env::var("OXIDE_EMBED_URL").is_ok() {
         for chunk in to_embed.chunks(64) {
             let texts: Vec<String> = chunk.iter().map(|s| embed_text(s)).collect();
-            let vectors = embedder.embed_batch(&texts);
+            let vectors = embedder.embed_documents(&texts);
             for (s, vec) in chunk.iter().zip(vectors) {
                 if vec.iter().all(|f| *f == 0.0) || vec.is_empty() {
                     report.embed_failures += 1;
@@ -746,7 +776,7 @@ pub fn update_index(
                 handles.push(scope.spawn(|| {
                     chunk
                         .iter()
-                        .map(|s| (s.id(), embedder.embed(&embed_text(s))))
+                        .map(|s| (s.id(), embedder.embed_document(&embed_text(s))))
                         .collect::<Vec<_>>()
                 }));
             }
@@ -771,12 +801,16 @@ pub fn update_index(
     let dim_str = embedder.dim().to_string();
     let schema_str = SCHEMA_VERSION.to_string();
     let extraction_str = EXTRACTION_VERSION.to_string();
+    // current_fp was already computed above for the staleness check; reuse
+    // it so the stored fingerprint reflects exactly what was just compared.
+    let fingerprint_json = serde_json::to_string(&current_fp)?;
     store.set_meta_all(&[
         ("root", root_str.as_str()),
         ("embedder", embedder.name()),
         ("dim", dim_str.as_str()),
         ("schema_version", schema_str.as_str()),
         ("extraction_version", extraction_str.as_str()),
+        ("embedding_fingerprint", fingerprint_json.as_str()),
     ])?;
     report.duration_ms = started.elapsed().as_millis();
 

@@ -19,6 +19,10 @@ tempfile = "3"
 tree-sitter = "0.24"
 tree-sitter-python = "0.23"
 tree-sitter-typescript = "0.23"
+fastembed = { version = "6.0.2", default-features = false, features = ["ort-download-binaries-rustls-tls", "hf-hub-rustls-tls"], optional = true }
+
+[features]
+native-embed = ["dep:fastembed"]
 
 [dev-dependencies]
 

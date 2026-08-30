@@ -205,7 +205,7 @@ impl<'a> RetrievalEngine<'a> {
 
         // ---- semantic stage ----
         let vec_scores = if opts.mode != SearchMode::LexicalOnly {
-            let qv = self.embedder.embed(query);
+            let qv = self.embedder.embed_query(query);
             let mut cache = self.vectors.borrow_mut();
             if cache.is_none() {
                 // One batched load instead of one query per symbol.
@@ -614,6 +614,82 @@ mod tests {
     fn seed_store() -> SqliteStore {
         let store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
+    }
+
+    /// Records which method the semantic stage actually calls, so the
+    /// migration from `embed` to `embed_query` in `RetrievalEngine::search`
+    /// is falsifiable by a future regression.
+    struct QuerySpy {
+        inner: HashedEmbedder,
+        embed_query_calls: std::sync::Mutex<Vec<String>>,
+        embed_calls: std::sync::Mutex<Vec<String>>,
+    }
+
+    impl QuerySpy {
+        fn new() -> Self {
+            Self {
+                inner: HashedEmbedder::default(),
+                embed_query_calls: std::sync::Mutex::new(Vec::new()),
+                embed_calls: std::sync::Mutex::new(Vec::new()),
+            }
+        }
+    }
+
+    impl EmbeddingProvider for QuerySpy {
+        fn name(&self) -> &str {
+            "query-spy"
+        }
+        fn dim(&self) -> usize {
+            self.inner.dim()
+        }
+        fn embed(&self, text: &str) -> Vec<f32> {
+            self.embed_calls.lock().unwrap().push(text.to_string());
+            self.inner.embed(text)
+        }
+        fn embed_query(&self, text: &str) -> Vec<f32> {
+            self.embed_query_calls
+                .lock()
+                .unwrap()
+                .push(text.to_string());
+            self.inner.embed(text)
+        }
+    }
+
+    #[test]
+    fn search_calls_embed_query_not_embed_for_the_query_text() {
+        let mut store = seed_store();
+        let s = sym(
+            "src/retry.py",
+            "RetryPolicy",
+            SymbolKind::Class,
+            "class RetryPolicy: retry schedule for failed requests",
+            &[],
+        );
+        store
+            .replace_file("src/retry.py", 1, std::slice::from_ref(&s))
+            .unwrap();
+        let seeding_emb = HashedEmbedder::default();
+        store
+            .put_embedding(s.id(), &seeding_emb.embed(&crate::index::embed_text(&s)))
+            .unwrap();
+
+        let spy = QuerySpy::new();
+        let engine = RetrievalEngine::new(&store, &spy);
+        let opts = SearchOptions {
+            limit: 5,
+            mode: SearchMode::Hybrid,
+            expand: false,
+        };
+        engine.search("retry failed requests", &opts).unwrap();
+
+        assert_eq!(
+            spy.embed_query_calls.lock().unwrap().as_slice(),
+            ["retry failed requests"]
+        );
+        assert!(
+            spy.embed_calls.lock().unwrap().is_empty(),
+            "search() must route the query through embed_query, not embed directly"
+        );
     }
 
     #[test]
