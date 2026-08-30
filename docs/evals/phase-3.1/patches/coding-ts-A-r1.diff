@@ -1,0 +1,14 @@
+diff -ruN /home/khoi/Projects/oxide/eval-agent/tasks/ts_bug_store/src/versioned_store.ts /tmp/p31-coding-ts-A-1-e2o7kg2s/repo/src/versioned_store.ts
+--- /home/khoi/Projects/oxide/eval-agent/tasks/ts_bug_store/src/versioned_store.ts	2026-08-23 17:06:28.696622894 +0700
++++ /tmp/p31-coding-ts-A-1-e2o7kg2s/repo/src/versioned_store.ts	2026-08-30 12:43:27.322476784 +0700
+@@ -13,9 +13,8 @@
+   }
+ 
+   set(key: string, value: T): number {
+-    // BUG: version never advances; optimistic-concurrency checks break.
+     const previous = this.entries.get(key);
+-    const version = previous?.version ?? this.initialVersion;
++    const version = previous ? previous.version + 1 : this.initialVersion;
+     this.entries.set(key, { value, version });
+     return version;
+   }

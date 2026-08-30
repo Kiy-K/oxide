@@ -1,0 +1,498 @@
+{
+  "label": "rmcp-live-2024-11-05",
+  "initialize_response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": "2024-11-05",
+      "capabilities": {
+        "tools": {}
+      },
+      "serverInfo": {
+        "name": "oxide",
+        "version": "0.1.0"
+      },
+      "instructions": "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits."
+    }
+  },
+  "tools_list_response": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "tools": [
+        {
+          "name": "context",
+          "description": "Build a bounded working set for an unfamiliar coding task.",
+          "inputSchema": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "task": {
+                "type": "string"
+              },
+              "token_budget": {
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "task"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "search",
+          "description": "Find repository code relevant to a focused implementation question.",
+          "inputSchema": {
+            "additionalProperties": false,
+            "properties": {
+              "limit": {
+                "maximum": 100,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "path": {
+                "type": "string"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object"
+          }
+        }
+      ]
+    }
+  },
+  "tools_schema_chars": 590,
+  "tools_schema_tokens_est": 147.5,
+  "server_instructions": "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits.",
+  "instructions_chars": 280,
+  "instructions_tokens_est": 70.0,
+  "malformed_missing_required": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "error": {
+      "code": -32602,
+      "message": "task must be a string"
+    }
+  },
+  "malformed_wrong_type": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "error": {
+      "code": -32602,
+      "message": "task must be a string"
+    }
+  },
+  "unknown_tool": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "error": {
+      "code": -32602,
+      "message": "tool not found"
+    }
+  },
+  "context_call_response": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"task\":\"how does retry backoff work\",\"budget_tokens\":4096,\"used_tokens\":691,\"items\":[{\"id\":\"oxidepy/retry.py#RetryPolicy\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy\",\"name\":\"RetryPolicy\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":15,\"end_line\":45,\"score\":0.01534515,\"reasons\":[\"lexical=7.376\",\"semantic=0.243\"],\"snippet\":\"class RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\\n\\n    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\",\"role\":\"primary\",\"est_tokens\":326},{\"id\":\"oxidepy/cache.py#TTLCache\",\"file\":\"oxidepy/cache.py\",\"qualified_name\":\"TTLCache\",\"name\":\"TTLCache\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":6,\"end_line\":25,\"score\":0.014899356,\"reasons\":[\"lexical=10.233\",\"semantic=0.143\"],\"snippet\":\"class TTLCache:\\n    \\\"\\\"\\\"Caches values until their time-to-live expires.\\\"\\\"\\\"\\n\\n    def __init__(self, ttl_seconds: float = 60.0):\\n        self.ttl_seconds = ttl_seconds\\n        self._entries = {}\\n\\n    def get_or_set(self, key: str, producer):\\n        \\\"\\\"\\\"Return cached `key`, or compute it with `producer` and cache it.\\\"\\\"\\\"\\n        hit = self._entries.get(key)\\n        now = time.monotonic()\\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\\n            return hit[0]\\n        value = producer()\\n        self._entries[key] = (value, now)\\n        return value\\n\\n    def invalidate(self, key: str) -> None:\\n        \\\"\\\"\\\"Drop a single expired or unwanted entry.\\\"\\\"\\\"\\n        self._entries.pop(key, None)\",\"role\":\"primary\",\"est_tokens\":188},{\"id\":\"oxidepy/http_client.py#HttpClient.__init__\",\"file\":\"oxidepy/http_client.py\",\"qualified_name\":\"HttpClient.__init__\",\"name\":\"__init__\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":18,\"end_line\":20,\"score\":0.0134615395,\"reasons\":[\"lexical=2.857\",\"semantic=0.147\"],\"snippet\":\"    def __init__(self, base_url: str, policy: RetryPolicy | None = None):\\n        self.base_url = base_url.rstrip(\\\"/\\\")\\n        self.policy = policy or RetryPolicy()\",\"role\":\"primary\",\"est_tokens\":53},{\"id\":\"oxidepy/retry.py#TooManyAttemptsError\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"TooManyAttemptsError\",\"name\":\"TooManyAttemptsError\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":7,\"end_line\":12,\"score\":0.0060111484,\"reasons\":[\"uses\u2190tests/test_retry.py:__module__\"],\"snippet\":\"class TooManyAttemptsError(RuntimeError):\\n    \\\"\\\"\\\"Raised when every retry attempt has been exhausted.\\\"\\\"\\\"\\n\\n    def __init__(self, attempts: int):\\n        super().__init__(f\\\"gave up after {attempts} attempts\\\")\\n        self.attempts = attempts\",\"role\":\"dependency\",\"est_tokens\":72},{\"id\":\"tests/test_retry.py#test_backoff_delay_increases_with_attempts\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_backoff_delay_increases_with_attempts\",\"name\":\"test_backoff_delay_increases_with_attempts\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":14,\"end_line\":16,\"score\":0.014849499,\"reasons\":[\"lexical=5.719\",\"semantic=0.268\"],\"snippet\":\"def test_backoff_delay_increases_with_attempts():\\n    policy = RetryPolicy(base_delay_ms=100, jitter=0.0)\\n    assert policy.backoff_ms(0) < policy.backoff_ms(2)\",\"role\":\"test\",\"est_tokens\":52}],\"omitted\":[{\"id\":\"oxidepy/retry.py#oxidepy/retry.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.backoff_ms\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.should_retry\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"tests/test_retry.py#tests/test_retry.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/cache.py#oxidepy/cache.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.wait\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/cache.py#TTLCache.get_or_set\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.exhausted\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/cache.py#TTLCache.invalidate\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.__init__\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"tests/test_retry.py#test_client_errors_are_not_retried\",\"why\":\"beyond test cap\"},{\"id\":\"tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts\",\"why\":\"beyond test cap\"},{\"id\":\"tests/test_retry.py#test_exhausted_policy_raises\",\"why\":\"beyond test cap\"}]}"
+        }
+      ],
+      "isError": false
+    }
+  },
+  "context_response_chars": 6052,
+  "context_response_tokens_est": 1513.0,
+  "search_call_response": {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[{\"id\":\"oxidepy/retry.py#RetryPolicy.should_retry\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.should_retry\",\"name\":\"should_retry\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":31,\"end_line\":37,\"score\":0.016393442,\"reasons\":[\"lexical=1.645\",\"semantic=0.540\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\"},{\"id\":\"tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_retry_policy_gives_up_after_max_attempts\",\"name\":\"test_retry_policy_gives_up_after_max_attempts\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":8,\"end_line\":11,\"score\":0.015927419,\"reasons\":[\"lexical=1.625\",\"semantic=0.459\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.exhausted\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.exhausted\",\"name\":\"exhausted\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":27,\"end_line\":29,\"score\":0.015724206,\"reasons\":[\"lexical=1.587\",\"semantic=0.514\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\"],\"snippet\":\"    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\"},{\"id\":\"oxidepy/retry.py#RetryPolicy\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy\",\"name\":\"RetryPolicy\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":15,\"end_line\":45,\"score\":0.015542522,\"reasons\":[\"lexical=1.540\",\"semantic=0.516\",\"parent\u2190RetryPolicy.should_retry\",\"uses\u2190test_retry_policy_gives_up_after_max_attempts\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"parent\u2190RetryPolicy.exhausted\"],\"snippet\":\"class RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\\n\\n    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.wait\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.wait\",\"name\":\"wait\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":44,\"end_line\":45,\"score\":0.015291376,\"reasons\":[\"lexical=1.558\",\"semantic=0.427\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"tests/test_retry.py#tests/test_retry.py:__module__\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"tests/test_retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":28,\"score\":0.015079366,\"reasons\":[\"lexical=1.603\",\"semantic=0.373\"],\"snippet\":\"\\\"\\\"\\\"Tests for the retry policy.\\\"\\\"\\\"\\n\\nimport pytest\\n\\nfrom oxidepy.retry import RetryPolicy, TooManyAttemptsError\\n\\n\\ndef test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\\n\\n\\ndef test_backoff_delay_increases_with_attempts():\\n    policy = RetryPolicy(base_delay_ms=100, jitter=0.0)\\n    assert policy.backoff_ms(0) < policy.backoff_ms(2)\\n\\n\\ndef test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\\n\\n\\ndef test_exhausted_policy_raises():\\n    policy = RetryPolicy(max_attempts=1)\\n    with pytest.raises(TooManyAttemptsError):\\n        raise TooManyAttemptsError(policy.max_attempts)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.backoff_ms\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.backoff_ms\",\"name\":\"backoff_ms\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":39,\"end_line\":42,\"score\":0.014837578,\"reasons\":[\"lexical=1.505\",\"semantic=0.394\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\"},{\"id\":\"oxidepy/retry.py#oxidepy/retry.py:__module__\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"oxidepy/retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":45,\"score\":0.014725275,\"reasons\":[\"lexical=1.467\",\"semantic=0.440\"],\"snippet\":\"\\\"\\\"\\\"Retry policy with exponential backoff for flaky operations.\\\"\\\"\\\"\\n\\nimport random\\nimport time\\n\\n\\nclass TooManyAttemptsError(RuntimeError):\\n    \\\"\\\"\\\"Raised when every retry attempt has been exhausted.\\\"\\\"\\\"\\n\\n    def __init__(self, attempts: int):\\n        super().__init__(f\\\"gave up after {attempts} attempts\\\")\\n        self.attempts = attempts\\n\\n\\nclass RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\"},{\"id\":\"oxidepy/http_client.py#HttpClient.__init__\",\"file\":\"oxidepy/http_client.py\",\"qualified_name\":\"HttpClient.__init__\",\"name\":\"__init__\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":18,\"end_line\":20,\"score\":0.014537815,\"reasons\":[\"lexical=1.498\",\"semantic=0.388\"],\"snippet\":\"    def __init__(self, base_url: str, policy: RetryPolicy | None = None):\\n        self.base_url = base_url.rstrip(\\\"/\\\")\\n        self.policy = policy or RetryPolicy()\"},{\"id\":\"tests/test_retry.py#test_client_errors_are_not_retried\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_client_errors_are_not_retried\",\"name\":\"test_client_errors_are_not_retried\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":19,\"end_line\":22,\"score\":0.014420854,\"reasons\":[\"lexical=1.452\",\"semantic=0.422\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\"}]"
+        }
+      ],
+      "isError": false
+    }
+  },
+  "search_response_chars": 9582,
+  "search_response_tokens_est": 2395.5,
+  "index_missing_error": {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"error\":{\"action\":\"index\",\"code\":\"index_missing\",\"message\":\"index missing at /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir/.oxide/index.db; run `oxide index /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir`\"}}"
+        }
+      ],
+      "structuredContent": {
+        "error": {
+          "action": "index",
+          "code": "index_missing",
+          "message": "index missing at /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir/.oxide/index.db; run `oxide index /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir`"
+        }
+      },
+      "isError": true
+    }
+  },
+  "repeat_call_response_matches": false,
+  "raw_log": [
+    {
+      "dir": "send",
+      "bytes": 185,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "initialize",
+        "id": 1,
+        "params": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "oxide-phase-3.1-probe",
+            "version": "0.1.0"
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 439,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "oxide",
+            "version": "0.1.0"
+          },
+          "instructions": "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits."
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 57,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "notifications/initialized"
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 51,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/list",
+        "id": 2
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 635,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "tools": [
+            {
+              "name": "context",
+              "description": "Build a bounded working set for an unfamiliar coding task.",
+              "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "task": {
+                    "type": "string"
+                  },
+                  "token_budget": {
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "task"
+                ],
+                "type": "object"
+              }
+            },
+            {
+              "name": "search",
+              "description": "Find repository code relevant to a focused implementation question.",
+              "inputSchema": {
+                "additionalProperties": false,
+                "properties": {
+                  "limit": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "query"
+                ],
+                "type": "object"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 99,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 3,
+        "params": {
+          "name": "context",
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 83,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "error": {
+          "code": -32602,
+          "message": "task must be a string"
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 108,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 4,
+        "params": {
+          "name": "context",
+          "arguments": {
+            "task": 5
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 83,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "error": {
+          "code": -32602,
+          "message": "task must be a string"
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 108,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 5,
+        "params": {
+          "name": "nonexistent_tool",
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 76,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "error": {
+          "code": -32602,
+          "message": "tool not found"
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 136,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 6,
+        "params": {
+          "name": "context",
+          "arguments": {
+            "task": "how does retry backoff work"
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 6084,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"task\":\"how does retry backoff work\",\"budget_tokens\":4096,\"used_tokens\":691,\"items\":[{\"id\":\"oxidepy/retry.py#RetryPolicy\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy\",\"name\":\"RetryPolicy\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":15,\"end_line\":45,\"score\":0.01534515,\"reasons\":[\"lexical=7.376\",\"semantic=0.243\"],\"snippet\":\"class RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\\n\\n    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\",\"role\":\"primary\",\"est_tokens\":326},{\"id\":\"oxidepy/cache.py#TTLCache\",\"file\":\"oxidepy/cache.py\",\"qualified_name\":\"TTLCache\",\"name\":\"TTLCache\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":6,\"end_line\":25,\"score\":0.014899356,\"reasons\":[\"lexical=10.233\",\"semantic=0.143\"],\"snippet\":\"class TTLCache:\\n    \\\"\\\"\\\"Caches values until their time-to-live expires.\\\"\\\"\\\"\\n\\n    def __init__(self, ttl_seconds: float = 60.0):\\n        self.ttl_seconds = ttl_seconds\\n        self._entries = {}\\n\\n    def get_or_set(self, key: str, producer):\\n        \\\"\\\"\\\"Return cached `key`, or compute it with `producer` and cache it.\\\"\\\"\\\"\\n        hit = self._entries.get(key)\\n        now = time.monotonic()\\n        if hit is not None and (now - hit[1]) < self.ttl_seconds:\\n            return hit[0]\\n        value = producer()\\n        self._entries[key] = (value, now)\\n        return value\\n\\n    def invalidate(self, key: str) -> None:\\n        \\\"\\\"\\\"Drop a single expired or unwanted entry.\\\"\\\"\\\"\\n        self._entries.pop(key, None)\",\"role\":\"primary\",\"est_tokens\":188},{\"id\":\"oxidepy/http_client.py#HttpClient.__init__\",\"file\":\"oxidepy/http_client.py\",\"qualified_name\":\"HttpClient.__init__\",\"name\":\"__init__\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":18,\"end_line\":20,\"score\":0.0134615395,\"reasons\":[\"lexical=2.857\",\"semantic=0.147\"],\"snippet\":\"    def __init__(self, base_url: str, policy: RetryPolicy | None = None):\\n        self.base_url = base_url.rstrip(\\\"/\\\")\\n        self.policy = policy or RetryPolicy()\",\"role\":\"primary\",\"est_tokens\":53},{\"id\":\"oxidepy/retry.py#TooManyAttemptsError\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"TooManyAttemptsError\",\"name\":\"TooManyAttemptsError\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":7,\"end_line\":12,\"score\":0.0060111484,\"reasons\":[\"uses\u2190tests/test_retry.py:__module__\"],\"snippet\":\"class TooManyAttemptsError(RuntimeError):\\n    \\\"\\\"\\\"Raised when every retry attempt has been exhausted.\\\"\\\"\\\"\\n\\n    def __init__(self, attempts: int):\\n        super().__init__(f\\\"gave up after {attempts} attempts\\\")\\n        self.attempts = attempts\",\"role\":\"dependency\",\"est_tokens\":72},{\"id\":\"tests/test_retry.py#test_backoff_delay_increases_with_attempts\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_backoff_delay_increases_with_attempts\",\"name\":\"test_backoff_delay_increases_with_attempts\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":14,\"end_line\":16,\"score\":0.014849499,\"reasons\":[\"lexical=5.719\",\"semantic=0.268\"],\"snippet\":\"def test_backoff_delay_increases_with_attempts():\\n    policy = RetryPolicy(base_delay_ms=100, jitter=0.0)\\n    assert policy.backoff_ms(0) < policy.backoff_ms(2)\",\"role\":\"test\",\"est_tokens\":52}],\"omitted\":[{\"id\":\"oxidepy/retry.py#oxidepy/retry.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.backoff_ms\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.should_retry\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"tests/test_retry.py#tests/test_retry.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/cache.py#oxidepy/cache.py:__module__\",\"why\":\"module subsumed by concrete symbols\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.wait\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/cache.py#TTLCache.get_or_set\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.exhausted\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/cache.py#TTLCache.invalidate\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.__init__\",\"why\":\"subsumed by overlapping symbol\"},{\"id\":\"tests/test_retry.py#test_client_errors_are_not_retried\",\"why\":\"beyond test cap\"},{\"id\":\"tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts\",\"why\":\"beyond test cap\"},{\"id\":\"tests/test_retry.py#test_exhausted_policy_raises\",\"why\":\"beyond test cap\"}]}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 114,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 7,
+        "params": {
+          "name": "search",
+          "arguments": {
+            "query": "retry"
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 9569,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[{\"id\":\"oxidepy/retry.py#RetryPolicy.should_retry\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.should_retry\",\"name\":\"should_retry\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":31,\"end_line\":37,\"score\":0.016393442,\"reasons\":[\"lexical=1.645\",\"semantic=0.540\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\"},{\"id\":\"tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_retry_policy_gives_up_after_max_attempts\",\"name\":\"test_retry_policy_gives_up_after_max_attempts\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":8,\"end_line\":11,\"score\":0.015927419,\"reasons\":[\"lexical=1.625\",\"semantic=0.459\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.exhausted\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.exhausted\",\"name\":\"exhausted\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":27,\"end_line\":29,\"score\":0.015724206,\"reasons\":[\"lexical=1.587\",\"semantic=0.514\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\"],\"snippet\":\"    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\"},{\"id\":\"oxidepy/retry.py#RetryPolicy\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy\",\"name\":\"RetryPolicy\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":15,\"end_line\":45,\"score\":0.015542522,\"reasons\":[\"lexical=1.540\",\"semantic=0.516\",\"parent\u2190RetryPolicy.should_retry\",\"uses\u2190test_retry_policy_gives_up_after_max_attempts\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"parent\u2190RetryPolicy.exhausted\"],\"snippet\":\"class RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\\n\\n    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.wait\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.wait\",\"name\":\"wait\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":44,\"end_line\":45,\"score\":0.015291376,\"reasons\":[\"lexical=1.558\",\"semantic=0.427\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"tests/test_retry.py#tests/test_retry.py:__module__\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"tests/test_retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":28,\"score\":0.015079366,\"reasons\":[\"lexical=1.603\",\"semantic=0.373\"],\"snippet\":\"\\\"\\\"\\\"Tests for the retry policy.\\\"\\\"\\\"\\n\\nimport pytest\\n\\nfrom oxidepy.retry import RetryPolicy, TooManyAttemptsError\\n\\n\\ndef test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\\n\\n\\ndef test_backoff_delay_increases_with_attempts():\\n    policy = RetryPolicy(base_delay_ms=100, jitter=0.0)\\n    assert policy.backoff_ms(0) < policy.backoff_ms(2)\\n\\n\\ndef test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\\n\\n\\ndef test_exhausted_policy_raises():\\n    policy = RetryPolicy(max_attempts=1)\\n    with pytest.raises(TooManyAttemptsError):\\n        raise TooManyAttemptsError(policy.max_attempts)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.backoff_ms\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.backoff_ms\",\"name\":\"backoff_ms\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":39,\"end_line\":42,\"score\":0.014837578,\"reasons\":[\"lexical=1.505\",\"semantic=0.394\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\"},{\"id\":\"oxidepy/retry.py#oxidepy/retry.py:__module__\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"oxidepy/retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":45,\"score\":0.014725275,\"reasons\":[\"lexical=1.467\",\"semantic=0.440\"],\"snippet\":\"\\\"\\\"\\\"Retry policy with exponential backoff for flaky operations.\\\"\\\"\\\"\\n\\nimport random\\nimport time\\n\\n\\nclass TooManyAttemptsError(RuntimeError):\\n    \\\"\\\"\\\"Raised when every retry attempt has been exhausted.\\\"\\\"\\\"\\n\\n    def __init__(self, attempts: int):\\n        super().__init__(f\\\"gave up after {attempts} attempts\\\")\\n        self.attempts = attempts\\n\\n\\nclass RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\"},{\"id\":\"oxidepy/http_client.py#HttpClient.__init__\",\"file\":\"oxidepy/http_client.py\",\"qualified_name\":\"HttpClient.__init__\",\"name\":\"__init__\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":18,\"end_line\":20,\"score\":0.014537815,\"reasons\":[\"lexical=1.498\",\"semantic=0.388\"],\"snippet\":\"    def __init__(self, base_url: str, policy: RetryPolicy | None = None):\\n        self.base_url = base_url.rstrip(\\\"/\\\")\\n        self.policy = policy or RetryPolicy()\"},{\"id\":\"tests/test_retry.py#test_client_errors_are_not_retried\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_client_errors_are_not_retried\",\"name\":\"test_client_errors_are_not_retried\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":19,\"end_line\":22,\"score\":0.014420854,\"reasons\":[\"lexical=1.452\",\"semantic=0.422\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\"}]"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 173,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 8,
+        "params": {
+          "name": "context",
+          "arguments": {
+            "task": "x",
+            "path": "/tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir"
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 562,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"error\":{\"action\":\"index\",\"code\":\"index_missing\",\"message\":\"index missing at /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir/.oxide/index.db; run `oxide index /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir`\"}}"
+            }
+          ],
+          "structuredContent": {
+            "error": {
+              "action": "index",
+              "code": "index_missing",
+              "message": "index missing at /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir/.oxide/index.db; run `oxide index /tmp/oxide-mcp-probe-rpdrq3um/repo/_no_index_subdir`"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "dir": "send",
+      "bytes": 114,
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "id": 9,
+        "params": {
+          "name": "search",
+          "arguments": {
+            "query": "retry"
+          }
+        }
+      }
+    },
+    {
+      "dir": "recv",
+      "bytes": 9569,
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[{\"id\":\"oxidepy/retry.py#RetryPolicy.should_retry\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.should_retry\",\"name\":\"should_retry\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":31,\"end_line\":37,\"score\":0.016393442,\"reasons\":[\"lexical=1.645\",\"semantic=0.540\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\"},{\"id\":\"tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_retry_policy_gives_up_after_max_attempts\",\"name\":\"test_retry_policy_gives_up_after_max_attempts\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":8,\"end_line\":11,\"score\":0.015927419,\"reasons\":[\"lexical=1.625\",\"semantic=0.459\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.exhausted\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.exhausted\",\"name\":\"exhausted\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":27,\"end_line\":29,\"score\":0.015724206,\"reasons\":[\"lexical=1.587\",\"semantic=0.514\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\"],\"snippet\":\"    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\"},{\"id\":\"oxidepy/retry.py#RetryPolicy\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy\",\"name\":\"RetryPolicy\",\"kind\":\"class\",\"language\":\"python\",\"start_line\":15,\"end_line\":45,\"score\":0.015542522,\"reasons\":[\"lexical=1.540\",\"semantic=0.516\",\"parent\u2190RetryPolicy.should_retry\",\"uses\u2190test_retry_policy_gives_up_after_max_attempts\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"parent\u2190RetryPolicy.exhausted\"],\"snippet\":\"class RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\\n\\n    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.wait\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.wait\",\"name\":\"wait\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":44,\"end_line\":45,\"score\":0.015291376,\"reasons\":[\"lexical=1.558\",\"semantic=0.427\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def wait(self, attempt: int) -> None:\\n        time.sleep(self.backoff_ms(attempt) / 1000.0)\"},{\"id\":\"tests/test_retry.py#tests/test_retry.py:__module__\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"tests/test_retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":28,\"score\":0.015079366,\"reasons\":[\"lexical=1.603\",\"semantic=0.373\"],\"snippet\":\"\\\"\\\"\\\"Tests for the retry policy.\\\"\\\"\\\"\\n\\nimport pytest\\n\\nfrom oxidepy.retry import RetryPolicy, TooManyAttemptsError\\n\\n\\ndef test_retry_policy_gives_up_after_max_attempts():\\n    policy = RetryPolicy(max_attempts=3)\\n    assert policy.should_retry(1, ConnectionError(\\\"boom\\\"))\\n    assert not policy.should_retry(3, ConnectionError(\\\"boom\\\"))\\n\\n\\ndef test_backoff_delay_increases_with_attempts():\\n    policy = RetryPolicy(base_delay_ms=100, jitter=0.0)\\n    assert policy.backoff_ms(0) < policy.backoff_ms(2)\\n\\n\\ndef test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\\n\\n\\ndef test_exhausted_policy_raises():\\n    policy = RetryPolicy(max_attempts=1)\\n    with pytest.raises(TooManyAttemptsError):\\n        raise TooManyAttemptsError(policy.max_attempts)\"},{\"id\":\"oxidepy/retry.py#RetryPolicy.backoff_ms\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"RetryPolicy.backoff_ms\",\"name\":\"backoff_ms\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":39,\"end_line\":42,\"score\":0.014837578,\"reasons\":[\"lexical=1.505\",\"semantic=0.394\",\"sibling\u2190RetryPolicy.should_retry\",\"imported-definition\u2190test_retry_policy_gives_up_after_max_attempts\",\"sibling\u2190RetryPolicy.exhausted\"],\"snippet\":\"    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\\n        return int(delay * noise)\"},{\"id\":\"oxidepy/retry.py#oxidepy/retry.py:__module__\",\"file\":\"oxidepy/retry.py\",\"qualified_name\":\"oxidepy/retry.py:__module__\",\"name\":\"__module__\",\"kind\":\"module\",\"language\":\"python\",\"start_line\":1,\"end_line\":45,\"score\":0.014725275,\"reasons\":[\"lexical=1.467\",\"semantic=0.440\"],\"snippet\":\"\\\"\\\"\\\"Retry policy with exponential backoff for flaky operations.\\\"\\\"\\\"\\n\\nimport random\\nimport time\\n\\n\\nclass TooManyAttemptsError(RuntimeError):\\n    \\\"\\\"\\\"Raised when every retry attempt has been exhausted.\\\"\\\"\\\"\\n\\n    def __init__(self, attempts: int):\\n        super().__init__(f\\\"gave up after {attempts} attempts\\\")\\n        self.attempts = attempts\\n\\n\\nclass RetryPolicy:\\n    \\\"\\\"\\\"Decides whether a failed operation should be attempted again.\\n\\n    The policy grows the delay exponentially between attempts and adds a\\n    small jitter so many callers do not synchronize their retries.\\n    \\\"\\\"\\\"\\n\\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\\n        self.max_attempts = max_attempts\\n        self.base_delay_ms = base_delay_ms\\n        self.jitter = jitter\\n\\n    @property\\n    def exhausted(self) -> bool:\\n        return self.attempts_left <= 0\\n\\n    def should_retry(self, attempt: int, error: Exception) -> bool:\\n        \\\"\\\"\\\"Return True when `error` seen on `attempt` deserves another try.\\\"\\\"\\\"\\n        if attempt >= self.max_attempts:\\n            return False\\n        # Connection errors and 5xx responses are transient; 4xx are not.\\n        transient = isinstance(error, (ConnectionError, TimeoutError))\\n        return transient or getattr(error, \\\"status_code\\\", 500) >= 500\\n\\n    def backoff_ms(self, attempt: int) -> int:\\n        delay = self.base_delay_ms * (2 ** attempt)\"},{\"id\":\"oxidepy/http_client.py#HttpClient.__init__\",\"file\":\"oxidepy/http_client.py\",\"qualified_name\":\"HttpClient.__init__\",\"name\":\"__init__\",\"kind\":\"method\",\"language\":\"python\",\"start_line\":18,\"end_line\":20,\"score\":0.014537815,\"reasons\":[\"lexical=1.498\",\"semantic=0.388\"],\"snippet\":\"    def __init__(self, base_url: str, policy: RetryPolicy | None = None):\\n        self.base_url = base_url.rstrip(\\\"/\\\")\\n        self.policy = policy or RetryPolicy()\"},{\"id\":\"tests/test_retry.py#test_client_errors_are_not_retried\",\"file\":\"tests/test_retry.py\",\"qualified_name\":\"test_client_errors_are_not_retried\",\"name\":\"test_client_errors_are_not_retried\",\"kind\":\"function\",\"language\":\"python\",\"start_line\":19,\"end_line\":22,\"score\":0.014420854,\"reasons\":[\"lexical=1.452\",\"semantic=0.422\",\"test\u2190RetryPolicy.should_retry\"],\"snippet\":\"def test_client_errors_are_not_retried():\\n    err = type(\\\"ClientErr\\\", (Exception,), {\\\"status_code\\\": 404})(\\\"nope\\\")\\n    policy = RetryPolicy()\\n    assert not policy.should_retry(1, err)\"}]"
+            }
+          ],
+          "isError": false
+        }
+      }
+    }
+  ],
+  "version_negotiation_probe": {
+    "requested": "2025-06-18",
+    "negotiated_response": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2025-06-18",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "oxide",
+          "version": "0.1.0"
+        },
+        "instructions": "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits."
+      }
+    }
+  }
+}

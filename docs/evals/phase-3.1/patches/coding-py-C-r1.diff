@@ -1,0 +1,13 @@
+diff -ruN /home/khoi/Projects/oxide/eval-agent/tasks/py_bug_retry/app/retry.py /tmp/p31-coding-py-C-1-g0_zbaaq/repo/app/retry.py
+--- /home/khoi/Projects/oxide/eval-agent/tasks/py_bug_retry/app/retry.py	2026-08-23 17:05:46.676315469 +0700
++++ /tmp/p31-coding-py-C-1-g0_zbaaq/repo/app/retry.py	2026-08-30 12:29:59.113121587 +0700
+@@ -15,8 +15,7 @@
+         return isinstance(error, (ConnectionError, TimeoutError)) or status >= 500
+ 
+     def backoff_ms(self, attempt):
+-        # BUG: delay shrinks instead of growing; callers starve the server.
+-        return self.base_delay_ms // (attempt + 1)
++        return self.base_delay_ms * (2 ** attempt)
+ 
+     def wait(self, attempt):
+         import time
