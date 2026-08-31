@@ -122,6 +122,8 @@ pub fn parse_file_with(
         exported: false,
         parent: None,
         references: Vec::new(),
+        calls: Vec::new(),
+        bases: Vec::new(),
     });
     syms
 }

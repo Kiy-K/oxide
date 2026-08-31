@@ -27,6 +27,10 @@ pub struct ParsedFile {
     pub symbols: Vec<Symbol>,
 }
 
+/// Per symbol id: `(calls, bases)`, the precomputed-relations side-table
+/// shape (`IndexBackend::all_symbol_relations`).
+pub type SymbolRelations = HashMap<u64, (Vec<String>, Vec<String>)>;
+
 pub trait IndexBackend {
     fn get_meta(&self, key: &str) -> Result<Option<String>>;
     fn set_meta(&mut self, key: &str, value: &str) -> Result<()>;
@@ -39,7 +43,27 @@ pub trait IndexBackend {
     /// as a compatible legacy index instead of an incomplete one.
     fn set_meta_all(&mut self, pairs: &[(&str, &str)]) -> Result<()>;
     fn file_hashes(&self) -> Result<HashMap<String, u64>>;
-    fn replace_file(&mut self, file: &str, hash: u64, symbols: &[Symbol]) -> Result<()>;
+    /// Replaces `file`'s symbols (and, since a symbol whose body didn't
+    /// change keeps its embedding across the rewrite, its embeddings) and
+    /// its precomputed relations, as **one** transaction. Relations were
+    /// briefly a separate `put_symbol_relations_batch` call issued right
+    /// after this one from `update_index` — a process interrupted between
+    /// the two left `symbols`/`files.content_hash` already updated to the
+    /// new content while `symbol_relations` still held the old, wrong
+    /// values, and because content_hash already matched, no future run
+    /// would ever reparse that file to fix it (`tests/interrupted_index_recovery.rs`
+    /// pins the general class of bug this pattern already guards against
+    /// for symbols+embeddings; this closes the same class for relations).
+    /// `relations` is typically `structural_relations::compute_file_relations`'s
+    /// output for `symbols`; pass `&[]` when the caller has no relations to
+    /// write (every non-`update_index` test call site).
+    fn replace_file(
+        &mut self,
+        file: &str,
+        hash: u64,
+        symbols: &[Symbol],
+        relations: &[(u64, Vec<String>, Vec<String>)],
+    ) -> Result<()>;
     fn remove_files(&mut self, files: &[String]) -> Result<()>;
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
     fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
@@ -51,6 +75,29 @@ pub trait IndexBackend {
     /// from different models are not comparable).
     fn clear_embeddings(&mut self) -> Result<()>;
     fn drop_embeddings_without_symbols(&mut self) -> Result<()>;
+    /// Replaces precomputed call/base relations for every `(symbol_id,
+    /// calls, bases)` triple in `relations`, as one transaction per call —
+    /// `update_index` calls this once per reparsed file
+    /// (`structural_relations::compute_file_relations`), so one transaction
+    /// per file, not per symbol (an earlier per-symbol-transaction version
+    /// left a file only partially updated if interrupted mid-run; per-file
+    /// batching narrows that window — full run-level atomicity would need
+    /// a completion marker, not added here). `calls`/`bases` are bare
+    /// names, same heuristic tier as `Symbol::references`. Every entry is
+    /// written even when both are empty — that's what clears a symbol's
+    /// stale relations after an edit removes its last call/base; see
+    /// `compute_file_relations`'s doc comment.
+    fn put_symbol_relations_batch(
+        &mut self,
+        relations: &[(u64, Vec<String>, Vec<String>)],
+    ) -> Result<()>;
+    /// All precomputed relations, keyed by symbol id, as `(calls, bases)`.
+    /// Empty/absent for any symbol with no calls/bases at all. Read by
+    /// `structural_relations::load_symbols_with_relations`, which
+    /// `context.rs::build_context` uses instead of calling this crate's
+    /// `all_symbols` directly whenever `RelationGraph::callers_of`/
+    /// `implementors_of` are needed.
+    fn all_symbol_relations(&self) -> Result<SymbolRelations>;
 }
 
 pub struct SqliteStore {
@@ -95,6 +142,20 @@ const SCHEMA_SQL: &str = r#"
         dim INTEGER NOT NULL,
         vec BLOB NOT NULL
     );
+    -- Precomputed AST-precise call/base relations (structural_relations.rs),
+    -- one row per (symbol, target). Populated by update_index itself, one
+    -- reparsed file at a time. A side table, not new columns on `symbols`
+    -- — `CREATE TABLE IF NOT EXISTS` is a no-op against an already-created
+    -- `symbols` table on an existing on-disk index.db, so new columns
+    -- there would never appear on an upgrade; a brand-new table name is
+    -- picked up cleanly by the same `IF NOT EXISTS` on any existing
+    -- database, no SCHEMA_VERSION bump needed.
+    CREATE TABLE IF NOT EXISTS symbol_relations(
+        symbol_id INTEGER NOT NULL REFERENCES symbols(id) ON DELETE CASCADE,
+        kind TEXT NOT NULL,
+        target TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_symbol_relations_symbol_id ON symbol_relations(symbol_id);
 "#;
 
 fn is_locked(e: &rusqlite::Error) -> bool {
@@ -236,7 +297,13 @@ impl IndexBackend for SqliteStore {
         Ok(rows.collect::<std::result::Result<HashMap<_, _>, _>>()?)
     }
 
-    fn replace_file(&mut self, file: &str, hash: u64, symbols: &[Symbol]) -> Result<()> {
+    fn replace_file(
+        &mut self,
+        file: &str,
+        hash: u64,
+        symbols: &[Symbol],
+        relations: &[(u64, Vec<String>, Vec<String>)],
+    ) -> Result<()> {
         // IMMEDIATE: acquire the write lock up front. A deferred
         // transaction that reads before it writes can hit SQLITE_BUSY on
         // the read->write lock upgrade, which busy_timeout does NOT retry
@@ -310,6 +377,24 @@ impl IndexBackend for SqliteStore {
                 }
             }
         }
+        // Same transaction as the symbol rewrite above — see this method's
+        // doc comment for why relations must land atomically with
+        // symbols/content_hash, not as a follow-up call.
+        {
+            let mut del = tx.prepare("DELETE FROM symbol_relations WHERE symbol_id = ?1")?;
+            let mut ins = tx.prepare(
+                "INSERT INTO symbol_relations (symbol_id, kind, target) VALUES (?1, ?2, ?3)",
+            )?;
+            for (symbol_id, calls, bases) in relations {
+                del.execute([*symbol_id as i64])?;
+                for target in calls {
+                    ins.execute(rusqlite::params![*symbol_id as i64, "calls", target])?;
+                }
+                for target in bases {
+                    ins.execute(rusqlite::params![*symbol_id as i64, "bases", target])?;
+                }
+            }
+        }
         tx.commit()?;
         Ok(())
     }
@@ -328,6 +413,18 @@ impl IndexBackend for SqliteStore {
         }
         tx.commit()?;
         self.drop_embeddings_without_symbols()?;
+        // Same orphan-sweep shape as embeddings above (foreign keys aren't
+        // enforced — `PRAGMA foreign_keys` is never turned on in this
+        // codebase — so `symbol_relations`'s `ON DELETE CASCADE` is
+        // declarative only): a symbol_relations row for a symbol deleted by
+        // this call, or by an earlier `replace_file` rename-within-file,
+        // becomes an orphan until this sweep runs. Matches the existing,
+        // accepted embeddings behavior exactly rather than holding this one
+        // table to a stricter standard.
+        self.conn.execute(
+            "DELETE FROM symbol_relations WHERE symbol_id NOT IN (SELECT id FROM symbols)",
+            [],
+        )?;
         Ok(())
     }
 
@@ -425,6 +522,54 @@ impl IndexBackend for SqliteStore {
         )?;
         Ok(())
     }
+
+    fn put_symbol_relations_batch(
+        &mut self,
+        relations: &[(u64, Vec<String>, Vec<String>)],
+    ) -> Result<()> {
+        let tx = self.conn.transaction()?;
+        {
+            let mut del = tx.prepare("DELETE FROM symbol_relations WHERE symbol_id = ?1")?;
+            let mut ins = tx.prepare(
+                "INSERT INTO symbol_relations (symbol_id, kind, target) VALUES (?1, ?2, ?3)",
+            )?;
+            for (symbol_id, calls, bases) in relations {
+                del.execute([*symbol_id as i64])?;
+                for target in calls {
+                    ins.execute(rusqlite::params![*symbol_id as i64, "calls", target])?;
+                }
+                for target in bases {
+                    ins.execute(rusqlite::params![*symbol_id as i64, "bases", target])?;
+                }
+            }
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
+    fn all_symbol_relations(&self) -> Result<SymbolRelations> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT symbol_id, kind, target FROM symbol_relations")?;
+        let rows = stmt.query_map([], |r| {
+            Ok((
+                r.get::<_, i64>(0)? as u64,
+                r.get::<_, String>(1)?,
+                r.get::<_, String>(2)?,
+            ))
+        })?;
+        let mut out: HashMap<u64, (Vec<String>, Vec<String>)> = HashMap::new();
+        for row in rows {
+            let (id, kind, target) = row?;
+            let entry = out.entry(id).or_default();
+            match kind.as_str() {
+                "calls" => entry.0.push(target),
+                "bases" => entry.1.push(target),
+                _ => {}
+            }
+        }
+        Ok(out)
+    }
 }
 
 fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
@@ -449,6 +594,11 @@ fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
         exported: r.get::<_, i64>(10)? != 0,
         parent: r.get(11)?,
         references: serde_json::from_str(&r.get::<_, String>(12)?).unwrap_or_default(),
+        // Not columns on `symbols` — populated separately by
+        // `structural_relations::load_symbols_with_relations` from the
+        // side table `symbol_relations`, never by this loader.
+        calls: Vec::new(),
+        bases: Vec::new(),
     })
 }
 
@@ -558,6 +708,42 @@ pub fn update_index(
     // are accounted separately below so the totals never silently disagree
     // with `scanned_files`.
     report.unchanged_files = current.len() - to_parse.len();
+
+    // One-time backfill for an index that predates precomputed structural
+    // relations: it has symbols but an empty `symbol_relations` table.
+    // Without this, a symbol in a file that never changes again would never
+    // get relations — the main per-file loop below only computes them for
+    // `to_parse` (reparsed) files, same incremental contract as
+    // `extract_references`. Detected once per run (relations empty while
+    // symbols aren't) and self-limiting: after this backfill, every
+    // existing symbol has a `symbol_relations` entry (even an empty one,
+    // per `compute_file_relations`'s doc comment on why that matters), so
+    // this condition is false on every subsequent run.
+    if !existing.is_empty() && store.all_symbol_relations()?.is_empty() {
+        let to_parse_files: HashSet<&String> = to_parse.iter().map(|(f, _)| *f).collect();
+        let mut unchanged_by_file: HashMap<&str, Vec<Symbol>> = HashMap::new();
+        for s in &existing {
+            if !to_parse_files.contains(&s.file) {
+                unchanged_by_file
+                    .entry(s.file.as_str())
+                    .or_default()
+                    .push(s.clone());
+            }
+        }
+        for (file, file_symbols) in unchanged_by_file {
+            let (Some(src), Some(lang)) = (
+                current.get(file),
+                scanner::language_for_path(Path::new(file)),
+            ) else {
+                continue;
+            };
+            let relations =
+                crate::structural_relations::compute_file_relations(&file_symbols, src, lang);
+            if !relations.is_empty() {
+                store.put_symbol_relations_batch(&relations)?;
+            }
+        }
+    }
 
     // Parse all changed files first so reference matching sees both old
     // definitions and everything added in this run. Keep the source alive for
@@ -691,7 +877,24 @@ pub fn update_index(
         if let Some(old_ids) = existing_ids_by_file.get(pf.file.as_str()) {
             report.deleted_symbols += old_ids.difference(&new_ids).count();
         }
-        store.replace_file(&pf.file, pf.hash, &pf.symbols)?;
+        // Precomputed structural relations (structural_relations.rs): reuses
+        // this loop's already-open `pf.src` and already-parsed `pf.symbols`
+        // — one extra tree-sitter Query pass per reparsed file, no second
+        // file read. Computed before `replace_file` so both land in the
+        // same transaction (`replace_file`'s doc comment explains why a
+        // separate follow-up call was a real interrupted-process bug: the
+        // file's content_hash would already be updated, so a crash between
+        // two separate calls would strand stale relations permanently,
+        // since that file would never be reparsed again). Only for `parsed`
+        // (reparsed) files, matching `extract_references` above: an
+        // unchanged file keeps its existing `symbol_relations` rows
+        // untouched, same incremental contract as everything else here.
+        let relations = scanner::language_for_path(Path::new(&pf.file))
+            .map(|lang| {
+                crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang)
+            })
+            .unwrap_or_default();
+        store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations)?;
     }
 
     // Vectors from a different vector space are not comparable: wipe them

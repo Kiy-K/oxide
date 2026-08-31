@@ -901,6 +901,8 @@ mod tests {
             exported: false,
             parent: Some("Auth".into()),
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         };
         let evidence = Evidence::from_symbol(&symbol, 1.0, Vec::new(), "return token".into());
         assert_eq!(evidence.id, "src/auth.py#Auth.refresh");

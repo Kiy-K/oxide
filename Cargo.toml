@@ -20,7 +20,6 @@ tree-sitter = "0.27"
 tree-sitter-tags = "0.27"
 tree-sitter-python = "0.25"
 tree-sitter-typescript = "0.23"
-ast-grep-core = { version = "=0.45.3", default-features = false, features = ["tree-sitter"] }
 fastembed = { version = "6.0.2", default-features = false, features = ["ort-download-binaries-rustls-tls", "hf-hub-rustls-tls"], optional = true }
 
 [features]

@@ -12,5 +12,6 @@ pub mod retrieval;
 pub mod review;
 pub mod scanner;
 pub mod service;
-pub mod structural;
+pub mod structural_relations;
 pub mod symbols;
+pub mod tree_sitter_structural;

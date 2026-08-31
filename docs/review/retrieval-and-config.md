@@ -96,22 +96,28 @@ refactor").
 
 ---
 
-### RET-004 — `RetrievalMode` only gates the bounded ast-grep stage
+### RET-004 — `RetrievalMode` only gates the bounded structural-relation stage
 **Severity:** MAJOR · **Scope:** `RetrievalMode`'s effect throughout
 `retrieval.rs`/`context.rs`.
 
 **Invariant:** `Fast`/`Balanced`/`Quality` control only: (a) whether
-`context.rs`'s bounded ast-grep expansion runs and its seed/file budget, and
-(b) whether `context.rs::rerank_candidates`'s (currently no-op) hook runs
-(`Quality` only). `Fast` additionally skips `RetrievalEngine::search`'s own
+`context.rs`'s bounded structural-relation expansion (`RelationGraph::callers_of`,
+scoped to the seed pool's files — see LANG-001 in
+`structural-and-language.md`) runs and its seed/file budget, and (b) whether
+`context.rs::rerank_candidates`'s (currently no-op) hook runs (`Quality`
+only). `Fast` additionally skips `RetrievalEngine::search`'s own
 `RelationGraph` expansion (`opts.expand`). The mode must never gate the
 always-on lexical+semantic stage — that stage is unconditional in every
-mode, by design.
+mode, by design. (Historical note: this stage used to be a live
+`AstGrepProvider` AST scan; migrated to a precomputed `RelationGraph` lookup
+in `docs/precomputed-relations-migration/README.md`. The mode-gating
+contract itself — what's gated, what isn't — is unchanged by that
+migration.)
 
 **What constitutes a violation:** any code path where `Fast`/`Balanced`
 skips or weakens lexical or semantic scoring itself (as opposed to the
-ast-grep/rerank stages); a new "cheap mode" concept introduced elsewhere
-that duplicates what `RetrievalMode` already owns.
+structural-relation/rerank stages); a new "cheap mode" concept introduced
+elsewhere that duplicates what `RetrievalMode` already owns.
 
 **Evidence required:** cite `RetrievalMode`'s doc comment and
 `structural_budget()`/`rerank()`, then point to the specific code path that

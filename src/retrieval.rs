@@ -9,6 +9,7 @@ use crate::config::{
 use crate::embeddings::{tokenize, EmbeddingProvider};
 use crate::index::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
+use std::cell::OnceCell;
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -503,6 +504,16 @@ pub struct RelationGraph<'a> {
     children_of: HashMap<&'a str, Vec<&'a Symbol>>,
     defs_by_name: HashMap<&'a str, Vec<&'a Symbol>>,
     files: HashSet<&'a str>,
+    /// Reverse indexes over `Symbol::calls`/`bases` (experimental,
+    /// `structural_relations` — empty on every symbol unless that module's
+    /// opt-in second pass ran). Built lazily via `OnceCell`, not in
+    /// `build()`, so the frozen path (`neighbors()`, called on every
+    /// `RelationGraph::build()` in `context.rs`/`retrieval.rs`/`review.rs`)
+    /// pays nothing for these — they're only populated the first time
+    /// `callers_of`/`implementors_of` is actually called, which no
+    /// production code path does.
+    callers_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
+    implementors_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
 }
 
 fn is_test_symbol(s: &Symbol) -> bool {
@@ -540,7 +551,51 @@ impl<'a> RelationGraph<'a> {
             children_of,
             defs_by_name,
             files,
+            callers_of_index: OnceCell::new(),
+            implementors_of_index: OnceCell::new(),
         }
+    }
+
+    /// AST-precise callers of `name` (experimental, see `structural_relations`):
+    /// symbols whose precomputed `calls` contains `name`, sorted `(file,
+    /// start_line)` for the same reason `tree_sitter_structural.rs::finish`
+    /// sorts its hits — a caller like `context.rs` truncating to the first N
+    /// must see a deterministic order, not `HashMap` iteration order
+    /// (`tests/determinism_stress.rs` exists for exactly this class of bug).
+    /// Repo-wide, unlike `find_callers`'s bounded-file-list query-time
+    /// contract — see docs/precomputed-structural-relations/README.md for
+    /// why that's the actual axis this experiment had to measure.
+    pub fn callers_of(&self, name: &str) -> Vec<&'a Symbol> {
+        let index = self.callers_of_index.get_or_init(|| {
+            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+            for s in self.symbols {
+                for callee in &s.calls {
+                    idx.entry(callee.as_str()).or_default().push(s);
+                }
+            }
+            idx
+        });
+        let mut out: Vec<&Symbol> = index.get(name).cloned().unwrap_or_default();
+        out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
+        out
+    }
+
+    /// AST-precise implementors of `base_name` (experimental) — symbols
+    /// whose precomputed `bases` contains `base_name`. Same sort/repo-wide
+    /// contract as `callers_of`.
+    pub fn implementors_of(&self, base_name: &str) -> Vec<&'a Symbol> {
+        let index = self.implementors_of_index.get_or_init(|| {
+            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+            for s in self.symbols {
+                for base in &s.bases {
+                    idx.entry(base.as_str()).or_default().push(s);
+                }
+            }
+            idx
+        });
+        let mut out: Vec<&Symbol> = index.get(base_name).cloned().unwrap_or_default();
+        out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
+        out
     }
 
     /// Resolve an import string from a file to concrete symbols, when the
@@ -696,6 +751,8 @@ mod tests {
             exported: true,
             parent: None,
             references: refs.iter().map(|s| s.to_string()).collect(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         }
     }
 
@@ -754,7 +811,7 @@ mod tests {
             &[],
         );
         store
-            .replace_file("src/retry.py", 1, std::slice::from_ref(&s))
+            .replace_file("src/retry.py", 1, std::slice::from_ref(&s), &[])
             .unwrap();
         let seeding_emb = HashedEmbedder::default();
         store
@@ -800,8 +857,12 @@ mod tests {
                 &[],
             ),
         ];
-        store.replace_file("src/retry.py", 1, &syms[..1]).unwrap();
-        store.replace_file("src/auth.py", 1, &syms[1..]).unwrap();
+        store
+            .replace_file("src/retry.py", 1, &syms[..1], &[])
+            .unwrap();
+        store
+            .replace_file("src/auth.py", 1, &syms[1..], &[])
+            .unwrap();
         let emb = HashedEmbedder::default();
         let engine = RetrievalEngine::new(&store, &emb);
         let opts = SearchOptions {
@@ -826,7 +887,7 @@ mod tests {
             &[],
         );
         store
-            .replace_file("src/http/backoff.py", 1, std::slice::from_ref(&s1))
+            .replace_file("src/http/backoff.py", 1, std::slice::from_ref(&s1), &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         {
@@ -872,13 +933,13 @@ mod tests {
             &["RetryPolicy"],
         );
         store
-            .replace_file("src/net/client.py", 1, std::slice::from_ref(&client))
+            .replace_file("src/net/client.py", 1, std::slice::from_ref(&client), &[])
             .unwrap();
         store
-            .replace_file("src/net/retry.py", 1, std::slice::from_ref(&policy))
+            .replace_file("src/net/retry.py", 1, std::slice::from_ref(&policy), &[])
             .unwrap();
         store
-            .replace_file("tests/test_retry.py", 1, std::slice::from_ref(&test))
+            .replace_file("tests/test_retry.py", 1, std::slice::from_ref(&test), &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in &[&client, &policy, &test] {
@@ -988,7 +1049,9 @@ mod tests {
             ),
         ];
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
-        store.replace_file("src/retry.py", 1, &symbols).unwrap();
+        store
+            .replace_file("src/retry.py", 1, &symbols, &[])
+            .unwrap();
         let emb = HashedEmbedder::default();
         for s in &symbols {
             store

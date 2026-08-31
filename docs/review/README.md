@@ -15,7 +15,7 @@ file below before reviewing a change in that area.
 |---|---|
 | `retrieval-and-config.md` | Fusion/context weights, `RetrievalMode` default and scope, lexical/semantic concurrency |
 | `embeddings-and-index.md` | Fingerprint compatibility, provider selection (no silent fallback/download), degradation on provider failure |
-| `structural-and-language.md` | Bounded ast-grep usage, the `ast-grep-core` abstraction boundary, declarative vs. bespoke language extractors |
+| `structural-and-language.md` | Bounded structural-relation lookups, `structural_relations.rs` attribution tie-breaks, declarative vs. bespoke language extractors |
 | `evidence-and-benchmarks.md` | Benchmark provenance, incomplete/cancelled runs, what a passing test actually proves |
 | `api-surface.md` | MCP/CLI surface growth, JSON output contract stability |
 

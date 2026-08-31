@@ -1,75 +1,95 @@
 # Structural search and language-support review rules
 
-Scope: `src/structural.rs` (ast-grep adapter), `src/parser.rs` /
-`src/languages/tags.rs` (language extraction).
+Scope: `src/structural_relations.rs` (index-time precomputation),
+`src/tree_sitter_structural.rs` (the Tree-sitter query substrate),
+`src/retrieval.rs`'s `RelationGraph::callers_of`/`implementors_of`,
+`src/parser.rs` / `src/languages/tags.rs` (language extraction).
+
+`src/structural.rs` (the `ast-grep-core` adapter) and its query-time
+`StructuralSearchProvider` trait no longer exist — migrated to precomputed
+relations, `docs/precomputed-relations-migration/README.md`. LANG-001 and
+LANG-002 below describe the current architecture; if you're reviewing a
+diff against an old checkout that still has `structural.rs`, read that
+migration doc first.
 
 ---
 
-### LANG-001 — Structural search must always be bounded, never a request-time whole-repo scan
+### LANG-001 — A repo-wide relation lookup must always be scoped before it reaches context output
 **Severity:** BLOCKER · **Scope:** any caller of
-`StructuralSearchProvider::find_callers`/`find_implementors`.
+`RelationGraph::callers_of`/`implementors_of`.
 
-**Invariant:** every call must pass a caller-supplied, explicitly bounded
-file list — the files of already-retrieved symbols, capped by
-`RetrievalMode::structural_budget()` — never a repo-wide scan triggered by
-a live request. `FileSource`'s own doc comment states this as the contract,
-not a benchmark footnote: ast-grep re-parses every file it's handed on top
-of the parse OXIDE's indexer already did for that file, so an unbounded
-scan is a real, structural cost, not a missing-cache problem.
+**Invariant:** `callers_of`/`implementors_of` are repo-wide by construction
+(`retrieval.rs`) — they answer for every indexed symbol, not a bounded
+subset. Every call site that feeds context output back to a request must
+intersect the result with an explicit, bounded file scope — the files of
+already-retrieved symbols, capped by `RetrievalMode::structural_budget()` —
+before using it. This is not a style preference: a 902-file synthetic-repo
+measurement showed an unscoped lookup returning **60x more results** than
+the same lookup scoped to a realistic seed pool
+(`docs/precomputed-structural-relations/README.md` "Reach/noise") — that
+much fan-out is noise, not context, for a budgeted agent response.
 
-**What constitutes a violation:** a new call site that passes
-`store.all_symbols()`'s full file set, a repo glob, or otherwise removes the
-mode-dependent seed/file caps from a request-time code path (`context.rs`'s
-expansion loop or any future caller).
+**What constitutes a violation:** a new call site that uses
+`graph.callers_of(name)`/`graph.implementors_of(name)`'s return value
+without filtering by `scope_files` (or an equivalent explicit bound) before
+it reaches `Candidate`/`ContextItem` output; a change that removes the
+mode-dependent seed/file caps from `context.rs`'s bounded-expansion loop.
 
-**Evidence required:** the measured cost differential — bounded (5 files):
-17-149ms vs. unbounded (109 files): 1270-1320ms, a 10-70x gap
-(`docs/astgrep-structural-search/README.md`) — plus the actual file-list
-construction at the call site in question, showing it isn't bounded.
+**Evidence required:** the measured reach differential — unfiltered vs.
+scoped, 60x on the 902-file synthetic repo
+(`docs/precomputed-structural-relations/README.md`) — plus the actual
+`scope_files` construction and filter at the call site in question, showing
+it's actually applied before the result is used.
 
-**Exceptions:** offline benchmark/example harnesses
-(`examples/structural_cost.rs`) that intentionally run unbounded for
-measurement are not live requests and are fine.
+**Exceptions:** offline benchmark/example harnesses that intentionally run
+unscoped for measurement are not live requests and are fine.
 
 ---
 
-### LANG-002 — `ast-grep-core` types stay behind `structural.rs`'s abstraction
-**Severity:** MAJOR · **Scope:** any module other than `src/structural.rs`.
+### LANG-002 — Attribution (`structural_relations::enclosing`) is a tie-break contract, not an approximation to relax casually
+**Severity:** MAJOR · **Scope:** `src/structural_relations.rs`'s
+`enclosing()` and `compute_file_relations()`.
 
-**Invariant:** no `ast_grep_core` type (`Pattern`, `Language`, `StrDoc`,
-`TSLanguage`, etc.) appears outside `structural.rs`'s internals; every
-caller sees only `StructuralHit` and the `StructuralSearchProvider` trait.
-This is the module's own stated design goal, and matters concretely because
-`ast-grep-core` is pinned exactly at `=0.45.3` (pre-1.0, unstable API) —
-letting its types leak elsewhere means an upgrade has to touch every leak
-site instead of one module.
+**Invariant:** mapping a raw call-site/base-clause line back to the
+`Symbol` it belongs to is genuinely ambiguous in real source — three
+distinct ties were found and fixed empirically, each pinned by a regression
+test in `structural_relations.rs`'s own test module:
 
-**What constitutes a violation:** `context.rs`, `retrieval.rs`, `mcp.rs`, or
-`cli.rs` importing `ast_grep_core` directly; a new public item in
-`structural.rs` whose signature exposes an `ast_grep_core` type instead of
-`StructuralHit`; bumping the `=0.45.3` version pin without first running the
-conformance suite (`cargo test -j 2 --lib structural`, 12 tests as of the
-integration-boundary hardening pass — see `docs/astgrep-hardening/`),
-`cargo run --example structural_benchmark --release`, and a fresh `cargo
-tree -p ast-grep-core` / `cargo tree --duplicates` audit for a newly
-introduced grammar crate or `tree-sitter` duplication — this is the
-documented upgrade rule (`AGENTS.md`), not a suggestion.
+1. A single top-level definition's span is numerically identical to the
+   file's Module fallback symbol's span — fixed by excluding Module from
+   the span competition entirely (a pure fallback, not a competitor).
+2. Two functions nested on one physical line have byte-identical spans —
+   fixed by a secondary tie-break on qualified-name length (longer name =
+   more deeply nested = correct target).
+3. A class and its own single-line member/base-list attribution needs the
+   class's own declared identity, not span containment, because a
+   same-line member can share the class's exact span — fixed by keying
+   `all_bases_in_file` on the class node's own start line plus a
+   `Class`/`Interface` kind filter, not on containment or bare name (name
+   alone over-attributes across differently-nested same-named classes).
 
-**Note for reviewers:** `docs/astgrep-hardening/README.md` pins three known,
-intentionally-unfixed pattern-matching gaps (TS `implements A, B` only
-matches the first interface; Python multiple inheritance isn't matched at
-all; `extends X implements Y` only matches the extends side). A PR that
-silently "fixes" one of these without updating its pinning test and calling
-out the behavior change explicitly is a violation of EVD-003 (a passing
-test isn't proof the fix does what the PR claims) as much as it is of this
-rule — treat a diff to those three tests as a signal to read closely, not a
-routine test update.
+A change to the tie-break ordering, the Module exclusion, or the bases
+join key without re-running (and, if behavior changes, updating)
+`call_inside_a_one_line_nested_function_attaches_to_the_inner_function`,
+`top_level_calls_attach_to_the_module_fallback_symbol`, and
+`same_bare_name_classes_in_different_scopes_do_not_cross_attribute_bases`
+(all in `structural_relations.rs`) is very likely reintroducing one of
+these three bugs, not simplifying dead code.
 
-**Evidence required:** grep for `ast_grep_core` imports outside
-`structural.rs`; if any exist outside `#[cfg(test)]`/internal helpers,
-that's the finding.
+**What constitutes a violation:** any edit to `enclosing()`'s sort key,
+the Module-exclusion `filter`, or `all_bases_in_file`'s line/kind join
+without those three tests passing unmodified, or a PR that reverts to
+name-based or pure-containment attribution for bases without new evidence
+that the fanning/mis-attribution bugs those approaches had are actually
+fixed some other way.
 
-**Exceptions:** none — this is the entire point of the abstraction.
+**Evidence required:** `cargo test --lib structural_relations` (5 tests as
+of this migration) passing unmodified, or an explicit accounting of which
+of the three tie-break cases a proposed change affects and why.
+
+**Exceptions:** none for the three specific ties above; a genuinely new
+tie-break case is welcome as a fourth regression test, not a reason to
+loosen the existing three.
 
 ---
 
@@ -85,7 +105,9 @@ not a new procedural extractor." The handwritten, per-language AST-walking
 extractors (`languages/python.rs`, `languages/typescript.rs`, reachable via
 `extractor_for_handwritten`) are retained specifically for one documented
 gap upstream `tags.scm` cannot express — decorator-inclusive spans — not as
-a template to copy for new languages.
+a template to copy for new languages. The same declarative-first bar
+applies to `queries/*_{callers,implementors}.scm`
+(`tree_sitter_structural.rs`) for any new language's structural relations.
 
 **What constitutes a violation:** a PR adding a new language via a new
 hand-rolled procedural AST walker without first showing what `tags.scm`/

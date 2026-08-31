@@ -1,5 +1,15 @@
 # Concurrent evidence providers + retrieval modes
 
+> **Partially superseded.** The "bounded ast-grep expansion" evidence below
+> describes the live `AstGrepProvider` AST-scan stage that used to sit
+> behind `context.rs`'s bounded expansion; that stage now reads from a
+> precomputed `RelationGraph` lookup instead (`AstGrepProvider`/
+> `src/structural.rs` are gone) — see
+> `docs/precomputed-relations-migration/README.md`. The mode-gating
+> contract, the file-scope bounding rationale, and the coordinator/threading
+> design this doc evidences are unchanged by that migration. Kept as-is
+> below for historical record; read the migration doc for what's current.
+
 Exit evidence for the coordinator refactor. Architecture summary lives in
 the `AGENTS.md` load-bearing-invariants entries added alongside this doc;
 this file is the raw benchmark data and the reasoning behind the design

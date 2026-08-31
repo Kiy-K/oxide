@@ -1,5 +1,11 @@
 # Phase 3.4b evidence: ast-grep structural search
 
+> **Superseded.** `src/structural.rs` (the `ast-grep-core` adapter this doc
+> evidences) was removed and replaced with precomputed structural relations
+> — see `docs/precomputed-relations-migration/README.md`. Kept as-is below
+> for historical record; the module doc it used to point to no longer
+> exists.
+
 Raw data backing the keep/wire decision. `src/structural.rs` module doc has
 the architecture summary.
 

@@ -11,12 +11,16 @@ output shapes across `search`/`context`/`review`.
 **Invariant:** the MCP surface stays at its current minimal set (`context`,
 `search`) and the CLI surface stays scoped to what's documented, unless a
 change carries the same evidence bar the existing surface was held to. The
-precedent is explicit: bounded ast-grep expansion and the reranker hook
-were both built and benchmarked before being wired into `context.rs`, and
-`find_implementors`/whole structural search were deliberately kept *out* of
-MCP — "Keep the isolated module, do not wire it into `context.rs`/
-retrieval/MCP in this commit... revisiting production wiring once there's
-evidence from real usage" (`docs/astgrep-structural-search/README.md`).
+precedent is explicit: bounded structural-relation expansion (originally a
+live `AstGrepProvider` AST scan, migrated to a precomputed
+`RelationGraph` lookup — `docs/precomputed-relations-migration/README.md`)
+and the reranker hook were both built and benchmarked before being wired
+into `context.rs`, and `implementors_of`/whole structural search were
+deliberately kept *out* of MCP — "Keep the isolated module, do not wire it
+into `context.rs`/retrieval/MCP in this commit... revisiting production
+wiring once there's evidence from real usage"
+(`docs/astgrep-structural-search/README.md`, the original decision this
+precedent traces to).
 
 **What constitutes a violation:** a new MCP tool or CLI subcommand added
 because it "could be useful" or "an agent might want this," without a

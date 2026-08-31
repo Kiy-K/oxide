@@ -154,6 +154,8 @@ fn visit(
                 exported: true,
                 parent,
                 references: Vec::new(),
+                calls: Vec::new(),
+                bases: Vec::new(),
             });
             stack.push((qualified.clone(), is_class));
             if let Some(body) = node.child_by_field_name("body") {

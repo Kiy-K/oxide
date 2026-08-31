@@ -95,6 +95,20 @@ pub struct Symbol {
     /// Resolved references to other known symbols (filled by the indexer).
     #[serde(default)]
     pub references: Vec<String>,
+    /// AST-precise call-target bare names found in this symbol's body —
+    /// experimental, populated only by `structural_relations`'s opt-in
+    /// second pass (`docs/precomputed-structural-relations/README.md`),
+    /// never by the default `update_index` path. Deliberately excluded
+    /// from `index::embed_text` — unlike `references`, these do not affect
+    /// `content_hash` or the embedding, keeping embeddings frozen per that
+    /// experiment's brief. Bare names only, same heuristic tier as
+    /// `references`/`uses` (no scope analysis) — not a resolved call graph.
+    #[serde(default)]
+    pub calls: Vec<String>,
+    /// AST-precise base class/interface bare names this symbol (a class)
+    /// extends or implements — same provenance and caveats as `calls`.
+    #[serde(default)]
+    pub bases: Vec<String>,
 }
 
 impl Symbol {
@@ -180,6 +194,8 @@ mod tests {
             exported: false,
             parent: None,
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         };
         assert_eq!(mk("a.py", "f").id(), mk("a.py", "f").id());
         assert_ne!(mk("a.py", "f").id(), mk("b.py", "f").id());
@@ -203,6 +219,8 @@ mod tests {
             exported: false,
             parent: None,
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         };
         assert_eq!(sym.span_text(src), "def bar():\n    pass");
     }

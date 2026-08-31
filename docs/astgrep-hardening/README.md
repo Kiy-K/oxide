@@ -1,5 +1,11 @@
 # Integration-boundary hardening for `src/structural.rs`
 
+> **Superseded.** `src/structural.rs` was removed and replaced with
+> precomputed structural relations — see
+> `docs/precomputed-relations-migration/README.md`. The "treat it as
+> replaceable" conclusion below held: it was in fact replaced. Kept as-is
+> for historical record.
+
 Evidence for treating `ast-grep-core` as a reliable, replaceable OXIDE
 implementation detail, ahead of expanding structural retrieval. Builds on
 `docs/astgrep-structural-search/README.md` (the Phase 3.4b spike) and

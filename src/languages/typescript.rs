@@ -295,6 +295,8 @@ impl TsExtractor {
             exported,
             parent,
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         });
     }
 
@@ -356,6 +358,8 @@ impl TsExtractor {
             exported,
             parent,
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         });
         Some(qualified)
     }
@@ -396,6 +400,8 @@ impl TsExtractor {
             exported: false,
             parent: Some(parent),
             references: Vec::new(),
+            calls: Vec::new(),
+            bases: Vec::new(),
         });
     }
 }

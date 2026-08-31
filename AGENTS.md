@@ -54,21 +54,22 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   touch those fields; capturing `self` wholesale fails to compile for a
   reason that has nothing to do with what the closure actually reads.
 - `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval.rs`) only gates
-  the *bounded ast-grep expansion* stage in `context.rs`'s own expansion
-  loop — never the always-on lexical+semantic stage, and never
+  the *bounded structural-relation expansion* stage in `context.rs`'s own
+  expansion loop — never the always-on lexical+semantic stage, and never
   `RetrievalEngine::search`'s own RelationGraph expansion (`opts.expand`)
   except that `Fast` also skips it there. An unconfigured caller always
   resolves to `Balanced` (`RetrievalMode::resolve(None)`, checked before
   `$OXIDE_RETRIEVAL_MODE`) — config may only raise or lower that default, per
   the same precedence `open_embedder` already uses for `$OXIDE_EMBED_URL`.
-  The bounded ast-grep expansion's file scope is the union of the seed
-  pool's own files (capped), matching `structural.rs`'s documented
-  "files of already-retrieved symbols" contract exactly — not a per-seed
-  RelationGraph-neighbor lookup, which would only rescan files a
-  name-matching heuristic already flagged and add little new signal. This
-  means a caller in a file the seed search didn't independently surface is
-  invisible to it; that's a real ceiling, not a bug (see
-  docs/retrieval-coordinator/README.md).
+  The bounded structural-relation expansion's file scope is the union of
+  the seed pool's own files (capped), matching `RelationGraph::callers_of`'s
+  repo-wide result being filtered down to exactly that scope before use
+  (`structural_relations.rs`/`docs/precomputed-relations-migration/README.md`)
+  — not a per-seed RelationGraph-neighbor lookup, which would only rescan
+  files a name-matching heuristic already flagged and add little new
+  signal. This means a caller in a file the seed search didn't
+  independently surface is invisible to it; that's a real ceiling, not a
+  bug (see docs/retrieval-coordinator/README.md).
 - Lexical docs include symbol *bodies* at weight 1 (names/signatures weight 4).
   Body tokens were added because gold-context evals showed bugfix targets hide
   behind local identifiers. Don't remove for "cleanup".
@@ -166,29 +167,49 @@ identity everywhere is `path#QualifiedName`.
   `tree-sitter-python` 0.23→0.25 (a `links = "tree-sitter"` native-lib crate
   forces one version across the graph); `tree-sitter-typescript` needed no
   bump. See `docs/treesitter-tags-parity/` for the parity evidence.
-- `src/structural.rs` wraps `ast-grep-core` (pinned `=0.45.3`, pre-1.0 —
-  `Language`/`LanguageExt` are implemented directly, not just called) for
-  symbol-anchored structural queries (implementors, AST-precise callers).
-  Wired into `context.rs`'s bounded expansion loop (not the MCP surface —
-  see `docs/retrieval-coordinator/README.md`); still not called from
-  `retrieval.rs`. Any caller MUST bound the file list it passes in to the
-  files of already-retrieved symbols — an unbounded whole-repo scan measured
-  10-70x slower (ast-grep re-parses every file it's given, on top of the
-  parse the indexer already did), enforced in `context.rs` by a one-line
-  `scope_files.len() >= max_files` break, not just convention. No
-  `ast_grep_core` type may appear outside `src/structural.rs`. **Changing
-  the version pin requires**, before the pin changes: the 12-test
-  conformance suite (`cargo test -j 2 --lib structural`) passing unmodified,
-  `cargo run --example structural_benchmark --release` still matching its
-  documented recall, and a re-run of the dependency audit (`cargo tree -p
-  ast-grep-core`, `cargo tree --duplicates`) to catch a newly-introduced
-  grammar crate or `tree-sitter` duplication. See
-  `docs/astgrep-structural-search/` for the original spike evidence and
-  `docs/astgrep-hardening/` for the dependency/binary-size audit,
-  conformance suite, and three known pattern-matching gaps (TS
-  `implements A, B` only matches the first interface; Python multiple
-  inheritance isn't matched at all; `extends X implements Y` only matches
-  the extends side) found and pinned, not fixed, by that pass.
+- Symbol-anchored structural queries (implementors, AST-precise callers)
+  are **precomputed at index time**, not answered by a live query-time AST
+  scan — `src/structural.rs` (an `ast-grep-core` adapter) and
+  `TreeSitterStructuralProvider` (a query-time Tree-sitter-query adapter)
+  both existed at points in this project's history and are both gone;
+  `ast-grep-core` is no longer a dependency at all. The current pipeline:
+  `structural_relations::compute_file_relations` runs inside
+  `index::update_index`'s existing per-file loop (same place
+  `extract_references` runs — reuses that loop's already-open source and
+  already-parsed symbols, adding one extra `tree_sitter::Query` pass per
+  reparsed file via `tree_sitter_structural.rs`'s `all_calls_in_file`/
+  `all_bases_in_file`), writes `(symbol_id, calls, bases)` to a
+  `symbol_relations` SQLite side table (`IndexBackend::put_symbol_relations_batch`,
+  one transaction per reparsed file — **every** symbol in that file gets an
+  entry, even an empty one, which is what clears a stale relation after an
+  edit removes a symbol's last call/base), and `context.rs`'s bounded
+  expansion reads it back via `RelationGraph::callers_of`/`implementors_of`
+  (`retrieval.rs`, two `OnceCell`-lazy reverse indexes over `Symbol.calls`/
+  `bases` — `RelationGraph::build()` itself does zero extra work whether or
+  not those fields are populated). Any caller of `callers_of`/
+  `implementors_of` MUST intersect the result with an explicit bounded file
+  scope before it reaches context output — the lookup itself is repo-wide
+  by construction and a 902-file synthetic-repo measurement showed 60x more
+  results unfiltered than the same lookup scoped to a realistic seed pool;
+  `context.rs` enforces this the same way it always has, with a
+  `scope_files` filter built from the seed pool's own files (capped),
+  applied to the `callers_of` result before use — see
+  `docs/review/structural-and-language.md`'s LANG-001. Attribution (mapping
+  a raw call-site/base-clause line back to the `Symbol` it belongs to,
+  `structural_relations::enclosing`) has three known ties, each found
+  empirically and fixed with a specific tie-break, each pinned by its own
+  regression test — see LANG-002 in the same review doc before touching
+  `enclosing()` or `compute_file_relations()`. `calls`/`bases` are bare
+  names, same heuristic tier (identifier-name intersection, no scope
+  analysis) as `Symbol.references`/the `uses` relation — not more precise
+  about *which* callee a name resolves to, only about *what counts as a
+  call* (an AST call-expression, not `references`'s token match). See
+  `docs/precomputed-relations-migration/README.md` for the migration
+  evidence and final numbers, `docs/precomputed-structural-relations/README.md`
+  and `docs/treesitter-structural-eval/README.md` for the two experiments
+  that preceded it, and `docs/astgrep-structural-search/`/
+  `docs/astgrep-hardening/` for the original (now superseded) ast-grep
+  spike and hardening pass.
 - Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
   DB lives at `<repo>/.oxide/index.db`.
 - `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —

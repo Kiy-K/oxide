@@ -312,6 +312,8 @@ impl LanguageExtractor for TagsExtractor {
                 exported,
                 parent,
                 references: Vec::new(),
+                calls: Vec::new(),
+                bases: Vec::new(),
             });
             stack.push((qualified, d.start, d.end, is_container));
         }

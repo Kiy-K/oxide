@@ -16,7 +16,6 @@ use crate::config::{
 use crate::embeddings::EmbeddingProvider;
 use crate::index::IndexBackend;
 use crate::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
-use crate::structural::{AstGrepProvider, FileSource, StructuralSearchProvider};
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
@@ -144,7 +143,7 @@ pub fn build_context(
     // Structural expansion around strong primaries only (same rule as search:
     // expansion supplements, never displaces direct hits).
     if !seeds.is_empty() {
-        let symbols = store.all_symbols()?;
+        let symbols = crate::structural_relations::load_symbols_with_relations(store)?;
         let graph = RelationGraph::build(&symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
@@ -178,21 +177,34 @@ pub fn build_context(
             }
         }
 
-        // Bounded ast-grep expansion: AST-precise callers of the top seeds —
-        // a relation `RelationGraph` above cannot answer (it only sees
-        // identifier-name intersection, not real call sites, so a caller
-        // with no other traceable relation to the seed is invisible to it).
-        // Anchored on the same high-confidence seeds; scoped to the files of
-        // already-retrieved symbols (the seed pool itself), per
-        // `structural.rs`'s documented `FileSource` contract — never a
-        // whole-repo scan (10-70x unbounded-vs-bounded cost evidence in
-        // docs/astgrep-structural-search/README.md). Skipped entirely in
-        // `Fast` mode. Its own hit cap, deliberately separate from
+        // Bounded structural-relation expansion: AST-precise callers of the
+        // top seeds — a relation `RelationGraph::neighbors` above cannot
+        // answer (it only sees identifier-name intersection, not real call
+        // sites, so a caller with no other traceable relation to the seed
+        // is invisible to it). Served from `RelationGraph::callers_of`, a
+        // precomputed reverse index (`structural_relations.rs`, populated
+        // by `update_index` itself) instead of a live AST scan — same
+        // provenance tier and same bounding contract as the ast-grep-based
+        // version this replaced (docs/precomputed-relations-migration/README.md),
+        // just backed by an index-time lookup instead of a query-time
+        // parse. Anchored on the same high-confidence seeds; scoped to the
+        // files of already-retrieved symbols (the seed pool itself) —
+        // `callers_of` itself is repo-wide (measured 60x more results
+        // unfiltered on a 902-file synthetic repo,
+        // docs/precomputed-structural-relations/README.md "Reach/noise"),
+        // so that file-scope filter is load-bearing, not optional, exactly
+        // as it was for the ast-grep version. Skipped entirely in `Fast`
+        // mode. Its own hit cap, deliberately separate from
         // `CONTEXT_EXPANSION_TOTAL`/`CONTEXT_EXPANSION_PER_SEED` (those are
         // pinned by `expansion_is_capped_per_seed_and_total` for the
         // RelationGraph pass specifically) since this is a distinct,
         // independently-bounded evidence source, not a bigger RelationGraph.
-        const AST_GREP_HITS_PER_SEED: usize = 2;
+        // The reason tag `ast-grep-caller` is kept verbatim even though
+        // ast-grep is gone — it's stable provenance vocabulary in
+        // `ContextItem.reasons` (a JSON-exposed field), not an
+        // implementation reference; renaming it would be an observable
+        // output change for no behavioral gain (see the migration doc).
+        const STRUCTURAL_CALLER_HITS_PER_SEED: usize = 2;
         if let Some((max_seeds, max_files)) = opts.retrieval_mode.structural_budget() {
             let mut scope_files: Vec<String> = Vec::new();
             for h in &seeds {
@@ -203,40 +215,22 @@ pub fn build_context(
                     scope_files.push(h.symbol.file.clone());
                 }
             }
-            let sources: Vec<(String, String)> = scope_files
-                .iter()
-                .filter_map(|f| {
-                    std::fs::read_to_string(root.join(f))
-                        .ok()
-                        .map(|src| (f.clone(), src))
-                })
-                .collect();
-            let file_sources: Vec<FileSource> = sources
-                .iter()
-                .map(|(file, src)| FileSource { file, src })
-                .collect();
 
             for seed in seeds.iter().take(max_seeds) {
-                let Some(lang) = crate::scanner::language_for_path(Path::new(&seed.symbol.file))
-                else {
-                    continue;
-                };
-                let hits = AstGrepProvider.find_callers(lang, &file_sources, &seed.symbol.name);
+                let callers = graph.callers_of(&seed.symbol.name);
                 // Not gated on `seen_seeds`: a caller that's *already* a
                 // direct seed or RelationGraph neighbor still benefits from
                 // this extra provenance (`order_note` merges reasons/scores
                 // for the same symbol id rather than duplicating it), and
-                // `AST_GREP_HITS_PER_SEED` alone keeps this bounded.
-                for hit in hits.iter().take(AST_GREP_HITS_PER_SEED) {
-                    let Some(enclosing) = enclosing_symbol(&symbols, &hit.file, hit.start_line)
-                    else {
-                        continue;
-                    };
-                    if enclosing.id() == seed.symbol.id() {
-                        continue;
-                    }
+                // `STRUCTURAL_CALLER_HITS_PER_SEED` alone keeps this bounded.
+                let scoped = callers
+                    .into_iter()
+                    .filter(|c| scope_files.contains(&c.file))
+                    .filter(|c| c.id() != seed.symbol.id())
+                    .take(STRUCTURAL_CALLER_HITS_PER_SEED);
+                for caller in scoped {
                     order_note(Candidate {
-                        symbol: enclosing.clone(),
+                        symbol: caller.clone(),
                         score: seed.score * 0.4,
                         reasons: vec![format!("ast-grep-caller←{}", seed.symbol.qualified_name)],
                         role: Role::Dependency,
@@ -547,16 +541,6 @@ fn is_test_symbol(s: &Symbol) -> bool {
 /// ordering/packing logic.
 fn rerank_candidates(_query: &str, _candidates: &mut [Candidate]) {}
 
-/// Smallest indexed symbol in `file` whose line range contains `line` — maps
-/// an ast-grep hit (a raw file/line/text match, not an OXIDE symbol) back to
-/// the symbol it lives in, so it can become an ordinary `Candidate`.
-fn enclosing_symbol<'a>(symbols: &'a [Symbol], file: &str, line: u32) -> Option<&'a Symbol> {
-    symbols
-        .iter()
-        .filter(|s| s.file == file && s.start_line <= line && line <= s.end_line)
-        .min_by_key(|s| s.end_line.saturating_sub(s.start_line))
-}
-
 fn overlap_ratio(a: &Symbol, b: &Symbol) -> f32 {
     let lo = a.start_line.max(b.start_line);
     let hi = a.end_line.min(b.end_line);
@@ -612,6 +596,8 @@ mod tests {
             exported: true,
             parent: None,
             references: vec![],
+            calls: Vec::new(),
+            bases: Vec::new(),
         }
     }
 
@@ -682,7 +668,7 @@ mod tests {
 
     fn seed(file: &str, syms: &[Symbol]) -> SqliteStore {
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
-        store.replace_file(file, 1, syms).unwrap();
+        store.replace_file(file, 1, syms, &[]).unwrap();
         let emb = HashedEmbedder::default();
         for s in syms {
             store
@@ -710,7 +696,7 @@ mod tests {
                 )
             })
             .collect();
-        store.replace_file("src/small.py", 1, &smalls).unwrap();
+        store.replace_file("src/small.py", 1, &smalls, &[]).unwrap();
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
@@ -792,10 +778,10 @@ mod tests {
         );
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
-            .replace_file("src/a.py", 1, &[m.clone(), f.clone()])
+            .replace_file("src/a.py", 1, &[m.clone(), f.clone()], &[])
             .unwrap();
         store
-            .replace_file("src/other.py", 1, std::slice::from_ref(&other))
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in [&m, &f, &other] {
@@ -896,7 +882,7 @@ mod tests {
                 )
             })
             .collect();
-        store.replace_file("src/junk.py", 1, &smalls).unwrap();
+        store.replace_file("src/junk.py", 1, &smalls, &[]).unwrap();
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
@@ -951,7 +937,7 @@ mod tests {
         let mut store = seed("src/app.py", &[caller.clone()]);
         for d in &defs {
             store
-                .replace_file(&d.file, 1, std::slice::from_ref(d))
+                .replace_file(&d.file, 1, std::slice::from_ref(d), &[])
                 .unwrap();
         }
         let emb = HashedEmbedder::default();
@@ -1021,7 +1007,15 @@ mod tests {
         );
         let mut store = seed("src/policy.py", &[target]);
         store
-            .replace_file("src/app.py", 1, std::slice::from_ref(&caller))
+            .replace_file("src/app.py", 1, std::slice::from_ref(&caller), &[])
+            .unwrap();
+        // This test hand-builds symbols via `replace_file`, bypassing
+        // `update_index` (which is what normally populates
+        // `symbol_relations` — see `structural_relations::compute_file_relations`).
+        // Persist the one relation this test actually exercises directly,
+        // matching what a real index of `src/app.py` would have produced.
+        store
+            .put_symbol_relations_batch(&[(caller.id(), vec!["should_retry".to_string()], vec![])])
             .unwrap();
 
         let has_ast_grep_evidence = |mode: RetrievalMode| {
@@ -1074,7 +1068,7 @@ mod tests {
             "def helper_one(): hot target help",
         );
         store
-            .replace_file("src/other.py", 1, std::slice::from_ref(&other))
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in hot.iter().chain(std::iter::once(&other)) {
@@ -1143,7 +1137,7 @@ mod tests {
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         for s in &many {
             store
-                .replace_file(&s.file, 1, std::slice::from_ref(s))
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
                 .unwrap();
         }
         let emb = HashedEmbedder::default();
@@ -1200,10 +1194,10 @@ mod tests {
         );
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
-            .replace_file("src/mod_only.py", 1, std::slice::from_ref(&orphan))
+            .replace_file("src/mod_only.py", 1, std::slice::from_ref(&orphan), &[])
             .unwrap();
         store
-            .replace_file("src/both.py", 1, &[subsumed.clone(), concrete.clone()])
+            .replace_file("src/both.py", 1, &[subsumed.clone(), concrete.clone()], &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in [&orphan, &subsumed, &concrete] {
