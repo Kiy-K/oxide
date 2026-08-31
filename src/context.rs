@@ -15,7 +15,8 @@ use crate::config::{
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::index::IndexBackend;
-use crate::retrieval::{RelationGraph, RetrievalEngine, SearchMode, SearchOptions};
+use crate::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::structural::{AstGrepProvider, FileSource, StructuralSearchProvider};
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
@@ -67,6 +68,7 @@ pub struct ContextOptions {
     pub budget_tokens: usize,
     /// Candidate pool before packing.
     pub max_candidates: usize,
+    pub retrieval_mode: RetrievalMode,
 }
 
 impl Default for ContextOptions {
@@ -75,6 +77,7 @@ impl Default for ContextOptions {
         Self {
             budget_tokens: CONTEXT_DEFAULT_BUDGET_TOKENS,
             max_candidates: CONTEXT_MAX_CANDIDATES,
+            retrieval_mode: RetrievalMode::default(),
         }
     }
 }
@@ -105,6 +108,7 @@ pub fn build_context(
         limit: opts.max_candidates,
         mode: SearchMode::Hybrid,
         expand: false,
+        retrieval_mode: opts.retrieval_mode,
     };
     let seeds = engine.search(query, &seed_opts)?;
 
@@ -173,6 +177,73 @@ pub fn build_context(
                 });
             }
         }
+
+        // Bounded ast-grep expansion: AST-precise callers of the top seeds —
+        // a relation `RelationGraph` above cannot answer (it only sees
+        // identifier-name intersection, not real call sites, so a caller
+        // with no other traceable relation to the seed is invisible to it).
+        // Anchored on the same high-confidence seeds; scoped to the files of
+        // already-retrieved symbols (the seed pool itself), per
+        // `structural.rs`'s documented `FileSource` contract — never a
+        // whole-repo scan (10-70x unbounded-vs-bounded cost evidence in
+        // docs/astgrep-structural-search/README.md). Skipped entirely in
+        // `Fast` mode. Its own hit cap, deliberately separate from
+        // `CONTEXT_EXPANSION_TOTAL`/`CONTEXT_EXPANSION_PER_SEED` (those are
+        // pinned by `expansion_is_capped_per_seed_and_total` for the
+        // RelationGraph pass specifically) since this is a distinct,
+        // independently-bounded evidence source, not a bigger RelationGraph.
+        const AST_GREP_HITS_PER_SEED: usize = 2;
+        if let Some((max_seeds, max_files)) = opts.retrieval_mode.structural_budget() {
+            let mut scope_files: Vec<String> = Vec::new();
+            for h in &seeds {
+                if scope_files.len() >= max_files {
+                    break;
+                }
+                if !scope_files.contains(&h.symbol.file) {
+                    scope_files.push(h.symbol.file.clone());
+                }
+            }
+            let sources: Vec<(String, String)> = scope_files
+                .iter()
+                .filter_map(|f| {
+                    std::fs::read_to_string(root.join(f))
+                        .ok()
+                        .map(|src| (f.clone(), src))
+                })
+                .collect();
+            let file_sources: Vec<FileSource> = sources
+                .iter()
+                .map(|(file, src)| FileSource { file, src })
+                .collect();
+
+            for seed in seeds.iter().take(max_seeds) {
+                let Some(lang) = crate::scanner::language_for_path(Path::new(&seed.symbol.file))
+                else {
+                    continue;
+                };
+                let hits = AstGrepProvider.find_callers(lang, &file_sources, &seed.symbol.name);
+                // Not gated on `seen_seeds`: a caller that's *already* a
+                // direct seed or RelationGraph neighbor still benefits from
+                // this extra provenance (`order_note` merges reasons/scores
+                // for the same symbol id rather than duplicating it), and
+                // `AST_GREP_HITS_PER_SEED` alone keeps this bounded.
+                for hit in hits.iter().take(AST_GREP_HITS_PER_SEED) {
+                    let Some(enclosing) = enclosing_symbol(&symbols, &hit.file, hit.start_line)
+                    else {
+                        continue;
+                    };
+                    if enclosing.id() == seed.symbol.id() {
+                        continue;
+                    }
+                    order_note(Candidate {
+                        symbol: enclosing.clone(),
+                        score: seed.score * 0.4,
+                        reasons: vec![format!("ast-grep-caller←{}", seed.symbol.qualified_name)],
+                        role: Role::Dependency,
+                    });
+                }
+            }
+        }
     }
 
     // ---- dedup / subsumption -------------------------------------------
@@ -212,6 +283,16 @@ pub fn build_context(
             continue;
         }
         kept.push(c);
+    }
+
+    // ---- optional reranker (Quality mode only) ---------------------------
+    // Downstream stage over the merged, deduped candidate pool — deliberately
+    // not part of indexing, and not wired to a real model yet. `rerank`
+    // only ever adjusts `Candidate.score`; role ordering, the relevance
+    // floor, and budgeted packing below already consume `score` as-is, so a
+    // future cross-encoder/LLM reranker slots in here with no other changes.
+    if opts.retrieval_mode.rerank() {
+        rerank_candidates(query, &mut kept);
     }
 
     // ---- ordering: primaries → dependencies → tests, score-desc within role
@@ -457,6 +538,23 @@ fn is_test_symbol(s: &Symbol) -> bool {
         || f.contains(".spec.")
         || f.contains("/tests/")
         || n.starts_with("test_")
+}
+
+/// Reranker-ready hook (Quality mode): a pass-through today. Kept as a real
+/// function with the exact signature a scoring reranker needs — `query` plus
+/// mutable access to each candidate's `score` — so wiring one in later is a
+/// body change here, not a new call site or a change to any downstream
+/// ordering/packing logic.
+fn rerank_candidates(_query: &str, _candidates: &mut [Candidate]) {}
+
+/// Smallest indexed symbol in `file` whose line range contains `line` — maps
+/// an ast-grep hit (a raw file/line/text match, not an OXIDE symbol) back to
+/// the symbol it lives in, so it can become an ordinary `Candidate`.
+fn enclosing_symbol<'a>(symbols: &'a [Symbol], file: &str, line: u32) -> Option<&'a Symbol> {
+    symbols
+        .iter()
+        .filter(|s| s.file == file && s.start_line <= line && line <= s.end_line)
+        .min_by_key(|s| s.end_line.saturating_sub(s.start_line))
 }
 
 fn overlap_ratio(a: &Symbol, b: &Symbol) -> f32 {
@@ -887,6 +985,69 @@ mod tests {
         assert!(
             deps == CONTEXT_EXPANSION_PER_SEED,
             "fan-out must be capped at exactly {CONTEXT_EXPANSION_PER_SEED}, got {deps}"
+        );
+    }
+
+    #[test]
+    fn bounded_ast_grep_expansion_is_mode_gated() {
+        // `caller` calls `should_retry` via a real AST call site
+        // (`policy.should_retry(x)`), but its `references` deliberately do
+        // NOT list "should_retry" — RelationGraph's identifier-based `uses`
+        // relation can't find this pairing at all, isolating ast-grep
+        // expansion as the only mechanism that can surface it.
+        let tmp = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(tmp.path().join("src")).unwrap();
+        std::fs::write(
+            tmp.path().join("src/policy.py"),
+            "def should_retry(x):\n    return True\n",
+        )
+        .unwrap();
+        std::fs::write(
+            tmp.path().join("src/app.py"),
+            "def caller():\n    if not policy.should_retry(x):\n        return\n",
+        )
+        .unwrap();
+        let target = sym(
+            "src/policy.py",
+            "should_retry",
+            SymbolKind::Function,
+            "def should_retry(x):\n    return True",
+        );
+        let caller = sym(
+            "src/app.py",
+            "caller",
+            SymbolKind::Function,
+            "def caller():\n    if not policy.should_retry(x):\n        return",
+        );
+        let mut store = seed("src/policy.py", &[target]);
+        store
+            .replace_file("src/app.py", 1, std::slice::from_ref(&caller))
+            .unwrap();
+
+        let has_ast_grep_evidence = |mode: RetrievalMode| {
+            build_context(
+                tmp.path(),
+                &store,
+                &HashedEmbedder::default(),
+                "should_retry",
+                &ContextOptions {
+                    retrieval_mode: mode,
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+            .items
+            .iter()
+            .any(|i| i.reasons.iter().any(|r| r.starts_with("ast-grep-caller")))
+        };
+
+        assert!(
+            has_ast_grep_evidence(RetrievalMode::Balanced),
+            "balanced mode should surface the AST-precise caller RelationGraph cannot find"
+        );
+        assert!(
+            !has_ast_grep_evidence(RetrievalMode::Fast),
+            "fast mode must skip the bounded ast-grep expansion stage entirely"
         );
     }
 

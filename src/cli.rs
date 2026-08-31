@@ -1,10 +1,27 @@
 //! CLI: index / status / search / review / stats / context / eval.
 
 use crate::retrieval::read_snippet;
-use crate::retrieval::SearchMode;
+use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{
     ErrorAction, Evidence, RepositoryService, SearchRequest, ServiceError, StatusResult,
 };
+
+/// An explicit, unparseable `--retrieval-mode` fails loudly (matches how
+/// `--mode` is validated above); an unset flag falls through to
+/// `RetrievalMode::resolve`'s env var / `Balanced`-default precedence.
+fn resolve_retrieval_mode(explicit: Option<&str>, json: bool) -> Result<RetrievalMode, CliError> {
+    match explicit {
+        Some(s) => RetrievalMode::parse(s).ok_or_else(|| {
+            CliError::new(
+                "invalid_configuration",
+                ErrorAction::Stop,
+                format!("unknown retrieval-mode {s}; use fast|balanced|quality"),
+                json,
+            )
+        }),
+        None => Ok(RetrievalMode::resolve(None)),
+    }
+}
 
 #[derive(clap::Parser)]
 #[command(name = "oxide", about = "Local incremental code index and retrieval")]
@@ -50,6 +67,10 @@ pub enum Cmd {
         /// Disable structural expansion.
         #[arg(long, default_value_t = false)]
         no_expand: bool,
+        /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
+        /// $OXIDE_RETRIEVAL_MODE, then balanced.
+        #[arg(long)]
+        retrieval_mode: Option<String>,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -81,6 +102,10 @@ pub enum Cmd {
         /// Token budget for the pack (estimate: chars/4).
         #[arg(long, default_value_t = 4096)]
         budget_tokens: usize,
+        /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
+        /// $OXIDE_RETRIEVAL_MODE, then balanced.
+        #[arg(long)]
+        retrieval_mode: Option<String>,
         #[arg(long)]
         json: bool,
     },
@@ -152,6 +177,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             limit,
             mode,
             no_expand,
+            retrieval_mode,
             json,
         } => {
             let mode = match mode.as_str() {
@@ -174,6 +200,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     limit,
                     mode,
                     expand: !no_expand,
+                    retrieval_mode: resolve_retrieval_mode(retrieval_mode.as_deref(), json)?,
                 },
                 json,
             )
@@ -184,8 +211,15 @@ pub fn run(args: Args) -> Result<(), CliError> {
             path,
             task,
             budget_tokens,
+            retrieval_mode,
             json,
-        } => cmd_context(path.as_deref(), &task, budget_tokens, json),
+        } => cmd_context(
+            path.as_deref(),
+            &task,
+            budget_tokens,
+            resolve_retrieval_mode(retrieval_mode.as_deref(), json)?,
+            json,
+        ),
         Cmd::Mcp => run_mcp(),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
@@ -397,11 +431,12 @@ fn cmd_context(
     path: Option<&str>,
     task: &str,
     budget_tokens: usize,
+    retrieval_mode: RetrievalMode,
     json: bool,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let pack = service
-        .context(task, budget_tokens)
+        .context(task, budget_tokens, retrieval_mode)
         .map_err(|e| CliError::service(e, json))?;
     if json {
         println!(

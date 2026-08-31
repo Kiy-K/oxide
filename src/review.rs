@@ -4,7 +4,9 @@
 use crate::embeddings::EmbeddingProvider;
 use crate::gitutil::diff_files;
 use crate::index::IndexBackend;
-use crate::retrieval::{RelationGraph, RetrievalEngine, SearchHit, SearchMode, SearchOptions};
+use crate::retrieval::{
+    RelationGraph, RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions,
+};
 use crate::symbols::Symbol;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -96,6 +98,7 @@ pub fn build_review_context(
             limit: 12,
             mode: SearchMode::VectorOnly,
             expand: false,
+            retrieval_mode: RetrievalMode::default(),
         };
         if let Ok(hits) = engine.search(&query, &opts) {
             for h in hits {

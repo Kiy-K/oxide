@@ -6,7 +6,7 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
+use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use oxide::structural::{AstGrepProvider, FileSource, StructuralSearchProvider};
 use oxide::symbols::{Language, Symbol};
 use serde::Deserialize;
@@ -95,6 +95,7 @@ fn main() {
                 limit: k,
                 mode: SearchMode::Hybrid,
                 expand: true,
+                retrieval_mode: RetrievalMode::default(),
             };
             let t0 = std::time::Instant::now();
             let baseline_hits = engine.search(&task.text, &opts).unwrap();

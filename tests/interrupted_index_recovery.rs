@@ -20,7 +20,7 @@
 
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
 use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::SearchMode;
+use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{ErrorAction, RepositoryService, SearchRequest};
 use std::path::Path;
 
@@ -38,6 +38,7 @@ fn search_request() -> SearchRequest {
         limit: 5,
         mode: SearchMode::LexicalOnly,
         expand: false,
+        retrieval_mode: RetrievalMode::default(),
     }
 }
 
@@ -71,7 +72,7 @@ fn schema_only_index_is_rejected_not_treated_as_healthy() {
     );
 
     let ctx_err = service
-        .context("thing", 128)
+        .context("thing", 128, RetrievalMode::default())
         .expect_err("context must also fail structurally, not return a deceptive empty pack");
     assert!(matches!(
         ctx_err.action(),

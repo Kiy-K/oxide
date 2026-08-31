@@ -18,11 +18,65 @@ pub enum SearchMode {
     Hybrid,
 }
 
+/// Relevance/latency tradeoff for a request. Controls how much *expensive*
+/// evidence (bounded ast-grep expansion, in `context.rs`) gets collected on
+/// top of the always-on lexical+semantic stage — it does not gate lexical or
+/// semantic scoring themselves, which run unconditionally and concurrently.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum RetrievalMode {
+    Fast,
+    #[default]
+    Balanced,
+    Quality,
+}
+
+impl RetrievalMode {
+    pub fn parse(s: &str) -> Option<Self> {
+        match s.trim().to_ascii_lowercase().as_str() {
+            "fast" => Some(Self::Fast),
+            "balanced" => Some(Self::Balanced),
+            "quality" => Some(Self::Quality),
+            _ => None,
+        }
+    }
+
+    /// `explicit` (a `--mode`/tool-argument flag) wins; then `$OXIDE_RETRIEVAL_MODE`;
+    /// an unconfigured agent always lands on `Balanced` (the `Default` impl).
+    /// Mirrors the existing embedder-selection precedence in `cli.rs`.
+    pub fn resolve(explicit: Option<&str>) -> Self {
+        explicit
+            .and_then(Self::parse)
+            .or_else(|| {
+                std::env::var("OXIDE_RETRIEVAL_MODE")
+                    .ok()
+                    .and_then(|v| Self::parse(&v))
+            })
+            .unwrap_or_default()
+    }
+
+    /// Bounded ast-grep expansion budget: `(max anchored seeds, max files per
+    /// seed)`. `None` means skip the stage entirely (`Fast`) — never a
+    /// whole-repo scan regardless of mode.
+    pub fn structural_budget(self) -> Option<(usize, usize)> {
+        match self {
+            Self::Fast => None,
+            Self::Balanced => Some((2, 3)),
+            Self::Quality => Some((3, 6)),
+        }
+    }
+
+    /// Whether the (currently no-op) downstream reranker stage runs.
+    pub fn rerank(self) -> bool {
+        matches!(self, Self::Quality)
+    }
+}
+
 pub struct SearchOptions {
     pub limit: usize,
     pub mode: SearchMode,
     /// Include structural expansion around strong initial hits.
     pub expand: bool,
+    pub retrieval_mode: RetrievalMode,
 }
 
 impl Default for SearchOptions {
@@ -31,6 +85,7 @@ impl Default for SearchOptions {
             limit: 10,
             mode: SearchMode::Hybrid,
             expand: true,
+            retrieval_mode: RetrievalMode::default(),
         }
     }
 }
@@ -200,38 +255,71 @@ impl<'a> RetrievalEngine<'a> {
         let lookup =
             |id: &u64| -> Option<&Symbol> { self.by_id.get(id).map(|&i| &self.symbols[i]) };
 
-        // ---- lexical stage ----
-        let lex_scores = self.lexical.search(query, 1.5, 0.75);
-
-        // ---- semantic stage ----
-        let vec_scores = if opts.mode != SearchMode::LexicalOnly {
-            let qv = self.embedder.embed_query(query);
-            let mut cache = self.vectors.borrow_mut();
-            if cache.is_none() {
-                // One batched load instead of one query per symbol.
-                *cache = Some(
-                    self.store
-                        .all_embeddings()?
-                        .into_iter()
+        // Vector cache load happens synchronously (once per engine lifetime,
+        // cheap on a cache hit) so the two independent evidence providers
+        // below only ever need a read-only borrow, which is what lets them
+        // run on separate threads: `RefCell` itself is never `Sync`, but a
+        // `Ref`'s target is a plain `HashMap`, and `&HashMap` is `Sync`.
+        // Degrades gracefully: a failed load (e.g. a corrupt embeddings
+        // table) drops semantic evidence for this query instead of failing
+        // the whole search — lexical evidence alone is still useful.
+        if opts.mode != SearchMode::LexicalOnly && self.vectors.borrow().is_none() {
+            let loaded = self
+                .store
+                .all_embeddings()
+                .map(|rows| {
+                    rows.into_iter()
                         .map(|(id, (_, v))| (id, v))
-                        .collect(),
-                );
-            }
-            let embeddings = cache.as_ref().expect("just populated");
-            let mut out = HashMap::with_capacity(embeddings.len());
-            for s in &self.symbols {
-                if let Some(v) = embeddings.get(&s.id()) {
-                    if v.len() != qv.len() || v.is_empty() {
-                        continue;
+                        .collect::<HashMap<_, _>>()
+                })
+                .unwrap_or_default();
+            *self.vectors.borrow_mut() = Some(loaded);
+        }
+        let vectors_guard = self.vectors.borrow();
+        let embeddings: Option<&HashMap<u64, Vec<f32>>> = vectors_guard.as_ref();
+
+        // ---- lexical + semantic stages, concurrently ----
+        // Independent evidence providers: BM25 is pure in-memory CPU work,
+        // semantic scoring's `embed_query` may be a blocking HTTP round trip
+        // (`HttpEmbedder`). Serializing them (the old code did) pays their
+        // latency sum; run them on separate OS threads so a request pays the
+        // max instead. Plain `std::thread::scope` (no tokio task) because
+        // this must work identically from a fully synchronous caller (the
+        // `oxide context`/`oxide search` CLI path runs with no async runtime
+        // at all) and from inside MCP's `spawn_blocking` closure alike.
+        // Bind the specific Sync fields the closures need — capturing `self`
+        // wholesale would drag in `store: &dyn IndexBackend` and
+        // `vectors: RefCell<..>`, neither of which is `Sync`, even though
+        // the closures below never touch them.
+        let lexical = &self.lexical;
+        let symbols = &self.symbols;
+        let embedder = self.embedder;
+        let (lex_scores, vec_scores) = std::thread::scope(|scope| {
+            let lex_handle = scope.spawn(|| lexical.search(query, 1.5, 0.75));
+            let vec_handle = scope.spawn(|| -> HashMap<u64, f32> {
+                let Some(embeddings) = embeddings else {
+                    return HashMap::new();
+                };
+                let qv = embedder.embed_query(query);
+                let mut out = HashMap::with_capacity(embeddings.len());
+                for s in symbols {
+                    if let Some(v) = embeddings.get(&s.id()) {
+                        if v.len() != qv.len() || v.is_empty() {
+                            continue;
+                        }
+                        let dot: f32 = qv.iter().zip(v.iter()).map(|(a, b)| a * b).sum();
+                        out.insert(s.id(), dot);
                     }
-                    let dot: f32 = qv.iter().zip(v.iter()).map(|(a, b)| a * b).sum();
-                    out.insert(s.id(), dot);
                 }
-            }
-            out
-        } else {
-            HashMap::new()
-        };
+                out
+            });
+            // A panicking provider thread must not take the whole search
+            // down with it — treat it the same as "no evidence from this
+            // provider" rather than propagating the panic.
+            let lex = lex_handle.join().unwrap_or_default();
+            let vec = vec_handle.join().unwrap_or_default();
+            (lex, vec)
+        });
 
         // ---- fuse ----
         let mut rrf: HashMap<u64, f32> = HashMap::new();
@@ -679,6 +767,7 @@ mod tests {
             limit: 5,
             mode: SearchMode::Hybrid,
             expand: false,
+            retrieval_mode: RetrievalMode::default(),
         };
         engine.search("retry failed requests", &opts).unwrap();
 
@@ -719,6 +808,7 @@ mod tests {
             limit: 5,
             mode: SearchMode::LexicalOnly,
             expand: false,
+            retrieval_mode: RetrievalMode::default(),
         };
         let hits = engine.search("RetryPolicy", &opts).unwrap();
         assert_eq!(hits[0].symbol.qualified_name, "RetryPolicy");
@@ -750,6 +840,7 @@ mod tests {
             limit: 3,
             mode: SearchMode::VectorOnly,
             expand: false,
+            retrieval_mode: RetrievalMode::default(),
         };
         let hits = engine.search("retrying failed http calls", &opts).unwrap();
         assert!(!hits.is_empty());
@@ -800,6 +891,7 @@ mod tests {
             limit: 8,
             mode: SearchMode::LexicalOnly,
             expand: true,
+            retrieval_mode: RetrievalMode::default(),
         };
         let hits = engine.search("RetryPolicy", &opts).unwrap();
         let names: Vec<&str> = hits
@@ -836,5 +928,74 @@ mod tests {
             Some("pkg/api/index.ts")
         );
         assert_eq!(resolve_module("./missing", "src/main.ts", &files), None);
+    }
+
+    #[test]
+    fn retrieval_mode_parses_case_insensitively_and_rejects_garbage() {
+        assert_eq!(RetrievalMode::parse("Fast"), Some(RetrievalMode::Fast));
+        assert_eq!(
+            RetrievalMode::parse("QUALITY"),
+            Some(RetrievalMode::Quality)
+        );
+        assert_eq!(RetrievalMode::parse("turbo"), None);
+    }
+
+    #[test]
+    fn retrieval_mode_resolve_prefers_explicit_then_defaults_to_balanced() {
+        assert_eq!(RetrievalMode::resolve(Some("fast")), RetrievalMode::Fast);
+        // No explicit value and (in a clean test process) no
+        // $OXIDE_RETRIEVAL_MODE set: an unconfigured agent must land on
+        // Balanced, never silently on Fast or Quality.
+        assert_eq!(RetrievalMode::resolve(None), RetrievalMode::Balanced);
+    }
+
+    #[test]
+    fn hybrid_search_runs_lexical_and_semantic_concurrently_without_changing_results() {
+        // Regression guard for the `std::thread::scope` refactor: running the
+        // two stages on separate threads must be observationally identical
+        // to the old serial code for the same query/mode — same hits, same
+        // scores, same order — repeated to catch any nondeterminism from the
+        // concurrency itself (e.g. a race on the lazily-loaded vector cache).
+        let symbols = vec![
+            sym(
+                "src/retry.py",
+                "RetryPolicy",
+                SymbolKind::Class,
+                "class RetryPolicy: pass",
+                &[],
+            ),
+            sym(
+                "src/retry.py",
+                "RetryPolicy.should_retry",
+                SymbolKind::Method,
+                "def should_retry(self, attempt, error): pass",
+                &[],
+            ),
+        ];
+        let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
+        store.replace_file("src/retry.py", 1, &symbols).unwrap();
+        let emb = HashedEmbedder::default();
+        for s in &symbols {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .unwrap();
+        }
+        let engine = RetrievalEngine::new(&store, &emb);
+        let opts = SearchOptions {
+            limit: 5,
+            mode: SearchMode::Hybrid,
+            expand: false,
+            retrieval_mode: RetrievalMode::default(),
+        };
+        let first = engine.search("retry policy", &opts).unwrap();
+        for _ in 0..5 {
+            let hits = engine.search("retry policy", &opts).unwrap();
+            let ids: Vec<u64> = hits.iter().map(|h| h.symbol.id()).collect();
+            let first_ids: Vec<u64> = first.iter().map(|h| h.symbol.id()).collect();
+            assert_eq!(ids, first_ids, "concurrent search must be deterministic");
+            for (a, b) in hits.iter().zip(first.iter()) {
+                assert_eq!(a.score, b.score, "scores must match across repeated runs");
+            }
+        }
     }
 }

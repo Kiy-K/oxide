@@ -6,7 +6,7 @@
 use crate::context::{build_context, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{update_index, IndexBackend, IndexReport, IndexStats, SqliteStore};
-use crate::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
 use crate::symbols::{Language, Symbol, SymbolKind};
@@ -151,6 +151,7 @@ pub struct SearchRequest {
     pub limit: usize,
     pub mode: SearchMode,
     pub expand: bool,
+    pub retrieval_mode: RetrievalMode,
 }
 
 #[derive(Debug, Serialize)]
@@ -384,6 +385,7 @@ impl RepositoryService {
                     limit: request.limit.min(MAX_SEARCH_RESULTS),
                     mode: request.mode,
                     expand: request.expand,
+                    retrieval_mode: request.retrieval_mode,
                 },
             )
             .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))?;
@@ -408,7 +410,12 @@ impl RepositoryService {
         Ok(evidence)
     }
 
-    pub fn context(&self, task: &str, budget_tokens: usize) -> Result<ContextResult, ServiceError> {
+    pub fn context(
+        &self,
+        task: &str,
+        budget_tokens: usize,
+        retrieval_mode: RetrievalMode,
+    ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
         let provider = open_embedder(None)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
@@ -420,6 +427,7 @@ impl RepositoryService {
             task,
             &ContextOptions {
                 budget_tokens,
+                retrieval_mode,
                 ..ContextOptions::default()
             },
         )

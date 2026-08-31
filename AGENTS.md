@@ -34,6 +34,35 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 - Retrieval expansion must never displace direct hits: direct results keep
   their pre-expansion scores; expansion-only items are appended after. The
   benchmark gate depends on this invariant (`src/retrieval.rs`).
+- `RetrievalEngine::search` runs lexical (BM25) and semantic (embed_query +
+  dot-product scan) concurrently via plain `std::thread::scope` — not a tokio
+  task. This is deliberate: `oxide context`/`oxide search` from the CLI run
+  fully synchronously with no tokio runtime at all (`cli.rs::run_mcp`'s own
+  comment says so), while MCP already runs the whole service call inside
+  `spawn_blocking`. `std::thread::scope` is the one primitive that works
+  identically from both without adding a Cargo.toml tokio feature. The
+  closures inside the scope capture narrow field references
+  (`&self.lexical`, `&self.symbols`, `self.embedder`), never `self` — `self:
+  &RetrievalEngine` is not `Send` (it holds `store: &dyn IndexBackend` and
+  `vectors: RefCell<..>`, neither `Sync`) even though the closures never
+  touch those fields; capturing `self` wholesale fails to compile for a
+  reason that has nothing to do with what the closure actually reads.
+- `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval.rs`) only gates
+  the *bounded ast-grep expansion* stage in `context.rs`'s own expansion
+  loop — never the always-on lexical+semantic stage, and never
+  `RetrievalEngine::search`'s own RelationGraph expansion (`opts.expand`)
+  except that `Fast` also skips it there. An unconfigured caller always
+  resolves to `Balanced` (`RetrievalMode::resolve(None)`, checked before
+  `$OXIDE_RETRIEVAL_MODE`) — config may only raise or lower that default, per
+  the same precedence `open_embedder` already uses for `$OXIDE_EMBED_URL`.
+  The bounded ast-grep expansion's file scope is the union of the seed
+  pool's own files (capped), matching `structural.rs`'s documented
+  "files of already-retrieved symbols" contract exactly — not a per-seed
+  RelationGraph-neighbor lookup, which would only rescan files a
+  name-matching heuristic already flagged and add little new signal. This
+  means a caller in a file the seed search didn't independently surface is
+  invisible to it; that's a real ceiling, not a bug (see
+  docs/retrieval-coordinator/README.md).
 - Lexical docs include symbol *bodies* at weight 1 (names/signatures weight 4).
   Body tokens were added because gold-context evals showed bugfix targets hide
   behind local identifiers. Don't remove for "cleanup".

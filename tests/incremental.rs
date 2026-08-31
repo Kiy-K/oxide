@@ -67,6 +67,7 @@ fn changing_one_symbol_only_reembeds_that_symbol() {
                 limit: 3,
                 mode: oxide::retrieval::SearchMode::LexicalOnly,
                 expand: false,
+                retrieval_mode: oxide::retrieval::RetrievalMode::default(),
             },
         )
         .unwrap();

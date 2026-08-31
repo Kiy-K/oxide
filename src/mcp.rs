@@ -18,7 +18,7 @@
 //! keeps that distinction exact instead of depending on rmcp's internal
 //! error-message prefix to *not* match.
 
-use crate::retrieval::SearchMode;
+use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{RepositoryService, SearchRequest, ServiceError};
 use rmcp::model::{
     CallToolResult, ContentBlock, Implementation, JsonObject, ServerCapabilities, ServerInfo,
@@ -46,6 +46,9 @@ impl OxideServer {
     }
 }
 
+const RETRIEVAL_MODE_DESCRIPTION: &str =
+    "Relevance/latency tradeoff. Omit for balanced (the default for an unconfigured agent).";
+
 fn context_input_schema() -> JsonObject {
     object(json!({
         "type": "object",
@@ -53,6 +56,7 @@ fn context_input_schema() -> JsonObject {
             "task": {"type": "string"},
             "path": {"type": "string"},
             "token_budget": {"type": "integer", "minimum": 0},
+            "mode": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
         },
         "required": ["task"],
         "additionalProperties": false,
@@ -66,10 +70,24 @@ fn search_input_schema() -> JsonObject {
             "query": {"type": "string"},
             "path": {"type": "string"},
             "limit": {"type": "integer", "minimum": 0, "maximum": 100},
+            "mode": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
         },
         "required": ["query"],
         "additionalProperties": false,
     }))
+}
+
+/// Parses the optional `mode` argument (fast|balanced|quality). Absent means
+/// `RetrievalMode::resolve(None)` — the process's `$OXIDE_RETRIEVAL_MODE`, or
+/// `Balanced` for a fully unconfigured agent. An explicit but unparseable
+/// value fails loudly rather than silently falling back.
+fn optional_retrieval_mode(arguments: &JsonObject) -> Result<RetrievalMode, McpError> {
+    match optional_string(arguments, "mode")? {
+        Some(s) => RetrievalMode::parse(s).ok_or_else(|| {
+            McpError::invalid_params(format!("mode must be fast|balanced|quality, got {s}"), None)
+        }),
+        None => Ok(RetrievalMode::resolve(None)),
+    }
 }
 
 fn object(value: Value) -> JsonObject {
@@ -87,16 +105,17 @@ impl OxideServer {
         input_schema = context_input_schema()
     )]
     async fn context(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["task", "path", "token_budget"])?;
+        reject_unknown(&arguments, &["task", "path", "token_budget", "mode"])?;
         let task = required_string(&arguments, "task")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let budget = optional_usize(&arguments, "token_budget")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
+        let mode = optional_retrieval_mode(&arguments)?;
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
                 Ok(service) => service,
                 Err(error) => return Ok(service_error_result(error)),
             };
-            match service.context(&task, budget) {
+            match service.context(&task, budget, mode) {
                 Ok(result) => tool_success(result),
                 Err(error) => Ok(service_error_result(error)),
             }
@@ -110,10 +129,11 @@ impl OxideServer {
         input_schema = search_input_schema()
     )]
     async fn search(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["query", "path", "limit"])?;
+        reject_unknown(&arguments, &["query", "path", "limit", "mode"])?;
         let query = required_string(&arguments, "query")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);
+        let retrieval_mode = optional_retrieval_mode(&arguments)?;
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
                 Ok(service) => service,
@@ -125,6 +145,7 @@ impl OxideServer {
                     limit,
                     mode: SearchMode::Hybrid,
                     expand: true,
+                    retrieval_mode,
                 },
             );
             match result {

@@ -5,7 +5,7 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::SearchMode;
+use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{RepositoryService, SearchRequest};
 use std::path::Path;
 
@@ -39,12 +39,15 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
                 limit: 5,
                 mode: SearchMode::VectorOnly,
                 expand: false,
+                retrieval_mode: RetrievalMode::default(),
             },
         )
         .unwrap_err();
     assert_eq!(err.code(), "provider_mismatch");
 
-    let err = service.context("understand thing", 512).unwrap_err();
+    let err = service
+        .context("understand thing", 512, RetrievalMode::default())
+        .unwrap_err();
     assert_eq!(err.code(), "provider_mismatch");
 
     // Lexical-only search never needs a semantic provider, so a dimension
@@ -57,6 +60,7 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
                 limit: 5,
                 mode: SearchMode::LexicalOnly,
                 expand: false,
+                retrieval_mode: RetrievalMode::default(),
             },
         )
         .unwrap();
@@ -84,12 +88,15 @@ fn incompatible_index_version_is_a_structured_error_not_a_guess() {
                 limit: 5,
                 mode: SearchMode::LexicalOnly,
                 expand: false,
+                retrieval_mode: RetrievalMode::default(),
             },
         )
         .unwrap_err();
     assert_eq!(err.code(), "index_incompatible");
 
-    let err = service.context("understand thing", 128).unwrap_err();
+    let err = service
+        .context("understand thing", 128, RetrievalMode::default())
+        .unwrap_err();
     assert_eq!(err.code(), "index_incompatible");
 }
 
@@ -124,6 +131,7 @@ fn index_without_version_meta_is_incompatible_not_legacy_compatible() {
                 limit: 5,
                 mode: SearchMode::LexicalOnly,
                 expand: false,
+                retrieval_mode: RetrievalMode::default(),
             },
         )
         .unwrap_err();

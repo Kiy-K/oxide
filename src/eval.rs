@@ -3,7 +3,7 @@
 
 use crate::embeddings::HashedEmbedder;
 use crate::index::{update_index, SqliteStore};
-use crate::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
@@ -132,6 +132,7 @@ pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
                     limit: k,
                     mode,
                     expand,
+                    retrieval_mode: RetrievalMode::default(),
                 };
                 let hits = engine.search(&q.text, &opts)?;
                 let relevant: std::collections::HashSet<&str> =

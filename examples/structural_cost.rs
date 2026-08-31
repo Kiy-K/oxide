@@ -4,7 +4,7 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
+use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use oxide::structural::{AstGrepProvider, FileSource, StructuralSearchProvider};
 use oxide::symbols::Language;
 use std::fs;
@@ -83,6 +83,7 @@ fn main() {
                     limit: 5,
                     mode: SearchMode::Hybrid,
                     expand: true,
+                    retrieval_mode: RetrievalMode::default(),
                 },
             )
             .unwrap();
