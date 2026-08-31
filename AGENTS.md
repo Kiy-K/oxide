@@ -3,6 +3,12 @@
 OXIDE: local incremental code index + hybrid retrieval (Rust, single crate).
 Full docs: `README.md`; context-engineering rationale: `docs/context-engineering-notes.md`.
 
+**Reviewing a change (Codex, Claude, or human)?** Read `docs/review/README.md`
+first — it encodes OXIDE-specific invariants, severities, and evidence
+standards so review comments catch real regressions instead of generic
+style notes. The "load-bearing invariants" below are BLOCKER-severity under
+that policy.
+
 ## Commands
 
 ```bash
