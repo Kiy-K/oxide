@@ -411,7 +411,7 @@ fn span_lines(src: &str, start: u32, end: u32) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parser::parse_file;
+    use crate::parser::{extractor_for_handwritten, parse_file_with};
 
     const TS: &str = "\
 import { Injectable } from '@nestjs/common';
@@ -442,7 +442,16 @@ function helper(x: number) {
 
     #[test]
     fn extracts_ts_declarations_with_export_flags() {
-        let syms = parse_file("src/auth.ts", TS, Language::TypeScript);
+        // Pinned against the handwritten extractor explicitly. The
+        // `DEFAULT_TIMEOUT` constant this test covers is also captured by
+        // the default (tags) extractor — see
+        // `tags::tests::export_const_with_non_function_value_is_captured`.
+        let syms = parse_file_with(
+            extractor_for_handwritten(Language::TypeScript),
+            "src/auth.ts",
+            TS,
+            Language::TypeScript,
+        );
         let find = |q: &str| syms.iter().find(|s| s.qualified_name == q).unwrap();
         let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
         for q in [
@@ -495,7 +504,12 @@ export function Counter({ start }: Props) {
 }
 export const Header = () => <h1>hi</h1>;
 ";
-        let syms = parse_file("src/ui/Counter.tsx", src, Language::Tsx);
+        let syms = parse_file_with(
+            extractor_for_handwritten(Language::Tsx),
+            "src/ui/Counter.tsx",
+            src,
+            Language::Tsx,
+        );
         let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
         assert!(names.contains(&"Counter"), "{names:?}");
         assert!(names.contains(&"Header"), "{names:?}");

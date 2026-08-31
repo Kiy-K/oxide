@@ -186,7 +186,7 @@ fn span_lines(src: &str, start: u32, end: u32) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parser::parse_file;
+    use crate::parser::{extractor_for_handwritten, parse_file_with};
 
     const SRC: &str = "\
 import os
@@ -209,7 +209,16 @@ def module_level():
 
     #[test]
     fn extracts_classes_methods_functions_and_imports() {
-        let syms = parse_file("src/store.py", SRC, Language::Python);
+        // Pinned against the handwritten extractor explicitly (not
+        // `parse_file`, whose default is `extractor_for` — see
+        // `tags::tests::decorator_line_is_not_included_in_span` for the
+        // documented gap this test's decorator-span assertion covers).
+        let syms = parse_file_with(
+            extractor_for_handwritten(Language::Python),
+            "src/store.py",
+            SRC,
+            Language::Python,
+        );
         let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
         assert!(names.contains(&"VersionedStore"), "{names:?}");
         assert!(names.contains(&"VersionedStore.get"), "{names:?}");

@@ -114,6 +114,23 @@ identity everywhere is `path#QualifiedName`.
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.
   Language support = implement `LanguageExtractor` + register in
   `src/parser.rs` (currently python, typescript/tsx).
+- `parser.rs::extractor_for()` (the default) routes through
+  `src/languages/tags.rs`'s generic `TagsExtractor`: a `LanguageProfile`
+  (grammar + `queries/*_tags.scm` + `queries/*_locals.scm`) feeds the official
+  `tree-sitter-tags` crate, and OXIDE reconstructs parent/containment and
+  Python's method-vs-function split itself via byte-range nesting over the
+  flat tag list (tags carry no parent info at all). Adding a language is
+  meant to mostly be grammar + `.scm` + normalization tests, not a new
+  procedural extractor. The original handwritten, per-language AST-walking
+  extractors (`languages/python.rs`, `languages/typescript.rs`) are retained,
+  reachable via `extractor_for_handwritten()`, not deleted: they cover a
+  narrow but real gap upstream tags.scm doesn't — decorator-inclusive spans
+  (`@app.route`, `@Injectable()`) — documented and pinned by
+  `languages::tags::tests::decorator_line_is_not_included_in_span`. Adopting
+  `tree-sitter-tags` required bumping `tree-sitter` 0.24→0.27 and
+  `tree-sitter-python` 0.23→0.25 (a `links = "tree-sitter"` native-lib crate
+  forces one version across the graph); `tree-sitter-typescript` needed no
+  bump. See `docs/treesitter-tags-parity/` for the parity evidence.
 - Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
   DB lives at `<repo>/.oxide/index.db`.
 - `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —

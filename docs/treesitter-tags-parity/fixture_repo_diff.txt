@@ -1,0 +1,25 @@
+########## PYTHON ##########
+--- oxidepy/__init__.py: old=1 new=2 DIFF ---
+  ONLY-NEW  Constant  __all__                                  lines=   6-6    exported=true  parent=None
+--- oxidepy/auth.py: 11 symbols, names match ---
+--- oxidepy/cache.py: 5 symbols, names match ---
+--- oxidepy/http_client.py: 6 symbols, names match ---
+--- oxidepy/retry.py: 9 symbols, names match ---
+  SPAN-DIFF RetryPolicy.exhausted: old=(27,29) new=(28,29)
+--- tests/test_auth.py: 6 symbols, names match ---
+--- tests/test_retry.py: 5 symbols, names match ---
+TOTAL old=43 new=44 (PYTHON)
+
+########## TYPESCRIPT ##########
+--- auth/service.ts: 7 symbols, names match ---
+--- cache/versioned_store.ts: 7 symbols, names match ---
+--- src/index.ts: 1 symbols, names match ---
+--- net/client.ts: 6 symbols, names match ---
+--- net/retry.ts: old=7 new=8 DIFF ---
+  ONLY-NEW  Method    RetryPolicy.backoffMs                    lines=   3-3    exported=false parent=Some("RetryPolicy")
+TOTAL old=28 new=29 (TYPESCRIPT)
+
+########## TSX ##########
+--- ui/Button.tsx: 3 symbols, names match ---
+--- __tests__/Button.test.tsx: 1 symbols, names match ---
+TOTAL old=4 new=4 (TSX)

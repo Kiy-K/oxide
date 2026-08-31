@@ -14,13 +14,38 @@ pub trait LanguageExtractor: Sync {
     fn collect_imports(&self, src: &str) -> Vec<String>;
 }
 
-pub use crate::languages::{python, typescript};
+pub use crate::languages::{python, tags, typescript};
 
 static PYTHON: python::PythonExtractor = python::PythonExtractor;
 static TYPESCRIPT: typescript::TsExtractor = typescript::TsExtractor { tsx: false };
 static TSX: typescript::TsExtractor = typescript::TsExtractor { tsx: true };
 
+static PYTHON_TAGS: tags::TagsExtractor =
+    tags::TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
+static TYPESCRIPT_TAGS: tags::TagsExtractor =
+    tags::TagsExtractor::new(&crate::languages::TYPESCRIPT_PROFILE);
+static TSX_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::TSX_PROFILE);
+
+/// The default extraction path (Phase 3.4a): grammar + declarative
+/// tags.scm + normalization, not a bespoke per-language walker.
 pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
+    match lang {
+        Language::Python => &PYTHON_TAGS,
+        Language::TypeScript => &TYPESCRIPT_TAGS,
+        Language::Tsx => &TSX_TAGS,
+    }
+}
+
+/// The handwritten, procedural-AST-walk extractors predating Phase 3.4a.
+/// Retained, not deleted: the parity evidence (docs/treesitter-tags-parity)
+/// showed a real, if narrow, capability loss under tags — decorator-inclusive
+/// spans (`@app.route`, `@Injectable()` — often the single most
+/// retrieval-relevant line on a symbol, and body tokens feed the lexical
+/// index at weight 1 per AGENTS.md) and `export const X = <primitive>`
+/// constants that upstream `tags.scm` doesn't capture at all. Not wired into
+/// `extractor_for`; reachable explicitly if the default path's gaps ever
+/// matter enough to need it.
+pub fn extractor_for_handwritten(lang: Language) -> &'static dyn LanguageExtractor {
     match lang {
         Language::Python => &PYTHON,
         Language::TypeScript => &TYPESCRIPT,
@@ -31,7 +56,19 @@ pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
 /// Parse `src` into symbols. Returns an empty vec (not an error) on parse
 /// failure so indexing degrades gracefully instead of aborting a run.
 pub fn parse_file(file: &str, src: &str, lang: Language) -> Vec<Symbol> {
-    let ext = extractor_for(lang);
+    parse_file_with(extractor_for(lang), file, src, lang)
+}
+
+/// Same orchestration as `parse_file` (dedup + module fallback), against an
+/// arbitrary extractor — lets tests and callers pin behavior against a
+/// specific extractor (e.g. `extractor_for_handwritten`) regardless of which
+/// one `extractor_for` currently defaults to.
+pub fn parse_file_with(
+    ext: &dyn LanguageExtractor,
+    file: &str,
+    src: &str,
+    lang: Language,
+) -> Vec<Symbol> {
     let imports = ext.collect_imports(src);
     let mut syms = ext.extract(file, src, &imports);
     // Stable ids are (file, qualified_name); duplicate qualified names in one
