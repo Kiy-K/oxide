@@ -5,9 +5,9 @@ implementation detail, ahead of expanding structural retrieval. Builds on
 `docs/astgrep-structural-search/README.md` (the Phase 3.4b spike) and
 `docs/retrieval-coordinator/README.md` (which wired bounded structural
 expansion into `context.rs` — the earlier spike doc's "not wired in this
-commit" note is superseded by that later work, not by this one). No new
-structural features, patterns, or public API were added in this pass —
-conformance testing and dependency/boundary audit only.
+commit" note is superseded by that later work, not by this one). The
+implementor patterns cover full Python base-class and TypeScript interface
+lists; no public API was added.
 
 ## Dependency footprint
 
@@ -85,29 +85,11 @@ empirically against the real `ast-grep-core` behavior, not assumed:
 | `malformed_source_returns_empty_instead_of_panicking` | tree-sitter's error tolerance (ERROR nodes, never a parse failure) means ast-grep pattern matching over broken Python/TS source degrades to "no match," never panics, for both `find_implementors`/`find_callers` |
 | `empty_file_list_returns_empty_instead_of_panicking` | The `files: &[]` edge case is safe |
 
-Three tests pin **known, real gaps found by this audit**, not previously
-documented with this precision, and deliberately not fixed (widening a
-match pattern is new pattern surface, out of scope for a hardening pass):
-
-- `typescript_implements_list_only_matches_the_first_interface_known_gap` —
-  `class Widget implements A, B` matches `find_implementors(.., "A")` but
-  **not** `find_implementors(.., "B")`. The Phase 3.4b doc's "not yet tested
-  against multiple interfaces" note undersold this: it isn't merely
-  untested, the second-and-later interface in the list is silently
-  invisible. This is a worse failure mode than a clean miss — a caller
-  querying for the first-listed interface gets a correct-looking answer,
-  building false confidence that the query would also work for any other
-  interface in the same clause.
-- `python_multiple_inheritance_is_a_known_unmatched_gap` — `class X(A, B):`
-  does not match `find_implementors(.., "A")` at all (not even a
-  first-position match like TypeScript's `implements` list above; Python's
-  pattern requires the base-class list to be exactly one element).
-- `typescript_extends_plus_implements_only_matches_the_extends_side_known_gap`
-  — `class Widget extends Base implements Iface { ... }`, a very common
-  real-world shape, matches on `Base` (via the extends pattern) but not on
-  `Iface` (the implements pattern has no extends clause in it, and
-  ast-grep's clause-shape correspondence requirement means the two don't
-  overlap).
+The three previously documented implementor gaps are now positive
+regressions: `typescript_implements_list_matches_every_interface`,
+`python_multiple_inheritance_matches_every_base`, and
+`typescript_extends_plus_implements_matches_both_sides`. The patterns still
+match only class declarations in the caller-supplied bounded file list.
 
 Run: `cargo test -j 2 --lib structural`.
 
@@ -171,10 +153,9 @@ exact) requires, before the pin changes:
    transitive grammar crate or duplicate `tree-sitter`, silently reversing
    the "no hidden grammar bundle" property this pass confirmed.
 
-If any of the three known gaps documented above change behavior (fixed,
-worsened, or shifted) as a side effect of the version bump, that's a
-material finding for the bump's own commit message — not something to
-silently absorb.
+If any of the three list/clause regressions documented above changes
+behavior as a side effect of the version bump, that's a material finding for
+the bump's own commit message — not something to silently absorb.
 
 ## Verdict
 
@@ -184,8 +165,8 @@ pass), the dependency footprint is small and precisely accounted for
 (two genuinely new crates, ~0.84% binary size), request-time work is
 provably bounded by a one-line invariant, and the conformance suite now
 exercises both languages, TSX (previously untested), and failure modes
-(malformed/empty input) — with three real gaps found and pinned rather than
-glossed over. **`ast-grep-core` is robust enough to treat as replaceable
+(malformed/empty input), while the formerly missing implementor list shapes
+are covered by positive regressions. **`ast-grep-core` is robust enough to treat as replaceable
 infrastructure**: a future swap or upgrade has a concrete suite (conformance
 + structural benchmark + dependency audit) to validate against, not just
 "it compiled."

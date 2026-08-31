@@ -204,12 +204,26 @@ impl StructuralSearchProvider for AstGrepProvider {
             Language::Python => hits_for(
                 AgPython,
                 files,
-                &[format!("class $NAME({type_name}): $$$BODY")],
+                &[
+                    format!("class $NAME({type_name}): $$$BODY"),
+                    format!("class $NAME({type_name}, $$$BASES): $$$BODY"),
+                    format!("class $NAME($$$BASES, {type_name}): $$$BODY"),
+                    format!("class $NAME($$$BEFORE, {type_name}, $$$AFTER): $$$BODY"),
+                ],
             ),
             Language::TypeScript | Language::Tsx => {
                 let patterns = vec![
                     format!("class $NAME implements {type_name} {{ $$$BODY }}"),
+                    format!("class $NAME implements {type_name}, $$$REST {{ $$$BODY }}"),
+                    format!("class $NAME implements $$$REST, {type_name} {{ $$$BODY }}"),
                     format!("class $NAME extends {type_name} {{ $$$BODY }}"),
+                    format!("class $NAME extends $BASE implements {type_name} {{ $$$BODY }}"),
+                    format!(
+                        "class $NAME extends $BASE implements {type_name}, $$$REST {{ $$$BODY }}"
+                    ),
+                    format!(
+                        "class $NAME extends $BASE implements $$$REST, {type_name} {{ $$$BODY }}"
+                    ),
                 ];
                 if lang == Language::Tsx {
                     hits_for(AgTsx, files, &patterns)
@@ -320,16 +334,7 @@ mod tests {
     // for hardening the existing boundary.
 
     #[test]
-    fn typescript_implements_list_only_matches_the_first_interface_known_gap() {
-        // KNOWN GAP, empirically confirmed (not assumed): `class Widget
-        // implements A, B` matches find_implementors(.., "A") — the pattern
-        // `class $NAME implements {type_name} { $$$BODY }` apparently
-        // anchors against the *first* element of a multi-interface clause —
-        // but find_implementors(.., "B") returns nothing, even though B is
-        // a real implemented interface. This is a more deceptive gap than a
-        // clean miss: querying for the first-listed interface silently
-        // looks correct while every other interface in the same clause is
-        // invisible. Not fixed here — see the module-level suite doc above.
+    fn typescript_implements_list_matches_every_interface() {
         let src = "class Widget implements A, B {\n  a() {}\n  b() {}\n}\n";
         let a_hits = AstGrepProvider.find_implementors(
             Language::TypeScript,
@@ -342,22 +347,12 @@ mod tests {
             &[FileSource { file: "x.ts", src }],
             "B",
         );
-        assert_eq!(
-            b_hits.len(),
-            0,
-            "{b_hits:?} — update this test if the pattern is intentionally widened to match every element"
-        );
+        assert_eq!(b_hits.len(), 1, "{b_hits:?}");
     }
 
     #[test]
-    fn python_multiple_inheritance_is_a_known_unmatched_gap() {
-        // KNOWN GAP, empirically confirmed: the Python pattern
-        // `class $NAME({type_name}): $$$BODY` requires the base-class list
-        // to be exactly one element. `class X(A, B):` — ordinary, idiomatic
-        // multiple inheritance — does not match on "A" at all (not even a
-        // first-position match like TypeScript's `implements` clause
-        // above). Not fixed here for the same reason as the TS gap.
-        let hits = AstGrepProvider.find_implementors(
+    fn python_multiple_inheritance_matches_every_base() {
+        let a_hits = AstGrepProvider.find_implementors(
             Language::Python,
             &[FileSource {
                 file: "x.py",
@@ -365,25 +360,20 @@ mod tests {
             }],
             "A",
         );
-        assert_eq!(
-            hits.len(),
-            0,
-            "{hits:?} — update this test if the pattern is intentionally widened"
+        assert_eq!(a_hits.len(), 1, "{a_hits:?}");
+        let b_hits = AstGrepProvider.find_implementors(
+            Language::Python,
+            &[FileSource {
+                file: "x.py",
+                src: "class X(A, B):\n    pass\n",
+            }],
+            "B",
         );
+        assert_eq!(b_hits.len(), 1, "{b_hits:?}");
     }
 
     #[test]
-    fn typescript_extends_plus_implements_only_matches_the_extends_side_known_gap() {
-        // KNOWN GAP, empirically confirmed: `class Widget extends Base
-        // implements Iface { ... }` — a very common real-world shape —
-        // matches find_implementors(.., "Base") via the extends pattern,
-        // but find_implementors(.., "Iface") returns nothing: the implements
-        // pattern (`class $NAME implements {type_name} { $$$BODY }`) has no
-        // extends clause in it, and ast-grep requires the clause shape to
-        // correspond — unlike the first-position match within one clause
-        // type seen above. Not fixed here for the same reason as the other
-        // two gaps: a combined extends+implements pattern is new pattern
-        // surface, not a boundary-hardening fix.
+    fn typescript_extends_plus_implements_matches_both_sides() {
         let src = "class Widget extends Base implements Iface {\n  render() {}\n}\n";
         let extends_hits = AstGrepProvider.find_implementors(
             Language::TypeScript,
@@ -396,11 +386,7 @@ mod tests {
             &[FileSource { file: "x.ts", src }],
             "Iface",
         );
-        assert_eq!(
-            implements_hits.len(),
-            0,
-            "{implements_hits:?} — update this test if the pattern is intentionally widened"
-        );
+        assert_eq!(implements_hits.len(), 1, "{implements_hits:?}");
     }
 
     #[test]
