@@ -131,6 +131,15 @@ identity everywhere is `path#QualifiedName`.
   `tree-sitter-python` 0.23→0.25 (a `links = "tree-sitter"` native-lib crate
   forces one version across the graph); `tree-sitter-typescript` needed no
   bump. See `docs/treesitter-tags-parity/` for the parity evidence.
+- `src/structural.rs` wraps `ast-grep-core` (pinned `=0.45.3`, pre-1.0 —
+  `Language`/`LanguageExt` are implemented directly, not just called) for
+  symbol-anchored structural queries (implementors, AST-precise callers).
+  Isolated and evidence-only for now: not called from `retrieval.rs`,
+  `context.rs`, or the MCP surface. Any caller MUST bound the file list it
+  passes in to the files of already-retrieved symbols — an unbounded
+  whole-repo scan measured 10-70x slower (ast-grep re-parses every file it's
+  given, on top of the parse the indexer already did). See
+  `docs/astgrep-structural-search/` for the evidence.
 - Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
   DB lives at `<repo>/.oxide/index.db`.
 - `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —

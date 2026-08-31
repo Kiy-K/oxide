@@ -1,0 +1,57 @@
+{
+  "note": "New tasks (not fixtures/benchmark.json), added in Phase 3.4b specifically to test structural relationships: multi-implementor and cross-file-caller. Not part of tests/benchmark_gate.rs's frozen gate. Gold files are fixtures/ts_repo/src/net/policies.ts and fixtures/py_repo/oxidepy/notifiers.py, both new in this phase.",
+  "k": 5,
+  "repos": {
+    "py": "fixtures/py_repo",
+    "ts": "fixtures/ts_repo"
+  },
+  "queries": [
+    {
+      "id": "ts-implementors-retrypolicy",
+      "repo": "ts",
+      "task": "structural-implementors",
+      "text": "the retry policy interface every backoff strategy must implement",
+      "anchor_symbol": "RetryPolicy",
+      "anchor_lang": "typescript",
+      "structural_intent": "implementors",
+      "relevant": [
+        "src/net/retry.ts#ExponentialBackoff",
+        "src/net/policies.ts#LinearBackoff",
+        "src/net/policies.ts#NoRetryPolicy"
+      ]
+    },
+    {
+      "id": "ts-callers-shouldretry",
+      "repo": "ts",
+      "task": "structural-callers",
+      "text": "the retry policy interface every backoff strategy must implement",
+      "anchor_symbol": "shouldRetry",
+      "anchor_lang": "typescript",
+      "structural_intent": "callers",
+      "relevant": ["src/net/policies.ts#attemptWithPolicy"]
+    },
+    {
+      "id": "py-implementors-notifier",
+      "repo": "py",
+      "task": "structural-implementors",
+      "text": "base class for delivery channels used to notify when retries give up",
+      "anchor_symbol": "Notifier",
+      "anchor_lang": "python",
+      "structural_intent": "implementors",
+      "relevant": [
+        "oxidepy/notifiers.py#EmailNotifier",
+        "oxidepy/notifiers.py#SlackNotifier"
+      ]
+    },
+    {
+      "id": "py-callers-should-retry",
+      "repo": "py",
+      "task": "structural-callers",
+      "text": "decides whether a failed operation should be attempted again",
+      "anchor_symbol": "should_retry",
+      "anchor_lang": "python",
+      "structural_intent": "callers",
+      "relevant": ["oxidepy/notifiers.py#notify_after_final_attempt"]
+    }
+  ]
+}
