@@ -427,11 +427,13 @@ pub enum GemmaQueryPrompt {
 
 #[cfg(feature = "native-embed")]
 impl GemmaQueryPrompt {
-    fn apply(self, text: &str) -> String {
+    /// The literal prefix this variant prepends to the raw query text
+    /// (empty for `Bare`).
+    fn query_prefix(self) -> &'static str {
         match self {
-            GemmaQueryPrompt::Bare => text.to_string(),
-            GemmaQueryPrompt::SearchResult => format!("task: search result | query: {text}"),
-            GemmaQueryPrompt::CodeRetrieval => format!("task: code retrieval | query: {text}"),
+            GemmaQueryPrompt::Bare => "",
+            GemmaQueryPrompt::SearchResult => "task: search result | query: ",
+            GemmaQueryPrompt::CodeRetrieval => "task: code retrieval | query: ",
         }
     }
 
@@ -472,29 +474,135 @@ impl GemmaQueryPrompt {
 /// unfixed: no config file (env var only); no model-missing/no-silent-download
 /// gating beyond fastembed's own auto-download; no index-compatibility
 /// fingerprint beyond the existing name-based check `update_index` already does.
+/// Per-model metadata needed to reproduce each candidate's authoritative
+/// upstream query/document semantics. Prefixes are prepended verbatim to the
+/// raw text (empty = no prefix). Sourced from each model's own HF model card
+/// during the Phase 3.3b Pareto survey — not assumed interchangeable with
+/// EmbeddingGemma's convention.
+#[cfg(feature = "native-embed")]
+struct NativeModelSpec {
+    model: fastembed::EmbeddingModel,
+    model_id: &'static str,
+    quantization: &'static str,
+    /// Empty for Gemma profiles — theirs is resolved from `GemmaQueryPrompt`
+    /// instead, since Gemma is the only model with more than one documented
+    /// query convention.
+    query_prefix: &'static str,
+    document_prefix: &'static str,
+    pooling: &'static str,
+}
+
+#[cfg(feature = "native-embed")]
+fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
+    use fastembed::EmbeddingModel::*;
+    Ok(match profile {
+        "embeddinggemma-300m" => NativeModelSpec {
+            model: EmbeddingGemma300M,
+            model_id: "embeddinggemma-300m",
+            quantization: "fp32",
+            query_prefix: "",
+            document_prefix: "title: none | text: ",
+            pooling: "graph-baked",
+        },
+        "embeddinggemma-300m-q4" => NativeModelSpec {
+            model: EmbeddingGemma300MQ4,
+            model_id: "embeddinggemma-300m",
+            quantization: "int4",
+            query_prefix: "",
+            document_prefix: "title: none | text: ",
+            pooling: "graph-baked",
+        },
+        // BAAI/bge-small-en-v1.5 model card: query-only instruction prefix,
+        // no document-side prefix ("no instruction needs to be added to
+        // passages").
+        "bge-small-en-v1.5" => NativeModelSpec {
+            model: BGESmallENV15,
+            model_id: "bge-small-en-v1.5",
+            quantization: "fp32",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
+        // snowflake/snowflake-arctic-embed-{xs,s} model cards: same query
+        // prefix convention as BGE, CLS pooling (confirmed against fastembed's
+        // own `get_default_pooling_method` table, which matches).
+        "arctic-embed-xs" => NativeModelSpec {
+            model: SnowflakeArcticEmbedXS,
+            model_id: "snowflake-arctic-embed-xs",
+            quantization: "fp32",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
+        "arctic-embed-s" => NativeModelSpec {
+            model: SnowflakeArcticEmbedS,
+            model_id: "snowflake-arctic-embed-s",
+            quantization: "fp32",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
+        // jinaai/jina-embeddings-v2-base-code model card: plain mean-pooled
+        // bi-encoder, no query/document instruction convention (predates
+        // Jina v3's task-instruction prompts).
+        "jina-code-v2" => NativeModelSpec {
+            model: JinaEmbeddingsV2BaseCode,
+            model_id: "jina-embeddings-v2-base-code",
+            quantization: "fp32",
+            query_prefix: "",
+            document_prefix: "",
+            pooling: "mean",
+        },
+        // sentence-transformers/all-MiniLM-L6-v2: plain baseline, no prefix.
+        "minilm-l6-v2" => NativeModelSpec {
+            model: AllMiniLML6V2,
+            model_id: "all-MiniLM-L6-v2",
+            quantization: "fp32",
+            query_prefix: "",
+            document_prefix: "",
+            pooling: "mean",
+        },
+        other => anyhow::bail!(
+            "unsupported native embedding profile {other:?}; supported: \
+             embeddinggemma-300m, embeddinggemma-300m-q4, bge-small-en-v1.5, \
+             arctic-embed-xs, arctic-embed-s, jina-code-v2, minilm-l6-v2"
+        ),
+    })
+}
+
 #[cfg(feature = "native-embed")]
 pub struct NativeEmbedder {
     model: std::sync::Mutex<fastembed::TextEmbedding>,
     dim: usize,
     name: String,
     query_prompt: GemmaQueryPrompt,
+    /// Whether `query_prompt` actually affects this instance's embedding
+    /// behavior. Only Gemma profiles have more than one documented query
+    /// convention (see `native_model_spec`); every other profile stores
+    /// whatever `query_prompt` its caller happened to pass (typically just
+    /// resolved from `$OXIDE_EMBED_NATIVE_QUERY_PROMPT`, which is otherwise
+    /// unrelated to this profile) but must not let it leak into reported
+    /// identity — `fingerprint()` gates on this instead of on
+    /// `query_prompt != Bare` alone.
+    is_gemma: bool,
+    query_prefix: String,
+    document_prefix: String,
+    model_id: String,
+    quantization: String,
+    pooling: String,
 }
 
 #[cfg(feature = "native-embed")]
 impl NativeEmbedder {
-    /// `profile` selects a built-in model; currently only `embeddinggemma-300m`
-    /// (the model validated in the Phase 3.3 spike) is supported. `query_prompt`
-    /// selects which of Gemma's documented query prompts to apply (see item 2
-    /// of the Phase 3.3 follow-up); documents always use Gemma's authoritative
-    /// `"title: none | text: "` representation, which is not a variant.
+    /// `profile` selects a built-in model (see [`native_model_spec`] for the
+    /// supported set). `query_prompt` only affects Gemma profiles, which
+    /// have more than one documented query convention (see item 2 of the
+    /// Phase 3.3 follow-up); every other profile uses its own single
+    /// upstream-documented query prefix and ignores this parameter.
     pub fn new(profile: &str, query_prompt: GemmaQueryPrompt) -> anyhow::Result<Self> {
-        let embedding_model = match profile {
-            "embeddinggemma-300m" => fastembed::EmbeddingModel::EmbeddingGemma300M,
-            other => anyhow::bail!(
-                "unsupported native embedding profile {other:?}; supported: embeddinggemma-300m"
-            ),
-        };
-        let dim = fastembed::TextEmbedding::get_model_info(&embedding_model)?.dim;
+        let spec = native_model_spec(profile)?;
+        let is_gemma = profile.starts_with("embeddinggemma");
+        let dim = fastembed::TextEmbedding::get_model_info(&spec.model)?.dim;
         // fastembed defaults to the relative `./.fastembed_cache` unless
         // $HF_HOME/$FASTEMBED_CACHE_DIR is set, which would dump ~1.2GB of
         // weights into whatever directory `oxide` happens to run from.
@@ -505,22 +613,37 @@ impl NativeEmbedder {
             .unwrap_or_else(|| std::path::PathBuf::from("."))
             .join(".cache/huggingface/hub");
         let model = fastembed::TextEmbedding::try_new(
-            fastembed::TextInitOptions::new(embedding_model).with_cache_dir(cache_dir),
+            fastembed::TextInitOptions::new(spec.model.clone()).with_cache_dir(cache_dir),
         )?;
         // Name encodes the query-prompt variant so index-compatibility
         // staleness detection (name-based, see `update_index`) invalidates
         // across variants too — otherwise switching variants without
         // reindexing would silently mix incompatible vectors.
-        let name = match query_prompt {
-            GemmaQueryPrompt::Bare => format!("native:{profile}"),
-            GemmaQueryPrompt::SearchResult => format!("native:{profile}:search-result"),
-            GemmaQueryPrompt::CodeRetrieval => format!("native:{profile}:code-retrieval"),
+        let name = if is_gemma {
+            match query_prompt {
+                GemmaQueryPrompt::Bare => format!("native:{profile}"),
+                GemmaQueryPrompt::SearchResult => format!("native:{profile}:search-result"),
+                GemmaQueryPrompt::CodeRetrieval => format!("native:{profile}:code-retrieval"),
+            }
+        } else {
+            format!("native:{profile}")
+        };
+        let query_prefix = if is_gemma {
+            query_prompt.query_prefix().to_string()
+        } else {
+            spec.query_prefix.to_string()
         };
         Ok(Self {
             model: std::sync::Mutex::new(model),
             dim,
             name,
             query_prompt,
+            is_gemma,
+            query_prefix,
+            document_prefix: spec.document_prefix.to_string(),
+            model_id: spec.model_id.to_string(),
+            quantization: spec.quantization.to_string(),
+            pooling: spec.pooling.to_string(),
         })
     }
 
@@ -595,11 +718,18 @@ impl NativeEmbedder {
             GemmaQueryPrompt::SearchResult => format!("native:{profile}:search-result"),
             GemmaQueryPrompt::CodeRetrieval => format!("native:{profile}:code-retrieval"),
         };
+        let query_prefix = query_prompt.query_prefix().to_string();
         Ok(Self {
             model: std::sync::Mutex::new(model),
             dim,
             name,
             query_prompt,
+            is_gemma: true,
+            query_prefix,
+            document_prefix: "title: none | text: ".to_string(),
+            model_id: "embeddinggemma-300m".to_string(),
+            quantization: "fp32".to_string(),
+            pooling: "graph-baked".to_string(),
         })
     }
 }
@@ -632,50 +762,62 @@ impl EmbeddingProvider for NativeEmbedder {
     }
 
     fn embed_query(&self, text: &str) -> Vec<f32> {
-        self.embed(&self.query_prompt.apply(text))
+        if self.query_prefix.is_empty() {
+            self.embed(text)
+        } else {
+            self.embed(&format!("{}{text}", self.query_prefix))
+        }
     }
 
     fn embed_document(&self, text: &str) -> Vec<f32> {
-        self.embed(&format!("title: none | text: {text}"))
+        if self.document_prefix.is_empty() {
+            self.embed(text)
+        } else {
+            self.embed(&format!("{}{text}", self.document_prefix))
+        }
     }
 
     fn embed_documents(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        if self.document_prefix.is_empty() {
+            return self.embed_batch(texts);
+        }
         let prefixed: Vec<String> = texts
             .iter()
-            .map(|t| format!("title: none | text: {t}"))
+            .map(|t| format!("{}{t}", self.document_prefix))
             .collect();
         self.embed_batch(&prefixed)
     }
 
     fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
+        let query_profile = if self.is_gemma && self.query_prompt != GemmaQueryPrompt::Bare {
+            self.query_prompt.profile_label().to_string()
+        } else if self.query_prefix.is_empty() {
+            "none".to_string()
+        } else {
+            format!("prefix:{}", self.query_prefix)
+        };
+        let document_profile = if self.document_prefix.is_empty() {
+            "none".to_string()
+        } else {
+            format!("prefix:{}", self.document_prefix)
+        };
         EmbeddingSpaceFingerprint {
             schema_version: EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
             // Profile key, not `self.name` (which already folds the query
             // variant in for the legacy name-based fallback check) — the
             // variant has its own field below instead of being smuggled
             // into the model identity.
-            model: "embeddinggemma-300m".to_string(),
-            // onnx-community/embeddinggemma-300m-ONNX has no pinned revision
-            // in this prototype (fastembed resolves "main" via hf-hub);
-            // genuine revision pinning is follow-up work, not this field
-            // lying about having one.
+            model: self.model_id.clone(),
+            // No pinned revision in this prototype (fastembed resolves
+            // "main" via hf-hub); genuine revision pinning is follow-up
+            // work, not this field lying about having one.
             artifact_revision: String::new(),
-            // `EmbeddingModel::EmbeddingGemma300M` is the full-precision
-            // variant (`onnx/model.onnx`, ~1.2GB) — distinct from the
-            // Q4/quantized `EmbeddingModel` variants fastembed also lists,
-            // which this prototype does not expose.
-            quantization: "fp32".to_string(),
+            quantization: self.quantization.clone(),
             representation: "dense".to_string(),
             dimension: self.dim,
-            query_profile: self.query_prompt.profile_label().to_string(),
-            // Always Gemma's authoritative document representation — not a
-            // variant, see `embed_document`/`embed_documents` above.
-            document_profile: "gemma-title-none-text".to_string(),
-            // fastembed pins this model's `output_key` to the ONNX graph's
-            // own pre-pooled `sentence_embedding` output (confirmed by
-            // reading `fastembed`'s `models/text_embedding.rs`); OXIDE never
-            // runs its own pooling math for this model.
-            pooling: "graph-baked".to_string(),
+            query_profile,
+            document_profile,
+            pooling: self.pooling.clone(),
             normalization: "l2".to_string(),
             similarity: "cosine".to_string(),
         }
@@ -700,6 +842,13 @@ fn native_query_prompt_from_env() -> anyhow::Result<GemmaQueryPrompt> {
 /// also treated as an embedding-space change requiring reindex.
 #[cfg(feature = "native-embed")]
 fn native_provider_name(profile: &str, query_prompt: GemmaQueryPrompt) -> String {
+    // Must match the is_gemma-gated logic in `NativeEmbedder::new`'s `name`
+    // computation — this function exists so `configured_provider_name` can
+    // report the same identity without constructing a model, and the two
+    // must never diverge or the name-based staleness fallback breaks.
+    if !profile.starts_with("embeddinggemma") {
+        return format!("native:{profile}");
+    }
     match query_prompt {
         GemmaQueryPrompt::Bare => format!("native:{profile}"),
         GemmaQueryPrompt::SearchResult => format!("native:{profile}:search-result"),
@@ -827,9 +976,9 @@ mod tests {
         // the three variants are not accidentally identical before trusting
         // any retrieval-level A/B/C comparison built on top of them.
         let text = "fix backoff";
-        let bare = GemmaQueryPrompt::Bare.apply(text);
-        let search = GemmaQueryPrompt::SearchResult.apply(text);
-        let code = GemmaQueryPrompt::CodeRetrieval.apply(text);
+        let bare = format!("{}{text}", GemmaQueryPrompt::Bare.query_prefix());
+        let search = format!("{}{text}", GemmaQueryPrompt::SearchResult.query_prefix());
+        let code = format!("{}{text}", GemmaQueryPrompt::CodeRetrieval.query_prefix());
         assert_eq!(bare, "fix backoff");
         assert_eq!(search, "task: search result | query: fix backoff");
         assert_eq!(code, "task: code retrieval | query: fix backoff");
@@ -873,6 +1022,41 @@ mod tests {
             println!("[{name}] norm={norm:.4}");
             println!("[{name}] first8 = {:?}", &v[..8]);
         }
+    }
+
+    /// Regression for a real bug caught in review: `$OXIDE_EMBED_NATIVE_QUERY_PROMPT`
+    /// only means something for Gemma profiles, but a non-Bare value passed
+    /// alongside a non-Gemma profile (e.g. left over in the environment from
+    /// a previous Gemma run) must not leak into that profile's reported
+    /// identity — otherwise the same BGE vectors get two different
+    /// fingerprints depending on an env var BGE doesn't even consult,
+    /// spuriously invalidating an otherwise-compatible index on reindex.
+    ///
+    /// Ignored by default: needs the BGE-small model cached locally (network
+    /// on first run). Run explicitly with `cargo test --features
+    /// native-embed -- --ignored non_gemma_profile_ignores_gemma_query_prompt_in_identity`.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    #[ignore]
+    fn non_gemma_profile_ignores_gemma_query_prompt_in_identity() {
+        let bare = NativeEmbedder::new("bge-small-en-v1.5", GemmaQueryPrompt::Bare).unwrap();
+        let with_leftover_prompt =
+            NativeEmbedder::new("bge-small-en-v1.5", GemmaQueryPrompt::SearchResult).unwrap();
+
+        assert_eq!(bare.name(), with_leftover_prompt.name());
+        assert_eq!(
+            bare.fingerprint(),
+            with_leftover_prompt.fingerprint(),
+            "a query_prompt this profile doesn't consult must not appear in its identity"
+        );
+        assert!(!bare.fingerprint().query_profile.contains("gemma"));
+
+        let text = "fix backoff";
+        assert_eq!(
+            bare.embed_query(text),
+            with_leftover_prompt.embed_query(text),
+            "the ignored query_prompt must not affect embedding output either"
+        );
     }
 
     /// Dumps full-precision vectors for cross-checking against the
