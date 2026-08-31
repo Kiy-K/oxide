@@ -169,12 +169,26 @@ identity everywhere is `path#QualifiedName`.
 - `src/structural.rs` wraps `ast-grep-core` (pinned `=0.45.3`, pre-1.0 —
   `Language`/`LanguageExt` are implemented directly, not just called) for
   symbol-anchored structural queries (implementors, AST-precise callers).
-  Isolated and evidence-only for now: not called from `retrieval.rs`,
-  `context.rs`, or the MCP surface. Any caller MUST bound the file list it
-  passes in to the files of already-retrieved symbols — an unbounded
-  whole-repo scan measured 10-70x slower (ast-grep re-parses every file it's
-  given, on top of the parse the indexer already did). See
-  `docs/astgrep-structural-search/` for the evidence.
+  Wired into `context.rs`'s bounded expansion loop (not the MCP surface —
+  see `docs/retrieval-coordinator/README.md`); still not called from
+  `retrieval.rs`. Any caller MUST bound the file list it passes in to the
+  files of already-retrieved symbols — an unbounded whole-repo scan measured
+  10-70x slower (ast-grep re-parses every file it's given, on top of the
+  parse the indexer already did), enforced in `context.rs` by a one-line
+  `scope_files.len() >= max_files` break, not just convention. No
+  `ast_grep_core` type may appear outside `src/structural.rs`. **Changing
+  the version pin requires**, before the pin changes: the 12-test
+  conformance suite (`cargo test -j 2 --lib structural`) passing unmodified,
+  `cargo run --example structural_benchmark --release` still matching its
+  documented recall, and a re-run of the dependency audit (`cargo tree -p
+  ast-grep-core`, `cargo tree --duplicates`) to catch a newly-introduced
+  grammar crate or `tree-sitter` duplication. See
+  `docs/astgrep-structural-search/` for the original spike evidence and
+  `docs/astgrep-hardening/` for the dependency/binary-size audit,
+  conformance suite, and three known pattern-matching gaps (TS
+  `implements A, B` only matches the first interface; Python multiple
+  inheritance isn't matched at all; `extends X implements Y` only matches
+  the extends side) found and pinned, not fixed, by that pass.
 - Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
   DB lives at `<repo>/.oxide/index.db`.
 - `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —

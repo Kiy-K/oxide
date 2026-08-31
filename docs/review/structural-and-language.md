@@ -47,7 +47,23 @@ site instead of one module.
 **What constitutes a violation:** `context.rs`, `retrieval.rs`, `mcp.rs`, or
 `cli.rs` importing `ast_grep_core` directly; a new public item in
 `structural.rs` whose signature exposes an `ast_grep_core` type instead of
-`StructuralHit`.
+`StructuralHit`; bumping the `=0.45.3` version pin without first running the
+conformance suite (`cargo test -j 2 --lib structural`, 12 tests as of the
+integration-boundary hardening pass — see `docs/astgrep-hardening/`),
+`cargo run --example structural_benchmark --release`, and a fresh `cargo
+tree -p ast-grep-core` / `cargo tree --duplicates` audit for a newly
+introduced grammar crate or `tree-sitter` duplication — this is the
+documented upgrade rule (`AGENTS.md`), not a suggestion.
+
+**Note for reviewers:** `docs/astgrep-hardening/README.md` pins three known,
+intentionally-unfixed pattern-matching gaps (TS `implements A, B` only
+matches the first interface; Python multiple inheritance isn't matched at
+all; `extends X implements Y` only matches the extends side). A PR that
+silently "fixes" one of these without updating its pinning test and calling
+out the behavior change explicitly is a violation of EVD-003 (a passing
+test isn't proof the fix does what the PR claims) as much as it is of this
+rule — treat a diff to those three tests as a signal to read closely, not a
+routine test update.
 
 **Evidence required:** grep for `ast_grep_core` imports outside
 `structural.rs`; if any exist outside `#[cfg(test)]`/internal helpers,

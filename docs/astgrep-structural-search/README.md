@@ -156,6 +156,17 @@ there's evidence from real usage that natural-language agent queries
 actually hit this gap often enough to justify spending context budget or
 MCP surface on it.
 
+## Update: wired in, then hardened
+
+The "not wired into `context.rs`/retrieval/MCP in this commit" line above
+was true when written; `docs/retrieval-coordinator/README.md` later wired
+bounded ast-grep expansion into `context.rs`'s expansion loop. A subsequent
+integration-boundary hardening pass — dependency/binary-size audit, a
+12-test conformance suite (was 4), and three previously-undocumented known
+gaps — is recorded in `docs/astgrep-hardening/README.md`. Both later docs
+supersede this section's wiring status; the rest of this document (the
+spike's raw benchmark evidence) still stands as the original record.
+
 ## Raw evidence locations
 
 - `src/structural.rs` — adapter + `#[cfg(test)]` unit tests (4, including

@@ -306,4 +306,224 @@ mod tests {
         assert_eq!(hits.len(), 1, "{hits:?}");
         assert_eq!(hits[0].text, "policy.should_retry(attempt, error)");
     }
+
+    // ---- Conformance suite (integration-boundary hardening) --------------
+    //
+    // Beyond the four tests above (which pin regressions caught during the
+    // Phase 3.4b spike), these confirm actual behavior at edges the spike's
+    // fixture-scale benchmark never exercised: TSX (zero prior coverage
+    // despite being a fully wired `Language` variant), method-style calls in
+    // TypeScript (only Python had this), and malformed/empty input. Three
+    // real gaps were found this way, not assumed — pinned below as known
+    // limitations rather than silently "fixed" into a new pattern shape,
+    // since widening the match patterns is a feature change out of scope
+    // for hardening the existing boundary.
+
+    #[test]
+    fn typescript_implements_list_only_matches_the_first_interface_known_gap() {
+        // KNOWN GAP, empirically confirmed (not assumed): `class Widget
+        // implements A, B` matches find_implementors(.., "A") — the pattern
+        // `class $NAME implements {type_name} { $$$BODY }` apparently
+        // anchors against the *first* element of a multi-interface clause —
+        // but find_implementors(.., "B") returns nothing, even though B is
+        // a real implemented interface. This is a more deceptive gap than a
+        // clean miss: querying for the first-listed interface silently
+        // looks correct while every other interface in the same clause is
+        // invisible. Not fixed here — see the module-level suite doc above.
+        let src = "class Widget implements A, B {\n  a() {}\n  b() {}\n}\n";
+        let a_hits = AstGrepProvider.find_implementors(
+            Language::TypeScript,
+            &[FileSource { file: "x.ts", src }],
+            "A",
+        );
+        assert_eq!(a_hits.len(), 1, "{a_hits:?}");
+        let b_hits = AstGrepProvider.find_implementors(
+            Language::TypeScript,
+            &[FileSource { file: "x.ts", src }],
+            "B",
+        );
+        assert_eq!(
+            b_hits.len(),
+            0,
+            "{b_hits:?} — update this test if the pattern is intentionally widened to match every element"
+        );
+    }
+
+    #[test]
+    fn python_multiple_inheritance_is_a_known_unmatched_gap() {
+        // KNOWN GAP, empirically confirmed: the Python pattern
+        // `class $NAME({type_name}): $$$BODY` requires the base-class list
+        // to be exactly one element. `class X(A, B):` — ordinary, idiomatic
+        // multiple inheritance — does not match on "A" at all (not even a
+        // first-position match like TypeScript's `implements` clause
+        // above). Not fixed here for the same reason as the TS gap.
+        let hits = AstGrepProvider.find_implementors(
+            Language::Python,
+            &[FileSource {
+                file: "x.py",
+                src: "class X(A, B):\n    pass\n",
+            }],
+            "A",
+        );
+        assert_eq!(
+            hits.len(),
+            0,
+            "{hits:?} — update this test if the pattern is intentionally widened"
+        );
+    }
+
+    #[test]
+    fn typescript_extends_plus_implements_only_matches_the_extends_side_known_gap() {
+        // KNOWN GAP, empirically confirmed: `class Widget extends Base
+        // implements Iface { ... }` — a very common real-world shape —
+        // matches find_implementors(.., "Base") via the extends pattern,
+        // but find_implementors(.., "Iface") returns nothing: the implements
+        // pattern (`class $NAME implements {type_name} { $$$BODY }`) has no
+        // extends clause in it, and ast-grep requires the clause shape to
+        // correspond — unlike the first-position match within one clause
+        // type seen above. Not fixed here for the same reason as the other
+        // two gaps: a combined extends+implements pattern is new pattern
+        // surface, not a boundary-hardening fix.
+        let src = "class Widget extends Base implements Iface {\n  render() {}\n}\n";
+        let extends_hits = AstGrepProvider.find_implementors(
+            Language::TypeScript,
+            &[FileSource { file: "x.ts", src }],
+            "Base",
+        );
+        assert_eq!(extends_hits.len(), 1, "{extends_hits:?}");
+        let implements_hits = AstGrepProvider.find_implementors(
+            Language::TypeScript,
+            &[FileSource { file: "x.ts", src }],
+            "Iface",
+        );
+        assert_eq!(
+            implements_hits.len(),
+            0,
+            "{implements_hits:?} — update this test if the pattern is intentionally widened"
+        );
+    }
+
+    #[test]
+    fn typescript_finds_method_style_calls_not_just_bare_calls() {
+        // TypeScript-side parity for the Python test above — only Python had
+        // method-call coverage before this suite.
+        let f = FileSource {
+            file: "x.ts",
+            src: "function handle(client: Client) {\n  if (!client.shouldRetry(1)) return;\n}\n",
+        };
+        let hits = AstGrepProvider.find_callers(Language::TypeScript, &[f], "shouldRetry");
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert_eq!(hits[0].text, "client.shouldRetry(1)");
+    }
+
+    #[test]
+    fn tsx_finds_implementors_across_component_files() {
+        // TSX had zero test coverage despite being a fully wired `Language`
+        // variant in both find_implementors and find_callers.
+        let base = FileSource {
+            file: "props.tsx",
+            src: "interface ClickHandler { onClick(): void }\n",
+        };
+        let widget = FileSource {
+            file: "widget.tsx",
+            src: "class Widget implements ClickHandler {\n  onClick() {}\n  render() { return <div/> }\n}\n",
+        };
+        let other = FileSource {
+            file: "other.tsx",
+            src: "class Unrelated {\n  render() { return <span/> }\n}\n",
+        };
+        let hits = AstGrepProvider.find_implementors(
+            Language::Tsx,
+            &[base, widget, other],
+            "ClickHandler",
+        );
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert!(hits[0]
+            .text
+            .starts_with("class Widget implements ClickHandler"));
+    }
+
+    #[test]
+    fn tsx_finds_bare_and_method_calls_inside_jsx_expressions() {
+        // A call inside a JSX attribute expression (`onClick={() =>
+        // api.fetchData(1)}`) plus an ordinary top-level call — both are
+        // real call sites a caller-discovery feature must not miss just
+        // because one is embedded in a JSX expression container.
+        let f = FileSource {
+            file: "app.tsx",
+            src: "function App() {\n  return <div onClick={() => api.fetchData(1)} />;\n}\napi.fetchData(2);\n",
+        };
+        let hits = AstGrepProvider.find_callers(Language::Tsx, &[f], "fetchData");
+        assert_eq!(hits.len(), 2, "{hits:?}");
+        assert!(hits.iter().any(|h| h.text == "api.fetchData(1)"));
+        assert!(hits.iter().any(|h| h.text == "api.fetchData(2)"));
+    }
+
+    #[test]
+    fn malformed_source_returns_empty_instead_of_panicking() {
+        // tree-sitter is error-tolerant by design (it always produces a
+        // parse tree, using ERROR nodes for invalid syntax) — confirmed here
+        // that ast-grep's pattern matching over such a tree degrades to "no
+        // match" rather than panicking, for both languages and both methods
+        // this module exposes.
+        let broken_ts = FileSource {
+            file: "broken.ts",
+            src: "class X implements { foo(",
+        };
+        assert_eq!(
+            AstGrepProvider
+                .find_implementors(Language::TypeScript, &[broken_ts], "A")
+                .len(),
+            0
+        );
+
+        let broken_ts2 = FileSource {
+            file: "broken2.ts",
+            src: "function f( { return",
+        };
+        assert_eq!(
+            AstGrepProvider
+                .find_callers(Language::TypeScript, &[broken_ts2], "f")
+                .len(),
+            0
+        );
+
+        let broken_py = FileSource {
+            file: "broken.py",
+            src: "class X(:\n    pass",
+        };
+        assert_eq!(
+            AstGrepProvider
+                .find_implementors(Language::Python, &[broken_py], "A")
+                .len(),
+            0
+        );
+
+        let broken_py2 = FileSource {
+            file: "broken2.py",
+            src: "def f(:\n  return",
+        };
+        assert_eq!(
+            AstGrepProvider
+                .find_callers(Language::Python, &[broken_py2], "f")
+                .len(),
+            0
+        );
+    }
+
+    #[test]
+    fn empty_file_list_returns_empty_instead_of_panicking() {
+        assert_eq!(
+            AstGrepProvider
+                .find_implementors(Language::TypeScript, &[], "A")
+                .len(),
+            0
+        );
+        assert_eq!(
+            AstGrepProvider
+                .find_callers(Language::Python, &[], "f")
+                .len(),
+            0
+        );
+    }
 }
