@@ -16,6 +16,7 @@ import argparse
 import json
 import os
 import shutil
+import sqlite3
 import subprocess
 import sys
 import time
@@ -98,6 +99,42 @@ def index_repo(repo_dir: Path, embedder_url: str) -> None:
            cwd=repo_dir, env={"OXIDE_EMBED_URL": embedder_url})
     if r.returncode != 0:
         raise RuntimeError(f"oxide index failed: {r.stderr[:300]}")
+
+
+def verify_embedder_took_effect(repo_dir: Path, want_native: bool) -> str:
+    """Fail loudly if the requested embedder mode didn't actually apply;
+    return the *actual* provider identity string OXIDE recorded.
+
+    A binary built without --features native-embed silently falls through
+    to the offline hashed embedder when OXIDE_EMBED_NATIVE is set (Rust's
+    own open_embedder has no other option) — the eval would keep running
+    and labeling results with the requested profile while actually scoring
+    the hashed baseline. Checked once per run, not per task.
+
+    The returned string is the ground truth for which vectors were
+    actually produced (e.g. `native:bge-small-en-v1.5` vs.
+    `native:embeddinggemma-300m:search-result`) — callers must use it to
+    label results/logs instead of reconstructing a label from env vars,
+    which drifts from reality for any non-Gemma profile (query-prompt env
+    vars only affect Gemma's `name()`; a leftover
+    OXIDE_EMBED_NATIVE_QUERY_PROMPT for another profile is silently
+    ignored by Rust but would still leak into a hand-built label).
+    """
+    db = repo_dir / ".oxide" / "index.db"
+    con = sqlite3.connect(db)
+    try:
+        row = con.execute("SELECT value FROM meta WHERE key='embedder'").fetchone()
+    finally:
+        con.close()
+    embedder = row[0] if row else ""
+    prefix = "native:" if want_native else "http:"
+    if not embedder.startswith(prefix):
+        raise RuntimeError(
+            f"embedder mismatch: expected {prefix}... but index meta has "
+            f"{embedder!r} — is target/release/oxide built with "
+            f"--features native-embed? (want_native={want_native})"
+        )
+    return embedder
 
 
 def retrieve(indexed: Path, condition: str, problem: str) -> tuple[list[dict], int]:
@@ -201,6 +238,48 @@ def evaluate_task(repo_dir: Path, row: dict, items: list[dict]) -> dict:
     )
 
 
+# Sentinel for a results row written before per-record provenance existed.
+# Never treated as matching any real provider identity — see
+# check_embedder_provenance.
+UNKNOWN_EMBEDDER = "<unknown, pre-provenance record>"
+
+
+def load_existing_progress(results_path: Path) -> tuple[set[tuple[str, str]], set[str]]:
+    """Read a results file's completed (task, condition) keys plus the set
+    of embedder identities its rows were actually produced under. A row
+    with no `embedder` field (written before provenance tracking existed)
+    counts as UNKNOWN_EMBEDDER, not as "matches the current run" — its
+    provider is genuinely unknowable, not assumed compatible.
+    """
+    done_keys: set[tuple[str, str]] = set()
+    existing_embedders: set[str] = set()
+    if results_path.exists():
+        for line in results_path.read_text().splitlines():
+            if line.strip():
+                rec = json.loads(line)
+                done_keys.add((rec["task"], rec["condition"]))
+                existing_embedders.add(rec.get("embedder", UNKNOWN_EMBEDDER))
+    return done_keys, existing_embedders
+
+
+def check_embedder_provenance(
+    existing_embedders: set[str], effective_embedder: str, results_path: Path
+) -> None:
+    """Hard-stop before appending into a results file whose prior rows came
+    from a different (or unknown) embedding provider — resuming would
+    silently mix incomparable vector spaces into one aggregate.
+    """
+    if existing_embedders and existing_embedders != {effective_embedder}:
+        raise SystemExit(
+            f"{results_path} already has results from "
+            f"{sorted(existing_embedders)}, which differ from this "
+            f"run's embedder {effective_embedder!r}. Resuming into a "
+            "file with a different/unknown provider would mix "
+            "incomparable vector spaces in one aggregate — use a "
+            "different --out directory."
+        )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--conditions", default="lexical,vec,hybrid,budgeted")
@@ -221,7 +300,19 @@ def main() -> None:
 
     ensure_contextbench()
     embedder_url = os.environ.get("OXIDE_EMBED_URL", "")
-    assert embedder_url, "set OXIDE_EMBED_URL (llama.cpp embeddings server)"
+    native_profile = os.environ.get("OXIDE_EMBED_NATIVE", "")
+    assert embedder_url or native_profile, (
+        "set OXIDE_EMBED_URL (llama.cpp embeddings server) or OXIDE_EMBED_NATIVE "
+        "(in-process fastembed profile, native-embed build)"
+    )
+    # Rust's own precedence picks the HTTP URL over OXIDE_EMBED_NATIVE
+    # (embeddings.rs::open_embedder) — a leftover OXIDE_EMBED_URL from an
+    # earlier run would silently evaluate the wrong embedder while this
+    # script still labels results with the profile the caller intended.
+    assert not (embedder_url and native_profile), (
+        f"both OXIDE_EMBED_URL={embedder_url!r} and OXIDE_EMBED_NATIVE={native_profile!r} "
+        "set — ambiguous, unset one (oxide prefers the HTTP URL)"
+    )
 
     if args.instances:
         # Pin mode: load unbounded, then filter; per-repo sampling would
@@ -245,14 +336,11 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     results_path = out_dir / "cb_results.jsonl"
 
-    done_keys = set()
-    if results_path.exists():
-        for line in results_path.read_text().splitlines():
-            if line.strip():
-                rec = json.loads(line)
-                done_keys.add((rec["task"], rec["condition"]))
+    done_keys, existing_embedders = load_existing_progress(results_path)
 
     agg = defaultdict(lambda: defaultdict(list))
+    embedder_verified = False
+    effective_embedder = None
     with results_path.open("a") as sink:
         for i, row in enumerate(tasks):
             key_prefix = row["instance_id"]
@@ -262,6 +350,14 @@ def main() -> None:
             try:
                 repo_dir = ensure_repo_checkout(row["repo_url"], row["base_commit"])
                 index_repo(repo_dir, embedder_url)
+                if not embedder_verified:
+                    effective_embedder = verify_embedder_took_effect(
+                        repo_dir, want_native=bool(native_profile)
+                    )
+                    check_embedder_provenance(existing_embedders, effective_embedder, results_path)
+                    embedder_verified = True
+            except SystemExit:
+                raise
             except Exception as e:
                 print(f"[{i+1}/{len(tasks)}] SKIP {row['instance_id']}: {e}")
                 continue
@@ -278,6 +374,7 @@ def main() -> None:
                     "repo": row["repo"],
                     "language": row["language"],
                     "condition": cond,
+                    "embedder": effective_embedder,
                     "items": len(items),
                     "used_tokens": used_tokens,
                     "retrieve_s": round(time.time() - t0, 2),
