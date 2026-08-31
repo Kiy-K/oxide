@@ -345,7 +345,12 @@ def main() -> None:
         for i, row in enumerate(tasks):
             key_prefix = row["instance_id"]
             todo = [c for c in args.conditions.split(",") if (key_prefix, c) not in done_keys]
-            if not todo:
+            # A row with nothing left to do is normally skipped outright —
+            # but not before provenance has been checked at least once: if
+            # every row's conditions are already done, skipping unconditionally
+            # here would let the whole run no-op without ever validating that
+            # results_path's existing rows match this run's provider.
+            if not todo and embedder_verified:
                 continue
             try:
                 repo_dir = ensure_repo_checkout(row["repo_url"], row["base_commit"])
@@ -360,6 +365,8 @@ def main() -> None:
                 raise
             except Exception as e:
                 print(f"[{i+1}/{len(tasks)}] SKIP {row['instance_id']}: {e}")
+                continue
+            if not todo:
                 continue
             stats = sh([str(ROOT / "target/release/oxide"), "stats"], cwd=repo_dir)
             if "symbols:    0" in stats.stdout:

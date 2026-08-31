@@ -89,3 +89,50 @@ def test_end_to_end_resume_into_mixed_provider_file_is_rejected(tmp_path):
     assert ("t1", "hybrid") in done_keys  # would otherwise be skipped as already-done
     with pytest.raises(SystemExit):
         cb.check_embedder_provenance(existing_embedders, "native:bge-small-en-v1.5", results_path)
+
+
+def test_main_validates_provenance_even_when_every_task_is_already_done(tmp_path, monkeypatch):
+    """Closes the remaining resume gap: when every (task, condition) pair a
+    run would touch is already recorded, the old control flow `continue`d
+    before ever indexing/verifying anything, so a mismatched (or legacy,
+    unknown-provider) results file was never actually checked. main() must
+    still index+verify against the first task and hard-stop, instead of
+    quietly finishing as a no-op.
+    """
+    out_dir = tmp_path / "out"
+    out_dir.mkdir()
+    results_path = out_dir / "cb_results.jsonl"
+    conditions = ["lexical", "vec", "hybrid", "budgeted"]
+    # Every condition for the only task main() will see is already done,
+    # under a provider this run does not use.
+    _write_jsonl(
+        results_path,
+        [{"task": "fake-1", "condition": c, "embedder": "http:qwen3-Q8_0@u"} for c in conditions],
+    )
+    before = results_path.read_text()
+
+    fake_task = {
+        "instance_id": "fake-1",
+        "repo": "acme/widget",
+        "repo_url": "https://example.invalid/acme/widget.git",
+        "base_commit": "deadbeef",
+        "language": "python",
+        "problem_statement": "n/a",
+    }
+    monkeypatch.setattr(cb, "load_tasks", lambda *a, **k: [fake_task])
+    monkeypatch.setattr(cb, "ensure_repo_checkout", lambda *a, **k: tmp_path / "repo")
+    monkeypatch.setattr(cb, "index_repo", lambda *a, **k: None)
+    monkeypatch.setattr(cb, "verify_embedder_took_effect", lambda *a, **k: "native:bge-small-en-v1.5")
+    monkeypatch.setenv("OXIDE_EMBED_NATIVE", "bge-small-en-v1.5")
+    monkeypatch.delenv("OXIDE_EMBED_URL", raising=False)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["contextbench_run.py", "--out", str(out_dir), "--conditions", ",".join(conditions)],
+    )
+
+    with pytest.raises(SystemExit):
+        cb.main()
+
+    # Nothing was appended before (or instead of) the hard stop.
+    assert results_path.read_text() == before
