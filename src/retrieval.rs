@@ -403,7 +403,7 @@ impl<'a> RetrievalEngine<'a> {
 
         // ---- structural expansion ----
         let base_scores = rrf.clone();
-        if opts.expand && !hits.is_empty() {
+        if opts.expand && opts.retrieval_mode != RetrievalMode::Fast && !hits.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
             let strong: Vec<&Symbol> = hits
                 .iter()
@@ -912,6 +912,21 @@ mod tests {
             .find(|h| h.symbol.name == "test_retry_policy_expires")
             .unwrap();
         assert!(test_hit.reasons.iter().any(|r| r.contains("test←")));
+
+        let fast_hits = engine
+            .search(
+                "RetryPolicy",
+                &SearchOptions {
+                    retrieval_mode: RetrievalMode::Fast,
+                    ..opts
+                },
+            )
+            .unwrap();
+        assert!(fast_hits.iter().all(|h| {
+            h.reasons
+                .iter()
+                .all(|reason| !reason.starts_with("uses←") && !reason.starts_with("test←"))
+        }));
     }
 
     #[test]
