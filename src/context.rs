@@ -81,7 +81,7 @@ impl Default for ContextOptions {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 struct Candidate {
     symbol: Symbol,
     score: f32,
@@ -281,10 +281,24 @@ pub fn build_context(
 
     // ---- optional reranker (Quality mode only) ---------------------------
     // Downstream stage over the merged, deduped candidate pool — deliberately
-    // not part of indexing, and not wired to a real model yet. `rerank`
+    // not part of indexing, and not wired to a real model. `rerank`
     // only ever adjusts `Candidate.score`; role ordering, the relevance
     // floor, and budgeted packing below already consume `score` as-is, so a
     // future cross-encoder/LLM reranker slots in here with no other changes.
+    // See `rerank_candidates`'s doc comment: a real implementation was
+    // already tried here and rejected (docs/reranker-eval/README.md).
+    //
+    // `OXIDE_DEBUG_DUMP_KEPT`, if set, writes this exact pre-allocation
+    // `kept` pool to a file as JSON — a general candidate-pool diagnostic
+    // (not reranker-specific): neither a huge token budget nor `items ∪
+    // omitted` in the final pack is faithful to it, since the per-file
+    // and role diversity caps below are independent of the token budget
+    // and still drop `kept` members regardless of how large it is.
+    if let Ok(path) = std::env::var("OXIDE_DEBUG_DUMP_KEPT") {
+        if let Ok(json) = serde_json::to_string(&kept) {
+            let _ = std::fs::write(&path, json);
+        }
+    }
     if opts.retrieval_mode.rerank() {
         rerank_candidates(query, &mut kept);
     }
@@ -535,10 +549,22 @@ fn is_test_symbol(s: &Symbol) -> bool {
 }
 
 /// Reranker-ready hook (Quality mode): a pass-through today. Kept as a real
-/// function with the exact signature a scoring reranker needs — `query` plus
-/// mutable access to each candidate's `score` — so wiring one in later is a
-/// body change here, not a new call site or a change to any downstream
-/// ordering/packing logic.
+/// function with the exact signature a scoring reranker needs — `query`
+/// plus mutable access to each candidate's `score` — so wiring one in later
+/// is a body change here, not a new call site or a change to any
+/// downstream ordering/packing logic.
+///
+/// A local-reranker experiment (BGE-reranker-v2-m3, MS MARCO MiniLM-L6-v2)
+/// already ran against this exact hook and was rejected for v0.1: no
+/// quality improvement over this no-op on the pinned Tier A set, and
+/// BGE-v2-m3's CPU latency (~36s/query) was independently disqualifying
+/// for a synchronous CLI. See `docs/reranker-eval/README.md` for the full
+/// methodology and raw evidence. Re-implementing this must not overwrite
+/// `Candidate.score` with an unrecalibrated reranker score — the relevance
+/// floor below is anchored to the fused BM25/cosine scale, and comparing a
+/// reranker's own score against it directly reproduced a prior evidence-
+/// loss regression (empirically confirmed in that experiment). See RET-005
+/// in `docs/review/retrieval-and-config.md`.
 fn rerank_candidates(_query: &str, _candidates: &mut [Candidate]) {}
 
 fn overlap_ratio(a: &Symbol, b: &Symbol) -> f32 {
@@ -1227,5 +1253,59 @@ mod tests {
             !ids.contains(&"src/both.py:__module__"),
             "module with concrete sibling must be subsumed: {ids:?}"
         );
+    }
+
+    /// `OXIDE_DEBUG_DUMP_KEPT` writes the pre-allocation candidate pool
+    /// (`kept`) to a file as JSON — useful for any evaluation/debugging
+    /// that needs the real candidates feeding role/floor/budget allocation,
+    /// since neither a huge token budget nor `items ∪ omitted` in the final
+    /// pack is faithful to it (both still lose members to the
+    /// budget-independent per-file/role diversity caps). Used by the
+    /// (rejected) local-reranker experiment, docs/reranker-eval/README.md,
+    /// but has no dependency on reranking — it stays as a general
+    /// candidate-pool diagnostic. Pins that the dump fires whenever the env
+    /// var is set, and stays silent otherwise.
+    #[test]
+    fn debug_dump_kept_writes_exactly_when_env_var_set() {
+        let store = seed(
+            "src/a.py",
+            &[sym(
+                "src/a.py",
+                "widget",
+                SymbolKind::Function,
+                "def widget(): pass",
+            )],
+        );
+        let tmp = tempfile::tempdir().unwrap();
+        let dump = tempfile::NamedTempFile::new().unwrap();
+        std::fs::remove_file(dump.path()).ok(); // exists() must reflect build_context, not setup
+
+        let pack_without = build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "widget",
+            &ContextOptions::default(),
+        )
+        .unwrap();
+        assert!(!pack_without.items.is_empty());
+        assert!(!dump.path().exists(), "no dump without the env var");
+
+        // SAFETY (test-only): no other test reads this var.
+        unsafe { std::env::set_var("OXIDE_DEBUG_DUMP_KEPT", dump.path()) };
+        build_context(
+            tmp.path(),
+            &store,
+            &HashedEmbedder::default(),
+            "widget",
+            &ContextOptions::default(),
+        )
+        .unwrap();
+        unsafe { std::env::remove_var("OXIDE_DEBUG_DUMP_KEPT") };
+
+        let dumped: Vec<serde_json::Value> =
+            serde_json::from_str(&std::fs::read_to_string(dump.path()).unwrap()).unwrap();
+        assert_eq!(dumped.len(), 1);
+        assert_eq!(dumped[0]["symbol"]["qualified_name"], "widget");
     }
 }

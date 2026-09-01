@@ -1,0 +1,278 @@
+{
+  "bge-v2-m3": [
+    {
+      "model": "bge-v2-m3",
+      "event": "loaded",
+      "load_seconds": 13.744
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__36989b6d",
+      "n": 14,
+      "seconds": 35.969
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__2e76c8cd",
+      "n": 13,
+      "seconds": 32.316
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__88e1ffd3",
+      "n": 11,
+      "seconds": 28.802
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__07f7e78f",
+      "n": 13,
+      "seconds": 36.399
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__9cca0774",
+      "n": 14,
+      "seconds": 39.949
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275",
+      "n": 15,
+      "seconds": 41.597
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__23963510",
+      "n": 13,
+      "seconds": 37.576
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__10750f29",
+      "n": 14,
+      "seconds": 39.287
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1409977d",
+      "n": 14,
+      "seconds": 40.082
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__51b4c299",
+      "n": 14,
+      "seconds": 38.677
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__049a7048",
+      "n": 13,
+      "seconds": 37.888
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__da598baa",
+      "n": 12,
+      "seconds": 33.283
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1397ea97",
+      "n": 13,
+      "seconds": 36.91
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__237decf1",
+      "n": 13,
+      "seconds": 36.718
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__4b7ae9d9",
+      "n": 10,
+      "seconds": 29.109
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__0eecae1e",
+      "n": 11,
+      "seconds": 30.814
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__60068eb0",
+      "n": 14,
+      "seconds": 39.713
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-PolyBench__typescript__evolution__feature__41cd3842",
+      "n": 14,
+      "seconds": 39.663
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "SWE-PolyBench__typescript__maintenance__bugfix__42165c4e",
+      "n": 11,
+      "seconds": 31.891
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "Multi-SWE-Bench__typescript__maintenance__bugfix__2fb50735",
+      "n": 15,
+      "seconds": 27.284
+    },
+    {
+      "model": "bge-v2-m3",
+      "instance_id": "Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70",
+      "n": 15,
+      "seconds": 42.704
+    },
+    {
+      "model": "bge-v2-m3",
+      "event": "done",
+      "peak_rss_mb": 2855.6
+    }
+  ],
+  "minilm-l6": [
+    {
+      "model": "minilm-l6",
+      "event": "loaded",
+      "load_seconds": 0.544
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__36989b6d",
+      "n": 14,
+      "seconds": 0.61
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__2e76c8cd",
+      "n": 13,
+      "seconds": 0.586
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__88e1ffd3",
+      "n": 11,
+      "seconds": 0.472
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__07f7e78f",
+      "n": 13,
+      "seconds": 0.604
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__9cca0774",
+      "n": 14,
+      "seconds": 0.576
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275",
+      "n": 15,
+      "seconds": 0.567
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__23963510",
+      "n": 13,
+      "seconds": 0.493
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__10750f29",
+      "n": 14,
+      "seconds": 0.539
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1409977d",
+      "n": 14,
+      "seconds": 0.534
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__51b4c299",
+      "n": 14,
+      "seconds": 0.633
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__049a7048",
+      "n": 13,
+      "seconds": 0.605
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__da598baa",
+      "n": 12,
+      "seconds": 0.56
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__1397ea97",
+      "n": 13,
+      "seconds": 0.613
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__237decf1",
+      "n": 13,
+      "seconds": 0.605
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__4b7ae9d9",
+      "n": 10,
+      "seconds": 0.462
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__0eecae1e",
+      "n": 11,
+      "seconds": 0.5
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-Bench-Verified__python__maintenance__bugfix__60068eb0",
+      "n": 14,
+      "seconds": 0.56
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-PolyBench__typescript__evolution__feature__41cd3842",
+      "n": 14,
+      "seconds": 1.384
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "SWE-PolyBench__typescript__maintenance__bugfix__42165c4e",
+      "n": 11,
+      "seconds": 0.415
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "Multi-SWE-Bench__typescript__maintenance__bugfix__2fb50735",
+      "n": 15,
+      "seconds": 0.669
+    },
+    {
+      "model": "minilm-l6",
+      "instance_id": "Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70",
+      "n": 15,
+      "seconds": 0.684
+    },
+    {
+      "model": "minilm-l6",
+      "event": "done",
+      "peak_rss_mb": 1180.5
+    }
+  ]
+}

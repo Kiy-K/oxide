@@ -1,0 +1,62 @@
+[
+  {
+    "id": "src/generators/css-filter.ts#formatInversionFixes.shouldIgnoreProp",
+    "text": "src/generators/css-filter.ts :: formatInversionFixes.shouldIgnoreProp\nrelation context: lexical=20.989; semantic=0.541\n\n        shouldIgnoreProp: (prop, value) => {\n            if (prop === 'css') {\n                return !value;\n            }\n            return !(Array.isArray(value) && value.length > 0);\n        }"
+  },
+  {
+    "id": "src/inject/dynamic-theme/modify-css.ts#shouldIgnoreImage",
+    "text": "src/inject/dynamic-theme/modify-css.ts :: shouldIgnoreImage\nrelation context: lexical=15.876; semantic=0.509\n\nfunction shouldIgnoreImage(selectorText: string, selectors: string[]) {\n    if (!selectorText || selectors.length === 0) {\n        return false;\n    }\n    if (selectors.some((s) => s === '*')) {\n        return true;\n    }\n    const ruleSelectors = selectorText.split(/,\\s*/g);\n    for (let i = 0; i < selectors.length; i++) {\n        const ignoredSelector = selectors[i];\n        if (ruleSelectors.some((s) => s === ignoredSelector)) {\n            return true;\n        }\n    }\n    return false;\n}"
+  },
+  {
+    "id": "src/generators/dynamic-theme.ts#formatDynamicThemeFixes.shouldIgnoreProp",
+    "text": "src/generators/dynamic-theme.ts :: formatDynamicThemeFixes.shouldIgnoreProp\nrelation context: lexical=20.352; semantic=0.494\n\n        shouldIgnoreProp: (prop, value) => {\n            if (prop === 'css') {\n                return !value;\n            }\n            return !(Array.isArray(value) && value.length > 0);\n        },"
+  },
+  {
+    "id": "src/generators/css-filter.ts#formatInversionFixes.formatPropValue",
+    "text": "src/generators/css-filter.ts :: formatInversionFixes.formatPropValue\nrelation context: lexical=14.697; semantic=0.512\n\n        formatPropValue: (prop, value) => {\n            if (prop === 'css') {\n                return (value as string).trim().replace(/\\n+/g, '\\n');\n            }\n            return formatArray(value as string[]).trim();\n        },"
+  },
+  {
+    "id": "src/generators/utils/parse.ts#parseSiteFixConfig",
+    "text": "src/generators/utils/parse.ts :: parseSiteFixConfig\nrelation context: lexical=18.298; semantic=0.495\n\nexport function parseSiteFixConfig<T extends SiteProps>(text: string, options: SitesFixesParserOptions<T>, recordStart: number, recordEnd: number): T {\n    const block = text.substring(recordStart, recordEnd);\n    return parseSitesFixesConfig<T>(block, options)[0];\n}"
+  },
+  {
+    "id": "src/generators/css-filter.ts#parseInversionFixes",
+    "text": "src/generators/css-filter.ts :: parseInversionFixes\nrelation context: lexical=11.311; semantic=0.570\n\nexport function parseInversionFixes(text: string) {\n    return parseSitesFixesConfig<InversionFix>(text, {\n        commands: Object.keys(inversionFixesCommands),\n        getCommandPropName: (command) => inversionFixesCommands[command],\n        parseCommandValue: (command, value) => {\n            if (command === 'CSS') {\n                return value.trim();\n            }\n            return parseArray(value);\n        },\n    });\n}"
+  },
+  {
+    "id": "src/inject/dynamic-theme/inline-style.ts#shouldIgnoreInlineStyle",
+    "text": "src/inject/dynamic-theme/inline-style.ts :: shouldIgnoreInlineStyle\nrelation context: lexical=15.727; semantic=0.487\n\nfunction shouldIgnoreInlineStyle(element: HTMLElement, selectors: string[]) {\n    for (let i = 0, len = selectors.length; i < len; i++) {\n        const ingnoredSelector = selectors[i];\n        if (element.matches(ingnoredSelector)) {\n            return true;\n        }\n    }\n    return false;\n}"
+  },
+  {
+    "id": "src/generators/css-filter.ts#getInversionFixesFor",
+    "text": "src/generators/css-filter.ts :: getInversionFixesFor\nrelation context: lexical=14.068; semantic=0.492\n\nexport function getInversionFixesFor(url: string, fixes: string, index: SitePropsIndex<InversionFix>): InversionFix {\n    const inversionFixes = getSitesFixesFor<InversionFix>(url, fixes, index, {\n        commands: Object.keys(inversionFixesCommands),\n        getCommandPropName: (command) => inversionFixesCommands[command],\n        parseCommandValue: (command, value) => {\n            if (command === 'CSS') {\n                return value.trim();\n            }\n            return parseArray(value);\n        },\n    });\n\n    const common = {\n        url: inversionFixes[0].url,\n        invert: inversionFixes[0].invert || [],\n        noinvert: inversionFixes[0].noinvert || [],\n        removebg: inversionFixes[0].removebg || [],\n        css: inversionFixes[0].css || '',\n    };\n\n    if (url) {\n        // Search for match with given URL\n        const matches = inversionFixes\n            .slice(1)\n            .filter((s) => isURLInList(url, s.url))\n            .sort((a, b) => b.url[0].length - a.url[0].length);\n        if (matches.length > 0) {\n            const found = matches[0];\n            return {\n                url: found.url,\n                invert: common.invert.concat(found.invert || []),\n                noinvert: common.noinvert.concat(found.noinvert || []),\n                removebg: common.removebg.concat(found.removebg || []),\n                css: [common.css, found.css].filter((s) => s).join('\\n'),\n            };\n        }\n    }\n    return common;\n}"
+  },
+  {
+    "id": "src/generators/utils/parse.ts#getSitesFixesFor",
+    "text": "src/generators/utils/parse.ts :: getSitesFixesFor\nrelation context: lexical=15.189; semantic=0.481\n\nexport function getSitesFixesFor<T extends SiteProps>(url: string, text: string, index: SitePropsIndex<T>, options: SitesFixesParserOptions<T>): T[] {\n    const records: T[] = [];\n    let recordIds: number[] = [];\n    const domain = getDomain(url);\n    for (const pattern of Object.keys(index.domainPatterns)) {\n        if (isURLMatched(url, pattern)) {\n            recordIds = recordIds.concat(index.domainPatterns[pattern]);\n        }\n    }\n\n    const labels = domain.split('.');\n    for (let i = 0; i < labels.length; i++) {\n        const substring = labels.slice(i).join('.');\n        if (index.domains[substring] && isURLMatched(url, substring)) {\n            recordIds = recordIds.concat(index.domains[substring]);\n        }\n    }\n\n    const set = new Set();\n    for (const id of recordIds) {\n        if (set.has(id)) {\n            // This record was already added to the list\n            continue;\n        }\n        set.add(id);\n        if (!index.cache[id]) {\n            const [start, end] = decodeOffset(index.offsets, id);\n            index.cache[id] = parseSiteFixConfig<T>(text, options, start, end);\n        }\n        records.push(index.cache[id]);\n    }\n\n    return records;\n}"
+  },
+  {
+    "id": "src/generators/static-theme.ts#formatStaticThemes.shouldIgnoreProp",
+    "text": "src/generators/static-theme.ts :: formatStaticThemes.shouldIgnoreProp\nrelation context: lexical=13.979; semantic=0.486\n\n        shouldIgnoreProp: (prop, value) => {\n            if (prop === 'noCommon') {\n                return !value;\n            }\n            return !(Array.isArray(value) && value.length > 0);\n        }"
+  },
+  {
+    "id": "src/generators/dynamic-theme.ts#getDynamicThemeFixesFor",
+    "text": "src/generators/dynamic-theme.ts :: getDynamicThemeFixesFor\nrelation context: lexical=20.510; semantic=0.437\n\nexport function getDynamicThemeFixesFor(url: string, frameURL: string, text: string, index: SitePropsIndex<DynamicThemeFix>, enabledForPDF: boolean) {\n    const fixes = getSitesFixesFor(frameURL || url, text, index, {\n        commands: Object.keys(dynamicThemeFixesCommands),\n        getCommandPropName: (command) => dynamicThemeFixesCommands[command],\n        parseCommandValue: (command, value) => {\n            if (command === 'CSS') {\n                return value.trim();\n            }\n            return parseArray(value);\n        },\n    });\n\n    if (fixes.length === 0 || fixes[0].url[0] !== '*') {\n        return null;\n    }\n    const genericFix = fixes[0];\n\n    const common = {\n        url: genericFix.url,\n        invert: genericFix.invert || [],\n        css: genericFix.css || '',\n        ignoreInlineStyle: genericFix.ignoreInlineStyle || [],\n        ignoreImageAnalysis: genericFix.ignoreImageAnalysis || [],\n    };\n    if (enabledForPDF) {\n        common.css += '\\nembed[type=\"application/pdf\"] { filter: invert(100%) contrast(90%); }';\n    }\n    const sortedBySpecificity = fixes\n        .slice(1)\n        .map((theme) => {\n            return {\n                specificity: isURLInList(frameURL || url, theme.url) ? theme.url[0].length : 0,\n                theme\n            };\n        })\n        .filter(({specificity}) => specificity > 0)\n        .sort((a, b) => b.specificity - a.specificity);\n\n    if (sortedBySpecificity.length === 0) {\n        return common;\n    }\n\n    const match = sortedBySpecificity[0].theme;\n\n    return {\n        url: match.url,\n        invert: common.invert.concat(match.invert || []),\n        css: [common.css, match.css].filter((s) => s).join('\\n'),\n        ignoreInlineStyle: common.ignoreInlineStyle.concat(match.ignoreInlineStyle || []),\n        ignoreImageAnalysis: common.ignoreImageAnalysis.concat(match.ignoreImageAnalysis || []),\n    };\n}"
+  },
+  {
+    "id": "src/generators/utils/parse.ts#parseSitesFixesConfig",
+    "text": "src/generators/utils/parse.ts :: parseSitesFixesConfig\nrelation context: lexical=16.347; semantic=0.458\n\nexport function parseSitesFixesConfig<T extends SiteProps>(text: string, options: SitesFixesParserOptions<T>) {\n    const sites: T[] = [];\n\n    const blocks = text.replace(/\\r/g, '').split(/^\\s*={2,}\\s*$/gm);\n    blocks.forEach((block) => {\n        const lines = block.split('\\n');\n        const commandIndices: number[] = [];\n        lines.forEach((ln, i) => {\n            if (ln.match(/^[A-Z]+(\\s[A-Z]+){0,2}$/)) {\n                commandIndices.push(i);\n            }\n        });\n\n        if (commandIndices.length === 0) {\n            return;\n        }\n\n        const siteFix = {\n            url: parseArray(lines.slice(0, commandIndices[0]).join('\\n')),\n        } as T;\n\n        commandIndices.forEach((commandIndex, i) => {\n            const command = lines[commandIndex].trim();\n            const valueText = lines.slice(commandIndex + 1, i === commandIndices.length - 1 ? lines.length : commandIndices[i + 1]).join('\\n');\n            const prop = options.getCommandPropName(command);\n            if (!prop) {\n                return;\n            }\n            const value = options.parseCommandValue(command, valueText);\n            siteFix[prop] = value;\n        });\n\n        sites.push(siteFix);\n    });\n\n    return sites;\n}"
+  },
+  {
+    "id": "src/generators/dynamic-theme.ts#parseDynamicThemeFixes",
+    "text": "src/generators/dynamic-theme.ts :: parseDynamicThemeFixes\nrelation context: lexical=10.474; semantic=0.499\n\nexport function parseDynamicThemeFixes(text: string) {\n    return parseSitesFixesConfig<DynamicThemeFix>(text, {\n        commands: Object.keys(dynamicThemeFixesCommands),\n        getCommandPropName: (command) => dynamicThemeFixesCommands[command],\n        parseCommandValue: (command, value) => {\n            if (command === 'CSS') {\n                return value.trim();\n            }\n            return parseArray(value);\n        },\n    });\n}"
+  },
+  {
+    "id": "src/generators/css-filter.ts#formatInversionFixes.getPropCommandName",
+    "text": "src/generators/css-filter.ts :: formatInversionFixes.getPropCommandName\nrelation context: sibling\u2190formatInversionFixes.shouldIgnoreProp\n\n        getPropCommandName: (prop) => Object.entries(inversionFixesCommands).find(([, p]) => p === prop)[0],"
+  },
+  {
+    "id": "src/utils/platform.ts#isChromium",
+    "text": "src/utils/platform.ts :: isChromium\nrelation context: imported-definition\u2190formatInversionFixes.shouldIgnoreProp\n\nexport const isChromium = userAgent.includes('chrome') || userAgent.includes('chromium');"
+  }
+]

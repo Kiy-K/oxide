@@ -124,3 +124,53 @@ elsewhere that duplicates what `RetrievalMode` already owns.
 diverges from the table those methods define.
 
 **Exceptions:** none stated.
+
+---
+
+### RET-005 — A reranker score must never overwrite a fused score without recalibrating every downstream threshold
+**Severity:** BLOCKER · **Scope:** any future `rerank_candidates`
+implementation in `context.rs`, and any other code that assigns an
+externally-produced score onto `Candidate.score` or `SearchHit.score`.
+
+**Invariant:** `Candidate.score` is fused-scale (BM25/cosine fusion,
+`retrieval.rs`), and `build_context`'s relevance floor compares candidate
+scores against a threshold anchored to that same scale (the original top
+*seed* score × `CONTEXT_RELEVANCE_FLOOR_FRACTION`). A reranker's own score
+— whatever its native range (sigmoid `[0,1]`, raw classifier logits,
+generative yes/no log-probabilities, ...) — must never be written directly
+into `Candidate.score` (or otherwise reach a downstream consumer of the
+fused scale) unless that consumer is recalibrated to the new score space
+first. Doing so silently breaks any threshold, cap, or comparison built
+against the old scale.
+
+**Why this is BLOCKER, not MAJOR:** it fails silently. Nothing panics,
+`cargo test`/`clippy` stay green, and the output still looks like a
+plausible context pack — it's just missing evidence a human or agent
+needed, with no error surfaced anywhere. This exact failure mode caused a
+real prior regression (an earlier Jina-reranker integration collapsing 3
+relevant symbols/383 tokens of context down to 1 symbol/36 tokens) and was
+independently reproduced under controlled conditions in
+`docs/reranker-eval/README.md` (MiniLM-L6 in "raw" mode: 8 gold-relevant
+symbols lost across 6/21 pinned Tier A tasks) — two different rerankers,
+same mechanism, both silent.
+
+**What constitutes a violation:** any diff that assigns an external
+model's score directly to `Candidate.score`/`SearchHit.score` without
+either (a) rescaling/normalizing it onto the fused scale first (e.g. rank-
+based multiset transplant — reorder candidates by the new score, then
+reassign the *original* fused score values in that new order, so the
+floor's pass/fail count is provably unchanged — see the `transplant` mode
+in `docs/reranker-eval/README.md` for a worked example), or (b) explicitly
+recalibrating the floor (and any other fused-scale consumer) to the
+reranker's own scale, with evidence that recalibration was tested against
+the benchmark gate, not just asserted in a comment.
+
+**Evidence required:** the score-assignment diff hunk, plus either the
+rescaling logic or the recalibrated-threshold diff and its benchmark
+comparison. A PR that adds reranker scoring with neither is the finding —
+don't wait to see if it happens to work on the diff's own test fixtures.
+
+**Exceptions:** test code that directly constructs `Candidate`/`SearchHit`
+values with hand-picked scores to test ordering logic in isolation (no
+external model score ever crosses the fused/reranker scale boundary
+there).
