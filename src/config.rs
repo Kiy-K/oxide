@@ -21,3 +21,11 @@ pub(crate) const CONTEXT_EXPANSION_TOTAL: usize = 2;
 pub(crate) const CONTEXT_MAX_ITEMS_PER_FILE: usize = 2;
 pub(crate) const CONTEXT_MAX_PRIMARIES: usize = 5;
 pub(crate) const CONTEXT_MAX_TESTS: usize = 1;
+
+/// Term-coverage corroboration boost (experiment, see
+/// docs/term-coverage-eval/README.md). `0.0` is a no-op — byte-identical to
+/// pre-experiment fusion scoring — and is overridden only via
+/// `$OXIDE_TERM_COVERAGE_ALPHA` for the experiment itself. Promoting a
+/// nonzero value to the shipped default here requires the same fresh
+/// canonical-benchmark re-baseline as any other constant in this file.
+pub(crate) const TERM_COVERAGE_ALPHA_DEFAULT: f32 = 0.0;
