@@ -34,29 +34,28 @@ directly comparable the way native's single-process numbers are.
 
 | Metric | qwen3-Q8_0 (HTTP) | embeddinggemma-300m fp32 (native) | embeddinggemma-300m-q4 (native) | minilm-l6-v2 (native) |
 |---|---|---|---|---|
-| Cold init (client/process) | 119.7ms (client only; server boot below) | 2347ms | 17563ms | 10750ms |
-| `embed_query` p50 | ~58ms* | 23.19ms | 22.43ms | **2.40ms** |
-| `embed_query` p95 | ~75ms* | 31.99ms | 24.58ms | **2.80ms** |
-| 1-symbol incremental, per-item | 211.8ms* | 108.98ms | 54.95ms | 6.78ms |
-| 10-symbol incremental, per-item | 192.85ms* | 37.70ms | 41.93ms | 3.88ms |
-| 50-symbol incremental, per-item | 236.70ms* | 34.61ms | 42.56ms | 3.80ms |
-| 100-symbol incremental, per-item | 258.42ms* | 36.28ms | 43.44ms | 3.91ms |
-| Batch-64 throughput, per-item (documented, `docs/indexing-rebuild-scopes/README.md`) | **56ms** (authoritative — see note) | ~41.5ms (24.1 items/s @ n=500) | ~50.3ms (19.9 items/s @ n=500) | 4.2ms (239.7 items/s @ n=500) |
+| Cold init (client/process) | 200.9ms (client only; server boot below) | 2347ms | 17563ms | 10750ms |
+| `embed_query` p50 | 38.56ms | 23.19ms | 22.43ms | **2.40ms** |
+| `embed_query` p95 | 41.36ms | 31.99ms | 24.58ms | **2.80ms** |
+| 1-symbol incremental, per-item | 121.96ms | 108.98ms | 54.95ms | 6.78ms |
+| 10-symbol incremental, per-item | 98.17ms | 37.70ms | 41.93ms | 3.88ms |
+| 50-symbol incremental, per-item | 105.27ms | 34.61ms | 42.56ms | 3.80ms |
+| 100-symbol incremental, per-item | 105.25ms | 36.28ms | 43.44ms | 3.91ms |
+| Batch-64 throughput, per-item (documented, `docs/indexing-rebuild-scopes/README.md`) | **56ms** | ~41.5ms (24.1 items/s @ n=500) | ~50.3ms (19.9 items/s @ n=500) | 4.2ms (239.7 items/s @ n=500) |
 | Peak RSS | ~140–260MB (server process, `ps`, varies by measurement point) | 1601MB | 984MB | 633MB |
 | Model/cache size on disk | 0 (server-managed) | 1.2GB | +0.2GB (shares fp32's HF repo) | 87MB |
 
-\* The HTTP numbers marked `*` were measured in the same session
-immediately after three back-to-back native ONNX runs saturated all cores;
-a direct curl re-check at the same moment showed batch-64 throughput at
-~85ms/item, i.e. ~1.5x worse than the 56ms/item figure already measured and
-documented independently in `docs/indexing-rebuild-scopes/README.md` under
-a quiescent system. **The 56ms/item figure is the one to trust** for
-comparison purposes; the `*` numbers are kept here to show relative
-ordering held anyway (Qwen's HTTP round-trip cost dominates every native
-option's in-process call at any recent measurement), not as absolute truth.
-This is a session-environment artifact, not a per-model regression — worth
-knowing if this comparison is ever rerun: don't stack heavy native-model
-benchmarking immediately before HTTP benchmarking on a shared box.
+The `embed_query`/incremental rows above were measured twice: once
+immediately after three back-to-back native ONNX runs had saturated every
+core (a contended run — those numbers were discarded, not reported here),
+and once rerun alone on an idle machine (5.9GB free, no other `oxide`
+process running) — the numbers in the table are the clean, idle-machine
+rerun (`OXIDE_PROBE_SKIP_THROUGHPUT=1
+./target/release/examples/embedding_profile_probe_http`). Do not stack
+heavy native-model benchmarking immediately before HTTP benchmarking on a
+shared box if this comparison is ever rerun — the contended numbers were
+~1.5–2x worse across the board and would have understated Qwen's actual
+per-query cost relative to the native profiles.
 
 Qwen3 server cold start (separate process boundary, `scripts/embedder.sh
 start`, GGUF weight load from local cache): **6.15s**, ~260MB RSS
@@ -125,18 +124,35 @@ either way at this sample size. A full 21-task automated version of this
 same probe would be needed for a statistically conclusive allocator-vs-retrieval
 split; that is more indexing time (each task potentially reindexing at a
 different pinned `base_commit`, ×2 embedders) than remained in scope here,
-and is named as follow-up work rather than guessed at.
+and is named as follow-up work rather than guessed at. One methodology gap
+worth flagging for whoever builds that full version: this probe's
+`final_hit` check is set membership over the whole final pack, but `R@5`
+(the metric actually showing the regression) is rank-position over the
+first five unique files — a gold file sitting at position 6 of a 7-item
+pack counts as a hit here and a miss in `R@5`. A conclusive version must
+replicate `ranked_files(items)[:5]` exactly, not just check pack membership,
+or it will keep reporting "gold survives" on tasks the metric scores as
+failures.
 
-**Indirect evidence (strong): the effect is Gemma-specific, not
-native/size-general.** MiniLM is native and in-process exactly like Gemma —
-if "native embedder" or "small model" were the cause, MiniLM should show the
+**Indirect evidence: rules out native-runtime as the cause; does not
+cleanly isolate model size.** MiniLM is native and in-process exactly like
+Gemma — if "native embedder" alone were the cause, MiniLM should show the
 same budgeted degradation. It does not; it improves under budget, matching
-Qwen's direction, despite being far smaller and faster than Gemma. This
-rules out two of the three plausible mechanisms the advisor named (a
-native-runtime-specific artifact, or a size-driven quality ceiling) and
-narrows the cause to something particular to Gemma's own score
-distribution or prompt-formatting convention interacting with the
-allocator's `CONTEXT_RELEVANCE_FLOOR_FRACTION = 0.15` (`src/config.rs`) —
+Qwen's direction, despite being far smaller and faster than Gemma. That
+rules out a native-runtime-specific artifact cleanly (same fastembed/ONNX
+path, opposite direction). It does **not** cleanly isolate model size,
+though: MiniLM's own hybrid R@5 (0.556) starts well below Gemma's (0.687),
+so MiniLM has more headroom for the budgeted pipeline's structural
+expansion to add recall — "improves from 0.556" and "degrades from 0.687"
+aren't quite the same experiment. What the evidence *does* support without
+qualification: Qwen (the largest candidate) and MiniLM (the smallest)
+land on the same side — both improve under budget — while only the
+mid-sized Gemma degrades. That is still enough to defeat "the larger model
+is required," since size alone doesn't predict which side of the split a
+model falls on. The likelier candidate mechanism is something particular
+to Gemma's own score distribution or prompt-formatting convention
+interacting with the allocator's `CONTEXT_RELEVANCE_FLOOR_FRACTION = 0.15`
+(`src/config.rs`) —
 a fixed *fraction of the top seed score*, not an absolute threshold. If
 Gemma's cosine-similarity scores for code cluster more tightly around the
 top score than Qwen's or MiniLM's do (a real possibility: Gemma's
@@ -160,10 +176,10 @@ smaller, is direct evidence against that story.
 
 | Profile | Budgeted R@5 | Budgeted hit@5 | `embed_query` p50 | Peak RSS | Disk | Verdict |
 |---|---|---|---|---|---|---|
-| qwen3-Q8_0 | **0.738** | **0.90** | ~56ms/item (batch, authoritative) | ~140–260MB (separate server process) | 0 (server-managed) | **KEEP — default.** Best quality on the metric that matters most (budgeted, since that's what real queries use), reasonable resource cost split into a long-lived server process. |
-| embeddinggemma-300m fp32 | 0.671 | 0.81 | 23ms | 1601MB | 1.2GB | **REJECT for v0.1.** Worse quality than both Qwen and MiniLM on the condition that matters, highest RSS and disk footprint of any candidate, and every `oxide` invocation re-pays a 2.3s cold-init cost the server-based Qwen path doesn't. Its earlier "matches/beats Qwen on hybrid" result doesn't survive contact with the budgeted condition, which is what agents actually consume. |
-| embeddinggemma-300m-q4 | not measured (see below) | not measured | 22ms (comparable to fp32) | 984MB (better than fp32, not dramatically) | +0.2GB | **REJECT for v0.1**, on architecture alone: same representation family as the rejected fp32 profile, worse cold-init (17.6s — CPU int4 dequant setup is *slower* to initialize than fp32, not faster) and worse batch throughput (19.9 vs 24.1 items/s) than fp32. Quantization bought lower RSS, nothing else, on this CPU-only path. Not worth a quality run to confirm what the runtime numbers already rule out. |
-| minilm-l6-v2 | 0.639 | 0.81 | **2.4ms (24x faster than Qwen's HTTP round trip)** | **633MB (best of any native profile)** | **87MB (smallest by far)** | **KEEP — lightweight profile.** Doesn't beat Qwen on quality, but is the only candidate that is simultaneously dramatically cheaper on every runtime axis *and* free of Gemma's budgeted-quality pathology. This is the actual Pareto-frontier lightweight option: nothing tested is both cheaper and better on quality. |
+| qwen3-Q8_0 | **0.738** | **0.90** | 38.56ms (clean, idle-machine rerun) | ~140–260MB (separate server process) | 0 (server-managed) | **KEEP — default.** Best quality on the metric that matters most (budgeted, since that's what real queries use), reasonable resource cost split into a long-lived server process. |
+| embeddinggemma-300m fp32 | 0.671 | 0.81 | 23.19ms | 1601MB | 1.2GB | **REJECT for v0.1.** Worse quality than both Qwen and MiniLM on the condition that matters, highest RSS and disk footprint of any candidate, and every `oxide` invocation re-pays a 2.3s cold-init cost the server-based Qwen path doesn't. Its earlier "matches/beats Qwen on hybrid" result doesn't survive contact with the budgeted condition, which is what agents actually consume. |
+| embeddinggemma-300m-q4 | not measured (see below) | not measured | 22.43ms (comparable to fp32) | 984MB (better than fp32, not dramatically) | +0.2GB | **REJECT for v0.1**, on architecture alone: same representation family as the rejected fp32 profile, worse cold-init (17.6s — CPU int4 dequant setup is *slower* to initialize than fp32, not faster) and worse batch throughput (19.9 vs 24.1 items/s) than fp32. Quantization bought lower RSS, nothing else, on this CPU-only path. Not worth a quality run to confirm what the runtime numbers already rule out. |
+| minilm-l6-v2 | 0.639 | 0.81 | **2.40ms (~16x faster than Qwen's clean `embed_query` p50 of 38.56ms)** | **633MB (best of any native profile)** | **87MB (smallest by far)** | **KEEP — lightweight profile.** Doesn't beat Qwen on quality, but is the only candidate that is simultaneously dramatically cheaper on every runtime axis *and* free of Gemma's budgeted-quality pathology. This is the actual Pareto-frontier lightweight option: nothing tested is both cheaper and better on quality. |
 
 **Recommended v0.1 profiles**:
 - **Default**: `qwen3-Q8_0` (unchanged). It already wins on the metric OXIDE's

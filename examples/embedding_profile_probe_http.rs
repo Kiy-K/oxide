@@ -78,16 +78,18 @@ fn main() -> anyhow::Result<()> {
         );
     }
 
-    let big: Vec<String> = (0..500).map(sample_doc).collect();
-    let t = Instant::now();
-    let out = embedder.embed_documents(&big);
-    let elapsed = t.elapsed();
-    anyhow::ensure!(out.len() == big.len());
-    println!(
-        "throughput_500_total_ms={:.1} items_per_sec={:.1}",
-        elapsed.as_secs_f64() * 1000.0,
-        500.0 / elapsed.as_secs_f64()
-    );
+    if std::env::var("OXIDE_PROBE_SKIP_THROUGHPUT").is_err() {
+        let big: Vec<String> = (0..500).map(sample_doc).collect();
+        let t = Instant::now();
+        let out = embedder.embed_documents(&big);
+        let elapsed = t.elapsed();
+        anyhow::ensure!(out.len() == big.len());
+        println!(
+            "throughput_500_total_ms={:.1} items_per_sec={:.1}",
+            elapsed.as_secs_f64() * 1000.0,
+            500.0 / elapsed.as_secs_f64()
+        );
+    }
 
     if let Some(kb) = peak_rss_kb() {
         println!("client_peak_rss_mb={:.1}", kb as f64 / 1024.0);
