@@ -15,3 +15,4 @@ pub mod service;
 pub mod structural_relations;
 pub mod symbols;
 pub mod tree_sitter_structural;
+pub mod watcher;

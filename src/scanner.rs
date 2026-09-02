@@ -68,6 +68,25 @@ const DENYLIST_SUFFIXES: &[&str] = &[
     "-gen.py",
 ];
 
+/// Cheap rejection for a repo-relative path that sits under a directory
+/// `scan_repo` would never descend into (denylisted, or hidden the way
+/// `WalkBuilder::hidden(true)` treats any dot-prefixed entry). Used by the
+/// watcher (`src/watcher.rs`) to reject known build/cache/VCS noise without
+/// falling back to a full rescan — a build process writing continuously into
+/// `target/` must never trigger repeated full-tree walks just because those
+/// paths aren't in a cached indexable set.
+pub fn has_denied_ancestor(rel: &Path) -> bool {
+    rel.parent().is_some_and(|parent| {
+        parent.components().any(|c| match c {
+            std::path::Component::Normal(name) => {
+                let name = name.to_str().unwrap_or("");
+                DENYLIST_DIRS.contains(&name) || name.starts_with('.')
+            }
+            _ => false,
+        })
+    })
+}
+
 fn is_denied(path: &Path, is_dir: bool) -> bool {
     let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
         return true;

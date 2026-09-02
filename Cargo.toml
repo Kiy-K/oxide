@@ -21,14 +21,25 @@ tree-sitter-tags = "0.27"
 tree-sitter-python = "0.25"
 tree-sitter-typescript = "0.23"
 fastembed = { version = "6.0.2", default-features = false, features = ["ort-download-binaries-rustls-tls", "hf-hub-rustls-tls"], optional = true }
-# `oxide watch`: native fs events (inotify/FSEvents/ReadDirectoryChangesW),
-# plus save-burst debouncing. Small, platform-native, no polling fallback in
-# normal use — unlike native-embed/native-qwen3 this is a core CLI feature,
-# not an experimental ML backend, so it's a plain (non-optional) dependency.
-# No direct `notify` dependency: notify-debouncer-mini re-exports it
-# (`notify_debouncer_mini::notify`) so there's exactly one version in the
-# tree, whatever this crate happens to pin internally.
-notify-debouncer-mini = { version = "0.7.0", default-features = false }
+# `oxide watch`: native fs events (inotify/FSEvents/ReadDirectoryChangesW).
+# Small, platform-native, no polling fallback in normal use — unlike
+# native-embed/native-qwen3 this is a core CLI feature, not an experimental
+# ML backend, so it's a plain (non-optional) dependency.
+#
+# Depended on directly rather than through `notify-debouncer-mini`: that
+# crate's own debouncing discards each raw event's `EventKind` before it
+# reaches caller code, and its internals are private, so there is no way to
+# filter `EventKind::Access` through it. That filter isn't optional here —
+# notify's Linux backend unconditionally includes `WatchMask::OPEN` (no
+# `notify::Config` knob turns it off), so every file OXIDE itself opens
+# while processing a batch (parsing, hashing) echoes back as a fresh event
+# on the exact path just processed. Without filtering that out before it
+# reaches the pending-changes set, the watcher relentlessly reprocesses its
+# own reads — see `watcher::run`'s doc comment for the debounce this
+# dependency is used to build instead.
+notify = { version = "8", default-features = false, features = [
+  "macos_fsevent",
+] }
 
 [features]
 native-embed = ["dep:fastembed"]

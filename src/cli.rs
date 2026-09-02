@@ -136,6 +136,17 @@ pub enum Cmd {
     },
     /// Run the minimal stdio MCP server for coding agents.
     Mcp,
+    /// Reconcile, then keep the index fresh via filesystem events until
+    /// stopped. Prefer `oxide index` for one-shot/CI use; this is for a
+    /// long-running local session.
+    Watch {
+        /// Repository path.
+        path: Option<String>,
+        /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
+        /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
+        #[arg(long)]
+        embedder: Option<String>,
+    },
 }
 
 #[derive(Debug)]
@@ -256,6 +267,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }
+        Cmd::Watch { path, embedder } => cmd_watch(path.as_deref(), embedder.as_deref()),
     }
 }
 
@@ -323,6 +335,50 @@ fn cmd_index(
         print_index_summary(&root, &result);
     }
     Ok(())
+}
+
+fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliError> {
+    let json = false; // `oxide watch` is an interactive/long-running command, no --json mode.
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
+    let root = service.root().to_path_buf();
+
+    // `watcher::run` registers the filesystem watch before reconciling, so
+    // no edit in this command's startup window can be missed.
+    println!("oxide: reconciling {} before watching...", root.display());
+
+    let lock = crate::watcher::WatchLock::acquire(&root).map_err(|e| CliError::generic(e, json))?;
+    let embedder =
+        crate::embeddings::open_embedder(embedder_url).map_err(|e| CliError::generic(e, json))?;
+    let mut store = crate::index::SqliteStore::open(&root.join(".oxide").join("index.db"))
+        .map_err(|e| CliError::generic(e, json))?;
+
+    println!(
+        "oxide: watching {} for changes (ctrl-c to stop)...",
+        root.display()
+    );
+    let stop = std::sync::atomic::AtomicBool::new(false);
+    crate::watcher::run(
+        &root,
+        &mut store,
+        embedder.as_ref(),
+        &lock,
+        &stop,
+        |report| {
+            if report.scanned_files > 0 {
+                println!(
+                    "oxide: {} file(s) changed — {} reparsed, {} removed, {} errored; \
+                 {} embedded, {} reused",
+                    report.scanned_files,
+                    report.reparsed_files,
+                    report.removed_files,
+                    report.errored_files,
+                    report.embedded_symbols,
+                    report.reused_embeddings
+                );
+            }
+        },
+    )
+    .map_err(|e| CliError::generic(e, json))
 }
 
 fn cmd_status(path: Option<&str>, json: bool) -> Result<(), CliError> {
