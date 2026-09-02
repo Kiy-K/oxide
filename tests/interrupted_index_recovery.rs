@@ -19,7 +19,7 @@
 //! `oxide index` must recover cleanly.
 
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexBackend, IndexOptions, SqliteStore};
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{ErrorAction, RepositoryService, SearchRequest};
 use std::path::Path;
@@ -184,7 +184,7 @@ fn a_follow_up_index_recovers_cleanly_from_any_interruption_point() {
 
     let service = service_for(root);
     // Explicit indexing must recover cleanly regardless of the torn state.
-    let result = service.index(None).unwrap();
+    let result = service.index(None, &IndexOptions::default()).unwrap();
     assert_eq!(result.errored_files, 0);
 
     let status = service.status().unwrap();

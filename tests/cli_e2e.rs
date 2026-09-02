@@ -718,3 +718,85 @@ fn sustained_concurrent_read_write_stress_never_corrupts_or_panics() {
     assert_eq!(status["files"], 15);
     assert_eq!(status["is_current"], true);
 }
+
+/// CLI-level contract for `oxide index -a/-g/-e`: complements
+/// `tests/index_scope_flags.rs`'s library-level coverage of the same
+/// semantics by exercising the actual flag parsing and JSON field names an
+/// agent would see over the CLI.
+#[test]
+fn index_scope_flags_are_wired_through_the_cli() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(
+        tmp.path(),
+        "src/a.py",
+        "def a():\n    return b()\n\ndef b():\n    return 1\n",
+    );
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    // Default second run: fully incremental, nothing to do.
+    let plain = json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+    assert_eq!(plain["changed_files"], 0);
+    assert_eq!(plain["embedded_symbols"], 0);
+    assert_eq!(plain["relations_refreshed_symbols"], 0);
+
+    // -g alone: relations refreshed, nothing reparsed or re-embedded.
+    let graph = json_stdout(&run(tmp.path(), &["index", ".", "-g", "--json"]));
+    assert_eq!(graph["changed_files"], 0);
+    assert_eq!(graph["embedded_symbols"], 0);
+    assert!(graph["relations_refreshed_symbols"].as_u64().unwrap() > 0);
+
+    // -e alone: every embedding recomputed, nothing reparsed or graph-refreshed.
+    let embeddings = json_stdout(&run(tmp.path(), &["index", ".", "-e", "--json"]));
+    assert_eq!(embeddings["changed_files"], 0);
+    assert_eq!(embeddings["relations_refreshed_symbols"], 0);
+    assert!(embeddings["embedded_symbols"].as_u64().unwrap() > 0);
+    assert_eq!(embeddings["reused_embeddings"], 0);
+
+    // --all: full reparse forced, even with nothing changed on disk.
+    let all_json = json_stdout(&run(tmp.path(), &["index", ".", "--all", "--json"]));
+    assert!(all_json["changed_files"].as_u64().unwrap() > 0);
+    assert_eq!(all_json["reused_embeddings"], 0);
+
+    // -a in human (non-JSON) mode reports the base/graph stage before
+    // warning and continuing into semantic indexing — two summaries, one
+    // warning line, in that order.
+    let out = run(tmp.path(), &["index", ".", "-a"]);
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    let indexed_lines = stdout.matches("indexed ").count();
+    assert_eq!(
+        indexed_lines, 2,
+        "expected base-stage + final summary: {stdout}"
+    );
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(
+        stderr.contains("continuing to semantic indexing"),
+        "missing the CPU-time warning: {stderr}"
+    );
+
+    // Combining flags is accepted and each still does its own job.
+    let combined = json_stdout(&run(tmp.path(), &["index", ".", "-g", "-e", "--json"]));
+    assert_eq!(
+        combined["changed_files"], 0,
+        "-g -e together must not imply -a's forced reparse"
+    );
+    assert!(combined["relations_refreshed_symbols"].as_u64().unwrap() > 0);
+    assert_eq!(combined["reused_embeddings"], 0);
+}
+
+#[test]
+fn index_help_documents_the_rebuild_scope_flags() {
+    let out = Command::new(env!("CARGO_BIN_EXE_oxide"))
+        .args(["index", "--help"])
+        .output()
+        .unwrap();
+    assert!(out.status.success());
+    let help = String::from_utf8_lossy(&out.stdout);
+    for flag in ["-a", "--all", "-g", "--graph", "-e", "--embeddings"] {
+        assert!(help.contains(flag), "help text missing {flag}:\n{help}");
+    }
+}

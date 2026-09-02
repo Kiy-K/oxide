@@ -1,9 +1,11 @@
 //! CLI: index / status / search / review / stats / context / eval.
 
+use crate::index::IndexOptions;
 use crate::retrieval::read_snippet;
 use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{
-    ErrorAction, Evidence, RepositoryService, SearchRequest, ServiceError, StatusResult,
+    ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest, ServiceError,
+    StatusResult,
 };
 
 /// An explicit, unparseable `--retrieval-mode` fails loudly (matches how
@@ -32,7 +34,8 @@ pub struct Args {
 
 #[derive(clap::Subcommand)]
 pub enum Cmd {
-    /// Index (or incrementally update) a repository.
+    /// Index (or incrementally update) a repository. With no flags, this
+    /// only touches stale/changed layers — safe and cheap to run often.
     Index {
         /// Repository path.
         path: Option<String>,
@@ -40,6 +43,21 @@ pub enum Cmd {
         /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
         #[arg(long)]
         embedder: Option<String>,
+        /// Force rebuild of every indexing layer (base parse, graph, and
+        /// embeddings), even where nothing changed. Implies -g and -e, and
+        /// also reparses every file regardless of content hash. Reports
+        /// the cheap base/graph stage as soon as it finishes, then warns
+        /// before starting semantic indexing (often much slower on CPU).
+        #[arg(short = 'a', long = "all")]
+        all: bool,
+        /// Force rebuild of structural/graph relations for every existing
+        /// symbol, not just symbols in files that changed.
+        #[arg(short = 'g', long = "graph")]
+        graph: bool,
+        /// Force rebuild of every symbol's embedding, regardless of
+        /// whether its stored embedding is already current.
+        #[arg(short = 'e', long = "embeddings")]
+        embeddings: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -168,8 +186,22 @@ pub fn run(args: Args) -> Result<(), CliError> {
         Cmd::Index {
             path,
             embedder,
+            all,
+            graph,
+            embeddings,
             json,
-        } => cmd_index(path.as_deref(), embedder.as_deref(), json),
+        } => {
+            let opts = if all {
+                IndexOptions::all()
+            } else {
+                IndexOptions {
+                    force_reparse: false,
+                    force_graph: graph,
+                    force_embeddings: embeddings,
+                }
+            };
+            cmd_index(path.as_deref(), embedder.as_deref(), &opts, all, json)
+        }
         Cmd::Status { path, json } => cmd_status(path.as_deref(), json),
         Cmd::Search {
             query,
@@ -227,35 +259,68 @@ pub fn run(args: Args) -> Result<(), CliError> {
     }
 }
 
-fn cmd_index(path: Option<&str>, embedder_url: Option<&str>, json: bool) -> Result<(), CliError> {
+fn print_index_summary(root: &std::path::Path, result: &IndexResult) {
+    println!(
+        "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed, {} errored",
+        root.display(),
+        result.scanned_files,
+        result.reused_files,
+        result.changed_files,
+        result.removed_files,
+        result.errored_files
+    );
+    let graph_note = if result.relations_refreshed_symbols > 0 {
+        format!(
+            "; graph: {} symbols refreshed",
+            result.relations_refreshed_symbols
+        )
+    } else {
+        String::new()
+    };
+    println!(
+        "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused{graph_note}",
+        result.new_symbols,
+        result.changed_symbols,
+        result.deleted_symbols,
+        result.embedded_symbols,
+        result.reused_embeddings
+    );
+    println!("took {}ms", result.duration_ms);
+}
+
+fn cmd_index(
+    path: Option<&str>,
+    embedder_url: Option<&str>,
+    opts: &IndexOptions,
+    all: bool,
+    json: bool,
+) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
-    let result = service
-        .index(embedder_url)
-        .map_err(|e| CliError::service(e, json))?;
+    let root = service.root().to_path_buf();
+    // `-a`/`--all`: report the cheap base/graph stage as soon as it's done,
+    // with a warning before the (often much slower on CPU) embedding stage
+    // starts — so a user isn't left guessing whether a long-running `-a`
+    // is stuck. JSON mode stays a single structured result, like every
+    // other command here, so the intermediate hook is a no-op there.
+    let result = if all && !json {
+        service.index_staged(embedder_url, opts, |base| {
+            print_index_summary(&root, base);
+            eprintln!(
+                "oxide: base/graph stage done — continuing to semantic indexing, \
+                 which can take noticeably longer on CPU..."
+            );
+        })
+    } else {
+        service.index(embedder_url, opts)
+    }
+    .map_err(|e| CliError::service(e, json))?;
     if json {
         println!(
             "{}",
             serde_json::to_string_pretty(&result).map_err(|e| CliError::generic(e, true))?
         );
     } else {
-        println!(
-            "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed, {} errored",
-            service.root().display(),
-            result.scanned_files,
-            result.reused_files,
-            result.changed_files,
-            result.removed_files,
-            result.errored_files
-        );
-        println!(
-            "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused",
-            result.new_symbols,
-            result.changed_symbols,
-            result.deleted_symbols,
-            result.embedded_symbols,
-            result.reused_embeddings
-        );
-        println!("took {}ms", result.duration_ms);
+        print_index_summary(&root, &result);
     }
     Ok(())
 }

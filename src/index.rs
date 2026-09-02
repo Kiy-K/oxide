@@ -4,7 +4,7 @@
 use crate::scanner;
 use crate::symbols::{Language, Symbol};
 use anyhow::{Context, Result};
-use rusqlite::Connection;
+use rusqlite::{Connection, OptionalExtension};
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
@@ -68,6 +68,16 @@ pub trait IndexBackend {
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
     fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
     fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()>;
+    /// Same effect as calling [`Self::put_embedding`] once per item, but as
+    /// one transaction instead of one autocommit per row — profiling the
+    /// embedding stage found the per-symbol `execute()` calls (each an
+    /// implicit transaction under SQLite's default autocommit behavior,
+    /// each paying its own fsync) were a real, avoidable cost independent
+    /// of embedder latency, unlike the batch/thread-chunking around it
+    /// (already near the empirically-measured optimum — see
+    /// docs/indexing-rebuild-scopes/README.md). A symbol id with no
+    /// matching row in `symbols` is skipped, same as `put_embedding`.
+    fn put_embeddings_batch(&mut self, items: &[(u64, Vec<f32>)]) -> Result<()>;
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
     /// All embeddings in one shot (avoids per-symbol queries in retrieval).
     fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
@@ -462,6 +472,32 @@ impl IndexBackend for SqliteStore {
         Ok(())
     }
 
+    fn put_embeddings_batch(&mut self, items: &[(u64, Vec<f32>)]) -> Result<()> {
+        let tx = self.conn.transaction()?;
+        {
+            let mut hash_stmt = tx.prepare("SELECT content_hash FROM symbols WHERE id = ?1")?;
+            let mut ins = tx.prepare(
+                "INSERT OR REPLACE INTO embeddings(symbol_id, content_hash, dim, vec)
+                 VALUES(?1,?2,?3,?4)",
+            )?;
+            for (symbol_id, vec) in items {
+                let chash: Option<i64> = hash_stmt
+                    .query_row([*symbol_id as i64], |r| r.get(0))
+                    .optional()?;
+                let Some(chash) = chash else { continue };
+                let bytes: Vec<u8> = vec.iter().flat_map(|f| f.to_le_bytes()).collect();
+                ins.execute(rusqlite::params![
+                    *symbol_id as i64,
+                    chash,
+                    vec.len() as i32,
+                    bytes
+                ])?;
+            }
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>> {
         let mut stmt = self
             .conn
@@ -626,7 +662,7 @@ impl SqliteStore {
 use serde::Serialize;
 
 /// Outcome of one incremental run; surfaced by the CLI to show work avoided.
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Default, Clone, Serialize)]
 pub struct IndexReport {
     pub scanned_files: usize,
     pub unchanged_files: usize,
@@ -648,13 +684,82 @@ pub struct IndexReport {
     /// exactly one of unchanged_files + reparsed_files + errored_files.
     #[serde(default)]
     pub errored_files: usize,
+    /// Symbols whose structural relations (`symbol_relations`) were
+    /// recomputed even though their own file wasn't reparsed this run —
+    /// nonzero only under `IndexOptions::force_graph` (`oxide index -g`) or
+    /// the one-time legacy-index backfill this same code path also serves.
+    #[serde(default)]
+    pub relations_refreshed_symbols: usize,
 }
 
-/// Run incremental indexing of the repo at `root` into `store`.
+/// Explicit rebuild scope for `oxide index`'s `-a`/`-g`/`-e` flags. Each
+/// field only widens *which* symbols a stage recomputes — it never changes
+/// what "stale" means or skips a stage's own required prerequisite work.
+/// `Default` (all `false`) is the plain incremental contract every existing
+/// caller of `update_index` already relies on, so adding this type changes
+/// no existing behavior.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct IndexOptions {
+    /// `-a`/`--all` only: reparse every file regardless of `content_hash`
+    /// match, e.g. after upgrading OXIDE for an extractor/grammar fix that
+    /// should re-derive symbols even where source text didn't change.
+    pub force_reparse: bool,
+    /// `-g`/`--graph`: recompute structural relations for every existing
+    /// symbol, not just symbols in files reparsed this run.
+    pub force_graph: bool,
+    /// `-e`/`--embeddings`: recompute every symbol's embedding regardless
+    /// of whether its stored embedding's hash already matches.
+    pub force_embeddings: bool,
+}
+
+impl IndexOptions {
+    /// `-a`/`--all`: every layer forced.
+    pub fn all() -> Self {
+        Self {
+            force_reparse: true,
+            force_graph: true,
+            force_embeddings: true,
+        }
+    }
+}
+
+/// Run incremental indexing of the repo at `root` into `store`. Equivalent
+/// to `update_index_scoped` with `IndexOptions::default()` — the plain
+/// incremental contract every pre-existing caller of this function keeps
+/// getting unchanged.
 pub fn update_index(
     root: &Path,
     store: &mut dyn IndexBackend,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
+) -> Result<IndexReport> {
+    update_index_scoped(root, store, embedder, &IndexOptions::default())
+}
+
+/// Like [`update_index`], but with explicit forced-rebuild scope. Runs the
+/// base stage ([`update_base`]) then the embedding stage
+/// ([`update_embeddings`]) back to back and returns one combined report —
+/// the same single-call contract `update_index` has always had. Callers
+/// that need to report progress *between* the two stages (`oxide index -a`)
+/// should call `update_base`/`update_embeddings` directly instead.
+pub fn update_index_scoped(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+    opts: &IndexOptions,
+) -> Result<IndexReport> {
+    let mut report = update_base(root, store, opts)?;
+    update_embeddings(root, store, embedder, opts, &mut report)?;
+    Ok(report)
+}
+
+/// Scan + parse + symbol/reference update + structural relations — every
+/// indexing layer except embeddings. `report.duration_ms` on return covers
+/// only this stage; a caller running both stages should overwrite it with
+/// the grand total (see `update_index_scoped`).
+pub fn update_base(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    opts: &IndexOptions,
 ) -> Result<IndexReport> {
     let started = std::time::Instant::now();
     let mut report = IndexReport::default();
@@ -698,28 +803,35 @@ pub fn update_index(
         report.removed_files = removed.len();
     }
 
-    // Changed or new files.
+    // Changed or new files. `force_reparse` (`-a`/`--all`) treats every file
+    // as changed, bypassing the content_hash shortcut entirely — e.g. after
+    // an extractor/grammar upgrade that should re-derive symbols even where
+    // source text didn't change.
     let to_parse: Vec<(&String, u64)> = current
         .iter()
         .map(|(f, src)| (f, crate::symbols::content_hash(src)))
-        .filter(|(f, h)| stored.get(*f).copied() != Some(*h))
+        .filter(|(f, h)| opts.force_reparse || stored.get(*f).copied() != Some(*h))
         .collect();
     // Unchanged is relative to files we could actually read; unreadable files
     // are accounted separately below so the totals never silently disagree
     // with `scanned_files`.
     report.unchanged_files = current.len() - to_parse.len();
 
-    // One-time backfill for an index that predates precomputed structural
-    // relations: it has symbols but an empty `symbol_relations` table.
-    // Without this, a symbol in a file that never changes again would never
-    // get relations — the main per-file loop below only computes them for
-    // `to_parse` (reparsed) files, same incremental contract as
-    // `extract_references`. Detected once per run (relations empty while
-    // symbols aren't) and self-limiting: after this backfill, every
-    // existing symbol has a `symbol_relations` entry (even an empty one,
-    // per `compute_file_relations`'s doc comment on why that matters), so
-    // this condition is false on every subsequent run.
-    if !existing.is_empty() && store.all_symbol_relations()?.is_empty() {
+    // Recompute structural relations for symbols in files NOT being
+    // reparsed this run (the main per-file loop below already covers
+    // `to_parse` files). Two triggers share this exact path:
+    //  - `opts.force_graph` (`-g`/`--graph`): user asked to rebuild the
+    //    graph layer explicitly.
+    //  - One-time backfill for an index that predates precomputed
+    //    structural relations (symbols exist, `symbol_relations` is
+    //    empty). Self-limiting: after this runs once, every existing
+    //    symbol has a `symbol_relations` entry (even an empty one, per
+    //    `compute_file_relations`'s doc comment on why that matters), so
+    //    this condition is false on every subsequent run.
+    // `force_reparse` (`-a`) makes `to_parse` cover every file already, so
+    // `unchanged_by_file` below is naturally empty and this does no
+    // redundant work on top of the main per-file loop.
+    if opts.force_graph || (!existing.is_empty() && store.all_symbol_relations()?.is_empty()) {
         let to_parse_files: HashSet<&String> = to_parse.iter().map(|(f, _)| *f).collect();
         let mut unchanged_by_file: HashMap<&str, Vec<Symbol>> = HashMap::new();
         for s in &existing {
@@ -737,6 +849,7 @@ pub fn update_index(
             ) else {
                 continue;
             };
+            report.relations_refreshed_symbols += file_symbols.len();
             let relations =
                 crate::structural_relations::compute_file_relations(&file_symbols, src, lang);
             if !relations.is_empty() {
@@ -897,6 +1010,44 @@ pub fn update_index(
         store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations)?;
     }
 
+    report.duration_ms = started.elapsed().as_millis();
+
+    // Every discovered file must land in exactly one accounted state; a
+    // mismatch means a file silently vanished somewhere in the pipeline.
+    // Checked here, not at the very end of the full pipeline, because every
+    // field this compares is already final once the base stage completes —
+    // the embedding stage never touches scanned/unchanged/reparsed/errored.
+    anyhow::ensure!(
+        report.scanned_files == report.unchanged_files + report.reparsed_files + report.errored_files,
+        "index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {}",
+        report.scanned_files,
+        report.unchanged_files,
+        report.reparsed_files,
+        report.errored_files
+    );
+    Ok(report)
+}
+
+/// Embedding stage only: fingerprint/embedder staleness check, then
+/// (re)embed. Must run after a base stage (`update_base`/`update_index`)
+/// that reflects current file content — never call this against a store
+/// whose symbols might be stale, or it will embed symbols against text
+/// they no longer match. Adds this stage's elapsed time to
+/// `report.duration_ms` rather than overwriting it, so a caller running
+/// both stages back to back ends up with their sum.
+pub fn update_embeddings(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+    opts: &IndexOptions,
+    report: &mut IndexReport,
+) -> Result<()> {
+    let started = std::time::Instant::now();
+    let workers = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1)
+        .clamp(1, 4);
+
     // Vectors from a different vector space are not comparable: wipe them
     // once so everything below re-embeds under the current model. The
     // structured fingerprint (Phase 3.3 item 3) is the real contract when
@@ -941,15 +1092,17 @@ pub fn update_index(
         },
     }
 
-    // Embed only symbols whose embedding is missing or whose content changed;
-    // everything else reuses its stored vector untouched. Vector computation
-    // is pure CPU: fan out over the same bounded pool, write serially after.
+    // Embed only symbols whose embedding is missing or whose content
+    // changed; everything else reuses its stored vector untouched — unless
+    // `opts.force_embeddings` (`-e`/`--embeddings`) says recompute
+    // everything regardless of the hash match. Vector computation is pure
+    // CPU: fan out over the same bounded pool, write serially after.
     let embeddings = store.all_embeddings()?;
     let all = store.all_symbols()?;
     let to_embed: Vec<&Symbol> = all
         .iter()
         .filter(|s| match embeddings.get(&s.id()) {
-            Some((old_hash, _)) if *old_hash == s.content_hash => {
+            Some((old_hash, _)) if *old_hash == s.content_hash && !opts.force_embeddings => {
                 report.reused_embeddings += 1;
                 false
             }
@@ -963,14 +1116,20 @@ pub fn update_index(
         for chunk in to_embed.chunks(64) {
             let texts: Vec<String> = chunk.iter().map(|s| embed_text(s)).collect();
             let vectors = embedder.embed_documents(&texts);
+            // One transaction per chunk instead of one autocommit per
+            // symbol — see `IndexBackend::put_embeddings_batch`'s doc
+            // comment for why this was worth doing and the batch/thread
+            // chunking around it wasn't.
+            let mut batch: Vec<(u64, Vec<f32>)> = Vec::with_capacity(chunk.len());
             for (s, vec) in chunk.iter().zip(vectors) {
                 if vec.iter().all(|f| *f == 0.0) || vec.is_empty() {
                     report.embed_failures += 1;
                     continue;
                 }
-                store.put_embedding(s.id(), &vec)?;
-                report.embedded_symbols += 1;
+                batch.push((s.id(), vec));
             }
+            report.embedded_symbols += batch.len();
+            store.put_embeddings_batch(&batch)?;
         }
     } else {
         let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
@@ -993,10 +1152,8 @@ pub fn update_index(
             Ok::<_, anyhow::Error>(out)
         })?;
         for part in computed {
-            for (id, vec) in part {
-                store.put_embedding(id, &vec)?;
-                report.embedded_symbols += 1;
-            }
+            report.embedded_symbols += part.len();
+            store.put_embeddings_batch(&part)?;
         }
     }
 
@@ -1015,19 +1172,12 @@ pub fn update_index(
         ("extraction_version", extraction_str.as_str()),
         ("embedding_fingerprint", fingerprint_json.as_str()),
     ])?;
-    report.duration_ms = started.elapsed().as_millis();
-
-    // Every discovered file must land in exactly one accounted state; a
-    // mismatch means a file silently vanished somewhere in the pipeline.
-    anyhow::ensure!(
-        report.scanned_files == report.unchanged_files + report.reparsed_files + report.errored_files,
-        "index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {}",
-        report.scanned_files,
-        report.unchanged_files,
-        report.reparsed_files,
-        report.errored_files
-    );
-    Ok(report)
+    // Additive, not an overwrite: a caller running this right after
+    // `update_base` (the normal case) already has that stage's duration in
+    // `report.duration_ms` and wants the combined total, not just this
+    // stage's time.
+    report.duration_ms += started.elapsed().as_millis();
+    Ok(())
 }
 
 /// References = identifiers appearing in the symbol body that match a known

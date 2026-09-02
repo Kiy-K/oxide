@@ -5,7 +5,10 @@
 
 use crate::context::{build_context, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
-use crate::index::{update_index, IndexBackend, IndexReport, IndexStats, SqliteStore};
+use crate::index::{
+    update_base, update_embeddings, IndexBackend, IndexOptions, IndexReport, IndexStats,
+    SqliteStore,
+};
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
@@ -167,6 +170,8 @@ pub struct IndexResult {
     pub reused_embeddings: usize,
     pub embed_failures: usize,
     pub errored_files: usize,
+    #[serde(default)]
+    pub relations_refreshed_symbols: usize,
     #[serde(skip)]
     pub duration_ms: u128,
 }
@@ -185,6 +190,7 @@ impl From<IndexReport> for IndexResult {
             reused_embeddings: r.reused_embeddings,
             embed_failures: r.embed_failures,
             errored_files: r.errored_files,
+            relations_refreshed_symbols: r.relations_refreshed_symbols,
             duration_ms: r.duration_ms,
         }
     }
@@ -280,7 +286,26 @@ impl RepositoryService {
         &self.root
     }
 
-    pub fn index(&self, embedder_url: Option<&str>) -> Result<IndexResult, ServiceError> {
+    pub fn index(
+        &self,
+        embedder_url: Option<&str>,
+        opts: &IndexOptions,
+    ) -> Result<IndexResult, ServiceError> {
+        self.index_staged(embedder_url, opts, |_| {})
+    }
+
+    /// Like [`Self::index`], but calls `on_base_done` with the base-stage
+    /// result (scan/parse/symbols/graph, no embeddings yet) before starting
+    /// the embedding stage — the hook `oxide index -a` uses to report the
+    /// cheap layers as done and warn that semantic indexing is next, before
+    /// a potentially much longer wait. `index()` passes a no-op hook, so
+    /// this is the only implementation both go through.
+    pub fn index_staged(
+        &self,
+        embedder_url: Option<&str>,
+        opts: &IndexOptions,
+        on_base_done: impl FnOnce(&IndexResult),
+    ) -> Result<IndexResult, ServiceError> {
         if scanner::scan_repo(&self.root)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?
             .is_empty()
@@ -296,9 +321,12 @@ impl RepositoryService {
         let embedder = open_embedder(embedder_url)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
         let mut store = self.open_index_for_write()?;
-        let result: IndexResult = update_index(&self.root, &mut store, embedder.as_ref())
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?
-            .into();
+        let mut report: IndexReport = update_base(&self.root, &mut store, opts)
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
+        on_base_done(&report.clone().into());
+        update_embeddings(&self.root, &mut store, embedder.as_ref(), opts, &mut report)
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
+        let result: IndexResult = report.into();
         if result.embed_failures > 0 || !embedder.is_available() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,
@@ -702,6 +730,7 @@ fn compare_context_evidence(a: &ContextEvidence, b: &ContextEvidence) -> Orderin
 mod tests {
     use super::*;
     use crate::embeddings::EmbeddingSpaceFingerprint;
+    use crate::index::update_index;
 
     /// Reports a caller-supplied fingerprint regardless of name/dim, so
     /// tests can construct two providers that are indistinguishable by the
