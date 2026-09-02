@@ -200,8 +200,26 @@ impl From<IndexReport> for IndexResult {
 pub struct StatusResult {
     pub root: String,
     pub index_exists: bool,
+    /// Unchanged meaning from before the auto-indexing watcher: files
+    /// current AND embedder current AND embedding/symbol counts match.
+    /// `base_fresh`/`pending_embeddings` below are the new, finer-grained
+    /// fields — added alongside, not a replacement, since existing readers
+    /// of `is_current` (tests, the MCP surface) depend on this exact value.
     pub is_current: bool,
     pub embedder_current: bool,
+    /// True when every tracked file's on-disk content matches what's
+    /// indexed — independent of embedding freshness. A caller that only
+    /// needs lexical/structural signals (not semantic search) can treat the
+    /// index as usable whenever this is true, even while
+    /// `pending_embeddings` is nonzero (auto-indexing watcher: "track base
+    /// and semantic freshness independently").
+    pub base_fresh: bool,
+    /// Symbols whose embedding is missing, stale, or from a different
+    /// embedding space than the configured provider — 0 means semantic
+    /// search reflects current content. Computed without contacting the
+    /// embedder (see `index::content_stale_embedding_count`), so `oxide
+    /// status` stays network-free.
+    pub pending_embeddings: usize,
     pub files: usize,
     pub symbols: usize,
     pub embeddings: usize,
@@ -348,6 +366,8 @@ impl RepositoryService {
                 index_exists: false,
                 is_current: false,
                 embedder_current: false,
+                base_fresh: false,
+                pending_embeddings: 0,
                 files: 0,
                 symbols: 0,
                 embeddings: 0,
@@ -375,11 +395,23 @@ impl RepositoryService {
             && current
                 .iter()
                 .all(|(file, hash)| indexed.get(file).copied() == Some(*hash));
+        // Network-free: reuses the name-based `embedder_current` check
+        // already computed above instead of constructing a live provider
+        // (which for `HttpEmbedder` would mean a network round trip just to
+        // report status) — see `content_stale_embedding_count`'s doc.
+        let pending_embeddings = if embedder_current {
+            crate::index::content_stale_embedding_count(&store)
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+        } else {
+            stats.symbols
+        };
         Ok(StatusResult {
             root: self.root.display().to_string(),
             index_exists: true,
             is_current: files_current && embedder_current && stats.embeddings == stats.symbols,
             embedder_current,
+            base_fresh: files_current,
+            pending_embeddings,
             files: stats.files,
             symbols: stats.symbols,
             embeddings: stats.embeddings,

@@ -21,6 +21,14 @@ tree-sitter-tags = "0.27"
 tree-sitter-python = "0.25"
 tree-sitter-typescript = "0.23"
 fastembed = { version = "6.0.2", default-features = false, features = ["ort-download-binaries-rustls-tls", "hf-hub-rustls-tls"], optional = true }
+# `oxide watch`: native fs events (inotify/FSEvents/ReadDirectoryChangesW),
+# plus save-burst debouncing. Small, platform-native, no polling fallback in
+# normal use — unlike native-embed/native-qwen3 this is a core CLI feature,
+# not an experimental ML backend, so it's a plain (non-optional) dependency.
+# No direct `notify` dependency: notify-debouncer-mini re-exports it
+# (`notify_debouncer_mini::notify`) so there's exactly one version in the
+# tree, whatever this crate happens to pin internally.
+notify-debouncer-mini = { version = "0.7.0", default-features = false }
 
 [features]
 native-embed = ["dep:fastembed"]

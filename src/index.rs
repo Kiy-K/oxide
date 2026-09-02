@@ -858,9 +858,176 @@ pub fn update_base(
         }
     }
 
-    // Parse all changed files first so reference matching sees both old
-    // definitions and everything added in this run. Keep the source alive for
-    // reference extraction instead of re-reading from disk.
+    parse_and_persist_changed_files(
+        to_parse,
+        &current,
+        &existing,
+        &before_symbols,
+        unreadable_files,
+        store,
+        &mut report,
+    )?;
+
+    report.duration_ms = started.elapsed().as_millis();
+
+    // Every discovered file must land in exactly one accounted state; a
+    // mismatch means a file silently vanished somewhere in the pipeline.
+    // Checked here, not at the very end of the full pipeline, because every
+    // field this compares is already final once the base stage completes —
+    // the embedding stage never touches scanned/unchanged/reparsed/errored.
+    anyhow::ensure!(
+        report.scanned_files == report.unchanged_files + report.reparsed_files + report.errored_files,
+        "index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {}",
+        report.scanned_files,
+        report.unchanged_files,
+        report.reparsed_files,
+        report.errored_files
+    );
+    Ok(report)
+}
+
+/// Base-stage update scoped to an explicit set of changed repo-relative
+/// paths, for the auto-indexing watcher (`docs/auto-indexing-watcher-constraints/README.md`
+/// seam #3). Reuses the exact same per-file parse/reference/relations/persist
+/// pipeline as `update_base` (`parse_and_persist_changed_files`) — the only
+/// difference is how `to_parse`/`current`/`removed` are computed: from the
+/// caller-supplied path set instead of a full `scanner::scan_repo` walk.
+///
+/// `update_base` stays the "reconcile everything" entry point (manual
+/// `oxide index`, startup/reconnect reconciliation) — this is strictly
+/// additive, an optimization for "these specific paths changed" that a
+/// watcher already knows from fs events, not a replacement.
+///
+/// # Deletion semantics — the one thing this function must get right
+///
+/// A path in `changed_paths` is treated as **removed** only when both hold:
+/// 1. it does not currently exist on disk (confirmed via `std::fs::metadata`
+///    failing for that exact path — direct filesystem evidence, checked
+///    fresh, never inferred), and
+/// 2. it was already tracked in the store (`stored.contains_key`).
+///
+/// A path outside `changed_paths` is never touched, deleted, or otherwise
+/// assumed stale by this function — unlike `update_base`, which derives
+/// `removed` from every stored file *not* found by a full scan, this
+/// function has no full-tree view and must not pretend it does. A file the
+/// watcher never learned about (a missed event, a watcher that wasn't
+/// running) is exactly the gap `update_base`-driven reconciliation on
+/// startup/reconnect exists to close, not something this function can or
+/// should guess at.
+pub fn update_base_for_files(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    opts: &IndexOptions,
+    changed_paths: &[String],
+) -> Result<IndexReport> {
+    let started = std::time::Instant::now();
+    let mut report = IndexReport::default();
+
+    let stored = store.file_hashes()?;
+    let existing = store.all_symbols()?;
+    let before_symbols: HashMap<u64, u64> =
+        existing.iter().map(|s| (s.id(), s.content_hash)).collect();
+
+    let mut current: HashMap<String, String> = HashMap::with_capacity(changed_paths.len());
+    let mut unreadable_files: usize = 0;
+    let mut removed: Vec<String> = Vec::new();
+    // Dedup defensively: a debounced batch could name the same path twice
+    // (e.g. one event for the write, one for a metadata-only touch).
+    let mut seen: HashSet<&str> = HashSet::with_capacity(changed_paths.len());
+    for p in changed_paths {
+        if !seen.insert(p.as_str()) {
+            continue;
+        }
+        match std::fs::read_to_string(root.join(p)) {
+            Ok(src) => {
+                current.insert(p.clone(), src);
+            }
+            // Only a confirmed absence (`NotFound`) is deletion evidence —
+            // and only for a path the store already tracks. Any other read
+            // failure (non-UTF8, permissions, a file mid-write) means the
+            // path still exists; it must never be treated as removed, only
+            // as unreadable this round (matches `update_base`'s
+            // `unreadable_files`, accounted in `errored_files` below).
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                if stored.contains_key(p) {
+                    removed.push(p.clone());
+                }
+                // else: never tracked — a transient/irrelevant path (e.g.
+                // an editor's temp file the caller's ignore-filter let
+                // through, or deleted again before this batch ran).
+            }
+            Err(_) => unreadable_files += 1,
+        }
+    }
+    report.scanned_files = current.len() + removed.len() + unreadable_files;
+
+    if !removed.is_empty() {
+        let doomed = existing
+            .iter()
+            .filter(|s| removed.contains(&s.file))
+            .count();
+        store.remove_files(&removed)?;
+        report.deleted_symbols += doomed;
+        report.removed_files = removed.len();
+    }
+
+    let to_parse: Vec<(&String, u64)> = current
+        .iter()
+        .map(|(f, src)| (f, crate::symbols::content_hash(src)))
+        .filter(|(f, h)| opts.force_reparse || stored.get(*f).copied() != Some(*h))
+        .collect();
+    report.unchanged_files = current.len() - to_parse.len();
+
+    parse_and_persist_changed_files(
+        to_parse,
+        &current,
+        &existing,
+        &before_symbols,
+        unreadable_files,
+        store,
+        &mut report,
+    )?;
+
+    report.duration_ms = started.elapsed().as_millis();
+
+    // Scoped invariant, deliberately different from `update_base`'s: this
+    // function has no independent "scanned" count from a directory walk —
+    // `scanned_files` is defined as `current.len() + removed.len()` above,
+    // i.e. every path this function actually accounted for. `removed_files`
+    // is therefore part of THIS invariant (unlike `update_base`, where
+    // removed files are computed from `stored`, disjoint from its
+    // `scanned_files`/directory-walk count).
+    anyhow::ensure!(
+        report.scanned_files
+            == report.unchanged_files + report.reparsed_files + report.errored_files + report.removed_files,
+        "scoped index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {} + removed {}",
+        report.scanned_files,
+        report.unchanged_files,
+        report.reparsed_files,
+        report.errored_files,
+        report.removed_files
+    );
+    Ok(report)
+}
+
+/// Shared parse → reference-resolve → structural-relations → persist
+/// pipeline for a batch of changed files, extracted so `update_base`
+/// (repo-wide) and `update_base_for_files` (fs-event-scoped, for the
+/// auto-indexing watcher) share one implementation of the part that never
+/// differs between them — only how `to_parse`/`current`/`existing` are
+/// computed differs by caller. `existing` and `before_symbols` are always
+/// repo-wide snapshots (`store.all_symbols()`) even when `to_parse` is
+/// scoped: reference resolution needs the whole project's known names
+/// regardless of how many files changed this run.
+fn parse_and_persist_changed_files(
+    to_parse: Vec<(&String, u64)>,
+    current: &HashMap<String, String>,
+    existing: &[Symbol],
+    before_symbols: &HashMap<u64, u64>,
+    unreadable_files: usize,
+    store: &mut dyn IndexBackend,
+    report: &mut IndexReport,
+) -> Result<()> {
     // Parsing is pure CPU over independent files: fan out across a small
     // bounded pool (laptop-friendly cap) and collect in order.
     let workers = std::thread::available_parallelism()
@@ -970,7 +1137,7 @@ pub fn update_base(
     // real deletion too. Group the pre-edit snapshot by file so that delta is
     // counted, not just symbols new/changed_symbols above it.
     let mut existing_ids_by_file: HashMap<&str, HashSet<u64>> = HashMap::new();
-    for s in &existing {
+    for s in existing {
         existing_ids_by_file
             .entry(s.file.as_str())
             .or_default()
@@ -1009,23 +1176,7 @@ pub fn update_base(
             .unwrap_or_default();
         store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations)?;
     }
-
-    report.duration_ms = started.elapsed().as_millis();
-
-    // Every discovered file must land in exactly one accounted state; a
-    // mismatch means a file silently vanished somewhere in the pipeline.
-    // Checked here, not at the very end of the full pipeline, because every
-    // field this compares is already final once the base stage completes —
-    // the embedding stage never touches scanned/unchanged/reparsed/errored.
-    anyhow::ensure!(
-        report.scanned_files == report.unchanged_files + report.reparsed_files + report.errored_files,
-        "index accounting invariant violated: scanned {} != unchanged {} + reparsed {} + errored {}",
-        report.scanned_files,
-        report.unchanged_files,
-        report.reparsed_files,
-        report.errored_files
-    );
-    Ok(report)
+    Ok(())
 }
 
 /// Embedding stage only: fingerprint/embedder staleness check, then
@@ -1178,6 +1329,62 @@ pub fn update_embeddings(
     // stage's time.
     report.duration_ms += started.elapsed().as_millis();
     Ok(())
+}
+
+/// Read-only count of symbols whose embedding is missing, stale (content
+/// changed since last embedded), or from a different embedding space than
+/// `embedder` currently provides — exactly what `update_embeddings` would
+/// (re)compute if called right now, without calling it. For the
+/// auto-indexing watcher's "track base and semantic freshness independently"
+/// / "stale/pending embeddings must never be presented as current"
+/// requirements (`docs/auto-indexing-watcher-constraints/README.md` seam
+/// #2): a caller can report "N symbols pending embedding" without
+/// triggering the embedding work itself (which may be slow or
+/// network-bound). Mirrors `update_embeddings`'s own staleness checks
+/// exactly — the two must never diverge, or a watcher could report "0
+/// pending" while a real `update_embeddings` run would still find work.
+pub fn pending_embedding_count(
+    store: &dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+) -> Result<usize> {
+    let current_fp = embedder.fingerprint();
+    let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
+        .get_meta("embedding_fingerprint")?
+        .filter(|s| !s.is_empty())
+        .map(|s| serde_json::from_str(&s).ok());
+    let space_changed = match stored_fp {
+        Some(Some(prev)) => prev != current_fp,
+        // Unreadable stored fingerprint: same "reindex all" fallback
+        // `update_embeddings` takes.
+        Some(None) => true,
+        None => match store.get_meta("embedder")? {
+            Some(prev) => !prev.is_empty() && prev != embedder.name(),
+            None => false,
+        },
+    };
+    if space_changed {
+        return Ok(store.all_symbols()?.len());
+    }
+    content_stale_embedding_count(store)
+}
+
+/// Count of symbols whose stored embedding is missing or whose content
+/// changed since it was computed — the embedding-space-agnostic half of
+/// [`pending_embedding_count`]'s check, split out so a caller that has
+/// already established embedder compatibility some other way (e.g.
+/// `RepositoryService::status`'s existing name-based `embedder_current`
+/// check, which is deliberately network-free) doesn't need a live
+/// `EmbeddingProvider` just to ask "how many symbols are stale."
+pub fn content_stale_embedding_count(store: &dyn IndexBackend) -> Result<usize> {
+    let all = store.all_symbols()?;
+    let embeddings = store.all_embeddings()?;
+    Ok(all
+        .iter()
+        .filter(|s| match embeddings.get(&s.id()) {
+            Some((old_hash, _)) => *old_hash != s.content_hash,
+            None => true,
+        })
+        .count())
 }
 
 /// References = identifiers appearing in the symbol body that match a known

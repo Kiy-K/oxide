@@ -359,6 +359,19 @@ fn render_status(status: &StatusResult) {
         status.files, status.symbols, status.embeddings
     );
     println!(
+        "base:       {}  semantic: {}",
+        if status.base_fresh {
+            "fresh".to_string()
+        } else {
+            "stale".to_string()
+        },
+        if status.pending_embeddings == 0 {
+            "fresh".to_string()
+        } else {
+            format!("{} pending", status.pending_embeddings)
+        }
+    );
+    println!(
         "embedder:   {}",
         status.embedder.as_deref().unwrap_or("not indexed")
     );
