@@ -27,6 +27,10 @@ native-embed = ["dep:fastembed"]
 
 [dev-dependencies]
 
+[[example]]
+name = "embedding_profile_probe"
+required-features = ["native-embed"]
+
 [profile.release]
 debug = false
 lto = "thin"

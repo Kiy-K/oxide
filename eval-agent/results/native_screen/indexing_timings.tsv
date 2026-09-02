@@ -1,0 +1,8 @@
+profile	repo	symbols	index_seconds
+embeddinggemma-300m	seaborn	2790	
+embeddinggemma-300m	flask	1629	
+embeddinggemma-300m	requests	743	
+embeddinggemma-300m	pylint	11120	
+embeddinggemma-300m	pytest	5146	
+embeddinggemma-300m	code-server	432	
+embeddinggemma-300m	darkreader	993	
