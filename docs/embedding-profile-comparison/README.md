@@ -41,7 +41,7 @@ directly comparable the way native's single-process numbers are.
 | 10-symbol incremental, per-item | 98.17ms | 37.70ms | 41.93ms | 3.88ms |
 | 50-symbol incremental, per-item | 105.27ms | 34.61ms | 42.56ms | 3.80ms |
 | 100-symbol incremental, per-item | 105.25ms | 36.28ms | 43.44ms | 3.91ms |
-| Batch-64 throughput, per-item (documented, `docs/indexing-rebuild-scopes/README.md`) | **56ms** | ~41.5ms (24.1 items/s @ n=500) | ~50.3ms (19.9 items/s @ n=500) | 4.2ms (239.7 items/s @ n=500) |
+| Batch-64 throughput, per-item, **cross-session** (`docs/indexing-rebuild-scopes/README.md`, different session/machine-state/sample text — not rerun this session, see Scoping decisions) | 56ms | ~41.5ms (24.1 items/s @ n=500) | ~50.3ms (19.9 items/s @ n=500) | 4.2ms (239.7 items/s @ n=500) |
 | Peak RSS | ~140–260MB (server process, `ps`, varies by measurement point) | 1601MB | 984MB | 633MB |
 | Model/cache size on disk | 0 (server-managed) | 1.2GB | +0.2GB (shares fp32's HF repo) | 87MB |
 
@@ -152,8 +152,8 @@ is required," since size alone doesn't predict which side of the split a
 model falls on. The likelier candidate mechanism is something particular
 to Gemma's own score distribution or prompt-formatting convention
 interacting with the allocator's `CONTEXT_RELEVANCE_FLOOR_FRACTION = 0.15`
-(`src/config.rs`) —
-a fixed *fraction of the top seed score*, not an absolute threshold. If
+(`src/config.rs`) — a fixed *fraction of the top seed score*, not an
+absolute threshold. If
 Gemma's cosine-similarity scores for code cluster more tightly around the
 top score than Qwen's or MiniLM's do (a real possibility: Gemma's
 `search-result` prompt convention and its ONNX-graph-baked pooling
@@ -168,9 +168,12 @@ model on a sample of tasks, named here as the concrete next step rather
 than attempted under this task's scope.
 
 **What this attribution does NOT show**: it does not show the "larger
-model is required" story the task asked to check against. MiniLM being
-immune to the same failure mode Gemma exhibits, while being dramatically
-smaller, is direct evidence against that story.
+model is required" story the task asked to check against. It's not that
+the smallest candidate is immune to Gemma's failure mode on its own merits
+(its lower hybrid baseline muddies that specific comparison, as above) —
+it's that the largest candidate (Qwen) and the smallest (MiniLM) both land
+on the *improves-under-budget* side, and only the mid-sized Gemma degrades.
+Size does not predict the split; something else about Gemma does.
 
 ## Pareto frontier and recommendation
 
@@ -222,3 +225,15 @@ smaller, is direct evidence against that story.
   per the task's explicit constraint. If that hypothesis is worth confirming,
   it needs its own scoped follow-up (plotting seed-score distributions per
   model), not a change bundled into this comparison.
+- **CPU utilization was not instrumented as a table column**, though it was
+  on the task's measurement list. Only incidental `ps`/`top` observations
+  exist (native ONNX embedding runs pegged ~1200% across cores during
+  batch indexing; the idle Qwen server sits around 10-12% between
+  requests) — not a controlled, per-profile measurement comparable across
+  candidates. Not rerun for this: it wouldn't change which profile wins on
+  any metric that mattered to the recommendation above.
+- **The batch-64 throughput row is cross-session** (a different session's
+  measurement, noted inline in the table) and was not rerun this session;
+  the same-session, same-doc-text `100-symbol incremental, per-item` row
+  above it is the directly comparable figure if the two need to be read
+  together.
