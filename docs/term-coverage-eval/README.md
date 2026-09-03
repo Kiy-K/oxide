@@ -1,9 +1,7 @@
 # Term-coverage corroboration experiment
 
-Status: **Original (unbounded-multiplicative) sweep DONE — REVISE. Follow-up
-(bounded-additive fix) IN PROGRESS: harness/scoring/eval fixes done and
-tested, partial 11/21 rerun leans SAFE-BUT-MARGINALLY-USEFUL, full 21-task
-rerun pending.**
+Status: **DONE. Final recommendation: REJECT adopting a nonzero default —
+safe, but not useful enough to ship.**
 
 ## Follow-up status (read this first)
 
@@ -55,18 +53,73 @@ floating-point-precision noise, and not a bug in OXIDE's own ranking code
 rankings can flip between separate runs even with byte-identical index
 state and byte-identical query text.
 
-**Partial rerun evidence** (bounded scoring, alphas 0.0/0.05/0.1, 11 of 21
-tasks — stopped by explicit instruction before completing, preserved at
-`results/incomplete-run-3-bounded-scoring-stopped-at-11-of-21/`, see that
-directory's `NOTE.md` for the honest read: valid data, incomplete coverage,
-not final): 9/11 tasks completely flat, 2/11 (pylint) show real positive
-MRR/nDCG movement at alpha=0.1 with zero regressions, and neither task that
-regressed under the old formula (`...2e76c8cd`, `...9cca0774`) regresses
-here. Reading as **SAFE-BUT-MARGINALLY-USEFUL**: the fix appears to work,
-but the sample is too small and Python-skewed (no TypeScript, no pytest) to
-call it validated, and the effect size at alpha≤0.1 is thin. **The full
-21-task rerun must show a meaningfully larger, still-regression-free win
-before any nonzero default is adopted** — this partial run is not that bar.
+An earlier partial rerun (11/21 tasks, stopped mid-run before the harness
+reuse fix landed) is preserved at `results/
+incomplete-run-3-bounded-scoring-stopped-at-11-of-21/` for audit — its
+`NOTE.md` explains it's valid-but-incomplete data, superseded by the full
+run below.
+
+## Final result: the full 21-task rerun (bounded scoring)
+
+Ran to completion — all 21 pinned tasks (17 Python + 4 TypeScript), alphas
+0.0/0.05/0.1, `results/results-bounded-scoring-full.jsonl` — in well under
+10 minutes total thanks to the harness reuse fix (vs. the multi-hour,
+repeatedly-interrupted cost the commit-keyed worktrees alone imposed).
+
+| alpha | P@5 | R@5 | MRR | nDCG@10 | gold-in-ctx |
+|---|---|---|---|---|---|
+| 0.0 (baseline) | 0.2286 | 0.3637 | 0.4247 | 0.4815 | 61.9% |
+| 0.05 | 0.2286 | 0.3637 | 0.4247 | 0.4815 | 61.9% |
+| 0.1 | 0.2286 | 0.3637 | 0.4485 | 0.4891 | 61.9% |
+
+**18 of 21 tasks are completely flat at both alpha=0.05 and alpha=0.1** —
+zero movement in any metric. **Zero P@5, recall@5, or gold-in-context
+movement on any task at any alpha.** Only 3 tasks move at all, and only at
+alpha=0.1 (nothing at 0.05):
+
+- `...51b4c299` (pylint): MRR +0.5, nDCG@10 +0.144 — the same task that
+  moved in the earlier partial run, reproducing cleanly.
+- `...049a7048` (pylint): nDCG@10 +0.017 — also reproduces from the partial
+  run.
+- `...07f7e78f` (requests): `used_tokens` -84 only, no ranking metric moves
+  at all — token-budget noise, not a ranking effect.
+
+Neither task that regressed under the original unbounded-multiplicative
+formula (`...2e76c8cd` Blueprint, `...9cca0774` Session.request) regresses
+here, at either alpha, across the full pinned set. The bounded-scoring fix
+is confirmed safe.
+
+**But it does not clear the bar this rerun was run to test.** The
+instruction going into this run was explicit: the full run must show a
+*meaningfully larger* win, still regression-free, before any nonzero
+default is adopted. It didn't — the full 21-task result is not larger than
+the 11-task partial sample's signal, it's the *same* signal (the identical
+two pylint tasks, nothing new), diluted across twice as many tasks that
+show nothing at all. 3 of 21 tasks nudged, 18 of 21 completely inert, and
+the nudge itself never touches precision, recall, or gold-in-context — only
+MRR/nDCG reordering within results that were already being retrieved
+correctly.
+
+## Final recommendation: REJECT adopting a nonzero default
+
+Not REVISE — the fix has already been revised once (bounded additive bonus,
+module-symbol exclusion) and retested, and the identifier-dominance
+regression that drove the original REVISE is confirmed gone. This is a
+different call: **the corroboration boost, even in its safe bounded form,
+is not useful enough to justify shipping.** An effect this thin (2 of 21
+tasks, MRR/nDCG only, capped at alpha=0.1) does not clear "meaningfully
+larger" by any reasonable reading, and there's no evidence a higher alpha
+would help — the whole point of the bounded design is that raising alpha
+past this range risks reintroducing exactly the identifier-dominance
+regression the fix was built to prevent.
+
+`$OXIDE_TERM_COVERAGE_ALPHA` stays env-gated, default `0.0` (no-op). The
+hook itself is harmless to leave in the codebase (off by default, fully
+tested, zero measured overhead) — there's no reason to rip it out — but no
+further tuning of this specific mechanism is recommended without a new
+idea for why it would help more than this. This closes the term-coverage
+corroboration experiment for good; no further reruns follow from this
+conclusion.
 
 ## Objective
 
