@@ -8,11 +8,11 @@ touched by this worktree — verified at creation time and rechecked before
 every commit below. No retrieval/graph/allocator/default-provider-selection
 semantics have been changed; see "Code changes" for exactly what was.
 
-**Status: Stage A setup complete, correctness-verified for all six candidate
-configurations, timed measurements not yet taken — the machine has had a
-background `oxide index` job running continuously (another session's
-ContextBench corroboration sweep) since before this worktree was created.
-Per this task's own instruction, timed runs only happen on an idle machine.**
+**Status: Stage A complete — all six candidate configurations correctness-
+verified and timed on an idle machine (a peer session's background indexing
+job was blocking this and was stopped at this task's request; see "Stage A
+timed measurements" for how idleness was confirmed). No recommendation is
+made in this report; see "Not yet done" for what Stage B still needs.**
 
 ## Candidates
 
@@ -103,23 +103,89 @@ No `--pooling` override was needed for Nomic (unlike Qwen3, which needs
 encodes Nomic's documented mean pooling; that's what these correctness
 numbers actually confirm, not an assumption.
 
-## Blocked: Stage A timed measurements
+## Stage A timed measurements
 
-Per this task's instruction to time only on an idle machine: `pgrep -fa
-"target/release/oxide index"` has shown the same background `oxide index .`
-process (pid 72492, another session's ContextBench corroboration sweep,
-apparently indexing a large repo — the process predates this worktree and
-was still running at last check, load average 1.5–3.0) continuously since
-before this survey started. The Nomic server was stopped rather than left
-idling through this wait, since a cold-start timing run needs a fresh server
-start anyway.
+The other session's background `oxide index .` job (the one blocking this
+section when this doc was first written) was stopped at this task's request
+(peer session `oxide-f2`, confirmed by its own user). Machine verified idle
+before every timed run below (`uptime` load average 1.2–1.9 on 16 cores,
+~10% utilization, plus checking for no live `oxide index`/`contextbench_run`/
+`tierb_agent_run` processes). One false alarm along the way worth recording:
+the production Qwen3 server's `ps` `%CPU` column showed 33% and looked like
+live load, but that column is a lifetime average since process start, not
+current usage — its request log had gone quiet, confirming genuine idle.
 
-**Not yet measured, pending an idle window:** cold init/load, `embed_query`
-p50/p95, incremental (1/10/50/100-symbol) latency, batch-64/500 throughput,
-peak RSS, and per-candidate `index.db` size on a fixed fixture repo (the
-disk/vector-size axis specifically named in the task — 768d vs 256d Nomic
-should show roughly a 3x difference in stored embedding bytes, which is the
-actual point of the 256d variant).
+All timings below are same-session, same-machine-state, same methodology
+(`examples/embedding_profile_probe*`, unmodified for every profile except
+Nomic, which uses the new `_http_nomic` twin) — including a fresh Qwen3
+re-run, so the whole table is apples-to-apples rather than mixing in the
+prior survey's cross-session number. It closely reproduces that prior run
+(100-symbol incremental: 105.49ms/item here vs 105.25ms/item there), which
+cross-validates both this session's methodology and the prior one's.
+
+| Profile | Runtime | Dim | Cold init | `embed_query` p50 | `embed_query` p95 | 100-sym incremental/item | Throughput (500, items/s) | Peak RSS | Disk (weights) |
+|---|---|---|---|---|---|---|---|---|---|
+| qwen3-Q8_0 (reference) | HTTP | 1024 | 879ms (client only; server already warm) | 39.39ms | 41.91ms | 105.49ms | 9.2 | 141MB (server, current) | 0 (server-managed) |
+| minilm-l6-v2 (reference) | native | 384 | 166.8ms | 1.95ms | 4.87ms | 3.03ms | 310.5 | 629.4MB | 87MB |
+| arctic-embed-xs | native | 384 | 177.8ms | 2.48ms | 2.97ms | 3.23ms | 298.3 | 582.2MB | 87MB (fp32 `model.onnx`) |
+| bge-small-en-v1.5 | native | 384 | 293.0ms | 4.47ms | 5.32ms | 6.16ms | 156.2 | 640.2MB | 128MB |
+| jina-code-v2 | native | 768 | 1172.1ms | 11.71ms | 14.01ms | 25.40ms | 35.1 | 1889.0MB | 615MB (fp32 `model.onnx`) |
+| nomic-v2-moe (768d) | HTTP | 768 | 67.8ms (client only) / 4.05s (server cold start) | 84.42ms | 101.25ms | 54.48ms | 19.7 | 409.9MB (server) | 489MB (Q8_0 GGUF) |
+| nomic-v2-moe (256d, truncated) | HTTP | 256 | 61.0ms (client only) | 77.24ms | 87.07ms | 50.99ms | 20.1 | 409.9MB (same server) | 489MB (shared with 768d) |
+
+Notes on this table:
+- Qwen3's cold-init row is client-only (server pre-warm) — its own server
+  cold-start (`scripts/embedder.sh start`) was **not** re-measured this
+  session (reusing the prior survey's 6.15s), since the server was already
+  up and stopping it just to re-time a well-established number wasn't worth
+  the disruption. Nomic's server cold start (4.05s, `nomic_server.sh start`)
+  **was** freshly measured, same process-boundary methodology.
+- 768d vs 256d Nomic client-side latency is within noise of each other
+  (expected: truncation happens client-side after the server does the same
+  768d forward pass regardless of requested output size — the compute cost
+  is identical, only the wire payload and stored-vector size shrink).
+- `jina-code-v2`'s fp32 `model.onnx` (768d, larger transformer) is
+  meaningfully heavier on every axis than every other native candidate
+  including the reference MiniLM — cold init 7x, peak RSS 3x, throughput
+  ~9x slower.
+- Disk figures for `jina-code-v2`/`arctic-embed-xs` are the fp32
+  `model.onnx` fastembed actually loads by default, not the full HF repo
+  snapshot (which includes unused fp16/int8/quantized/bnb4 variants and, for
+  Jina, an unrelated raw PyTorch checkpoint — combined snapshot sizes were
+  1.7GB and 364MB respectively, both larger than what's actually resident).
+
+### Disk/vector size: `index.db` on a fixed fixture repo
+
+Measured via a new `examples/index_size_probe.rs` (calls `update_index`
+directly, like `eval.rs` already does — bypasses the CLI since
+`open_embedder` has no path for Nomic's protocol) against `fixtures/py_repo`
+(8 files, 54 symbols).
+
+| Profile | Dim | `index.db` bytes | SQLite pages (4096B) |
+|---|---|---|---|
+| hashed-bow-256 (baseline) | 256 | 143,360 | 35 |
+| nomic-v2-moe (256d truncated) | 256 | 143,360 | 35 |
+| minilm-l6-v2 / arctic-embed-xs / bge-small-en-v1.5 | 384 | 176,128 | 43 |
+| jina-code-v2 | 768 | 278,528 | 68 |
+| nomic-v2-moe (768d) | 768 | 278,528 | 68 |
+| qwen3-Q8_0 | 1024 | 311,296 | 76 |
+
+**Caveat, stated plainly rather than papered over:** every value above is an
+exact multiple of SQLite's 4096-byte page size, and this fixture is tiny (54
+symbols) — at this scale, `index.db` size is dominated by page-allocation
+granularity and fixed schema overhead (symbols/references/structural-relations
+tables), not raw embedding bytes. The task's expectation that "768d vs 256d
+is 3x" reflects the *embedding bytes themselves* (768×4 vs 256×4 = exactly
+3x, trivially true), but that ratio does **not** show cleanly in total
+`index.db` size until a repo is large enough for embedding storage to
+dominate the fixed overhead — 54 symbols isn't that scale. A repo with
+thousands of symbols (e.g. the `pylint`-scale fixtures used in the
+ContextBench corroboration work) would be needed for a fair reading of the
+dimension's effect on total on-disk index size; not run here to avoid the
+long reindex time that would cost, and because the per-vector byte math
+(dim × 4 bytes × symbol count) already answers the question the task is
+actually asking without needing to reindex a large repo just to watch SQLite
+round up to the next page.
 
 ## Not yet done
 
