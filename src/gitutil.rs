@@ -43,12 +43,36 @@ fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
 /// (new-file coordinates). `range` empty = worktree vs HEAD; `A..B` explicit;
 /// a single rev `R` means "everything since R" (`git diff R`).
 pub fn diff_files(repo: &Path, range: &str) -> Result<Vec<FileDelta>> {
-    let text = if range.is_empty() {
-        run_git(repo, &["diff", "--unified=0", "--no-color", "HEAD"])?
+    let cmd: &[&str] = if range.is_empty() {
+        &["diff", "--unified=0", "--no-color", "HEAD"]
     } else {
-        run_git(repo, &["diff", "--unified=0", "--no-color", range])?
+        &["diff", "--unified=0", "--no-color", range]
     };
+    let text = run_git(repo, cmd).map_err(|e| friendly_diff_error(range, e))?;
     Ok(parse_unified(&text))
+}
+
+/// Wrap a failed `git diff` with a hint a human can act on, instead of
+/// surfacing git's raw stderr alone (a fresh single-commit checkout makes
+/// the default `HEAD~1` fail with `ambiguous argument` every time).
+fn friendly_diff_error(range: &str, error: anyhow::Error) -> anyhow::Error {
+    let full = format!("{error:#}");
+    // Outside a repo git prints its whole usage block instead of a one-line
+    // error; the first line names the actual problem, the rest is noise.
+    let detail = full.split("usage:").next().unwrap_or(&full).trim_end();
+    let hint = if full.to_lowercase().contains("not a git repository") {
+        "oxide review needs git history; run it inside a git checkout"
+    } else if detail.contains("ambiguous argument") || detail.contains("unknown revision") {
+        if range.is_empty() {
+            "the repository has no HEAD commit yet; make an initial commit before reviewing"
+        } else {
+            "that range does not exist in this repository; use --diff HEAD for \
+             the current commit or --diff \"\" for uncommitted worktree changes"
+        }
+    } else {
+        "git diff failed; check that the range is a valid revision range"
+    };
+    anyhow::anyhow!("{detail}\nhint: {hint}")
 }
 
 pub fn parse_unified(text: &str) -> Vec<FileDelta> {
@@ -156,6 +180,45 @@ new file mode 100644
         let deltas = diff_files(root, "").unwrap();
         let d = deltas.iter().find(|d| d.file == "a.py").expect("delta");
         assert!(d.added.windows(2).any(|w| w[0].1 + 1 == w[1].0) || !d.added.is_empty());
+    }
+
+    #[test]
+    fn young_repo_diff_range_gets_an_actionable_hint() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        std::fs::write(root.join("a.py"), "def one():\n    pass\n").unwrap();
+        git(root, &["init", "-q"]);
+        git(root, &["add", "."]);
+        git(
+            root,
+            &[
+                "-c",
+                "user.email=t@t",
+                "-c",
+                "user.name=t",
+                "commit",
+                "-qm",
+                "init",
+            ],
+        );
+        let err = diff_files(root, "HEAD~1").unwrap_err();
+        let msg = format!("{err:#}");
+        assert!(
+            msg.contains("hint:") && msg.contains("--diff HEAD"),
+            "missing actionable hint: {msg}"
+        );
+    }
+
+    #[test]
+    fn diff_outside_a_git_repo_gets_a_git_checkout_hint() {
+        let tmp = tempfile::tempdir().unwrap();
+        std::fs::write(tmp.path().join("a.py"), "def one():\n    pass\n").unwrap();
+        let err = diff_files(tmp.path(), "HEAD").unwrap_err();
+        let msg = format!("{err:#}");
+        assert!(
+            msg.contains("hint:") && msg.contains("git checkout"),
+            "missing actionable hint: {msg}"
+        );
     }
 
     fn git(dir: &std::path::Path, args: &[&str]) {

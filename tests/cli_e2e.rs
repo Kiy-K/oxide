@@ -176,6 +176,43 @@ fn empty_search_and_invalid_invocation_keep_distinct_contracts() {
 }
 
 #[test]
+fn tokenless_search_and_zero_limits_are_explicit_not_silent() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");
+    json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+
+    // Empty and stopword-only queries must not dump the whole index as
+    // zero-score ties; they are ordinary no-hit queries.
+    for query in ["", "the and for"] {
+        let hits = json_stdout(&run(tmp.path(), &["search", query, "--json"]));
+        assert_eq!(hits, Value::Array(Vec::new()), "query {query:?}");
+    }
+
+    let zero_limit = run(tmp.path(), &["search", "thing", "--limit", "0", "--json"]);
+    assert!(!zero_limit.status.success());
+    assert!(zero_limit.stderr.is_empty());
+    let error: Value = serde_json::from_slice(&zero_limit.stdout).unwrap();
+    assert_eq!(error["error"]["code"], "invalid_configuration");
+    assert_eq!(error["error"]["action"], "stop");
+
+    let zero_budget = run(
+        tmp.path(),
+        &[
+            "context",
+            "--task",
+            "thing",
+            "--budget-tokens",
+            "0",
+            "--json",
+        ],
+    );
+    assert!(!zero_budget.status.success());
+    assert!(zero_budget.stderr.is_empty());
+    let error: Value = serde_json::from_slice(&zero_budget.stdout).unwrap();
+    assert_eq!(error["error"]["code"], "invalid_configuration");
+}
+
+#[test]
 fn unavailable_embedder_is_a_nonzero_structured_failure() {
     let tmp = tempfile::tempdir().unwrap();
     write(tmp.path(), "src/thing.py", "def thing():\n    return 1\n");

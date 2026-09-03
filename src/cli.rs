@@ -37,6 +37,7 @@ pub enum Cmd {
     },
     /// Search the index.
     Search {
+        /// Search terms: identifiers or a natural-language description.
         query: String,
         /// Repository path. Defaults to discovering from the current directory.
         #[arg(long)]
@@ -44,7 +45,7 @@ pub enum Cmd {
         /// Max results.
         #[arg(short, long, default_value_t = 10)]
         limit: usize,
-        /// Retrieval mode.
+        /// Retrieval mode: hybrid, lexical, or semantic (alias: vector).
         #[arg(short, long, default_value = "hybrid")]
         mode: String,
         /// Disable structural expansion.
@@ -167,6 +168,14 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     ))
                 }
             };
+            if limit == 0 {
+                return Err(CliError::new(
+                    "invalid_configuration",
+                    ErrorAction::Stop,
+                    "limit must be at least 1",
+                    json,
+                ));
+            }
             cmd_search(
                 path.as_deref(),
                 &query,
@@ -185,7 +194,17 @@ pub fn run(args: Args) -> Result<(), CliError> {
             task,
             budget_tokens,
             json,
-        } => cmd_context(path.as_deref(), &task, budget_tokens, json),
+        } => {
+            if budget_tokens == 0 {
+                return Err(CliError::new(
+                    "invalid_configuration",
+                    ErrorAction::Stop,
+                    "budget_tokens must be at least 1",
+                    json,
+                ));
+            }
+            cmd_context(path.as_deref(), &task, budget_tokens, json)
+        }
         Cmd::Mcp => run_mcp(),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
@@ -255,6 +274,14 @@ fn render_status(status: &StatusResult) {
             "stale"
         }
     );
+    if !status.index_exists {
+        println!("hint:       run `oxide index {}` to build it", status.root);
+    } else if !status.is_current {
+        println!(
+            "hint:       run `oxide index {}` to refresh it",
+            status.root
+        );
+    }
     println!(
         "files:      {}  symbols: {}  embeddings: {}",
         status.files, status.symbols, status.embeddings

@@ -197,6 +197,12 @@ impl<'a> RetrievalEngine<'a> {
         if self.symbols.is_empty() {
             return Ok(Vec::new());
         }
+        // A query with no indexable tokens (empty, whitespace-only,
+        // stopwords) would score every symbol 0.0 and return the whole
+        // index as tied non-hits; report no matches instead.
+        if tokenize(query).is_empty() {
+            return Ok(Vec::new());
+        }
         let lookup =
             |id: &u64| -> Option<&Symbol> { self.by_id.get(id).map(|&i| &self.symbols[i]) };
 
@@ -678,6 +684,35 @@ mod tests {
         let hits = engine.search("retrying failed http calls", &opts).unwrap();
         assert!(!hits.is_empty());
         assert!(hits[0].reasons.iter().any(|r| r.starts_with("semantic")));
+    }
+
+    #[test]
+    fn tokenless_queries_return_no_hits_instead_of_dumping_the_index() {
+        let store = seed_store();
+        let emb = HashedEmbedder::default();
+        let engine = RetrievalEngine::new(&store, &emb);
+        for mode in [
+            SearchMode::LexicalOnly,
+            SearchMode::VectorOnly,
+            SearchMode::Hybrid,
+        ] {
+            for query in ["", "   ", "the and for"] {
+                let hits = engine
+                    .search(
+                        query,
+                        &SearchOptions {
+                            limit: 10,
+                            mode,
+                            expand: false,
+                        },
+                    )
+                    .unwrap();
+                assert!(
+                    hits.is_empty(),
+                    "{mode:?} query {query:?} must not return whole-index ties"
+                );
+            }
+        }
     }
 
     #[test]
