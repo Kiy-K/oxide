@@ -6,7 +6,7 @@ Full build/test/lint commands and load-bearing invariants (symbol id composition
 
 ## Repo etiquette
 
-- Commit messages: lowercase conventional-ish prefix + concise imperative summary (`fix:`, `feat:`, `refactor:`, `docs:`, `harden:`, `bench:`, `tierb:`). No git remote is configured — work happens directly on `main`, no PR workflow.
+- Commit messages: lowercase conventional-ish prefix + concise imperative summary (`fix:`, `feat:`, `refactor:`, `docs:`, `harden:`, `bench:`, `tierb:`). Work happens directly on `main`, no PR workflow.
 - Order matters only at commit time: `fmt` → `clippy` → `test` → benchmark gate (`tests/benchmark_gate.rs`), per `AGENTS.md`.
 
 ## Agent-facing docs — don't duplicate, restate
