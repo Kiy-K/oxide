@@ -117,6 +117,17 @@ impl SharedEmbeddingCache {
             })
             .ok();
         let (dim, bytes) = row?;
+        // Defense in depth alongside `put`'s own dimension check: a row
+        // whose stored `dim` doesn't match this provider's current
+        // dimension can only exist from a schema/data anomaly (manual
+        // tampering, a cache file shared across an incompatible OXIDE
+        // version) since `put` never writes a mismatched one — but
+        // serving it anyway would silently hand `RetrievalEngine::search`
+        // a malformed vector under a provider identity that claims it's
+        // fine. Treat it as a miss instead.
+        if dim as usize != self.inner.dim() {
+            return None;
+        }
         Some(
             bytes
                 .as_chunks::<4>()
@@ -129,12 +140,23 @@ impl SharedEmbeddingCache {
     }
 
     fn put(&self, ch: u64, v: &[f32]) {
-        // A failure/empty vector must never be cached — the same rule
-        // `CachingEmbedder` (examples/term_coverage_sweep.rs) already
-        // applies to query embeddings: caching a transient provider
-        // failure would silently poison every future commit that happens
-        // to share this content, long after the provider recovers.
-        if v.is_empty() {
+        // A failure/empty vector, or one whose length doesn't match this
+        // provider's own declared dimension, must never be cached. Empty
+        // is `HttpEmbedder`'s documented transient-failure signal
+        // (`CachingEmbedder`, examples/term_coverage_sweep.rs, applies the
+        // same rule to query embeddings) — caching it would silently
+        // poison every future commit that happens to share this content,
+        // long after the provider recovers. A non-empty but wrong-length
+        // vector is a different failure shape `HttpEmbedder` doesn't
+        // itself guard against (a malformed/truncated HTTP response is
+        // not required to come back empty) — caching *that* would let a
+        // transient bad response persist as this content's permanent
+        // embedding across every future commit that reuses it, silently
+        // dropped from semantic search wherever `RetrievalEngine::search`'s
+        // own length check (`v.len() != qv.len()`) then skips it, with no
+        // path back to a healthy vector once the provider recovers, since
+        // nothing else would ever invalidate this cache entry.
+        if v.is_empty() || v.len() != self.inner.dim() {
             return;
         }
         let bytes: Vec<u8> = v.iter().flat_map(|f| f.to_le_bytes()).collect();
@@ -468,6 +490,78 @@ mod tests {
         assert!(
             !recovered.is_empty(),
             "the healthy provider must be consulted for real"
+        );
+    }
+
+    /// A malformed HTTP response doesn't have to come back *empty* the way
+    /// `HashedEmbedder`/`HttpEmbedder`'s own documented failure path does —
+    /// a truncated or garbled response can come back non-empty but the
+    /// wrong length. `put`'s empty-only check alone would silently cache
+    /// that as this content's permanent embedding across every future
+    /// commit that reuses it, with no path back to a healthy vector once
+    /// the provider recovers (nothing else would ever invalidate the
+    /// entry). Both `put` (never writes it) and `get` (never serves a
+    /// wrong-dimension row even if one somehow exists) must refuse it.
+    #[test]
+    fn malformed_wrong_dimension_embeddings_are_never_cached_or_served() {
+        struct WrongDimEmbedder {
+            inner: HashedEmbedder,
+            return_wrong_dim_next: StdAtomicUsize,
+        }
+        impl EmbeddingProvider for WrongDimEmbedder {
+            fn name(&self) -> &str {
+                "wrong-dim-test-embedder"
+            }
+            fn dim(&self) -> usize {
+                self.inner.dim()
+            }
+            fn embed(&self, text: &str) -> Vec<f32> {
+                let v = self.inner.embed(text);
+                if self.return_wrong_dim_next.swap(0, Ordering::Relaxed) == 1 {
+                    // Simulates a truncated/garbled HTTP response: non-empty,
+                    // but not this provider's declared dimension.
+                    return v[..v.len() / 2].to_vec();
+                }
+                v
+            }
+        }
+
+        let cache_db = tempfile::NamedTempFile::new().unwrap();
+        let cache1 = SharedEmbeddingCache::open(
+            Box::new(WrongDimEmbedder {
+                inner: HashedEmbedder::default(),
+                return_wrong_dim_next: StdAtomicUsize::new(1),
+            }),
+            cache_db.path(),
+        )
+        .unwrap();
+        let malformed = cache1.embed_document("def payment(): pass");
+        assert_ne!(
+            malformed.len(),
+            cache1.inner.dim(),
+            "sanity: the fixture must actually return a wrong-dimension vector"
+        );
+
+        // A later, healthy provider must NOT see a poisoned wrong-dimension
+        // cache entry for this content — it must recompute for real.
+        let cache2 = SharedEmbeddingCache::open(
+            Box::new(WrongDimEmbedder {
+                inner: HashedEmbedder::default(),
+                return_wrong_dim_next: StdAtomicUsize::new(0),
+            }),
+            cache_db.path(),
+        )
+        .unwrap();
+        let recovered = cache2.embed_document("def payment(): pass");
+        assert_eq!(
+            cache2.misses(),
+            1,
+            "a wrong-dimension embed must never be cached"
+        );
+        assert_eq!(
+            recovered.len(),
+            cache2.inner.dim(),
+            "the healthy provider must be consulted for real, not served the malformed vector"
         );
     }
 }
