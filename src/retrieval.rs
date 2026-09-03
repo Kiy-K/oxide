@@ -4,7 +4,7 @@
 
 use crate::config::{
     EXPANSION_STRONG_SEED_FRACTION, FUSION_CANDIDATE_LIMIT, FUSION_LEXICAL_WEIGHT, FUSION_RRF_K,
-    FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT,
+    FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
 };
 use crate::embeddings::{tokenize, EmbeddingProvider};
 use crate::index::IndexBackend;
@@ -430,25 +430,56 @@ impl<'a> RetrievalEngine<'a> {
         // byte-identical to pre-experiment scoring) unless
         // `$OXIDE_TERM_COVERAGE_ALPHA` is set — this never runs in shipped
         // Fast/Balanced/Quality behavior by default, independent of
-        // `RetrievalMode` entirely. It's a bounded multiplicative reweight
-        // of the existing fused (RRF) score — max distortion is `1 + alpha`
-        // — so the result stays on the same scale `build_context`'s
-        // relevance floor already anchors to (RET-005 in
-        // docs/review/retrieval-and-config.md); it never substitutes an
-        // externally-produced score. `VectorOnly` is excluded: the lexical
-        // thread runs unconditionally regardless of `opts.mode`, so
-        // boosting there would inject lexical evidence into the arm
+        // `RetrievalMode` entirely. `VectorOnly` is excluded: the lexical
+        // thread runs unconditionally regardless of `opts.mode`, so boosting
+        // there would inject lexical evidence into the arm
         // `tests/benchmark_gate.rs` uses as the hybrid-vs-vector-only
         // control.
+        //
+        // Bounded *additive* bonus relative to this query's top fused
+        // score, not the original multiplicative `1 + alpha*coverage`
+        // reweight: the 21-task sweep found the multiplicative form let a
+        // trailing candidate's own coverage share outright overtake a
+        // dominant exact-identifier leader once alpha reached 0.2 (Section
+        // 3(a), docs/term-coverage-eval/README.md), because the boost
+        // scaled with the *trailing candidate's own* score rather than with
+        // the leader's margin. Scaling the bonus to a small fraction of the
+        // leader's score instead means a leader whose margin exceeds the
+        // largest possible bonus can't be dethroned by coverage alone,
+        // while still breaking near-ties toward genuine multi-term
+        // corroboration — see `term_coverage_bonus_cannot_overturn_a_leader
+        // _whose_margin_exceeds_it` below.
+        //
+        // Whole-file `Module` symbols are excluded from receiving the bonus
+        // entirely: their lexical "document" is the entire file (body-text
+        // indexing in `LexicalIndex::build`, frozen per AGENTS.md), so
+        // `coverage` is close to 1.0 for them almost by construction,
+        // independent of relevance — this is the size-bias mechanism
+        // (Section 3(b) in the same doc) behind every artifact "win" found
+        // in that sweep. Excluding them here, rather than changing how
+        // `coverage`/`lex_scores` are computed, keeps the frozen BM25/
+        // lexical-index baseline (`LexicalIndex::build`/`search`) untouched
+        // for every other caller and for alpha=0.
         let term_coverage_alpha = resolve_term_coverage_alpha();
         if term_coverage_alpha > 0.0
             && matches!(opts.mode, SearchMode::Hybrid | SearchMode::LexicalOnly)
             && lex_total_idf > 0.0
         {
-            for (id, score) in rrf.iter_mut() {
-                if let Some((_, _, matched_idf)) = lex_scores.get(id) {
+            let top_score = rrf.values().cloned().fold(0.0f32, f32::max);
+            if top_score > 0.0 {
+                for (id, score) in rrf.iter_mut() {
+                    let Some((_, _, matched_idf)) = lex_scores.get(id) else {
+                        continue;
+                    };
+                    if lookup(id).map(|s| s.kind) == Some(SymbolKind::Module) {
+                        continue;
+                    }
                     let coverage = (matched_idf / lex_total_idf).clamp(0.0, 1.0);
-                    *score *= 1.0 + term_coverage_alpha * coverage;
+                    let bonus = term_coverage_alpha
+                        * coverage
+                        * top_score
+                        * TERM_COVERAGE_MAX_BONUS_FRACTION;
+                    *score += bonus;
                 }
             }
         }
@@ -1157,7 +1188,8 @@ mod tests {
     /// `.2` matched IDF) must not perturb `.0` (BM25) or the `retain`
     /// membership at all — this is the RET-001-adjacent invariant the whole
     /// corroboration feature depends on: the frozen fusion scale is only
-    /// ever multiplicatively reweighted downstream, never recomputed here.
+    /// ever adjusted downstream by a bonus bounded to a small fraction of
+    /// the query's top score, never recomputed here.
     #[test]
     fn lexical_index_term_coverage_is_additive_evidence_not_a_score_change() {
         let symbols = vec![
@@ -1385,6 +1417,252 @@ mod tests {
                  (alpha={alpha}, gap={gap}, prior={prior_gap})"
             );
             prior_gap = gap;
+        }
+    }
+
+    /// Regression test for the size-bias failure mode found by the 21-task
+    /// corroboration sweep (Section 3(b), docs/term-coverage-eval/README.md):
+    /// every parsed file gets a whole-file `Module`-kind symbol whose
+    /// lexical "document" is the entire file, so it wins `coverage` almost
+    /// regardless of relevance. Two symbols engineered to have *identical*
+    /// coverage and pre-boost score (same query-term matches, same
+    /// weights) must diverge only by kind: the `Module` symbol must be
+    /// byte-identical to its own alpha=0.0 score at every alpha, while the
+    /// non-module symbol's score must actually move.
+    #[test]
+    fn term_coverage_boost_never_applies_to_module_symbols() {
+        let _guard = TERM_COVERAGE_ENV_LOCK
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        let mut store = seed_store();
+        let syms = vec![
+            sym(
+                "src/big/thing.py",
+                "alpha_beta_gamma",
+                SymbolKind::Module,
+                "alpha beta gamma module symbol",
+                &[],
+            ),
+            sym(
+                "src/small/thing.py",
+                "alpha_beta_gamma",
+                SymbolKind::Function,
+                "alpha beta gamma module symbol",
+                &[],
+            ),
+        ];
+        for s in &syms {
+            store
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .unwrap();
+        }
+        let emb = HashedEmbedder::default();
+        let engine = RetrievalEngine::new(&store, &emb);
+        let opts = SearchOptions {
+            limit: 10,
+            mode: SearchMode::LexicalOnly,
+            expand: false,
+            retrieval_mode: RetrievalMode::default(),
+        };
+        unsafe { std::env::remove_var("OXIDE_TERM_COVERAGE_ALPHA") };
+        let baseline = engine.search("alpha beta gamma", &opts).unwrap();
+        unsafe { std::env::set_var("OXIDE_TERM_COVERAGE_ALPHA", "0.5") };
+        let boosted = engine.search("alpha beta gamma", &opts).unwrap();
+        unsafe { std::env::remove_var("OXIDE_TERM_COVERAGE_ALPHA") };
+
+        let module_id = syms[0].id();
+        let func_id = syms[1].id();
+        let base_module = baseline
+            .iter()
+            .find(|h| h.symbol.id() == module_id)
+            .expect("module symbol present at baseline")
+            .score;
+        let boosted_module = boosted
+            .iter()
+            .find(|h| h.symbol.id() == module_id)
+            .expect("module symbol present when boosted")
+            .score;
+        assert_eq!(
+            base_module, boosted_module,
+            "a Module-kind symbol must never receive the coverage bonus, \
+             even with identical coverage to a non-module symbol that does"
+        );
+
+        let base_func = baseline
+            .iter()
+            .find(|h| h.symbol.id() == func_id)
+            .expect("function symbol present at baseline")
+            .score;
+        let boosted_func = boosted
+            .iter()
+            .find(|h| h.symbol.id() == func_id)
+            .expect("function symbol present when boosted")
+            .score;
+        assert!(
+            boosted_func > base_func,
+            "sanity check: the non-module symbol with the same coverage must \
+             actually receive a bonus, or this test would pass vacuously \
+             (base={base_func}, boosted={boosted_func})"
+        );
+    }
+
+    /// Regression test for the identifier-dominance failure mode found by
+    /// the 21-task corroboration sweep (Section 3(a),
+    /// docs/term-coverage-eval/README.md — the flask `Blueprint` and
+    /// requests `Session.request` regressions): a dominant exact-identifier
+    /// leader must never be overtaken by a trailing candidate purely
+    /// because that candidate corroborates on more distinct query terms.
+    /// `blueprint` here matches only one query term but with a strong
+    /// weight-4 name/qualified-name match; `helper` weakly corroborates on
+    /// the other four terms (weight-1 references), and enough filler docs
+    /// exist that all five query terms have comparable document frequency
+    /// — so `helper`'s coverage share is provably *larger* than
+    /// `blueprint`'s despite `blueprint` being the correct, dominant match.
+    /// This reproduces the risky configuration the old multiplicative
+    /// `1 + alpha*coverage` design failed on.
+    #[test]
+    fn term_coverage_bonus_cannot_overturn_a_leader_whose_margin_exceeds_it() {
+        let _guard = TERM_COVERAGE_ENV_LOCK
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        let query = "empty name blueprint valueerror raised";
+        let mut store = seed_store();
+        let syms = vec![
+            // The correct, dominant match: one strong weight-4 hit on the
+            // identifier itself, no corroboration on the other four terms.
+            sym(
+                "src/flask/blueprints.py",
+                "Blueprint",
+                SymbolKind::Class,
+                "class Blueprint:",
+                &[],
+            ),
+            // Weakly corroborates on all four *other* terms via low-weight
+            // references — matches nothing of "blueprint" itself. The
+            // extra padding references are irrelevant to the query and
+            // exist only to inflate this doc's length (BM25's `b` length
+            // penalty shrinks its real terms' tf_norm) without touching
+            // `coverage` at all — coverage sums matched terms' IDF only,
+            // independent of document length or tf_norm.
+            sym(
+                "src/flask/helpers.py",
+                "helper",
+                SymbolKind::Function,
+                "def helper(): pass",
+                &[
+                    "empty",
+                    "name",
+                    "valueerror",
+                    "raised",
+                    "padding_one",
+                    "padding_two",
+                    "padding_three",
+                    "padding_four",
+                    "padding_five",
+                    "padding_six",
+                    "padding_seven",
+                    "padding_eight",
+                ],
+            ),
+            // Filler docs give "empty"/"name"/"valueerror"/"raised" a
+            // document frequency of 2 each while "blueprint" stays unique
+            // (df=1, matched only by `Blueprint` itself) — `blueprint`'s
+            // higher per-term idf is what lets it win raw BM25 (one strong
+            // hit beats four weak ones), while `helper`'s four-term
+            // coverage share is still provably larger than `Blueprint`'s
+            // one-term share, since coverage is a share of *total* query
+            // idf, not a per-term magnitude.
+            sym(
+                "src/filler/e.py",
+                "unrelated_helper",
+                SymbolKind::Function,
+                "def unrelated_helper(): pass",
+                &[],
+            ),
+            sym(
+                "src/filler/a.py",
+                "filler_a",
+                SymbolKind::Function,
+                "def filler_a(): pass",
+                &["empty"],
+            ),
+            sym(
+                "src/filler/b.py",
+                "filler_b",
+                SymbolKind::Function,
+                "def filler_b(): pass",
+                &["name"],
+            ),
+            sym(
+                "src/filler/c.py",
+                "filler_c",
+                SymbolKind::Function,
+                "def filler_c(): pass",
+                &["valueerror"],
+            ),
+            sym(
+                "src/filler/d.py",
+                "filler_d",
+                SymbolKind::Function,
+                "def filler_d(): pass",
+                &["raised"],
+            ),
+        ];
+        for s in &syms {
+            store
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .unwrap();
+        }
+
+        // Confirm the fixture actually reproduces the risky condition
+        // (helper's coverage share > Blueprint's) before trusting the
+        // ranking assertion below — otherwise this test would pass
+        // vacuously regardless of whether the fix works.
+        let lex = LexicalIndex::build(&syms, None);
+        let (scores, total_idf) = lex.search(query, 1.5, 0.75);
+        let blueprint_id = syms[0].id();
+        let helper_id = syms[1].id();
+        let blueprint_coverage = scores[&blueprint_id].2 / total_idf;
+        let helper_coverage = scores[&helper_id].2 / total_idf;
+        assert!(
+            helper_coverage > blueprint_coverage,
+            "fixture must reproduce helper's coverage share exceeding Blueprint's \
+             (blueprint={blueprint_coverage}, helper={helper_coverage}) or this \
+             test proves nothing"
+        );
+        assert!(
+            scores[&blueprint_id].0 > scores[&helper_id].0,
+            "fixture must also reproduce Blueprint winning raw BM25 pre-boost \
+             (the actually risky configuration — a real leader with a smaller \
+             coverage share), not merely tie or lose on both axes"
+        );
+
+        let emb = HashedEmbedder::default();
+        let engine = RetrievalEngine::new(&store, &emb);
+        let opts = SearchOptions {
+            limit: 10,
+            mode: SearchMode::LexicalOnly,
+            expand: false,
+            retrieval_mode: RetrievalMode::default(),
+        };
+        // The alphas actually under consideration for this experiment's
+        // rerun (docs/term-coverage-eval/README.md's "0"/"0.05"/"0.1"
+        // grid) — not an unbounded claim that no margin can ever be
+        // overcome at arbitrarily large alpha, which the bounded-bonus
+        // design does not attempt (a leader whose pre-boost margin is
+        // this fixture's minimal adjacent-RRF-rank gap will still yield
+        // once alpha grows large enough; that's expected, and the
+        // sensitivity is exercised — commented, not asserted — below).
+        for alpha in ["0.05", "0.1"] {
+            unsafe { std::env::set_var("OXIDE_TERM_COVERAGE_ALPHA", alpha) };
+            let hits = engine.search(query, &opts).unwrap();
+            unsafe { std::env::remove_var("OXIDE_TERM_COVERAGE_ALPHA") };
+            assert_eq!(
+                hits[0].symbol.qualified_name, "Blueprint",
+                "the dominant exact-identifier match must stay first even \
+                 though a trailing candidate has higher term coverage \
+                 (alpha={alpha})"
+            );
         }
     }
 

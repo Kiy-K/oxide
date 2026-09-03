@@ -1,6 +1,7 @@
 pub mod cli;
 pub mod config;
 pub mod context;
+pub mod embedding_cache;
 pub mod embeddings;
 pub mod eval;
 pub mod gitutil;

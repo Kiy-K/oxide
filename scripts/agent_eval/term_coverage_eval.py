@@ -38,9 +38,14 @@ SWEEP_BIN = ROOT / "target/release/examples/term_coverage_sweep"
 ENV_BASE = {"OXIDE_EMBED_URL": os.environ.get("OXIDE_EMBED_URL", "")}
 PIN = ROOT / "eval-agent/results/tier_a_instances.txt"
 ALLOW = {i.strip() for i in PIN.read_text().splitlines() if i.strip()}
-ALPHAS = ["0.0", "0.1", "0.2", "0.3", "0.5"]
+ALPHAS = ["0.0", "0.05", "0.1"]
 K = 5
 OUT_DIR = ROOT / "docs/term-coverage-eval/results"
+# Fresh output path (not `results.jsonl`) for the bounded-scoring rerun —
+# the original 5-alpha (0.0-0.5) multiplicative-boost sweep stays at
+# `results.jsonl` as committed REVISE evidence; this rerun exercises the
+# bounded-additive-bonus fix and the narrower 0/0.05/0.1 grid it targets.
+OUT_NAME = os.environ.get("OXIDE_TERM_COVERAGE_OUT_NAME", "results-bounded-scoring.jsonl")
 
 
 def gold_lines(row) -> dict[str, list[tuple[int, int]]]:
@@ -58,7 +63,42 @@ def gold_lines(row) -> dict[str, list[tuple[int, int]]]:
     return lines
 
 
+# `kind == "module"` (a whole-file symbol, always spanning line 1 to the
+# file's last line) is excluded from symbol-level relevance — it's the
+# mechanism behind every artifact "win" in the first 21-task sweep
+# (docs/term-coverage-eval/README.md Section 3(b)): a whole-file document
+# "overlaps" almost any gold range in its file for free under a plain
+# line-range test, regardless of whether it's actually the relevant code.
+#
+# Deliberately scoped to `kind == "module"` only, NOT a generic large-span
+# threshold: an early draft of this fix also excluded any symbol over 200
+# lines regardless of kind, and a smoke check against this exact fixture
+# caught it wrongly excluding Flask's own `Blueprint` class (505 lines,
+# 117-621) — the correct, precise gold answer for the query this eval
+# harness measures. A large *class* can legitimately be the right, precise
+# answer; a whole *file* by construction never is. Only `module` has that
+# structural guarantee.
+def is_coarse_symbol(item: dict) -> bool:
+    return item.get("kind") == "module"
+
+
+def overlaps_gold_file(item: dict, gold: dict[str, list[tuple[int, int]]]) -> bool:
+    """File-level relevance: `item`'s file contains a gold range at all,
+    independent of line precision or symbol size. Tracked as its own signal
+    (see `pack_metrics`'s `gold_file_in_context`) rather than folded into
+    `overlaps_gold`, so "found the right file" and "found the right code"
+    are never conflated into one number again."""
+    return item["file"] in gold
+
+
 def overlaps_gold(item: dict, gold: dict[str, list[tuple[int, int]]]) -> bool:
+    """Symbol-level relevance: a precise line-range overlap, withheld
+    entirely for coarse/whole-file symbols (`is_coarse_symbol`) no matter
+    how much of the file's line range they happen to cover — a whole-file
+    match is file-level evidence (`overlaps_gold_file`), not symbol-level
+    precision, and must never be counted as the latter."""
+    if is_coarse_symbol(item):
+        return False
     ranges = gold.get(item["file"])
     if not ranges:
         return False
@@ -76,7 +116,12 @@ def matched_gold_indices(item: dict, gold_ranges: list[tuple[str, int, int]]) ->
     overlap the same single gold range (e.g. two functions in one annotated
     region), so counting *hits* against a *gold-range* denominator (the
     original bug here) can exceed 1.0 for recall or blow nDCG's [0,1] bound —
-    tracking which ranges are actually covered keeps both metrics bounded."""
+    tracking which ranges are actually covered keeps both metrics bounded.
+
+    Coarse/whole-file symbols (`is_coarse_symbol`) never match here, for the
+    same reason `overlaps_gold` withholds them — see its docstring."""
+    if is_coarse_symbol(item):
+        return set()
     out = set()
     for idx, (f, gs, ge) in enumerate(gold_ranges):
         if item["file"] == f and item["start_line"] <= ge and gs <= item["end_line"]:
@@ -84,10 +129,25 @@ def matched_gold_indices(item: dict, gold_ranges: list[tuple[str, int, int]]) ->
     return out
 
 
-def sweep(repo: Path, problem: str) -> list[dict]:
+def sweep(repo: Path, problem: str, expected_commit: str) -> list[dict]:
     """Runs the full alpha sweep for one task in a single process. Returns
     one dict per alpha with `hits`, `pack`, `search_seconds`,
-    `context_seconds`, `embed_query_calls_total`, `embed_query_cache_hits_total`."""
+    `context_seconds`, `embed_query_calls_total`, `embed_query_cache_hits_total`.
+
+    `expected_commit` is verified against `repo`'s actual HEAD immediately
+    before invoking the sweep binary — defense in depth on top of
+    `ensure_repo_checkout`'s own commit-keyed worktree (which already makes
+    a stale checkout structurally impossible for callers that go through
+    it), so a caller that received `repo` from anywhere else, or much
+    earlier in a long-running process, can't silently measure the wrong
+    commit. Fails closed: raises rather than proceeding on a mismatch.
+    """
+    cur = cb.sh(["git", "rev-parse", "HEAD"], cwd=repo).stdout.strip()
+    if cur != expected_commit:
+        raise RuntimeError(
+            f"commit verification failed before sweep: {repo} is at {cur!r}, "
+            f"expected {expected_commit!r} — refusing to run against the wrong commit"
+        )
     with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
         f.write(problem)
         task_file = f.name
@@ -144,12 +204,20 @@ def rank_metrics(hits: list[dict], gold: dict) -> dict:
 def pack_metrics(pack: dict, gold: dict) -> dict:
     items = pack["items"]
     relevant = [it for it in items if overlaps_gold(it, gold)]
+    # Separate, coarser signal: is the *file* right, even where no item's
+    # precise line range overlaps gold (e.g. only a coarse/whole-file
+    # symbol landed in the pack). Reported alongside `gold_in_context`
+    # (never folded into it) so a whole-file match can't be mistaken for
+    # symbol-level precision the way it silently was in the first sweep.
+    file_relevant = [it for it in items if overlaps_gold_file(it, gold)]
     return {
         "used_tokens": pack["used_tokens"],
         "n_items": len(items),
         "relevant_items": len(relevant),
         "gold_in_context": len(relevant) > 0,
         "relevant_ids": sorted(f"{it['file']}#{it['qualified_name']}" for it in relevant),
+        "gold_file_in_context": len(file_relevant) > 0,
+        "file_relevant_items": len(file_relevant),
     }
 
 
@@ -166,11 +234,11 @@ def main() -> None:
     assert not missing, f"pinned instances missing: {sorted(missing)}"
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    results_path = OUT_DIR / "results.jsonl"
+    results_path = OUT_DIR / OUT_NAME
     with results_path.open("w") as sink:
         for i, row in enumerate(tasks):
             repo = cb.ensure_repo_checkout(row["repo_url"], row["base_commit"])
-            cb.index_repo(repo, embedder_url)
+            cb.index_repo_cached(repo, embedder_url, row["base_commit"])
             problem = row["problem_statement"]
             gold = gold_lines(row)
             if not gold:
@@ -178,7 +246,7 @@ def main() -> None:
                 continue
 
             t0 = time.time()
-            arms = sweep(repo, problem)
+            arms = sweep(repo, problem, row["base_commit"])
             task_wall_s = time.time() - t0
 
             for arm in arms:

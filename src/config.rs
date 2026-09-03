@@ -29,3 +29,18 @@ pub(crate) const CONTEXT_MAX_TESTS: usize = 1;
 /// nonzero value to the shipped default here requires the same fresh
 /// canonical-benchmark re-baseline as any other constant in this file.
 pub(crate) const TERM_COVERAGE_ALPHA_DEFAULT: f32 = 0.0;
+
+/// Caps the term-coverage bonus as a fraction of the current query's top
+/// fused score: `bonus = alpha * coverage * top_score * this`. The 21-task
+/// corroboration sweep (docs/term-coverage-eval/README.md) found the
+/// original multiplicative `1 + alpha*coverage` reweight let corroboration
+/// overpower a dominant exact-identifier match starting at alpha=0.2 — a
+/// candidate whose own score was far behind the leader could still win
+/// outright once its coverage share was large enough, because the boost
+/// scaled with *that candidate's own* score, not with how far behind it
+/// was. Bounding the bonus to a small fraction of the *leader's* score
+/// instead means a leader whose margin over the runner-up exceeds the
+/// largest possible bonus (`alpha * this`, since coverage is clamped to
+/// [0,1]) can never be dethroned by coverage alone, while still being able
+/// to break near-ties in favor of genuine multi-term corroboration.
+pub(crate) const TERM_COVERAGE_MAX_BONUS_FRACTION: f32 = 0.15;

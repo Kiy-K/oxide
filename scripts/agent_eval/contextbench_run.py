@@ -71,34 +71,110 @@ def load_tasks(langs=("python", "typescript"), limit_per_repo=None):
 
 
 def ensure_repo_checkout(repo_url: str, base_commit: str) -> Path:
+    """Returns a working directory pinned to `base_commit` — permanently and
+    exclusively, via a dedicated `git worktree` keyed by (repo, commit), not
+    a single mutable per-repo-name checkout shared across every task on
+    that repo.
+
+    The old design (one checkout dir per repo name, re-checked-out on every
+    task) meant the directory silently reflected whichever commit the
+    *last* task on that repo left it at. Any caller that read repo state
+    without going through this function first — e.g. re-running the sweep
+    binary directly against an already-checked-out path, as happened while
+    investigating the term-coverage corroboration sweep's per-task detail —
+    silently operated on the wrong commit with no error. Keying the
+    directory itself by commit makes that class of bug structurally
+    impossible: each (repo, commit) pair gets its own permanent worktree
+    that nothing else ever mutates, and the explicit HEAD check below fails
+    closed (raises) rather than returning a possibly-wrong directory.
+    """
     REPO_CACHE.mkdir(parents=True, exist_ok=True)
     name = repo_url.rstrip("/").removesuffix(".git").split("/")[-1]
-    dst = REPO_CACHE / name
-    if dst.exists() and not (dst / ".git").exists():
-        shutil.rmtree(dst)  # partial clone from an interrupted run
-    if not dst.exists():
+    src = REPO_CACHE / name
+    if src.exists() and not (src / ".git").exists():
+        shutil.rmtree(src)  # partial clone from an interrupted run
+    if not src.exists():
         print(f"    cloning {repo_url} (blobless)...", flush=True)
-        r = sh(["git", "clone", "--filter=blob:none", repo_url, str(dst)])
+        r = sh(["git", "clone", "--filter=blob:none", repo_url, str(src)])
         if r.returncode != 0:
             raise RuntimeError(f"clone failed: {r.stderr[:300]}")
-    have = sh(["git", "cat-file", "-e", f"{base_commit}^{{commit}}"], cwd=dst)
+    have = sh(["git", "cat-file", "-e", f"{base_commit}^{{commit}}"], cwd=src)
     if have.returncode != 0:
-        r = sh(["git", "fetch", "-q", "origin", base_commit], cwd=dst)
+        r = sh(["git", "fetch", "-q", "origin", base_commit], cwd=src)
         if r.returncode != 0:
             raise RuntimeError(f"fetch {base_commit[:10]} failed: {r.stderr[:200]}")
+
+    dst = REPO_CACHE / f"{name}@{base_commit[:12]}"
+    if dst.exists() and not (dst / ".git").exists():
+        shutil.rmtree(dst)  # partial worktree from an interrupted run
+    if not dst.exists():
+        r = sh(["git", "worktree", "add", "--detach", "-q", str(dst), base_commit], cwd=src)
+        if r.returncode != 0:
+            # A worktree whose directory was deleted out from under git
+            # (e.g. manual cleanup) leaves a stale registration at the same
+            # path that blocks `add` — prune once and retry rather than
+            # silently falling through with no directory.
+            sh(["git", "worktree", "prune"], cwd=src)
+            r = sh(["git", "worktree", "add", "--detach", "-q", str(dst), base_commit], cwd=src)
+            if r.returncode != 0:
+                raise RuntimeError(f"worktree add failed: {r.stderr[:300]}")
+
     cur = sh(["git", "rev-parse", "HEAD"], cwd=dst).stdout.strip()
     if cur != base_commit:
-        r = sh(["git", "checkout", "-q", base_commit], cwd=dst)
-        if r.returncode != 0:
-            raise RuntimeError(f"checkout failed: {r.stderr[:200]}")
+        raise RuntimeError(
+            f"commit verification failed for {repo_url}: worktree at {dst} is at "
+            f"{cur!r}, expected {base_commit!r} — refusing to run against the wrong commit"
+        )
     return dst
 
 
 def index_repo(repo_dir: Path, embedder_url: str) -> None:
+    # A commit-keyed worktree (see `ensure_repo_checkout`) can't share
+    # embeddings with a *different* commit's worktree even for unchanged
+    # files, so the first index of each commit is a genuinely fresh full
+    # embed, not an incremental one — a several-thousand-symbol repo over a
+    # single-threaded local embedder measurably exceeded the previous
+    # 1800s default under load (pylint took up to 30min+ across repeated
+    # attempts, though 252s once the embedder itself was healthy and most
+    # symbols were already embedded from an earlier interrupted attempt).
     r = sh([str(ROOT / "target/release/oxide"), "index", "."],
-           cwd=repo_dir, env={"OXIDE_EMBED_URL": embedder_url})
+           cwd=repo_dir, env={"OXIDE_EMBED_URL": embedder_url}, timeout=3600)
     if r.returncode != 0:
         raise RuntimeError(f"oxide index failed: {r.stderr[:300]}")
+
+
+# Sibling to REPO_CACHE (`.../oxide-contextbench/embedding-cache.db`), not
+# inside any commit-keyed worktree — a single shared, content-addressed
+# cache every `index_repo_cached` call reads from and writes to, entirely
+# separate from any repo's own `.oxide/index.db` (see
+# `src/embedding_cache.rs`).
+EMBEDDING_CACHE_DB = REPO_CACHE.parent / "embedding-cache.db"
+
+
+def index_repo_cached(repo_dir: Path, embedder_url: str, base_commit: str) -> None:
+    """Like `index_repo`, but through `term_coverage_index` instead of the
+    plain `oxide index .` CLI: verifies `repo_dir`'s HEAD against
+    `base_commit` before writing anything (fails closed on a mismatch), and
+    reuses embeddings for content unchanged across different pinned commits
+    via `EMBEDDING_CACHE_DB` — recovering the cross-commit reuse
+    `ensure_repo_checkout`'s commit-keyed worktrees (correctly) stopped
+    sharing through the index.db itself. Symbol/structural-relation state
+    is never shared; only content-addressed embedding vectors are. Scoped
+    to the term-coverage harness — other `index_repo` callers are
+    unaffected."""
+    binary = ROOT / "target/release/examples/term_coverage_index"
+    assert binary.exists(), (
+        f"{binary} missing — build it first: "
+        "cargo build --release --example term_coverage_index"
+    )
+    r = sh(
+        [str(binary), str(repo_dir), base_commit, str(EMBEDDING_CACHE_DB)],
+        cwd=repo_dir,
+        env={"OXIDE_EMBED_URL": embedder_url},
+        timeout=3600,
+    )
+    if r.returncode != 0:
+        raise RuntimeError(f"term_coverage_index failed: {r.stderr[-2000:]}")
 
 
 def verify_embedder_took_effect(repo_dir: Path, want_native: bool) -> str:

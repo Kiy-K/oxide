@@ -1,6 +1,72 @@
 # Term-coverage corroboration experiment
 
-Status: **DONE. Recommendation: REVISE — do not adopt a nonzero default yet.**
+Status: **Original (unbounded-multiplicative) sweep DONE — REVISE. Follow-up
+(bounded-additive fix) IN PROGRESS: harness/scoring/eval fixes done and
+tested, partial 11/21 rerun leans SAFE-BUT-MARGINALLY-USEFUL, full 21-task
+rerun pending.**
+
+## Follow-up status (read this first)
+
+Everything below "## Objective" describes the *original* sweep — unbounded
+multiplicative `1 + alpha*coverage`, alphas 0.0-0.5, verdict REVISE. That
+verdict drove three fixes, all implemented and tested on `main` working
+tree (not yet all committed as of this note):
+
+1. **Scoring** (`src/config.rs::TERM_COVERAGE_MAX_BONUS_FRACTION`,
+   `src/retrieval.rs`): the boost is now a bounded *additive* bonus capped
+   to a small fraction of the query's top fused score, and `SymbolKind::
+   Module` (whole-file) symbols are excluded from receiving it at all —
+   see the two new regression tests `term_coverage_boost_never_applies_to
+   _module_symbols` and `term_coverage_bonus_cannot_overturn_a_leader
+   _whose_margin_exceeds_it` in `src/retrieval.rs`.
+2. **Eval** (`scripts/agent_eval/term_coverage_eval.py`): `is_coarse_symbol`
+   excludes `kind == "module"` from symbol-level relevance/coverage
+   credit; a new `gold_file_in_context`/`file_relevant_items` pair tracks
+   file-level relevance as an explicitly separate signal, never folded
+   into symbol-level `gold_in_context`.
+3. **Harness reuse** (`src/embedding_cache.rs`, `examples/
+   term_coverage_index.rs`, `scripts/agent_eval/contextbench_run.py::
+   index_repo_cached`): commit-keyed worktrees (`ensure_repo_checkout`)
+   fixed a real stale-checkout bug but lost cross-commit embedding reuse,
+   making a full 21-task rerun impractically slow (one repo's pinned
+   commits alone could cost 15-30min *each*). A separate, content-
+   addressed embedding cache — keyed by `(embedding fingerprint,
+   content_hash(embedded text))`, entirely disjoint from any commit's own
+   `.oxide/index.db` — now lets unchanged content reuse its vector across
+   commits without a second HTTP round trip, while symbol/structural-
+   relation state stays fully commit-exclusive. Regression tests: 7 unit
+   tests in `src/embedding_cache.rs` (wrong-checkout fails closed,
+   identical content reuses across separate cache instances, changed
+   content re-embeds, different fingerprints never share vectors, failed
+   embeds never cached) plus one full `update_index`-level integration
+   test (`tests/embedding_cache_reuse.rs`) proving no symbol/graph state
+   leaks between two independently-indexed repos even as they share
+   embeddings.
+
+A repeatability probe (raw HTTP calls to the embedder, same text, same
+process, several times) attributes the previously-reported same-task
+jitter directly to the embedder's own prompt-cache/slot-reuse behavior: a
+"cold" call and a "warm" (cache-hit) call for identical text return
+numerically different vectors (max abs diff ~0.0044 in one probe), and
+interleaving an unrelated query before a repeat measurably perturbs the
+result too (cosine similarity 0.99986 vs. 1.0 on a clean repeat) — not
+floating-point-precision noise, and not a bug in OXIDE's own ranking code
+(no Rust `HashMap`-seed hypothesis needed). This explains why near-tied
+rankings can flip between separate runs even with byte-identical index
+state and byte-identical query text.
+
+**Partial rerun evidence** (bounded scoring, alphas 0.0/0.05/0.1, 11 of 21
+tasks — stopped by explicit instruction before completing, preserved at
+`results/incomplete-run-3-bounded-scoring-stopped-at-11-of-21/`, see that
+directory's `NOTE.md` for the honest read: valid data, incomplete coverage,
+not final): 9/11 tasks completely flat, 2/11 (pylint) show real positive
+MRR/nDCG movement at alpha=0.1 with zero regressions, and neither task that
+regressed under the old formula (`...2e76c8cd`, `...9cca0774`) regresses
+here. Reading as **SAFE-BUT-MARGINALLY-USEFUL**: the fix appears to work,
+but the sample is too small and Python-skewed (no TypeScript, no pytest) to
+call it validated, and the effect size at alpha≤0.1 is thin. **The full
+21-task rerun must show a meaningfully larger, still-regression-free win
+before any nonzero default is adopted** — this partial run is not that bar.
 
 ## Objective
 
