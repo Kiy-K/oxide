@@ -700,6 +700,19 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             document_prefix: "",
             pooling: "cls",
         },
+        // Quantized (int8) BGESmallENV15 — same model card/prompt convention
+        // as fp32, different onnx weights (Qdrant/bge-small-en-v1.5-onnx-Q).
+        // Added for the CPU-first tiny-embedder screen (see
+        // docs/cpu-embedding-survey/quantized-tiny-screen.md); quantization
+        // does not change the documented prompt or pooling convention.
+        "bge-small-en-v1.5-q" => NativeModelSpec {
+            model: BGESmallENV15Q,
+            model_id: "bge-small-en-v1.5",
+            quantization: "int8",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
         // snowflake/snowflake-arctic-embed-{xs,s} model cards: same query
         // prefix convention as BGE, CLS pooling (confirmed against fastembed's
         // own `get_default_pooling_method` table, which matches).
@@ -707,6 +720,15 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             model: SnowflakeArcticEmbedXS,
             model_id: "snowflake-arctic-embed-xs",
             quantization: "fp32",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
+        // Quantized (int8) SnowflakeArcticEmbedXS — same repo, quantized onnx.
+        "arctic-embed-xs-q" => NativeModelSpec {
+            model: SnowflakeArcticEmbedXSQ,
+            model_id: "snowflake-arctic-embed-xs",
+            quantization: "int8",
             query_prefix: "Represent this sentence for searching relevant passages: ",
             document_prefix: "",
             pooling: "cls",
@@ -739,10 +761,20 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             document_prefix: "",
             pooling: "mean",
         },
+        // Quantized (int8) AllMiniLML6V2 — same repo, quantized onnx.
+        "minilm-l6-v2-q" => NativeModelSpec {
+            model: AllMiniLML6V2Q,
+            model_id: "all-MiniLM-L6-v2",
+            quantization: "int8",
+            query_prefix: "",
+            document_prefix: "",
+            pooling: "mean",
+        },
         other => anyhow::bail!(
             "unsupported native embedding profile {other:?}; supported: \
              embeddinggemma-300m, embeddinggemma-300m-q4, bge-small-en-v1.5, \
-             arctic-embed-xs, arctic-embed-s, jina-code-v2, minilm-l6-v2"
+             bge-small-en-v1.5-q, arctic-embed-xs, arctic-embed-xs-q, \
+             arctic-embed-s, jina-code-v2, minilm-l6-v2, minilm-l6-v2-q"
         ),
     })
 }
