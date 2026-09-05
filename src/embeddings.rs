@@ -281,14 +281,95 @@ pub(crate) fn qwen3_query_text(task: &str) -> String {
     )
 }
 
+/// Prompt protocol for an [`HttpEmbedder`] instance: how query/document text
+/// is formatted before being sent to the endpoint. Query/document asymmetry
+/// is a property of the model behind the endpoint, not of the HTTP transport
+/// — mirrors `NativeEmbedder`'s per-profile prefixes (Phase: CPU-embedding
+/// survey, `docs/cpu-embedding-survey/`). `HttpEmbedder::new` (the only
+/// constructor `open_embedder`/production code calls) always uses
+/// `Qwen3Instruct` — this enum exists so survey/benchmark code can construct
+/// additional protocols via [`HttpEmbedder::new_with_protocol`] without
+/// touching the shipped provider-selection path at all.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum HttpPromptProtocol {
+    /// Qwen3's instruction-prefixed query protocol (`qwen3_query_text`);
+    /// documents embedded verbatim. The sole protocol in production use.
+    Qwen3Instruct,
+    /// Literal prefixes prepended verbatim to query/document text, e.g.
+    /// Nomic v2's `"search_query: "`/`"search_document: "` task-instruction
+    /// convention. `label` feeds `name()`/`fingerprint()` — never leave it
+    /// empty for a non-Qwen protocol, or two different models sharing a bare
+    /// model-string+endpoint pair could collide in `name()` and get silently
+    /// treated as index-compatible when they aren't (see EMB-001).
+    Prefixed {
+        query_prefix: &'static str,
+        document_prefix: &'static str,
+        label: &'static str,
+    },
+}
+
+/// Pure text-transformation helper for [`HttpPromptProtocol::Prefixed`] —
+/// independently testable without a network call, same pattern as
+/// `qwen3_query_text`.
+fn prefixed_text(prefix: &str, text: &str) -> String {
+    if prefix.is_empty() {
+        text.to_string()
+    } else {
+        format!("{prefix}{text}")
+    }
+}
+
+/// Matryoshka-style truncate-then-renormalize: keep the first `dim` values
+/// (a no-op if the vector is already that short or shorter) and L2-renormalize
+/// so downstream cosine/dot similarity remains meaningful. Only valid for a
+/// model provably trained for MRL truncation at `dim` — the caller's
+/// responsibility to verify against the model card, not this function's.
+fn truncate_and_renormalize(v: &[f32], dim: usize) -> Vec<f32> {
+    if v.len() <= dim {
+        return v.to_vec();
+    }
+    let mut t: Vec<f32> = v[..dim].to_vec();
+    let norm = t
+        .iter()
+        .map(|x| (*x as f64) * (*x as f64))
+        .sum::<f64>()
+        .sqrt();
+    if norm > 0.0 {
+        for x in &mut t {
+            *x /= norm as f32;
+        }
+    }
+    t
+}
+
+/// Pure name computation for an `HttpEmbedder`, independently testable
+/// without a network probe (mirrors `native_provider_name`). Must match
+/// exactly what `HttpEmbedder::new_with`'s `name` field is set to.
+fn http_embedder_name(
+    endpoint: &str,
+    model: &str,
+    protocol: &HttpPromptProtocol,
+    truncate_dim: Option<usize>,
+) -> String {
+    let base = match protocol {
+        HttpPromptProtocol::Qwen3Instruct => format!("http:{model}@{endpoint}"),
+        HttpPromptProtocol::Prefixed { label, .. } => format!("http:{model}:{label}@{endpoint}"),
+    };
+    match truncate_dim {
+        Some(d) => format!("{base}:dim{d}"),
+        None => base,
+    }
+}
+
 /// Embedder backed by any OpenAI-compatible `/v1/embeddings` HTTP endpoint
 /// (llama.cpp's server by default). OXIDE ships no model code: it POSTs JSON.
 ///
-/// Query/document asymmetry (Qwen3 protocol): `embed_query` applies the
-/// instruction prefix internally; documents are embedded verbatim. This
-/// provider has only ever served Qwen3 in this codebase (see
-/// `docs/canonical-baseline.md`) — a genuinely model-agnostic HTTP provider
-/// would need per-model prompt configuration, out of scope here.
+/// `HttpEmbedder::new` (what `open_embedder`/production code calls) always
+/// builds the [`HttpPromptProtocol::Qwen3Instruct`] protocol — the only one
+/// this codebase has shipped (see `docs/canonical-baseline.md`).
+/// [`HttpEmbedder::new_with_protocol`] additionally supports other protocols
+/// and optional Matryoshka dimension truncation, for survey/benchmark code
+/// (`docs/cpu-embedding-survey/`) — it is not wired into `open_embedder`.
 pub struct HttpEmbedder {
     endpoint: String,
     model: String,
@@ -296,26 +377,47 @@ pub struct HttpEmbedder {
     /// Distinguishes instances so index meta invalidates across endpoints.
     name: String,
     healthy: std::sync::atomic::AtomicBool,
+    protocol: HttpPromptProtocol,
+    truncate_dim: Option<usize>,
 }
 
 impl HttpEmbedder {
     /// Probe the endpoint with a tiny input to learn the vector dimension.
     pub fn new(endpoint: &str, model: &str) -> anyhow::Result<Self> {
+        Self::new_with_protocol(endpoint, model, HttpPromptProtocol::Qwen3Instruct, None)
+    }
+
+    /// Like [`Self::new`], but with an explicit prompt protocol and optional
+    /// Matryoshka truncation dimension (see [`truncate_and_renormalize`]).
+    /// Not used by `open_embedder` — construct directly for survey/benchmark
+    /// use.
+    pub fn new_with_protocol(
+        endpoint: &str,
+        model: &str,
+        protocol: HttpPromptProtocol,
+        truncate_dim: Option<usize>,
+    ) -> anyhow::Result<Self> {
+        let endpoint = endpoint.trim_end_matches('/').to_string();
+        let name = http_embedder_name(&endpoint, model, &protocol, truncate_dim);
         let mut e = Self {
-            endpoint: endpoint.trim_end_matches('/').to_string(),
+            endpoint,
             model: model.to_string(),
             dim: 0,
-            name: format!("http:{model}@{endpoint}"),
+            name,
             healthy: std::sync::atomic::AtomicBool::new(true),
+            protocol,
+            truncate_dim,
         };
+        // Truncation is applied inside `embed_batch_raw`, so probing with it
+        // already set reports the *effective* (possibly truncated) dimension.
         let probe = e.embed_batch_raw(vec!["dimension probe".to_string()])?;
-        e.dim = probe
-            .first()
-            .map(|v| v.len())
-            .ok_or_else(|| anyhow::anyhow!("embedding endpoint returned no vectors: {endpoint}"))?;
+        e.dim = probe.first().map(|v| v.len()).ok_or_else(|| {
+            anyhow::anyhow!("embedding endpoint returned no vectors: {}", e.endpoint)
+        })?;
         anyhow::ensure!(
             e.dim > 0,
-            "embedding endpoint returned empty vectors: {endpoint}"
+            "embedding endpoint returned empty vectors: {}",
+            e.endpoint
         );
         Ok(e)
     }
@@ -350,16 +452,18 @@ impl HttpEmbedder {
         };
         let mut out = Vec::with_capacity(n);
         for item in items {
-            out.push(
-                item["embedding"]
-                    .as_array()
-                    .map(|a| {
-                        a.iter()
-                            .filter_map(|x| x.as_f64().map(|f| f as f32))
-                            .collect()
-                    })
-                    .unwrap_or_default(),
-            );
+            let v: Vec<f32> = item["embedding"]
+                .as_array()
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|x| x.as_f64().map(|f| f as f32))
+                        .collect()
+                })
+                .unwrap_or_default();
+            out.push(match self.truncate_dim {
+                Some(d) if !v.is_empty() => truncate_and_renormalize(&v, d),
+                _ => v,
+            });
         }
         Ok(out)
     }
@@ -403,7 +507,80 @@ impl EmbeddingProvider for HttpEmbedder {
     }
 
     fn embed_query(&self, text: &str) -> Vec<f32> {
-        self.embed(&qwen3_query_text(text))
+        match &self.protocol {
+            HttpPromptProtocol::Qwen3Instruct => self.embed(&qwen3_query_text(text)),
+            HttpPromptProtocol::Prefixed { query_prefix, .. } => {
+                self.embed(&prefixed_text(query_prefix, text))
+            }
+        }
+    }
+
+    fn embed_document(&self, text: &str) -> Vec<f32> {
+        match &self.protocol {
+            HttpPromptProtocol::Qwen3Instruct => self.embed(text),
+            HttpPromptProtocol::Prefixed {
+                document_prefix, ..
+            } => self.embed(&prefixed_text(document_prefix, text)),
+        }
+    }
+
+    fn embed_documents(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        match &self.protocol {
+            HttpPromptProtocol::Qwen3Instruct => self.embed_batch(texts),
+            HttpPromptProtocol::Prefixed {
+                document_prefix, ..
+            } => {
+                if document_prefix.is_empty() {
+                    return self.embed_batch(texts);
+                }
+                let prefixed: Vec<String> = texts
+                    .iter()
+                    .map(|t| prefixed_text(document_prefix, t))
+                    .collect();
+                self.embed_batch(&prefixed)
+            }
+        }
+    }
+
+    fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
+        let (query_profile, document_profile) = match &self.protocol {
+            HttpPromptProtocol::Qwen3Instruct => ("qwen3-instruct".to_string(), "none".to_string()),
+            HttpPromptProtocol::Prefixed {
+                query_prefix,
+                document_prefix,
+                label,
+            } => (
+                format!(
+                    "{label}:{}",
+                    if query_prefix.is_empty() {
+                        "none"
+                    } else {
+                        "prefix"
+                    }
+                ),
+                format!(
+                    "{label}:{}",
+                    if document_prefix.is_empty() {
+                        "none"
+                    } else {
+                        "prefix"
+                    }
+                ),
+            ),
+        };
+        EmbeddingSpaceFingerprint {
+            schema_version: EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
+            model: self.model.clone(),
+            artifact_revision: String::new(),
+            quantization: String::new(),
+            representation: "dense".to_string(),
+            dimension: self.dim,
+            query_profile,
+            document_profile,
+            pooling: "unspecified".to_string(),
+            normalization: "unspecified".to_string(),
+            similarity: "cosine".to_string(),
+        }
     }
 }
 
@@ -523,6 +700,19 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             document_prefix: "",
             pooling: "cls",
         },
+        // Quantized (int8) BGESmallENV15 — same model card/prompt convention
+        // as fp32, different onnx weights (Qdrant/bge-small-en-v1.5-onnx-Q).
+        // Added for the CPU-first tiny-embedder screen (see
+        // docs/cpu-embedding-survey/quantized-tiny-screen.md); quantization
+        // does not change the documented prompt or pooling convention.
+        "bge-small-en-v1.5-q" => NativeModelSpec {
+            model: BGESmallENV15Q,
+            model_id: "bge-small-en-v1.5",
+            quantization: "int8",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
         // snowflake/snowflake-arctic-embed-{xs,s} model cards: same query
         // prefix convention as BGE, CLS pooling (confirmed against fastembed's
         // own `get_default_pooling_method` table, which matches).
@@ -530,6 +720,15 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             model: SnowflakeArcticEmbedXS,
             model_id: "snowflake-arctic-embed-xs",
             quantization: "fp32",
+            query_prefix: "Represent this sentence for searching relevant passages: ",
+            document_prefix: "",
+            pooling: "cls",
+        },
+        // Quantized (int8) SnowflakeArcticEmbedXS — same repo, quantized onnx.
+        "arctic-embed-xs-q" => NativeModelSpec {
+            model: SnowflakeArcticEmbedXSQ,
+            model_id: "snowflake-arctic-embed-xs",
+            quantization: "int8",
             query_prefix: "Represent this sentence for searching relevant passages: ",
             document_prefix: "",
             pooling: "cls",
@@ -562,10 +761,20 @@ fn native_model_spec(profile: &str) -> anyhow::Result<NativeModelSpec> {
             document_prefix: "",
             pooling: "mean",
         },
+        // Quantized (int8) AllMiniLML6V2 — same repo, quantized onnx.
+        "minilm-l6-v2-q" => NativeModelSpec {
+            model: AllMiniLML6V2Q,
+            model_id: "all-MiniLM-L6-v2",
+            quantization: "int8",
+            query_prefix: "",
+            document_prefix: "",
+            pooling: "mean",
+        },
         other => anyhow::bail!(
             "unsupported native embedding profile {other:?}; supported: \
              embeddinggemma-300m, embeddinggemma-300m-q4, bge-small-en-v1.5, \
-             arctic-embed-xs, arctic-embed-s, jina-code-v2, minilm-l6-v2"
+             bge-small-en-v1.5-q, arctic-embed-xs, arctic-embed-xs-q, \
+             arctic-embed-s, jina-code-v2, minilm-l6-v2, minilm-l6-v2-q"
         ),
     })
 }
@@ -967,6 +1176,78 @@ mod tests {
         let e = HashedEmbedder::default();
         let texts = vec!["a".to_string(), "b".to_string()];
         assert_eq!(e.embed_documents(&texts), e.embed_batch(&texts));
+    }
+
+    #[test]
+    fn prefixed_text_prepends_verbatim_and_passes_through_when_empty() {
+        assert_eq!(
+            prefixed_text("search_query: ", "fix backoff"),
+            "search_query: fix backoff"
+        );
+        assert_eq!(prefixed_text("", "fix backoff"), "fix backoff");
+    }
+
+    #[test]
+    fn truncate_and_renormalize_shortens_and_restores_unit_norm() {
+        // A simple normalized vector, truncated well below its full length.
+        let full = vec![0.5f32; 4]; // norm = 1.0
+        let truncated = truncate_and_renormalize(&full, 2);
+        assert_eq!(truncated.len(), 2);
+        let norm: f32 = truncated.iter().map(|x| x * x).sum::<f32>().sqrt();
+        assert!(
+            (norm - 1.0).abs() < 1e-5,
+            "truncated vector should be renormalized to unit length, got norm={norm}"
+        );
+        // Direction (relative component ratios) must be preserved, not just norm.
+        assert!((truncated[0] - truncated[1]).abs() < 1e-6);
+    }
+
+    #[test]
+    fn truncate_and_renormalize_is_noop_when_already_short_enough() {
+        let v = vec![0.6f32, 0.8f32];
+        assert_eq!(truncate_and_renormalize(&v, 8), v);
+    }
+
+    #[test]
+    fn http_embedder_name_discriminates_protocol_and_truncation() {
+        // The Qwen3 (production) protocol's name format must stay byte-identical
+        // to the pre-refactor `format!("http:{model}@{endpoint}")`.
+        let qwen = http_embedder_name(
+            "http://127.0.0.1:8191/v1/embeddings",
+            "qwen3-Q8_0",
+            &HttpPromptProtocol::Qwen3Instruct,
+            None,
+        );
+        assert_eq!(qwen, "http:qwen3-Q8_0@http://127.0.0.1:8191/v1/embeddings");
+
+        let nomic_768 = http_embedder_name(
+            "http://127.0.0.1:8192/v1/embeddings",
+            "nomic-embed-text-v2-moe-Q8_0",
+            &HttpPromptProtocol::Prefixed {
+                query_prefix: "search_query: ",
+                document_prefix: "search_document: ",
+                label: "nomic-v2",
+            },
+            None,
+        );
+        let nomic_256 = http_embedder_name(
+            "http://127.0.0.1:8192/v1/embeddings",
+            "nomic-embed-text-v2-moe-Q8_0",
+            &HttpPromptProtocol::Prefixed {
+                query_prefix: "search_query: ",
+                document_prefix: "search_document: ",
+                label: "nomic-v2",
+            },
+            Some(256),
+        );
+        // Same endpoint+model as Qwen would collide under the old bare format;
+        // the protocol label must keep it distinct.
+        assert_ne!(qwen, nomic_768);
+        // Truncated and full-dimension variants of the same model must never
+        // compare equal either, or `update_index` would reuse 768d vectors
+        // for a 256d-configured provider.
+        assert_ne!(nomic_768, nomic_256);
+        assert!(nomic_256.ends_with(":dim256"));
     }
 
     #[cfg(feature = "native-embed")]
