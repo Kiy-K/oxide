@@ -1,0 +1,18 @@
+{
+  "corpus": "flask",
+  "note": "Hand-written module-responsibility queries, FIXED BEFORE any model was run. Phrased from what the module does (docs/behaviour vocabulary) rather than by naming its symbols, so the set is not a pure lexical-identifier exercise. One gold file per query; recall@5 == hit@5 here by construction.",
+  "queries": [
+    {"q": "sign and verify the session cookie so it cannot be tampered with", "gold": "src/flask/sessions.py"},
+    {"q": "load configuration values from environment variables and python files", "gold": "src/flask/config.py"},
+    {"q": "render a template with the application context available", "gold": "src/flask/templating.py"},
+    {"q": "serialize objects to JSON including dates and UUIDs", "gold": "src/flask/json/provider.py"},
+    {"q": "push and pop the request context stack", "gold": "src/flask/ctx.py"},
+    {"q": "class based view dispatching by HTTP method", "gold": "src/flask/views.py"},
+    {"q": "test client that sends fake requests to the application", "gold": "src/flask/testing.py"},
+    {"q": "register a group of routes under a URL prefix", "gold": "src/flask/blueprints.py"},
+    {"q": "send a file from disk to the client with the correct mimetype", "gold": "src/flask/helpers.py"},
+    {"q": "command line interface for running the development server", "gold": "src/flask/cli.py"},
+    {"q": "configure the default logging handler for the app", "gold": "src/flask/logging.py"},
+    {"q": "the request and response subclasses used by the framework", "gold": "src/flask/wrappers.py"}
+  ]
+}

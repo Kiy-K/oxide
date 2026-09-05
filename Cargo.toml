@@ -53,6 +53,14 @@ native-embed = ["dep:fastembed"]
 name = "embedding_profile_probe"
 required-features = ["native-embed"]
 
+[[example]]
+name = "native_correctness_check"
+required-features = ["native-embed"]
+
+[[example]]
+name = "index_size_probe"
+required-features = ["native-embed"]
+
 [profile.release]
 debug = false
 lto = "thin"
