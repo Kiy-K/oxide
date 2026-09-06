@@ -5,9 +5,11 @@
 > `tree-sitter-tags` extraction migration and the precomputed-structural-
 > relations change, so they are **not** comparable to anything measured on
 > today's HEAD. Both profiles this document recommends have been replaced:
-> `arctic-embed-xs-q` is now the shipped default provider, beating fp32
-> `minilm-l6-v2` on every condition in a same-corpus rerun, and replacing
-> `qwen3-Q8_0` on operational cost. See
+> `arctic-embed-xs-q` is now the shipped default provider. A same-corpus rerun
+> puts it ahead of fp32 `minilm-l6-v2` on `vec` and `hybrid` (one tie, no
+> losses) and on budgeted R@5/R@10/nDCG@10, tied on budgeted hit@5 and behind
+> only on budgeted MRR; it replaces `qwen3-Q8_0` on operational cost, not on
+> budgeted quality. See
 > `docs/cpu-embedding-survey/phase3-minilm-rerun.md` (which reran MiniLM on
 > this HEAD specifically so the comparison would be honest) and
 > `docs/cpu-embedding-survey/phase2-arctic-quality-gate.md`.
