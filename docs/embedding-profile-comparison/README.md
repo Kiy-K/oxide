@@ -1,5 +1,18 @@
 # Local embedding profile comparison (Task D)
 
+> **Superseded on the recommendation, 2026-09-06.** The numbers below remain
+> the correct record of what this session measured, but they predate the
+> `tree-sitter-tags` extraction migration and the precomputed-structural-
+> relations change, so they are **not** comparable to anything measured on
+> today's HEAD. Both profiles this document recommends have been replaced:
+> `arctic-embed-xs-q` is now the shipped default provider, beating fp32
+> `minilm-l6-v2` on every condition in a same-corpus rerun, and replacing
+> `qwen3-Q8_0` on operational cost. See
+> `docs/cpu-embedding-survey/phase3-minilm-rerun.md` (which reran MiniLM on
+> this HEAD specifically so the comparison would be honest) and
+> `docs/cpu-embedding-survey/phase2-arctic-quality-gate.md`.
+
+
 Objective: make semantic indexing/querying fast and lightweight enough for
 normal developer machines, then pick OXIDE's v0.1 default/lightweight/quality
 embedding profiles by the actual Pareto frontier — not by assuming the
