@@ -420,15 +420,25 @@ runs straight into `CONTEXT_MAX_PRIMARIES`.
 cargo build --release --features native-embed
 cargo build --release --example corpus_manifest
 
-# baseline (needs the llama.cpp server: scripts/embedder.sh start)
-OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings OXIDE_EMBED_MODEL=qwen3-Q8_0 \
-  OXIDE_RANKING_PER_TASK_OUT=…/per_task_qwen3.jsonl \
+# The provider environment must stay active for EVERY command in a phase, not
+# just the scoring one: `kept_pool_probe.py` re-runs `oxide context` itself, so
+# without it the probe would run under the offline hashed embedder and its
+# stage evidence would describe a different embedding space. Export, do not
+# prefix a single command.
+
+# --- baseline (needs the llama.cpp server: scripts/embedder.sh start) ---
+export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings
+export OXIDE_EMBED_MODEL=qwen3-Q8_0
+unset OXIDE_EMBED_NATIVE                     # oxide prefers the URL; leaving both set is refused
+OXIDE_RANKING_PER_TASK_OUT=…/per_task_qwen3.jsonl \
   eval-agent/.venv/bin/python eval-agent/benchmark/ranking_metrics.py
 eval-agent/.venv/bin/python scripts/agent_eval/capture_corpus_manifests.py --out …/manifests_qwen3
 eval-agent/.venv/bin/python scripts/agent_eval/kept_pool_probe.py --out …/kept_qwen3.jsonl
 
-# candidate (in-process, no server)
-OXIDE_EMBED_NATIVE=arctic-embed-xs-q OXIDE_RANKING_PER_TASK_OUT=…/per_task_arctic.jsonl \
+# --- candidate (in-process, no server) ---
+unset OXIDE_EMBED_URL OXIDE_EMBED_MODEL
+export OXIDE_EMBED_NATIVE=arctic-embed-xs-q
+OXIDE_RANKING_PER_TASK_OUT=…/per_task_arctic.jsonl \
   eval-agent/.venv/bin/python eval-agent/benchmark/ranking_metrics.py
 eval-agent/.venv/bin/python scripts/agent_eval/capture_corpus_manifests.py --out …/manifests_arctic
 eval-agent/.venv/bin/python scripts/agent_eval/kept_pool_probe.py --out …/kept_arctic.jsonl

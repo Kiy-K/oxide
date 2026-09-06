@@ -64,7 +64,15 @@ Usage:
 """
 import argparse
 import json
+import sys
 from collections import defaultdict
+from pathlib import Path
+
+# The pinned task set, when it is present. Used only to catch a run that lost
+# whole tasks from *both* files — a symmetric truncation the two files cannot
+# detect by comparing against each other.
+PIN = Path(__file__).resolve().parents[2] / "eval-agent/results/tier_a_instances.txt"
+CONDITIONS = ("lexical", "vec", "hybrid", "budgeted")
 
 # Every ranked list in the sink is a top-10 (search --limit 10); saying "@10"
 # in a label is therefore the strongest honest claim about absence.
@@ -95,6 +103,20 @@ def load(path):
         r = json.loads(line)
         rows[r["task"]][r["condition"]] = r
         models.add(r["model"])
+    # EVD-002: a cancelled or partially written run is not evidence. Without
+    # this, a run killed halfway still yields a clean-looking win/regression
+    # tally computed over whichever rows happened to land.
+    incomplete = {
+        t: sorted(set(CONDITIONS) - set(conds))
+        for t, conds in rows.items()
+        if not set(CONDITIONS) <= set(conds)
+    }
+    if incomplete:
+        raise SystemExit(
+            f"{path} is incomplete — {len(incomplete)} task(s) missing conditions, e.g. "
+            f"{dict(list(incomplete.items())[:3])}. A partial run is not evidence; "
+            f"re-run it rather than comparing what landed."
+        )
     if len(models) > 1:
         raise SystemExit(
             f"{path} mixes embedding providers {sorted(models)} — refusing to "
@@ -279,9 +301,23 @@ def main():
     kc = load_kept(a.kept_candidate, cm, a.candidate)
     shared = sorted(set(base) & set(cand))
     assert shared, "no overlapping tasks"
+    # Also EVD-002, and fatal rather than a warning: a task scored by only one
+    # side is not a paired observation, and quietly dropping it changes which
+    # tasks the tallies below are computed over.
     only_one = set(base) ^ set(cand)
     if only_one:
-        print(f"# WARNING: {len(only_one)} task(s) in only one file: {sorted(only_one)}")
+        raise SystemExit(
+            f"{len(only_one)} task(s) present in only one file: {sorted(only_one)} — "
+            f"the comparison is paired, so an unmatched task cannot be scored"
+        )
+    if PIN.exists():
+        pinned = {i.strip() for i in PIN.read_text().splitlines() if i.strip()}
+        missing = pinned - set(shared)
+        if missing:
+            raise SystemExit(
+                f"{len(missing)} pinned task(s) absent from both files: {sorted(missing)} — "
+                f"refusing to report a partial sweep as the frozen {len(pinned)}-task result"
+            )
     print(f"# baseline={bm}  candidate={cm}  metric={a.metric}  tasks={len(shared)}")
     print(f"# stage evidence (pool + omitted[].why): baseline={'yes' if kb else 'NO'} "
           f"candidate={'yes' if kc else 'NO'} — pack-stage labels are only emitted where present")
