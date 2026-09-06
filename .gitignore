@@ -5,6 +5,12 @@ eval-agent/results/*_summary.txt
 eval-agent/results/pack_diag*.log
 eval-agent/results/logs/
 eval-agent/results/tierb_*/
+# Per-symbol corpus manifests: ~35MB per provider capture (87,606 symbols x2),
+# regenerable with scripts/agent_eval/capture_corpus_manifests.py. The small
+# derived files beside them ARE committed — corpus/INDEX.txt (per-worktree
+# symbol count + manifest sha256) and PROVENANCE.tsv (per-worktree embedder +
+# fingerprint) — so the equality claim stays checkable without the bulk.
+eval-agent/results/*/manifests_*/corpus/*.tsv
 eval-agent/benchmark/results/
 eval-agent/third_party/
 eval-agent/.venv/

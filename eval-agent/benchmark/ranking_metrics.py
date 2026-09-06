@@ -49,6 +49,13 @@ else:
     except Exception as e:  # noqa: BLE001
         raise SystemExit(f"embedder not answering at {ENV['OXIDE_EMBED_URL']}: {e}")
     MODEL_LABEL = ENV["OXIDE_EMBED_MODEL"]
+# Optional per-task evidence sink. The aggregate table this script prints
+# answers "did quality move"; it cannot answer "where, and did lexical or
+# structural expansion rescue it" — that needs the per-(task, condition)
+# ranked file list next to the gold set. Opt-in via env var so every
+# existing invocation keeps its exact current behaviour and output; the
+# aggregate math below is untouched and never reads this file.
+PER_TASK_OUT = os.environ.get("OXIDE_RANKING_PER_TASK_OUT", "")
 PIN = ROOT / "eval-agent/results/tier_a_instances.txt"
 ALLOW = {i.strip() for i in PIN.read_text().splitlines() if i.strip()}
 CONDITIONS = ["lexical", "vec", "hybrid", "budgeted"]
@@ -85,6 +92,7 @@ def main():
     agg = {c: defaultdict(float) for c in CONDITIONS}
     n = 0
     embedder_verified = False
+    sink = open(PER_TASK_OUT, "w") if PER_TASK_OUT else None
     for row in tasks:
         repo = cb.ensure_repo_checkout(row["repo_url"], row["base_commit"])
         # Unlike contextbench_run.py's main loop, this script never used to
@@ -134,6 +142,27 @@ def main():
             )
             ideal = sum(1.0 / math.log2(i + 2) for i in range(min(len(gold), 10)))
             a["ndcg10"] += dcg / ideal if ideal else 0.0
+            if sink is not None:
+                sink.write(json.dumps({
+                    "task": row["instance_id"],
+                    "repo": row["repo"],
+                    "language": row["language"],
+                    "condition": cond,
+                    "model": MODEL_LABEL,
+                    "gold": sorted(gold),
+                    "ranked": files[:10],
+                    "r@1": len(gold & set(files[:1])) / max(1, len(gold)),
+                    "r@5": len(gold & set(files[:5])) / max(1, len(gold)),
+                    "r@10": len(gold & set(files[:10])) / max(1, len(gold)),
+                    "hit@5": float(any(f in gold for f in files[:5])),
+                    "mrr": rr,
+                    "ndcg10": dcg / ideal if ideal else 0.0,
+                    "tok": tok,
+                    "items": len(items),
+                }) + "\n")
+                sink.flush()
+    if sink is not None:
+        sink.close()
     print(f"tasks={n} model={MODEL_LABEL}")
     hdr = ("cond      " + "".join(f"{'R@'+str(k):>7}" for k in KS)
            + f" {'hit@5':>7} {'MRR':>7} {'nDCG@10':>8} {'tok':>6} {'items':>6}")

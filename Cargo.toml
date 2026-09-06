@@ -61,6 +61,11 @@ required-features = ["native-embed"]
 name = "index_size_probe"
 required-features = ["native-embed"]
 
+# Provider-agnostic (reads an existing index, never embeds), so unlike the
+# probes above it needs no native-embed feature.
+[[example]]
+name = "corpus_manifest"
+
 [profile.release]
 debug = false
 lto = "thin"
