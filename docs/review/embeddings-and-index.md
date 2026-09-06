@@ -56,11 +56,20 @@ of the old rule. What survives is everything below.
 and `--no-default-features` as the two ways back to `HashedEmbedder`. Three
 things must hold:
 
-1. **`open_embedder` and `configured_provider_name` resolve identically** for
-   any given environment — both go through `resolve_native_profile`. Divergence
-   makes `oxide status` report `embedder_current: false` against a current
-   index and makes `validate_index` fire on an embedding space that never
-   changed.
+1. **`open_embedder` and `configured_provider_name` select the same
+   *profile*** for any given environment — both go through
+   `resolve_native_profile`. Divergence there makes `oxide status` report
+   `embedder_current: false` against a current index and makes `validate_index`
+   fire on an embedding space that never changed.
+
+   They deliberately differ on *invalid* configuration, and that is not a
+   violation: for an unsupported profile name, or an unparseable
+   `$OXIDE_EMBED_NATIVE_QUERY_PROMPT`, `open_embedder` returns an error while
+   `configured_provider_name` still names what was configured. That is its
+   contract — it reports the configured identity without constructing or
+   probing anything, so `oxide status` can tell a user their typo'd setting
+   differs from the embedder that actually built the index, instead of failing
+   to answer. Both outcomes are loud; neither silently mislabels a vector.
 2. **No silent cross-space fallback.** A model that cannot be loaded is an
    error. Falling back to `HashedEmbedder` (or any other provider) on failure
    would change the embedding space without changing the recorded identity,

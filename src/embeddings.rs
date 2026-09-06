@@ -1066,6 +1066,14 @@ fn native_provider_name(profile: &str, query_prompt: GemmaQueryPrompt) -> String
 }
 
 /// Return the configured provider identity without probing a network endpoint.
+///
+/// Shares `resolve_native_profile` with `open_embedder` so the two always pick
+/// the same profile — see AGENTS.md for what breaks when they drift. They do
+/// diverge on *invalid* configuration, deliberately: an unsupported profile
+/// name or an unparseable `$OXIDE_EMBED_NATIVE_QUERY_PROMPT` is an error from
+/// `open_embedder`, while this function still reports what was configured, so
+/// `oxide status` can say the configured provider differs from the stored one
+/// rather than refusing to answer.
 pub fn configured_provider_name(explicit: Option<&str>) -> String {
     let url = explicit
         .map(str::to_string)

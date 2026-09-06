@@ -112,10 +112,20 @@ TS), `ranking_metrics.py`, unchanged scoring math, shipped
 | budgeted | tokens | 1808 | 1932 | **1801** |
 | budgeted | items | 6.9 | 7.1 | 7.2 |
 
-**Arctic beats fresh MiniLM on every condition and almost every metric.** The
-single exception is budgeted MRR (0.615 vs 0.651): MiniLM more often puts *a*
-gold file first, while Arctic more often gets *more* of the gold set into the
-pack (higher budgeted R@5, R@10, nDCG@10 at an equal hit@5).
+**Arctic is ahead of fresh MiniLM on every metric of `vec` and `hybrid` except
+one tie, and on `budgeted` except one tie and one loss.** Stated exactly, since
+"beats on everything" would not be true:
+
+- `lexical` is tied on all six metrics — it is the control, identical by
+  construction for every provider.
+- `vec`: Arctic ahead on all six.
+- `hybrid`: Arctic ahead on five; **hit@5 is tied** at 0.762.
+- `budgeted`: Arctic ahead on R@1, R@5, R@10 and nDCG@10; **hit@5 is tied** at
+  0.810; **MiniLM wins MRR** 0.651 vs 0.615.
+
+The budgeted split is the interesting one: MiniLM more often puts *a* gold file
+first, while Arctic more often gets *more* of the gold set into the pack — same
+hit@5, higher R@5/R@10/nDCG@10.
 
 **The staleness that invalidated the Qwen baseline barely moved MiniLM.**
 The 2026-09-02 capture recorded budgeted R@5 **0.639** / hit@5 **0.81** and
@@ -141,11 +151,22 @@ tasks on both sides of both comparisons.
 | MiniLM → Arctic | vec | 9 | 10 | 2 |
 | MiniLM → Arctic | hybrid | 3 | 17 | 1 |
 | MiniLM → Arctic | **budgeted** | **3** | 17 | **1** |
+| Qwen → Arctic *(Phase 2)* | vec | 5 | 15 | 1 |
+| Qwen → Arctic *(Phase 2)* | hybrid | 3 | 16 | 2 |
+| Qwen → Arctic *(Phase 2)* | **budgeted** | **2** | 17 | **2** |
 
 MiniLM never wins a budgeted task against Qwen and loses two. Against MiniLM,
-Arctic wins three budgeted tasks and loses one. The ordering
-**Qwen > Arctic > MiniLM** on budgeted quality is consistent between the
-aggregate table and the paired per-task tally.
+Arctic wins three budgeted tasks and loses one.
+
+The third block is Phase 2's own paired run
+(`eval-agent/results/arctic_phase2/per_task_comparison.txt`), included because
+**pairwise tallies are not transitive** — the first two blocks on their own
+establish only Qwen vs MiniLM and MiniLM vs Arctic, and could not order Qwen
+against Arctic. With the direct comparison in hand, budgeted is 2-2 between
+Qwen and Arctic on tasks moved, which is a genuine wash rather than the clear
+Qwen lead the aggregate R@5 gap suggests; the ordering
+**Qwen ≳ Arctic > MiniLM** on budgeted quality is what all three direct
+comparisons plus the aggregate table support.
 
 ---
 
@@ -209,10 +230,12 @@ not be read as a ranking. **The recommendation below does not rest on runtime**
 
 **Lightweight profile: switch the recommendation from `minilm-l6-v2` to
 `arctic-embed-xs-q`.** On identical corpora, identical retrieval and an
-identical 21-task pin, Arctic is better on every condition (vec, hybrid,
-budgeted) and on all but one metric; it is the only profile of the three that
-surfaces gold into the candidate pool for all 21 tasks; it is 4x smaller on
-disk; and it is at worst comparable on every runtime axis that was measured.
+identical 21-task pin, Arctic is ahead of MiniLM on `vec` and `hybrid` (one
+tie, no losses) and on `budgeted` R@5/R@10/nDCG@10, tying budgeted hit@5 and
+losing only budgeted MRR — see §3 for the exact split. It is also the only
+profile of the three that surfaces gold into the candidate pool for all 21
+tasks; it is 4x smaller on disk; and it is at worst comparable on every runtime
+axis that was measured.
 
 **Production default: changed to `arctic-embed-xs-q`.** This is a decision the
 quality numbers alone do not make — Qwen still leads budgeted R@5 (0.698 vs
