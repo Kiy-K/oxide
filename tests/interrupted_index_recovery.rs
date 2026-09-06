@@ -29,6 +29,28 @@ fn write(path: &Path, content: &str) {
     std::fs::write(path, content).unwrap();
 }
 
+/// Pin the offline hashed embedder for this whole test binary.
+///
+/// `open_embedder`'s default is now a real ONNX model
+/// (`DEFAULT_NATIVE_PROFILE`), which downloads weights and needs network.
+/// These tests exercise the service boundary, not embedding, and several of
+/// them additionally *depend* on the provider being the hashed one, since
+/// they hand-write index meta naming it.
+///
+/// Safe despite `OXIDE_EMBED_NATIVE` being process-global: the write happens
+/// exactly once inside a `Once`, and every test calls this as its first
+/// statement, so `Once` blocks every other test thread until the write
+/// completes. No `getenv` in this process can run concurrently with it, and
+/// the value never changes afterwards.
+fn pin_offline_embedder() {
+    static PIN: std::sync::Once = std::sync::Once::new();
+    PIN.call_once(|| {
+        // SAFETY: the only write to this variable in this process, serialized
+        // by `Once` ahead of every read. See the doc comment above.
+        unsafe { std::env::set_var("OXIDE_EMBED_NATIVE", "hashed") };
+    });
+}
+
 fn service_for(root: &Path) -> RepositoryService {
     RepositoryService::discover(Some(root.to_str().unwrap())).unwrap()
 }
@@ -44,6 +66,7 @@ fn search_request() -> SearchRequest {
 
 #[test]
 fn schema_only_index_is_rejected_not_treated_as_healthy() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     write(&root.join("src/thing.py"), "def thing():\n    return 1\n");
@@ -82,6 +105,7 @@ fn schema_only_index_is_rejected_not_treated_as_healthy() {
 
 #[test]
 fn partially_committed_files_without_metadata_are_rejected() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     let src = "def thing():\n    return 1\n";
@@ -120,6 +144,7 @@ fn partially_committed_files_without_metadata_are_rejected() {
 
 #[test]
 fn embedding_phase_interrupted_before_meta_write_is_rejected() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     let src = "def thing():\n    return 1\n";
@@ -161,6 +186,7 @@ fn embedding_phase_interrupted_before_meta_write_is_rejected() {
 
 #[test]
 fn a_follow_up_index_recovers_cleanly_from_any_interruption_point() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     let src = "def thing():\n    return 1\n";
@@ -198,6 +224,7 @@ fn a_follow_up_index_recovers_cleanly_from_any_interruption_point() {
 
 #[test]
 fn closing_meta_writes_are_atomic_as_a_group() {
+    pin_offline_embedder();
     // Direct proof of the fix: a normal, uninterrupted `update_index` run
     // must never leave `root` set without the version keys that gate
     // compatibility checking (the exact torn state the tests above
@@ -225,6 +252,7 @@ fn closing_meta_writes_are_atomic_as_a_group() {
 
 #[test]
 fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
+    pin_offline_embedder();
     // Characterizes the exact narrow window `set_meta_all` closes: before
     // the fix, `update_index` wrote root/embedder/dim/schema_version/
     // extraction_version as five separate statements. A process killed
@@ -263,13 +291,11 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
         // Hand-craft the pre-fix torn window: root/embedder/dim written,
         // schema_version/extraction_version deliberately withheld.
         store.set_meta("root", &root.display().to_string()).unwrap();
-        // `embedder` is written as whatever provider *this environment* is
-        // configured for, not as `emb.name()`. What this test pins is which
-        // meta *keys* are present after a torn write — `embedder_current` is
-        // background, and hard-coding the hashed name here would instead make
-        // the assertion below track the shipped default provider
-        // (`DEFAULT_NATIVE_PROFILE`), failing for a reason this test is not
-        // about. The vectors above stay hashed; nothing here searches.
+        // `embedder` is written as whatever provider this binary is pinned to
+        // rather than a hard-coded name, so it cannot drift from
+        // `pin_offline_embedder`. What this test pins is which meta *keys* are
+        // present after a torn write; `embedder_current` below is background,
+        // and it must not start tracking the shipped default provider.
         store
             .set_meta("embedder", &configured_provider_name(None))
             .unwrap();

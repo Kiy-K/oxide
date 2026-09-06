@@ -1101,11 +1101,17 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
 /// `qwen3-Q8_0` HTTP recommendation on the frozen 21-task ContextBench
 /// evidence in `docs/cpu-embedding-survey/` — decisively better vector-only
 /// retrieval than Qwen (R@5 0.655 vs 0.536), a gold file in the candidate
-/// pool on 21/21 tasks where Qwen manages 19, ~9x faster full-repo indexing,
-/// 4x less peak RSS, and no separate server process to run at all. Qwen
-/// remains ahead on budgeted R@5 by 0.035 (one to two tasks out of
-/// twenty-one); that margin does not pay for a llama.cpp server in the
-/// loop.
+/// pool on 21/21 tasks where Qwen manages 19, ~9x faster full-repo indexing
+/// (113.6s vs the Jina reference's 1025.5s on the same corpus), and no
+/// separate server process to run at all. Qwen remains ahead on budgeted R@5
+/// by 0.035 (one to two tasks out of twenty-one); that margin does not pay
+/// for a llama.cpp server in the loop.
+///
+/// Peak RSS is deliberately *not* claimed as a win over Qwen: Arctic's
+/// measured 230MB is in-process, while Qwen's ~140-260MB is a separate
+/// long-lived server measured with `ps` at varying points. The two are not
+/// comparable, and Arctic's 4.3x RSS advantage in the survey is over
+/// `jina-code-v2` (996MB), not over Qwen.
 pub const DEFAULT_NATIVE_PROFILE: &str = "arctic-embed-xs-q";
 
 /// The `OXIDE_EMBED_NATIVE` value that opts back out to the offline

@@ -14,8 +14,32 @@ fn write(path: &Path, content: &str) {
     std::fs::write(path, content).unwrap();
 }
 
+/// Pin the offline hashed embedder for this whole test binary.
+///
+/// `open_embedder`'s default is now a real ONNX model
+/// (`DEFAULT_NATIVE_PROFILE`), which downloads weights and needs network.
+/// These tests exercise the service boundary, not embedding, and several of
+/// them additionally *depend* on the provider being the hashed one — the
+/// dimension-mismatch test below is only a "same identity, different shape"
+/// scenario while both sides report `hashed-bow-256`.
+///
+/// Safe despite `OXIDE_EMBED_NATIVE` being process-global: the write happens
+/// exactly once inside a `Once`, and every test calls this as its first
+/// statement, so `Once` blocks every other test thread until the write
+/// completes. No `getenv` in this process can run concurrently with it, and
+/// the value never changes afterwards.
+fn pin_offline_embedder() {
+    static PIN: std::sync::Once = std::sync::Once::new();
+    PIN.call_once(|| {
+        // SAFETY: the only write to this variable in this process, serialized
+        // by `Once` ahead of every read. See the doc comment above.
+        unsafe { std::env::set_var("OXIDE_EMBED_NATIVE", "hashed") };
+    });
+}
+
 #[test]
 fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     write(&root.join("src/thing.py"), "def thing():\n    return 1\n");
@@ -30,7 +54,9 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
         update_index(root, &mut store, &HashedEmbedder::new(128)).unwrap();
     }
 
-    // search()/context() open the default (256-dim) embedder internally.
+    // search()/context() open the configured embedder internally — pinned to
+    // the 256-dim hashed one above, so the provider *name* matches and only
+    // the dimension differs.
     let service = RepositoryService::discover(Some(root.to_str().unwrap())).unwrap();
     let err = service
         .search(
@@ -69,6 +95,7 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
 
 #[test]
 fn incompatible_index_version_is_a_structured_error_not_a_guess() {
+    pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     write(&root.join("src/thing.py"), "def thing():\n    return 1\n");
@@ -102,6 +129,7 @@ fn incompatible_index_version_is_a_structured_error_not_a_guess() {
 
 #[test]
 fn index_without_version_meta_is_incompatible_not_legacy_compatible() {
+    pin_offline_embedder();
     // v0.1 has no installed base to preserve compatibility for. An index
     // missing schema_version/extraction_version meta (corrupt write, or a
     // hypothetical pre-tracking binary) must fail explicit and force a
