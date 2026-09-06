@@ -1,0 +1,38 @@
+### SurrealKV silently loses a committed transaction at 40k with incremental HNSW
+###
+### Shape: 1600 files x 25 symbols = 40,000 rows, vectors written in
+### transactions of VEC_CHUNK=1000 rows, HNSW index defined BEFORE ingest
+### (SDB_INDEX_FIRST=1) so it is maintained incrementally.
+###
+### Every vector write reported success: db.query(...).await?.check()? returned
+### Ok for all 40 chunks. The audit below reads the store back afterwards.
+
+--- surrealkv 40k, index-first, run 1 ---
+engine=surrealkv rows=40000 with_vec=39000 missing_vec=1000
+  lowest missing ids:  [36000, 36001, 36002]
+  highest missing ids: [36999, 36998, 36997]
+
+--- surrealkv 40k, index-first, run 2 ---
+engine=surrealkv rows=40000 with_vec=39000 missing_vec=1000
+  lowest missing ids:  [34000, 34001, 34002]
+  highest missing ids: [34999, 34998, 34997]
+
+--- surrealkv 40k, index-AFTER bulk load (different write shape) ---
+engine=surrealkv rows=40000 with_vec=40000 missing_vec=0
+
+--- rocksdb 40k, index-first (same harness, same chunking) ---
+engine=rocksdb rows=40000 with_vec=40000 missing_vec=0
+
+--- both engines, 10k, index-first ---
+engine=surrealkv rows=10000 with_vec=10000 missing_vec=0
+engine=rocksdb   rows=10000 with_vec=10000 missing_vec=0
+
+### Reading: exactly one contiguous VEC_CHUNK-sized block vanishes, at a
+### different offset each run, only on SurrealKV, only while the HNSW index is
+### being maintained incrementally. The same harness and the same chunking lose
+### nothing on RocksDB and nothing at 10k, so this is not the chunking code.
+### It first surfaced as an exact-cosine control failing with
+### "Expected `array<number>` but found `NONE`" -- nothing in the write path
+### itself ever reported an error.
+###
+### SurrealKV is documented as beta.

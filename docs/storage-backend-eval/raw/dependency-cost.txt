@@ -36,3 +36,20 @@ SQLite probe (rusqlite 0.32 "bundled", the pin OXIDE already ships):
 	Elapsed (wall clock) time (h:mm:ss or m:ss): 22:31.82
 	Maximum resident set size (kbytes): 6717784
 	crates compiled: 336
+
+### G0 REMEASURED on the engine SurrealDB documents for EMBEDDED use.
+### The first round measured kv-rocksdb, which the deployment-models doc
+### recommends for on-disk *server* deployments; for embedded it names
+### SurrealKV (beta) as the preferred choice, for lower resident memory and
+### in-process behaviour. RocksDB's C++ compile was four fifths of the cost.
+###
+###   surrealdb = { version = "3", default-features = false,
+###                 features = ["kv-surrealkv"] }
+###   plus tokio (rt-multi-thread, macros), serde, anyhow.
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:24.57
+	Maximum resident set size (kbytes): 6086940
+	crates compiled: 330
+	crates in lockfile: 446
+	rocksdb crates pulled in: 0   (no C++ compile at all)
+
+### For comparison, the same manifest with kv-rocksdb instead: 22:31.82.

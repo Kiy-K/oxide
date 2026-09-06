@@ -183,3 +183,44 @@ index entry was cleaned up, because there is no such index to leave behind.
   orthogonal — the hardest possible case for a graph-based index like HNSW.
   Real embeddings cluster. G4d's SurrealDB result should be read as "HNSW loses
   recall here", not as a general claim about HNSW.
+
+## Retest round (after the first verdict was challenged)
+
+The first verdict was pushed back on, correctly: G1 as originally run conflated
+*multiple processes opening one embedded store* with *concurrent access inside
+one process*, and the whole evaluation used `kv-rocksdb` rather than the engine
+SurrealDB documents for embedded use. The retest is written up in
+[`surrealdb-retest.md`](surrealdb-retest.md). Gates added or changed for it:
+
+- **G1a in-process concurrency** — `surreal-conc` / `sqlite-conc`. Cloned
+  `Surreal` handles across concurrent Tokio tasks on a multi-thread runtime,
+  against OS threads with one pre-opened connection each. Reads are checked for
+  exact results; writers target disjoint files so a failure is store contention
+  rather than a logical conflict.
+- **G1b multi-process** — the original probe, now reported as the engine's
+  model rather than as a failure.
+- **G1c cold-process cost** — `surreal-query` / `sqlite-query`, timed by the
+  caller around the whole process, because seven of OXIDE's nine subcommands are
+  one-shot processes.
+- **Context-shaped composite** — `surreal-ctx` / `sqlite-ctx`. One BM25 + one
+  vector top-10 + three relation lookups in an already-warm process. This is the
+  number a daemon would *not* buy back, so it is the one the architecture
+  decision turns on.
+- **`SDB_ENGINE`** selects `rocksdb` or `surrealkv`; **`SDB_INDEX_FIRST=1`**
+  defines the HNSW index before ingest instead of after a bulk load.
+- **`surreal-audit`** counts rows missing the `vec` field. Added after an
+  exact-cosine control failed with `Expected array<number> but found NONE`,
+  which is how the SurrealKV lost-write finding surfaced.
+
+A fourth harness bug was found in this round, on the SQLite side: `replace_file`
+used a `DEFERRED` transaction, and since it reads before it writes it hit
+`SQLITE_BUSY_SNAPSHOT`, which `busy_timeout` does not retry. That made SQLite
+look like it lost 15 of 16 concurrent writers. `BEGIN IMMEDIATE` fixed it and
+SQLite lands 64/64 — slowly (744 ms against SurrealDB's ~100 ms), but correctly.
+
+**Not done:** the Codex review of this retest round did not complete — it was
+killed by its own 50-minute timeout without producing output. The first round's
+four review passes do not cover any of the retest code or claims. Anything in
+`surrealdb-retest.md` should be read as unreviewed by that second pair of eyes,
+in particular the SurrealKV lost-write finding, which deserves an independent
+attempt to break it before it is treated as established.

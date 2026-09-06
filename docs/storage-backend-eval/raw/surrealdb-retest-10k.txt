@@ -1,0 +1,69 @@
+### RETEST under SurrealDB's documented embedded model:
+###   - engine selectable (SDB_ENGINE): rocksdb, or surrealkv which the
+###     deployment-models doc calls the preferred embedded choice
+###   - HNSW index DEFINED BEFORE ingest (SDB_INDEX_FIRST=1) so it is
+###     maintained incrementally instead of built after a bulk load
+###   - all paths on ext4 (/home), never tmpfs
+
+### surrealdb — 10,000 symbols, engine=rocksdb, HNSW index-first
+
+=== surrealdb-3 (rocksdb) — phase 1: writes ===
+METRIC startup.open_empty_ms              198
+METRIC ingest.symbols_ms                  11334 for 10000 symbols
+METRIC ingest.vectors_ms                  1568 for 10000 vectors
+METRIC ingest.hnsw_build_ms               0 (index defined before ingest; cost is inside ingest.vectors_ms)
+PASS   G3b atomic replace (rollback)      25 rows before, 25 after a failing txn (err=true)
+PASS   G3c freshness add/edit/rename/del  add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+METRIC footprint.peak_rss_kb              438188
+METRIC footprint.on_disk_bytes            189077293
+-- 0 gate(s) FAILED
+
+
+=== surrealdb-3 (rocksdb) — phase 2: fresh-process reads ===
+PASS   G3a persistence/reopen             10000 rows after fresh-process reopen (expected 10000)
+METRIC startup.reopen_populated_ms        371
+METRIC query.first_knn_after_open_ms      24
+PASS   G4a graph parity                   10 probes, got/expected — build_buffer:131/131 build_cache:170/170 build_cursor:157/157 build_graph:142/142 build_index:152/152 Base0:102/102 Base1:97/97 Base10:99/99 Base11:99/99 Base12:98/98
+METRIC query.callers_of_ms                138 (first call in process), 9 (warm)
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      18
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0
+METRIC query.literal_ms                   182 (full scan: no trigram index)
+PASS   G4d vector KNN recall@10 == 1.0    HNSW ef=64: 10/10; ef=512: 10/10; exact-in-db control: 10/10
+METRIC query.knn_ms                       18 (ef=64), 10 (ef=512)
+PASS   G4e determinism (repeat query)     bm25 stable=true knn stable=true
+METRIC footprint.peak_rss_kb              348724
+METRIC footprint.on_disk_bytes            175300849
+-- 0 gate(s) FAILED
+
+### surrealdb — 10,000 symbols, engine=surrealkv, HNSW index-first
+
+=== surrealdb-3 (surrealkv) — phase 1: writes ===
+METRIC startup.open_empty_ms              214
+METRIC ingest.symbols_ms                  8973 for 10000 symbols
+METRIC ingest.vectors_ms                  1789 for 10000 vectors
+METRIC ingest.hnsw_build_ms               0 (index defined before ingest; cost is inside ingest.vectors_ms)
+PASS   G3b atomic replace (rollback)      25 rows before, 25 after a failing txn (err=true)
+PASS   G3c freshness add/edit/rename/del  add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+METRIC footprint.peak_rss_kb              484768
+METRIC footprint.on_disk_bytes            170410021
+-- 0 gate(s) FAILED
+
+
+=== surrealdb-3 (surrealkv) — phase 2: fresh-process reads ===
+PASS   G3a persistence/reopen             10000 rows after fresh-process reopen (expected 10000)
+METRIC startup.reopen_populated_ms        523
+METRIC query.first_knn_after_open_ms      33
+PASS   G4a graph parity                   10 probes, got/expected — build_buffer:131/131 build_cache:170/170 build_cursor:157/157 build_graph:142/142 build_index:152/152 Base0:102/102 Base1:97/97 Base10:99/99 Base11:99/99 Base12:98/98
+METRIC query.callers_of_ms                17 (first call in process), 29 (warm)
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      24
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0
+METRIC query.literal_ms                   185 (full scan: no trigram index)
+PASS   G4d vector KNN recall@10 == 1.0    HNSW ef=64: 10/10; ef=512: 10/10; exact-in-db control: 10/10
+METRIC query.knn_ms                       14 (ef=64), 14 (ef=512)
+PASS   G4e determinism (repeat query)     bm25 stable=true knn stable=true
+METRIC footprint.peak_rss_kb              352184
+METRIC footprint.on_disk_bytes            170410097
+-- 0 gate(s) FAILED
+

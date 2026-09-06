@@ -1,13 +1,27 @@
 # Enhanced SQLite vs SurrealDB for OXIDE
 
-**Verdict: keep SQLite and enhance it. SurrealDB is rejected.** It fails two
-hard gates outright — G0 on cost and G1 on concurrent access — it cannot build
-the vector index it needs at 40,000 symbols, and it does not win any gate it
-passes. The finding is scoped to what was tested: SurrealDB 3.2.4 embedded with
-`kv-rocksdb`, not every SurrealDB version, storage engine, or configuration. Zvec stays
-frozen as the leading specialist challenger; this round did not exercise it, and
-nothing here settles the question it was frozen against.
+> **Corrected.** The first round rejected SurrealDB on three grounds and three
+> of them were methodology errors of mine, not properties of the database. It
+> was retested under the model its own docs describe — see
+> **[`surrealdb-retest.md`](surrealdb-retest.md)**, which supersedes every
+> SurrealDB claim below. The Enhanced SQLite half of this document is unaffected.
 
+**Verdict: keep SQLite and enhance it. Do not adopt SurrealDB — but on fit, not
+on capability.** Under its documented embedded model SurrealDB passes every
+correctness gate on both storage engines, builds in 5 m 25 s with no C++
+compile, and beats SQLite on concurrent writes by 7–8×. It is ruled out because
+no embedded engine allows two processes on one store, so OXIDE's seven one-shot
+subcommands would have to be rebuilt as clients of a daemon — and after paying
+for that, a context-shaped query is still 7–12× slower than the SQLite path that
+needs no changes at all. Separately: SurrealKV, the engine the docs recommend
+for embedded use, **silently lost a committed 1,000-row transaction** at 40k
+symbols.
+
+Scope: SurrealDB 3.2.4 embedded, `kv-rocksdb` and `kv-surrealkv`. Nothing here
+speaks to SurrealDB in server mode. Zvec stays frozen as the leading specialist
+challenger; nothing here settles the question it was frozen against.
+
+- **Retest under SurrealDB's documented model, and the architecture question: [`surrealdb-retest.md`](surrealdb-retest.md)**
 - Methodology, gate definitions, harness bugs found and fixed, limits: [`methodology.md`](methodology.md)
 - Status-quo numbers the proposal has to beat: [`baseline.md`](baseline.md)
 - Whether FTS5 can reproduce OXIDE's ranking: [`fts5-parity-notes.md`](fts5-parity-notes.md)
@@ -16,18 +30,28 @@ nothing here settles the question it was frozen against.
   [`surrealdb-10k.txt`](raw/surrealdb-10k.txt) (two independent index builds),
   [`surrealdb-40k.txt`](raw/surrealdb-40k.txt),
   [`perf-baseline.txt`](raw/perf-baseline.txt),
-  [`dependency-cost.txt`](raw/dependency-cost.txt) (also holds the G0 build timing)
+  [`dependency-cost.txt`](raw/dependency-cost.txt) (both G0 build timings),
+  and from the retest: [`concurrency-split.txt`](raw/concurrency-split.txt),
+  [`surrealdb-retest-10k.txt`](raw/surrealdb-retest-10k.txt),
+  [`surrealdb-retest-40k.txt`](raw/surrealdb-retest-40k.txt),
+  [`context-shaped.txt`](raw/context-shaped.txt),
+  [`surrealkv-lost-writes.txt`](raw/surrealkv-lost-writes.txt)
 - Gate harness: [`spike/`](spike/) — both backends and both G1 probes in one binary
 
-## Gate results
+## Gate results (first round — SurrealDB column superseded)
+
+The SurrealDB column below was measured with `kv-rocksdb` and with the HNSW
+index built after a bulk load. [`surrealdb-retest.md`](surrealdb-retest.md)
+redoes G0, G1, G4d and the 40k row properly; the rows marked ~~struck~~ are
+wrong as stated.
 
 Both backends driven through one binary ([`spike/`](spike/)), one seeded
 synthetic corpus, one gate list. Headline shape: 10,000 symbols, 384-d vectors.
 
 | Gate | Enhanced SQLite | SurrealDB 3.2.4 (`kv-rocksdb`) |
 | --- | --- | --- |
-| **G0** build cost | **no new dependency** — FTS5, `bm25()` and `trigram` are all present in the pinned `rusqlite 0.32 bundled` (SQLite 3.46.0) | **FAIL in practice** — +221 crates (369 → 590), compiles RocksDB from C++ source; cold `-j 2` build **22 m 32 s**, 6.7 GB peak RSS |
-| **G1** concurrent access | **PASS** — a second process reading through the same flags as `SqliteStore::open_read_only` sees a consistent snapshot while a writer holds an *open, uncommitted* write transaction | **FAIL** — RocksDB takes an exclusive `LOCK`; a second process gets `Resource temporarily unavailable`, and even a same-process reopen after `drop` gets `lock hold by current process` |
+| **G0** build cost | **no new dependency** — FTS5, `bm25()` and `trigram` are all present in the pinned `rusqlite 0.32 bundled` (SQLite 3.46.0) | ~~22 m 32 s~~ → **5 m 25 s** with `kv-surrealkv`, the documented embedded engine; no RocksDB, no C++ compile ([retest](surrealdb-retest.md)) |
+| **G1** concurrent access | **PASS** — a second process reading through the same flags as `SqliteStore::open_read_only` sees a consistent snapshot while a writer holds an *open, uncommitted* write transaction | ~~FAIL~~ → split. **G1a in-process** (the documented model): **PASS**, and 7–8× faster than SQLite on concurrent writes. **G1b multi-process**: not a model either embedded engine offers ([retest](surrealdb-retest.md)) |
 | **G2** startup | open 35 ms · reopen populated **0 ms** | open 436 ms · reopen populated 249 ms |
 | **G3a** persistence/reopen | PASS | PASS |
 | **G3b** atomic file replacement | PASS | PASS — rolls back correctly on `THROW` |
@@ -35,9 +59,9 @@ synthetic corpus, one gate list. Headline shape: 10,000 symbols, 384-d vectors.
 | **G4a** graph parity | PASS — 10 probes (5 call targets, 5 base targets), every set exact | PASS — same 10 probes, every set exact |
 | **G4b** BM25 exact match | PASS — 5 terms, 0 missing, 0 spurious | PASS — 5 terms, 0 missing, 0 spurious |
 | **G4c** literal substring exact match | PASS — 5 substrings, 0 missing, 0 spurious | PASS — same 5, but by full scan; SurrealDB has no trigram index |
-| **G4d** vector recall@10 == 1.0 | **PASS** — exact by construction | **FAIL** — HNSW returns 7–8/10 at the default `ef=64` across the two captured index builds, and 9–10/10 at `ef=512`, which costs 25 ms against SQLite's 7.8 ms exact answer. An exact in-database control returns 10/10, so this is index recall, not a query-semantics mismatch |
+| **G4d** vector recall@10 == 1.0 | **PASS** — exact by construction | ~~FAIL (7–8/10)~~ → **PASS, 10/10 at the default `ef=64`** once the index is defined before ingest instead of after a bulk load ([retest](surrealdb-retest.md)) |
 | **G4e** determinism (repeat query) | PASS | PASS within one index; recall varies between index *builds* |
-| **scale to 40k symbols** | **PASS** — all gates, 3.3 s total | **FAIL** — 40,000 symbols and vectors ingest fine (38.3 s + 5.2 s, 1.5 GB on disk); the following `DEFINE INDEX … HNSW DIMENSION 384` aborts with a RocksDB `Transaction conflict`, single writer, no concurrency, in every one of six attempts |
+| **scale to 40k symbols** | **PASS** — all gates, 3.3 s total | ~~FAIL~~ → **completes on both engines** with an index-first build. The abort was the bulk-load-then-`DEFINE INDEX` shape, not a capacity limit ([retest](surrealdb-retest.md)). Separately, SurrealKV silently lost a committed 1,000-row transaction here |
 | **G5** ContextBench | not reached — no candidate cleared every gate | **not run** (G1 already fatal) |
 
 ### Cost side by side, 10,000 symbols
@@ -46,17 +70,23 @@ synthetic corpus, one gate list. Headline shape: 10,000 symbols, 384-d vectors.
 | --- | --- | --- | --- |
 | ingest 10k symbols | 530 ms | 10,565 ms | 20× |
 | ingest 10k vectors | 64 ms | 1,482 ms | 23× |
-| build vector index | 0 ms (none) | 17,804 ms | — |
-| **total write phase** | **0.71 s** | **~30 s** | **~42×** |
+| build vector index | 0 ms (none) | ~~17,804 ms~~ 0 with an index-first build; its cost moves into vector ingest | — |
+| **total write phase** | **0.71 s** | **~30 s** (index-after) / **~13 s** (index-first, surrealkv) | 18–42× |
 | BM25 query | 0.51 ms | 20 ms | 39× |
 | literal substring | 0.50 ms | 178 ms | 353× |
 | `callers_of` | 0.14 ms | 113 ms cold / 40 ms warm | 296× warm |
-| top-10 vectors | 8.2 ms cold / 7.8 ms warm, exact | 1 ms @8/10, 25 ms @10/10, plus 25 ms first-in-process | — |
+| top-10 vectors | 8.2 ms cold / 7.8 ms warm, exact | ~~1 ms @8/10~~ → **14–18 ms @10/10** with an index-first build | ~2× |
 | peak RSS | 42 MB | 693 MB write / 359 MB read | 9–17× |
 | on-disk | 28 MB | 89 MB (322 MB before compaction) | 3.2× |
 
 Numbers are from index build #1 in [`raw/surrealdb-10k.txt`](raw/surrealdb-10k.txt)
-and the 400×25 run in [`raw/sqlite-gates.txt`](raw/sqlite-gates.txt).
+and the 400×25 run in [`raw/sqlite-gates.txt`](raw/sqlite-gates.txt). **The rows
+marked ~~struck~~ were measured with the index built after a bulk load and are
+corrected in [`surrealdb-retest.md`](surrealdb-retest.md);** the retest's own
+numbers are in [`raw/surrealdb-retest-10k.txt`](raw/surrealdb-retest-10k.txt).
+The single most decision-relevant figure is not in this table at all — a warm,
+context-shaped composite costs 8 ms on SQLite against 54–89 ms on SurrealDB
+([`raw/context-shaped.txt`](raw/context-shaped.txt)).
 
 **All runs are on ext4 with 170 GB free, not tmpfs.** An earlier sweep used
 `/tmp`, which on this machine is tmpfs; that flattered SurrealDB's write path by
@@ -70,7 +100,12 @@ and a warm query number, so neither is credited with a warm cache the other paid
 for. Peak RSS includes the harness's own in-memory corpus (~15 MB of vectors
 here) identically for both.
 
-## Why G1 is fatal rather than inconvenient
+## Why the process model matters for OXIDE
+
+> Superseded in part: the *gate* framing below was wrong, since multi-process
+> access is not a model SurrealDB offers rather than a defect. The *consequence*
+> for OXIDE is real and is assessed properly in
+> [`surrealdb-retest.md`](surrealdb-retest.md#can-oxide-reasonably-adapt-watch--cli).
 
 OXIDE is a one-process-per-CLI-call tool with a long-lived watcher. `oxide watch`
 holds the store open continuously; `oxide index` can run from any process at any
@@ -88,7 +123,8 @@ is.
 
 Even setting G1 aside, SurrealDB loses on its own terms:
 
-- **It cannot build its vector index at 40k symbols.** The rows go in fine —
+- ~~**It cannot build its vector index at 40k symbols.**~~ **Wrong** — it can,
+  with an index-first build; see the retest. As originally measured: the rows go in fine —
   40,000 symbols in 38.3 s, 40,000 vectors in 5.2 s, 1.5 GB on disk — and then
   `DEFINE INDEX … HNSW DIMENSION 384` aborts with a RocksDB
   `Transaction conflict`, in a strictly sequential single-writer run,
@@ -118,9 +154,10 @@ Even setting G1 aside, SurrealDB loses on its own terms:
 - **No literal-substring index.** G4c passes only because `string::contains`
   scans every row (178 ms vs 0.50 ms). That is a structural gap, not a tuning
   problem — there is no trigram index to add.
-- **Approximate vectors slower than exact ones at this scale.** SQLite's
-  brute-force cosine is 7.8 ms and exact at 10k symbols; SurrealDB's HNSW needs
-  `ef=512` and 25 ms to reach 10/10.
+- ~~**Approximate vectors slower than exact ones at this scale.**~~ **Corrected**:
+  with an index-first build HNSW reaches 10/10 at the default `ef=64` in
+  14–18 ms, against SQLite's 7.8 ms exact — roughly 2×, not the gap first
+  reported. At 40k on rocksdb, though, the HNSW query degrades to 3.2–4.4 s.
 
 ## What Enhanced SQLite actually buys
 

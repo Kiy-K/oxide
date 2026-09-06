@@ -1,0 +1,60 @@
+### G1 SPLIT INTO THE TWO THINGS THE FIRST ROUND CONFLATED
+
+## G1a — in-process concurrency: the model the Rust SDK documents.
+## One embedded instance, Surreal handles cloned into concurrent tokio
+## tasks on a multi-thread runtime. SQLite's counterpart is OS threads
+## with one connection each, opened before the timed section.
+
+-- enhanced sqlite --
+PASS   G1a concurrent reads correct       40 threads, own connection each, every result set exact
+METRIC concurrency.reads_ms               1 sequential vs 20 concurrent (40 queries)
+PASS   G1a concurrent writes (disjoint files) 16 writers x 4 rows: 64/64 landed, 0 error(s)
+METRIC concurrency.writes_ms              744
+METRIC footprint.peak_rss_kb              43548
+-- 0 gate(s) FAILED
+
+-- surrealdb engine=rocksdb --
+PASS   G1a concurrent reads correct       40 tasks on cloned handles, every result set exact
+METRIC concurrency.reads_ms               335 sequential vs 43 concurrent (40 queries)
+PASS   G1a concurrent writes (disjoint files) 16 writers x 4 rows: 64/64 landed, 0 error(s)
+METRIC concurrency.writes_ms              107
+METRIC footprint.peak_rss_kb              219320
+-- 0 gate(s) FAILED
+
+-- surrealdb engine=surrealkv --
+PASS   G1a concurrent reads correct       40 tasks on cloned handles, every result set exact
+METRIC concurrency.reads_ms               219 sequential vs 23 concurrent (40 queries)
+PASS   G1a concurrent writes (disjoint files) 16 writers x 4 rows: 64/64 landed, 0 error(s)
+METRIC concurrency.writes_ms              95
+METRIC footprint.peak_rss_kb              176224
+-- 0 gate(s) FAILED
+
+## G1b — two processes opening the same store path. Neither embedded
+## engine supports this; it is the engine's model, not a defect.
+
+-- engine=rocksdb --
+HELD
+Error: There was a problem with a transaction: IO error: While lock file: /home/khoi/.cache/sdbgate/mp.M429/x/LOCK: Resource temporarily unavailable
+
+-- engine=surrealkv --
+HELD
+Error: There was a problem with the datastore: Other error: Database at /home/khoi/.cache/sdbgate/mp.90MY/x/LOCK is already locked by another process
+
+-- enhanced sqlite, same probe --
+HELD (uncommitted write transaction open)
+OPENED meta_rows=0
+
+## G1c — one query from a COLD PROCESS, 10k symbols. This is what
+## every oxide context/search invocation pays today with no daemon.
+-- enhanced sqlite --
+rows=10000   0.00 s 
+rows=10000   0.00 s 
+rows=10000   0.00 s 
+-- surrealdb engine=rocksdb --
+rows=10000   0.48 s 
+rows=10000   0.34 s 
+rows=10000   0.29 s 
+-- surrealdb engine=surrealkv --
+rows=10000   0.54 s 
+rows=10000   0.62 s 
+rows=10000   0.55 s 

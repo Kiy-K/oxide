@@ -1,0 +1,14 @@
+### A context-shaped composite: 1 BM25 + 1 vector top-10 + 3 relation
+### lookups, in one ALREADY-WARM process, best of 3. This is roughly what
+### one 'oxide context' costs the store. A daemon would buy back the cold
+### open measured in concurrency-split.txt; it would not buy back this.
+
+## 10000 symbols
+enhanced sqlite context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 8 ms
+engine=rocksdb context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 54 ms
+engine=surrealkv context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 89 ms
+
+## 40000 symbols
+enhanced sqlite context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 32 ms
+engine=rocksdb context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 278 ms
+engine=surrealkv context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 375 ms

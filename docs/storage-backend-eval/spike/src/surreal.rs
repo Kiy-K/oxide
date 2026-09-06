@@ -9,12 +9,24 @@ use crate::corpus::{cosine, Sym, DIM};
 use crate::gate::{dir_bytes, rss_kb, Report};
 use anyhow::{Context, Result};
 use std::time::Instant;
-use surrealdb::engine::local::{Db, RocksDb};
+use surrealdb::engine::any::{connect, Any};
 use surrealdb::types::SurrealValue;
 use surrealdb::Surreal;
 
-async fn open(path: &std::path::Path) -> Result<Surreal<Db>> {
-    let db = Surreal::new::<RocksDb>(path.to_str().unwrap()).await?;
+/// `$SDB_ENGINE` selects the storage engine: `rocksdb` (the default here, and
+/// what SurrealDB recommends for on-disk *server* deployments) or `surrealkv`
+/// (what the deployment-models doc calls the preferred choice for *embedded*
+/// deployments, for lower resident memory and in-process behaviour). Both are
+/// reached through `engine::any::connect` with a URL, so the gate code is
+/// identical for either.
+pub fn engine() -> String {
+    std::env::var("SDB_ENGINE").unwrap_or_else(|_| "rocksdb".into())
+}
+
+pub type Db = Any;
+
+async fn open(path: &std::path::Path) -> Result<Surreal<Any>> {
+    let db = connect(format!("{}://{}", engine(), path.to_str().unwrap())).await?;
     db.use_ns("oxide").use_db("index").await?;
     Ok(db)
 }
@@ -33,6 +45,17 @@ async fn schema(db: &Surreal<Db>) -> Result<()> {
     )
     .await?
     .check()?;
+    // `SDB_INDEX_FIRST=1` defines the HNSW index on an empty table so it is
+    // maintained incrementally as rows arrive, instead of being built in one
+    // statement after a bulk load. The bulk-load-then-DEFINE shape is what
+    // aborted at 40k, so which of the two fails is the interesting question.
+    if std::env::var("SDB_INDEX_FIRST").is_ok() {
+        db.query(format!(
+            "DEFINE INDEX IF NOT EXISTS sym_vec ON symbol FIELDS vec HNSW DIMENSION {DIM} DIST COSINE;"
+        ))
+        .await?
+        .check()?;
+    }
     Ok(())
 }
 
@@ -109,7 +132,7 @@ pub async fn try_open(path: &str) -> Result<()> {
 /// processes is also the faithful model — OXIDE indexes in one process and
 /// queries in another.
 pub async fn run1(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Report> {
-    let mut rep = Report::new("surrealdb-3 (rocksdb) — phase 1: writes");
+    let mut rep = Report::new(Box::leak(format!("surrealdb-3 ({}) — phase 1: writes", engine()).into_boxed_str()));
     let syms = crate::corpus::corpus(7, files, per_file);
     let vecs = crate::corpus::vectors(&syms);
     let dbpath = dir.join("sdb");
@@ -175,15 +198,29 @@ pub async fn run1(dir: &std::path::Path, files: usize, per_file: usize) -> Resul
         format!("{} for {} vectors", t.elapsed().as_millis(), vecs.len()),
     );
 
-    crate::gate::Report::step("building HNSW index");
+    let index_first = std::env::var("SDB_INDEX_FIRST").is_ok();
+    crate::gate::Report::step(if index_first {
+        "HNSW index was defined up front; nothing to build here"
+    } else {
+        "building HNSW index after bulk load"
+    });
     let t = Instant::now();
-    db.query(format!(
-        "DEFINE INDEX IF NOT EXISTS sym_vec ON symbol FIELDS vec HNSW DIMENSION {DIM} DIST COSINE;"
-    ))
-    .await
-    .and_then(|r| r.check())
-    .context("HNSW index build failed")?;
-    rep.metric("ingest.hnsw_build_ms", format!("{}", t.elapsed().as_millis()));
+    if !index_first {
+        db.query(format!(
+            "DEFINE INDEX IF NOT EXISTS sym_vec ON symbol FIELDS vec HNSW DIMENSION {DIM} DIST COSINE;"
+        ))
+        .await
+        .and_then(|r| r.check())
+        .context("HNSW index build failed")?;
+    }
+    rep.metric(
+        "ingest.hnsw_build_ms",
+        if index_first {
+            "0 (index defined before ingest; cost is inside ingest.vectors_ms)".to_string()
+        } else {
+            format!("{}", t.elapsed().as_millis())
+        },
+    );
 
     // ---- G3b: atomic file replacement ----
     // A transaction whose second half is invalid must leave the first half's
@@ -288,7 +325,7 @@ pub async fn run1(dir: &std::path::Path, files: usize, per_file: usize) -> Resul
 /// Phase 2: a fresh process over the store phase 1 left behind — the read
 /// path OXIDE pays on every CLI invocation.
 pub async fn run2(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Report> {
-    let mut rep = Report::new("surrealdb-3 (rocksdb) — phase 2: fresh-process reads");
+    let mut rep = Report::new(Box::leak(format!("surrealdb-3 ({}) — phase 2: fresh-process reads", engine()).into_boxed_str()));
     let syms = crate::corpus::corpus(7, files, per_file);
     let vecs = crate::corpus::vectors(&syms);
     let dbpath = dir.join("sdb");
@@ -586,4 +623,194 @@ async fn bm25_hits(db: &Surreal<Db>, term: &str) -> Result<Vec<(i64, f32)>> {
         .iter()
         .filter_map(|h| rec_id(&h.id).map(|i| (i, h.score.unwrap_or(0.0))))
         .collect())
+}
+
+
+/// G1a — the documented in-process concurrency model: one embedded instance,
+/// `Surreal` handles cloned into concurrent Tokio tasks on a multi-thread
+/// runtime. This is what the Rust SDK's concurrency reference describes (and
+/// benchmarks, for reads). Concurrent *writes* are not covered by that doc, so
+/// they are measured here separately rather than assumed.
+pub async fn concurrency(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Report> {
+    let mut rep = Report::new(Box::leak(
+        format!("surrealdb-3 ({}) — G1a in-process concurrency", engine()).into_boxed_str(),
+    ));
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let dbpath = dir.join("sdb");
+    let db = open(&dbpath).await?;
+    schema(&db).await?;
+    for chunk in syms.chunks(per_file) {
+        replace_file(&db, &chunk[0].file, chunk).await?;
+    }
+
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let expect: Vec<(String, std::collections::BTreeSet<i64>)> = probes
+        .calls
+        .iter()
+        .map(|target| {
+            (
+                target.clone(),
+                syms.iter()
+                    .filter(|s| s.calls.contains(target))
+                    .map(|s| s.id)
+                    .collect(),
+            )
+        })
+        .collect();
+
+    // Sequential baseline, same total work.
+    const ROUNDS: usize = 40;
+    let t = Instant::now();
+    for i in 0..ROUNDS {
+        let (target, _) = &expect[i % expect.len()];
+        let _ = ids_where(&db, "WHERE $n IN calls", target).await?;
+    }
+    let seq_ms = t.elapsed().as_millis();
+
+    // Concurrent reads across cloned handles.
+    let t = Instant::now();
+    let mut handles = Vec::new();
+    for i in 0..ROUNDS {
+        let db = db.clone();
+        let (target, want) = expect[i % expect.len()].clone();
+        handles.push(tokio::spawn(async move {
+            let got = ids_where(&db, "WHERE $n IN calls", &target).await?;
+            anyhow::Ok(got == want)
+        }));
+    }
+    let mut all_correct = true;
+    for h in handles {
+        all_correct &= h.await??;
+    }
+    let par_ms = t.elapsed().as_millis();
+    rep.gate(
+        "G1a concurrent reads correct",
+        all_correct,
+        format!("{ROUNDS} tasks on cloned handles, every result set exact"),
+    );
+    rep.metric(
+        "concurrency.reads_ms",
+        format!("{seq_ms} sequential vs {par_ms} concurrent ({ROUNDS} queries)"),
+    );
+
+    // Concurrent writes: each task replaces its own distinct file. No two
+    // tasks touch the same rows, so any failure is contention in the store,
+    // not a logical conflict in the workload.
+    const WRITERS: usize = 16;
+    let t = Instant::now();
+    let mut handles = Vec::new();
+    for w in 0..WRITERS {
+        let db = db.clone();
+        let file = format!("pkg0/conc_{w}.py");
+        let mut rows = crate::corpus::corpus(500 + w as u64, 1, 4);
+        for (i, r) in rows.iter_mut().enumerate() {
+            r.id = 20_000_000 + (w * 100 + i) as i64;
+            r.file = file.clone();
+        }
+        handles.push(tokio::spawn(async move {
+            replace_file(&db, &file, &rows).await.map(|_| ())
+        }));
+    }
+    let mut write_errs = Vec::new();
+    for h in handles {
+        if let Err(e) = h.await? {
+            write_errs.push(format!("{e}"));
+        }
+    }
+    let write_ms = t.elapsed().as_millis();
+    let mut landed = 0;
+    for w in 0..WRITERS {
+        landed += file_count(&db, &format!("pkg0/conc_{w}.py")).await? as usize;
+    }
+    rep.gate(
+        "G1a concurrent writes (disjoint files)",
+        write_errs.is_empty() && landed == WRITERS * 4,
+        format!(
+            "{WRITERS} writers x 4 rows: {landed}/{} landed, {} error(s){}",
+            WRITERS * 4,
+            write_errs.len(),
+            write_errs
+                .first()
+                .map(|e| format!(" — first: {e}"))
+                .unwrap_or_default()
+        ),
+    );
+    rep.metric("concurrency.writes_ms", format!("{write_ms}"));
+    rep.metric("footprint.peak_rss_kb", format!("{}", rss_kb()));
+    Ok(rep)
+}
+
+/// G1c — one query from a cold process, the way `oxide context` runs today.
+/// Timed by the caller around the whole process, so it includes runtime setup
+/// and store open.
+pub async fn one_query(dir: &std::path::Path) -> Result<()> {
+    let db = open(&dir.join("sdb")).await?;
+    let n = count(&db, "").await?;
+    println!("rows={n}");
+    Ok(())
+}
+
+/// Completeness audit: how many rows exist, and how many are missing the `vec`
+/// field the vector index needs. Added because a 40k SurrealKV run reported a
+/// clean ingest and then failed an exact-cosine control with "Expected
+/// `array<number>` but found `NONE`", which is only possible if some vector
+/// writes did not land.
+pub async fn audit(dir: &std::path::Path) -> Result<()> {
+    let db = open(&dir.join("sdb")).await?;
+    let total = count(&db, "").await?;
+    let missing = count(&db, "WHERE vec IS NONE").await?;
+    let present = count(&db, "WHERE vec IS NOT NONE").await?;
+    println!("engine={} rows={total} with_vec={present} missing_vec={missing}", engine());
+    if missing > 0 {
+        let mut r = db
+            .query("SELECT id FROM symbol WHERE vec IS NONE ORDER BY id LIMIT 3")
+            .await?
+            .check()?;
+        let lo: Vec<IdRow> = r.take(0)?;
+        let mut r = db
+            .query("SELECT id FROM symbol WHERE vec IS NONE ORDER BY id DESC LIMIT 3")
+            .await?
+            .check()?;
+        let hi: Vec<IdRow> = r.take(0)?;
+        let ids = |v: &Vec<IdRow>| v.iter().filter_map(|x| rec_id(&x.id)).collect::<Vec<_>>();
+        println!("  lowest missing ids:  {:?}", ids(&lo));
+        println!("  highest missing ids: {:?}", ids(&hi));
+        println!("  (VEC_CHUNK = {}; a contiguous block of that size means one", crate::VEC_CHUNK);
+        println!("   whole transaction committed without error and did not land)");
+    }
+    Ok(())
+}
+
+
+/// A context-shaped composite: one BM25 query + one vector top-10 + three
+/// relation lookups, all in one warm process. This is roughly what a single
+/// `oxide context` costs the store, and it is the number a daemon would have
+/// to live with — a daemon buys back the cold-open cost, not this.
+pub async fn context_shaped(dir: &std::path::Path, files: usize, per_file: usize) -> Result<()> {
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let vecs = crate::corpus::vectors(&syms);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let db = open(&dir.join("sdb")).await?;
+    // Warm the process first; the cold-open cost is measured separately by G1c.
+    let _ = bm25_hits(&db, &probes.terms[0]).await?;
+    let mut best = u128::MAX;
+    for _ in 0..3 {
+        let t = Instant::now();
+        let _ = bm25_hits(&db, &probes.terms[1]).await?;
+        let mut r = db
+            .query("SELECT id FROM symbol WHERE vec <|10,64|> $q")
+            .bind(("q", vecs[0].clone()))
+            .await?
+            .check()?;
+        let _: Vec<IdRow> = r.take(0)?;
+        for target in probes.calls.iter().take(3) {
+            let _ = ids_where(&db, "WHERE $n IN calls", target).await?;
+        }
+        best = best.min(t.elapsed().as_millis());
+    }
+    println!(
+        "engine={} context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: {best} ms",
+        engine()
+    );
+    Ok(())
 }

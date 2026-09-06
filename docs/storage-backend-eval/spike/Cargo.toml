@@ -11,7 +11,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb"] }
+surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb", "kv-surrealkv"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 serde = { version = "1", features = ["derive"] }
 anyhow = "1"

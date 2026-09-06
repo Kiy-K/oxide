@@ -1,0 +1,95 @@
+### 40,000 symbols with the HNSW index defined BEFORE ingest.
+### The first round built the index after a bulk load and it aborted with
+### a RocksDB transaction conflict; that was the shape, not a capacity limit.
+
+### engine=rocksdb
+[METRIC] startup.open_empty_ms 321
+[METRIC] ingest.symbols_ms 40851 for 40000 symbols
+[METRIC] ingest.vectors_ms 7288 for 40000 vectors
+[METRIC] ingest.hnsw_build_ms 0 (index defined before ingest; cost is inside ingest.vectors_ms)
+[PASS] G3b atomic replace (rollback) 25 rows before, 25 after a failing txn (err=true)
+[PASS] G3c freshness add/edit/rename/del add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+[METRIC] footprint.peak_rss_kb 1313236
+[METRIC] footprint.on_disk_bytes 993629792
+
+=== surrealdb-3 (rocksdb) — phase 1: writes ===
+METRIC startup.open_empty_ms              321
+METRIC ingest.symbols_ms                  40851 for 40000 symbols
+METRIC ingest.vectors_ms                  7288 for 40000 vectors
+METRIC ingest.hnsw_build_ms               0 (index defined before ingest; cost is inside ingest.vectors_ms)
+PASS   G3b atomic replace (rollback)      25 rows before, 25 after a failing txn (err=true)
+PASS   G3c freshness add/edit/rename/del  add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+METRIC footprint.peak_rss_kb              1313236
+METRIC footprint.on_disk_bytes            993629792
+-- 0 gate(s) FAILED
+phase1 wall=50.98s maxrss=1311708KB
+
+[PASS] G3a persistence/reopen 40000 rows after fresh-process reopen (expected 40000)
+[METRIC] startup.reopen_populated_ms 529
+[METRIC] query.first_knn_after_open_ms 81
+[PASS] G4a graph parity 10 probes, got/expected — build_buffer:577/577 build_cache:622/622 build_cursor:580/580 build_graph:615/615 build_index:619/619 Base0:377/377 Base1:393/393 Base10:388/388 Base11:410/410 Base12:406/406
+[METRIC] query.callers_of_ms 448 (first call in process), 271 (warm)
+[PASS] G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+[METRIC] query.bm25_ms 83
+[PASS] G4c literal substring exact match 5 substrings; total missing=0 spurious=0
+[METRIC] query.literal_ms 720 (full scan: no trigram index)
+[FAIL] G4d vector KNN recall@10 == 1.0 HNSW ef=64: 9/10; ef=512: 10/10; exact-in-db control: 10/10
+[METRIC] query.knn_ms 3237 (ef=64), 4418 (ef=512)
+[PASS] G4e determinism (repeat query) bm25 stable=true knn stable=true
+[METRIC] footprint.peak_rss_kb 1181296
+[METRIC] footprint.on_disk_bytes 348374544
+
+=== surrealdb-3 (rocksdb) — phase 2: fresh-process reads ===
+PASS   G3a persistence/reopen             40000 rows after fresh-process reopen (expected 40000)
+METRIC startup.reopen_populated_ms        529
+METRIC query.first_knn_after_open_ms      81
+PASS   G4a graph parity                   10 probes, got/expected — build_buffer:577/577 build_cache:622/622 build_cursor:580/580 build_graph:615/615 build_index:619/619 Base0:377/377 Base1:393/393 Base10:388/388 Base11:410/410 Base12:406/406
+METRIC query.callers_of_ms                448 (first call in process), 271 (warm)
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      83
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0
+METRIC query.literal_ms                   720 (full scan: no trigram index)
+FAIL   G4d vector KNN recall@10 == 1.0    HNSW ef=64: 9/10; ef=512: 10/10; exact-in-db control: 10/10
+METRIC query.knn_ms                       3237 (ef=64), 4418 (ef=512)
+PASS   G4e determinism (repeat query)     bm25 stable=true knn stable=true
+METRIC footprint.peak_rss_kb              1181296
+METRIC footprint.on_disk_bytes            348374544
+-- 1 gate(s) FAILED
+phase2 wall=20.89s maxrss=1186604KB
+store on disk: 354M	/home/khoi/.cache/sdbgate/b.8k34
+
+### engine=surrealkv
+[METRIC] startup.open_empty_ms 345
+[METRIC] ingest.symbols_ms 28753 for 40000 symbols
+[METRIC] ingest.vectors_ms 7716 for 40000 vectors
+[METRIC] ingest.hnsw_build_ms 0 (index defined before ingest; cost is inside ingest.vectors_ms)
+[PASS] G3b atomic replace (rollback) 25 rows before, 25 after a failing txn (err=true)
+[PASS] G3c freshness add/edit/rename/del add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+[METRIC] footprint.peak_rss_kb 915320
+[METRIC] footprint.on_disk_bytes 632590411
+
+=== surrealdb-3 (surrealkv) — phase 1: writes ===
+METRIC startup.open_empty_ms              345
+METRIC ingest.symbols_ms                  28753 for 40000 symbols
+METRIC ingest.vectors_ms                  7716 for 40000 vectors
+METRIC ingest.hnsw_build_ms               0 (index defined before ingest; cost is inside ingest.vectors_ms)
+PASS   G3b atomic replace (rollback)      25 rows before, 25 after a failing txn (err=true)
+PASS   G3c freshness add/edit/rename/del  add=true edit=true rename=true delete=true (relation rows 4->0, literal rows 1->0; both must start nonzero or the check is vacuous)
+METRIC footprint.peak_rss_kb              915320
+METRIC footprint.on_disk_bytes            632590411
+-- 0 gate(s) FAILED
+phase1 wall=39.26s maxrss=915320KB
+
+[PASS] G3a persistence/reopen 40000 rows after fresh-process reopen (expected 40000)
+[METRIC] startup.reopen_populated_ms 251
+[METRIC] query.first_knn_after_open_ms 124
+[PASS] G4a graph parity 10 probes, got/expected — build_buffer:577/577 build_cache:622/622 build_cursor:580/580 build_graph:615/615 build_index:619/619 Base0:377/377 Base1:393/393 Base10:388/388 Base11:410/410 Base12:406/406
+[METRIC] query.callers_of_ms 234 (first call in process), 115 (warm)
+[PASS] G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+[METRIC] query.bm25_ms 96
+[PASS] G4c literal substring exact match 5 substrings; total missing=0 spurious=0
+[METRIC] query.literal_ms 753 (full scan: no trigram index)
+Error: Incorrect arguments for function vector::similarity::cosine(). Argument 1 was the wrong type. Expected `array<number>` but found `NONE`
+Command exited with non-zero status 1
+phase2 wall=9.65s maxrss=852532KB
+store on disk: 613M	/home/khoi/.cache/sdbgate/b.DcSm

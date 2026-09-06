@@ -13,6 +13,7 @@ use std::time::Instant;
 fn open(path: &std::path::Path) -> Result<Connection> {
     let c = Connection::open(path)?;
     c.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;")?;
+    c.busy_timeout(std::time::Duration::from_secs(10))?;
     Ok(c)
 }
 
@@ -41,7 +42,7 @@ fn schema(c: &Connection) -> Result<()> {
 /// One transaction, exactly like `IndexBackend::replace_file`: symbols, their
 /// relations, and both FTS shadow tables move together or not at all.
 fn replace_file(c: &mut Connection, file: &str, syms: &[Sym]) -> Result<()> {
-    let tx = c.transaction()?;
+    let tx = c.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
     {
         let mut stale = tx.prepare("SELECT id, body, name FROM symbols WHERE file = ?1")?;
         let old: Vec<(i64, String, String)> = stale
@@ -447,4 +448,168 @@ pub fn run(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Repor
     }
     rep.metric("footprint.on_disk_bytes", format!("{on_disk}"));
     Ok(rep)
+}
+
+
+/// G1a control — SQLite's equivalent of the same in-process concurrency test.
+/// SQLite has no async model, so the honest counterpart is OS threads, each
+/// with its own connection to the same file (which is how a multi-threaded
+/// process would use it).
+pub fn concurrency(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Report> {
+    let mut rep = Report::new("enhanced sqlite — G1a in-process concurrency");
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let dbpath = dir.join("index.db");
+    {
+        let mut c = open(&dbpath)?;
+        schema(&c)?;
+        for chunk in syms.chunks(per_file) {
+            replace_file(&mut c, &chunk[0].file, chunk)?;
+        }
+    }
+
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let expect: Vec<(String, std::collections::BTreeSet<i64>)> = probes
+        .calls
+        .iter()
+        .map(|target| {
+            (
+                target.clone(),
+                syms.iter()
+                    .filter(|s| s.calls.contains(target))
+                    .map(|s| s.id)
+                    .collect(),
+            )
+        })
+        .collect();
+
+    const ROUNDS: usize = 40;
+    let c = open(&dbpath)?;
+    let t = Instant::now();
+    for i in 0..ROUNDS {
+        let (target, _) = &expect[i % expect.len()];
+        let _ = ids_rel(&c, "calls", target)?;
+    }
+    let seq_ms = t.elapsed().as_millis();
+    drop(c);
+
+    // `Connection` is Send but not Sync, so each thread owns one. They are
+    // opened before the timed section: SurrealDB's cloned handle shares an
+    // already-open store, and timing SQLite's connection setup inside the
+    // window would compare two different things.
+    let conns: Vec<Connection> = (0..ROUNDS).map(|_| open(&dbpath)).collect::<Result<_>>()?;
+    let t = Instant::now();
+    let all_correct = std::thread::scope(|sc| -> Result<bool> {
+        let mut hs = Vec::new();
+        for (i, c) in conns.into_iter().enumerate() {
+            let (target, want) = expect[i % expect.len()].clone();
+            hs.push(sc.spawn(move || -> Result<bool> {
+                Ok(ids_rel(&c, "calls", &target)? == want)
+            }));
+        }
+        let mut ok = true;
+        for h in hs {
+            ok &= h.join().unwrap()?;
+        }
+        Ok(ok)
+    })?;
+    let par_ms = t.elapsed().as_millis();
+    rep.gate(
+        "G1a concurrent reads correct",
+        all_correct,
+        format!("{ROUNDS} threads, own connection each, every result set exact"),
+    );
+    rep.metric(
+        "concurrency.reads_ms",
+        format!("{seq_ms} sequential vs {par_ms} concurrent ({ROUNDS} queries)"),
+    );
+
+    // Concurrent writers to disjoint files. SQLite serialises writers by
+    // design, so the interesting question is whether they all succeed (with
+    // busy_timeout) rather than whether they run in parallel.
+    const WRITERS: usize = 16;
+    let t = Instant::now();
+    let errs = std::thread::scope(|sc| -> Vec<String> {
+        let mut hs = Vec::new();
+        for w in 0..WRITERS {
+            let p = dbpath.clone();
+            hs.push(sc.spawn(move || -> Result<()> {
+                let mut c = open(&p)?;
+                let file = format!("pkg0/conc_{w}.py");
+                let mut rows = crate::corpus::corpus(500 + w as u64, 1, 4);
+                for (i, r) in rows.iter_mut().enumerate() {
+                    r.id = 20_000_000 + (w * 100 + i) as i64;
+                    r.file = file.clone();
+                }
+                replace_file(&mut c, &file, &rows)
+            }));
+        }
+        hs.into_iter()
+            .filter_map(|h| h.join().unwrap().err().map(|e| format!("{e}")))
+            .collect()
+    });
+    let write_ms = t.elapsed().as_millis();
+    let c = open(&dbpath)?;
+    let mut landed = 0;
+    for w in 0..WRITERS {
+        landed += count_file(&c, &format!("pkg0/conc_{w}.py"))? as usize;
+    }
+    rep.gate(
+        "G1a concurrent writes (disjoint files)",
+        errs.is_empty() && landed == WRITERS * 4,
+        format!(
+            "{WRITERS} writers x 4 rows: {landed}/{} landed, {} error(s){}",
+            WRITERS * 4,
+            errs.len(),
+            errs.first().map(|e| format!(" — first: {e}")).unwrap_or_default()
+        ),
+    );
+    rep.metric("concurrency.writes_ms", format!("{write_ms}"));
+    rep.metric("footprint.peak_rss_kb", format!("{}", rss_kb()));
+    Ok(rep)
+}
+
+/// G1c control — one query from a cold process.
+pub fn one_query(path: &std::path::Path) -> Result<()> {
+    let c = open(path)?;
+    let n: i64 = c.query_row("SELECT count(*) FROM symbols", [], |r| r.get(0))?;
+    println!("rows={n}");
+    Ok(())
+}
+
+
+/// Control for the same context-shaped composite.
+pub fn context_shaped(path: &std::path::Path, files: usize, per_file: usize) -> Result<()> {
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let vecs = crate::corpus::vectors(&syms);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let c = open(path)?;
+    let qv = vecs[0].clone();
+    let _ = bm25_hits(&c, &probes.terms[0])?;
+    let mut best = u128::MAX;
+    for _ in 0..3 {
+        let t = Instant::now();
+        let _ = bm25_hits(&c, &probes.terms[1])?;
+        {
+            let mut st = c.prepare("SELECT symbol_id, vec FROM embeddings")?;
+            let mut scored: Vec<(i64, f32)> = st
+                .query_map([], |r| {
+                    let id: i64 = r.get(0)?;
+                    let b: Vec<u8> = r.get(1)?;
+                    let v: Vec<f32> = b
+                        .chunks_exact(4)
+                        .map(|c| f32::from_le_bytes([c[0], c[1], c[2], c[3]]))
+                        .collect();
+                    Ok((id, if v.len() == DIM { cosine(&qv, &v) } else { f32::MIN }))
+                })?
+                .collect::<rusqlite::Result<Vec<(i64, f32)>>>()?;
+            scored.sort_by(|a, b| b.1.total_cmp(&a.1).then(a.0.cmp(&b.0)));
+            let _: Vec<i64> = scored.iter().take(10).map(|x| x.0).collect();
+        }
+        for target in probes.calls.iter().take(3) {
+            let _ = ids_rel(&c, "calls", target)?;
+        }
+        best = best.min(t.elapsed().as_millis());
+    }
+    println!("enhanced sqlite context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: {best} ms");
+    Ok(())
 }

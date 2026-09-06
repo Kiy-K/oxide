@@ -19,8 +19,50 @@ fn main() -> anyhow::Result<()> {
     let files: usize = a.get(2).and_then(|s| s.parse().ok()).unwrap_or(400);
     let per_file: usize = a.get(3).and_then(|s| s.parse().ok()).unwrap_or(25);
     let dir = tempfile::tempdir()?;
+    // An explicit 4th argument keeps the store after the process exits, which
+    // the two-process and cold-query measurements need.
+    let workdir = |a: &Vec<String>| -> std::path::PathBuf {
+        a.get(4)
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| dir.path().to_path_buf())
+    };
     let rep = match which {
-        "sqlite" => sqlite::run(dir.path(), files, per_file)?,
+        "sqlite" => sqlite::run(&workdir(&a), files, per_file)?,
+        "sqlite-conc" => sqlite::concurrency(&workdir(&a), files, per_file)?,
+        "surreal-conc" => {
+            let d = workdir(&a);
+            tokio::runtime::Builder::new_multi_thread()
+                .enable_all()
+                .build()?
+                .block_on(surreal::concurrency(&d, files, per_file))?
+        }
+        "sqlite-ctx" => {
+            let f = a.get(3).and_then(|s| s.parse().ok()).unwrap_or(400);
+            let pf = a.get(4).and_then(|s| s.parse().ok()).unwrap_or(25);
+            sqlite::context_shaped(std::path::Path::new(&a[2]), f, pf)?;
+            return Ok(());
+        }
+        "surreal-ctx" => {
+            let f = a.get(3).and_then(|s| s.parse().ok()).unwrap_or(400);
+            let pf = a.get(4).and_then(|s| s.parse().ok()).unwrap_or(25);
+            tokio::runtime::Builder::new_multi_thread().enable_all().build()?.block_on(
+                surreal::context_shaped(std::path::Path::new(&a[2]), f, pf))?;
+            return Ok(());
+        }
+        "sqlite-query" => {
+            sqlite::one_query(std::path::Path::new(&a[2]))?;
+            return Ok(());
+        }
+        "surreal-audit" => {
+            tokio::runtime::Builder::new_multi_thread().enable_all().build()?.block_on(
+                surreal::audit(std::path::Path::new(&a[2])))?;
+            return Ok(());
+        }
+        "surreal-query" => {
+            tokio::runtime::Builder::new_multi_thread().enable_all().build()?.block_on(
+                surreal::one_query(std::path::Path::new(&a[2])))?;
+            return Ok(());
+        }
         "sqlite-hold" => {
             sqlite::hold(&a[2], a.get(3).and_then(|s| s.parse().ok()).unwrap_or(20))?;
             return Ok(());
@@ -32,9 +74,7 @@ fn main() -> anyhow::Result<()> {
         // Two processes, because RocksDB's lock is not released on drop and
         // because that is how OXIDE actually runs: index, then query.
         "surreal1" | "surreal2" => {
-            let d = std::path::PathBuf::from(
-                a.get(4).cloned().unwrap_or_else(|| dir.path().display().to_string()),
-            );
+            let d = workdir(&a);
             let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build()?;
             if which == "surreal1" {
                 rt.block_on(surreal::run1(&d, files, per_file))?
