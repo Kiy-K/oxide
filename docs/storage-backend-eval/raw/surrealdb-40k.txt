@@ -1,0 +1,21 @@
+### All runs on /home (ext4, 170 GB free) — NOT tmpfs. An earlier attempt on
+### tmpfs hit 'Disk quota exceeded' and was discarded; this run has 170 GB free
+### and still aborts, so the failure is not a space artifact.
+
+### surrealdb — 40,000 symbols (1600 files x 25): ingest succeeds, HNSW build aborts
+[METRIC] startup.open_empty_ms 186
+[step] ingesting symbols
+[METRIC] ingest.symbols_ms 38298 for 40000 symbols
+[step] ingesting vectors
+[METRIC] ingest.vectors_ms 5168 for 40000 vectors
+[step] building HNSW index
+Error: HNSW index build failed
+
+Caused by:
+    0: There was a problem with the key-value store: Transaction conflict: Operation failed. Try again.: Transaction could not check for conflicts for operation at SequenceNumber 2683520 as the MemTable only contains changes newer than SequenceNumber 3147105.  Increasing the value of the max_write_buffer_size_to_maintain option could reduce the frequency of this error.. This transaction can be retried
+    1: Transaction conflict: Operation failed. Try again.: Transaction could not check for conflicts for operation at SequenceNumber 2683520 as the MemTable only contains changes newer than SequenceNumber 3147105.  Increasing the value of the max_write_buffer_size_to_maintain option could reduce the frequency of this error.. This transaction can be retried
+Command exited with non-zero status 1
+phase1 wall=157.91s maxrss=1952464KB
+
+store size on disk after the abort:
+1.5G	/home/khoi/.cache/sdbgate/big.0BnR

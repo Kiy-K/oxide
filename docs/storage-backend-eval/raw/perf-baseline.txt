@@ -1,0 +1,24 @@
+$ OXIDE_EMBED_NATIVE=hashed scripts/perf.sh 200
+== repo: 200 modules/lang ==
+files=804 symbols=3412
+cold_index=408ms (peak_rss=28388KB) warm_index=23ms (peak_rss=24204KB) single_edit=39ms (peak_rss=25268KB) (symbols: +0 new, ~2 changed, -0 deleted; embeddings: 2 written, 3410 reused)
+search_latency_best_of_3=0.04s context_latency_best_of_3=0.05s db_size=6.3M
+
+$ OXIDE_EMBED_NATIVE=hashed scripts/perf.sh 450
+== repo: 450 modules/lang ==
+files=1804 symbols=7662
+cold_index=798ms (peak_rss=34516KB) warm_index=47ms (peak_rss=32764KB) single_edit=71ms (peak_rss=33532KB) (symbols: +0 new, ~2 changed, -0 deleted; embeddings: 2 written, 7660 reused)
+search_latency_best_of_3=0.08s context_latency_best_of_3=0.10s db_size=14M
+
+$ OXIDE_EMBED_NATIVE=hashed scripts/perf.sh 900
+== repo: 900 modules/lang ==
+files=3604 symbols=15312
+cold_index=1601ms (peak_rss=49568KB) warm_index=106ms (peak_rss=46992KB) single_edit=118ms (peak_rss=48596KB) (symbols: +0 new, ~2 changed, -0 deleted; embeddings: 2 written, 15310 reused)
+search_latency_best_of_3=0.17s context_latency_best_of_3=0.20s db_size=28M
+
+$ OXIDE_EMBED_NATIVE=hashed scripts/perf.sh 1500
+== repo: 1500 modules/lang ==
+files=6004 symbols=25512
+cold_index=2667ms (peak_rss=69320KB) warm_index=184ms (peak_rss=66216KB) single_edit=190ms (peak_rss=68424KB) (symbols: +0 new, ~2 changed, -0 deleted; embeddings: 2 written, 25510 reused)
+search_latency_best_of_3=0.28s context_latency_best_of_3=0.35s db_size=47M
+

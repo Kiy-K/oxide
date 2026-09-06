@@ -1,0 +1,38 @@
+Marginal dependency cost of adopting surrealdb, computed from the two Cargo.lock
+files (union, not sum). Spike manifest is the MINIMAL embedded configuration:
+  surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb"] }
+
+oxide unique crates:            369
+surreal-spike unique crates:    422
+shared:                         201
+NEW crates surrealdb adds:      221   (369 -> 590)
+
+Notable additions:
+  axum, axum-core, hyper-timeout, jsonwebtoken, object_store, revision,
+  revision-derive, surrealdb, surrealdb-collections, surrealdb-core,
+  surrealdb-librocksdb-sys, surrealdb-protocol, surrealdb-rocksdb,
+  surrealdb-strand, surrealdb-types, surrealdb-types-derive
+
+surrealdb-librocksdb-sys compiles RocksDB from C++ source (~400 translation
+units) as part of a cold build.
+
+SQLite probe (rusqlite 0.32 "bundled", the pin OXIDE already ships):
+  sqlite_version = 3.46.0
+            fts5: OK
+    fts5-trigram: OK
+       fts5-bm25: OK
+          bm25(): OK
+  trigram literal substring match: OK
+  load_extension: compiled in, runtime-gated by the authorizer
+
+  => FTS5/BM25 and trigram literal search add ZERO new dependencies.
+  => sqlite-vec is published as 0.1.10-alpha.4 (still alpha).
+
+### G0 build cost: cold `cargo build --release -j 2`, surrealdb only
+###   surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb"] }
+###   plus tokio (rt-multi-thread, macros), serde, anyhow. Nothing else in the manifest.
+	User time (seconds): 2273.62
+	System time (seconds): 61.19
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 22:31.82
+	Maximum resident set size (kbytes): 6717784
+	crates compiled: 336

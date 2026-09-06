@@ -1,0 +1,17 @@
+### G1 concurrent access, both backends, same harness.
+### Paths are on ext4 (/home), like every other run in this evaluation.
+
+$ sdb_gate sqlite-hold  "$T/t.db" 12 &   # holds an OPEN, UNCOMMITTED write transaction
+HELD (uncommitted write transaction open)
+$ sdb_gate sqlite-try   "$T/t.db"        # SQLITE_OPEN_READ_ONLY, as SqliteStore::open_read_only does
+OPENED meta_rows=0
+
+$ sdb_gate surreal-hold "$E/x" 12 &
+HELD
+$ sdb_gate surreal-try  "$E/x"
+Error: There was a problem with a transaction: IO error: While lock file: /home/khoi/.cache/sdbgate/sd.GbLO/x/LOCK: Resource temporarily unavailable
+
+### Same-process reopen: open, drop the handle, open again
+$ sdb_gate surreal-reopen "$R/y"
+opened once
+Error: There was a problem with a transaction: IO error: lock hold by current process, acquire time 1788697069 acquiring thread 79177: /home/khoi/.cache/sdbgate/re.sIRr/y/LOCK: No locks available

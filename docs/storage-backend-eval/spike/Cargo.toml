@@ -1,0 +1,26 @@
+# Standalone: deliberately NOT a member of any workspace, and OXIDE's root
+# Cargo.toml has no [workspace] section, so `cargo build` at the repo root
+# never sees this crate. It exists to keep the storage-backend gate runs
+# reproducible without putting a 450-crate dependency tree (which compiles
+# RocksDB from C++ source) anywhere near OXIDE's own build.
+[workspace]
+
+[package]
+name = "sdb_gate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"
+# Same pin OXIDE itself uses, so the control measures the SQLite that ships
+# with OXIDE today, not a newer one.
+rusqlite = { version = "0.32", features = ["bundled"] }
+tempfile = "3"
+
+[profile.release]
+debug = false
+lto = "thin"
+codegen-units = 1
