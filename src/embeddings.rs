@@ -637,20 +637,28 @@ impl GemmaQueryPrompt {
     }
 }
 
-/// PROTOTYPE (Phase 3.3 spike): native in-process embedding via `fastembed`
-/// (ONNX Runtime + HF tokenizers, no external server). Gated behind the
-/// `native-embed` Cargo feature — off by default, zero effect on the default
-/// build or the frozen retrieval benchmark.
+/// Native in-process embedding via `fastembed` (ONNX Runtime + HF tokenizers,
+/// no external server). Behind the `native-embed` Cargo feature, which is
+/// **on by default** — `DEFAULT_NATIVE_PROFILE` is the provider an
+/// unconfigured OXIDE uses. `--no-default-features` drops it and restores the
+/// hashed embedder. The frozen retrieval benchmark is unaffected either way:
+/// `src/eval.rs` constructs `HashedEmbedder` directly.
+///
+/// Began as a Phase 3.3 spike; `arctic-embed-xs-q` graduated to the shipped
+/// default on the 21-task ContextBench evidence in
+/// `docs/cpu-embedding-survey/`. The other profiles in `native_model_spec`
+/// remain opt-in and carry the spike's original caveats.
 ///
 /// What's verified: fastembed's tokenization + output-key selection +
 /// normalization for `embeddinggemma-300m` match a direct onnxruntime-python
 /// run of the same ONNX weights to ~1e-6. What's NOT verified: agreement with
 /// the authoritative Sentence-Transformers `encode_query`/`encode_document`
-/// reference or with the current llama.cpp/Qwen3 production baseline — see
-/// the Phase 3.3 item-2 report before calling this model "supported". Also
-/// unfixed: no config file (env var only); no model-missing/no-silent-download
-/// gating beyond fastembed's own auto-download; no index-compatibility
-/// fingerprint beyond the existing name-based check `update_index` already does.
+/// reference — see the Phase 3.3 item-2 report before calling *that* model
+/// "supported". Still unfixed: no config file (env var only), and no
+/// model-missing gating beyond fastembed's own auto-download — the download is
+/// now the documented default behaviour rather than an unguarded surprise, but
+/// nothing verifies the fetched artifact's revision (`artifact_revision` is
+/// empty for every native profile, see `fingerprint`).
 /// Per-model metadata needed to reproduce each candidate's authoritative
 /// upstream query/document semantics. Prefixes are prepended verbatim to the
 /// raw text (empty = no prefix). Sourced from each model's own HF model card
