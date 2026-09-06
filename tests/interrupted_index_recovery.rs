@@ -18,7 +18,7 @@
 //! actionable error, never a deceptive empty success, and a follow-up
 //! `oxide index` must recover cleanly.
 
-use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
+use oxide::embeddings::{configured_provider_name, EmbeddingProvider, HashedEmbedder};
 use oxide::index::{update_index, IndexBackend, IndexOptions, SqliteStore};
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{ErrorAction, RepositoryService, SearchRequest};
@@ -263,7 +263,16 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
         // Hand-craft the pre-fix torn window: root/embedder/dim written,
         // schema_version/extraction_version deliberately withheld.
         store.set_meta("root", &root.display().to_string()).unwrap();
-        store.set_meta("embedder", emb.name()).unwrap();
+        // `embedder` is written as whatever provider *this environment* is
+        // configured for, not as `emb.name()`. What this test pins is which
+        // meta *keys* are present after a torn write — `embedder_current` is
+        // background, and hard-coding the hashed name here would instead make
+        // the assertion below track the shipped default provider
+        // (`DEFAULT_NATIVE_PROFILE`), failing for a reason this test is not
+        // about. The vectors above stay hashed; nothing here searches.
+        store
+            .set_meta("embedder", &configured_provider_name(None))
+            .unwrap();
         store.set_meta("dim", &emb.dim().to_string()).unwrap();
     }
 

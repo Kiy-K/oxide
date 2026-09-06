@@ -45,6 +45,7 @@ notify = { version = "8", default-features = false, features = [
 ] }
 
 [features]
+default = ["native-embed"]
 native-embed = ["dep:fastembed"]
 
 [dev-dependencies]

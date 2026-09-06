@@ -28,8 +28,9 @@ git diff --check
 ```
 
 The fixture benchmark is a retrieval-quality gate, not a timing benchmark.
-It uses the default deterministic hashed embedder; the reference aggregate is
-vector-only Recall@5 `0.818`, hybrid Recall@5 `0.909`.
+It constructs the deterministic hashed embedder directly (`src/eval.rs`), so it
+is unaffected by the shipped default provider or by `$OXIDE_EMBED_*`; the
+reference aggregate is vector-only Recall@5 `0.818`, hybrid Recall@5 `0.909`.
 
 ## Reproducibility and network policy
 

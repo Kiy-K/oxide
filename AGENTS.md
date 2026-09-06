@@ -110,8 +110,21 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 
 ## Embeddings / providers
 
-- Provider selection: explicit `--embedder URL` > `$OXIDE_EMBED_URL` > offline
-  `HashedEmbedder` (no server needed; benchmark gate runs on this).
+- Provider selection: explicit `--embedder URL` > `$OXIDE_EMBED_URL` >
+  `$OXIDE_EMBED_NATIVE` > `DEFAULT_NATIVE_PROFILE` (`arctic-embed-xs-q`).
+  **The default is no longer offline** — an unconfigured `oxide index` loads
+  real ONNX weights through fastembed and downloads ~23MB on first use.
+  `OXIDE_EMBED_NATIVE=hashed` (`OFFLINE_PROFILE`) opts back out to
+  `HashedEmbedder`; so does building `--no-default-features`. The benchmark
+  gate is unaffected either way — `src/eval.rs` constructs `HashedEmbedder`
+  directly and never calls `open_embedder`.
+- `open_embedder` and `configured_provider_name` must resolve the SAME
+  provider for the same environment, which is why both go through
+  `resolve_native_profile`. If they diverge, `oxide status` reports
+  `embedder_current: false` against a current index and `validate_index`
+  fires on an embedding space that never changed. A missing model is an
+  error, never a silent downgrade to hashed: they are different spaces, and
+  swapping them quietly would wipe every stored vector on the next run.
 - Provider identity = `http:{model}@{endpoint}` where model comes from
   `$OXIDE_EMBED_MODEL`. Switching the served GGUF quant WITHOUT changing that
   label silently keeps stale, incomparable vectors. Index meta detects the

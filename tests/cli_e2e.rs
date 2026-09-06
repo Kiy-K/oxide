@@ -9,8 +9,14 @@ fn write(root: &Path, relative: &str, source: &str) {
 }
 
 fn run(root: &Path, args: &[&str]) -> Output {
+    // The shipped default provider is now a real ONNX model
+    // (`DEFAULT_NATIVE_PROFILE`), which downloads weights and needs
+    // network. Tests pin the offline hashed embedder so the suite
+    // stays hermetic, fast and deterministic, and so a subprocess
+    // never disagrees with an index another one built.
     Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(args)
+        .env("OXIDE_EMBED_NATIVE", "hashed")
         .current_dir(root)
         .output()
         .unwrap()
@@ -469,6 +475,7 @@ fn spawn_indexers(root: &Path, n: usize) -> Vec<Output> {
         .map(|_| {
             Command::new(env!("CARGO_BIN_EXE_oxide"))
                 .args(["index", ".", "--json"])
+                .env("OXIDE_EMBED_NATIVE", "hashed")
                 .current_dir(root)
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
@@ -597,6 +604,7 @@ fn search_succeeds_while_another_process_is_indexing() {
     }
     let indexer = Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(["index", ".", "--json"])
+        .env("OXIDE_EMBED_NATIVE", "hashed")
         .current_dir(tmp.path())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
@@ -673,6 +681,7 @@ fn sustained_concurrent_read_write_stress_never_corrupts_or_panics() {
         }
         let writer = Command::new(env!("CARGO_BIN_EXE_oxide"))
             .args(["index", ".", "--json"])
+            .env("OXIDE_EMBED_NATIVE", "hashed")
             .current_dir(tmp.path())
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
@@ -792,6 +801,7 @@ fn index_scope_flags_are_wired_through_the_cli() {
 fn index_help_documents_the_rebuild_scope_flags() {
     let out = Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(["index", "--help"])
+        .env("OXIDE_EMBED_NATIVE", "hashed")
         .output()
         .unwrap();
     assert!(out.status.success());

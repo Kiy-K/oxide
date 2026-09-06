@@ -30,8 +30,14 @@ fn write(root: &Path, relative: &str, source: &str) {
 }
 
 fn run(root: &Path, args: &[&str]) -> Output {
+    // The shipped default provider is now a real ONNX model
+    // (`DEFAULT_NATIVE_PROFILE`), which downloads weights and needs
+    // network. Tests pin the offline hashed embedder so the suite
+    // stays hermetic, fast and deterministic, and so a subprocess
+    // never disagrees with an index another one built.
     Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(args)
+        .env("OXIDE_EMBED_NATIVE", "hashed")
         .current_dir(root)
         .output()
         .unwrap()

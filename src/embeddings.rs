@@ -1076,9 +1076,15 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
             format!("http:{model}@{u}")
         }
         _ => {
+            // Must resolve through the same `resolve_native_profile` as
+            // `open_embedder`, or this name disagrees with the provider that
+            // actually embedded: `oxide status` would report
+            // `embedder_current: false` against a perfectly current index, and
+            // `validate_index` would fire on a space that never changed.
             #[cfg(feature = "native-embed")]
-            if let Ok(profile) = std::env::var("OXIDE_EMBED_NATIVE") {
-                if !profile.is_empty() {
+            {
+                let configured = std::env::var("OXIDE_EMBED_NATIVE").ok();
+                if let Some(profile) = resolve_native_profile(configured.as_deref()) {
                     let query_prompt =
                         native_query_prompt_from_env().unwrap_or(GemmaQueryPrompt::Bare);
                     return native_provider_name(&profile, query_prompt);
@@ -1089,9 +1095,57 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
     }
 }
 
-/// Provider factory: explicit URL wins, then `OXIDE_EMBED_URL`, then (behind
-/// the `native-embed` feature) `OXIDE_EMBED_NATIVE`, else the offline hashed
-/// embedder. OXIDE stays fully useful without any server or model download.
+/// The native profile `open_embedder` uses when nothing is configured.
+///
+/// Chosen over the previous offline-hashed fallback and over the
+/// `qwen3-Q8_0` HTTP recommendation on the frozen 21-task ContextBench
+/// evidence in `docs/cpu-embedding-survey/` — decisively better vector-only
+/// retrieval than Qwen (R@5 0.655 vs 0.536), a gold file in the candidate
+/// pool on 21/21 tasks where Qwen manages 19, ~9x faster full-repo indexing,
+/// 4x less peak RSS, and no separate server process to run at all. Qwen
+/// remains ahead on budgeted R@5 by 0.035 (one to two tasks out of
+/// twenty-one); that margin does not pay for a llama.cpp server in the
+/// loop.
+pub const DEFAULT_NATIVE_PROFILE: &str = "arctic-embed-xs-q";
+
+/// The `OXIDE_EMBED_NATIVE` value that opts back out to the offline
+/// `HashedEmbedder` — no model, no download, no network. This is the escape
+/// hatch for air-gapped use and the value OXIDE's own test suite pins, since
+/// the default now loads real weights.
+pub const OFFLINE_PROFILE: &str = "hashed";
+
+/// Resolves `$OXIDE_EMBED_NATIVE` to the native profile to load, or `None`
+/// for the offline hashed embedder.
+///
+/// Split out from `open_embedder` so the precedence is testable without a
+/// model download: unset and empty both mean "use the default", and only the
+/// explicit `OFFLINE_PROFILE` opts out.
+#[cfg(feature = "native-embed")]
+fn resolve_native_profile(configured: Option<&str>) -> Option<String> {
+    match configured.map(str::trim) {
+        Some(OFFLINE_PROFILE) => None,
+        Some(p) if !p.is_empty() => Some(p.to_string()),
+        _ => Some(DEFAULT_NATIVE_PROFILE.to_string()),
+    }
+}
+
+/// Provider factory: explicit URL wins, then `OXIDE_EMBED_URL`, then
+/// `OXIDE_EMBED_NATIVE` (or, unset, `DEFAULT_NATIVE_PROFILE`), and finally
+/// the offline hashed embedder.
+///
+/// **The default is no longer offline.** An unconfigured `oxide index` loads
+/// `DEFAULT_NATIVE_PROFILE` through fastembed, which downloads its ONNX
+/// weights (~23MB) on first use and needs network to do so. That is a
+/// deliberate trade for a default that actually retrieves well; the previous
+/// zero-download behaviour is still one env var away
+/// (`OXIDE_EMBED_NATIVE=hashed`), and is what you want for air-gapped
+/// machines and for reproducing the benchmark gate, which constructs
+/// `HashedEmbedder` directly and is unaffected by any of this.
+///
+/// A missing model is an error, never a silent downgrade to the hashed
+/// embedder: the two are different embedding spaces, and quietly swapping
+/// them would trip `update_index`'s fingerprint check and wipe every stored
+/// vector on the next run.
 pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn EmbeddingProvider>> {
     let url = explicit
         .map(str::to_string)
@@ -1103,8 +1157,9 @@ pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn Embedding
         }
         _ => {
             #[cfg(feature = "native-embed")]
-            if let Ok(profile) = std::env::var("OXIDE_EMBED_NATIVE") {
-                if !profile.is_empty() {
+            {
+                let configured = std::env::var("OXIDE_EMBED_NATIVE").ok();
+                if let Some(profile) = resolve_native_profile(configured.as_deref()) {
                     let query_prompt = native_query_prompt_from_env()?;
                     return Ok(Box::new(NativeEmbedder::new(&profile, query_prompt)?));
                 }
@@ -1117,6 +1172,57 @@ pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn Embedding
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// `open_embedder` and `configured_provider_name` must name the same
+    /// provider for the same environment — see the comment in the latter for
+    /// what breaks otherwise. Read-only on the environment, so it cannot race
+    /// with a concurrently running test.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    fn unconfigured_provider_name_is_the_shipped_native_default() {
+        if std::env::var_os("OXIDE_EMBED_URL").is_some()
+            || std::env::var_os("OXIDE_EMBED_NATIVE").is_some()
+        {
+            return; // a configured environment is not what this pins
+        }
+        assert_eq!(
+            configured_provider_name(None),
+            format!("native:{DEFAULT_NATIVE_PROFILE}")
+        );
+    }
+
+    /// Pins the precedence `open_embedder` applies without constructing a
+    /// provider — so it stays offline and cannot be flaked by a missing
+    /// model. The `open_embedder` wiring above is a thin `match` over this.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    fn native_profile_resolution_defaults_to_arctic_and_opts_out_on_hashed() {
+        assert_eq!(
+            resolve_native_profile(None).as_deref(),
+            Some(DEFAULT_NATIVE_PROFILE),
+            "unset must load the shipped default, not the hashed embedder"
+        );
+        assert_eq!(
+            resolve_native_profile(Some("")).as_deref(),
+            Some(DEFAULT_NATIVE_PROFILE),
+            "an empty value is 'unconfigured', same as unset"
+        );
+        assert_eq!(
+            resolve_native_profile(Some("jina-code-v2")).as_deref(),
+            Some("jina-code-v2"),
+            "an explicit profile wins over the default"
+        );
+        assert_eq!(
+            resolve_native_profile(Some(OFFLINE_PROFILE)),
+            None,
+            "only the explicit offline profile opts back out to hashed"
+        );
+        assert_eq!(
+            resolve_native_profile(Some("  hashed  ")),
+            None,
+            "the offline opt-out survives surrounding whitespace"
+        );
+    }
 
     #[test]
     fn tokenizer_splits_cases_and_drops_stopwords() {

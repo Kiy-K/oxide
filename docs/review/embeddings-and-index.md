@@ -38,38 +38,54 @@ actual embedding output path, not assume it from the diff's stated intent.
 
 ---
 
-### EMB-002 — No silent embedding fallback or model download
+### EMB-002 — No silent embedding fallback; downloads only at the documented default
 **Severity:** BLOCKER · **Scope:** `open_embedder`/`configured_provider_name`
 and any new provider-construction path.
 
+**History:** this rule previously read "an unconfigured default must always
+resolve to `HashedEmbedder` — no network call, no model download, ever". That
+invariant was **deliberately retired** when `arctic-embed-xs-q` became the
+shipped default (`DEFAULT_NATIVE_PROFILE`) and `native-embed` became a default
+Cargo feature; see `docs/cpu-embedding-survey/phase3-minilm-rerun.md` §7 for
+the decision and its cost. Do not flag the default's download as a violation
+of the old rule. What survives is everything below.
+
 **Invariant:** provider selection precedence is explicit
-`--embedder`/tool-argument > `$OXIDE_EMBED_URL` > (feature-gated)
-`$OXIDE_EMBED_NATIVE` > the offline `HashedEmbedder`. An unconfigured
-default (no flag, no env var) must always resolve to `HashedEmbedder` — no
-network call, no model download, ever. Any path that reaches the network or
-downloads model weights requires an explicit, documented user opt-in.
+`--embedder`/tool-argument > `$OXIDE_EMBED_URL` > `$OXIDE_EMBED_NATIVE` >
+`DEFAULT_NATIVE_PROFILE`, with `OXIDE_EMBED_NATIVE=hashed` (`OFFLINE_PROFILE`)
+and `--no-default-features` as the two ways back to `HashedEmbedder`. Three
+things must hold:
 
-**What constitutes a violation:** a new fallback branch that tries
-network/native before `HashedEmbedder`; a new CLI subcommand or MCP path
-that constructs a provider without going through `open_embedder`'s
-precedence; widening `NativeEmbedder::new`'s reachability so its un-gated
-`fastembed` auto-download (an acknowledged, explicitly documented gap — see
-the `NativeEmbedder` module doc's "no model-missing/no-silent-download
-gating beyond fastembed's own auto-download") becomes reachable without
-*both* the `native-embed` compile feature *and* an explicit
-`$OXIDE_EMBED_NATIVE` value. That gap existing behind two opt-ins is
-accepted; broadening its reach is the violation.
+1. **`open_embedder` and `configured_provider_name` resolve identically** for
+   any given environment — both go through `resolve_native_profile`. Divergence
+   makes `oxide status` report `embedder_current: false` against a current
+   index and makes `validate_index` fire on an embedding space that never
+   changed.
+2. **No silent cross-space fallback.** A model that cannot be loaded is an
+   error. Falling back to `HashedEmbedder` (or any other provider) on failure
+   would change the embedding space without changing the recorded identity,
+   and the next `update_index` would wipe and recompute every stored vector.
+3. **The offline path stays reachable and documented.** Air-gapped use must
+   remain possible without editing code.
 
-**Evidence required:** cite `open_embedder`'s match arms and its doc
-comment ("OXIDE stays fully useful without any server or model download").
-For anything touching `native-embed`, cite the module doc's own "unfixed"
-note as the accepted baseline, and show specifically how the change
-broadens what's reachable without opt-in.
+**What constitutes a violation:** changing the precedence in one of the two
+functions but not the other; a `unwrap_or_else`/`ok()` that swallows a provider
+construction failure into a different provider; a new CLI subcommand or MCP
+path that constructs a provider without going through `open_embedder`; removing
+or undocumenting `OFFLINE_PROFILE`; **widening what gets downloaded** — a new
+default-reachable path that fetches weights for anything other than
+`DEFAULT_NATIVE_PROFILE`, or that downloads without recording a distinct
+`EmbeddingSpaceFingerprint`.
+
+**Evidence required:** cite both functions' match arms and show they agree.
+For a change to the default profile itself, cite same-corpus benchmark evidence
+on the frozen 21-task pin (the standard `docs/cpu-embedding-survey/` runs meet
+this) — a default swap silently invalidates every existing user's index, so it
+needs the same paired, manifest-verified comparison Phase 2 and Phase 3 used.
 
 **Exceptions:** `NativeEmbedder::from_local_files` is the one constructor
-that provably cannot download (reads local file bytes only; the compiled
-feature set has no `hf-hub` capability at all) — expanding its use is fine
-and is the documented way to add native models safely.
+that provably cannot download (reads local file bytes only) — expanding its use
+is fine and is the documented way to add native models safely.
 
 ---
 

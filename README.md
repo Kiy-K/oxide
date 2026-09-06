@@ -9,8 +9,7 @@ OXIDE is not a vector database, not a code graph, not a Tree-sitter indexer,
 and not a RAG framework — those are layered implementation components
 underneath it (see Architecture below), not what it is. It is not an LLM
 wrapper either; the product is the context-supply layer a coding agent
-calls before it starts reading and editing. Works fully offline; the
-default embedder is deterministic and needs no model.
+calls before it starts reading and editing.
 
 ## Install
 
@@ -21,10 +20,34 @@ cargo build --release          # binary at target/release/oxide
 Requires Rust 1.98.0 (pinned in `rust-toolchain.toml`) and a `git` binary on
 PATH (used only for `review`).
 
-Semantic search runs fully local via llama.cpp: `scripts/embedder.sh start`
-(starts an OpenAI-compatible embeddings endpoint, ~0.3 GB RSS), then
-`export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings OXIDE_EMBED_MODEL=qwen3-Q8_0`.
-Without it OXIDE uses the offline hashed embedder.
+### Embeddings
+
+Semantic search works with no configuration and no server. The default
+provider is `arctic-embed-xs-q` — a 384-dimension int8 ONNX model run
+in-process via fastembed, ~23 MB of weights fetched from Hugging Face on
+first index and cached thereafter. It is chosen on the 21-task ContextBench
+evidence in `docs/cpu-embedding-survey/`: better vector-only retrieval than
+the 1024-dimension `qwen3-Q8_0` it replaces (R@5 0.655 vs 0.536), ~9x faster
+full-repo indexing, ~230 MB peak RSS, and no separate process to run.
+
+Two ways to change it:
+
+```bash
+# fully offline / air-gapped: deterministic hashed embedder, no model, no network
+export OXIDE_EMBED_NATIVE=hashed
+
+# a different in-process model (see `native_model_spec` in src/embeddings.rs)
+export OXIDE_EMBED_NATIVE=jina-code-v2
+
+# an OpenAI-compatible HTTP endpoint, e.g. llama.cpp via scripts/embedder.sh start
+export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings OXIDE_EMBED_MODEL=qwen3-Q8_0
+```
+
+Precedence: `--embedder URL` > `$OXIDE_EMBED_URL` > `$OXIDE_EMBED_NATIVE` >
+the default profile. Changing provider changes the embedding space, so the
+next index run wipes and recomputes every vector; symbols, relations and the
+lexical index are untouched. Building with `--no-default-features` drops the
+ONNX runtime entirely and falls back to the hashed embedder.
 
 ## Usage
 
@@ -84,7 +107,7 @@ Repository
 Selective Code Indexing
    |-- syntax evidence      (Tree-sitter: symbols, spans, signatures)
    |-- lexical evidence     (BM25 over names/signatures/paths/bodies)
-   |-- semantic evidence    (embedding provider; offline hashed by default)
+   |-- semantic evidence    (embedding provider; in-process ONNX by default)
    `-- structural evidence  (parent/child, imports, references, tests)
        |
 Evidence retrieval
@@ -111,7 +134,7 @@ src/
 ├── languages    python.rs, typescript.rs (TS + TSX grammars)
 ├── symbols      core model, stable FNV-1a hashing
 ├── index        SQLite storage + incremental indexing pipeline
-├── embeddings   provider abstraction + offline hashed embedder
+├── embeddings   provider abstraction + in-process ONNX, HTTP, and hashed providers
 ├── service      stable repository/application boundary for CLI and MCP
 ├── retrieval    BM25 lexical + cosine semantic fused via RRF + structural expansion
 ├── gitutil      unified-diff parsing (git CLI)
@@ -158,8 +181,9 @@ scale). Optimizations that produced these numbers:
 ### Hybrid retrieval
 
 - **Lexical**: BM25 over names/signatures/paths/references (works with zero embeddings)
-- **Semantic**: provider-based vectors; default is a deterministic hashed
-  bag-of-tokens embedder (swap in any model by implementing one trait)
+- **Semantic**: provider-based vectors; default is in-process
+  `arctic-embed-xs-q` (swap in any model by implementing one trait, or opt
+  out to the deterministic hashed embedder with `OXIDE_EMBED_NATIVE=hashed`)
 - **Structural expansion**: strong hits pull in parents, children, referenced
   definitions, imported definitions, and related tests (`test_*`,
   `*_test.py`, `*.spec.ts(x)`) as *additional* context that never displaces
@@ -301,8 +325,9 @@ parsing or human renderers, and exposes no admin commands.
 
 ## Limitations
 
-- Default embeddings are hashed tokens: real semantic similarity is shallow;
-  bring a real embedding model via `EmbeddingProvider` for stronger semantics.
+- The default provider downloads ~23 MB of model weights on first index and
+  needs network to do so. `OXIDE_EMBED_NATIVE=hashed` restores the previous
+  zero-download behaviour, at shallow semantic similarity.
 - Reference extraction is identifier-name intersection, not scope analysis;
   high-confidence relations only (same-name definitions, resolvable imports).
 - TS bare imports (`import x from 'pkg'`) resolve only if `pkg` matches an

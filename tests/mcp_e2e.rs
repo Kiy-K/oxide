@@ -33,6 +33,12 @@ impl McpProcess {
             .stderr(std::process::Stdio::piped());
         if let Some(url) = embedder_url {
             command.env("OXIDE_EMBED_URL", url);
+        } else {
+            // No URL configured: without this the server would fall through to
+            // `DEFAULT_NATIVE_PROFILE` and load real ONNX weights. Pin the
+            // offline embedder so the test stays hermetic and matches the index
+            // `index()` above builds.
+            command.env("OXIDE_EMBED_NATIVE", "hashed");
         }
         let mut child = command.spawn().unwrap();
         let mut process = Self {
@@ -82,8 +88,14 @@ fn write(root: &Path, relative: &str, source: &str) {
 }
 
 fn index(root: &Path) {
+    // The shipped default provider is now a real ONNX model
+    // (`DEFAULT_NATIVE_PROFILE`), which downloads weights and needs
+    // network. Tests pin the offline hashed embedder so the suite
+    // stays hermetic, fast and deterministic, and so a subprocess
+    // never disagrees with an index another one built.
     let output = Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(["index", "."])
+        .env("OXIDE_EMBED_NATIVE", "hashed")
         .current_dir(root)
         .output()
         .unwrap();

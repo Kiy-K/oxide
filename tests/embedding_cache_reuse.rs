@@ -12,7 +12,7 @@
 //! each store only ever reports its own repository's own symbols.
 
 use oxide::embedding_cache::SharedEmbeddingCache;
-use oxide::embeddings::open_embedder;
+use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexBackend, SqliteStore};
 use std::path::Path;
 
@@ -46,9 +46,13 @@ fn identical_files_reuse_embeddings_across_commits_without_leaking_symbols() {
     let db_a = tempfile::NamedTempFile::new().unwrap();
     let db_b = tempfile::NamedTempFile::new().unwrap();
 
+    // The provider is incidental here — what is under test is
+    // content-addressed reuse through `update_index`. Construct the offline
+    // hashed embedder directly rather than going through `open_embedder`,
+    // whose default is now a real ONNX model that would need a download.
     let mut store_a = SqliteStore::open(db_a.path()).unwrap();
     let embedder_a =
-        SharedEmbeddingCache::open(open_embedder(None).unwrap(), cache_db.path()).unwrap();
+        SharedEmbeddingCache::open(Box::new(HashedEmbedder::default()), cache_db.path()).unwrap();
     update_index(repo_a.path(), &mut store_a, &embedder_a).unwrap();
     // First-ever indexing of this content: nothing to reuse yet.
     assert_eq!(embedder_a.hits(), 0);
@@ -56,7 +60,7 @@ fn identical_files_reuse_embeddings_across_commits_without_leaking_symbols() {
 
     let mut store_b = SqliteStore::open(db_b.path()).unwrap();
     let embedder_b =
-        SharedEmbeddingCache::open(open_embedder(None).unwrap(), cache_db.path()).unwrap();
+        SharedEmbeddingCache::open(Box::new(HashedEmbedder::default()), cache_db.path()).unwrap();
     update_index(repo_b.path(), &mut store_b, &embedder_b).unwrap();
 
     // --- reuse: shared.py's content must not be re-embedded from scratch ---
