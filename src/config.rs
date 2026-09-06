@@ -19,6 +19,11 @@ pub(crate) const CONTEXT_RELEVANCE_FLOOR_FRACTION: f32 = 0.15;
 pub(crate) const CONTEXT_EXPANSION_PER_SEED: usize = 2;
 pub(crate) const CONTEXT_EXPANSION_TOTAL: usize = 2;
 pub(crate) const CONTEXT_MAX_ITEMS_PER_FILE: usize = 2;
+/// Overridden only via `$OXIDE_CONTEXT_MAX_PRIMARIES` for the primary-cap
+/// sensitivity experiment (docs/primary-cap-sensitivity/README.md); unset is
+/// byte-identical to this value. Promoting a different number to the shipped
+/// default here requires the same fresh canonical-benchmark re-baseline as any
+/// other constant in this file.
 pub(crate) const CONTEXT_MAX_PRIMARIES: usize = 5;
 pub(crate) const CONTEXT_MAX_TESTS: usize = 1;
 

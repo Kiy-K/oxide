@@ -33,6 +33,24 @@ pub enum Role {
     Test,
 }
 
+/// `$OXIDE_CONTEXT_MAX_PRIMARIES` overrides `CONTEXT_MAX_PRIMARIES` for the
+/// primary-cap sensitivity experiment only
+/// (docs/cpu-embedding-survey/phase2-arctic-quality-gate.md found every
+/// pool-to-pack loss under a tiny embedder carried the reason
+/// `beyond primary cap`, which the aggregate numbers alone cannot tell apart
+/// from a semantic loss). Mirrors `resolve_term_coverage_alpha`'s
+/// env-override precedence: any parse failure, including unset, falls back to
+/// the frozen shipped default, so an unset environment is byte-identical to
+/// the pre-experiment allocator. Promoting a different value to the shipped
+/// default requires the same fresh canonical-benchmark re-baseline as any
+/// other constant in `config.rs`.
+fn resolve_context_max_primaries() -> usize {
+    std::env::var("OXIDE_CONTEXT_MAX_PRIMARIES")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(CONTEXT_MAX_PRIMARIES)
+}
+
 pub const CHARS_PER_TOKEN: f32 = CONTEXT_CHARS_PER_TOKEN;
 
 #[derive(Debug, Serialize)]
@@ -347,6 +365,7 @@ pub fn build_context(
     let mut per_file: HashMap<&str, usize> = HashMap::new();
     let mut primaries = 0usize;
     let mut tests = 0usize;
+    let max_primaries = resolve_context_max_primaries();
     for c in &kept {
         let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
         if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= CONTEXT_MAX_ITEMS_PER_FILE
@@ -360,7 +379,7 @@ pub fn build_context(
         }
         let over_role_cap = match c.role {
             Role::Primary => {
-                if primaries >= CONTEXT_MAX_PRIMARIES {
+                if primaries >= max_primaries {
                     Some("beyond primary cap")
                 } else {
                     primaries += 1;
