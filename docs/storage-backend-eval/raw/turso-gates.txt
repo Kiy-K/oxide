@@ -1,0 +1,104 @@
+# Turso gate round — raw output
+
+Candidate: `turso` 0.7.2 (the version this round measured; the manifest asks for
+"0.7", so pin it if you need byte-identical numbers).
+
+Machine: the same laptop as the rest of this evaluation. Every database run is
+on /home (btrfs, ~175 GB free), never tmpfs. Binary built with
+`cargo build --release -j 2 --no-default-features --features turso` — not the
+crate's default features, which install `#[global_allocator] mimalloc`.
+
+Reproduce with:
+
+    cargo build --release -j 2 --no-default-features --features turso
+    ./target/release/sdb_gate turso        <files> <per_file> <workdir>   # gate suite
+    ./target/release/sdb_gate turso-shapes <files> <per_file> <workdir>   # ingest attribution
+
+## Gate suite, 1,000 symbols (40 files x 25)
+
+```
+=== turso 0.7.2 (tantivy fts + ngram) — G2/G3c/G4b/G4c ONLY; G3a/G3b/G4a/G4d/G4e NOT RUN ===
+METRIC startup.open_empty_ms              16
+METRIC ingest.symbols_ms                  44315 for 1000 symbols
+METRIC startup.reopen_populated_ms        1
+PASS   G2 reopen sees every row           1000 before / 1000 after reopen (expected 1000)
+PASS   G3c freshness add/edit/rename/del  add=true edit=true rename=true delete=true (relation rows 4->0, fts hits 1->0, ngram hits 1->0; after OPTIMIZE INDEX (ok=true): fts=0 ngram=0)
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      0.248
+METRIC query.fts_score_range              first=4.4102 last=4.4102 over 40 hits (ORDER BY score DESC)
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0 (ngram tokenizer)
+METRIC query.literal_ms                   0.145 (ngram fts index)
+METRIC footprint.peak_rss_kb              123500
+METRIC footprint.on_disk_bytes            14202512
+-- 0 gate(s) FAILED
+```
+
+## Ingest cost by index shape
+
+`turso-shapes` loads the same corpus four ways and reports ms/symbol. The
+executor-park counters exist because a hand-rolled `block_on` that naps on
+every `Pending` would be indistinguishable from a slow engine; they read ~0 ms
+over a handful of polls in every run, so the numbers below are the engine.
+
+### Scaling sweep
+
+```
+### 250 symbols
+METRIC ingest.shape.no_index_ms           46 total (46 load + 0 index) for 250 symbols = 0.18 ms/symbol [executor parked 0 ms over 0 Pending polls]
+METRIC ingest.shape.fts_only_ms           2414 total (2414 load + 0 index) for 250 symbols = 9.66 ms/symbol [executor parked 0 ms over 0 Pending polls]
+METRIC ingest.shape.fts+ngram_index_first_ms 5782 total (5782 load + 0 index) for 250 symbols = 23.13 ms/symbol [executor parked 0 ms over 0 Pending polls]
+METRIC ingest.shape.fts+ngram_index_last_ms 35 total (18 load + 17 index) for 250 symbols = 0.14 ms/symbol [executor parked 0 ms over 0 Pending polls]
+### 500 symbols
+METRIC ingest.shape.no_index_ms           33 total (33 load + 0 index) for 500 symbols = 0.07 ms/symbol [executor parked 0 ms over 1 Pending polls]
+METRIC ingest.shape.fts_only_ms           6131 total (6131 load + 0 index) for 500 symbols = 12.26 ms/symbol [executor parked 0 ms over 1 Pending polls]
+METRIC ingest.shape.fts+ngram_index_first_ms 13390 total (13390 load + 0 index) for 500 symbols = 26.78 ms/symbol [executor parked 0 ms over 1 Pending polls]
+METRIC ingest.shape.fts+ngram_index_last_ms 62 total (46 load + 16 index) for 500 symbols = 0.12 ms/symbol [executor parked 0 ms over 1 Pending polls]
+### 1000 symbols
+METRIC ingest.shape.no_index_ms           83 total (83 load + 0 index) for 1000 symbols = 0.08 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts_only_ms           21702 total (21702 load + 0 index) for 1000 symbols = 21.70 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts+ngram_index_first_ms 45675 total (45675 load + 0 index) for 1000 symbols = 45.67 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts+ngram_index_last_ms 128 total (102 load + 26 index) for 1000 symbols = 0.13 ms/symbol [executor parked 0 ms over 5 Pending polls]
+### 2000 symbols
+METRIC ingest.shape.no_index_ms           203 total (203 load + 0 index) for 2000 symbols = 0.10 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts_only_ms           75808 total (75808 load + 0 index) for 2000 symbols = 37.90 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts+ngram_index_first_ms 175605 total (175605 load + 0 index) for 2000 symbols = 87.80 ms/symbol [executor parked 0 ms over 5 Pending polls]
+METRIC ingest.shape.fts+ngram_index_last_ms 248 total (195 load + 53 index) for 2000 symbols = 0.12 ms/symbol [executor parked 0 ms over 5 Pending polls]
+```
+
+### OPTIMIZE INDEX as the documented remedy, and commit-count attribution
+
+The third block re-splits the same 2,000 symbols into 20 files of 100 instead
+of 80 files of 25 — four times fewer transactions, therefore four times fewer
+Tantivy commits, for identical data. (The `optimize_10` row is not comparable
+across splits: "every 10 files" is 2 optimizes over 20 files and 8 over 80.)
+
+```
+### 1000 symbols as 40 files x 25 symbols
+METRIC ingest.shape.fts_only_ms           22384 total (22384 load + 0 index) for 1000 symbols = 22.38 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_ms 45126 total (45126 load + 0 index) for 1000 symbols = 45.13 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_optimize_10_ms 22010 total (22010 load + 0 index) for 1000 symbols = 22.01 ms/symbol [executor parked 0 ms over 7 Pending polls, 4 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_last_ms 129 total (105 load + 24 index) for 1000 symbols = 0.13 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+### 2000 symbols as 80 files x 25 symbols
+METRIC ingest.shape.fts_only_ms           77757 total (77757 load + 0 index) for 2000 symbols = 38.88 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_ms 172496 total (172496 load + 0 index) for 2000 symbols = 86.25 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_optimize_10_ms 66514 total (66514 load + 0 index) for 2000 symbols = 33.26 ms/symbol [executor parked 0 ms over 7 Pending polls, 8 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_last_ms 241 total (183 load + 58 index) for 2000 symbols = 0.12 ms/symbol [executor parked 0 ms over 5 Pending polls, 0 OPTIMIZE INDEX]
+### 2000 symbols as 20 files x 100 symbols
+METRIC ingest.shape.fts_only_ms           72901 total (72901 load + 0 index) for 2000 symbols = 36.45 ms/symbol [executor parked 0 ms over 2 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_ms 173676 total (173676 load + 0 index) for 2000 symbols = 86.84 ms/symbol [executor parked 0 ms over 2 Pending polls, 0 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_first_optimize_10_ms 110000 total (110000 load + 0 index) for 2000 symbols = 55.00 ms/symbol [executor parked 0 ms over 2 Pending polls, 2 OPTIMIZE INDEX]
+METRIC ingest.shape.fts+ngram_index_last_ms 161 total (104 load + 57 index) for 2000 symbols = 0.08 ms/symbol [executor parked 0 ms over 2 Pending polls, 0 OPTIMIZE INDEX]
+```
+
+## Killed run: 10,000 symbols
+
+The headline 10,000-symbol shape was started and killed after ~24 minutes,
+still inside the `fts_only` phase. The scaling curve above predicts 23.6
+minutes for that phase alone, which is what makes the extrapolation credible
+rather than a guess.
+
+```
+[METRIC] startup.open_empty_ms 15
+[METRIC] ingest.shape.no_index_ms 1759 total (1759 load + 0 index) for 10000 symbols = 0.18 ms/symbol [executor parked 0 ms over 17 Pending polls]
+EXIT=143
+```

@@ -2,12 +2,16 @@
 //! plus a 384-d vector each (arctic-embed-xs dim). Seeded LCG so both
 //! backends see byte-identical input.
 
+#[cfg(feature = "surreal")]
 use surrealdb::types::SurrealValue;
 
 // SurrealDB 3.x dropped serde for its own `SurrealValue` trait, so a
 // domain struct has to carry a database-specific derive to cross the
-// boundary at all. Noted as a gate finding, not worked around.
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize, surrealdb::types::SurrealValue)]
+// boundary at all. Noted as a gate finding, not worked around. Turso needs
+// no such derive — it binds plain values — so the derive is feature-gated
+// rather than unconditional.
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "surreal", derive(surrealdb::types::SurrealValue))]
 pub struct Sym {
     pub id: i64,
     pub file: String,

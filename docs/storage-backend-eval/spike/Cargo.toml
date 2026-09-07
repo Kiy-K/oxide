@@ -10,9 +10,24 @@ name = "sdb_gate"
 version = "0.1.0"
 edition = "2021"
 
+# Backends are feature-gated so one candidate's dependency tree never has to
+# compile to run the other's gates. `surreal` is default, which keeps every
+# command recorded in ../raw/ reproducible as written; the Turso run is
+# `--no-default-features --features turso` and compiles neither RocksDB nor
+# SurrealKV.
+[features]
+default = ["surreal"]
+surreal = ["dep:surrealdb", "dep:tokio"]
+turso = ["dep:turso"]
+
 [dependencies]
-surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb", "kv-surrealkv"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+surrealdb = { version = "3", default-features = false, features = ["kv-rocksdb", "kv-surrealkv"], optional = true }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"], optional = true }
+# Deliberately NOT the default features: `turso`'s defaults install
+# `#[global_allocator] mimalloc` (turso-0.7.2/src/lib.rs:35), and OXIDE's
+# allocator semantics are a preserved invariant of this evaluation. `fts` is
+# the only thing this gate round is here to measure.
+turso = { version = "0.7", default-features = false, features = ["fts"], optional = true }
 serde = { version = "1", features = ["derive"] }
 anyhow = "1"
 # Same pin OXIDE itself uses, so the control measures the SQLite that ships
