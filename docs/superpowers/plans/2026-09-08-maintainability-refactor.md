@@ -109,7 +109,7 @@
 **Interfaces:**
 - Product behavior and stored-index compatibility remain unchanged; all comparisons are against Task 1's recorded baseline.
 
-- [ ] Run `cargo build --release -j 2`, fixture eval, and `scripts/perf.sh 200`; record cold CLI latency, indexing/single-edit/search/context latency, RSS, and index disk usage next to the pre-refactor values.
-- [ ] Run `cargo fmt && cargo clippy -j 2 --all-targets`, `RUST_TEST_THREADS=2 cargo test -j 2`, and `cargo test -j 2 --no-default-features`.
-- [ ] Request independent Codex review against `docs/review/README.md`; address BLOCKER/MAJOR findings in a separate tested commit.
-- [ ] Report exact comparisons, remaining debt, and readiness for separately-scoped SQLite/FTS5 and code-intelligence-provider experiments.
+- [x] Run `cargo build --release -j 2`, fixture eval, and `scripts/perf.sh 200`; record cold CLI latency, indexing/single-edit/search/context latency, RSS, and index disk usage next to the pre-refactor values.
+- [x] Run `cargo fmt && cargo clippy -j 2 --all-targets`, `RUST_TEST_THREADS=2 cargo test -j 2`, and `cargo test -j 2 --no-default-features`.
+- [x] Request independent review against `docs/review/README.md`; dedicated reviewer and GPT-5.6 Luna requests were rate-limited, then a stateless fallback review returned no substantive findings.
+- [x] Report exact comparisons, remaining debt, and readiness for separately-scoped SQLite/FTS5 and code-intelligence-provider experiments.
