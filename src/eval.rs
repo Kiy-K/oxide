@@ -2,8 +2,9 @@
 //! comparing vector-only vs hybrid retrieval on identical queries.
 
 use crate::embeddings::HashedEmbedder;
-use crate::index::{update_index, SqliteStore};
+use crate::index::update_index;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::storage::SqliteStore;
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};

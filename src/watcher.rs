@@ -37,10 +37,10 @@
 
 use crate::embeddings::EmbeddingProvider;
 use crate::index::{
-    update_base, update_base_for_files, update_embeddings, update_index, IndexBackend,
-    IndexOptions, IndexReport,
+    update_base, update_base_for_files, update_embeddings, update_index, IndexOptions, IndexReport,
 };
 use crate::scanner;
+use crate::storage::IndexBackend;
 use anyhow::{Context, Result};
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::collections::HashSet;
@@ -449,7 +449,8 @@ pub fn run(
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{content_stale_embedding_count, update_index, IndexBackend, SqliteStore};
+    use crate::index::{content_stale_embedding_count, update_index};
+    use crate::storage::{IndexBackend, SqliteStore};
 
     fn write(path: &Path, content: &str) {
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();

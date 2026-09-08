@@ -3,10 +3,9 @@
 
 use crate::embeddings::EmbeddingProvider;
 use crate::gitutil::diff_files;
-use crate::index::IndexBackend;
-use crate::retrieval::{
-    RelationGraph, RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions,
-};
+use crate::relations::RelationGraph;
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
+use crate::storage::IndexBackend;
 use crate::symbols::Symbol;
 use serde::Serialize;
 use std::collections::HashMap;

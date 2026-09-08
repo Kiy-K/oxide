@@ -14,8 +14,9 @@ use crate::config::{
     CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
-use crate::index::IndexBackend;
-use crate::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::relations::RelationGraph;
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
@@ -622,7 +623,7 @@ impl ContextPack {
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexBackend, SqliteStore};
     use crate::symbols::{content_hash, Language};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str) -> Symbol {
@@ -717,7 +718,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in syms {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         store
@@ -745,7 +746,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -831,7 +832,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in [&m, &f, &other] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -931,7 +932,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let pack = build_context(
@@ -988,7 +989,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in defs.iter().chain(std::iter::once(&caller)) {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1118,7 +1119,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in hot.iter().chain(std::iter::once(&other)) {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1188,7 +1189,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &many {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1247,7 +1248,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in [&orphan, &subsumed, &concrete] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();

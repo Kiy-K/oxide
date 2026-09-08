@@ -67,11 +67,6 @@ provider's queries against another's vectors. Semantic commands then fail
 with `index_stale` and say to re-run `oxide index`; `--mode lexical` keeps
 working throughout.
 
-Precedence: `--embedder URL` > `$OXIDE_EMBED_URL` > `$OXIDE_EMBED_NATIVE` >
-the default profile. Changing provider changes the embedding space, so the
-next index run wipes and recomputes every vector; symbols, relations and the
-lexical index are untouched. Building with `--no-default-features` drops the
-ONNX runtime entirely and falls back to the hashed embedder.
 
 ## Usage
 
@@ -157,10 +152,12 @@ src/
 ├── parser       tree-sitter plumbing + LanguageExtractor trait
 ├── languages    python.rs, typescript.rs (TS + TSX grammars)
 ├── symbols      core model, stable FNV-1a hashing
-├── index        SQLite storage + incremental indexing pipeline
+├── storage      SQLite index storage, schema, and transactions
+├── index        incremental scanning, freshness, parsing, and embedding orchestration
 ├── embeddings   provider abstraction + in-process ONNX, HTTP, and hashed providers
-├── service      stable repository/application boundary for CLI and MCP
-├── retrieval    BM25 lexical + cosine semantic fused via RRF + structural expansion
+├── lexical      BM25 lexical document construction and scoring
+├── relations    bounded structural-relation traversal
+├── retrieval    lexical/semantic coordination, RRF fusion, and expansion
 ├── gitutil      unified-diff parsing (git CLI)
 ├── review       diff → changed symbols → related context pack
 ├── eval         committed benchmark harness

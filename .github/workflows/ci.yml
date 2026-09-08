@@ -35,6 +35,7 @@ jobs:
 
   test:
     name: Rust / Tests
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -50,11 +51,10 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
       - name: Full unit and integration suite
         run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2
-      - name: MCP protocol parity
-        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --test mcp_e2e
 
   no-default-features:
     name: Rust / No default features
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -81,6 +81,7 @@ jobs:
 
   retrieval-gate:
     name: OXIDE / Retrieval Gate
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -109,6 +110,7 @@ jobs:
 
   coverage:
     name: Rust / Coverage
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7

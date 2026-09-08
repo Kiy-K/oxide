@@ -7,6 +7,7 @@ use crate::service::{
     ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest, ServiceError,
     StatusResult,
 };
+use crate::storage::SqliteStore;
 
 /// An explicit, unparseable `--retrieval-mode` fails loudly (matches how
 /// `--mode` is validated above); an unset flag falls through to
@@ -355,7 +356,7 @@ fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliEr
     let lock = crate::watcher::WatchLock::acquire(&root).map_err(|e| CliError::generic(e, json))?;
     let embedder =
         crate::embeddings::open_embedder(embedder_url).map_err(|e| CliError::generic(e, json))?;
-    let mut store = crate::index::SqliteStore::open(&root.join(".oxide").join("index.db"))
+    let mut store = SqliteStore::open(&root.join(".oxide").join("index.db"))
         .map_err(|e| CliError::generic(e, json))?;
 
     println!(

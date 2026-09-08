@@ -6,8 +6,8 @@ installs `rustfmt`, `clippy`, and `llvm-tools-preview` with that toolchain.
 The required GitHub Actions checks run for pull requests and pushes to `main`:
 
 - **Rust / Quality**: `cargo fmt --check` and warning-free clippy.
-- **Rust / Tests**: the complete unit and integration suite, followed by the
-  explicit MCP protocol gate in `tests/mcp_e2e.rs`.
+- **Rust / Tests**: the complete unit and integration suite, including
+  `tests/mcp_e2e.rs`.
 - **Rust / No default features**: clippy and the full suite with
   `--no-default-features`. Without `native-embed` there is no ONNX runtime to
   load a model from, so this is the build an air-gapped or
@@ -19,13 +19,16 @@ The required GitHub Actions checks run for pull requests and pushes to `main`:
 - **Rust / Coverage**: a `cargo-llvm-cov` report and artifact. Coverage is
   informational; report generation itself must succeed.
 
+All non-quality jobs depend on **Rust / Quality**, so formatting and clippy
+fail before the more expensive test, feature-combination, retrieval, and
+coverage jobs start.
+
 Run the equivalent local gate before pushing:
 
 ```bash
 cargo fmt --check
 cargo clippy -j 2 --all-targets -- -D warnings
 cargo test -j 2
-cargo test -j 2 --test mcp_e2e
 cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
 cargo test -j 2 --no-default-features
 cargo build --release -j 2

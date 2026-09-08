@@ -99,7 +99,7 @@ pub struct Symbol {
     /// experimental, populated only by `structural_relations`'s opt-in
     /// second pass (`docs/precomputed-structural-relations/README.md`),
     /// never by the default `update_index` path. Deliberately excluded
-    /// from `index::embed_text` — unlike `references`, these do not affect
+    /// from `embeddings::symbol_embed_text` — unlike `references`, these do not affect
     /// `content_hash` or the embedding, keeping embeddings frozen per that
     /// experiment's brief. Bare names only, same heuristic tier as
     /// `references`/`uses` (no scope analysis) — not a resolved call graph.

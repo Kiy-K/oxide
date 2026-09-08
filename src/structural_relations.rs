@@ -19,11 +19,11 @@
 //! `docs/precomputed-structural-relations/README.md` for that evidence and
 //! `docs/precomputed-relations-migration/README.md` for this migration's.
 //! `context.rs`'s bounded expansion now reads these via
-//! `RelationGraph::callers_of`/`implementors_of` (`retrieval.rs`) instead of
+//! `RelationGraph::callers_of`/`implementors_of` (`relations.rs`) instead of
 //! a live AST scan; the old query-time `structural.rs`/ast-grep backend is
 //! gone.
 
-use crate::index::IndexBackend;
+use crate::storage::IndexBackend;
 use crate::symbols::{Language, Symbol, SymbolKind};
 use crate::tree_sitter_structural::{all_bases_in_file, all_calls_in_file};
 use anyhow::Result;
@@ -153,7 +153,8 @@ pub fn load_symbols_with_relations(store: &dyn IndexBackend) -> Result<Vec<Symbo
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{update_index, SqliteStore};
+    use crate::index::update_index;
+    use crate::storage::SqliteStore;
     use std::fs;
     use std::path::Path;
 

@@ -74,7 +74,7 @@ RelationGraph relations, and now ast-grep — funnels into the same
 `(symbol id, score contribution, human-readable reason)` triple, accumulated
 per symbol id (`retrieval.rs`'s `reasons: HashMap<u64, Vec<String>>` /
 `context.rs`'s `Candidate.reasons` + `order_note`'s merge-by-id). A prior
-provenance-audit doc comment in `retrieval.rs` (`RelationGraph::neighbors`)
+provenance-audit doc comment in `relations.rs` (`RelationGraph::neighbors`)
 had already tiered these into Direct (`lexical=`/`semantic=`) / Resolved
 (`parent←`/`imported-definition←`, backed by parsed structure) / Heuristic
 (`uses←`/`test←`, identifier-name intersection) — this refactor adds

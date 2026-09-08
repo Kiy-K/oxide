@@ -77,11 +77,11 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   (`get_meta("root")`) — engine construction needs an indexed store, not just
   symbols.
 - An embedding's cache-invalidation key must always equal (a hash of)
-  `index::embed_text(symbol)` exactly — never a proxy for it. The module
+  `embeddings::symbol_embed_text(symbol)` exactly — never a proxy for it. The module
   symbol's `content_hash` is intentionally coarse at parse time (imports +
   first line, `parser.rs`), but `update_index` overwrites it once `references`
-  are resolved (`content_hash(&embed_text(s))`) — references are part of
-  `embed_text` but aren't known until after parsing. This override is scoped
+  are resolved (`content_hash(&symbol_embed_text(s))`) — references are part of
+  `symbol_embed_text` but aren't known until after parsing. This override is scoped
   to files that used the coarse formula (`used_coarse_module_hash` in
   `update_index`); the empty-file fallback module symbol already hashes full
   source and must keep doing so, or comment-only files silently stop

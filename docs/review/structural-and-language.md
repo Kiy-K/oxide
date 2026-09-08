@@ -2,7 +2,7 @@
 
 Scope: `src/structural_relations.rs` (index-time precomputation),
 `src/tree_sitter_structural.rs` (the Tree-sitter query substrate),
-`src/retrieval.rs`'s `RelationGraph::callers_of`/`implementors_of`,
+`src/relations.rs`'s `RelationGraph::callers_of`/`implementors_of`,
 `src/parser.rs` / `src/languages/tags.rs` (language extraction).
 
 `src/structural.rs` (the `ast-grep-core` adapter) and its query-time

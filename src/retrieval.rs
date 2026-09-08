@@ -6,11 +6,12 @@ use crate::config::{
     EXPANSION_STRONG_SEED_FRACTION, FUSION_CANDIDATE_LIMIT, FUSION_LEXICAL_WEIGHT, FUSION_RRF_K,
     FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
 };
-use crate::embeddings::{tokenize, EmbeddingProvider};
-use crate::index::IndexBackend;
+use crate::embeddings::EmbeddingProvider;
+use crate::lexical::LexicalIndex;
+use crate::relations::RelationGraph;
+use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
-use std::cell::OnceCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SearchMode {
@@ -129,121 +130,6 @@ pub struct SearchHit {
     pub score: f32,
     pub reasons: Vec<String>,
     pub snippet: String,
-}
-
-pub struct LexicalIndex {
-    postings: HashMap<String, HashMap<u64, u32>>, // term -> doc -> weighted tf
-    doc_len: HashMap<u64, f32>,
-    doc_count: usize,
-}
-
-impl LexicalIndex {
-    /// `root` enables body-text indexing: gold-context evaluations showed
-    /// bugfix targets hide behind local identifiers that only exist in symbol
-    /// bodies (weight 1 vs 4 for names keeps precision).
-    pub fn build(symbols: &[Symbol], root: Option<&std::path::Path>) -> Self {
-        // Capacity heuristic: ~20 weighted postings per symbol keeps the
-        // posting maps from rehashing during the build.
-        let mut postings: HashMap<String, HashMap<u64, u32>> =
-            HashMap::with_capacity(symbols.len() * 24);
-        let mut doc_len: HashMap<u64, f32> = HashMap::new();
-        // Body slices come from disk; cache per file so each file is read once.
-        let mut body_cache: HashMap<&str, String> = HashMap::new();
-        for s in symbols {
-            let id = s.id();
-            let mut total_weight = 0u32;
-            let mut add = |field: &str, weight: u32| {
-                crate::embeddings::tokenize_into(field, &mut |tok| {
-                    let entry = match postings.get_mut(tok) {
-                        Some(docs) => docs,
-                        None => {
-                            postings.insert(tok.to_string(), HashMap::new());
-                            postings.get_mut(tok).unwrap()
-                        }
-                    };
-                    *entry.entry(id).or_insert(0) += weight;
-                    total_weight += weight;
-                });
-            };
-            // Qualified names dominate; signature next; context fields last.
-            add(&s.qualified_name, 4);
-            add(&s.name, 4);
-            add(&s.signature, 2);
-            add(&s.file.replace(['/', '.', ':'], " "), 2);
-            for r in &s.references {
-                add(r, 1);
-            }
-            for i in &s.imports {
-                add(i, 1);
-            }
-            if let Some(root) = root {
-                let body = body_cache.entry(&s.file).or_insert_with(|| {
-                    std::fs::read_to_string(root.join(&s.file)).unwrap_or_default()
-                });
-                let start = (s.start_line as usize).saturating_sub(1);
-                let lines: Vec<&str> = body.lines().collect();
-                if start < lines.len() {
-                    let end = (s.end_line as usize).min(lines.len());
-                    let slice = lines[start..end].join("\n");
-                    add(&slice, 1);
-                }
-            }
-            doc_len.insert(id, total_weight as f32);
-        }
-        Self {
-            postings,
-            doc_len,
-            doc_count: symbols.len(),
-        }
-    }
-
-    /// BM25 scores for the query terms, plus term-coverage evidence for the
-    /// corroboration experiment (`term_coverage_alpha`, docs/term-coverage-eval/):
-    /// for each doc, the number of *distinct* query terms matched — a
-    /// repeated query token (common in whole-issue-body queries) counts
-    /// once, not once per occurrence — and the sum of those distinct terms'
-    /// IDF weights, which discounts common-but-not-stopword terms the way
-    /// "meaningful" implies. The second return value is the sum of IDF over
-    /// every distinct query term that appears anywhere in the corpus
-    /// (`df > 0`) — the coverage denominator.
-    ///
-    /// BM25's own score accumulation (`e.0`) is untouched — still one
-    /// contribution per query-token occurrence, standard BM25 query-term-
-    /// frequency behavior. `e.1`'s distinct-term semantics still satisfy
-    /// `*terms > 0` identically to the old raw-occurrence count, so
-    /// `scores.retain` below keeps its exact original membership: this is
-    /// new accompanying evidence, not a scoring-behavior change.
-    fn search(&self, query: &str, k1: f32, b: f32) -> (HashMap<u64, (f32, usize, f32)>, f32) {
-        let avg_len = self.doc_len.values().sum::<f32>() / self.doc_count.max(1) as f32;
-        let mut scores: HashMap<u64, (f32, usize, f32)> = HashMap::new();
-        let mut seen_terms: HashSet<String> = HashSet::new();
-        let mut total_idf = 0.0f32;
-        for tok in tokenize(query) {
-            let first_occurrence = seen_terms.insert(tok.clone());
-            let Some(docs) = self.postings.get(&tok) else {
-                continue;
-            };
-            let df = docs.len() as f32;
-            let n = self.doc_count.max(1) as f32;
-            let idf = ((n - df + 0.5) / (df + 0.5)).max(0.0).ln_1p();
-            if first_occurrence {
-                total_idf += idf;
-            }
-            for (&doc, &tf) in docs {
-                let dl = self.doc_len.get(&doc).copied().unwrap_or(avg_len);
-                let tf_norm = tf as f32 * (k1 + 1.0)
-                    / (tf as f32 + k1 * (1.0 - b + b * dl / avg_len.max(1.0)));
-                let e = scores.entry(doc).or_insert((0.0, 0, 0.0));
-                e.0 += idf * tf_norm;
-                if first_occurrence {
-                    e.1 += 1;
-                    e.2 += idf;
-                }
-            }
-        }
-        scores.retain(|_, (_, terms, _)| *terms > 0);
-        (scores, total_idf)
-    }
 }
 
 /// Hybrid retrieval engine. Construction builds the lexical index once from a
@@ -593,239 +479,15 @@ pub fn read_snippet(path: &std::path::Path, start: u32, end: u32, cap: usize) ->
         .join("\n")
 }
 
-/// High-confidence structural relations used for expansion.
-pub struct RelationGraph<'a> {
-    symbols: &'a [Symbol],
-    by_qualified: HashMap<&'a str, &'a Symbol>,
-    children_of: HashMap<&'a str, Vec<&'a Symbol>>,
-    defs_by_name: HashMap<&'a str, Vec<&'a Symbol>>,
-    files: HashSet<&'a str>,
-    /// Reverse indexes over `Symbol::calls`/`bases` (experimental,
-    /// `structural_relations` — empty on every symbol unless that module's
-    /// opt-in second pass ran). Built lazily via `OnceCell`, not in
-    /// `build()`, so the frozen path (`neighbors()`, called on every
-    /// `RelationGraph::build()` in `context.rs`/`retrieval.rs`/`review.rs`)
-    /// pays nothing for these — they're only populated the first time
-    /// `callers_of`/`implementors_of` is actually called, which no
-    /// production code path does.
-    callers_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
-    implementors_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
-}
-
-fn is_test_symbol(s: &Symbol) -> bool {
-    let f = s.file.to_lowercase();
-    let n = s.name.to_lowercase();
-    f.starts_with("test_")
-        || f.contains("_test.")
-        || f.contains(".test.")
-        || f.contains(".spec.")
-        || f.contains("/tests/")
-        || f.contains("\\tests\\")
-        || n.starts_with("test_")
-        || n.ends_with("_test")
-        || n.ends_with("test") && (matches!(s.kind, SymbolKind::Function | SymbolKind::Method))
-}
-
-impl<'a> RelationGraph<'a> {
-    pub fn build(symbols: &'a [Symbol]) -> Self {
-        let mut by_qualified = HashMap::new();
-        let mut children_of: HashMap<&str, Vec<&Symbol>> = HashMap::new();
-        let mut defs_by_name: HashMap<&str, Vec<&Symbol>> = HashMap::new();
-        let mut files = HashSet::new();
-        for s in symbols {
-            by_qualified.insert(s.qualified_name.as_str(), s);
-            if let Some(p) = &s.parent {
-                children_of.entry(p.as_str()).or_default().push(s);
-            } else if s.kind != SymbolKind::Module {
-                defs_by_name.entry(s.name.as_str()).or_default().push(s);
-            }
-            files.insert(s.file.as_str());
-        }
-        Self {
-            symbols,
-            by_qualified,
-            children_of,
-            defs_by_name,
-            files,
-            callers_of_index: OnceCell::new(),
-            implementors_of_index: OnceCell::new(),
-        }
-    }
-
-    /// AST-precise callers of `name` (experimental, see `structural_relations`):
-    /// symbols whose precomputed `calls` contains `name`, sorted `(file,
-    /// start_line)` for the same reason `tree_sitter_structural.rs::finish`
-    /// sorts its hits — a caller like `context.rs` truncating to the first N
-    /// must see a deterministic order, not `HashMap` iteration order
-    /// (`tests/determinism_stress.rs` exists for exactly this class of bug).
-    /// Repo-wide, unlike `find_callers`'s bounded-file-list query-time
-    /// contract — see docs/precomputed-structural-relations/README.md for
-    /// why that's the actual axis this experiment had to measure.
-    pub fn callers_of(&self, name: &str) -> Vec<&'a Symbol> {
-        let index = self.callers_of_index.get_or_init(|| {
-            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
-            for s in self.symbols {
-                for callee in &s.calls {
-                    idx.entry(callee.as_str()).or_default().push(s);
-                }
-            }
-            idx
-        });
-        let mut out: Vec<&Symbol> = index.get(name).cloned().unwrap_or_default();
-        out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
-        out
-    }
-
-    /// AST-precise implementors of `base_name` (experimental) — symbols
-    /// whose precomputed `bases` contains `base_name`. Same sort/repo-wide
-    /// contract as `callers_of`.
-    pub fn implementors_of(&self, base_name: &str) -> Vec<&'a Symbol> {
-        let index = self.implementors_of_index.get_or_init(|| {
-            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
-            for s in self.symbols {
-                for base in &s.bases {
-                    idx.entry(base.as_str()).or_default().push(s);
-                }
-            }
-            idx
-        });
-        let mut out: Vec<&Symbol> = index.get(base_name).cloned().unwrap_or_default();
-        out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
-        out
-    }
-
-    /// Resolve an import string from a file to concrete symbols, when the
-    /// target file exists in the indexed set.
-    pub fn resolve_import<'b>(&'b self, from_file: &str, module: &str) -> Vec<&'a Symbol> {
-        let Some(target) = resolve_module(module, from_file, &self.files) else {
-            return Vec::new();
-        };
-        self.symbols
-            .iter()
-            .filter(move |s| s.file == target && s.kind != SymbolKind::Module)
-            .collect()
-    }
-
-    /// Related tests: test-file symbols referencing the seed's bare name.
-    pub fn related_tests(&self, seed: &Symbol) -> Vec<&'a Symbol> {
-        self.symbols
-            .iter()
-            .filter(|s| is_test_symbol(s))
-            .filter(|t| t.references.iter().any(|r| r == &seed.name) || t.name.contains(&seed.name))
-            .collect()
-    }
-
-    /// Provenance audit (Phase 1.1, deliberately not a type): every `reasons`
-    /// tag this engine emits falls into one of three confidence tiers. This
-    /// is documentation for a future structural-relationship phase to hook
-    /// into, not a data model change — no `Provenance` enum exists because
-    /// nothing here is currently ambiguous enough to need one.
-    ///
-    /// - **Direct** — the query matched this symbol itself: `lexical=`,
-    ///   `semantic=` tags from [`RetrievalEngine::search`].
-    /// - **Resolved** — a relation backed by parsed structure or a concrete
-    ///   file match, with ambiguous cases dropped rather than guessed:
-    ///   `parent←`/`child←`/`sibling←` (from the parser's own `Symbol.parent`
-    ///   field) and `imported-definition←` (import string resolved to one
-    ///   unambiguous indexed file via [`resolve_module`]; see its doc comment
-    ///   and the README's "Import resolution" note).
-    /// - **Heuristic** — identifier-name intersection with no scope analysis
-    ///   (see `# ponytail` note in `index.rs::extract_references`), so two
-    ///   unrelated symbols sharing a name can produce a false link:
-    ///   `uses←` (this symbol references a same-named definition) and
-    ///   `test←` (from [`RelationGraph::related_tests`]).
-    pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
-        let mut out: Vec<(String, &'a Symbol)> = Vec::new();
-        if let Some(p) = &seed.parent {
-            if let Some(parent_sym) = self.by_qualified.get(p.as_str()) {
-                out.push(("parent".into(), *parent_sym));
-            }
-            for c in self.children_of.get(p.as_str()).into_iter().flatten() {
-                out.push(("sibling".into(), *c));
-            }
-        }
-        for c in self
-            .children_of
-            .get(seed.qualified_name.as_str())
-            .into_iter()
-            .flatten()
-        {
-            out.push(("child".into(), *c));
-        }
-        // References from this symbol to known definitions.
-        for r in &seed.references {
-            if let Some(defs) = self.defs_by_name.get(r.as_str()) {
-                for d in defs {
-                    if d.file != seed.file {
-                        out.push(("uses".into(), *d));
-                    }
-                }
-            }
-        }
-        // Definitions imported by this file.
-        for m in &seed.imports {
-            for d in self.resolve_import(&seed.file, m) {
-                out.push(("imported-definition".into(), d));
-            }
-        }
-        // Related tests.
-        for t in self.related_tests(seed) {
-            out.push(("test".into(), t));
-        }
-        out.truncate(24);
-        out
-    }
-}
-
-/// Map `./utils/token` (+ language extensions / __init__ / index) to a file
-/// present in `files`. Returns None when ambiguous or missing.
-pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> Option<String> {
-    let norm = module.trim_start_matches("@/");
-    let joined = if let Some(rest) = norm.strip_prefix("./").or_else(|| norm.strip_prefix("../")) {
-        let ups = norm.matches("../").count();
-        let mut parts: std::collections::VecDeque<&str> = from_file.split('/').collect();
-        parts.pop_back(); // drop file name
-        for _ in 0..ups.min(parts.len()) {
-            parts.pop_back();
-        }
-        let mut p = parts.into_iter().collect::<Vec<_>>().join("/");
-        if !p.is_empty() {
-            p.push('/');
-        }
-        format!("{p}{rest}")
-    } else if norm.starts_with('.') {
-        return None;
-    } else {
-        // Absolute python-style import: try as path anywhere.
-        norm.replace('.', "/")
-    };
-
-    let candidates = [
-        format!("{joined}.py"),
-        format!("{joined}.pyi"),
-        format!("{joined}.ts"),
-        format!("{joined}.tsx"),
-        format!("{joined}/__init__.py"),
-        format!("{joined}/index.ts"),
-        format!("{joined}/index.tsx"),
-    ];
-    let matches: Vec<String> = candidates
-        .into_iter()
-        .filter(|c| files.contains(c.as_str()))
-        .collect();
-    if matches.len() == 1 {
-        Some(matches.into_iter().next().unwrap())
-    } else {
-        None
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{IndexBackend, SqliteStore};
+    use crate::lexical::LexicalIndex;
+    use crate::relations::resolve_module;
+    use crate::storage::{IndexBackend, SqliteStore};
     use crate::symbols::{content_hash, SymbolKind};
+    use std::collections::HashSet;
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str, refs: &[&str]) -> Symbol {
         let name = qname.rsplit('.').next().unwrap().to_string();
@@ -911,7 +573,10 @@ mod tests {
             .unwrap();
         let seeding_emb = HashedEmbedder::default();
         store
-            .put_embedding(s.id(), &seeding_emb.embed(&crate::index::embed_text(&s)))
+            .put_embedding(
+                s.id(),
+                &seeding_emb.embed(&crate::embeddings::symbol_embed_text(&s)),
+            )
             .unwrap();
 
         let spy = QuerySpy::new();
@@ -989,7 +654,7 @@ mod tests {
         {
             let s = &(&s1);
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1040,7 +705,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &[&client, &policy, &test] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1162,7 +827,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &symbols {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1682,7 +1347,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &syms {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);

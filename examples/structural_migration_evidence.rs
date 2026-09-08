@@ -6,8 +6,10 @@
 
 use oxide::context::{build_context, ContextOptions};
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use oxide::index::update_index;
+use oxide::relations::RelationGraph;
+use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use oxide::storage::{IndexBackend, SqliteStore};
 use oxide::structural_relations::load_symbols_with_relations;
 use serde::Deserialize;
 use std::collections::{HashMap, HashSet};
