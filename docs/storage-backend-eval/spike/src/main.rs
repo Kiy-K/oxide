@@ -114,6 +114,36 @@ fn main() -> anyhow::Result<()> {
         // shapes alongside the gate suite would charge the gate suite for them.
         #[cfg(feature = "turso")]
         "turso-shapes" => turso::ingest_shapes(&workdir(&a), files, per_file)?,
+        // Workload round: `oxide watch`'s shape, not a bulk load.
+        // `sdb_gate turso-edits <files> <per_file> <workdir> [edits] [optimize_every]`
+        #[cfg(feature = "turso")]
+        "turso-edits" => turso::incremental(
+            &workdir(&a),
+            files,
+            per_file,
+            a.get(5).and_then(|s| s.parse().ok()).unwrap_or(100),
+            a.get(6).and_then(|s| s.parse().ok()).unwrap_or(0),
+        )?,
+        "sqlite-edits" => sqlite::incremental(
+            &workdir(&a),
+            files,
+            per_file,
+            a.get(5).and_then(|s| s.parse().ok()).unwrap_or(100),
+        )?,
+        #[cfg(feature = "turso")]
+        "turso-ctx" => {
+            let f = a.get(3).and_then(|s| s.parse().ok()).unwrap_or(400);
+            let pf = a.get(4).and_then(|s| s.parse().ok()).unwrap_or(25);
+            turso::context_shaped(std::path::Path::new(&a[2]), f, pf)?;
+            return Ok(());
+        }
+        #[cfg(feature = "turso")]
+        "turso-query" => {
+            let f = a.get(3).and_then(|s| s.parse().ok()).unwrap_or(400);
+            let pf = a.get(4).and_then(|s| s.parse().ok()).unwrap_or(25);
+            turso::one_query(std::path::Path::new(&a[2]), f, pf)?;
+            return Ok(());
+        }
         other => anyhow::bail!("unknown backend {other}"),
     };
     rep.print();

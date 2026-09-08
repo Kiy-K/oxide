@@ -169,3 +169,26 @@ pub fn probes(syms: &[Sym], n: usize) -> Probes {
         literals: (0..n).map(|k| format!("tmp_{k} = ")).collect(),
     }
 }
+
+/// FNV-1a over the new body. An edit that changes `embed_text` must change the
+/// symbol's `content_hash`, or the embedding cache would wrongly reuse the old
+/// vector (`AGENTS.md`: the cache-invalidation key must equal a hash of
+/// `embed_text(symbol)`, never a proxy).
+pub fn body_hash(body: &str) -> i64 {
+    let mut h: u64 = 0xcbf29ce484222325;
+    for b in body.as_bytes() {
+        h ^= *b as u64;
+        h = h.wrapping_mul(0x100000001b3);
+    }
+    h as i64
+}
+
+/// One symbol's vector, regenerated from its (new) content hash so an edited
+/// symbol gets a genuinely different embedding.
+pub fn vector_for(hash: i64) -> Vec<f32> {
+    let mut r = Rng::new(0xBEEF ^ hash as u64);
+    let mut v: Vec<f32> = (0..DIM).map(|_| r.unit()).collect();
+    let n: f32 = v.iter().map(|x| x * x).sum::<f32>().sqrt();
+    v.iter_mut().for_each(|x| *x /= n);
+    v
+}

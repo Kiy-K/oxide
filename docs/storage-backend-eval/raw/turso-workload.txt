@@ -1,0 +1,123 @@
+# Turso workload round — OXIDE's access pattern, not a bulk load
+
+The gate and ingest rounds bulk-loaded a corpus. OXIDE does not bulk-load: it
+runs `oxide watch`, which reindexes ONE changed file against an already
+populated store, repeatedly, for a whole editing session — and it runs one
+short-lived process per CLI call, so it never gets a warm cache.
+
+Shape: 2,000 symbols (80 files x 25), then 100 single-file edits. Each edit
+rewrites one file's 25 symbols through `replace_file` and rewrites their
+embeddings, which is what `update_index` does when a file's content hash moves.
+Edits cycle over the first 40 files only, so the probe term keeps a stable,
+non-empty ground truth in the untouched half.
+
+Setup deliberately favours Turso: the corpus is bulk-loaded with the FTS index
+created AFTERWARDS, which the ingest round showed is its fast path and is a
+shape a cold `oxide index` could legitimately use. So what follows measures the
+incremental path alone.
+
+`OPTIMIZE INDEX` is timed INSIDE the edit window: it is offered as the remedy
+for this loop, so it pays for itself.
+
+Reproduce:
+
+    cargo build --release -j 2 --no-default-features --features turso
+    ./target/release/sdb_gate sqlite-edits 80 25 <dir> 100
+    ./target/release/sdb_gate turso-edits  80 25 <dir> 100 0     # no OPTIMIZE
+    ./target/release/sdb_gate turso-edits  80 25 <dir> 100 20    # OPTIMIZE every 20 edits
+    ./target/release/sdb_gate {sqlite,turso}-ctx   <dir>/index.db 80 25
+    ./target/release/sdb_gate turso-query          <dir>/index.db 80 25
+
+## Headline
+
+| | Enhanced SQLite | Turso, no OPTIMIZE | Turso, OPTIMIZE every 20 |
+| --- | --- | --- | --- |
+| ms per single-file edit, first 20 | 1.63 | 686 | 703 |
+| ms per single-file edit, last 20 | **1.82** | **2,774** | **1,468** |
+| drift over 100 edits | 1.12x | 4.04x | 2.09x |
+| query during the loop, end | 0.18 ms | 36.6 ms | 15.1 ms |
+| store growth over the loop | 11.3 -> 12.4 MB (+10%) | 6.1 -> 30.0 MB (+390%) | 6.1 -> 34.8 MB (+470%) |
+| peak RSS | 14.6 MB | 207 MB | 252 MB |
+| context-shaped composite, warm | 2 ms | 14 ms | **2 ms** |
+| cold process, FIRST fts query | n/a | 39.8 ms | **18.0 ms** |
+| cold process, second query | n/a | 13.4 ms | 0.36 ms |
+
+A single-file edit costs **807-1,520x** more than the SQLite control, and the
+gap widens as the session goes on. `OPTIMIZE INDEX` halves the per-edit cost
+and restores warm query latency to parity (2 ms composite, same as SQLite) but
+does not stop the drift and does not stop the file growing.
+
+## The number that matters most for OXIDE
+
+`turso-query` opens a fresh process, exactly as every `oxide context` /
+`oxide search` invocation does, and the FIRST FTS query costs **18 ms even on a
+freshly optimized single-segment index** — 39.8 ms on the un-maintained one —
+against 0.36 ms for the second query in the same process. That is the
+catalog-first load `docs/fts.md` describes (LoadingCatalog ->
+PreloadingEssentials -> CreatingIndex -> Ready, 64 MB hot cache).
+
+OXIDE runs one process per CLI call. It always pays the first number and never
+collects the second. Adopting Turso's persisted FTS index to remove OXIDE's
+~11 us/symbol per-process lexical rebuild (~22 ms at 2,000 symbols, per
+baseline.md) would replace it with ~18 ms of per-process FTS index load, plus
+the embedding load it does NOT replace (Turso has no dense ANN index), plus the
+query. The rationale for adopting it does not survive its own measurement.
+
+## Raw output
+
+### SQLite control
+```
+=== enhanced sqlite — incremental edit loop (oxide watch shape) ===
+METRIC setup.bulk_load_ms                 92 for 2000 symbols
+METRIC setup.store_bytes                  11276672
+METRIC edit_loop                          after 20 edits: 1.63 ms/edit, query 0.257 ms (85 hits), store 11608448 B
+METRIC edit_loop                          after 40 edits: 1.56 ms/edit, query 0.210 ms (65 hits), store 11698560 B
+METRIC edit_loop                          after 60 edits: 1.63 ms/edit, query 0.228 ms (40 hits), store 11927936 B
+METRIC edit_loop                          after 80 edits: 1.83 ms/edit, query 0.243 ms (40 hits), store 12444032 B
+METRIC edit_loop                          after 100 edits: 1.82 ms/edit, query 0.177 ms (40 hits), store 12444032 B
+METRIC edit_loop.drift                    first 20 edits 1.63 ms/edit -> last 20 1.82 ms/edit = 1.12x
+METRIC footprint.peak_rss_kb              14604
+-- 0 gate(s) FAILED
+```
+
+### Turso, no OPTIMIZE
+```
+=== turso 0.7.2 — incremental edit loop (oxide watch shape) ===
+METRIC setup.bulk_load_index_last_ms      251 for 2000 symbols (Turso's fast path)
+METRIC setup.store_bytes                  6107512
+METRIC edit_loop                          after 20 edits: 686 ms/edit, query 12.096 ms (85 hits), store 12338520 B
+METRIC edit_loop                          after 40 edits: 1565 ms/edit, query 24.877 ms (65 hits), store 15913304 B
+METRIC edit_loop                          after 60 edits: 2207 ms/edit, query 33.993 ms (40 hits), store 20562264 B
+METRIC edit_loop                          after 80 edits: 2504 ms/edit, query 38.963 ms (40 hits), store 25248088 B
+METRIC edit_loop                          after 100 edits: 2774 ms/edit, query 36.577 ms (40 hits), store 29954392 B
+METRIC edit_loop.drift                    first 20 edits 686 ms/edit -> last 20 2774 ms/edit = 4.04x (0 OPTIMIZE INDEX)
+METRIC footprint.peak_rss_kb              207188
+-- 0 gate(s) FAILED
+```
+
+### Turso, OPTIMIZE every 20 edits
+```
+=== turso 0.7.2 — incremental edit loop (oxide watch shape) ===
+METRIC setup.bulk_load_index_last_ms      281 for 2000 symbols (Turso's fast path)
+METRIC setup.store_bytes                  6111632
+METRIC edit_loop                          after 20 edits: 703 ms/edit, query 2.873 ms (85 hits), store 12849376 B
+METRIC edit_loop                          after 40 edits: 820 ms/edit, query 5.270 ms (65 hits), store 18056112 B
+METRIC edit_loop                          after 60 edits: 1029 ms/edit, query 8.400 ms (40 hits), store 24644224 B
+METRIC edit_loop                          after 80 edits: 1244 ms/edit, query 10.801 ms (40 hits), store 26820480 B
+METRIC edit_loop                          after 100 edits: 1468 ms/edit, query 15.131 ms (40 hits), store 34823120 B
+METRIC edit_loop.drift                    first 20 edits 703 ms/edit -> last 20 1468 ms/edit = 2.09x (5 OPTIMIZE INDEX)
+METRIC footprint.peak_rss_kb              251720
+-- 0 gate(s) FAILED
+```
+
+### Composite and cold-process
+```
+--- context-shaped composite (aged store, after 100 edits) ---
+enhanced sqlite context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 2 ms
+turso context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 14 ms
+turso context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: 2 ms
+--- cold process, first query: what ONE CLI invocation pays ---
+turso cold process: open 0.695 ms, count(*) 0.376 ms, FIRST fts query 39.831 ms (40 hits), second 13.379 ms, rows=2000
+turso cold process: open 2.136 ms, count(*) 0.368 ms, FIRST fts query 18.018 ms (40 hits), second 0.356 ms, rows=2000
+(first line = no OPTIMIZE, second = OPTIMIZE every 20)
+```

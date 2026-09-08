@@ -613,3 +613,115 @@ pub fn context_shaped(path: &std::path::Path, files: usize, per_file: usize) -> 
     println!("enhanced sqlite context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: {best} ms");
     Ok(())
 }
+
+
+/// Control for the incremental edit loop: same shape as
+/// `turso::incremental` — bulk load, then N single-file replacements, with
+/// per-edit latency, query latency and store size sampled as it goes.
+pub fn incremental(
+    dir: &std::path::Path,
+    files: usize,
+    per_file: usize,
+    edits: usize,
+) -> Result<Report> {
+    anyhow::ensure!(edits > 0, "edits must be > 0");
+    let mut rep = Report::new("enhanced sqlite — incremental edit loop (oxide watch shape)");
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let dbpath = dir.join("index.db");
+    // Start clean: a reused workdir would leave a previous run's symbols and
+    // embeddings in the measured size and queries (the Turso path already does
+    // this).
+    for ext in ["", "-wal", "-shm"] {
+        let _ = std::fs::remove_file(dbpath.with_file_name(format!("index.db{ext}")));
+    }
+    let mut c = open(&dbpath)?;
+    schema(&c)?;
+    let t = Instant::now();
+    for chunk in syms.chunks(per_file) {
+        replace_file(&mut c, &chunk[0].file, chunk)?;
+    }
+    let vecs = crate::corpus::vectors(&syms);
+    for chunk in syms.iter().zip(&vecs).collect::<Vec<_>>().chunks(crate::VEC_CHUNK) {
+        let tx = c.transaction()?;
+        for (s, v) in chunk {
+            let blob: Vec<u8> = v.iter().flat_map(|f| f.to_le_bytes()).collect();
+            tx.execute("INSERT OR REPLACE INTO embeddings VALUES(?1,?2)", params![s.id, blob])?;
+        }
+        tx.commit()?;
+    }
+    rep.metric(
+        "setup.bulk_load_ms",
+        format!("{} for {} symbols", t.elapsed().as_millis(), syms.len()),
+    );
+    let store_bytes = |p: &std::path::Path| -> u64 {
+        let mut n = std::fs::metadata(p).map(|m| m.len()).unwrap_or(0);
+        for ext in ["-wal", "-shm"] {
+            let side = p.with_file_name(format!("index.db{ext}"));
+            n += std::fs::metadata(side).map(|m| m.len()).unwrap_or(0);
+        }
+        n
+    };
+    rep.metric("setup.store_bytes", format!("{}", store_bytes(&dbpath)));
+
+    let mut per_edit_us: Vec<u128> = Vec::with_capacity(edits);
+    let window = (edits / 5).max(1);
+    for e in 0..edits {
+        // Edit only the first half of the corpus. The probe term `tmp_K` occurs
+        // once per file, so the untouched half keeps a stable, non-empty ground
+        // truth and the query-latency series stays interpretable — editing every
+        // file destroys the probe's own truth set and the numbers mean nothing.
+        let fi = e % (files / 2).max(1);
+        let start = fi * per_file;
+        let batch: Vec<crate::corpus::Sym> = syms[start..start + per_file]
+            .iter()
+            .map(|s| {
+                let mut x = s.clone();
+                x.body = format!(
+                    "def {}(self, index, cache):\n    tmp_{} = index + cache\n    return self.rank_gen{}(tmp_{})\n",
+                    x.name, e, e, e
+                );
+                x.content_hash = crate::corpus::body_hash(&x.body);
+                x
+            })
+            .collect();
+        let t = Instant::now();
+        replace_file(&mut c, &batch[0].file, &batch)?;
+        // Same re-embed the Turso arm does, so both sides pay for it.
+        {
+            let tx = c.transaction()?;
+            for sym in &batch {
+                let v = crate::corpus::vector_for(sym.content_hash);
+                let blob: Vec<u8> = v.iter().flat_map(|f| f.to_le_bytes()).collect();
+                tx.execute("INSERT OR REPLACE INTO embeddings VALUES(?1,?2)", params![sym.id, blob])?;
+            }
+            tx.commit()?;
+        }
+        per_edit_us.push(t.elapsed().as_micros());
+        if (e + 1) % window == 0 {
+            let t = Instant::now();
+            let hits = bm25_hits(&c, &probes.terms[1])?.len();
+            let q_us = t.elapsed().as_micros();
+            let recent = &per_edit_us[per_edit_us.len() - window..];
+            let avg = recent.iter().sum::<u128>() as f64 / recent.len() as f64 / 1000.0;
+            rep.metric(
+                "edit_loop",
+                format!(
+                    "after {} edits: {avg:.2} ms/edit, query {:.3} ms ({hits} hits), store {} B",
+                    e + 1,
+                    q_us as f64 / 1000.0,
+                    store_bytes(&dbpath)
+                ),
+            );
+        }
+    }
+    let first = per_edit_us[..window].iter().sum::<u128>() as f64 / window as f64 / 1000.0;
+    let last =
+        per_edit_us[per_edit_us.len() - window..].iter().sum::<u128>() as f64 / window as f64 / 1000.0;
+    rep.metric(
+        "edit_loop.drift",
+        format!("first {window} edits {first:.2} ms/edit -> last {window} {last:.2} ms/edit = {:.2}x", last / first),
+    );
+    rep.metric("footprint.peak_rss_kb", format!("{}", rss_kb()));
+    Ok(rep)
+}

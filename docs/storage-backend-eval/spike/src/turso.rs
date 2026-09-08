@@ -127,6 +127,7 @@ fn schema(c: &Connection, fts: bool, ngram: bool) -> Result<()> {
           start_line INTEGER, end_line INTEGER, content_hash INTEGER);
         CREATE INDEX IF NOT EXISTS symbols_file ON symbols(file);
         CREATE TABLE IF NOT EXISTS sym_lit(symbol_id INTEGER PRIMARY KEY, lit_body TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS embeddings(symbol_id INTEGER PRIMARY KEY, vec BLOB NOT NULL);
         CREATE TABLE IF NOT EXISTS relations(symbol_id INTEGER, kind TEXT, target TEXT);
         CREATE INDEX IF NOT EXISTS relations_rev ON relations(kind, target);
         CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
@@ -557,4 +558,231 @@ pub fn run(dir: &std::path::Path, files: usize, per_file: usize) -> Result<Repor
     drop(c);
     drop(db);
     Ok(rep)
+}
+
+
+// ---------------------------------------------------------------------------
+// Workload round: OXIDE's actual access pattern, not a synthetic bulk load.
+//
+// The gate round measured bulk ingest. OXIDE does not bulk-ingest; it runs
+// `oxide watch`, which reindexes ONE changed file against an already-populated
+// store, over and over, for the life of an editing session. Everything below
+// measures that shape, plus the two per-invocation costs a one-shot CLI pays.
+// ---------------------------------------------------------------------------
+
+/// Rewrites one file's symbols with fresh bodies — the unit of work
+/// `oxide watch` performs when a file changes on disk.
+fn edited_file(syms: &[Sym], file_idx: usize, per_file: usize, generation: u64) -> Vec<Sym> {
+    let start = file_idx * per_file;
+    syms[start..start + per_file]
+        .iter()
+        .map(|s| {
+            let mut e = s.clone();
+            e.body = format!(
+                "def {}(self, index, cache):\n    tmp_{} = index + cache\n    return self.rank_gen{}(tmp_{})\n",
+                e.name, generation, generation, generation
+            );
+            e.content_hash = crate::corpus::body_hash(&e.body);
+            e
+        })
+        .collect()
+}
+
+fn store_bytes(dbpath: &std::path::Path) -> u64 {
+    let mut n = std::fs::metadata(dbpath).map(|m| m.len()).unwrap_or(0);
+    for ext in ["-wal", "-shm", "-tshm"] {
+        let side = dbpath.with_file_name(format!("index.db{ext}"));
+        n += std::fs::metadata(side).map(|m| m.len()).unwrap_or(0);
+    }
+    n
+}
+
+/// W1/W2 — the `oxide watch` hot loop, and whether it drifts.
+///
+/// Setup deliberately favours Turso: the corpus is bulk-loaded with the FTS
+/// index created **afterwards**, which the gate round showed is its fast path
+/// (~0.12 ms/symbol) and is a shape a cold `oxide index` could legitimately
+/// use. Only then do the single-file edits start, so what follows measures the
+/// incremental path alone rather than re-measuring the bulk curve.
+///
+/// `optimize_every` runs `OPTIMIZE INDEX` after that many edits (0 = never),
+/// so the documented remedy is exercised in the incremental shape too.
+pub fn incremental(
+    dir: &std::path::Path,
+    files: usize,
+    per_file: usize,
+    edits: usize,
+    optimize_every: usize,
+) -> Result<Report> {
+    let mut rep = Report::new("turso 0.7.2 — incremental edit loop (oxide watch shape)");
+    anyhow::ensure!(edits > 0, "edits must be > 0");
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let dbpath = dir.join("index.db");
+    remove_store(&dbpath);
+
+    let (db, mut c) = open(&dbpath)?;
+    schema(&c, false, false)?;
+    let t = Instant::now();
+    for chunk in syms.chunks(per_file) {
+        replace_file(&mut c, &chunk[0].file, chunk)?;
+    }
+    let vecs = crate::corpus::vectors(&syms);
+    for chunk in syms.iter().zip(&vecs).collect::<Vec<_>>().chunks(crate::VEC_CHUNK) {
+        let tx = block_on(c.transaction())?;
+        for (sym, v) in chunk {
+            let blob: Vec<u8> = v.iter().flat_map(|f| f.to_le_bytes()).collect();
+            block_on(tx.execute(
+                "INSERT OR REPLACE INTO embeddings VALUES(?1,?2)",
+                turso::params![sym.id, blob],
+            ))?;
+        }
+        block_on(tx.commit())?;
+    }
+    schema(&c, true, true)?;
+    rep.metric(
+        "setup.bulk_load_index_last_ms",
+        format!("{} for {} symbols (Turso's fast path)", t.elapsed().as_millis(), syms.len()),
+    );
+    rep.metric("setup.store_bytes", format!("{}", store_bytes(&dbpath)));
+
+    // Each edit is one file, exactly like a `replace_file` from `oxide watch`.
+    let mut per_edit_ms: Vec<u128> = Vec::with_capacity(edits);
+    let mut checkpoints: Vec<String> = Vec::new();
+    let window = (edits / 5).max(1);
+    for e in 0..edits {
+        // Edit only the first half of the corpus. The probe term `tmp_K` occurs
+        // once per file, so the untouched half keeps a stable, non-empty ground
+        // truth and the query-latency series stays interpretable — editing every
+        // file destroys the probe's own truth set and the numbers mean nothing.
+        let fi = e % (files / 2).max(1);
+        let batch = edited_file(&syms, fi, per_file, e as u64);
+        let t = Instant::now();
+        replace_file(&mut c, &batch[0].file, &batch)?;
+        // A changed file re-embeds: OXIDE's `update_index` follows
+        // `replace_file` with `put_embeddings_batch` for the symbols whose
+        // content hash moved. Without this the loop measures a symbols-only
+        // workload and understates every edit.
+        {
+            let tx = block_on(c.transaction())?;
+            for sym in &batch {
+                let v = crate::corpus::vector_for(sym.content_hash);
+                let blob: Vec<u8> = v.iter().flat_map(|f| f.to_le_bytes()).collect();
+                block_on(tx.execute(
+                    "INSERT OR REPLACE INTO embeddings VALUES(?1,?2)",
+                    turso::params![sym.id, blob],
+                ))?;
+            }
+            block_on(tx.commit())?;
+        }
+        // OPTIMIZE INDEX is inside the timed window on purpose: it is offered
+        // as the remedy for this loop, so it has to pay for itself.
+        if optimize_every > 0 && (e + 1) % optimize_every == 0 {
+            block_on(c.execute_batch("OPTIMIZE INDEX;"))?;
+        }
+        per_edit_ms.push(t.elapsed().as_millis());
+        if (e + 1) % window == 0 {
+            let t = Instant::now();
+            let hits = bm25_hits(&c, &probes.terms[1])?.len();
+            let q_us = t.elapsed().as_micros();
+            let recent = &per_edit_ms[per_edit_ms.len() - window..];
+            let avg = recent.iter().sum::<u128>() as f64 / recent.len() as f64;
+            checkpoints.push(format!(
+                "after {} edits: {avg:.0} ms/edit, query {:.3} ms ({hits} hits), store {} B",
+                e + 1,
+                q_us as f64 / 1000.0,
+                store_bytes(&dbpath)
+            ));
+        }
+    }
+    for line in &checkpoints {
+        rep.metric("edit_loop", line.clone());
+    }
+    let first = per_edit_ms[..window].iter().sum::<u128>() as f64 / window as f64;
+    let last = per_edit_ms[per_edit_ms.len() - window..].iter().sum::<u128>() as f64 / window as f64;
+    rep.metric(
+        "edit_loop.drift",
+        format!(
+            "first {window} edits {first:.0} ms/edit -> last {window} {last:.0} ms/edit = {:.2}x \
+             ({} OPTIMIZE INDEX)",
+            if first > 0.0 { last / first } else { f64::NAN },
+            if optimize_every > 0 { edits / optimize_every } else { 0 }
+        ),
+    );
+    rep.metric("footprint.peak_rss_kb", format!("{}", rss_kb()));
+    drop(c);
+    drop(db);
+    Ok(rep)
+}
+
+/// W3 — the context-shaped composite, mirroring `sqlite::context_shaped`
+/// statement for statement: 1 BM25 + 1 full KNN scan + 3 relation lookups,
+/// warm, best of 3.
+pub fn context_shaped(path: &std::path::Path, files: usize, per_file: usize) -> Result<()> {
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let vecs = crate::corpus::vectors(&syms);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let (_db, c) = open(path)?;
+    let qv = vecs[0].clone();
+    let _ = bm25_hits(&c, &probes.terms[0])?;
+    let mut best = u128::MAX;
+    for _ in 0..3 {
+        let t = Instant::now();
+        let _ = bm25_hits(&c, &probes.terms[1])?;
+        {
+            let mut rows = block_on(c.query("SELECT symbol_id, vec FROM embeddings", ()))?;
+            let mut scored: Vec<(i64, f32)> = Vec::new();
+            while let Some(r) = block_on(rows.next())? {
+                let id: i64 = r.get(0)?;
+                let b: Vec<u8> = r.get(1)?;
+                let v: Vec<f32> = b
+                    .chunks_exact(4)
+                    .map(|c| f32::from_le_bytes([c[0], c[1], c[2], c[3]]))
+                    .collect();
+                scored.push((id, if v.len() == crate::corpus::DIM { crate::corpus::cosine(&qv, &v) } else { f32::MIN }));
+            }
+            scored.sort_by(|a, b| b.1.total_cmp(&a.1).then(a.0.cmp(&b.0)));
+            let _: Vec<i64> = scored.iter().take(10).map(|x| x.0).collect();
+        }
+        for target in probes.calls.iter().take(3) {
+            let mut rows = block_on(c.query(
+                "SELECT symbol_id FROM relations WHERE kind='calls' AND target=?1",
+                (target.clone(),),
+            ))?;
+            while block_on(rows.next())?.is_some() {}
+        }
+        best = best.min(t.elapsed().as_millis());
+    }
+    println!("turso context-shaped (1 bm25 + 1 knn + 3 relation lookups), warm, best of 3: {best} ms");
+    Ok(())
+}
+
+/// W4 — what a one-shot CLI invocation actually pays. `docs/fts.md` describes
+/// a catalog-first load state machine (LoadingCatalog -> PreloadingEssentials
+/// -> CreatingIndex -> Ready) with a 64 MB hot cache, so the first FTS query in
+/// a fresh process may cost far more than a warm one. OXIDE runs one process
+/// per CLI call, so this is the number it pays every time.
+pub fn one_query(path: &std::path::Path, files: usize, per_file: usize) -> Result<()> {
+    let syms = crate::corpus::corpus(7, files, per_file);
+    let probes = crate::corpus::probes(&syms, crate::PROBES);
+    let t0 = Instant::now();
+    let (_db, c) = open(path)?;
+    let open_us = t0.elapsed().as_micros();
+    let t1 = Instant::now();
+    let n = scalar(&c, "SELECT count(*) FROM symbols")?;
+    let count_us = t1.elapsed().as_micros();
+    let t2 = Instant::now();
+    let hits = bm25_hits(&c, &probes.terms[1])?.len();
+    let first_us = t2.elapsed().as_micros();
+    let t3 = Instant::now();
+    let _ = bm25_hits(&c, &probes.terms[2])?;
+    let second_us = t3.elapsed().as_micros();
+    println!(
+        "turso cold process: open {:.3} ms, count(*) {:.3} ms, FIRST fts query {:.3} ms ({hits} hits), second {:.3} ms, rows={n}",
+        open_us as f64 / 1000.0,
+        count_us as f64 / 1000.0,
+        first_us as f64 / 1000.0,
+        second_us as f64 / 1000.0
+    );
+    Ok(())
 }
