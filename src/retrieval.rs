@@ -7,7 +7,7 @@ use crate::config::{
     FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
 };
 use crate::embeddings::{tokenize, EmbeddingProvider};
-use crate::index::IndexBackend;
+use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use std::cell::OnceCell;
 use std::collections::{HashMap, HashSet};
@@ -824,7 +824,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexBackend, SqliteStore};
     use crate::symbols::{content_hash, SymbolKind};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str, refs: &[&str]) -> Symbol {

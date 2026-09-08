@@ -49,11 +49,11 @@
 - `index` continues to own `update_index`, freshness policy, and indexing orchestration; it imports `storage::{IndexBackend, SqliteStore}`.
 - Preserve transaction boundaries and `u64`/`i64` SQLite bit-casts exactly.
 
-- [ ] Move the contiguous storage declarations and implementation from `index.rs` to `storage.rs`; do not alter SQL, error propagation, transaction scopes, or method signatures.
-- [ ] Migrate all in-crate imports through `storage`; retain any necessary public re-export only if an existing external callsite requires the `index` path.
-- [ ] Run `cargo test -j 2 --test provider_migration_recovery`, `cargo test -j 2 --test interrupted_index_recovery`, and `cargo test -j 2 --test cli_e2e`.
-- [ ] Run `cargo test -j 2 --test full_incremental_parity` and `cargo build --release -j 2`.
-- [ ] Commit `refactor: separate SQLite storage from indexing`.
+- [x] Move the contiguous storage declarations and implementation from `index.rs` to `storage.rs`; do not alter SQL, error propagation, transaction scopes, or method signatures.
+- [x] Migrate all in-crate imports through `storage`; retain any necessary public re-export only if an existing external callsite requires the `index` path.
+- [x] Run `cargo test -j 2 --test provider_migration_recovery`, `cargo test -j 2 --test interrupted_index_recovery`, and `cargo test -j 2 --test cli_e2e`.
+- [x] Run `cargo test -j 2 --test full_incremental_parity` and `cargo build --release -j 2`.
+- [x] Commit `refactor: separate SQLite storage from indexing`.
 
 ### Task 3: Extract structural-relation traversal
 

@@ -14,8 +14,8 @@ use crate::config::{
     CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
-use crate::index::IndexBackend;
 use crate::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
@@ -622,7 +622,7 @@ impl ContextPack {
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexBackend, SqliteStore};
     use crate::symbols::{content_hash, Language};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str) -> Symbol {

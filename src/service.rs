@@ -5,13 +5,14 @@
 
 use crate::context::{build_context, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
-use crate::index::{
-    update_base, update_embeddings, IndexBackend, IndexOptions, IndexReport, IndexStats,
-    SqliteStore,
-};
+use crate::index::{update_base, update_embeddings, IndexOptions, IndexReport};
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
+use crate::storage::{
+    IndexBackend, IndexStats, SqliteStore, EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION,
+    SCHEMA_VERSION,
+};
 use crate::symbols::{Language, Symbol, SymbolKind};
 use serde::Serialize;
 use std::cmp::Ordering;
@@ -373,7 +374,7 @@ impl RepositoryService {
                 embeddings: 0,
                 embedder: None,
                 supported_languages: supported_languages(),
-                schema_version: crate::index::SCHEMA_VERSION,
+                schema_version: SCHEMA_VERSION,
             });
         }
         let store = self.open_index_for_read()?;
@@ -392,7 +393,7 @@ impl RepositoryService {
         // `embedder` name above describe different providers, so the name
         // match proves nothing until the next `oxide index` republishes it.
         let migrating = store
-            .get_meta(crate::index::EMBEDDING_MIGRATION_KEY)
+            .get_meta(EMBEDDING_MIGRATION_KEY)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
             .is_some_and(|s| !s.is_empty());
         let embedder_current = !migrating
@@ -434,7 +435,7 @@ impl RepositoryService {
             embeddings: stats.embeddings,
             embedder,
             supported_languages: supported_languages(),
-            schema_version: crate::index::SCHEMA_VERSION,
+            schema_version: SCHEMA_VERSION,
         })
     }
 
@@ -598,8 +599,8 @@ impl RepositoryService {
         // not guess how to read the index: reindex is the unambiguous fix
         // in either case.
         for (key, current) in [
-            ("schema_version", crate::index::SCHEMA_VERSION),
-            ("extraction_version", crate::index::EXTRACTION_VERSION),
+            ("schema_version", SCHEMA_VERSION),
+            ("extraction_version", EXTRACTION_VERSION),
         ] {
             let stored = store
                 .get_meta(key)
@@ -647,7 +648,7 @@ impl RepositoryService {
             // instead of failing. Lexical-only search is untouched: it
             // passes `expected_embedder: None` and never reaches here.
             if store
-                .get_meta(crate::index::EMBEDDING_MIGRATION_KEY)
+                .get_meta(EMBEDDING_MIGRATION_KEY)
                 .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
                 .is_some_and(|s| !s.is_empty())
             {
@@ -709,7 +710,7 @@ impl RepositoryService {
             // not corruption: mapping it to `IndexCorrupt` would tell the
             // caller to delete and rebuild the index over a condition that
             // resolves itself once the other writer finishes.
-            if crate::index::is_locked_error(&e) {
+            if crate::storage::is_locked_error(&e) {
                 ServiceError::from_error(ErrorCode::IndexFailed, e)
             } else {
                 ServiceError::from_error(ErrorCode::IndexCorrupt, e)
@@ -737,7 +738,7 @@ impl RepositoryService {
             // `IndexFailed` (Retry) is the same transient-contention code
             // the write path already uses for the identical underlying
             // condition.
-            if crate::index::is_locked_error(&e) {
+            if crate::storage::is_locked_error(&e) {
                 ServiceError::from_error(ErrorCode::IndexFailed, e)
             } else {
                 ServiceError::from_error(ErrorCode::IndexCorrupt, e)
