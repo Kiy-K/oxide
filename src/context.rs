@@ -717,7 +717,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in syms {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         store
@@ -745,7 +745,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -831,7 +831,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in [&m, &f, &other] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -931,7 +931,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let pack = build_context(
@@ -988,7 +988,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in defs.iter().chain(std::iter::once(&caller)) {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1118,7 +1118,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in hot.iter().chain(std::iter::once(&other)) {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1188,7 +1188,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &many {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();
@@ -1247,7 +1247,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in [&orphan, &subsumed, &concrete] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let tmp = tempfile::tempdir().unwrap();

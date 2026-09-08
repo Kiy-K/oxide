@@ -911,7 +911,10 @@ mod tests {
             .unwrap();
         let seeding_emb = HashedEmbedder::default();
         store
-            .put_embedding(s.id(), &seeding_emb.embed(&crate::index::embed_text(&s)))
+            .put_embedding(
+                s.id(),
+                &seeding_emb.embed(&crate::embeddings::symbol_embed_text(&s)),
+            )
             .unwrap();
 
         let spy = QuerySpy::new();
@@ -989,7 +992,7 @@ mod tests {
         {
             let s = &(&s1);
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1040,7 +1043,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &[&client, &policy, &test] {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1162,7 +1165,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &symbols {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);
@@ -1682,7 +1685,7 @@ mod tests {
         let emb = HashedEmbedder::default();
         for s in &syms {
             store
-                .put_embedding(s.id(), &emb.embed(&crate::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let engine = RetrievalEngine::new(&store, &emb);

@@ -1,6 +1,7 @@
 //! Persistent index: SQLite-backed storage plus the incremental indexing
 //! pipeline (file-hash short-circuit, per-symbol re-embed avoidance).
 
+use crate::embeddings::symbol_embed_text;
 use crate::scanner;
 use crate::symbols::{Language, Symbol};
 use anyhow::{Context, Result};
@@ -1232,17 +1233,17 @@ fn parse_and_persist_changed_files(
         for s in &mut pf.symbols {
             s.references = extract_references(s, &pf.src, &known_names);
             // The coarse module hash covers only imports + first line, but
-            // its embedding input (embed_text) also includes `references`,
+            // its embedding input (`symbol_embed_text`) also includes `references`,
             // which are resolved here — one stage later, once whole-project
             // known names exist. A body-only edit that adds/removes an
-            // in-file reference therefore changes embed_text without the
+            // in-file reference therefore changes `symbol_embed_text` without the
             // parser hash noticing. Recompute the module's content_hash as
-            // the literal hash of its own embed_text now that references
+            // the literal hash of its own `symbol_embed_text` now that references
             // are final, so the cache-invalidation key can never drift from
             // the actual embedding input (see AGENTS.md invariant) — but
             // only where the coarse formula was actually used.
             if s.kind == crate::symbols::SymbolKind::Module && used_coarse_module_hash {
-                s.content_hash = crate::symbols::content_hash(&embed_text(s));
+                s.content_hash = crate::symbols::content_hash(&symbol_embed_text(s));
             }
         }
     }
@@ -1366,7 +1367,7 @@ pub fn update_embeddings(
     // chunk; the thread pool stays useful for per-text providers.
     if to_embed.len() < 8 || std::env::var("OXIDE_EMBED_URL").is_ok() {
         for chunk in to_embed.chunks(64) {
-            let texts: Vec<String> = chunk.iter().map(|s| embed_text(s)).collect();
+            let texts: Vec<String> = chunk.iter().map(|s| symbol_embed_text(s)).collect();
             let vectors = embedder.embed_documents(&texts);
             // One transaction per chunk instead of one autocommit per
             // symbol — see `IndexBackend::put_embeddings_batch`'s doc
@@ -1390,7 +1391,7 @@ pub fn update_embeddings(
                 handles.push(scope.spawn(|| {
                     chunk
                         .iter()
-                        .map(|s| (s.id(), embedder.embed_document(&embed_text(s))))
+                        .map(|s| (s.id(), embedder.embed_document(&symbol_embed_text(s))))
                         .collect::<Vec<_>>()
                 }));
             }
@@ -1607,19 +1608,6 @@ fn extract_references(s: &Symbol, src: &str, known: &HashSet<String>) -> Vec<Str
     let mut out: Vec<String> = refs.into_iter().collect();
     out.sort();
     out
-}
-
-/// Text fed to the embedder for a symbol.
-pub fn embed_text(s: &Symbol) -> String {
-    format!(
-        "{} {} {} {} {} {}",
-        s.file,
-        s.kind,
-        s.qualified_name,
-        s.signature,
-        s.imports.join(" "),
-        s.references.join(" ")
-    )
 }
 
 #[cfg(test)]

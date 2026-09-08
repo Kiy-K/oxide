@@ -166,7 +166,7 @@ fn embedding_phase_interrupted_before_meta_write_is_rejected() {
         let emb = HashedEmbedder::default();
         for s in &syms {
             store
-                .put_embedding(s.id(), &emb.embed(&oxide::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&oxide::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         let stats = store.stats().unwrap();
@@ -285,7 +285,7 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
         let emb = HashedEmbedder::default();
         for s in &syms {
             store
-                .put_embedding(s.id(), &emb.embed(&oxide::index::embed_text(s)))
+                .put_embedding(s.id(), &emb.embed(&oxide::embeddings::symbol_embed_text(s)))
                 .unwrap();
         }
         // Hand-craft the pre-fix torn window: root/embedder/dim written,

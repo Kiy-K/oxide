@@ -1,6 +1,6 @@
 //! Phase 1.1 item 1: module embedding staleness.
 //!
-//! The module symbol's embedding input (`index::embed_text`) includes
+//! The module symbol's embedding input (`embeddings::symbol_embed_text`) includes
 //! `references`, which are resolved from the *whole file body* one stage
 //! after the parser assigns the module's initial coarse content_hash
 //! (imports + first line only, see parser.rs). Before the fix in
@@ -177,7 +177,7 @@ fn import_only_change_invalidates_module_embedding() {
 
     // Add an import; first declared line ("def foo():") is unchanged, only
     // the import moves in above it — imports participate in content_hash
-    // and embed_text directly (a pre-existing, already-correct path), this
+    // and `symbol_embed_text` directly (a pre-existing, already-correct path), this
     // asserts it still holds after the module hash formula changed.
     write(
         &root.join("thing.py"),
@@ -196,7 +196,7 @@ fn doc_comment_change_that_does_not_touch_embed_input_leaves_module_embedding_re
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     // A comment line after the first non-blank line is not part of
-    // embed_text (no full-body text is fed to the embedder); this documents
+    // `symbol_embed_text` (no full-body text is fed to the embedder); this documents
     // that limitation explicitly rather than silently assuming it.
     write(
         &root.join("thing.py"),
@@ -218,7 +218,7 @@ fn doc_comment_change_that_does_not_touch_embed_input_leaves_module_embedding_re
 
     assert_eq!(
         before_vec, after_vec,
-        "comment-only edits outside embed_text's inputs must not force a spurious re-embed"
+        "comment-only edits outside symbol_embed_text's inputs must not force a spurious re-embed"
     );
     // Reused, not recomputed-to-the-same-value by coincidence.
     let rebuilt_vec = clean_rebuild_module_embedding(root, "thing.py");
@@ -272,7 +272,7 @@ fn comment_only_file_fallback_hash_still_covers_the_full_source() {
     // comment/doc-only file's *only* index representation (the module
     // fallback symbol) still detects every edit, even ones that don't
     // touch the first line. `update_index` must not override that with the
-    // coarse embed_text-based formula — doing so would silently stop
+    // coarse `symbol_embed_text`-based formula — doing so would silently stop
     // detecting comment-only edits as "changed" (a real regression caught
     // by review before landing: verified concretely that an early version
     // of this fix left `content_hash` and `changed_symbols` both

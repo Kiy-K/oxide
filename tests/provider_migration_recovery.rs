@@ -13,10 +13,12 @@
 //! hand-writing meta rows: a SQLite trigger aborts the publishing write, so
 //! `update_embeddings` fails exactly where a `kill -9` would land.
 
-use oxide::embeddings::{EmbeddingProvider, EmbeddingSpaceFingerprint, HashedEmbedder};
+use oxide::embeddings::{
+    symbol_embed_text, EmbeddingProvider, EmbeddingSpaceFingerprint, HashedEmbedder,
+};
 use oxide::index::{
-    embed_text, update_embeddings, update_index, IndexBackend, IndexOptions, IndexReport,
-    SqliteStore, EMBEDDING_MIGRATION_KEY,
+    update_embeddings, update_index, IndexBackend, IndexOptions, IndexReport, SqliteStore,
+    EMBEDDING_MIGRATION_KEY,
 };
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{RepositoryService, SearchRequest};
@@ -227,7 +229,7 @@ fn assert_interrupted_state_reached(root: &Path, next: &dyn EmbeddingProvider) {
         let (_, vec) = stored.get(&s.id()).expect("every symbol has a row");
         assert_eq!(
             vec,
-            &next.embed_document(&embed_text(&s)),
+            &next.embed_document(&symbol_embed_text(&s)),
             "{} does not hold the incoming provider's vector — the state under \
              test was never reached",
             s.qualified_name
@@ -332,7 +334,7 @@ fn reverting_to_the_previous_provider_re_embeds_instead_of_reusing() {
         let (_, vec) = stored.get(&s.id()).expect("every symbol re-embedded");
         assert_eq!(
             vec,
-            &hashed.embed_document(&embed_text(s)),
+            &hashed.embed_document(&symbol_embed_text(s)),
             "{} still holds the abandoned provider's vector",
             s.qualified_name
         );

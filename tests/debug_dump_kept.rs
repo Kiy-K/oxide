@@ -53,7 +53,7 @@ fn seed(file: &str, syms: &[Symbol]) -> SqliteStore {
     let emb = HashedEmbedder::default();
     for s in syms {
         store
-            .put_embedding(s.id(), &emb.embed(&oxide::index::embed_text(s)))
+            .put_embedding(s.id(), &emb.embed(&oxide::embeddings::symbol_embed_text(s)))
             .unwrap();
     }
     store

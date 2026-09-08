@@ -81,7 +81,7 @@ fn env_override_replaces_the_shipped_primary_cap() {
             .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
             .unwrap();
         store
-            .put_embedding(s.id(), &emb.embed(&oxide::index::embed_text(s)))
+            .put_embedding(s.id(), &emb.embed(&oxide::embeddings::symbol_embed_text(s)))
             .unwrap();
     }
     let tmp = tempfile::tempdir().unwrap();

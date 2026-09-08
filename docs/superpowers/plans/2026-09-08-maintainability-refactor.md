@@ -31,12 +31,12 @@
 - `embeddings::symbol_embed_text(&Symbol) -> String` becomes the only formatter for text sent to embedders and hashed as vector cache identity.
 - Delete `index::embed_text`; every current caller imports the canonical formatter.
 
-- [ ] Record the observed pre-refactor fixture and synthetic benchmark values with command provenance; mark them as comparison data, not new thresholds.
-- [ ] Replace each `index::embed_text` import/call with `embeddings::symbol_embed_text` without changing formatter field order or separators.
-- [ ] Delete the duplicate formatter only after all callers have migrated.
-- [ ] Run `cargo test -j 2 --test embedding_staleness`, `cargo test -j 2 --test full_incremental_parity`, and `cargo test -j 2 --test provider_migration_recovery`.
-- [ ] Build release and run `./target/release/oxide eval --config fixtures/benchmark.json`; compare output to the recorded fixture baseline.
-- [ ] Commit `refactor: centralize canonical embedding text`.
+- [x] Record the observed pre-refactor fixture and synthetic benchmark values with command provenance; mark them as comparison data, not new thresholds.
+- [x] Replace each `index::embed_text` import/call with `embeddings::symbol_embed_text` without changing formatter field order or separators.
+- [x] Delete the duplicate formatter only after all callers have migrated.
+- [x] Run `cargo test -j 2 --test embedding_staleness`, `cargo test -j 2 --test full_incremental_parity`, and `cargo test -j 2 --test provider_migration_recovery`.
+- [x] Build release and run `./target/release/oxide eval --config fixtures/benchmark.json`; compare output to the recorded fixture baseline.
+- [x] Commit `refactor: centralize canonical embedding text`.
 
 ### Task 2: Extract the SQLite storage adapter
 
