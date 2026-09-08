@@ -9,6 +9,7 @@ pub mod index;
 pub mod languages;
 pub mod mcp;
 pub mod parser;
+pub mod relations;
 pub mod retrieval;
 pub mod review;
 pub mod scanner;

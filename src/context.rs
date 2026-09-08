@@ -14,7 +14,8 @@ use crate::config::{
     CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
-use crate::retrieval::{RelationGraph, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::relations::RelationGraph;
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;

@@ -65,11 +65,11 @@
 - Move `RelationGraph` and its reverse-index construction to `relations` unchanged.
 - Public callers use `relations::RelationGraph`; bounded file-scope filtering remains in the caller, especially `context`.
 
-- [ ] Move `RelationGraph` without changing `callers_of`, `implementors_of`, `uses`, ordering, or lazy reverse-index behavior.
-- [ ] Update imports in retrieval, context, and review; do not introduce a generic graph trait or new query interface.
-- [ ] Run focused context/review/retrieval tests, then `cargo test -j 2 --test determinism`.
-- [ ] Build release and run the fixture eval; investigate before committing if any recall value changes.
-- [ ] Commit `refactor: isolate structural relation traversal`.
+- [x] Move `RelationGraph` without changing `callers_of`, `implementors_of`, `uses`, ordering, or lazy reverse-index behavior.
+- [x] Update imports in retrieval, context, and review; do not introduce a generic graph trait or new query interface.
+- [x] Run focused context/review/retrieval tests, then `cargo test -j 2 --test determinism`.
+- [x] Build release and run the fixture eval; investigate before committing if any recall value changes.
+- [x] Commit `refactor: isolate structural relation traversal`.
 
 ### Task 4: Extract lexical retrieval
 

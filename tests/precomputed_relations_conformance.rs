@@ -30,8 +30,9 @@
 //! verified explicitly, not assumed.
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
-use oxide::retrieval::RelationGraph;
+use oxide::index::update_index;
+use oxide::relations::RelationGraph;
+use oxide::storage::{IndexBackend, SqliteStore};
 use oxide::structural_relations::load_symbols_with_relations;
 use oxide::symbols::Symbol;
 use std::fs;
