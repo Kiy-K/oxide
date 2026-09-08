@@ -81,10 +81,10 @@
 - Move `LexicalIndex` and its private token/document construction into `lexical` unchanged.
 - `RetrievalEngine` continues to coordinate concurrent lexical and semantic search and owns fusion/expansion ordering.
 
-- [ ] Move `LexicalIndex` with identical name/signature/body weighting and repository-root body loading.
-- [ ] Keep `RetrievalEngine::search`'s scoped thread concurrency and narrow captures intact; only update imports.
-- [ ] Run `cargo test -j 2 --lib retrieval`, `cargo test -j 2 --test determinism`, and fixture eval.
-- [ ] Commit `refactor: isolate lexical retrieval index`.
+- [x] Move `LexicalIndex` with identical name/signature/body weighting and repository-root body loading.
+- [x] Keep `RetrievalEngine::search`'s scoped thread concurrency and narrow captures intact; only update imports.
+- [x] Run `cargo test -j 2 --lib retrieval`, `cargo test -j 2 --test determinism_stress`, and fixture eval.
+- [x] Commit `refactor: isolate lexical retrieval index`.
 
 ### Task 5: Remove stale documentation and tighten CI dependencies
 
