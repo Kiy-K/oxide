@@ -19,3 +19,4 @@ eval-agent/.venv/
 __pycache__
 /target
 CLAUDE.local.md
+.worktrees/
