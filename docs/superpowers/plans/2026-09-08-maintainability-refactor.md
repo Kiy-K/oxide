@@ -95,11 +95,11 @@
 - `AGENTS.md`, `docs/review/*`, `docs/testing/ci.md`, `docs/canonical-baseline.md`, and `docs/perf-baseline-v0.1.md` remain the authoritative contracts/evidence.
 - CI retains `quality`, `tests`, `no-default`, `retrieval`, and `coverage`; expensive ContextBench stays non-required.
 
-- [ ] Correct the watcher document to describe the implemented watcher rather than a future design.
-- [ ] State one authority per current architecture/frozen decision/evidence/future-candidate category; preserve rejected-experiment evidence in place.
-- [ ] Make non-quality CI jobs depend on quality; remove the redundant standalone MCP rerun already included in `cargo test` and document that coverage.
-- [ ] Review the workflow diff for retained `OXIDE_EMBED_*` hermetic environment clearing, cache keys, failure artifacts, no-default coverage, retrieval gate, and informational coverage/performance behavior.
-- [ ] Run `cargo fmt && cargo clippy -j 2 --all-targets` and `cargo test -j 2`; commit `chore: clarify refactor evidence and CI gates`.
+- [x] Correct the watcher document to describe the implemented watcher rather than a future design.
+- [x] State one authority per current architecture/frozen decision/evidence/future-candidate category; preserve rejected-experiment evidence in place.
+- [x] Make non-quality CI jobs depend on quality; remove the redundant standalone MCP rerun already included in `cargo test` and document that coverage.
+- [x] Review the workflow diff for retained `OXIDE_EMBED_*` hermetic environment clearing, cache keys, failure artifacts, no-default coverage, retrieval gate, and informational coverage/performance behavior.
+- [x] Run `cargo fmt && cargo clippy -j 2 --all-targets` and `cargo test -j 2`; commit `chore: clarify refactor evidence and CI gates`.
 
 ### Task 6: Run canonical verification and independent review
 

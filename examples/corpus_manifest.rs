@@ -40,7 +40,8 @@
 //!   corpus_manifest <repo_dir> [--no-text]   # --no-text omits the last column
 
 use anyhow::Context;
-use oxide::index::{embed_text, IndexBackend, SqliteStore};
+use oxide::embeddings::symbol_embed_text;
+use oxide::storage::{IndexBackend, SqliteStore};
 use oxide::symbols::content_hash;
 use std::io::Write;
 
@@ -66,13 +67,13 @@ fn main() -> anyhow::Result<()> {
     let symbols = store.all_symbols()?;
     let mut lines: Vec<String> = Vec::with_capacity(symbols.len());
     for s in &symbols {
-        let text = embed_text(s);
+        let text = symbol_embed_text(s);
         // The invariant worth pinning alongside identity: an embedding's
         // cache key must equal a hash of exactly this string (AGENTS.md).
         // Emitting both columns lets a diff show whether a mismatch is in
         // the stored hash, the text, or both — they are not redundant: only
         // the module fallback symbol's `content_hash` is itself a hash of
-        // `embed_text`, so every other symbol's `references` can change
+        // `symbol_embed_text`, so every other symbol's `references` can change
         // (changing what is embedded) while `content_hash` stays put.
         let mut line = format!(
             "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}",
