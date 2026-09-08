@@ -1,7 +1,8 @@
 # Embeddings and index review rules
 
 Scope: `src/embeddings.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`,
-`open_embedder`), `src/index.rs`'s `update_index` staleness check.
+`open_embedder`), `src/index.rs`'s `incompatible_stored_space` staleness
+check and the migration marker around it.
 
 ---
 
@@ -13,7 +14,7 @@ Scope: `src/embeddings.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`,
 checkpoint, quantization, dimension, query/document prompt formatting,
 pooling, normalization, similarity function — must change that provider's
 `fingerprint()` (or, for providers relying on the default trait impl that
-don't override it, `name()`), so `update_index`'s compatibility check
+don't override it, `name()`), so `incompatible_stored_space`'s compatibility check
 detects the change and wipes stale vectors instead of silently comparing
 old and new vectors as if they lived in the same space. A field added to
 `EmbeddingSpaceFingerprint` that would make an old stored value's meaning
@@ -27,9 +28,9 @@ query-prompt variants (the name string includes the variant) — new
 providers or new variants must follow the same pattern, not skip it.
 
 **Evidence required:** the behavior-changing diff, plus the (unchanged)
-`fingerprint()`/`name()` output for the same provider. Cite `update_index`'s
-match over `stored_fp`/`current_fp` (`index.rs`) to show what compatibility
-signal the reviewer expects to change and doesn't.
+`fingerprint()`/`name()` output for the same provider. Cite
+`incompatible_stored_space`'s tier comparison (`index.rs`) to show what
+compatibility signal the reviewer expects to change and doesn't.
 
 **Exceptions:** a change provably incapable of affecting the vector space
 (e.g. renaming a private field, adding a cache with identical output) needs
@@ -126,3 +127,47 @@ table, then point to the specific line where the new code diverges from it.
 existing signal (provider health, not a single-call failure) — surfacing it
 more prominently elsewhere (e.g. a CLI status field) is not itself a
 violation of this rule.
+
+---
+
+### EMB-004 — An embedding migration must be atomic or detectably unfinished
+**Severity:** BLOCKER · **Scope:** `IndexBackend::begin_embedding_migration`,
+`update_embeddings`'s closing `set_meta_all`, `incompatible_stored_space`,
+`validate_index`'s `EMBEDDING_MIGRATION_KEY` check.
+
+**Invariant:** an `oxide index` killed at any point during a provider switch
+must leave the index either fully migrated or *visibly* mid-migration —
+never in a state where the stored identity metadata describes one provider
+and the stored vectors another. The mechanism is one atomic
+clear-and-mark (`begin_embedding_migration`) plus one atomic
+publish-and-unmark (`set_meta_all`), and the order is the whole proof: the
+marker cannot exist unless the embeddings table was emptied in the same
+transaction, so "marker == the provider about to run" implies every
+surviving row is that provider's. Across processes the proof rests on
+`ensure_migration_marker`, which both `put_embeddings_batch` and
+`set_meta_all` run inside their own transaction. See AGENTS.md's
+load-bearing invariant of the same name, including the residual
+compatibility-check race it declares out of scope.
+
+**What constitutes a violation:** splitting `begin_embedding_migration` into
+a separate `clear_embeddings()` and `set_meta()`; setting the marker before
+clearing; moving `ensure_migration_marker` outside the transaction it guards,
+or dropping it from either write path; dropping `EMBEDDING_MIGRATION_KEY`
+from the closing `set_meta_all`
+(the marker then never retires and every later run re-embeds); writing
+vectors under a new provider without the marker; treating a
+present-but-unparseable value at any compatibility tier as absent, so it
+falls open into the weaker tier below; making `validate_index` reject
+lexical-only reads while the marker is set (mid-migration must stay usable,
+degraded — that is the read-only service contract).
+
+**Evidence required:** the transaction boundaries actually changed, and
+which of `tests/provider_migration_recovery.rs`'s cases would stop failing
+if the mechanism were removed. A claim that a reordering is "equivalent"
+needs the interleaving spelled out, not asserted.
+
+**Exceptions:** the incremental, same-provider case is deliberately unmarked
+— no clear happens, the published metadata already describes the rows, and
+partial progress is caught by the existing `embeddings == symbols`
+completeness check. Adding a marker there would cost a full re-embed on
+every interrupted ordinary run.

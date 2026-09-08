@@ -40,7 +40,10 @@ pub enum Cmd {
         /// Repository path.
         path: Option<String>,
         /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
-        /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
+        /// Falls back to $OXIDE_EMBED_URL, then to the in-process model
+        /// named by $OXIDE_EMBED_NATIVE (default: arctic-embed-xs-q, which
+        /// downloads ~23MB of weights the first time it is loaded).
+        /// OXIDE_EMBED_NATIVE=hashed selects the offline hashed embedder.
         #[arg(long)]
         embedder: Option<String>,
         /// Force rebuild of every indexing layer (base parse, graph, and
@@ -143,7 +146,10 @@ pub enum Cmd {
         /// Repository path.
         path: Option<String>,
         /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
-        /// Falls back to $OXIDE_EMBED_URL, then the offline hashed embedder.
+        /// Falls back to $OXIDE_EMBED_URL, then to the in-process model
+        /// named by $OXIDE_EMBED_NATIVE (default: arctic-embed-xs-q, which
+        /// downloads ~23MB of weights the first time it is loaded).
+        /// OXIDE_EMBED_NATIVE=hashed selects the offline hashed embedder.
         #[arg(long)]
         embedder: Option<String>,
     },

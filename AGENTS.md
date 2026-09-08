@@ -107,6 +107,37 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   `schema_version`, and `validate_index`'s "missing schema_version means a
   pre-versioning legacy index" fallback would then wave a torn, incomplete
   index through as healthy (`tests/interrupted_index_recovery.rs`).
+- A provider switch clears vectors and writes the in-flight fingerprint to
+  `embedding_migration` as ONE transaction
+  (`IndexBackend::begin_embedding_migration`), and retires that key inside
+  the same `set_meta_all` that publishes the new identity. The atomicity only
+  works in that order: because the marker cannot exist unless the table was
+  emptied in the same transaction, "marker == the provider I am about to
+  use" proves every surviving row is that provider's. Setting the marker
+  before clearing proves nothing. That proof only extends across concurrent
+  `oxide index` processes because every embedding write and the closing
+  publish re-read the marker inside their own transaction and fail unless it
+  still holds the writer's space (`ensure_migration_marker`) — otherwise a
+  second run's migration would empty the table under the first, which would
+  keep appending alongside it. Still open by design: a run whose
+  compatibility check ran before another run's migration finished, and whose
+  first write lands after it, sees an empty marker at both moments; closing
+  that needs run-level writer serialization, which embedding's minutes-long
+  runtime rules out. `incompatible_stored_space` is the single
+  decision point for both `update_embeddings` and `pending_embedding_count`
+  (which AGENTS-era comments only *asked* not to diverge), and treats the
+  marker as outranking `embedding_fingerprint`, which in turn outranks the
+  legacy `embedder`+`dim` pair; a present-but-unparseable value at any tier
+  is incompatible and must never fail open into the weaker tier below.
+  `validate_index` refuses semantic — never lexical — reads while the marker
+  is set (`tests/provider_migration_recovery.rs`).
+- `SqliteStore::open_read_only` holds one deferred WAL read transaction for
+  the life of the store, so a request's metadata validation and its later
+  vector load see the same snapshot; in autocommit a concurrent `oxide
+  index` finishing a provider switch between the two let a request approve
+  the old identity and then score the new rows. Safe only because every
+  reader is request-scoped — a long-lived one would pin the WAL against
+  checkpointing.
 
 ## Embeddings / providers
 

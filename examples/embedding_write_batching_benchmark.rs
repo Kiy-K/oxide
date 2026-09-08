@@ -74,7 +74,7 @@ fn main() {
     let mut batched_store = seed_store(&batched_path, &symbols);
     let t0 = Instant::now();
     for chunk in vectors.chunks(CHUNK) {
-        batched_store.put_embeddings_batch(chunk).unwrap();
+        batched_store.put_embeddings_batch("", chunk).unwrap();
     }
     let batched_elapsed = t0.elapsed();
 

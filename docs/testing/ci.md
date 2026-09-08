@@ -8,6 +8,12 @@ The required GitHub Actions checks run for pull requests and pushes to `main`:
 - **Rust / Quality**: `cargo fmt --check` and warning-free clippy.
 - **Rust / Tests**: the complete unit and integration suite, followed by the
   explicit MCP protocol gate in `tests/mcp_e2e.rs`.
+- **Rust / No default features**: clippy and the full suite with
+  `--no-default-features`. Without `native-embed` there is no ONNX runtime to
+  load a model from, so this is the build an air-gapped or
+  minimal-dependency consumer actually gets; the default-feature jobs cannot
+  catch a `#[cfg(feature = "native-embed")]` block that stops compiling once
+  the feature is removed.
 - **OXIDE / Retrieval Gate**: the release binary runs the committed,
   deterministic `fixtures/benchmark.json` evaluation.
 - **Rust / Coverage**: a `cargo-llvm-cov` report and artifact. Coverage is
@@ -20,6 +26,8 @@ cargo fmt --check
 cargo clippy -j 2 --all-targets -- -D warnings
 cargo test -j 2
 cargo test -j 2 --test mcp_e2e
+cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
+cargo test -j 2 --no-default-features
 cargo build --release -j 2
 ./target/release/oxide eval --config fixtures/benchmark.json
 cargo install cargo-llvm-cov --version 0.6.19 --locked # once
@@ -45,6 +53,14 @@ coverage tool. After that setup, OXIDE verification is offline. The only
 HTTP-embedder test path uses a loopback endpoint to assert structured failure;
 it does not call an external service. Real-agent evaluations are research
 artifacts and are deliberately excluded from per-PR CI.
+
+The one test that exercises the shipped default provider for real —
+`provider_migration_recovery::real_default_provider_indexes_searches_and_stays_current`
+— is `#[ignore]`d for exactly this reason: it downloads ~23 MB of weights on
+a cold cache. Run it deliberately with
+`cargo test -j 2 --test provider_migration_recovery -- --ignored`. Everything
+required pins `OXIDE_EMBED_NATIVE=hashed`, so no CI job ever downloads a
+model.
 
 The cache contains Cargo registries, git dependencies, and `target/`; its key
 includes the lockfile, manifest, pinned toolchain, Cargo configuration, and

@@ -1,7 +1,12 @@
-//! Embedding provider abstraction plus the default offline embedder.
+//! Embedding provider abstraction and the providers OXIDE ships.
 //!
-//! v0.1 ships a deterministic hashed bag-of-tokens embedder: no network, no
-//! model download, reproducible across runs. Swap in a real model provider by
+//! The default is [`DEFAULT_NATIVE_PROFILE`], a real in-process ONNX model
+//! whose weights are downloaded the first time the model is *loaded* — which
+//! is any command that constructs a semantic provider, not only `oxide
+//! index`. The deterministic hashed bag-of-tokens embedder
+//! ([`HashedEmbedder`], selected by `OXIDE_EMBED_NATIVE=hashed`) is the
+//! offline opt-out and what the benchmark gate constructs directly: no
+//! network, no download, reproducible across runs. Add a provider by
 //! implementing [`EmbeddingProvider`]; nothing else in the pipeline changes.
 
 use crate::symbols::Symbol;
@@ -1130,10 +1135,24 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
 /// `jina-code-v2` (996MB), not over Qwen.
 pub const DEFAULT_NATIVE_PROFILE: &str = "arctic-embed-xs-q";
 
-/// The `OXIDE_EMBED_NATIVE` value that opts back out to the offline
-/// `HashedEmbedder` — no model, no download, no network. This is the escape
-/// hatch for air-gapped use and the value OXIDE's own test suite pins, since
-/// the default now loads real weights.
+/// The `OXIDE_EMBED_NATIVE` value that opts back out to the
+/// `HashedEmbedder` — no model, no download. The value OXIDE's own test
+/// suite pins, since the default now loads real weights.
+///
+/// This is *provider selection*, not a network prohibition, and it sits at
+/// the bottom of the precedence order in [`open_embedder`]: an explicit
+/// `--embedder URL` or a set `$OXIDE_EMBED_URL` still wins over it and still
+/// talks to that endpoint. For an actually-offline run, clear the endpoint
+/// configuration as well:
+///
+/// ```sh
+/// env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed oxide index .
+/// ```
+///
+/// Building `--no-default-features` drops the `native-embed` feature, so no
+/// ONNX model can be loaded at all — but it does not disable the HTTP
+/// provider either, for the same reason: the endpoint is still honoured if
+/// configured.
 pub const OFFLINE_PROFILE: &str = "hashed";
 
 /// Resolves `$OXIDE_EMBED_NATIVE` to the native profile to load, or `None`
@@ -1155,14 +1174,30 @@ fn resolve_native_profile(configured: Option<&str>) -> Option<String> {
 /// `OXIDE_EMBED_NATIVE` (or, unset, `DEFAULT_NATIVE_PROFILE`), and finally
 /// the offline hashed embedder.
 ///
-/// **The default is no longer offline.** An unconfigured `oxide index` loads
+/// **The default is no longer offline.** Unconfigured, this loads
 /// `DEFAULT_NATIVE_PROFILE` through fastembed, which downloads its ONNX
-/// weights (~23MB) on first use and needs network to do so. That is a
-/// deliberate trade for a default that actually retrieves well; the previous
-/// zero-download behaviour is still one env var away
-/// (`OXIDE_EMBED_NATIVE=hashed`), and is what you want for air-gapped
-/// machines and for reproducing the benchmark gate, which constructs
-/// `HashedEmbedder` directly and is unaffected by any of this.
+/// weights (~23MB) into `$HF_HOME` (else `~/.cache/huggingface/hub`) the
+/// first time the model is loaded, and needs network to do so.
+///
+/// "First model load" is not "first index": every command that can answer
+/// semantically — `search`, `context`, `review`, `watch` — calls this before
+/// touching the index, and `RepositoryService::search` in particular
+/// constructs the provider *before* `validate_index` runs. So a machine that
+/// already has an index but no cached weights will still download on its
+/// first semantic query. `--mode lexical` never reaches here.
+///
+/// A failed download is not sticky: nothing is written to the index, so
+/// re-running the same command after restoring network retries cleanly.
+/// Switching providers later is safe but not free — the new fingerprint
+/// makes `update_embeddings` clear and recompute every vector, so budget a
+/// full re-embed for the next `oxide index`.
+///
+/// That is a deliberate trade for a default that actually retrieves well;
+/// the previous zero-download behaviour is still one env var away
+/// (`OXIDE_EMBED_NATIVE=hashed`, see [`OFFLINE_PROFILE`] for the endpoint
+/// caveat), and is what you want for air-gapped machines and for reproducing
+/// the benchmark gate, which constructs `HashedEmbedder` directly and is
+/// unaffected by any of this.
 ///
 /// A missing model is an error, never a silent downgrade to the hashed
 /// embedder: the two are different embedding spaces, and quietly swapping

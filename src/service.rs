@@ -388,8 +388,16 @@ impl RepositoryService {
         let embedder = store
             .get_meta("embedder")
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-        let embedder_current =
-            embedder.as_deref() == Some(crate::embeddings::configured_provider_name(None).as_str());
+        // An interrupted provider migration means the vectors and the
+        // `embedder` name above describe different providers, so the name
+        // match proves nothing until the next `oxide index` republishes it.
+        let migrating = store
+            .get_meta(crate::index::EMBEDDING_MIGRATION_KEY)
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+            .is_some_and(|s| !s.is_empty());
+        let embedder_current = !migrating
+            && embedder.as_deref()
+                == Some(crate::embeddings::configured_provider_name(None).as_str());
         let files_current = !current.is_empty()
             && current.len() == indexed.len()
             && current
@@ -408,7 +416,16 @@ impl RepositoryService {
         Ok(StatusResult {
             root: self.root.display().to_string(),
             index_exists: true,
-            is_current: files_current && embedder_current && stats.embeddings == stats.symbols,
+            // `pending_embeddings` is part of the verdict, not a detail
+            // beside it: row counts match as soon as every symbol has *a*
+            // vector, including vectors computed against content that has
+            // since changed. Reporting `is_current: true` next to a nonzero
+            // pending count was self-contradictory, and told an agent the
+            // semantic half of retrieval was fresh when it was not.
+            is_current: files_current
+                && embedder_current
+                && pending_embeddings == 0
+                && stats.embeddings == stats.symbols,
             embedder_current,
             base_fresh: files_current,
             pending_embeddings,
@@ -621,13 +638,38 @@ impl RepositoryService {
             // index has one; name+dim is the fallback for indices that
             // predate it, so upgrading OXIDE doesn't strand every existing
             // index behind a spurious ProviderMismatch.
-            let stored_fp: Option<crate::embeddings::EmbeddingSpaceFingerprint> = store
+            // An unfinished provider migration outranks every identity key
+            // below: those describe the provider that *published* the index,
+            // and the interrupted run never got that far. Its vectors may
+            // belong to a different space entirely while row counts and
+            // metadata both look healthy — the exact state that made a
+            // same-dimension switch score against the wrong vector space
+            // instead of failing. Lexical-only search is untouched: it
+            // passes `expected_embedder: None` and never reaches here.
+            if store
+                .get_meta(crate::index::EMBEDDING_MIGRATION_KEY)
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+                .is_some_and(|s| !s.is_empty())
+            {
+                return Err(ServiceError::new(
+                    ErrorCode::IndexStale,
+                    "index embeddings were left mid-migration by an interrupted `oxide index`; run `oxide index PATH` to finish it (or `--mode lexical` meanwhile)",
+                ));
+            }
+            // Present-but-unparseable must not fail open into the weaker
+            // name+dim fallback below: a corrupt fingerprint would then be
+            // waved through by a provider whose *name* still matches, which
+            // is precisely the comparison the fingerprint exists to replace.
+            // `update_embeddings` has always treated it as incompatible;
+            // this is the read side agreeing.
+            let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
                 .get_meta("embedding_fingerprint")
                 .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
                 .filter(|s| !s.is_empty())
-                .and_then(|s| serde_json::from_str(&s).ok());
+                .map(|s| serde_json::from_str(&s).ok());
             let compatible = match stored_fp {
-                Some(prev) => prev == expected.fingerprint(),
+                Some(Some(prev)) => prev == expected.fingerprint(),
+                Some(None) => false,
                 None => {
                     let indexed_embedder = store
                         .get_meta("embedder")

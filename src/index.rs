@@ -17,6 +17,15 @@ pub const SCHEMA_VERSION: u32 = 1;
 /// stored symbols not directly comparable to freshly-parsed ones.
 pub const EXTRACTION_VERSION: u32 = 1;
 
+/// Meta key holding the in-flight embedding-space fingerprint while a
+/// provider migration is running. Non-empty means "the vectors in this index
+/// belong to *this* fingerprint, and the published identity metadata has not
+/// caught up yet" — see [`IndexBackend::begin_embedding_migration`]. Cleared
+/// (set to the empty string, matching the `filter(|s| !s.is_empty())` idiom
+/// used for every other optional meta value) in the same atomic
+/// `set_meta_all` that publishes the completed identity.
+pub const EMBEDDING_MIGRATION_KEY: &str = "embedding_migration";
+
 /// Storage abstraction. Small by design: swap SQLite for something else by
 /// implementing this trait.
 /// One parsed file: (repo-relative path, content hash, source text, symbols).
@@ -41,7 +50,12 @@ pub trait IndexBackend {
     /// `validate_index`'s "index predates version tracking" fallback for a
     /// missing `schema_version` key would otherwise treat that torn state
     /// as a compatible legacy index instead of an incomplete one.
-    fn set_meta_all(&mut self, pairs: &[(&str, &str)]) -> Result<()>;
+    ///
+    /// `expected_space` is the value [`EMBEDDING_MIGRATION_KEY`] must still
+    /// hold for this publication to be honest — see
+    /// [`IndexBackend::put_embeddings_batch`] for what that guard buys and
+    /// what it does not.
+    fn set_meta_all(&mut self, expected_space: &str, pairs: &[(&str, &str)]) -> Result<()>;
     fn file_hashes(&self) -> Result<HashMap<String, u64>>;
     /// Replaces `file`'s symbols (and, since a symbol whose body didn't
     /// change keeps its embedding across the rewrite, its embeddings) and
@@ -77,13 +91,63 @@ pub trait IndexBackend {
     /// (already near the empirically-measured optimum — see
     /// docs/indexing-rebuild-scopes/README.md). A symbol id with no
     /// matching row in `symbols` is skipped, same as `put_embedding`.
-    fn put_embeddings_batch(&mut self, items: &[(u64, Vec<f32>)]) -> Result<()>;
+    ///
+    /// Fails, in the same transaction, unless [`EMBEDDING_MIGRATION_KEY`]
+    /// still holds `expected_space` — the writer's own fingerprint while a
+    /// migration is in flight, or `""` for an ordinary incremental run.
+    /// Without this, `begin_embedding_migration`'s atomicity only holds for
+    /// one process: a second `oxide index` starting its own migration
+    /// mid-run would empty the table under the first, which would then keep
+    /// appending its vectors alongside the second's and one of them would
+    /// publish a single identity over the mix. With it, the loser fails
+    /// loudly and the table only ever holds the last migration's rows.
+    ///
+    /// What this does **not** close: a run whose compatibility check
+    /// happened *before* another run's migration completed, and whose first
+    /// write lands after it — the marker is legitimately `""` at both
+    /// moments, so the guard cannot see the difference. Closing that needs
+    /// run-level writer serialization (one transaction spanning the whole
+    /// embedding phase, or an advisory lock), which is deliberately out of
+    /// scope: embedding takes minutes, and holding SQLite's write lock that
+    /// long would block every other writer and grow the WAL without bound.
+    fn put_embeddings_batch(
+        &mut self,
+        expected_space: &str,
+        items: &[(u64, Vec<f32>)],
+    ) -> Result<()>;
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
     /// All embeddings in one shot (avoids per-symbol queries in retrieval).
     fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
-    /// Drop every vector (used when the embedding provider changed: vectors
-    /// from different models are not comparable).
-    fn clear_embeddings(&mut self) -> Result<()>;
+    /// Clear every vector AND record `fingerprint_json` under
+    /// [`EMBEDDING_MIGRATION_KEY`] as **one** transaction — the crash-safety
+    /// primitive for a provider switch, and deliberately the *only* way to
+    /// empty the embeddings table. A plain `clear_embeddings` used to sit
+    /// beside it; it was removed rather than left available, because an
+    /// unmarked clear is precisely the state this method exists to make
+    /// unreachable.
+    ///
+    /// `update_embeddings` publishes the new provider identity only at the
+    /// very end (`set_meta_all`), so a process killed after the replacement
+    /// vectors commit but before that write used to leave rows from provider
+    /// B under metadata naming provider A. Nothing downstream could tell:
+    /// row counts matched, and a same-dimension switch scored queries
+    /// against the wrong vector space rather than failing loudly.
+    ///
+    /// The marker closes that window because the atomicity runs the right
+    /// way round: the marker is never present unless the table was emptied
+    /// in the same transaction that set it, so "marker == the provider I am
+    /// about to use" proves every surviving row belongs to that provider's
+    /// space. Setting the marker *before* clearing (two statements) would
+    /// prove nothing — a crash between them leaves the old provider's rows
+    /// under a marker claiming the new one, which is the original bug with
+    /// extra steps.
+    ///
+    /// This alone only proves it within one process. Extending it across
+    /// concurrent `oxide index` runs is [`IndexBackend::put_embeddings_batch`]'s
+    /// and [`IndexBackend::set_meta_all`]'s `expected_space` guard, which
+    /// re-reads the marker inside each write's own transaction; read that
+    /// method's doc for the interleaving it closes and the one it does not.
+    fn begin_embedding_migration(&mut self, fingerprint_json: &str) -> Result<()>;
     fn drop_embeddings_without_symbols(&mut self) -> Result<()>;
     /// Replaces precomputed call/base relations for every `(symbol_id,
     /// calls, bases)` triple in `relations`, as one transaction per call —
@@ -112,6 +176,26 @@ pub trait IndexBackend {
 
 pub struct SqliteStore {
     conn: Connection,
+}
+
+/// Fail unless [`EMBEDDING_MIGRATION_KEY`] still holds `expected_space`,
+/// read inside `tx` so the check and the write it guards commit or roll back
+/// together. A guard read outside the transaction would be a plain TOCTOU.
+fn ensure_migration_marker(tx: &rusqlite::Transaction<'_>, expected_space: &str) -> Result<()> {
+    let current: String = tx
+        .query_row(
+            "SELECT value FROM meta WHERE key = ?1",
+            [EMBEDDING_MIGRATION_KEY],
+            |r| r.get(0),
+        )
+        .optional()?
+        .unwrap_or_default();
+    anyhow::ensure!(
+        current == expected_space,
+        "another process took over this index's embeddings mid-run \
+         (migration marker changed); re-run `oxide index`"
+    );
+    Ok(())
 }
 
 /// Cold-start schema init retry: bounded to give a losing concurrent
@@ -266,6 +350,22 @@ impl SqliteStore {
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.execute_batch("PRAGMA query_only = ON;")
             .with_context(|| format!("set query_only on {}", path.display()))?;
+        // One WAL snapshot for the whole read session. Every read command
+        // validates the index's identity metadata and *then* loads vectors;
+        // in autocommit those are two independent snapshots, so a concurrent
+        // `oxide index` finishing a provider switch in between let a request
+        // approve the old provider's metadata and go on to score against the
+        // new provider's rows. A deferred transaction takes its snapshot at
+        // the first read and holds it, so the two agree by construction.
+        //
+        // Read-only in the strict sense the CLI contract requires: with
+        // `query_only` set this can never become a write transaction, it
+        // takes no locks a writer waits on under WAL, and the connection's
+        // `Drop` ends it. Safe to hold open only because every reader here
+        // is request-scoped (`RepositoryService::open_index_for_read`); a
+        // long-lived one would pin the WAL against checkpointing.
+        conn.execute_batch("BEGIN DEFERRED;")
+            .with_context(|| format!("begin read snapshot on {}", path.display()))?;
         Ok(Self { conn })
     }
 }
@@ -285,10 +385,11 @@ impl IndexBackend for SqliteStore {
         Ok(())
     }
 
-    fn set_meta_all(&mut self, pairs: &[(&str, &str)]) -> Result<()> {
+    fn set_meta_all(&mut self, expected_space: &str, pairs: &[(&str, &str)]) -> Result<()> {
         let tx = self
             .conn
             .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        ensure_migration_marker(&tx, expected_space)?;
         for (key, value) in pairs {
             tx.execute(
                 "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
@@ -472,8 +573,15 @@ impl IndexBackend for SqliteStore {
         Ok(())
     }
 
-    fn put_embeddings_batch(&mut self, items: &[(u64, Vec<f32>)]) -> Result<()> {
-        let tx = self.conn.transaction()?;
+    fn put_embeddings_batch(
+        &mut self,
+        expected_space: &str,
+        items: &[(u64, Vec<f32>)],
+    ) -> Result<()> {
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        ensure_migration_marker(&tx, expected_space)?;
         {
             let mut hash_stmt = tx.prepare("SELECT content_hash FROM symbols WHERE id = ?1")?;
             let mut ins = tx.prepare(
@@ -546,8 +654,16 @@ impl IndexBackend for SqliteStore {
         Ok(out)
     }
 
-    fn clear_embeddings(&mut self) -> Result<()> {
-        self.conn.execute("DELETE FROM embeddings", [])?;
+    fn begin_embedding_migration(&mut self, fingerprint_json: &str) -> Result<()> {
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tx.execute("DELETE FROM embeddings", [])?;
+        tx.execute(
+            "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
+            [EMBEDDING_MIGRATION_KEY, fingerprint_json],
+        )?;
+        tx.commit()?;
         Ok(())
     }
 
@@ -1200,48 +1316,33 @@ pub fn update_embeddings(
         .clamp(1, 4);
 
     // Vectors from a different vector space are not comparable: wipe them
-    // once so everything below re-embeds under the current model. The
-    // structured fingerprint (Phase 3.3 item 3) is the real contract when
-    // both sides have one; the plain `embedder` name string is the fallback
-    // for indices/providers that predate it, so upgrading OXIDE doesn't
-    // force every existing index to reindex on the next run.
+    // once so everything below re-embeds under the current model. Clearing
+    // and marking the migration in flight is one transaction, so from here
+    // on "marker present" implies "every surviving vector is the marker's"
+    // — see `IndexBackend::begin_embedding_migration`.
     let current_fp = embedder.fingerprint();
-    let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
-        .get_meta("embedding_fingerprint")?
-        .filter(|s| !s.is_empty())
-        .map(|s| serde_json::from_str(&s).ok());
-    match stored_fp {
-        // Both sides have a fingerprint: it alone decides. A stored value
-        // that fails to parse (older/foreign schema) is conservatively
-        // treated as incompatible rather than guessed at.
-        Some(Some(prev)) if prev != current_fp => {
-            eprintln!(
-                "oxide: embedding space changed ({} -> {}); re-embedding all symbols",
-                prev.model, current_fp.model
-            );
-            store.clear_embeddings()?;
-        }
-        Some(Some(_)) => {}
-        Some(None) => {
-            eprintln!(
-                "oxide: stored embedding fingerprint is unreadable; re-embedding all symbols"
-            );
-            store.clear_embeddings()?;
-        }
-        // No fingerprint stored (legacy index): fall back to the name check
-        // this codebase has always used.
-        None => match store.get_meta("embedder")? {
-            Some(prev) if !prev.is_empty() && prev != embedder.name() => {
-                eprintln!(
-                    "oxide: embedder changed ({} -> {}); re-embedding all symbols",
-                    prev,
-                    embedder.name()
-                );
-                store.clear_embeddings()?;
-            }
-            _ => {}
-        },
+    let fingerprint_json = serde_json::to_string(&current_fp)?;
+    let resuming = store
+        .get_meta(EMBEDDING_MIGRATION_KEY)?
+        .is_some_and(|s| !s.is_empty());
+    if let Some(reason) = incompatible_stored_space(store, embedder)? {
+        eprintln!("oxide: {reason}");
+        store.begin_embedding_migration(&fingerprint_json)?;
+    } else if resuming {
+        // Compatible *and* marked means an earlier run of this same provider
+        // was interrupted: its rows are ours to finish. Rewrite the marker
+        // with this run's canonical serialization so the guard below can
+        // compare it as bytes rather than re-parsing it on every write.
+        store.set_meta(EMBEDDING_MIGRATION_KEY, &fingerprint_json)?;
     }
+
+    // The value every write below asserts the marker still holds. Empty for
+    // an ordinary incremental run (no migration is in flight, and none may
+    // start under us); this run's fingerprint while one is. See
+    // `IndexBackend::put_embeddings_batch` for the concurrency this closes.
+    // After the branch above this is either "" or this run's
+    // `fingerprint_json`; read it back rather than reconstructing it.
+    let expected_space = store.get_meta(EMBEDDING_MIGRATION_KEY)?.unwrap_or_default();
 
     // Embed only symbols whose embedding is missing or whose content
     // changed; everything else reuses its stored vector untouched — unless
@@ -1280,7 +1381,7 @@ pub fn update_embeddings(
                 batch.push((s.id(), vec));
             }
             report.embedded_symbols += batch.len();
-            store.put_embeddings_batch(&batch)?;
+            store.put_embeddings_batch(&expected_space, &batch)?;
         }
     } else {
         let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
@@ -1302,9 +1403,25 @@ pub fn update_embeddings(
             }
             Ok::<_, anyhow::Error>(out)
         })?;
+        // Same rejection the batched path above applies: an empty or
+        // all-zero vector is a provider failure, not an embedding. Counting
+        // it as a success (and storing it) let a fully-failed run report
+        // `embed_failures: 0`, which `index_staged` reads as "provider
+        // healthy" — and left rows that satisfy the `embeddings == symbols`
+        // completeness check while carrying no signal at all.
         for part in computed {
-            report.embedded_symbols += part.len();
-            store.put_embeddings_batch(&part)?;
+            let kept: Vec<(u64, Vec<f32>)> = part
+                .into_iter()
+                .filter(|(_, vec)| {
+                    let failed = vec.is_empty() || vec.iter().all(|f| *f == 0.0);
+                    if failed {
+                        report.embed_failures += 1;
+                    }
+                    !failed
+                })
+                .collect();
+            report.embedded_symbols += kept.len();
+            store.put_embeddings_batch(&expected_space, &kept)?;
         }
     }
 
@@ -1312,17 +1429,23 @@ pub fn update_embeddings(
     let dim_str = embedder.dim().to_string();
     let schema_str = SCHEMA_VERSION.to_string();
     let extraction_str = EXTRACTION_VERSION.to_string();
-    // current_fp was already computed above for the staleness check; reuse
-    // it so the stored fingerprint reflects exactly what was just compared.
-    let fingerprint_json = serde_json::to_string(&current_fp)?;
-    store.set_meta_all(&[
-        ("root", root_str.as_str()),
-        ("embedder", embedder.name()),
-        ("dim", dim_str.as_str()),
-        ("schema_version", schema_str.as_str()),
-        ("extraction_version", extraction_str.as_str()),
-        ("embedding_fingerprint", fingerprint_json.as_str()),
-    ])?;
+    // Publishing the completed identity and retiring the in-flight marker
+    // must be the same transaction as everything else here: this is the one
+    // instant at which the index stops being "mid-migration" and starts
+    // being "built by this provider", and a torn version of it is exactly
+    // the state `begin_embedding_migration` exists to make impossible.
+    store.set_meta_all(
+        &expected_space,
+        &[
+            ("root", root_str.as_str()),
+            ("embedder", embedder.name()),
+            ("dim", dim_str.as_str()),
+            ("schema_version", schema_str.as_str()),
+            ("extraction_version", extraction_str.as_str()),
+            ("embedding_fingerprint", fingerprint_json.as_str()),
+            (EMBEDDING_MIGRATION_KEY, ""),
+        ],
+    )?;
     // Additive, not an overwrite: a caller running this right after
     // `update_base` (the normal case) already has that stage's duration in
     // `report.duration_ms` and wants the combined total, not just this
@@ -1347,25 +1470,98 @@ pub fn pending_embedding_count(
     store: &dyn IndexBackend,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<usize> {
-    let current_fp = embedder.fingerprint();
-    let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
-        .get_meta("embedding_fingerprint")?
-        .filter(|s| !s.is_empty())
-        .map(|s| serde_json::from_str(&s).ok());
-    let space_changed = match stored_fp {
-        Some(Some(prev)) => prev != current_fp,
-        // Unreadable stored fingerprint: same "reindex all" fallback
-        // `update_embeddings` takes.
-        Some(None) => true,
-        None => match store.get_meta("embedder")? {
-            Some(prev) => !prev.is_empty() && prev != embedder.name(),
-            None => false,
-        },
-    };
-    if space_changed {
+    if incompatible_stored_space(store, embedder)?.is_some() {
         return Ok(store.all_symbols()?.len());
     }
     content_stale_embedding_count(store)
+}
+
+/// Whether the index's stored vectors are usable under `embedder`, and why
+/// not when they aren't: `Some(reason)` means "these vectors belong to a
+/// different embedding space, clear them", `None` means "reuse is safe".
+///
+/// The single decision point for [`update_embeddings`] (which clears on
+/// `Some`) and [`pending_embedding_count`] (which reports every symbol
+/// pending on `Some`). They used to duplicate this comparison, with a
+/// comment on each warning that they must never diverge; sharing it is how
+/// that guarantee stops depending on the comment.
+///
+/// Precedence, strongest evidence first:
+/// 1. [`EMBEDDING_MIGRATION_KEY`] — an unfinished migration. Only ever
+///    written in the same transaction that empties the embeddings table, so
+///    it, not the published metadata (which the interrupted run never
+///    reached), describes the surviving rows.
+/// 2. `embedding_fingerprint` — the real compatibility contract when
+///    present (Phase 3.3 item 3).
+/// 3. `embedder` + `dim` — the legacy fallback for indices written before
+///    fingerprints existed, so upgrading OXIDE doesn't force a reindex.
+///
+/// A stored value at any tier that is present but unparseable is treated as
+/// incompatible, never guessed at and never ignored: "unreadable" must not
+/// fail open into the weaker tier below it, or a corrupt fingerprint would
+/// be waved through by a matching legacy name.
+fn incompatible_stored_space(
+    store: &dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+) -> Result<Option<String>> {
+    let current_fp = embedder.fingerprint();
+    let parse =
+        |raw: &str| serde_json::from_str::<crate::embeddings::EmbeddingSpaceFingerprint>(raw);
+
+    if let Some(raw) = store
+        .get_meta(EMBEDDING_MIGRATION_KEY)?
+        .filter(|s| !s.is_empty())
+    {
+        return Ok(match parse(&raw) {
+            Ok(prev) if prev == current_fp => None,
+            Ok(prev) => Some(format!(
+                "an interrupted migration to {} left this index's vectors mid-flight; re-embedding all symbols under {}",
+                prev.model, current_fp.model
+            )),
+            Err(_) => Some(
+                "an interrupted embedding migration left an unreadable fingerprint; re-embedding all symbols".to_string(),
+            ),
+        });
+    }
+
+    if let Some(raw) = store
+        .get_meta("embedding_fingerprint")?
+        .filter(|s| !s.is_empty())
+    {
+        return Ok(match parse(&raw) {
+            Ok(prev) if prev == current_fp => None,
+            Ok(prev) => Some(format!(
+                "embedding space changed ({} -> {}); re-embedding all symbols",
+                prev.model, current_fp.model
+            )),
+            Err(_) => Some(
+                "stored embedding fingerprint is unreadable; re-embedding all symbols".to_string(),
+            ),
+        });
+    }
+
+    // Legacy index. The name check this codebase has always used, plus the
+    // dimension: the name does not imply the width. `HashedEmbedder` reports
+    // one fixed name at every `dim`, and a served model can change output
+    // width without changing its label, so a name-only comparison happily
+    // reuses rows of the wrong shape.
+    let prev_name = store.get_meta("embedder")?.filter(|s| !s.is_empty());
+    let prev_dim = store.get_meta("dim")?.filter(|s| !s.is_empty());
+    if let Some(prev) = prev_name.filter(|p| p != embedder.name()) {
+        return Ok(Some(format!(
+            "embedder changed ({} -> {}); re-embedding all symbols",
+            prev,
+            embedder.name()
+        )));
+    }
+    if let Some(prev) = prev_dim.filter(|d| *d != embedder.dim().to_string()) {
+        return Ok(Some(format!(
+            "embedding dimension changed ({} -> {}); re-embedding all symbols",
+            prev,
+            embedder.dim()
+        )));
+    }
+    Ok(None)
 }
 
 /// Count of symbols whose stored embedding is missing or whose content

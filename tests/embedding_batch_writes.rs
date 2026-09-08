@@ -57,7 +57,7 @@ fn batched_writes_are_identical_to_one_call_per_item() {
     }
     for chunk in vectors.chunks(7) {
         // Odd chunk size on purpose: exercises a final partial chunk.
-        batched.put_embeddings_batch(chunk).unwrap();
+        batched.put_embeddings_batch("", chunk).unwrap();
     }
 
     let a = per_item.all_embeddings().unwrap();
@@ -84,7 +84,7 @@ fn batched_writes_skip_symbol_ids_with_no_matching_row_same_as_put_embedding() {
         (symbols[0].id(), vec![1.0_f32, 2.0]),
         (bogus_id, vec![3.0_f32, 4.0]),
     ];
-    store.put_embeddings_batch(&items).unwrap();
+    store.put_embeddings_batch("", &items).unwrap();
 
     let stored = store.all_embeddings().unwrap();
     assert!(stored.contains_key(&symbols[0].id()));
@@ -97,6 +97,6 @@ fn batched_writes_skip_symbol_ids_with_no_matching_row_same_as_put_embedding() {
 #[test]
 fn empty_batch_is_a_harmless_no_op() {
     let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
-    store.put_embeddings_batch(&[]).unwrap();
+    store.put_embeddings_batch("", &[]).unwrap();
     assert!(store.all_embeddings().unwrap().is_empty());
 }

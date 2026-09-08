@@ -24,17 +24,29 @@ PATH (used only for `review`).
 
 Semantic search works with no configuration and no server. The default
 provider is `arctic-embed-xs-q` — a 384-dimension int8 ONNX model run
-in-process via fastembed, ~23 MB of weights fetched from Hugging Face on
-first index and cached thereafter. It is chosen on the 21-task ContextBench
-evidence in `docs/cpu-embedding-survey/`: better vector-only retrieval than
-the 1024-dimension `qwen3-Q8_0` it replaces (R@5 0.655 vs 0.536), ~9x faster
-full-repo indexing, ~230 MB peak RSS, and no separate process to run.
+in-process via fastembed, ~23 MB of weights fetched from Hugging Face the
+first time the model is loaded and cached thereafter. It is chosen on the
+21-task ContextBench evidence in `docs/cpu-embedding-survey/`: better
+vector-only retrieval than the 1024-dimension `qwen3-Q8_0` it replaces (R@5
+0.655 vs 0.536), ~9x faster full-repo indexing, ~230 MB peak RSS, and no
+separate process to run.
 
-Two ways to change it:
+**First model load, not first index.** Every command that answers
+semantically — `index`, `watch`, `search`, `context`, `review` — builds the
+provider before it touches the index, so a machine with an existing index but
+no cached weights still downloads on its first semantic query. `search --mode
+lexical` never loads a model. Weights land in `$HF_HOME` when set, otherwise
+`~/.cache/huggingface/hub`. A failed download writes nothing to the index:
+restore network and re-run the same command.
+
+Provider selection, strongest first — `--embedder URL`, then
+`$OXIDE_EMBED_URL`, then `$OXIDE_EMBED_NATIVE`:
 
 ```bash
-# fully offline / air-gapped: deterministic hashed embedder, no model, no network
-export OXIDE_EMBED_NATIVE=hashed
+# offline / air-gapped: deterministic hashed embedder, no model, no download.
+# Clear the endpoint too — OXIDE_EMBED_NATIVE selects a provider, it does not
+# forbid network, and a set OXIDE_EMBED_URL still outranks it.
+env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed oxide index .
 
 # a different in-process model (see `native_model_spec` in src/embeddings.rs)
 export OXIDE_EMBED_NATIVE=jina-code-v2
@@ -42,6 +54,18 @@ export OXIDE_EMBED_NATIVE=jina-code-v2
 # an OpenAI-compatible HTTP endpoint, e.g. llama.cpp via scripts/embedder.sh start
 export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings OXIDE_EMBED_MODEL=qwen3-Q8_0
 ```
+
+Building with `--no-default-features` drops ONNX support entirely (no model
+can be loaded), but does not disable the HTTP provider — a configured
+endpoint is still used.
+
+Changing provider is safe but not free: vectors from different models are not
+comparable, so the next `oxide index` clears and recomputes every embedding.
+That migration is crash-safe — an `oxide index` killed part-way through it
+leaves the index detectably mid-migration rather than silently serving one
+provider's queries against another's vectors. Semantic commands then fail
+with `index_stale` and say to re-run `oxide index`; `--mode lexical` keeps
+working throughout.
 
 Precedence: `--embedder URL` > `$OXIDE_EMBED_URL` > `$OXIDE_EMBED_NATIVE` >
 the default profile. Changing provider changes the embedding space, so the
@@ -325,9 +349,10 @@ parsing or human renderers, and exposes no admin commands.
 
 ## Limitations
 
-- The default provider downloads ~23 MB of model weights on first index and
-  needs network to do so. `OXIDE_EMBED_NATIVE=hashed` restores the previous
-  zero-download behaviour, at shallow semantic similarity.
+- The default provider downloads ~23 MB of model weights the first time the
+  model is loaded (any semantic command, not only `index`) and needs network
+  to do so. `env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed` restores the
+  previous zero-download behaviour, at shallow semantic similarity.
 - Reference extraction is identifier-name intersection, not scope analysis;
   high-confidence relations only (same-name definitions, resolvable imports).
 - TS bare imports (`import x from 'pkg'`) resolve only if `pkg` matches an

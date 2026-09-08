@@ -53,6 +53,32 @@ jobs:
       - name: MCP protocol parity
         run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --test mcp_e2e
 
+  no-default-features:
+    name: Rust / No default features
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
+      - name: Restore Cargo cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-nodefault-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
+      # Without `native-embed` there is no ONNX runtime to load a model
+      # from, so this is the build an air-gapped or minimal-dependency
+      # consumer actually gets. It has to keep compiling, linting and
+      # passing tests on its own — the default-feature jobs above cannot
+      # catch a `#[cfg(feature = "native-embed")]` block that stops
+      # building once removed.
+      - name: Lint
+        run: cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
+      - name: Full unit and integration suite
+        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features
+
   retrieval-gate:
     name: OXIDE / Retrieval Gate
     runs-on: ubuntu-latest
