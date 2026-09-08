@@ -7,6 +7,7 @@ set -euo pipefail
 N="${1:-200}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BIN="$ROOT/target/release/oxide"
+OFFLINE_EMBEDDER=(env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL OXIDE_EMBED_NATIVE=hashed)
 WORK="${TMPDIR:-/tmp}/oxide-perf-$$"
 
 trap 'rm -rf "$WORK"' EXIT
@@ -29,12 +30,12 @@ run_rss() {
 }
 
 cold_out="$(mktemp)"
-cold_rss=$(run_rss "$cold_out" "$BIN" index .)
+cold_rss=$(run_rss "$cold_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
 cold=$(grep '^took' "$cold_out" | grep -o '[0-9]*')
 rm -f "$cold_out"
 
 warm_out="$(mktemp)"
-warm_rss=$(run_rss "$warm_out" "$BIN" index .)
+warm_rss=$(run_rss "$warm_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
 warm=$(grep '^took' "$warm_out" | grep -o '[0-9]*')
 rm -f "$warm_out"
 
@@ -48,24 +49,24 @@ assert '707' in s, "edit did not apply"
 p.write_text(s)
 EOF
 edit_out_file="$(mktemp)"
-edit_rss=$(run_rss "$edit_out_file" "$BIN" index .)
+edit_rss=$(run_rss "$edit_out_file" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
 edit_ms=$(grep '^took' "$edit_out_file" | grep -o '[0-9]*')
 embed_line=$(grep 'symbols:' "$edit_out_file")
 rm -f "$edit_out_file"
 
 # search latency: best of 3 hybrid searches
 lat=$(for i in 1 2 3; do
-  /usr/bin/time -f "%e" "$BIN" search "retry policy should_retry attempts" --limit 5 2>&1 >/dev/null | tail -1
+  /usr/bin/time -f "%e" "${OFFLINE_EMBEDDER[@]}" "$BIN" search "retry policy should_retry attempts" --limit 5 2>&1 >/dev/null | tail -1
 done | sort -n | head -1)
 
 # context latency: best of 3
 ctx_lat=$(for i in 1 2 3; do
-  /usr/bin/time -f "%e" "$BIN" context --task "fix retry policy backoff" --budget-tokens 4096 2>&1 >/dev/null | tail -1
+  /usr/bin/time -f "%e" "${OFFLINE_EMBEDDER[@]}" "$BIN" context --task "fix retry policy backoff" --budget-tokens 4096 2>&1 >/dev/null | tail -1
 done | sort -n | head -1)
 
 size=$(du -h .oxide/index.db | cut -f1)
-files_count=$("$BIN" stats | awk '/^files:/ {print $2}')
-symbols_count=$("$BIN" stats | awk '/^symbols:/ {print $2}')
+files_count=$("${OFFLINE_EMBEDDER[@]}" "$BIN" stats | awk '/^files:/ {print $2}')
+symbols_count=$("${OFFLINE_EMBEDDER[@]}" "$BIN" stats | awk '/^symbols:/ {print $2}')
 
 printf 'files=%s symbols=%s\n' "$files_count" "$symbols_count"
 printf 'cold_index=%sms (peak_rss=%sKB) warm_index=%sms (peak_rss=%sKB) single_edit=%sms (peak_rss=%sKB) (%s)\n' \
