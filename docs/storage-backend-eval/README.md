@@ -21,6 +21,7 @@ Scope: SurrealDB 3.2.4 embedded, `kv-rocksdb` and `kv-surrealkv`. Nothing here
 speaks to SurrealDB in server mode. Zvec stays frozen as the leading specialist
 challenger; nothing here settles the question it was frozen against.
 
+- **Enhanced SQLite, built and measured — and the storage freeze: [`enhanced-sqlite.md`](enhanced-sqlite.md)**. Supersedes "What is not yet proven" below: ranking parity is now byte-identical on the fixture benchmark and bit-exact per score.
 - **Retest under SurrealDB's documented model, and the architecture question: [`surrealdb-retest.md`](surrealdb-retest.md)**
 - Methodology, gate definitions, harness bugs found and fixed, limits: [`methodology.md`](methodology.md)
 - Status-quo numbers the proposal has to beat: [`baseline.md`](baseline.md)

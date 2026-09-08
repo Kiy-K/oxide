@@ -124,6 +124,7 @@ fn partially_committed_files_without_metadata_are_rejected() {
                 oxide::symbols::content_hash(src),
                 &syms,
                 &[],
+                &[],
             )
             .unwrap();
         assert!(
@@ -160,6 +161,7 @@ fn embedding_phase_interrupted_before_meta_write_is_rejected() {
                 "src/thing.py",
                 oxide::symbols::content_hash(src),
                 &syms,
+                &[],
                 &[],
             )
             .unwrap();
@@ -203,6 +205,7 @@ fn a_follow_up_index_recovers_cleanly_from_any_interruption_point() {
                 "src/thing.py",
                 oxide::symbols::content_hash(src),
                 &syms,
+                &[],
                 &[],
             )
             .unwrap();
@@ -280,7 +283,13 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
         let mut store = SqliteStore::open(&root.join(".oxide/index.db")).unwrap();
         let syms = oxide::parser::parse_file("thing.py", src, oxide::symbols::Language::Python);
         store
-            .replace_file("thing.py", oxide::symbols::content_hash(src), &syms, &[])
+            .replace_file(
+                "thing.py",
+                oxide::symbols::content_hash(src),
+                &syms,
+                &[],
+                &[],
+            )
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in &syms {

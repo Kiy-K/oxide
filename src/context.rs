@@ -714,7 +714,7 @@ mod tests {
 
     fn seed(file: &str, syms: &[Symbol]) -> SqliteStore {
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
-        store.replace_file(file, 1, syms, &[]).unwrap();
+        store.replace_file(file, 1, syms, &[], &[]).unwrap();
         let emb = HashedEmbedder::default();
         for s in syms {
             store
@@ -742,7 +742,9 @@ mod tests {
                 )
             })
             .collect();
-        store.replace_file("src/small.py", 1, &smalls, &[]).unwrap();
+        store
+            .replace_file("src/small.py", 1, &smalls, &[], &[])
+            .unwrap();
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
@@ -824,10 +826,10 @@ mod tests {
         );
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
-            .replace_file("src/a.py", 1, &[m.clone(), f.clone()], &[])
+            .replace_file("src/a.py", 1, &[m.clone(), f.clone()], &[], &[])
             .unwrap();
         store
-            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[])
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[], &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in [&m, &f, &other] {
@@ -928,7 +930,9 @@ mod tests {
                 )
             })
             .collect();
-        store.replace_file("src/junk.py", 1, &smalls, &[]).unwrap();
+        store
+            .replace_file("src/junk.py", 1, &smalls, &[], &[])
+            .unwrap();
         let emb = HashedEmbedder::default();
         for s in &smalls {
             store
@@ -983,7 +987,7 @@ mod tests {
         let mut store = seed("src/app.py", &[caller.clone()]);
         for d in &defs {
             store
-                .replace_file(&d.file, 1, std::slice::from_ref(d), &[])
+                .replace_file(&d.file, 1, std::slice::from_ref(d), &[], &[])
                 .unwrap();
         }
         let emb = HashedEmbedder::default();
@@ -1053,7 +1057,7 @@ mod tests {
         );
         let mut store = seed("src/policy.py", &[target]);
         store
-            .replace_file("src/app.py", 1, std::slice::from_ref(&caller), &[])
+            .replace_file("src/app.py", 1, std::slice::from_ref(&caller), &[], &[])
             .unwrap();
         // This test hand-builds symbols via `replace_file`, bypassing
         // `update_index` (which is what normally populates
@@ -1114,7 +1118,7 @@ mod tests {
             "def helper_one(): hot target help",
         );
         store
-            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[])
+            .replace_file("src/other.py", 1, std::slice::from_ref(&other), &[], &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in hot.iter().chain(std::iter::once(&other)) {
@@ -1183,7 +1187,7 @@ mod tests {
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         for s in &many {
             store
-                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[], &[])
                 .unwrap();
         }
         let emb = HashedEmbedder::default();
@@ -1240,10 +1244,22 @@ mod tests {
         );
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
-            .replace_file("src/mod_only.py", 1, std::slice::from_ref(&orphan), &[])
+            .replace_file(
+                "src/mod_only.py",
+                1,
+                std::slice::from_ref(&orphan),
+                &[],
+                &[],
+            )
             .unwrap();
         store
-            .replace_file("src/both.py", 1, &[subsumed.clone(), concrete.clone()], &[])
+            .replace_file(
+                "src/both.py",
+                1,
+                &[subsumed.clone(), concrete.clone()],
+                &[],
+                &[],
+            )
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in [&orphan, &subsumed, &concrete] {

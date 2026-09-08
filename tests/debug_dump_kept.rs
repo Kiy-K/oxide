@@ -49,7 +49,7 @@ fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str) -> Symbol {
 
 fn seed(file: &str, syms: &[Symbol]) -> SqliteStore {
     let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
-    store.replace_file(file, 1, syms, &[]).unwrap();
+    store.replace_file(file, 1, syms, &[], &[]).unwrap();
     let emb = HashedEmbedder::default();
     for s in syms {
         store

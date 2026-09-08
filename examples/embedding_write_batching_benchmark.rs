@@ -42,7 +42,7 @@ fn seed_store(path: &Path, symbols: &[Symbol]) -> SqliteStore {
     let mut store = SqliteStore::open(path).unwrap();
     for s in symbols {
         store
-            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[])
+            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[], &[])
             .unwrap();
     }
     store

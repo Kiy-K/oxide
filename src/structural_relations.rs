@@ -318,7 +318,9 @@ mod tests {
         let mut store = SqliteStore::open(&tmp.path().join(".oxide/index.db")).unwrap();
         let symbols = crate::parser::parse_file("x.py", src, crate::symbols::Language::Python);
         let hash = crate::symbols::content_hash(src);
-        store.replace_file("x.py", hash, &symbols, &[]).unwrap();
+        store
+            .replace_file("x.py", hash, &symbols, &[], &[])
+            .unwrap();
         assert!(
             store.all_symbol_relations().unwrap().is_empty(),
             "precondition: simulated pre-migration index has symbols but no relations"

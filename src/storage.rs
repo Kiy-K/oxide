@@ -76,8 +76,41 @@ pub trait IndexBackend {
         hash: u64,
         symbols: &[Symbol],
         relations: &[(u64, Vec<String>, Vec<String>)],
+        postings: &[crate::lexical::DocPostings],
     ) -> Result<()>;
     fn remove_files(&mut self, files: &[String]) -> Result<()>;
+    /// `(document count, summed document length)` over the persisted lexical
+    /// index — BM25's `avg_len` denominator and numerator. Summed in SQL as
+    /// an integer rather than by folding `f32` document lengths in hash-map
+    /// order, which is what the in-memory index does; the two agree exactly
+    /// while the total stays under `f32`'s 2^24 integer limit, and past it
+    /// the SQL sum is the one that stays deterministic across processes.
+    /// Rewrite lexical postings for symbols whose rows are missing or stale
+    /// while the symbols themselves are unchanged — the backfill path for an
+    /// index that predates the persisted lexical tables, or whose earlier
+    /// backfill was interrupted.
+    ///
+    /// Separate from [`Self::replace_file`] because it must not touch
+    /// `symbols`: reparsing an unchanged file to repair a derived table
+    /// would be wasted work and would misreport `reparsed_files`. Safe
+    /// outside `replace_file`'s transaction only because the symbols are not
+    /// moving underneath it, and because an interrupted backfill leaves
+    /// [`LEXICAL_INDEX_KEY`] unpublished, which makes the whole persisted
+    /// lexical index unreadable rather than partially trusted.
+    /// Returns `false` without writing if `file`'s stored `content_hash` no
+    /// longer equals `expected_hash` — another process replaced that file
+    /// between this run's scan and this write, and the caller's postings
+    /// describe the older revision.
+    fn put_file_lexical(
+        &mut self,
+        file: &str,
+        expected_hash: u64,
+        postings: &[crate::lexical::DocPostings],
+    ) -> Result<bool>;
+    fn lexical_totals(&self) -> Result<(usize, i64)>;
+    /// Postings for one query term: `(symbol_id, weighted tf, document
+    /// length)`, one row per matching document.
+    fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>>;
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
     fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
     fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()>;
@@ -147,7 +180,6 @@ pub trait IndexBackend {
     /// re-reads the marker inside each write's own transaction; read that
     /// method's doc for the interleaving it closes and the one it does not.
     fn begin_embedding_migration(&mut self, fingerprint_json: &str) -> Result<()>;
-    fn drop_embeddings_without_symbols(&mut self) -> Result<()>;
     /// Replaces precomputed call/base relations for every `(symbol_id,
     /// calls, bases)` triple in `relations`, as one transaction per call —
     /// `update_index` calls this once per reparsed file
@@ -229,6 +261,10 @@ const SCHEMA_SQL: &str = r#"
     );
     CREATE INDEX IF NOT EXISTS idx_symbols_file ON symbols(file);
     CREATE INDEX IF NOT EXISTS idx_symbols_name ON symbols(name);
+    -- The `ON DELETE CASCADE` clauses below are load-bearing, not
+    -- decorative: `replace_file` and `remove_files` delete only from
+    -- `symbols` and rely on both dependent tables following. `open` turns
+    -- foreign-key enforcement on explicitly for that reason.
     CREATE TABLE IF NOT EXISTS embeddings(
         symbol_id INTEGER PRIMARY KEY REFERENCES symbols(id) ON DELETE CASCADE,
         content_hash INTEGER NOT NULL,
@@ -249,7 +285,76 @@ const SCHEMA_SQL: &str = r#"
         target TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_symbol_relations_symbol_id ON symbol_relations(symbol_id);
+    -- Persisted BM25 postings (lexical.rs). One row per (symbol, term) with
+    -- the weighted term frequency, and one `lexical_docs` row per symbol —
+    -- for EVERY symbol, including those that produce no terms, so BM25's
+    -- length normalization never silently falls back to the corpus average.
+    --
+    -- `WITHOUT ROWID` with the primary key in (term, symbol_id) order makes
+    -- a query-term lookup a covering range scan: term, symbol_id and tf all
+    -- live in the one b-tree, so scoring never touches a second structure.
+    -- The secondary index on symbol_id is what the `ON DELETE CASCADE` uses;
+    -- without it, deleting one symbol would scan the whole postings table,
+    -- and `replace_file` deletes every symbol in a file.
+    CREATE TABLE IF NOT EXISTS lexical_postings(
+        term TEXT NOT NULL,
+        symbol_id INTEGER NOT NULL REFERENCES symbols(id) ON DELETE CASCADE,
+        tf INTEGER NOT NULL,
+        PRIMARY KEY(term, symbol_id)
+    ) WITHOUT ROWID;
+    CREATE INDEX IF NOT EXISTS idx_lexical_postings_symbol ON lexical_postings(symbol_id);
+    CREATE TABLE IF NOT EXISTS lexical_docs(
+        symbol_id INTEGER PRIMARY KEY REFERENCES symbols(id) ON DELETE CASCADE,
+        len INTEGER NOT NULL
+    );
 "#;
+
+/// Format generation of the persisted lexical index. The value stored under
+/// [`LEXICAL_INDEX_KEY`] when, and only when, a full-corpus base pass has
+/// finished writing postings for every symbol. Bump when the tokenizer,
+/// field weights, or table layout change, so an index built by an older
+/// binary is rebuilt rather than scored under new rules.
+pub const LEXICAL_INDEX_VERSION: u32 = 1;
+
+/// Meta key carrying [`LEXICAL_INDEX_VERSION`] for a **complete** persisted
+/// lexical index.
+///
+/// Absence is the in-flight state, and that is the whole design: the tables
+/// existing, or even holding rows, proves nothing about whether every symbol
+/// is covered. An index upgraded from a build that predates them starts with
+/// zero rows; a backfill interrupted halfway leaves some files covered and
+/// some not, and the covered files' `content_hash` values already match, so
+/// no later incremental run would ever revisit them. Publishing this key
+/// only at the end of a full pass — and treating any other value, including
+/// none, as "not usable, rebuild it" — makes a partial index unreadable
+/// instead of quietly wrong. Same shape as [`EMBEDDING_MIGRATION_KEY`], and
+/// the same lesson as `schema_version`: a torn write must not be able to
+/// present itself as a healthy index.
+pub const LEXICAL_INDEX_KEY: &str = "lexical_index_version";
+
+/// Insert one file's postings.
+///
+/// Deliberately the plain shape. Three faster-looking variants were measured
+/// on the 15k-symbol perf corpus and none beat it: a 32 MB `cache_size` cost
+/// 31 MB of RSS for no time change; 128-row multi-row `INSERT` statements
+/// were *slower* (13.3 s vs 11.8 s cold index); and pre-sorting rows by term
+/// for b-tree locality came back inside noise (11.6 s). The write cost is
+/// b-tree and WAL work proportional to row count, roughly 9 µs per posting,
+/// and none of the usual levers move it. See
+/// `docs/storage-backend-eval/enhanced-sqlite.md`.
+fn insert_postings(
+    tx: &rusqlite::Transaction<'_>,
+    postings: &[crate::lexical::DocPostings],
+) -> Result<()> {
+    let mut stmt =
+        tx.prepare("INSERT INTO lexical_postings(term, symbol_id, tf) VALUES(?1,?2,?3)")?;
+    for d in postings {
+        for (term, tf) in &d.terms {
+            stmt.execute(rusqlite::params![term, d.symbol_id as i64, tf])?;
+        }
+    }
+    Ok(())
+}
 
 fn is_locked(e: &rusqlite::Error) -> bool {
     matches!(
@@ -282,6 +387,27 @@ impl SqliteStore {
         let conn =
             Connection::open(path).with_context(|| format!("open index at {}", path.display()))?;
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
+        // Foreign keys, declared rather than inherited. Both dependent
+        // tables carry `ON DELETE CASCADE` and OXIDE genuinely relies on
+        // those cascades — `replace_file` deletes a file's symbols and lets
+        // the embeddings and relations go with them, which is exactly why it
+        // snapshots the embeddings it wants to keep first.
+        //
+        // Nothing in OXIDE ever asked for that. Enforcement was on only
+        // because `libsqlite3-sys` compiles its bundled SQLite with
+        // `-DSQLITE_DEFAULT_FOREIGN_KEYS=1` (0.30.1's `build.rs`, the
+        // version pinned by `rusqlite 0.32`), inverting SQLite's own
+        // documented default of OFF. A rusqlite bump, or ever linking a
+        // system SQLite, would have silently switched cascades off and
+        // started stranding a row per deleted symbol, in a codebase whose
+        // comments asserted the cascades were decorative. Setting it
+        // explicitly costs one statement per open and makes the dependency
+        // real; `tests/foreign_key_audit.rs` fails if it stops holding.
+        //
+        // Must precede any transaction: `PRAGMA foreign_keys` is a silent
+        // no-op inside one.
+        conn.execute_batch("PRAGMA foreign_keys = ON;")
+            .with_context(|| format!("enable foreign keys on {}", path.display()))?;
         // Cold-start race: two processes creating the very first index.db
         // concurrently can still hit `database is locked` while switching
         // journal_mode / creating the schema, even with busy_timeout set —
@@ -413,6 +539,7 @@ impl IndexBackend for SqliteStore {
         hash: u64,
         symbols: &[Symbol],
         relations: &[(u64, Vec<String>, Vec<String>)],
+        postings: &[crate::lexical::DocPostings],
     ) -> Result<()> {
         // IMMEDIATE: acquire the write lock up front. A deferred
         // transaction that reads before it writes can hit SQLITE_BUSY on
@@ -442,6 +569,9 @@ impl IndexBackend for SqliteStore {
                 kept.push(row?);
             }
         }
+        // This cascades to `embeddings` and `symbol_relations` — foreign keys
+        // ARE enforced here (see `open`), which is why the snapshot above
+        // exists and why nothing deletes those two tables by hand.
         tx.execute("DELETE FROM symbols WHERE file = ?1", [file])?;
         tx.execute("DELETE FROM files WHERE path = ?1", [file])?;
         tx.execute(
@@ -489,14 +619,14 @@ impl IndexBackend for SqliteStore {
         }
         // Same transaction as the symbol rewrite above — see this method's
         // doc comment for why relations must land atomically with
-        // symbols/content_hash, not as a follow-up call.
+        // symbols/content_hash, not as a follow-up call. No per-symbol
+        // delete here: the file-scoped delete above already cleared every
+        // relation row belonging to this file.
         {
-            let mut del = tx.prepare("DELETE FROM symbol_relations WHERE symbol_id = ?1")?;
             let mut ins = tx.prepare(
                 "INSERT INTO symbol_relations (symbol_id, kind, target) VALUES (?1, ?2, ?3)",
             )?;
             for (symbol_id, calls, bases) in relations {
-                del.execute([*symbol_id as i64])?;
                 for target in calls {
                     ins.execute(rusqlite::params![*symbol_id as i64, "calls", target])?;
                 }
@@ -505,8 +635,86 @@ impl IndexBackend for SqliteStore {
                 }
             }
         }
+        // Lexical postings, same transaction and same reason: a file whose
+        // symbols are current but whose postings are not is a silently
+        // wrong BM25 corpus that no later incremental run would revisit,
+        // because the file's content_hash already matches. The cascade from
+        // the symbol delete above already removed the old rows.
+        {
+            let mut doc = tx.prepare("INSERT INTO lexical_docs(symbol_id, len) VALUES(?1,?2)")?;
+            for d in postings {
+                doc.execute(rusqlite::params![d.symbol_id as i64, d.len])?;
+            }
+        }
+        insert_postings(&tx, postings)?;
         tx.commit()?;
         Ok(())
+    }
+
+    fn put_file_lexical(
+        &mut self,
+        file: &str,
+        expected_hash: u64,
+        postings: &[crate::lexical::DocPostings],
+    ) -> Result<bool> {
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        // Re-read the file's hash inside this transaction, the same way
+        // `ensure_migration_marker` re-reads the embedding marker inside
+        // each write. The backfill's postings were derived from a snapshot
+        // taken earlier in the run; if `oxide watch` (or a second `oxide
+        // index`) replaced that file meanwhile, those symbols already have
+        // correct, newer postings and writing ours would overwrite them
+        // with stale ones — permanently, since the file's content_hash now
+        // matches and no incremental run would revisit it.
+        let stored: Option<i64> = tx
+            .query_row(
+                "SELECT content_hash FROM files WHERE path = ?1",
+                [file],
+                |r| r.get(0),
+            )
+            .optional()?;
+        if stored != Some(expected_hash as i64) {
+            return Ok(false);
+        }
+        {
+            // Delete first: a symbol's term set can shrink, and a stale row
+            // for a term the symbol no longer has would keep matching it.
+            let mut del = tx.prepare("DELETE FROM lexical_postings WHERE symbol_id = ?1")?;
+            let mut doc = tx.prepare(
+                "INSERT INTO lexical_docs(symbol_id, len) VALUES(?1,?2)
+                 ON CONFLICT(symbol_id) DO UPDATE SET len = ?2",
+            )?;
+            for d in postings {
+                del.execute([d.symbol_id as i64])?;
+                doc.execute(rusqlite::params![d.symbol_id as i64, d.len])?;
+            }
+        }
+        insert_postings(&tx, postings)?;
+        tx.commit()?;
+        Ok(true)
+    }
+
+    fn lexical_totals(&self) -> Result<(usize, i64)> {
+        let (count, total): (i64, Option<i64>) =
+            self.conn
+                .query_row("SELECT COUNT(*), SUM(len) FROM lexical_docs", [], |r| {
+                    Ok((r.get(0)?, r.get(1)?))
+                })?;
+        Ok((count as usize, total.unwrap_or(0)))
+    }
+
+    fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>> {
+        let mut stmt = self.conn.prepare_cached(
+            "SELECT p.symbol_id, p.tf, d.len
+             FROM lexical_postings p JOIN lexical_docs d ON d.symbol_id = p.symbol_id
+             WHERE p.term = ?1",
+        )?;
+        let rows = stmt.query_map([term], |r| {
+            Ok((r.get::<_, i64>(0)? as u64, r.get(1)?, r.get(2)?))
+        })?;
+        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
     }
 
     fn remove_files(&mut self, files: &[String]) -> Result<()> {
@@ -517,24 +725,16 @@ impl IndexBackend for SqliteStore {
         let tx = self
             .conn
             .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        // Cascades to `embeddings` and `symbol_relations`, in this
+        // transaction. Two repo-wide anti-join sweeps used to run here
+        // *after* the commit, on the documented belief that foreign keys
+        // were unenforced; they were no-ops in every run OXIDE has ever
+        // made, and they scanned both tables in full to achieve it.
         for f in files {
             tx.execute("DELETE FROM symbols WHERE file = ?1", [f])?;
             tx.execute("DELETE FROM files WHERE path = ?1", [f])?;
         }
         tx.commit()?;
-        self.drop_embeddings_without_symbols()?;
-        // Same orphan-sweep shape as embeddings above (foreign keys aren't
-        // enforced — `PRAGMA foreign_keys` is never turned on in this
-        // codebase — so `symbol_relations`'s `ON DELETE CASCADE` is
-        // declarative only): a symbol_relations row for a symbol deleted by
-        // this call, or by an earlier `replace_file` rename-within-file,
-        // becomes an orphan until this sweep runs. Matches the existing,
-        // accepted embeddings behavior exactly rather than holding this one
-        // table to a stricter standard.
-        self.conn.execute(
-            "DELETE FROM symbol_relations WHERE symbol_id NOT IN (SELECT id FROM symbols)",
-            [],
-        )?;
         Ok(())
     }
 
@@ -666,14 +866,6 @@ impl IndexBackend for SqliteStore {
         Ok(())
     }
 
-    fn drop_embeddings_without_symbols(&mut self) -> Result<()> {
-        self.conn.execute(
-            "DELETE FROM embeddings WHERE symbol_id NOT IN (SELECT id FROM symbols)",
-            [],
-        )?;
-        Ok(())
-    }
-
     fn put_symbol_relations_batch(
         &mut self,
         relations: &[(u64, Vec<String>, Vec<String>)],
@@ -771,5 +963,82 @@ impl SqliteStore {
             symbols: q("SELECT COUNT(*) FROM symbols")?,
             embeddings: q("SELECT COUNT(*) FROM embeddings")?,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Foreign-key audit. OXIDE's `replace_file`/`remove_files` delete only
+    /// from `symbols` and depend on `ON DELETE CASCADE` to take the
+    /// dependent rows with them, so enforcement being ON is a correctness
+    /// requirement, not a preference.
+    ///
+    /// It used to hold by accident: SQLite's own default is OFF, and the
+    /// only reason it was ON is that `libsqlite3-sys` compiles its bundled
+    /// amalgamation with `-DSQLITE_DEFAULT_FOREIGN_KEYS=1`. `open` now sets
+    /// it explicitly; this test fails if that stops being true, whether
+    /// because the pragma was dropped or because a dependency bump changed
+    /// the compiled-in default under it.
+    #[test]
+    fn foreign_keys_are_enforced_so_cascades_actually_fire() {
+        let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+        let on: i64 = store
+            .conn
+            .query_row("PRAGMA foreign_keys", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(
+            on, 1,
+            "foreign keys are OFF: replace_file/remove_files would silently \
+             strand an embedding and a relation row per deleted symbol"
+        );
+
+        // A dependent row for a symbol that does not exist must be refused.
+        // If this ever succeeds, enforcement is gone.
+        let orphan = store.conn.execute(
+            "INSERT INTO symbol_relations(symbol_id, kind, target) VALUES(?1,'calls','x')",
+            [9_999_999_i64],
+        );
+        assert!(
+            orphan.is_err(),
+            "insert of a relation row with no parent symbol was accepted"
+        );
+
+        // And the cascade itself: delete the parent, both children follow.
+        let sym = Symbol {
+            qualified_name: "a.f".into(),
+            name: "f".into(),
+            kind: crate::symbols::SymbolKind::Function,
+            language: Language::Python,
+            file: "a.py".into(),
+            start_line: 1,
+            end_line: 2,
+            content_hash: 7,
+            signature: "def f()".into(),
+            imports: vec![],
+            exported: true,
+            parent: None,
+            references: vec![],
+            calls: vec![],
+            bases: vec![],
+        };
+        let id = sym.id();
+        store
+            .replace_file("a.py", 1, &[sym], &[(id, vec!["g".into()], vec![])], &[])
+            .unwrap();
+        store.put_embedding(id, &[0.5, 0.5]).unwrap();
+        assert_eq!(store.all_embeddings().unwrap().len(), 1);
+        assert_eq!(store.all_symbol_relations().unwrap().len(), 1);
+
+        store.remove_files(&["a.py".to_string()]).unwrap();
+        assert!(
+            store.all_embeddings().unwrap().is_empty(),
+            "embedding outlived its symbol"
+        );
+        assert!(
+            store.all_symbol_relations().unwrap().is_empty(),
+            "relation outlived its symbol"
+        );
     }
 }

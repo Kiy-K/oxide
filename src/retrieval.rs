@@ -143,8 +143,21 @@ pub struct RetrievalEngine<'a> {
     symbols: Vec<Symbol>,
     /// symbol id -> position in `symbols`.
     by_id: HashMap<u64, usize>,
-    lexical: LexicalIndex,
+    lexical: LexicalSource,
     vectors: std::cell::RefCell<Option<HashMap<u64, Vec<f32>>>>,
+}
+
+/// Where BM25 postings come from for this engine.
+///
+/// `Persisted` is the normal case and costs nothing to construct — the whole
+/// point, since `Memory` re-reads every symbol body off disk and rebuilds the
+/// posting map on every process start. `Memory` remains for an index whose
+/// persisted lexical generation is absent or stale (built by an older
+/// binary, or mid-backfill), so retrieval degrades to "slow but identical"
+/// rather than "wrong" or "empty".
+enum LexicalSource {
+    Persisted,
+    Memory(LexicalIndex),
 }
 
 impl<'a> RetrievalEngine<'a> {
@@ -155,7 +168,18 @@ impl<'a> RetrievalEngine<'a> {
             .ok()
             .flatten()
             .map(std::path::PathBuf::from);
-        let lexical = LexicalIndex::build(&symbols, root.as_deref());
+        // Trust the persisted postings only on an exact generation match.
+        // Anything else — no key, an older format, a run interrupted before
+        // it published — means the tables may cover only part of the corpus,
+        // which would silently shrink BM25's view of the repo instead of
+        // failing. Falling back rebuilds in memory, and the next `oxide
+        // index` repairs the persisted copy.
+        let lexical = match store.get_meta(crate::storage::LEXICAL_INDEX_KEY) {
+            Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string() => {
+                LexicalSource::Persisted
+            }
+            _ => LexicalSource::Memory(LexicalIndex::build(&symbols, root.as_deref())),
+        };
         let by_id = symbols
             .iter()
             .enumerate()
@@ -168,6 +192,20 @@ impl<'a> RetrievalEngine<'a> {
             by_id,
             lexical,
             vectors: std::cell::RefCell::new(None),
+        }
+    }
+
+    /// Materialize the query's postings from whichever source this engine
+    /// has. A store read that fails degrades to no lexical evidence for this
+    /// query rather than failing the search, matching how a failed vector
+    /// load is already handled.
+    fn prepare_lexical(&self, query: &str) -> crate::lexical::LexicalQuery {
+        match &self.lexical {
+            LexicalSource::Memory(idx) => idx.prepare(query),
+            LexicalSource::Persisted => {
+                crate::lexical::prepare_from_store(self.store, self.symbols.len(), query)
+                    .unwrap_or_else(|_| crate::lexical::LexicalQuery::empty())
+            }
         }
     }
 
@@ -214,11 +252,23 @@ impl<'a> RetrievalEngine<'a> {
         // wholesale would drag in `store: &dyn IndexBackend` and
         // `vectors: RefCell<..>`, neither of which is `Sync`, even though
         // the closures below never touch them.
-        let lexical = &self.lexical;
+        // The persisted lexical source reads postings through `store: &dyn
+        // IndexBackend`, and `SqliteStore` is not `Sync`, so lexical work
+        // cannot move onto a spawned thread the way it used to. Inverting
+        // which side is spawned keeps the pair concurrent anyway: the
+        // *semantic* side gets the thread (its `embed_query` may be a
+        // blocking HTTP round trip, and it touches nothing unsendable),
+        // while lexical runs here, on the thread that owns the store.
+        // Request latency stays max(lexical, semantic) rather than their
+        // sum — doing the posting lookups before the scope would have made
+        // a long, many-token query pay both in series.
+        //
+        // `catch_unwind` preserves the old contract that a panicking
+        // evidence provider drops its own evidence instead of taking the
+        // whole search down; on a spawned thread `join` gave that for free.
         let symbols = &self.symbols;
         let embedder = self.embedder;
         let (lex_result, vec_scores) = std::thread::scope(|scope| {
-            let lex_handle = scope.spawn(|| lexical.search(query, 1.5, 0.75));
             let vec_handle = scope.spawn(|| -> HashMap<u64, f32> {
                 let Some(embeddings) = embeddings else {
                     return HashMap::new();
@@ -239,7 +289,10 @@ impl<'a> RetrievalEngine<'a> {
             // A panicking provider thread must not take the whole search
             // down with it — treat it the same as "no evidence from this
             // provider" rather than propagating the panic.
-            let lex = lex_handle.join().unwrap_or_default();
+            let lex = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                crate::lexical::score(&self.prepare_lexical(query), 1.5, 0.75)
+            }))
+            .unwrap_or_default();
             let vec = vec_handle.join().unwrap_or_default();
             (lex, vec)
         });
@@ -569,7 +622,7 @@ mod tests {
             &[],
         );
         store
-            .replace_file("src/retry.py", 1, std::slice::from_ref(&s), &[])
+            .replace_file("src/retry.py", 1, std::slice::from_ref(&s), &[], &[])
             .unwrap();
         let seeding_emb = HashedEmbedder::default();
         store
@@ -619,10 +672,10 @@ mod tests {
             ),
         ];
         store
-            .replace_file("src/retry.py", 1, &syms[..1], &[])
+            .replace_file("src/retry.py", 1, &syms[..1], &[], &[])
             .unwrap();
         store
-            .replace_file("src/auth.py", 1, &syms[1..], &[])
+            .replace_file("src/auth.py", 1, &syms[1..], &[], &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         let engine = RetrievalEngine::new(&store, &emb);
@@ -648,7 +701,13 @@ mod tests {
             &[],
         );
         store
-            .replace_file("src/http/backoff.py", 1, std::slice::from_ref(&s1), &[])
+            .replace_file(
+                "src/http/backoff.py",
+                1,
+                std::slice::from_ref(&s1),
+                &[],
+                &[],
+            )
             .unwrap();
         let emb = HashedEmbedder::default();
         {
@@ -694,13 +753,31 @@ mod tests {
             &["RetryPolicy"],
         );
         store
-            .replace_file("src/net/client.py", 1, std::slice::from_ref(&client), &[])
+            .replace_file(
+                "src/net/client.py",
+                1,
+                std::slice::from_ref(&client),
+                &[],
+                &[],
+            )
             .unwrap();
         store
-            .replace_file("src/net/retry.py", 1, std::slice::from_ref(&policy), &[])
+            .replace_file(
+                "src/net/retry.py",
+                1,
+                std::slice::from_ref(&policy),
+                &[],
+                &[],
+            )
             .unwrap();
         store
-            .replace_file("tests/test_retry.py", 1, std::slice::from_ref(&test), &[])
+            .replace_file(
+                "tests/test_retry.py",
+                1,
+                std::slice::from_ref(&test),
+                &[],
+                &[],
+            )
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in &[&client, &policy, &test] {
@@ -822,7 +899,7 @@ mod tests {
         ];
         let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
         store
-            .replace_file("src/retry.py", 1, &symbols, &[])
+            .replace_file("src/retry.py", 1, &symbols, &[], &[])
             .unwrap();
         let emb = HashedEmbedder::default();
         for s in &symbols {
@@ -982,7 +1059,7 @@ mod tests {
         ];
         for s in &syms {
             store
-                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[], &[])
                 .unwrap();
         }
         (store, syms)
@@ -1118,7 +1195,7 @@ mod tests {
         ];
         for s in &syms {
             store
-                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[], &[])
                 .unwrap();
         }
         let emb = HashedEmbedder::default();
@@ -1275,7 +1352,7 @@ mod tests {
         ];
         for s in &syms {
             store
-                .replace_file(&s.file, 1, std::slice::from_ref(s), &[])
+                .replace_file(&s.file, 1, std::slice::from_ref(s), &[], &[])
                 .unwrap();
         }
 

@@ -131,6 +131,36 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   is incompatible and must never fail open into the weaker tier below.
   `validate_index` refuses semantic — never lexical — reads while the marker
   is set (`tests/provider_migration_recovery.rs`).
+- Foreign keys ARE enforced, and OXIDE depends on it. `replace_file` and
+  `remove_files` delete only from `symbols` and rely on `ON DELETE CASCADE`
+  to take `embeddings` and `symbol_relations` with them — which is why
+  `replace_file` snapshots the embeddings it means to keep first. SQLite's
+  own default is OFF; this held for a long time only because
+  `libsqlite3-sys` compiles its bundled amalgamation with
+  `-DSQLITE_DEFAULT_FOREIGN_KEYS=1`, so a dependency bump or a system
+  SQLite would have silently stranded a row per deleted symbol. `open` now
+  issues `PRAGMA foreign_keys = ON` explicitly (before any transaction — it
+  is a no-op inside one), and `idx_symbol_relations_symbol_id` /
+  `idx_lexical_postings_symbol` exist to keep those cascades index-driven
+  rather than full scans. Don't reinstate manual orphan sweeps; they were
+  no-ops that scanned both tables in full.
+- The persisted BM25 index (`lexical_postings`/`lexical_docs`, written in
+  `replace_file`'s transaction) is usable **only** when
+  `meta.lexical_index_version` exactly equals `LEXICAL_INDEX_VERSION`. That
+  key is published once, at the end of a completed full-corpus
+  `update_base`; absence means pre-feature or interrupted, a different
+  value means written under different tokenizer/weight rules, and both make
+  readers fall back to `LexicalIndex::build` in memory. Table existence and
+  row count prove nothing — a backfill killed halfway leaves covered files
+  whose `content_hash` already matches, so no incremental run would ever
+  revisit them. Scoring is shared (`lexical::score`) between the two
+  sources, so the fallback is slow-but-bit-identical, never wrong;
+  `tests/lexical_persistence.rs` pins the exact `f32` bits, and
+  `oxide eval --config fixtures/benchmark.json` is byte-identical to the
+  pre-persistence output. `bm25()` itself is unusable here — it hardcodes
+  k1=1.2 against OXIDE's 1.5, uses a different IDF and document-length
+  definition, and cannot return the term-coverage evidence fusion consumes
+  (`docs/storage-backend-eval/enhanced-sqlite.md`).
 - `SqliteStore::open_read_only` holds one deferred WAL read transaction for
   the life of the store, so a request's metadata validation and its later
   vector load see the same snapshot; in autocommit a concurrent `oxide
@@ -255,6 +285,13 @@ identity everywhere is `path#QualifiedName`.
   `docs/astgrep-hardening/` for the original (now superseded) ast-grep
   spike and hardening pass.
 - Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
-  DB lives at `<repo>/.oxide/index.db`.
+  DB lives at `<repo>/.oxide/index.db`. The backend question is **closed**:
+  SurrealDB and Turso were evaluated and rejected, and Enhanced SQLite was
+  built and measured (`docs/storage-backend-eval/`). Enhancements are
+  limited to features already bundled with the pinned `rusqlite 0.32`;
+  proposing a different backend means a fresh evaluation round, not a
+  patch. Still open by design, and not settled by any of that: the vector
+  path is a brute-force scan, comfortable to roughly 50k symbols — the
+  question Zvec stays frozen against.
 - `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —
   they double as manual smoke-test repos (copy to /tmp before indexing).

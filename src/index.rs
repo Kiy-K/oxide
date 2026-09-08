@@ -2,7 +2,7 @@
 
 pub use crate::storage::{
     IndexBackend, IndexStats, ParsedFile, SqliteStore, SymbolRelations, EMBEDDING_MIGRATION_KEY,
-    EXTRACTION_VERSION, SCHEMA_VERSION,
+    EXTRACTION_VERSION, LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION, SCHEMA_VERSION,
 };
 
 use crate::embeddings::symbol_embed_text;
@@ -159,6 +159,13 @@ pub fn update_base(
     // as changed, bypassing the content_hash shortcut entirely — e.g. after
     // an extractor/grammar upgrade that should re-derive symbols even where
     // source text didn't change.
+    // Whether the persisted lexical index is known-complete and current-format.
+    // Anything else — no key (built before the feature, or a backfill that
+    // never finished), or a generation this binary does not recognize —
+    // means it must be rebuilt for every file, since a covered file's
+    // content_hash already matches and no incremental run would revisit it.
+    let backfill_lexical = store.get_meta(LEXICAL_INDEX_KEY)?.as_deref()
+        != Some(LEXICAL_INDEX_VERSION.to_string().as_str());
     let to_parse: Vec<(&String, u64)> = current
         .iter()
         .map(|(f, src)| (f, crate::symbols::content_hash(src)))
@@ -183,7 +190,23 @@ pub fn update_base(
     // `force_reparse` (`-a`) makes `to_parse` cover every file already, so
     // `unchanged_by_file` below is naturally empty and this does no
     // redundant work on top of the main per-file loop.
-    if opts.force_graph || (!existing.is_empty() && store.all_symbol_relations()?.is_empty()) {
+    //
+    // The persisted lexical index rides the same path for the same reason,
+    // under its own trigger (`backfill_lexical`). It deliberately does NOT
+    // force a reparse: reparsing would re-derive symbols that have not
+    // changed and inflate `reparsed_files`, when all that is missing is a
+    // derived table computable from the symbols already stored plus the
+    // source already read into `current` — exactly the relations case.
+    // Writing postings outside `replace_file`'s transaction is safe here
+    // and only here: these files' symbols are not being rewritten, so
+    // postings cannot end up describing a different revision than the
+    // symbols beside them, and an interruption mid-backfill leaves the
+    // generation key unpublished, which makes the whole persisted index
+    // unreadable until a later run finishes the job.
+    let refresh_relations =
+        opts.force_graph || (!existing.is_empty() && store.all_symbol_relations()?.is_empty());
+    let mut lexical_backfill_raced = false;
+    if refresh_relations || backfill_lexical {
         let to_parse_files: HashSet<&String> = to_parse.iter().map(|(f, _)| *f).collect();
         let mut unchanged_by_file: HashMap<&str, Vec<Symbol>> = HashMap::new();
         for s in &existing {
@@ -201,11 +224,25 @@ pub fn update_base(
             ) else {
                 continue;
             };
-            report.relations_refreshed_symbols += file_symbols.len();
-            let relations =
-                crate::structural_relations::compute_file_relations(&file_symbols, src, lang);
-            if !relations.is_empty() {
-                store.put_symbol_relations_batch(&relations)?;
+            if refresh_relations {
+                report.relations_refreshed_symbols += file_symbols.len();
+                let relations =
+                    crate::structural_relations::compute_file_relations(&file_symbols, src, lang);
+                if !relations.is_empty() {
+                    store.put_symbol_relations_batch(&relations)?;
+                }
+            }
+            if backfill_lexical {
+                let postings = crate::lexical::compute_file_postings(&file_symbols, src);
+                // A concurrent writer (the watcher, or a second `oxide
+                // index`) may have replaced this file since the scan. The
+                // store refuses the write in that case; the file already
+                // has correct postings from that writer, but this run can
+                // no longer prove it covered the whole corpus itself, so it
+                // must not publish the generation key.
+                if !store.put_file_lexical(file, crate::symbols::content_hash(src), &postings)? {
+                    lexical_backfill_raced = true;
+                }
             }
         }
     }
@@ -219,6 +256,27 @@ pub fn update_base(
         store,
         &mut report,
     )?;
+
+    // Publish the lexical generation only now, after every file in the
+    // corpus has been persisted with its postings. This single write is the
+    // moment a partial index becomes a usable one; interrupt the run
+    // anywhere before it and the key stays absent, readers keep falling back
+    // to the in-memory build, and the next run backfills again. Publishing
+    // per file, or on table creation, would expose a half-built corpus as
+    // authoritative — the same failure `schema_version` had.
+    //
+    // Only a *full-corpus* pass may publish. `update_base_for_files` (the
+    // watcher) sees an arbitrary subset and never calls this function, so it
+    // cannot promote an incomplete index; it only keeps an already-complete
+    // one current, which per-file transactional writes guarantee.
+    //
+    // And only a pass that actually wrote everything it set out to. If a
+    // concurrent writer replaced a file mid-backfill, that file's postings
+    // are that writer's, not this run's, and this run cannot vouch for the
+    // corpus — leave the key unpublished and let the next run finish.
+    if !lexical_backfill_raced {
+        store.set_meta(LEXICAL_INDEX_KEY, &LEXICAL_INDEX_VERSION.to_string())?;
+    }
 
     report.duration_ms = started.elapsed().as_millis();
 
@@ -526,7 +584,17 @@ fn parse_and_persist_changed_files(
                 crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang)
             })
             .unwrap_or_default();
-        store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations)?;
+        // Lexical postings, from the same already-open `pf.src` and
+        // already-parsed `pf.symbols` as the relations above — no second
+        // file read, and (unlike `LexicalIndex::build`) no file read at
+        // query time at all. Written in `replace_file`'s transaction so a
+        // file's symbols and its postings can never disagree. This is the
+        // shared helper, so the watcher's fs-event-scoped path
+        // (`update_base_for_files`) keeps postings current too; if it did
+        // not, a watcher edit would leave a published lexical index
+        // silently incomplete.
+        let postings = crate::lexical::compute_file_postings(&pf.symbols, &pf.src);
+        store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations, &postings)?;
     }
     Ok(())
 }

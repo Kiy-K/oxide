@@ -260,3 +260,105 @@ fn file_deleted_between_scan_and_read_is_accounted_not_silently_dropped() {
         );
     }
 }
+
+/// End-to-end freshness half of the foreign-key audit: `replace_file`
+/// deletes only from `symbols` and lets `ON DELETE CASCADE` take the
+/// embedding and relation rows with it. `storage.rs`'s unit test pins the
+/// pragma and the cascade directly; this pins the property that actually
+/// matters through `update_index`, so a future change that keeps foreign
+/// keys on but stops routing deletes through `symbols` still fails.
+#[test]
+fn editing_a_file_strands_no_orphan_embeddings_or_relations() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    let file = root.join("src/thing.py");
+    write(&file, FOO_V1); // foo + bar, where bar calls foo
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+
+    assert!(
+        !store.all_symbol_relations().unwrap().is_empty(),
+        "bar() calls foo(), so the relation table must be non-empty before the edit"
+    );
+
+    // Remove bar() entirely: its id disappears from `symbols`, and nothing
+    // will ever reparse it again.
+    write(&file, "def foo():\n    return 1\n");
+    update_index(root, &mut store, &emb).unwrap();
+
+    let live: std::collections::HashSet<u64> = store
+        .all_symbols()
+        .unwrap()
+        .iter()
+        .map(|s| s.id())
+        .collect();
+
+    let orphan_embeddings: Vec<u64> = store
+        .all_embeddings()
+        .unwrap()
+        .keys()
+        .filter(|id| !live.contains(id))
+        .copied()
+        .collect();
+    assert!(
+        orphan_embeddings.is_empty(),
+        "embeddings left behind for deleted symbols: {orphan_embeddings:?}"
+    );
+
+    let orphan_relations: Vec<u64> = store
+        .all_symbol_relations()
+        .unwrap()
+        .keys()
+        .filter(|id| !live.contains(id))
+        .copied()
+        .collect();
+    assert!(
+        orphan_relations.is_empty(),
+        "symbol_relations left behind for deleted symbols: {orphan_relations:?}"
+    );
+}
+
+/// Same property for a whole-file deletion. This one used to be enforced by
+/// two post-commit repo-wide anti-join sweeps in `remove_files`; the
+/// cascade had already done the work before they ran, so they were removed.
+#[test]
+fn deleting_a_file_strands_no_orphan_embeddings_or_relations() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(&root.join("src/thing.py"), FOO_V1);
+    write(&root.join("src/other.py"), "def keep():\n    return 2\n");
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+
+    std::fs::remove_file(root.join("src/thing.py")).unwrap();
+    update_index(root, &mut store, &emb).unwrap();
+
+    let live: std::collections::HashSet<u64> = store
+        .all_symbols()
+        .unwrap()
+        .iter()
+        .map(|s| s.id())
+        .collect();
+    assert!(!live.is_empty(), "other.py must still be indexed");
+
+    assert!(
+        store
+            .all_embeddings()
+            .unwrap()
+            .keys()
+            .all(|id| live.contains(id)),
+        "embeddings left behind for a deleted file"
+    );
+    assert!(
+        store
+            .all_symbol_relations()
+            .unwrap()
+            .keys()
+            .all(|id| live.contains(id)),
+        "symbol_relations left behind for a deleted file"
+    );
+}

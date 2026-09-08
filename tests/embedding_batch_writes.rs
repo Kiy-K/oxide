@@ -42,7 +42,7 @@ fn batched_writes_are_identical_to_one_call_per_item() {
     let mut per_item = SqliteStore::open(Path::new(":memory:")).unwrap();
     for s in &symbols {
         per_item
-            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[])
+            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[], &[])
             .unwrap();
     }
     for (id, vec) in &vectors {
@@ -52,7 +52,7 @@ fn batched_writes_are_identical_to_one_call_per_item() {
     let mut batched = SqliteStore::open(Path::new(":memory:")).unwrap();
     for s in &symbols {
         batched
-            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[])
+            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[], &[])
             .unwrap();
     }
     for chunk in vectors.chunks(7) {
@@ -76,7 +76,7 @@ fn batched_writes_skip_symbol_ids_with_no_matching_row_same_as_put_embedding() {
     let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
     for s in &symbols {
         store
-            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[])
+            .replace_file(&s.file, s.content_hash, std::slice::from_ref(s), &[], &[])
             .unwrap();
     }
     let bogus_id = 999_999_999_u64;
