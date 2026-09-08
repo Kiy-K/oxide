@@ -102,3 +102,83 @@ rather than a guess.
 [METRIC] ingest.shape.no_index_ms 1759 total (1759 load + 0 index) for 10000 symbols = 0.18 ms/symbol [executor parked 0 ms over 17 Pending polls]
 EXIT=143
 ```
+
+## Query latency vs corpus size
+
+Gate suite re-run at four sizes; `query.bm25_ms` and `query.literal_ms` are the
+first (cold) query in the process.
+
+```
+### 250 symbols
+=== turso 0.7.2 (tantivy fts + ngram) — G2/G3c/G4b/G4c ONLY; G3a/G3b/G4a/G4d/G4e NOT RUN ===
+METRIC ingest.symbols_ms                  3503 for 250 symbols
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      0.160
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0 (ngram tokenizer)
+METRIC query.literal_ms                   0.105 (ngram fts index)
+### 500 symbols
+=== turso 0.7.2 (tantivy fts + ngram) — G2/G3c/G4b/G4c ONLY; G3a/G3b/G4a/G4d/G4e NOT RUN ===
+METRIC ingest.symbols_ms                  11943 for 500 symbols
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      0.202
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0 (ngram tokenizer)
+METRIC query.literal_ms                   0.144 (ngram fts index)
+### 1000 symbols
+=== turso 0.7.2 (tantivy fts + ngram) — G2/G3c/G4b/G4c ONLY; G3a/G3b/G4a/G4d/G4e NOT RUN ===
+METRIC ingest.symbols_ms                  41796 for 1000 symbols
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      0.287
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0 (ngram tokenizer)
+METRIC query.literal_ms                   0.146 (ngram fts index)
+### 2000 symbols
+=== turso 0.7.2 (tantivy fts + ngram) — G2/G3c/G4b/G4c ONLY; G3a/G3b/G4a/G4d/G4e NOT RUN ===
+METRIC ingest.symbols_ms                  161633 for 2000 symbols
+PASS   G4b BM25 exact match vs ground truth 5 terms; total missing=0 spurious=0
+METRIC query.bm25_ms                      0.397
+PASS   G4c literal substring exact match  5 substrings; total missing=0 spurious=0 (ngram tokenizer)
+METRIC query.literal_ms                   0.223 (ngram fts index)
+```
+
+**Read this carefully.** BM25 latency rises 0.160 -> 0.397 ms across 250 ->
+2,000 symbols (~1.35x per doubling) and the ngram probe 0.105 -> 0.223 ms.
+That is consistent with growing segment fan-out, but this sweep does **not**
+isolate that cause: the corpus generator puts `tmp_K` once per file, so a
+probe term's ground-truth set grows with the corpus too, and some of the rise
+is simply more matching rows. The measurement that does isolate it is upstream
+issue #8170's, where a term matching exactly one row and a term matching all
+rows cost the same at every size.
+
+At OXIDE's scale the read side extrapolates to well under a millisecond, so
+the ingest curve, not this, is the wall.
+
+## Upstream corroboration (not measured here)
+
+- Turso's own engineering blog, "Beyond FTS5" (2026-01-27), documents the
+  mechanism: Tantivy is configured with `NoMergePolicy`, so "Segment count
+  grows over time", "Query fan-out increases over time", and "performance can
+  drift significantly if many small updates are done over time". Merges are
+  not backgrounded because the Directory is a B-tree inside the DB file, which
+  "inherit[s] 'single writer' semantics at the storage layer".
+  https://turso.tech/blog/beyond-fts5
+- `docs/fts.md` in the turso repo lists "No automatic segment merging - Uses
+  `NoMergePolicy`" as a current limitation, and "External content" as not
+  supported (OXIDE's FTS5 control uses `content='symbols'`, so FTS5 does not
+  duplicate bodies and Turso must).
+- Issue #8170 (open, labelled bug + full-text-search, same 0.7.2): "row-at-a-time
+  INSERT is O(n^2) and leaves the file 6-7x larger; OPTIMIZE INDEX reclaims
+  neither." Their doubling ratios 2.69/3.50/3.94 against ours 2.32/3.41/3.84.
+  A second reporter confirms via the Rust crate on 0.7.1 and 0.8.0-pre.2.
+- Issue #6533: background Tantivy maintenance is blocked because multiprocess
+  WAL "still maintains a single writer"; MVCC is suggested as the only route to
+  non-blocking maintenance -- and MVCC is mutually exclusive with the
+  multiprocess WAL OXIDE requires.
+- In flight, unreleased at 0.7.2: PR #8085 (reuse committed Tantivy writers,
+  bounded tiered segment maintenance), #8425 (+35% on cold_query), #8517
+  (segment registry), #8611 (merge segments on the write path past a
+  threshold) -- #8611 is the direct fix for the curve measured here.
+- Robustness under the configuration OXIDE would need: #8216 (open, unassigned)
+  `fts_match` on an index whose Tantivy backing objects are missing panics
+  SIGABRT rather than erroring; #8348 (open, labelled Bug/multiprocess/panic)
+  a SIGABRT under multiprocess WAL racing a TRUNCATE checkpoint -- though a
+  maintainer could not reproduce #8348 on main and disputed parts of it, so
+  treat that one as unsettled.
