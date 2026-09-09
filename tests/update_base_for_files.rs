@@ -231,3 +231,38 @@ fn converges_to_the_same_state_as_full_update_base() {
     names_b.sort();
     assert_eq!(names_a, names_b);
 }
+
+#[test]
+fn a_stale_extraction_version_escalates_a_scoped_update_to_a_full_reconcile() {
+    // A scoped update re-extracts only the named paths, but the embedding
+    // stage that follows publishes extraction_version unconditionally — so
+    // without this escalation a watcher batch would stamp the current
+    // version onto a corpus whose untouched files still hold old spans and
+    // hashes. Found by review.
+    let tmp = tempfile::tempdir().unwrap();
+    write(&tmp.path().join("a.py"), "def a():\n    return 1\n");
+    write(&tmp.path().join("b.py"), "def b():\n    return 2\n");
+    let mut store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
+    update_base(tmp.path(), &mut store, &IndexOptions::default()).unwrap();
+    store
+        .set_meta(
+            "extraction_version",
+            &oxide::index::EXTRACTION_VERSION.to_string(),
+        )
+        .unwrap();
+
+    // Only a.py is named, but the index claims an older extraction version.
+    store.set_meta("extraction_version", "0").unwrap();
+    let r = update_base_for_files(
+        tmp.path(),
+        &mut store,
+        &IndexOptions::default(),
+        &["a.py".to_string()],
+    )
+    .unwrap();
+    assert_eq!(
+        r.reparsed_files, 2,
+        "b.py must be reconciled too, not left on old extraction rules"
+    );
+    assert_eq!(r.scanned_files, 2, "the escalated run walks the whole tree");
+}

@@ -291,6 +291,15 @@ mod tests {
     }
 
     #[test]
+    fn rust_qualified_calls_and_macros_are_found() {
+        let src = "fn f() {\n    std::println!(\"x\");\n    crate::metrics::emit!(1);\n    log_it!(2);\n    crate::net::get();\n}\n";
+        let calls = all_calls_in_file(Language::Rust, src);
+        let mut names: Vec<&str> = calls.iter().map(|(_, n)| n.as_str()).collect();
+        names.sort();
+        assert_eq!(names, vec!["emit", "get", "log_it", "println"], "{calls:?}");
+    }
+
+    #[test]
     fn rust_impl_blocks_report_the_type_as_the_implementor() {
         let src = "struct Store;\nimpl Backend for Store {\n    fn get(&self) {}\n}\n";
         let bases = all_bases_in_file(Language::Rust, src);

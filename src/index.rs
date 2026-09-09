@@ -108,6 +108,20 @@ pub fn update_index_scoped(
 /// indexing layer except embeddings. `report.duration_ms` on return covers
 /// only this stage; a caller running both stages should overwrite it with
 /// the grand total (see `update_index_scoped`).
+/// Whether the index *claims* an extraction generation that is not this
+/// binary's. Only a present-and-different value counts: absence means
+/// either a fresh index (nothing stale to repair) or a base-only workflow
+/// that never reaches the `set_meta_all` in `update_embeddings` — treating
+/// that as stale would make every such run reparse the whole corpus
+/// forever. An index that is genuinely missing the key is refused outright
+/// by `validate_index`, so it can never be silently served either way.
+fn stale_extraction(store: &dyn IndexBackend) -> Result<bool> {
+    Ok(store
+        .get_meta("extraction_version")?
+        .filter(|s| !s.is_empty())
+        .is_some_and(|v| v != EXTRACTION_VERSION.to_string()))
+}
+
 pub fn update_base(
     root: &Path,
     store: &mut dyn IndexBackend,
@@ -173,11 +187,8 @@ pub fn update_base(
     // would publish the new version over rows that were never re-derived.
     // `validate_index` refuses to *serve* such an index; this is what makes
     // a plain `oxide index` actually repair it, without the user having to
-    // know about `-a`. On a fresh index the key is absent and this is true,
-    // which costs nothing: every file is new anyway.
-    let stale_extraction = store.get_meta("extraction_version")?.as_deref()
-        != Some(EXTRACTION_VERSION.to_string().as_str());
-    let force_reparse = opts.force_reparse || stale_extraction;
+    // know about `-a`.
+    let force_reparse = opts.force_reparse || stale_extraction(store)?;
     let to_parse: Vec<(&String, u64)> = current
         .iter()
         .map(|(f, src)| (f, crate::symbols::content_hash(src)))
@@ -342,6 +353,18 @@ pub fn update_base_for_files(
     opts: &IndexOptions,
     changed_paths: &[String],
 ) -> Result<IndexReport> {
+    // A scoped update re-extracts only the named paths, but the embedding
+    // stage that normally follows it publishes `extraction_version`
+    // unconditionally — so against an index built under older extraction
+    // rules, a watcher batch would stamp the current version onto a corpus
+    // where every untouched file still holds old spans and hashes, and
+    // `validate_index` would then wave it through. Escalate to the full
+    // reconcile once; afterwards the version matches and this never fires
+    // again. Found by review.
+    if stale_extraction(store)? {
+        return update_base(root, store, opts);
+    }
+
     let started = std::time::Instant::now();
     let mut report = IndexReport::default();
 

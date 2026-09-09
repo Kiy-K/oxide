@@ -13,5 +13,13 @@
       field: (field_identifier) @name)
   ]) @call
 
+; `std::println!(..)` and `crate::metrics::emit!(..)` put a
+; `scoped_identifier` in the `macro` field, so a bare-identifier pattern
+; misses them entirely — the qualified ordinary-call case above already had
+; its own alternative for the same reason.
 (macro_invocation
-  macro: (identifier) @name) @call
+  macro: [
+    (identifier) @name
+    (scoped_identifier
+      name: (identifier) @name)
+  ]) @call
