@@ -38,7 +38,15 @@
 //!   value of per-name bindings is only the rarer case where two imported
 //!   files define the same name.
 //! - **Python symbols are unconditionally `exported: true`** — the flag has
-//!   no Python meaning today.
+//!   no Python meaning today. `exported` is likewise not derived for Rust
+//!   (`pub`) or Go (leading capital).
+//! - **Kinds OXIDE has no slot for get the nearest one.** A Rust `union`
+//!   and a Go named type (`type Key string`) land on Class; a Go package
+//!   `var` lands on Constant; a Rust `macro_rules!` definition is dropped
+//!   entirely rather than mislabelled.
+//! - **Go interface satisfaction is not detected.** `bases` for Go means
+//!   embedding — the only syntactic evidence there is. A type satisfying an
+//!   interface without embedding it is invisible, by design.
 //!
 //! Closed, and now pinned in the affirmative by the goldens: decorated
 //! definitions span their decorators (and a decorator's own call attributes
@@ -56,7 +64,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const LANGUAGES: &[&str] = &["python", "typescript", "tsx", "rust"];
+const LANGUAGES: &[&str] = &["python", "typescript", "tsx", "rust", "go"];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 struct SnapshotSymbol {
@@ -193,6 +201,11 @@ fn rust_conformance() {
 }
 
 #[test]
+fn go_conformance() {
+    check_golden("go", &snapshot_of("go"));
+}
+
+#[test]
 fn cold_index_is_deterministic() {
     // Two independent cold indexes of identical sources must agree
     // symbol-for-symbol and field-for-field, including list ordering —
@@ -251,6 +264,12 @@ fn single_file_edit_touches_only_that_file() {
             "\npub fn appended() -> u32 {\n    build()\n}\n",
             "appended",
         ),
+        (
+            "go",
+            "store/store.go",
+            "\nfunc Appended() uint32 {\n\treturn 0\n}\n",
+            "Appended",
+        ),
     ];
     for (lang, rel, addition, added_name) in cases {
         let tmp = staged(lang);
@@ -287,6 +306,7 @@ fn broken_files_do_not_abort_indexing() {
         ("typescript", "src/broken.ts", "src/service.ts"),
         ("tsx", "src/broken.tsx", "src/Button.tsx"),
         ("rust", "src/broken.rs", "src/store.rs"),
+        ("go", "store/broken.go", "store/store.go"),
     ];
     for (lang, broken, sibling) in cases {
         let snap = snapshot_of(lang);

@@ -1,0 +1,331 @@
+[
+  {
+    "file": "store/broken.go",
+    "qualified_name": "store/broken.go:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 7,
+    "exported": false,
+    "id": 10884893946542067129,
+    "content_hash": 7791964982781629686,
+    "imports": [],
+    "references": [
+      "Broken"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/broken.go",
+    "qualified_name": "Broken",
+    "kind": "function",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 5,
+    "exported": false,
+    "id": 11469059851777287421,
+    "content_hash": 12162703931772429299,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "store/store.go:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 47,
+    "exported": false,
+    "id": 3660177804397188077,
+    "content_hash": 4588506258689504557,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Backend",
+      "Base",
+      "DefaultLimit",
+      "DefaultStore",
+      "Get",
+      "ID",
+      "Key",
+      "New",
+      "Resource",
+      "Store",
+      "String"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "DefaultLimit",
+    "kind": "constant",
+    "parent": null,
+    "start_line": 8,
+    "end_line": 8,
+    "exported": false,
+    "id": 15880320575000518757,
+    "content_hash": 10932294022729656905,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "DefaultStore",
+    "kind": "constant",
+    "parent": null,
+    "start_line": 10,
+    "end_line": 10,
+    "exported": false,
+    "id": 8491884210428641111,
+    "content_hash": 5705917262099590030,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "New"
+    ],
+    "calls": [
+      "New"
+    ],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Key",
+    "kind": "class",
+    "parent": null,
+    "start_line": 12,
+    "end_line": 12,
+    "exported": false,
+    "id": 3413538753494065449,
+    "content_hash": 15579923645409652906,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Resource",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 14,
+    "end_line": 16,
+    "exported": false,
+    "id": 12949612269509363673,
+    "content_hash": 12391989430624422286,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "ID"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Resource.ID",
+    "kind": "method",
+    "parent": "Resource",
+    "start_line": 15,
+    "end_line": 15,
+    "exported": false,
+    "id": 12951669738769502793,
+    "content_hash": 3995259468519275243,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Backend",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 18,
+    "end_line": 21,
+    "exported": false,
+    "id": 798145666290915322,
+    "content_hash": 2977085346829185442,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Get",
+      "Key",
+      "Resource"
+    ],
+    "calls": [],
+    "bases": [
+      "Resource"
+    ]
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Backend.Get",
+    "kind": "method",
+    "parent": "Backend",
+    "start_line": 20,
+    "end_line": 20,
+    "exported": false,
+    "id": 4410286081923488236,
+    "content_hash": 309652704066315389,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Key"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Base",
+    "kind": "class",
+    "parent": null,
+    "start_line": 23,
+    "end_line": 25,
+    "exported": false,
+    "id": 9074047732543710200,
+    "content_hash": 15611521564871317203,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Store",
+    "kind": "class",
+    "parent": null,
+    "start_line": 27,
+    "end_line": 30,
+    "exported": false,
+    "id": 13951943434488099637,
+    "content_hash": 14597980299978470845,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Base",
+      "Key"
+    ],
+    "calls": [],
+    "bases": [
+      "Base"
+    ]
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "New",
+    "kind": "function",
+    "parent": null,
+    "start_line": 32,
+    "end_line": 34,
+    "exported": false,
+    "id": 5463931126997057580,
+    "content_hash": 725975998802172702,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Key",
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Store.Get",
+    "kind": "method",
+    "parent": "Store",
+    "start_line": 36,
+    "end_line": 39,
+    "exported": false,
+    "id": 11874919698635403031,
+    "content_hash": 3082252674074302872,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Key",
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Store.String",
+    "kind": "method",
+    "parent": "Store",
+    "start_line": 41,
+    "end_line": 43,
+    "exported": false,
+    "id": 2064959814915629169,
+    "content_hash": 15503802392459275195,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [
+      "Join"
+    ],
+    "bases": []
+  },
+  {
+    "file": "store/store.go",
+    "qualified_name": "Base.String",
+    "kind": "method",
+    "parent": "Base",
+    "start_line": 45,
+    "end_line": 47,
+    "exported": false,
+    "id": 17523897886451144814,
+    "content_hash": 10611295778366214107,
+    "imports": [
+      "fmt",
+      "strings"
+    ],
+    "references": [
+      "Base"
+    ],
+    "calls": [
+      "Sprintf"
+    ],
+    "bases": []
+  }
+]

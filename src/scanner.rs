@@ -16,6 +16,7 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         (_, "ts") if !name.ends_with(".d.ts") => Some(TypeScript),
         ("", "tsx") | (_, "tsx") => Some(Tsx),
         (_, "rs") => Some(Rust),
+        (_, "go") => Some(Go),
         _ => None,
     }
 }

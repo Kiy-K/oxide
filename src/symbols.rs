@@ -10,6 +10,7 @@ pub enum Language {
     TypeScript,
     Tsx,
     Rust,
+    Go,
 }
 
 impl Language {
@@ -19,6 +20,7 @@ impl Language {
             Language::TypeScript => "typescript",
             Language::Tsx => "tsx",
             Language::Rust => "rust",
+            Language::Go => "go",
         }
     }
 }

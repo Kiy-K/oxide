@@ -17,7 +17,7 @@
 //! `@base`, `@call`, `@class`), and callers filter/attribute in Rust after
 //! matching.
 
-use crate::languages::{PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE};
+use crate::languages::{GO_PROFILE, PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE};
 use crate::symbols::Language;
 use std::sync::OnceLock;
 use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
@@ -37,6 +37,8 @@ const TSX_CALLERS_SRC: &str = concat!(
 const TS_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/typescript_implementors.scm");
 const RUST_CALLERS_SRC: &str = include_str!("languages/queries/rust_callers.scm");
 const RUST_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/rust_implementors.scm");
+const GO_CALLERS_SRC: &str = include_str!("languages/queries/go_callers.scm");
+const GO_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/go_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -63,6 +65,10 @@ static RUST_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static GO_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
@@ -70,6 +76,7 @@ fn ts_language(lang: Language) -> tree_sitter::Language {
         Language::TypeScript => (TYPESCRIPT_PROFILE.ts_language)(),
         Language::Tsx => (TSX_PROFILE.ts_language)(),
         Language::Rust => (RUST_PROFILE.ts_language)(),
+        Language::Go => (GO_PROFILE.ts_language)(),
     }
 }
 
@@ -79,6 +86,7 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::TypeScript => &TYPESCRIPT_QUERIES,
         Language::Tsx => &TSX_QUERIES,
         Language::Rust => &RUST_QUERIES,
+        Language::Go => &GO_QUERIES,
     }
 }
 
@@ -88,6 +96,7 @@ fn callers_src(lang: Language) -> &'static str {
         Language::TypeScript => TS_CALLERS_SRC,
         Language::Tsx => TSX_CALLERS_SRC,
         Language::Rust => RUST_CALLERS_SRC,
+        Language::Go => GO_CALLERS_SRC,
     }
 }
 
@@ -96,6 +105,7 @@ fn implementors_src(lang: Language) -> &'static str {
         Language::Python => PYTHON_IMPLEMENTORS_SRC,
         Language::TypeScript | Language::Tsx => TS_IMPLEMENTORS_SRC,
         Language::Rust => RUST_IMPLEMENTORS_SRC,
+        Language::Go => GO_IMPLEMENTORS_SRC,
     }
 }
 
@@ -268,6 +278,7 @@ mod tests {
             Language::TypeScript,
             Language::Tsx,
             Language::Rust,
+            Language::Go,
         ] {
             compiled_callers(lang);
             compiled_implementors(lang);

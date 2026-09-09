@@ -113,6 +113,9 @@ fn map_kind(name: &str) -> Option<SymbolKind> {
         "constant" => Some(SymbolKind::Constant),
         "module" => Some(SymbolKind::Module),
         "type_alias" => Some(SymbolKind::TypeAlias),
+        // Go's tags.scm gives every `type X ...` one syntax type; interfaces
+        // are separated out from the parse tree in `extract`.
+        "type" => Some(SymbolKind::Class),
         "enum" => Some(SymbolKind::Enum),
         _ => None,
     }
@@ -124,19 +127,72 @@ fn parse(profile: &LanguageProfile, src: &str) -> Option<tree_sitter::Tree> {
     parser.parse(src, None)
 }
 
-/// One narrow walk collecting the three things no tag capture exposes:
+/// The handful of things `collect_meta`'s single walk gathers because no tag
+/// capture exposes them. Bundled rather than passed as five out-params.
+#[derive(Default)]
+struct FileMeta {
+    imports: Vec<String>,
+    /// Byte ranges of `export_statement` wrappers (TypeScript/TSX).
+    exports: Vec<Range<usize>>,
+    /// Byte ranges of decorator nodes, for `decorator_extended_start`.
+    decorators: Vec<Range<usize>>,
+    /// Go only: `(method_declaration start byte, receiver type name)`. Go
+    /// methods are top-level declarations, so the containment stack has
+    /// nothing to qualify them with, and two types each with a `String()`
+    /// method would collide on the bare name under parser.rs's dedup. The
+    /// receiver is a field on the declaration itself, so the qualified name
+    /// is derivable — just not from the flat tag list.
+    go_receivers: Vec<(usize, String)>,
+    /// Go only: start bytes of `type_spec` nodes whose type is an
+    /// `interface_type`. Upstream tags.scm gives every `type X ...` the same
+    /// syntax type, so struct and interface are indistinguishable from tags
+    /// alone.
+    go_interfaces: Vec<usize>,
+}
+
+/// One narrow walk collecting the things no tag capture exposes:
 /// import module strings, `export` wrapper ranges, and (for languages with
 /// no export concept) nothing. Not a general extractor — four node kinds.
-fn collect_meta(
-    node: Node<'_>,
-    lang: Language,
-    src: &str,
-    imports: &mut Vec<String>,
-    exports: &mut Vec<Range<usize>>,
-    decorators: &mut Vec<Range<usize>>,
-) {
+fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) {
+    let imports = &mut meta.imports;
     match (lang, node.kind()) {
-        (_, "decorator") => decorators.push(node.byte_range()),
+        (_, "decorator") => meta.decorators.push(node.byte_range()),
+        (Language::Go, "import_spec") => {
+            if let Some(path) = node.child_by_field_name("path") {
+                if let Ok(t) = path.utf8_text(src.as_bytes()) {
+                    imports.push(t.trim_matches('"').to_string());
+                }
+            }
+            return;
+        }
+        (Language::Go, "method_declaration") => {
+            // `func (s *Store) Get(...)` -> receiver type `Store`; the
+            // pointer/parens/parameter name are all stripped by taking the
+            // last identifier-ish token.
+            if let Some(recv) = node.child_by_field_name("receiver") {
+                if let Ok(t) = recv.utf8_text(src.as_bytes()) {
+                    if let Some(name) = t
+                        .trim_matches(|c| c == '(' || c == ')')
+                        .split_whitespace()
+                        .next_back()
+                        .map(|t| t.trim_start_matches('*'))
+                        .map(|t| t.rsplit('.').next().unwrap_or(t))
+                        .filter(|t| !t.is_empty())
+                    {
+                        meta.go_receivers
+                            .push((node.byte_range().start, name.to_string()));
+                    }
+                }
+            }
+        }
+        (Language::Go, "type_spec") => {
+            if node
+                .child_by_field_name("type")
+                .is_some_and(|t| t.kind() == "interface_type")
+            {
+                meta.go_interfaces.push(node.byte_range().start);
+            }
+        }
         (Language::Python, "import_from_statement") => {
             if let Some(m) = node.child_by_field_name("module_name") {
                 if let Ok(t) = m.utf8_text(src.as_bytes()) {
@@ -181,7 +237,7 @@ fn collect_meta(
         }
         (Language::TypeScript | Language::Tsx, "import_statement" | "export_statement") => {
             if node.kind() == "export_statement" {
-                exports.push(node.byte_range());
+                meta.exports.push(node.byte_range());
             }
             if let Some(src_node) = node.child_by_field_name("source") {
                 if let Ok(t) = src_node.utf8_text(src.as_bytes()) {
@@ -193,7 +249,7 @@ fn collect_meta(
     }
     let mut cur = node.walk();
     for child in node.children(&mut cur) {
-        collect_meta(child, lang, src, imports, exports, decorators);
+        collect_meta(child, lang, src, meta);
     }
 }
 
@@ -253,39 +309,23 @@ impl LanguageExtractor for TagsExtractor {
         let Some(tree) = parse(self.profile, src) else {
             return Vec::new();
         };
-        let mut imports = Vec::new();
-        let mut exports = Vec::new();
-        let mut decorators = Vec::new();
-        collect_meta(
-            tree.root_node(),
-            self.profile.language,
-            src,
-            &mut imports,
-            &mut exports,
-            &mut decorators,
-        );
-        imports.sort();
-        imports.dedup();
-        imports
+        let mut meta = FileMeta::default();
+        collect_meta(tree.root_node(), self.profile.language, src, &mut meta);
+        meta.imports.sort();
+        meta.imports.dedup();
+        meta.imports
     }
 
     fn extract(&self, file: &str, src: &str, imports: &[String]) -> Vec<Symbol> {
         let profile = self.profile;
         let bytes = src.as_bytes();
 
-        let mut export_ranges = Vec::new();
-        let mut decorators = Vec::new();
+        let mut meta = FileMeta::default();
         if let Some(tree) = parse(profile, src) {
-            let mut discard = Vec::new();
-            collect_meta(
-                tree.root_node(),
-                profile.language,
-                src,
-                &mut discard,
-                &mut export_ranges,
-                &mut decorators,
-            );
+            collect_meta(tree.root_node(), profile.language, src, &mut meta);
         }
+        let export_ranges = &meta.exports;
+        let decorators = &meta.decorators;
 
         let mut defs: Vec<RawDef> = Vec::new();
         if let Some(config) = self.config() {
@@ -312,8 +352,8 @@ impl LanguageExtractor for TagsExtractor {
                             bytes,
                             decorator_extended_start(
                                 src,
-                                &decorators,
-                                export_anchor(&export_ranges, tag.range.start, tag.range.end),
+                                decorators,
+                                export_anchor(export_ranges, tag.range.start, tag.range.end),
                             ),
                         ),
                         line_end: byte_to_line(bytes, tag.range.end),
@@ -352,8 +392,22 @@ impl LanguageExtractor for TagsExtractor {
                 && in_class
             {
                 SymbolKind::Method
+            } else if meta.go_interfaces.contains(&d.start) {
+                // Every Go `type X ...` carries one syntax type upstream;
+                // only the parse tree says which are interfaces.
+                SymbolKind::Interface
             } else {
                 d.kind
+            };
+            // Go methods are top-level declarations qualified by their
+            // receiver type, not by nesting — see `FileMeta::go_receivers`.
+            let (parent, qualified) = match meta
+                .go_receivers
+                .iter()
+                .find(|(start, _)| *start == d.start)
+            {
+                Some((_, recv)) => (Some(recv.clone()), format!("{recv}.{}", d.name)),
+                None => (parent, qualified),
             };
             // Module counts as a container so a Rust `mod` block and a
             // TypeScript `namespace` qualify their members (`mod net { fn

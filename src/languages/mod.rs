@@ -9,6 +9,7 @@ const PYTHON_TAGS: &str = include_str!("queries/python_tags.scm");
 const TS_TAGS: &str = include_str!("queries/typescript_tags.scm");
 const TS_LOCALS: &str = include_str!("queries/typescript_locals.scm");
 const RUST_TAGS: &str = include_str!("queries/rust_tags.scm");
+const GO_TAGS: &str = include_str!("queries/go_tags.scm");
 
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
@@ -35,5 +36,12 @@ pub static RUST_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Rust,
     ts_language: || tree_sitter_rust::LANGUAGE.into(),
     tags_query: RUST_TAGS,
+    locals_query: "",
+};
+
+pub static GO_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::Go,
+    ts_language: || tree_sitter_go::LANGUAGE.into(),
+    tags_query: GO_TAGS,
     locals_query: "",
 };
