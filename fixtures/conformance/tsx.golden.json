@@ -1,0 +1,156 @@
+[
+  {
+    "file": "src/App.tsx",
+    "qualified_name": "src/App.tsx:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 10,
+    "exported": false,
+    "id": 9288746998993755409,
+    "content_hash": 7818945628716304333,
+    "imports": [
+      "./Button"
+    ],
+    "references": [
+      "App",
+      "Button",
+      "Panel"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/App.tsx",
+    "qualified_name": "App",
+    "kind": "function",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 10,
+    "exported": true,
+    "id": 17344600949863062190,
+    "content_hash": 17122399844970415644,
+    "imports": [
+      "./Button"
+    ],
+    "references": [
+      "Button",
+      "Panel"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Button.tsx",
+    "qualified_name": "src/Button.tsx:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 15,
+    "exported": false,
+    "id": 11618013832839106855,
+    "content_hash": 2882537070044180893,
+    "imports": [
+      "react"
+    ],
+    "references": [
+      "Button",
+      "ButtonProps",
+      "Panel",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Button.tsx",
+    "qualified_name": "ButtonProps",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 5,
+    "exported": true,
+    "id": 3352192426571481659,
+    "content_hash": 17952911511444392459,
+    "imports": [
+      "react"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Button.tsx",
+    "qualified_name": "Button",
+    "kind": "function",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 9,
+    "exported": true,
+    "id": 18235681523882000034,
+    "content_hash": 2393641755739381369,
+    "imports": [
+      "react"
+    ],
+    "references": [
+      "ButtonProps"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Button.tsx",
+    "qualified_name": "Panel",
+    "kind": "class",
+    "parent": null,
+    "start_line": 11,
+    "end_line": 15,
+    "exported": true,
+    "id": 12542486844973251641,
+    "content_hash": 4703213113357405366,
+    "imports": [
+      "react"
+    ],
+    "references": [
+      "Button",
+      "ButtonProps",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Button.tsx",
+    "qualified_name": "Panel.render",
+    "kind": "method",
+    "parent": "Panel",
+    "start_line": 12,
+    "end_line": 14,
+    "exported": false,
+    "id": 6538209886472480672,
+    "content_hash": 15573216100156073365,
+    "imports": [
+      "react"
+    ],
+    "references": [
+      "Button"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.tsx",
+    "qualified_name": "src/broken.tsx:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": false,
+    "id": 15524201409555160333,
+    "content_hash": 9347392771144570936,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]

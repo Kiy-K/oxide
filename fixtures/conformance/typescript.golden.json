@@ -1,0 +1,388 @@
+[
+  {
+    "file": "src/broken.ts",
+    "qualified_name": "src/broken.ts:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": false,
+    "id": 14294148356791318233,
+    "content_hash": 17556723645200632534,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/index.ts",
+    "qualified_name": "src/index.ts:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 2,
+    "exported": false,
+    "id": 17375855110614207015,
+    "content_hash": 5387783519721976499,
+    "imports": [
+      "./service",
+      "./types"
+    ],
+    "references": [
+      "Base",
+      "Derived"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.ts",
+    "qualified_name": "Base",
+    "kind": "class",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": true,
+    "id": 6528856559484591175,
+    "content_hash": 10673515077681364766,
+    "imports": [],
+    "references": [
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.ts",
+    "qualified_name": "src/ns.ts:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": false,
+    "id": 2792389755691724677,
+    "content_hash": 15582161107340035149,
+    "imports": [],
+    "references": [
+      "Base",
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.ts",
+    "qualified_name": "Base.area",
+    "kind": "method",
+    "parent": "Base",
+    "start_line": 2,
+    "end_line": 4,
+    "exported": false,
+    "id": 17081737408818375773,
+    "content_hash": 16342791580675173349,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "src/service.ts:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 27,
+    "exported": false,
+    "id": 8356459040351892705,
+    "content_hash": 14848831207708547863,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Base",
+      "Derived",
+      "Level",
+      "Shape",
+      "area",
+      "compute",
+      "constructor",
+      "helper",
+      "run"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Base",
+    "kind": "class",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 10,
+    "exported": true,
+    "id": 6315554811619061308,
+    "content_hash": 16114395094647993266,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Shape",
+      "area",
+      "constructor"
+    ],
+    "calls": [],
+    "bases": [
+      "Shape"
+    ]
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Base.constructor",
+    "kind": "method",
+    "parent": "Base",
+    "start_line": 5,
+    "end_line": 5,
+    "exported": false,
+    "id": 7278404125765638378,
+    "content_hash": 2134017030528387298,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Base.area",
+    "kind": "method",
+    "parent": "Base",
+    "start_line": 7,
+    "end_line": 9,
+    "exported": false,
+    "id": 215349758776379748,
+    "content_hash": 13929773024670755092,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Derived",
+    "kind": "class",
+    "parent": null,
+    "start_line": 12,
+    "end_line": 23,
+    "exported": true,
+    "id": 13599060372736225543,
+    "content_hash": 4761312395379458329,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Base",
+      "Shape",
+      "area",
+      "compute",
+      "helper",
+      "run"
+    ],
+    "calls": [],
+    "bases": [
+      "Shape"
+    ]
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Derived.run",
+    "kind": "method",
+    "parent": "Derived",
+    "start_line": 13,
+    "end_line": 15,
+    "exported": false,
+    "id": 9100609426673172272,
+    "content_hash": 767015172861792640,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "area"
+    ],
+    "calls": [
+      "area"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Derived.area",
+    "kind": "method",
+    "parent": "Derived",
+    "start_line": 17,
+    "end_line": 22,
+    "exported": false,
+    "id": 6200236163339563309,
+    "content_hash": 7725177579218800099,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "compute",
+      "helper"
+    ],
+    "calls": [
+      "helper"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "Derived.area.helper",
+    "kind": "function",
+    "parent": "Derived.area",
+    "start_line": 18,
+    "end_line": 20,
+    "exported": false,
+    "id": 3339120045843520716,
+    "content_hash": 15948048400500845668,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "compute"
+    ],
+    "calls": [
+      "compute"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.ts",
+    "qualified_name": "compute",
+    "kind": "function",
+    "parent": null,
+    "start_line": 25,
+    "end_line": 27,
+    "exported": true,
+    "id": 4342304592526409415,
+    "content_hash": 13526151121527955076,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Level"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "Shape",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": true,
+    "id": 17284009100737327161,
+    "content_hash": 3439514311092153929,
+    "imports": [],
+    "references": [
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "src/types.ts:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 12,
+    "exported": false,
+    "id": 8870632732785996405,
+    "content_hash": 8555130281704261135,
+    "imports": [],
+    "references": [
+      "DEFAULT_TIMEOUT",
+      "Handler",
+      "Level",
+      "Shape",
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "Shape.area",
+    "kind": "method",
+    "parent": "Shape",
+    "start_line": 2,
+    "end_line": 2,
+    "exported": false,
+    "id": 7297322469384982699,
+    "content_hash": 15071029279493067966,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "Handler",
+    "kind": "type_alias",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 5,
+    "exported": true,
+    "id": 12226067863722246166,
+    "content_hash": 9468911582078005746,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "Level",
+    "kind": "enum",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 10,
+    "exported": true,
+    "id": 12647155715786805530,
+    "content_hash": 8803080222923891442,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.ts",
+    "qualified_name": "DEFAULT_TIMEOUT",
+    "kind": "constant",
+    "parent": null,
+    "start_line": 12,
+    "end_line": 12,
+    "exported": true,
+    "id": 10850923278930170719,
+    "content_hash": 10834826283345063296,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]

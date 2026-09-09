@@ -1,0 +1,291 @@
+[
+  {
+    "file": "pkg/broken.py",
+    "qualified_name": "broken",
+    "kind": "function",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 2,
+    "exported": true,
+    "id": 2990110719060539973,
+    "content_hash": 14353525673411415345,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/broken.py",
+    "qualified_name": "pkg/broken.py:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 4,
+    "exported": false,
+    "id": 2849578903911587721,
+    "content_hash": 4674653569495629092,
+    "imports": [],
+    "references": [
+      "broken"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "pkg/models.py:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 24,
+    "exported": false,
+    "id": 5382684200702626129,
+    "content_hash": 508714346485629110,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [
+      "DEFAULT_LIMIT",
+      "Meta",
+      "Plain",
+      "Record",
+      "__init__",
+      "key",
+      "load"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "DEFAULT_LIMIT",
+    "kind": "constant",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 4,
+    "exported": true,
+    "id": 8734141792129705101,
+    "content_hash": 16243177776238361440,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Record",
+    "kind": "class",
+    "parent": null,
+    "start_line": 8,
+    "end_line": 16,
+    "exported": true,
+    "id": 16817704634088346338,
+    "content_hash": 1946171059982882316,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [
+      "Meta",
+      "key"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Record.key",
+    "kind": "method",
+    "parent": "Record",
+    "start_line": 12,
+    "end_line": 13,
+    "exported": true,
+    "id": 5508233706481779063,
+    "content_hash": 13781173423642663166,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Record.Meta",
+    "kind": "class",
+    "parent": "Record",
+    "start_line": 15,
+    "end_line": 16,
+    "exported": true,
+    "id": 1021362744916120594,
+    "content_hash": 4213200083911644602,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Plain",
+    "kind": "class",
+    "parent": null,
+    "start_line": 19,
+    "end_line": 24,
+    "exported": true,
+    "id": 4358213175682358020,
+    "content_hash": 6489958950536331773,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [
+      "Record",
+      "__init__",
+      "key",
+      "load"
+    ],
+    "calls": [],
+    "bases": [
+      "Record"
+    ]
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Plain.__init__",
+    "kind": "method",
+    "parent": "Plain",
+    "start_line": 20,
+    "end_line": 21,
+    "exported": true,
+    "id": 13071580664409239759,
+    "content_hash": 12139060511359133340,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [
+      "key"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/models.py",
+    "qualified_name": "Plain.load",
+    "kind": "method",
+    "parent": "Plain",
+    "start_line": 23,
+    "end_line": 24,
+    "exported": true,
+    "id": 10925595661420379625,
+    "content_hash": 3158478809657555657,
+    "imports": [
+      "abc",
+      "typing"
+    ],
+    "references": [
+      "key"
+    ],
+    "calls": [
+      "fetch"
+    ],
+    "bases": []
+  },
+  {
+    "file": "pkg/service.py",
+    "qualified_name": "pkg/service.py:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 14,
+    "exported": false,
+    "id": 5628586185894918481,
+    "content_hash": 14780396021649536307,
+    "imports": [
+      "pkg.models"
+    ],
+    "references": [
+      "DEFAULT_LIMIT",
+      "Record",
+      "build",
+      "inner",
+      "run"
+    ],
+    "calls": [
+      "register"
+    ],
+    "bases": []
+  },
+  {
+    "file": "pkg/service.py",
+    "qualified_name": "build",
+    "kind": "function",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 8,
+    "exported": true,
+    "id": 203822449447421486,
+    "content_hash": 5741363816894622488,
+    "imports": [
+      "pkg.models"
+    ],
+    "references": [
+      "DEFAULT_LIMIT",
+      "Record",
+      "inner"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "pkg/service.py",
+    "qualified_name": "build.inner",
+    "kind": "function",
+    "parent": "build",
+    "start_line": 5,
+    "end_line": 6,
+    "exported": true,
+    "id": 12078271991312573922,
+    "content_hash": 5185766303381171187,
+    "imports": [
+      "pkg.models"
+    ],
+    "references": [
+      "Record"
+    ],
+    "calls": [
+      "Record"
+    ],
+    "bases": []
+  },
+  {
+    "file": "pkg/service.py",
+    "qualified_name": "run",
+    "kind": "function",
+    "parent": null,
+    "start_line": 12,
+    "end_line": 14,
+    "exported": true,
+    "id": 8082245638213402917,
+    "content_hash": 16691507533075322354,
+    "imports": [
+      "pkg.models"
+    ],
+    "references": [
+      "build"
+    ],
+    "calls": [
+      "b",
+      "build"
+    ],
+    "bases": []
+  }
+]
