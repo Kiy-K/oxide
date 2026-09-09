@@ -80,11 +80,11 @@
     "qualified_name": "Record",
     "kind": "class",
     "parent": null,
-    "start_line": 8,
+    "start_line": 7,
     "end_line": 16,
     "exported": true,
     "id": 16817704634088346338,
-    "content_hash": 1946171059982882316,
+    "content_hash": 2737836334182307167,
     "imports": [
       "abc",
       "typing"
@@ -101,11 +101,11 @@
     "qualified_name": "Record.key",
     "kind": "method",
     "parent": "Record",
-    "start_line": 12,
+    "start_line": 11,
     "end_line": 13,
     "exported": true,
     "id": 5508233706481779063,
-    "content_hash": 13781173423642663166,
+    "content_hash": 4342118902877016953,
     "imports": [
       "abc",
       "typing"
@@ -219,9 +219,7 @@
       "inner",
       "run"
     ],
-    "calls": [
-      "register"
-    ],
+    "calls": [],
     "bases": []
   },
   {
@@ -271,11 +269,11 @@
     "qualified_name": "run",
     "kind": "function",
     "parent": null,
-    "start_line": 12,
+    "start_line": 11,
     "end_line": 14,
     "exported": true,
     "id": 8082245638213402917,
-    "content_hash": 16691507533075322354,
+    "content_hash": 332774963309331375,
     "imports": [
       "pkg.models"
     ],
@@ -284,7 +282,8 @@
     ],
     "calls": [
       "b",
-      "build"
+      "build",
+      "register"
     ],
     "bases": []
   }

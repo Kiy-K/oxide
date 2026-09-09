@@ -8,9 +8,16 @@ and `src/languages/tags.rs`'s module doc for the architecture).
 `cargo run --example parity_report --release`, comparing
 `extractor_for_handwritten` vs `extractor_for` (tags) over `fixtures/py_repo`
 and `fixtures/ts_repo`. After the two fixes below, only two intentional
-differences remain: `__all__` module-constant capture (Python, a gain) and
-the documented decorator-span gap on `RetryPolicy.exhausted` (pinned by
-`languages::tags::tests::decorator_line_is_not_included_in_span`).
+differences remained: `__all__` module-constant capture (Python, a gain) and
+the decorator-span gap on `RetryPolicy.exhausted`.
+
+**Superseded.** The decorator-span gap was later closed on the tags path
+(`tags.rs::decorator_extended_start`), a final parity run showed gains only
+and no losses, and the handwritten extractors, `extractor_for_handwritten`,
+and this `parity_report` example were all deleted. Extraction behavior is
+now pinned by `tests/language_conformance.rs`'s committed goldens instead.
+The tables below are kept as the record of the migration that produced the
+current path, not as reproducible commands.
 
 Two real bugs were found and fixed via this harness, not by inspection:
 - `tag.span` from tree-sitter-tags is the *name* node's line only (ctags

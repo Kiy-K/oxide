@@ -102,10 +102,12 @@ loosen the existing three.
 `TagsExtractor` + `LanguageProfile` (grammar + `.scm` queries) precisely so
 that adding a language is "mostly grammar + `.scm` + normalization tests,
 not a new procedural extractor." The handwritten, per-language AST-walking
-extractors (`languages/python.rs`, `languages/typescript.rs`, reachable via
-`extractor_for_handwritten`) are retained specifically for one documented
-gap upstream `tags.scm` cannot express — decorator-inclusive spans — not as
-a template to copy for new languages. The same declarative-first bar
+extractors are deleted; the one gap that kept them alive —
+decorator-inclusive spans — is closed on the tags path by
+`tags.rs::decorator_extended_start`, a byte-range rule over decorators
+collected in `collect_meta`'s existing walk, not a per-language walker.
+Narrow normalization of that kind is in bounds; a new procedural extractor
+is not. The same declarative-first bar
 applies to `queries/*_{callers,implementors}.scm`
 (`tree_sitter_structural.rs`) for any new language's structural relations.
 

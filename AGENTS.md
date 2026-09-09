@@ -232,11 +232,24 @@ identity everywhere is `path#QualifiedName`.
   flat tag list (tags carry no parent info at all). Adding a language is
   meant to mostly be grammar + `.scm` + normalization tests, not a new
   procedural extractor. The original handwritten, per-language AST-walking
-  extractors (`languages/python.rs`, `languages/typescript.rs`) are retained,
-  reachable via `extractor_for_handwritten()`, not deleted: they cover a
-  narrow but real gap upstream tags.scm doesn't — decorator-inclusive spans
-  (`@app.route`, `@Injectable()`) — documented and pinned by
-  `languages::tags::tests::decorator_line_is_not_included_in_span`. Adopting
+  extractors (`languages/python.rs`, `languages/typescript.rs`) are **gone**,
+  deleted once the one capability they were retained for —
+  decorator-inclusive spans (`@app.route`, `@Injectable()`) — was closed on
+  the tags path by `tags.rs::decorator_extended_start`: `collect_meta`'s
+  existing single walk also collects `decorator` byte ranges, and a
+  definition's span is widened back over any decorator separated from it by
+  whitespace only. Done in Rust rather than as `.scm` patterns because the
+  two grammars disagree about where a decorator lives (Python wraps the
+  definition in `decorated_definition`; TypeScript hangs it off
+  `export_statement` for a decorated exported class and off the class body
+  for a decorated method), so the query-level fix needs a pattern per
+  grammar shape per language *plus* a Rust rule collapsing the resulting
+  outer/inner twin definitions. Two consequences worth knowing: a
+  decorator's own call now attributes to the decorated symbol rather than
+  the file's module symbol, and `structural_relations` matches a base clause
+  to the *innermost containing* Class/Interface rather than an exact start
+  line, since the symbol's span no longer starts where the class node does.
+  Adopting
   `tree-sitter-tags` required bumping `tree-sitter` 0.24→0.27 and
   `tree-sitter-python` 0.23→0.25 (a `links = "tree-sitter"` native-lib crate
   forces one version across the graph); `tree-sitter-typescript` needed no

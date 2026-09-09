@@ -56,9 +56,24 @@ use std::collections::HashMap;
 /// symbol), so a top-level call still resolves to *some* symbol, never
 /// `None`.
 fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
+    innermost(file_symbols, line, |s| s.kind != SymbolKind::Module).or_else(|| {
+        file_symbols
+            .iter()
+            .find(|s| s.kind == SymbolKind::Module)
+            .copied()
+    })
+}
+
+/// Innermost symbol containing `line` among those passing `keep`, using the
+/// same span-then-nesting-depth tie-break `enclosing` documents above.
+fn innermost<'a>(
+    file_symbols: &[&'a Symbol],
+    line: u32,
+    keep: impl Fn(&Symbol) -> bool,
+) -> Option<&'a Symbol> {
     file_symbols
         .iter()
-        .filter(|s| s.kind != SymbolKind::Module && s.start_line <= line && line <= s.end_line)
+        .filter(|s| keep(s) && s.start_line <= line && line <= s.end_line)
         .min_by_key(|s| {
             (
                 s.end_line - s.start_line,
@@ -66,12 +81,6 @@ fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
             )
         })
         .copied()
-        .or_else(|| {
-            file_symbols
-                .iter()
-                .find(|s| s.kind == SymbolKind::Module)
-                .copied()
-        })
 }
 
 /// One `(symbol_id, calls, bases)` triple per symbol in `file_symbols` —
@@ -98,20 +107,21 @@ pub fn compute_file_relations(
             calls_by_symbol.entry(sym.id()).or_default().push(name);
         }
     }
-    // Keyed by the class declaration's own start line, filtered to
-    // Class/Interface-kind symbols — not name (two differently-nested
+    // Attributed to the *innermost* Class/Interface symbol containing the
+    // class declaration's own line — not by name (two differently-nested
     // classes can share a bare name, e.g. `Outer1.Config`/`Outer2.Config`,
-    // and matching by name alone would fan a base list onto every
-    // same-named class in the file — a real bug found by review, fixed by
-    // this exact-line approach: a class's own start line doesn't collide
-    // with a same-line member's start line for anything but that member
-    // itself, and the kind filter excludes it). See `all_bases_in_file`'s
-    // doc comment.
+    // and matching by name alone fans a base list onto every same-named
+    // class in the file — a real bug found by review). Containment rather
+    // than an exact line match because a decorated class's symbol span now
+    // starts at its first decorator (`tags.rs::decorator_extended_start`)
+    // while `all_bases_in_file` still reports the class node's own line;
+    // the innermost-wins tie-break keeps the nested case correct, and the
+    // kind filter keeps a same-line member out of the running. See
+    // `all_bases_in_file`'s doc comment.
     let mut bases_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
     for (class_line, base_name) in all_bases_in_file(lang, src) {
-        for sym in refs.iter().filter(|s| {
-            s.start_line == class_line
-                && matches!(s.kind, SymbolKind::Class | SymbolKind::Interface)
+        if let Some(sym) = innermost(&refs, class_line, |s| {
+            matches!(s.kind, SymbolKind::Class | SymbolKind::Interface)
         }) {
             bases_by_symbol
                 .entry(sym.id())

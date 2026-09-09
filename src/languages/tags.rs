@@ -15,7 +15,10 @@
 //! (see `queries/typescript_tags.scm`); imports and the exported flag need
 //! actual tree structure (a `source` field, an `export_statement` ancestor)
 //! that no tag capture exposes, so `collect_meta` walks the same parse tree
-//! once, narrowly, for those three things only — not a general AST walker.
+//! once, narrowly, for those — plus decorator ranges, which
+//! `decorator_extended_start` uses to widen a decorated definition's span
+//! back over its decorators. Still a fixed handful of node kinds, not a
+//! general AST walker.
 
 use super::LanguageExtractor;
 use crate::symbols::{content_hash, Language, Symbol, SymbolKind};
@@ -130,8 +133,10 @@ fn collect_meta(
     src: &str,
     imports: &mut Vec<String>,
     exports: &mut Vec<Range<usize>>,
+    decorators: &mut Vec<Range<usize>>,
 ) {
     match (lang, node.kind()) {
+        (_, "decorator") => decorators.push(node.byte_range()),
         (Language::Python, "import_from_statement") => {
             if let Some(m) = node.child_by_field_name("module_name") {
                 if let Ok(t) = m.utf8_text(src.as_bytes()) {
@@ -175,8 +180,51 @@ fn collect_meta(
     }
     let mut cur = node.walk();
     for child in node.children(&mut cur) {
-        collect_meta(child, lang, src, imports, exports);
+        collect_meta(child, lang, src, imports, exports, decorators);
     }
+}
+
+/// Walk `start` back over any decorators that sit immediately before it with
+/// nothing but whitespace in between, so a decorated definition's span (and
+/// therefore its `content_hash`, `signature`, and the body tokens the lexical
+/// index weights) begins at its first decorator.
+///
+/// Done here, over decorator byte ranges collected from the tree, rather than
+/// as extra `.scm` patterns: the two grammars disagree about where a
+/// decorator *lives* — Python wraps the definition in `decorated_definition`,
+/// while TypeScript hangs the decorator off `export_statement` for a
+/// decorated exported class and off the class body for a decorated method —
+/// so a query-level fix needs a pattern per grammar shape per language plus a
+/// Rust rule to collapse the resulting outer/inner twin definitions. The
+/// contiguity check is what keeps this honest: a decorator belonging to some
+/// *earlier* definition always has that definition's source between it and
+/// `start`, so it is never absorbed.
+/// Start byte of the `export_statement` that directly wraps a definition
+/// (same "ends at the same byte" test the `exported` flag uses), else the
+/// definition's own start. On its own this changes nothing — `export` and
+/// the declaration it wraps share a line — but it is what lets
+/// `decorator_extended_start` see past the `export` keyword in
+/// `@Injectable()\nexport class Svc`, where the decorator is a sibling of
+/// the export statement rather than of the class.
+fn export_anchor(export_ranges: &[Range<usize>], start: usize, end: usize) -> usize {
+    export_ranges
+        .iter()
+        .find(|r| r.start <= start && r.end == end)
+        .map_or(start, |r| r.start)
+}
+
+fn decorator_extended_start(src: &str, decorators: &[Range<usize>], start: usize) -> usize {
+    let mut start = start;
+    // Loops rather than taking one step, so a stack of decorators is
+    // absorbed whole.
+    while let Some(dec) = decorators
+        .iter()
+        .filter(|r| r.end <= start && src[r.end..start].trim().is_empty())
+        .max_by_key(|r| r.end)
+    {
+        start = dec.start;
+    }
+    start
 }
 
 impl LanguageExtractor for TagsExtractor {
@@ -194,12 +242,14 @@ impl LanguageExtractor for TagsExtractor {
         };
         let mut imports = Vec::new();
         let mut exports = Vec::new();
+        let mut decorators = Vec::new();
         collect_meta(
             tree.root_node(),
             self.profile.language,
             src,
             &mut imports,
             &mut exports,
+            &mut decorators,
         );
         imports.sort();
         imports.dedup();
@@ -209,6 +259,20 @@ impl LanguageExtractor for TagsExtractor {
     fn extract(&self, file: &str, src: &str, imports: &[String]) -> Vec<Symbol> {
         let profile = self.profile;
         let bytes = src.as_bytes();
+
+        let mut export_ranges = Vec::new();
+        let mut decorators = Vec::new();
+        if let Some(tree) = parse(profile, src) {
+            let mut discard = Vec::new();
+            collect_meta(
+                tree.root_node(),
+                profile.language,
+                src,
+                &mut discard,
+                &mut export_ranges,
+                &mut decorators,
+            );
+        }
 
         let mut defs: Vec<RawDef> = Vec::new();
         if let Some(config) = self.config() {
@@ -228,25 +292,23 @@ impl LanguageExtractor for TagsExtractor {
                     defs.push(RawDef {
                         start: tag.range.start,
                         end: tag.range.end,
-                        line_start: byte_to_line(bytes, tag.range.start),
+                        // Containment below still keys off the raw tag
+                        // range, so absorbing a decorator can never
+                        // re-parent anything — only the span widens.
+                        line_start: byte_to_line(
+                            bytes,
+                            decorator_extended_start(
+                                src,
+                                &decorators,
+                                export_anchor(&export_ranges, tag.range.start, tag.range.end),
+                            ),
+                        ),
                         line_end: byte_to_line(bytes, tag.range.end),
                         name: name.to_string(),
                         kind,
                     });
                 }
             }
-        }
-
-        let mut export_ranges = Vec::new();
-        if let Some(tree) = parse(profile, src) {
-            let mut discard = Vec::new();
-            collect_meta(
-                tree.root_node(),
-                profile.language,
-                src,
-                &mut discard,
-                &mut export_ranges,
-            );
         }
 
         // Outer-before-inner at equal start (longer span first) so the
@@ -365,30 +427,58 @@ class B:
     }
 
     #[test]
-    fn decorator_line_is_not_included_in_span() {
-        // Documented Phase 3.4a gap: python's tags.scm binds @definition.class
-        // to the class_definition node itself, never the wrapping
-        // decorated_definition — unlike the handwritten extractor (see
-        // python::tests::extracts_classes_methods_functions_and_imports,
-        // which asserts start_line == 4 for the same source). The decorator
-        // line is often the most retrieval-relevant line on a symbol
-        // (`@app.route`, `@pytest.fixture`), which is why the handwritten
-        // extractor is retained rather than deleted.
+    fn decorated_definitions_span_their_decorators() {
+        // Upstream python tags.scm binds @definition.class to the
+        // class_definition node itself, never the wrapping
+        // decorated_definition, so the decorator line — often the single
+        // most retrieval-relevant line on a symbol (`@app.route`,
+        // `@pytest.fixture`), and one that feeds the lexical index at body
+        // weight — used to fall outside the span entirely.
+        // `decorator_extended_start` widens it back.
         let src = "\
 @dataclass
+@final
 class VersionedStore:
-    def get(self, key):
-        return self.data[key]
+    @property
+    def get(self):
+        return self.data
 ";
         let syms = parse_file_with(&PYTHON_TAGS, "x.py", src, Language::Python);
         let cls = syms
             .iter()
             .find(|s| s.qualified_name == "VersionedStore")
             .unwrap();
-        assert_eq!(
-            cls.start_line, 2,
-            "decorator line 1 is excluded, not 4->1 as the handwritten extractor gives"
-        );
+        assert_eq!(cls.start_line, 1, "a stack of decorators is absorbed whole");
+        assert_eq!(cls.signature, "@dataclass");
+        let get = syms
+            .iter()
+            .find(|s| s.qualified_name == "VersionedStore.get")
+            .unwrap();
+        assert_eq!(get.start_line, 4);
+        // The widened span must still be exactly what span_text() recomputes.
+        assert_eq!(get.content_hash, content_hash(get.span_text(src)));
+    }
+
+    #[test]
+    fn a_decorator_on_a_previous_definition_is_not_absorbed() {
+        // The contiguity check is the whole safety argument: only whitespace
+        // may sit between a decorator and the definition it widens.
+        let src = "@dec\ndef a():\n    pass\n\ndef b():\n    pass\n";
+        let syms = parse_file_with(&PYTHON_TAGS, "x.py", src, Language::Python);
+        assert_eq!(syms.iter().find(|s| s.name == "a").unwrap().start_line, 1);
+        assert_eq!(syms.iter().find(|s| s.name == "b").unwrap().start_line, 5);
+    }
+
+    #[test]
+    fn typescript_decorators_widen_class_and_method_spans() {
+        // TypeScript hangs a decorated exported class's decorator off the
+        // export_statement and a decorated method's off the class body —
+        // two grammar shapes neither of which Python has, both handled by
+        // the same byte-range rule.
+        let src = "@Injectable()\nexport class Svc {\n  @Log()\n  run() {\n    return 1;\n  }\n}\n";
+        let syms = parse_file_with(&TYPESCRIPT_TAGS, "x.ts", src, Language::TypeScript);
+        assert_eq!(syms.iter().find(|s| s.name == "Svc").unwrap().start_line, 1);
+        assert_eq!(syms.iter().find(|s| s.name == "run").unwrap().start_line, 3);
     }
 
     #[test]
