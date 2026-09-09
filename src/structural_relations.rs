@@ -64,6 +64,16 @@ fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
     })
 }
 
+/// The single element of `it`, or `None` when it holds zero or more than
+/// one — ambiguity here means falling through to a weaker rule rather than
+/// picking arbitrarily.
+fn unique<'a, 'b: 'a>(mut it: impl Iterator<Item = &'a &'b Symbol>) -> Option<&'b Symbol> {
+    match (it.next(), it.next()) {
+        (Some(only), None) => Some(only),
+        _ => None,
+    }
+}
+
 /// Innermost symbol containing `line` among those passing `keep`, using the
 /// same span-then-nesting-depth tie-break `enclosing` documents above.
 fn innermost<'a>(
@@ -121,21 +131,28 @@ pub fn compute_file_relations(
     let mut bases_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
     for (class_line, class_name, base_name) in all_bases_in_file(lang, src) {
         let is_type = |s: &Symbol| matches!(s.kind, SymbolKind::Class | SymbolKind::Interface);
-        let owner = innermost(&refs, class_line, is_type).or_else(|| {
+        // Name first, among the symbols that actually contain the clause's
+        // line. Containment alone is ambiguous whenever two nested
+        // declarations share a line — `class Outer extends Base { f = class
+        // Inner extends Other {} }` reports line 1 for *both* clauses, and
+        // innermost-wins hands `Base` to `Inner` while `Outer` loses it
+        // (found by review). The query already reports which class each
+        // clause belongs to, so use it.
+        let owner = unique(refs.iter().filter(|s| {
+            is_type(s)
+                && s.name == class_name
+                && s.start_line <= class_line
+                && class_line <= s.end_line
+        }))
+        .or_else(|| innermost(&refs, class_line, is_type))
+        .or_else(|| {
             // Rust's `impl Trait for Store` sits nowhere near `struct
             // Store`, so nothing contains the impl block's line once the
             // impl's own (deduped-away) symbol is gone. Fall back to the
             // file's declaration of that name — but only when it is
             // unambiguous, since two same-named types in one file would
             // put us back in the fan-out this attribution exists to avoid.
-            let mut named = refs
-                .iter()
-                .filter(|s| is_type(s) && s.name == class_name)
-                .map(|s| &**s);
-            match (named.next(), named.next()) {
-                (Some(only), None) => Some(only),
-                _ => None,
-            }
+            unique(refs.iter().filter(|s| is_type(s) && s.name == class_name))
         });
         if let Some(sym) = owner {
             bases_by_symbol
@@ -295,6 +312,52 @@ mod tests {
             .unwrap();
         assert_eq!(c1.bases, vec!["A".to_string()], "{:?}", c1.bases);
         assert_eq!(c2.bases, vec!["B".to_string()], "{:?}", c2.bases);
+    }
+
+    #[test]
+    fn same_line_nested_classes_each_keep_their_own_base() {
+        // Found by review: both clauses report line 1, so containment alone
+        // handed `Base` to the inner class and left the outer one with none.
+        let tmp = tempfile::tempdir().unwrap();
+        write(
+            tmp.path(),
+            "z.ts",
+            "class Outer extends Base { f = class Inner extends Other {} }\n",
+        );
+        let store = indexed(tmp.path());
+
+        let symbols = load_symbols_with_relations(&store).unwrap();
+        let outer = symbols
+            .iter()
+            .find(|s| s.qualified_name == "Outer")
+            .unwrap();
+        let inner = symbols
+            .iter()
+            .find(|s| s.qualified_name == "Outer.Inner")
+            .unwrap();
+        assert_eq!(outer.bases, vec!["Base".to_string()], "{:?}", outer.bases);
+        assert_eq!(inner.bases, vec!["Other".to_string()], "{:?}", inner.bases);
+    }
+
+    #[test]
+    fn a_generic_go_receiver_qualifies_by_the_declared_type() {
+        // Found by review: `func (s *Store[T]) Get()` qualified as
+        // `Store[T].Get`, which matches no declared type.
+        let tmp = tempfile::tempdir().unwrap();
+        write(
+            tmp.path(),
+            "g.go",
+            "package p\n\ntype Store[T any] struct{}\n\nfunc (s *Store[T]) Get() string { return \"\" }\n",
+        );
+        let store = indexed(tmp.path());
+
+        let symbols = load_symbols_with_relations(&store).unwrap();
+        let get = symbols
+            .iter()
+            .find(|s| s.name == "Get")
+            .expect("Get is extracted");
+        assert_eq!(get.qualified_name, "Store.Get");
+        assert_eq!(get.parent.as_deref(), Some("Store"));
     }
 
     #[test]

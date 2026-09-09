@@ -168,7 +168,10 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
         (Language::Go, "method_declaration") => {
             // `func (s *Store) Get(...)` -> receiver type `Store`; the
             // pointer/parens/parameter name are all stripped by taking the
-            // last identifier-ish token.
+            // last identifier-ish token, and a generic receiver's type
+            // parameters (`func (s *Store[T]) Get()`) go too, or the method
+            // would qualify as `Store[T].Get` and never match the declared
+            // `Store` (found by review).
             if let Some(recv) = node.child_by_field_name("receiver") {
                 if let Ok(t) = recv.utf8_text(src.as_bytes()) {
                     if let Some(name) = t
@@ -176,6 +179,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                         .split_whitespace()
                         .next_back()
                         .map(|t| t.trim_start_matches('*'))
+                        .map(|t| t.split('[').next().unwrap_or(t))
                         .map(|t| t.rsplit('.').next().unwrap_or(t))
                         .filter(|t| !t.is_empty())
                     {

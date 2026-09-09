@@ -62,34 +62,52 @@ test in `structural_relations.rs`'s own test module:
    fixed by a secondary tie-break on qualified-name length (longer name =
    more deeply nested = correct target).
 3. A class and its own single-line member/base-list attribution needs the
-   class's own declared identity, not span containment, because a
-   same-line member can share the class's exact span — fixed by keying
+   class's own declared identity, because a same-line member can share the
+   class's exact span and a bare name over-attributes across
+   differently-nested same-named classes. Originally fixed by keying
    `all_bases_in_file` on the class node's own start line plus a
-   `Class`/`Interface` kind filter, not on containment or bare name (name
-   alone over-attributes across differently-nested same-named classes).
+   `Class`/`Interface` kind filter. **That exact-line key no longer
+   works** and has been replaced: a decorated class's *symbol* now spans
+   from its first decorator (`tags.rs::decorator_extended_start`) while
+   the query still reports the class node's line, and Rust's
+   `impl Trait for Store` sits nowhere near `struct Store` at all.
+4. Two nested declarations on one physical line report the *same* line for
+   both base clauses — `class Outer extends Base { f = class Inner extends
+   Other {} }` — so containment alone hands `Base` to `Inner` and leaves
+   `Outer` with none.
+
+The current bases join is a three-step ladder, each step falling through
+only on ambiguity: (a) the unique `Class`/`Interface` symbol that both
+*contains* the clause's line and *carries the class name the query
+reported* — this is what settles ties 3 and 4; (b) the innermost
+containing `Class`/`Interface`; (c) the unique same-named
+`Class`/`Interface` anywhere in the file, which is what lets a Rust impl
+block's bases reach the struct that declared the name. Ambiguity at any
+step falls through rather than picking arbitrarily (`unique()`).
 
 A change to the tie-break ordering, the Module exclusion, or the bases
-join key without re-running (and, if behavior changes, updating)
+join ladder without re-running (and, if behavior changes, updating)
 `call_inside_a_one_line_nested_function_attaches_to_the_inner_function`,
-`top_level_calls_attach_to_the_module_fallback_symbol`, and
-`same_bare_name_classes_in_different_scopes_do_not_cross_attribute_bases`
-(all in `structural_relations.rs`) is very likely reintroducing one of
-these three bugs, not simplifying dead code.
+`top_level_calls_attach_to_the_module_fallback_symbol`,
+`same_bare_name_classes_in_different_scopes_do_not_cross_attribute_bases`,
+and `same_line_nested_classes_each_keep_their_own_base` (all in
+`structural_relations.rs`) is very likely reintroducing one of these bugs,
+not simplifying dead code.
 
 **What constitutes a violation:** any edit to `enclosing()`'s sort key,
-the Module-exclusion `filter`, or `all_bases_in_file`'s line/kind join
-without those three tests passing unmodified, or a PR that reverts to
-name-based or pure-containment attribution for bases without new evidence
-that the fanning/mis-attribution bugs those approaches had are actually
-fixed some other way.
+the Module-exclusion `filter`, or the bases join ladder without those
+tests passing unmodified, or a PR that collapses the ladder back to
+name-only or containment-only attribution without new evidence that the
+fanning and mis-attribution bugs both of those had are actually fixed some
+other way.
 
-**Evidence required:** `cargo test --lib structural_relations` (5 tests as
-of this migration) passing unmodified, or an explicit accounting of which
-of the three tie-break cases a proposed change affects and why.
+**Evidence required:** `cargo test --lib structural_relations` passing
+unmodified, or an explicit accounting of which tie-break case a proposed
+change affects and why.
 
-**Exceptions:** none for the three specific ties above; a genuinely new
-tie-break case is welcome as a fourth regression test, not a reason to
-loosen the existing three.
+**Exceptions:** none for the specific ties above; a genuinely new
+tie-break case is welcome as another regression test, not a reason to
+loosen the existing ones.
 
 ---
 
