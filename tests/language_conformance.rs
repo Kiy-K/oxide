@@ -32,7 +32,11 @@
 //!
 //! - **Import bindings are not stored.** `import { Base, Derived } from
 //!   './service'` records the module string only; the bound names survive
-//!   nowhere structured (`SymbolKind::Import` is never produced).
+//!   nowhere structured (`SymbolKind::Import` is never produced). The
+//!   `uses` precision this was wanted for came instead from resolving the
+//!   module string to a file (`relations.rs::neighbors`), so the remaining
+//!   value of per-name bindings is only the rarer case where two imported
+//!   files define the same name.
 //! - **Python symbols are unconditionally `exported: true`** — the flag has
 //!   no Python meaning today.
 //!

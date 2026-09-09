@@ -144,7 +144,11 @@ impl<'a> RelationGraph<'a> {
     ///   (see `# ponytail` note in `index.rs::extract_references`), so two
     ///   unrelated symbols sharing a name can produce a false link:
     ///   `uses←` (this symbol references a same-named definition) and
-    ///   `test←` (from [`RelationGraph::related_tests`]).
+    ///   `test←` (from [`RelationGraph::related_tests`]). `uses←` is
+    ///   narrowed, not promoted: when some candidate sits in a file the
+    ///   seed's file imports, non-imported same-named definitions are
+    ///   dropped. That is still name matching — it just stops offering
+    ///   candidates the file demonstrably never pulled in.
     pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
         let mut out: Vec<(String, &'a Symbol)> = Vec::new();
         if let Some(p) = &seed.parent {
@@ -163,14 +167,34 @@ impl<'a> RelationGraph<'a> {
         {
             out.push(("child".into(), *c));
         }
-        // References from this symbol to known definitions.
+        // Files this symbol's own file actually imports, resolved to indexed
+        // paths — membership tests only, never iterated, so a HashSet here
+        // cannot leak nondeterministic order into `out` (which is truncated
+        // to 24 below; see tests/determinism_stress.rs).
+        let imported_files: HashSet<String> = seed
+            .imports
+            .iter()
+            .filter_map(|m| resolve_module(m, &seed.file, &self.files))
+            .collect();
+        // References from this symbol to known definitions. When any
+        // candidate lives in a file this one imports, the ones that don't
+        // are dropped: `uses` is the weakest tier (bare identifier-name
+        // intersection, no scope analysis), and an import is real syntactic
+        // evidence of which same-named definition was meant. With no
+        // import-backed candidate at all — a repo-internal helper reached
+        // without an import statement, or an unresolvable module string —
+        // the old fan-out is kept rather than dropping the relation.
         for r in &seed.references {
-            if let Some(defs) = self.defs_by_name.get(r.as_str()) {
-                for d in defs {
-                    if d.file != seed.file {
-                        out.push(("uses".into(), *d));
-                    }
+            let Some(defs) = self.defs_by_name.get(r.as_str()) else {
+                continue;
+            };
+            let cross_file = || defs.iter().filter(|d| d.file != seed.file);
+            let any_backed = cross_file().any(|d| imported_files.contains(&d.file));
+            for d in cross_file() {
+                if any_backed && !imported_files.contains(&d.file) {
+                    continue;
                 }
+                out.push(("uses".into(), *d));
             }
         }
         // Definitions imported by this file.
@@ -228,5 +252,66 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         Some(matches.into_iter().next().unwrap())
     } else {
         None
+    }
+}
+
+#[cfg(test)]
+mod uses_narrowing_tests {
+    use super::*;
+    use crate::symbols::{Language, SymbolKind};
+
+    fn sym(file: &str, name: &str, imports: &[&str], references: &[&str]) -> Symbol {
+        Symbol {
+            qualified_name: name.into(),
+            name: name.into(),
+            kind: SymbolKind::Class,
+            language: Language::TypeScript,
+            file: file.into(),
+            start_line: 1,
+            end_line: 2,
+            content_hash: 0,
+            signature: String::new(),
+            imports: imports.iter().map(|s| s.to_string()).collect(),
+            exported: true,
+            parent: None,
+            references: references.iter().map(|s| s.to_string()).collect(),
+            calls: Vec::new(),
+            bases: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn an_imported_definition_wins_over_a_same_named_one_elsewhere() {
+        let symbols = vec![
+            sym("src/a.ts", "Client", &[], &[]),
+            sym("src/b.ts", "Client", &[], &[]),
+            sym("src/c.ts", "useIt", &["./a"], &["Client"]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let uses: Vec<&str> = graph
+            .neighbors(&symbols[2])
+            .into_iter()
+            .filter(|(tag, _)| tag == "uses")
+            .map(|(_, s)| s.file.as_str())
+            .collect();
+        assert_eq!(uses, vec!["src/a.ts"], "b.ts is never imported by c.ts");
+    }
+
+    #[test]
+    fn with_no_import_backing_the_old_fan_out_is_kept() {
+        // Dropping the relation entirely would lose a real signal for repos
+        // where the reference isn't reached through an import statement.
+        let symbols = vec![
+            sym("src/a.ts", "Client", &[], &[]),
+            sym("src/b.ts", "Client", &[], &[]),
+            sym("src/c.ts", "useIt", &[], &["Client"]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let uses = graph
+            .neighbors(&symbols[2])
+            .into_iter()
+            .filter(|(tag, _)| tag == "uses")
+            .count();
+        assert_eq!(uses, 2);
     }
 }
