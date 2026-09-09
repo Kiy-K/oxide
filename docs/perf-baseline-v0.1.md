@@ -25,6 +25,25 @@ baseline used for regression thresholds.
 | 2,404 / 9,611               | 1,069 ms   | 126 ms              | 153 ms                | 0.17 s            | 0.23 s              | 39.1 MB           | 18 MB      |
 | 6,004 / 24,011              | 2,614 ms   | 385 ms              | 314 ms                | 0.43 s            | 0.57 s              | 80.1 MB           | 43 MB      |
 
+### Four-language synthetic repo (2026-09-09)
+
+`scripts/gen_bench_repo.py` emits Rust and Go modules as well as Python and
+TypeScript since language support widened. Measured under `nice -n 10`, so
+not directly comparable to the 2026-08-29 rows above:
+
+| repo size (files/symbols) | cold index | no-change reindex | single-edit reindex | search (best/3) | context (best/3) | peak RSS (cold) | index size |
+|---------------------------|-----------:|-------------------:|---------------------:|-----------------:|-------------------:|-----------------:|-----------:|
+| 1,205 / 6,615 (4 langs)   | 1,208 ms   | 41 ms               | 70 ms                 | 0.03 s            | 0.05 s              | 36.2 MB           | 18 MB      |
+| 804 / 3,412 (py+ts only)  | 664 ms     | 39 ms               | 54 ms                 | 0.02 s            | 0.03 s              | 29.1 MB           | 9.4 MB     |
+
+The two rows were measured minutes apart in one session: adding Rust and Go
+costs 0.183 ms/symbol against Python+TypeScript's 0.195, i.e. slightly less
+per symbol, with files growing more slowly than symbols. Per-language real
+repositories are in `docs/language-support/README.md`.
+
+`scripts/perf.sh` also accepts a repository path instead of a module count,
+copying it to a temp dir before indexing and editing it.
+
 A single-symbol edit rewrites (2 changed symbols — the touched function plus
 its enclosing module whose body hash includes the first line) and reuses
 every other embedding (e.g. 24,009/24,011 reused at the largest size).

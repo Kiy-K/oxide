@@ -222,8 +222,14 @@ identity everywhere is `path#QualifiedName`.
 ## Repo layout facts
 
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.
-  Language support = implement `LanguageExtractor` + register in
-  `src/parser.rs` (currently python, typescript/tsx).
+  Language support = add a `LanguageProfile` + `.scm` queries and register
+  in `src/parser.rs` (currently python, typescript/tsx, rust, go — see
+  `docs/language-support/README.md` for the coverage matrix, per-language
+  performance, and what each language still misses). Behavior per language
+  is pinned by `tests/language_conformance.rs`'s committed goldens under
+  `fixtures/conformance/`; regenerate with `UPDATE_GOLDEN=1` and read the
+  diff — a golden that changes without an intended cause is the alarm.
+  Java was evaluated and deliberately not added: `docs/java-feasibility/`.
 - `parser.rs::extractor_for()` (the default) routes through
   `src/languages/tags.rs`'s generic `TagsExtractor`: a `LanguageProfile`
   (grammar + `queries/*_tags.scm` + `queries/*_locals.scm`) feeds the official

@@ -4,6 +4,10 @@
 # Usage: scripts/perf.sh [modules_per_lang]
 set -euo pipefail
 
+# Argument is either a module count (synthetic repo, the default) or a path to
+# an existing repository, which is copied to $WORK and measured in place. The
+# copy matters: these runs write a .oxide/ index and edit one file, and doing
+# that to a real checkout in situ would be rude.
 N="${1:-200}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BIN="$ROOT/target/release/oxide"
@@ -12,8 +16,15 @@ WORK="${TMPDIR:-/tmp}/oxide-perf-$$"
 
 trap 'rm -rf "$WORK"' EXIT
 
-python3 "$ROOT/scripts/gen_bench_repo.py" "$WORK/repo" "$N"
-echo "== repo: $N modules/lang =="
+if [ -d "$N" ]; then
+  mkdir -p "$WORK"
+  cp -r "$N" "$WORK/repo"
+  rm -rf "$WORK/repo/.oxide"
+  echo "== repo: $N =="
+else
+  python3 "$ROOT/scripts/gen_bench_repo.py" "$WORK/repo" "$N"
+  echo "== repo: $N modules/lang =="
+fi
 
 cd "$WORK/repo"
 
@@ -39,14 +50,33 @@ warm_rss=$(run_rss "$warm_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
 warm=$(grep '^took' "$warm_out" | grep -o '[0-9]*')
 rm -f "$warm_out"
 
-# touch exactly one function body in one file
+# touch exactly one file: the synthetic repo's known service module when it is
+# there, otherwise the largest indexable source file in the repo (a comment
+# appended at the end, so the edit is real but changes no semantics).
 python3 - <<'EOF'
 import pathlib
 p = pathlib.Path("src/py/service_7/svc.py")
-s = p.read_text()
-s = s.replace('result = {"module": 7,', 'result = {"module": 707,')
-assert '707' in s, "edit did not apply"
-p.write_text(s)
+if p.exists():
+    s = p.read_text()
+    s = s.replace('result = {"module": 7,', 'result = {"module": 707,')
+    assert '707' in s, "edit did not apply"
+    p.write_text(s)
+else:
+    # A new declaration, not just a comment: a trailing comment changes no
+    # symbol's span, so nothing re-embeds and the measurement is vacuous.
+    exts = {
+        ".py": "\ndef perf_edit_probe():\n    return 1\n",
+        ".ts": "\nexport function perfEditProbe(): number {\n  return 1;\n}\n",
+        ".tsx": "\nexport function perfEditProbe(): number {\n  return 1;\n}\n",
+        ".rs": "\npub fn perf_edit_probe() -> u32 {\n    1\n}\n",
+        ".go": "\nfunc perfEditProbe() int {\n\treturn 1\n}\n",
+    }
+    cands = [f for f in pathlib.Path(".").rglob("*")
+             if f.is_file() and f.suffix in exts and ".oxide" not in f.parts]
+    assert cands, "no indexable file to edit"
+    target = max(cands, key=lambda f: f.stat().st_size)
+    target.write_text(target.read_text() + exts[target.suffix])
+    print(f"edited {target}")
 EOF
 edit_out_file="$(mktemp)"
 edit_rss=$(run_rss "$edit_out_file" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
