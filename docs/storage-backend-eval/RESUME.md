@@ -32,9 +32,11 @@ commit and recorded in the write-up.
 
 All three follow-ups are now closed:
 
-- **`scripts/perf.sh 1500` — done.** `search` 0.28 s -> 0.16 s, `context`
-  0.35 s -> 0.22 s, db 47 -> 70 MB. Numbers and the machine-comparability
-  caveat are in [`enhanced-sqlite.md`](enhanced-sqlite.md).
+- **`scripts/perf.sh 1500` — done, both sides measured.** Pre-change binary
+  built from `ca5ff68` and run on the same machine: cold index 8.0 s -> 22.2 s
+  (~2.8×, the worst ratio in the round), `search` 0.27 -> 0.14 s, `context`
+  0.34 -> 0.20 s, db 47 -> 70 MB. Three further after-runs were discarded as
+  contended; the reasoning is in [`enhanced-sqlite.md`](enhanced-sqlite.md).
 - **Real-repo parity — done, and it replaced the Tier A gap with better
   evidence.** `examples/lexical_parity_real_repos.rs` compared the persisted
   and in-memory scorers over 137,731 scored documents on four ContextBench
@@ -48,6 +50,10 @@ All three follow-ups are now closed:
 
 ## Open risks / things a fresh session should know
 
+- **Cold index grows worse with corpus size than first thought.** Same-machine
+  ratios are 2.2× (N=450), 2.25× (N=900) and **2.8× (N=1500)** — slightly
+  super-linear, because the posting-row count is. Extrapolating from the
+  smaller points understates it; measure, do not infer.
 - **Cold index roughly doubled** (5.2 s → 11.6 s at 15,312 symbols) and
   **`index.db` grew 50%** (28 MB → 42 MB). This is the real cost of the
   round, it is intrinsic to writing ~700k posting rows, and three attempts to

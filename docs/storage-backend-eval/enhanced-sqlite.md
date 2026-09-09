@@ -38,20 +38,31 @@ symbols), the same shape holds and the costs grow with it:
 
 | | before | after | |
 | --- | --- | --- | --- |
-| `search` | 0.28 s | **0.16 s** | −43% |
-| `context` | 0.35 s | **0.22 s** | −37% |
+| `search` | 0.27–0.28 s | **0.14–0.15 s** | ~−47% |
+| `context` | 0.34 s | **0.20 s** | −41% |
 | `index.db` | 47 MB | **70 MB** | +49% |
-| cold index | **not measured** | 23.9 s | — |
+| cold index | **8.0 s** | **22.2 s** | ~2.8× |
 
-The `search`/`context`/DB rows compare against `baseline.md` directly. The
-cold-index row deliberately has no ratio: **23.9 s is the only N=1500
-cold-index number that exists.** No same-machine pre-change run was taken at
-this size, and `baseline.md`'s 2.7 s is a different machine, so dividing them
-would report a 9× regression that is mostly hardware. The same-machine
-before/after ratio was 2.2× at N=450 and 2.25× at N=900, and there is no
-reason to expect N=1500 to differ — but that is an extrapolation, not a
-measurement, and it is not quoted as one. Capturing the real figure means one
-pre-change build and one `perf.sh 1500` run on an idle machine.
+The cold-index row is now measured on both sides, same machine, pre-change
+binary built from `ca5ff68`: **8042 ms and 8120 ms** before (1% spread),
+against **22,192 ms** after. Note this is the *worst* ratio in the round —
+2.8× at N=1500 against 2.2× at N=450 and 2.25× at N=900 — so the write cost
+grows slightly faster than linearly in symbol count. The extrapolation this
+table previously carried would have understated it, which is the argument for
+measuring rather than inferring.
+
+**Three further after-runs are discarded, and it matters why.** They returned
+60.6 s, 72.4 s and 76.2 s, degrading monotonically, and were taken while an
+unrelated application (a game, one core pegged at ~104% for the preceding 48
+minutes) contended for the machine. Temperatures were 58–60 °C and clocks were
+at nominal, so this was contention rather than thermal throttling; the
+pre-change pair and the 22.2 s figure were taken before it started. Quoting a
+contended run as a code property would be the same error
+[`baseline.md`](baseline.md) already records discarding an entire sweep for.
+The honest read: the ratio is ~2.8× on a quiet machine, and the after-side is
+markedly more sensitive to contention than the before-side — unsurprising,
+since it writes roughly 1.2M extra posting rows at this size and the
+before-side does not.
 
 Ranking is unchanged, and not merely "close": `oxide eval --config
 fixtures/benchmark.json` is **byte-identical** before and after, and
@@ -410,7 +421,8 @@ raised three findings, all accepted and fixed before commit:
 | crash recovery (`tests/interrupted_index_recovery.rs`) | pass |
 | interrupted lexical backfill | never read; repaired to exact parity |
 | multiprocess reader under writer (`tests/cli_e2e.rs`) | pass |
-| cold CLI latency | 0.17 s → 0.08 s (N=900), 0.28 s → 0.16 s (N=1500) |
+| cold CLI latency | 0.17 s → 0.08 s (N=900), 0.27 s → 0.14 s (N=1500) |
+| cold index, same-machine pair | 2.2× (N=450), 2.25× (N=900), 2.8× (N=1500) |
 | RSS | unchanged |
 | DB size | +50% synthetic, +41% on real repos |
 | ContextBench Tier A | not applicable — see below |
