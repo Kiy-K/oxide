@@ -30,20 +30,21 @@ commit and recorded in the write-up.
 
 ## What is left (Task 6 remainder)
 
-The freeze wording is already in `AGENTS.md` ("The backend question is
-**closed**"), so the plan's substance is delivered. Genuinely outstanding:
+All three follow-ups are now closed:
 
-- **The plan Ref is not marked complete.** Post the completion update to
-  https://plan.ref.tools/gxMECSPTsyIsd0Cd .
-- **Gates run at N=450/900 only.** `baseline.md`'s table goes to 1500
-  (25,512 symbols). Re-run `scripts/perf.sh 1500` for the new numbers if the
-  larger point matters — the cold-index and DB-size regressions both grow
-  linearly with symbol count, so that row is the least flattering one and
-  should be published rather than skipped.
-- **ContextBench Tier A was not re-run.** `docs/canonical-baseline.md` is a
-  21-task qwen3 table needing a running llama.cpp server and the cached repos
-  under `~/.cache/oxide-contextbench/`. The fixture eval being byte-identical
-  is strong evidence ranking did not move, but it is not that table.
+- **`scripts/perf.sh 1500` — done.** `search` 0.28 s -> 0.16 s, `context`
+  0.35 s -> 0.22 s, db 47 -> 70 MB. Numbers and the machine-comparability
+  caveat are in [`enhanced-sqlite.md`](enhanced-sqlite.md).
+- **Real-repo parity — done, and it replaced the Tier A gap with better
+  evidence.** `examples/lexical_parity_real_repos.rs` compared the persisted
+  and in-memory scorers over 137,731 scored documents on four ContextBench
+  repositories, upgrading pre-feature indexes in the process: bit-exact
+  everywhere. Run it CPU-capped and with explicit repo arguments.
+- **ContextBench Tier A — closed as not applicable.** `canonical-baseline.md`
+  is a qwen3 table; re-running against it needs a model ruled out on
+  operational cost, and re-running under Arctic would be a new baseline rather
+  than a comparison. Reasoning in the write-up's Freeze section.
+- **The plan Ref is updated** with the completion note.
 
 ## Open risks / things a fresh session should know
 

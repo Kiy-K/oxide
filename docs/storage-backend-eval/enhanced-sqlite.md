@@ -13,6 +13,14 @@ All numbers are from one machine (16 cores, 15 GB RAM, ext4, not tmpfs) on the
 stated otherwise. Cold-index timings on this machine drift ±20% run to run;
 where that matters it is called out rather than smoothed over.
 
+**This machine is not `baseline.md`'s machine.** Re-measuring the unchanged
+code here gives 2.2 s and 5.2 s cold index at N=450/900 against that document's
+0.8 s and 1.6 s — roughly 2.7× slower on the same workload. Query latencies
+agree closely (0.17 s at N=900 in both), so `search`/`context`/DB-size
+comparisons against `baseline.md` are sound and **cold-index comparisons
+against it are not**. Every cold-index before/after pair quoted here was
+measured on this machine, back to back.
+
 ## Headline
 
 | | before | after | |
@@ -24,6 +32,26 @@ where that matters it is called out rather than smoothed over.
 | single-file edit | 155 ms | 160 ms | — |
 | peak RSS | 50.4 MB | 50.3 MB | — |
 | `index.db` | 28 MB | **42 MB** | +50% |
+
+At the largest baseline point, `scripts/perf.sh 1500` (6,004 files, 25,512
+symbols), the same shape holds and the costs grow with it:
+
+| | before | after | |
+| --- | --- | --- | --- |
+| `search` | 0.28 s | **0.16 s** | −43% |
+| `context` | 0.35 s | **0.22 s** | −37% |
+| `index.db` | 47 MB | **70 MB** | +49% |
+| cold index | **not measured** | 23.9 s | — |
+
+The `search`/`context`/DB rows compare against `baseline.md` directly. The
+cold-index row deliberately has no ratio: **23.9 s is the only N=1500
+cold-index number that exists.** No same-machine pre-change run was taken at
+this size, and `baseline.md`'s 2.7 s is a different machine, so dividing them
+would report a 9× regression that is mostly hardware. The same-machine
+before/after ratio was 2.2× at N=450 and 2.25× at N=900, and there is no
+reason to expect N=1500 to differ — but that is an extrapolation, not a
+measurement, and it is not quoted as one. Capturing the real figure means one
+pre-change build and one `perf.sh 1500` run on an idle machine.
 
 Ranking is unchanged, and not merely "close": `oxide eval --config
 fixtures/benchmark.json` is **byte-identical** before and after, and
@@ -223,6 +251,38 @@ The cost is b-tree and WAL work proportional to row count, not per-statement
 overhead and not page-cache pressure. The simplest code is also the fastest,
 so it is what ships.
 
+### Parity on real repositories
+
+The fixture is four files and a tiny vocabulary. `examples/lexical_parity_real_repos.rs`
+repeats the same bit-exact comparison against the ContextBench repositories
+cached under `~/.cache/oxide-contextbench/repos` — real identifier
+distributions, and indexes built by an *older* OXIDE binary, so the run also
+exercises the upgrade-and-backfill path on databases that genuinely predate
+the feature.
+
+| repo | symbols | db | backfill | scored docs | parity |
+| --- | --- | --- | --- | --- | --- |
+| code-server | 446 | 2.4 → 3.5 MB (+47%) | 144 ms | 5,303 | exact |
+| darkreader | 1,224 | 6.4 → 8.8 MB (+36%) | 383 ms | 14,772 | exact |
+| flask | 1,629 | 8.5 → 11.8 MB (+39%) | 357 ms | 19,396 | exact |
+| pytest | 5,352 | 28.7 → 40.9 MB (+42%) | 2,012 ms | 98,260 | exact |
+| **total** | **8,651** | **46.0 → 64.9 MB (+41%)** | | **137,731** | **exact** |
+
+160 queries drawn from each repo's own symbol names, single- and multi-term
+plus a repeated-token case, every one bit-identical on BM25 score, term
+coverage count and coverage-IDF sum. Real-repo database growth (+41%) came in
+slightly under the synthetic corpus's +50%.
+
+The probe never touches the real index: it snapshots each database with
+`VACUUM INTO` and runs only `update_base` on the copy, so no embedder is
+constructed and no vector is read or written — which matters because those
+cached indexes hold hours of embeddings that `oxide index` would clear on a
+provider switch. Verified by md5: the sources are byte-identical after a run.
+Two repos (`ansible`, `openlibrary`) were skipped because their indexes carry
+no `root` in meta. `matplotlib` and `astropy` were started and abandoned: under
+the deliberate CPU cap (two cores, `nice -n 19`) they exceeded ten minutes, and
+137,731 scored documents already make the point.
+
 ## 3. FTS5 trigram — measured, works, rejected on cost
 
 Built over raw symbol bodies in a separate table (trigrams of pre-tokenized
@@ -343,20 +403,37 @@ raised three findings, all accepted and fixed before commit:
 | `tests/benchmark_gate.rs` (hybrid ≥ vector-only) | pass |
 | `oxide eval --config fixtures/benchmark.json` | **byte-identical** to pre-change |
 | score parity, in-memory vs persisted | bit-exact (`f32::to_bits`) |
+| same, on 4 real repos / 137,731 scored docs | bit-exact |
+| upgrade-and-backfill on pre-feature real indexes | publishes, complete, exact |
 | determinism (`tests/determinism_stress.rs`) | pass |
 | freshness: add / edit / rename / delete | pass, incl. no stranded rows |
 | crash recovery (`tests/interrupted_index_recovery.rs`) | pass |
 | interrupted lexical backfill | never read; repaired to exact parity |
 | multiprocess reader under writer (`tests/cli_e2e.rs`) | pass |
-| cold CLI latency | 0.17 s → 0.08 s |
+| cold CLI latency | 0.17 s → 0.08 s (N=900), 0.28 s → 0.16 s (N=1500) |
 | RSS | unchanged |
-| DB size | +50% |
+| DB size | +50% synthetic, +41% on real repos |
+| ContextBench Tier A | not applicable — see below |
 
 ## Freeze
 
 Storage architecture is closed. SQLite is the backend; enhancements are
 limited to features already bundled with it; a different backend requires a
 fresh evaluation round of its own. Recorded as an invariant in `AGENTS.md`.
+
+**ContextBench Tier A was not re-run, and should not be.**
+`docs/canonical-baseline.md` is a 21-task table measured with the
+`qwen3-Q8_0` HTTP embedder. Re-running Tier A *against that table* requires
+that model, which is ruled out on operational grounds — it needs a separate
+long-lived server and roughly 9× the indexing wall clock, and
+`arctic-embed-xs-q` is the default precisely because that cost is not worth
+paying. Running Tier A under Arctic instead would produce a *different*
+baseline rather than a before/after comparison: it would measure Arctic
+against qwen3 at least as much as it measured this change. Since this change
+is ranking-neutral by construction and proven so three ways — byte-identical
+`oxide eval`, bit-exact unit parity, and bit-exact parity over 137,731 scored
+documents on real repositories — Tier A is the wrong instrument here. It stays
+the right instrument for a change that actually moves ranking.
 
 Two questions this does **not** settle, both deliberately out of scope:
 
@@ -380,4 +457,12 @@ python3 scripts/gen_bench_repo.py $W 900
 cargo run --release --example lexical_build_probe -- $W
 cargo run --release --example sqlite_enhancements_probe -- $W
 ./target/release/oxide eval --config fixtures/benchmark.json
+
+# Real-repo parity. Cap the CPU: this laptop is shared, and the sweep is hot.
+# Name the repos explicitly — the no-argument form walks all 41 cached repos,
+# which is far more than the claim needs.
+R=~/.cache/oxide-contextbench/repos
+TMPDIR=$TMPDIR taskset -c 0,1 nice -n 19 ionice -c 3 \
+  ./target/release/examples/lexical_parity_real_repos \
+  $R/code-server $R/darkreader $R/flask $R/pytest
 ```
