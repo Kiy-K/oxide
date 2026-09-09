@@ -273,13 +273,7 @@ mod tests {
 
     #[test]
     fn all_language_queries_compile() {
-        for lang in [
-            Language::Python,
-            Language::TypeScript,
-            Language::Tsx,
-            Language::Rust,
-            Language::Go,
-        ] {
+        for &lang in Language::ALL {
             compiled_callers(lang);
             compiled_implementors(lang);
         }

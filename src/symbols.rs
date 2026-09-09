@@ -14,6 +14,19 @@ pub enum Language {
 }
 
 impl Language {
+    /// Every language this build extracts. The one list — `oxide status`
+    /// reports it and `tree_sitter_structural`'s query-compile test iterates
+    /// it — because a hand-maintained second copy is exactly how `oxide
+    /// status` came to keep claiming "python, typescript, tsx" after Rust
+    /// and Go shipped.
+    pub const ALL: &'static [Language] = &[
+        Language::Python,
+        Language::TypeScript,
+        Language::Tsx,
+        Language::Rust,
+        Language::Go,
+    ];
+
     pub fn as_str(&self) -> &'static str {
         match self {
             Language::Python => "python",

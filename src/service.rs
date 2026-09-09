@@ -766,7 +766,7 @@ impl Evidence {
 }
 
 fn supported_languages() -> Vec<Language> {
-    vec![Language::Python, Language::TypeScript, Language::Tsx]
+    Language::ALL.to_vec()
 }
 
 fn current_file_hashes(root: &Path) -> Result<HashMap<String, u64>, std::io::Error> {
