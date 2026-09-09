@@ -9,6 +9,7 @@ pub enum Language {
     Python,
     TypeScript,
     Tsx,
+    Rust,
 }
 
 impl Language {
@@ -17,6 +18,7 @@ impl Language {
             Language::Python => "python",
             Language::TypeScript => "typescript",
             Language::Tsx => "tsx",
+            Language::Rust => "rust",
         }
     }
 }

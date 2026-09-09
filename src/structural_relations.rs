@@ -119,10 +119,25 @@ pub fn compute_file_relations(
     // kind filter keeps a same-line member out of the running. See
     // `all_bases_in_file`'s doc comment.
     let mut bases_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
-    for (class_line, base_name) in all_bases_in_file(lang, src) {
-        if let Some(sym) = innermost(&refs, class_line, |s| {
-            matches!(s.kind, SymbolKind::Class | SymbolKind::Interface)
-        }) {
+    for (class_line, class_name, base_name) in all_bases_in_file(lang, src) {
+        let is_type = |s: &Symbol| matches!(s.kind, SymbolKind::Class | SymbolKind::Interface);
+        let owner = innermost(&refs, class_line, is_type).or_else(|| {
+            // Rust's `impl Trait for Store` sits nowhere near `struct
+            // Store`, so nothing contains the impl block's line once the
+            // impl's own (deduped-away) symbol is gone. Fall back to the
+            // file's declaration of that name — but only when it is
+            // unambiguous, since two same-named types in one file would
+            // put us back in the fan-out this attribution exists to avoid.
+            let mut named = refs
+                .iter()
+                .filter(|s| is_type(s) && s.name == class_name)
+                .map(|s| &**s);
+            match (named.next(), named.next()) {
+                (Some(only), None) => Some(only),
+                _ => None,
+            }
+        });
+        if let Some(sym) = owner {
             bases_by_symbol
                 .entry(sym.id())
                 .or_default()

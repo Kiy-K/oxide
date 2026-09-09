@@ -1,0 +1,383 @@
+[
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "src/backend.rs:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 14,
+    "exported": false,
+    "id": 14050950512353436911,
+    "content_hash": 7659364563104981665,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [
+      "Backend",
+      "Key",
+      "Resource",
+      "build",
+      "get",
+      "id"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "Resource",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 5,
+    "exported": false,
+    "id": 16627030725990124524,
+    "content_hash": 1335585204073733231,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [
+      "id"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "Resource.id",
+    "kind": "method",
+    "parent": "Resource",
+    "start_line": 4,
+    "end_line": 4,
+    "exported": false,
+    "id": 12020455135272639718,
+    "content_hash": 2061752151593171375,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "Backend",
+    "kind": "interface",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 9,
+    "exported": false,
+    "id": 1847238064535924501,
+    "content_hash": 11267481414782550726,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [
+      "Key",
+      "Resource",
+      "get"
+    ],
+    "calls": [],
+    "bases": [
+      "Resource"
+    ]
+  },
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "Backend.get",
+    "kind": "method",
+    "parent": "Backend",
+    "start_line": 8,
+    "end_line": 8,
+    "exported": false,
+    "id": 12375187856613913703,
+    "content_hash": 15624928961391012229,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [
+      "Key"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/backend.rs",
+    "qualified_name": "build",
+    "kind": "function",
+    "parent": null,
+    "start_line": 11,
+    "end_line": 14,
+    "exported": false,
+    "id": 14454783700828054435,
+    "content_hash": 11268086143859226577,
+    "imports": [
+      "crate::store::Key"
+    ],
+    "references": [],
+    "calls": [
+      "log_it"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/broken.rs",
+    "qualified_name": "broken",
+    "kind": "function",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": false,
+    "id": 10209102242981522773,
+    "content_hash": 2644912346064459141,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.rs",
+    "qualified_name": "src/broken.rs:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": false,
+    "id": 4764592526946037909,
+    "content_hash": 12645775553339922658,
+    "imports": [],
+    "references": [
+      "AlsoBroken",
+      "broken"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.rs",
+    "qualified_name": "AlsoBroken",
+    "kind": "class",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 5,
+    "exported": false,
+    "id": 13439586866864766506,
+    "content_hash": 2224069682166017526,
+    "imports": [],
+    "references": [
+      "broken"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "src/store.rs:__module__",
+    "kind": "module",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 40,
+    "exported": false,
+    "id": 14774653028584631817,
+    "content_hash": 9682491805868102263,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "Backend",
+      "Key",
+      "Level",
+      "Store",
+      "fetch",
+      "get",
+      "helper",
+      "inner",
+      "new"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Key",
+    "kind": "type_alias",
+    "parent": null,
+    "start_line": 6,
+    "end_line": 6,
+    "exported": false,
+    "id": 2766354261543918879,
+    "content_hash": 2918468018140853780,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Store",
+    "kind": "class",
+    "parent": null,
+    "start_line": 8,
+    "end_line": 10,
+    "exported": false,
+    "id": 847773420248354487,
+    "content_hash": 1245713634946377857,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "Key"
+    ],
+    "calls": [],
+    "bases": [
+      "Backend"
+    ]
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Store.new",
+    "kind": "method",
+    "parent": "Store",
+    "start_line": 13,
+    "end_line": 15,
+    "exported": false,
+    "id": 1113536158583504767,
+    "content_hash": 12213235545838103188,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [
+      "new"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Store.helper",
+    "kind": "method",
+    "parent": "Store",
+    "start_line": 17,
+    "end_line": 22,
+    "exported": false,
+    "id": 2764333412656400326,
+    "content_hash": 12473887763229230473,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "inner"
+    ],
+    "calls": [
+      "inner",
+      "len"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Store.helper.inner",
+    "kind": "function",
+    "parent": "Store.helper",
+    "start_line": 18,
+    "end_line": 20,
+    "exported": false,
+    "id": 8829503159506955310,
+    "content_hash": 12394049532118527608,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Store.get",
+    "kind": "method",
+    "parent": "Store",
+    "start_line": 26,
+    "end_line": 28,
+    "exported": false,
+    "id": 5545960000830280793,
+    "content_hash": 15080038211970751956,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "Key"
+    ],
+    "calls": [
+      "cloned",
+      "get"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "Level",
+    "kind": "enum",
+    "parent": null,
+    "start_line": 31,
+    "end_line": 34,
+    "exported": false,
+    "id": 13859716031194966932,
+    "content_hash": 913811897480623762,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "net",
+    "kind": "module",
+    "parent": null,
+    "start_line": 36,
+    "end_line": 40,
+    "exported": false,
+    "id": 2991639793617740075,
+    "content_hash": 12704002766577336102,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [
+      "fetch"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/store.rs",
+    "qualified_name": "net.fetch",
+    "kind": "function",
+    "parent": "net",
+    "start_line": 37,
+    "end_line": 39,
+    "exported": false,
+    "id": 1476895427365544343,
+    "content_hash": 12044906555071448011,
+    "imports": [
+      "crate::backend::Backend",
+      "std::collections::HashMap"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]

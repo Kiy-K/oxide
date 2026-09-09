@@ -21,6 +21,7 @@ static PYTHON_TAGS: tags::TagsExtractor =
 static TYPESCRIPT_TAGS: tags::TagsExtractor =
     tags::TagsExtractor::new(&crate::languages::TYPESCRIPT_PROFILE);
 static TSX_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::TSX_PROFILE);
+static RUST_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::RUST_PROFILE);
 
 /// The only extraction path: grammar + declarative tags.scm +
 /// normalization, not a bespoke per-language walker. The handwritten
@@ -32,6 +33,7 @@ pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
         Language::Python => &PYTHON_TAGS,
         Language::TypeScript => &TYPESCRIPT_TAGS,
         Language::Tsx => &TSX_TAGS,
+        Language::Rust => &RUST_TAGS,
     }
 }
 

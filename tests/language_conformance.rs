@@ -56,7 +56,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const LANGUAGES: &[&str] = &["python", "typescript", "tsx"];
+const LANGUAGES: &[&str] = &["python", "typescript", "tsx", "rust"];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 struct SnapshotSymbol {
@@ -188,6 +188,11 @@ fn tsx_conformance() {
 }
 
 #[test]
+fn rust_conformance() {
+    check_golden("rust", &snapshot_of("rust"));
+}
+
+#[test]
 fn cold_index_is_deterministic() {
     // Two independent cold indexes of identical sources must agree
     // symbol-for-symbol and field-for-field, including list ordering —
@@ -240,6 +245,12 @@ fn single_file_edit_touches_only_that_file() {
             "\nexport function Appended() {\n  return <App />;\n}\n",
             "Appended",
         ),
+        (
+            "rust",
+            "src/backend.rs",
+            "\npub fn appended() -> u32 {\n    build()\n}\n",
+            "appended",
+        ),
     ];
     for (lang, rel, addition, added_name) in cases {
         let tmp = staged(lang);
@@ -275,6 +286,7 @@ fn broken_files_do_not_abort_indexing() {
         ("python", "pkg/broken.py", "pkg/models.py"),
         ("typescript", "src/broken.ts", "src/service.ts"),
         ("tsx", "src/broken.tsx", "src/Button.tsx"),
+        ("rust", "src/broken.rs", "src/store.rs"),
     ];
     for (lang, broken, sibling) in cases {
         let snap = snapshot_of(lang);

@@ -43,6 +43,8 @@ fastembed = { version = "6.0.2", default-features = false, features = ["ort-down
 notify = { version = "8", default-features = false, features = [
   "macos_fsevent",
 ] }
+tree-sitter-rust = "0.24"
+tree-sitter-go = "0.25"
 
 [features]
 default = ["native-embed"]

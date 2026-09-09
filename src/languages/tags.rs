@@ -166,6 +166,19 @@ fn collect_meta(
             }
             return;
         }
+        (Language::Rust, "use_declaration") => {
+            // The whole use tree as written (`std::collections::HashMap`,
+            // `crate::net::{get, post}`), matching how Python and
+            // TypeScript both record the raw module string rather than a
+            // resolved path. `relations::resolve_module` maps `::` the same
+            // way it maps Python's dots.
+            if let Some(arg) = node.child_by_field_name("argument") {
+                if let Ok(t) = arg.utf8_text(src.as_bytes()) {
+                    imports.push(t.to_string());
+                }
+            }
+            return;
+        }
         (Language::TypeScript | Language::Tsx, "import_statement" | "export_statement") => {
             if node.kind() == "export_statement" {
                 exports.push(node.byte_range());
@@ -342,7 +355,16 @@ impl LanguageExtractor for TagsExtractor {
             } else {
                 d.kind
             };
-            let is_container = matches!(kind, SymbolKind::Class | SymbolKind::Interface);
+            // Module counts as a container so a Rust `mod` block and a
+            // TypeScript `namespace` qualify their members (`mod net { fn
+            // get }` -> `net.get`). Without it every `mod` in a file
+            // contributes bare names that collide under parser.rs's
+            // qualified-name dedup. The file-level `__module__` fallback is
+            // added after extraction and never reaches this stack.
+            let is_container = matches!(
+                kind,
+                SymbolKind::Class | SymbolKind::Interface | SymbolKind::Module
+            );
             // An `export_statement` directly wraps exactly one declaration
             // (`export class Foo {}`), so its end byte coincides with the
             // wrapped definition's end byte. Containment alone (`r.contains

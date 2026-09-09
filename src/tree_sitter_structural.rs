@@ -17,7 +17,7 @@
 //! `@base`, `@call`, `@class`), and callers filter/attribute in Rust after
 //! matching.
 
-use crate::languages::{PYTHON_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE};
+use crate::languages::{PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE};
 use crate::symbols::Language;
 use std::sync::OnceLock;
 use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
@@ -35,6 +35,8 @@ const TSX_CALLERS_SRC: &str = concat!(
     include_str!("languages/queries/tsx_callers.scm")
 );
 const TS_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/typescript_implementors.scm");
+const RUST_CALLERS_SRC: &str = include_str!("languages/queries/rust_callers.scm");
+const RUST_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/rust_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -57,12 +59,17 @@ static TSX_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static RUST_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
         Language::Python => (PYTHON_PROFILE.ts_language)(),
         Language::TypeScript => (TYPESCRIPT_PROFILE.ts_language)(),
         Language::Tsx => (TSX_PROFILE.ts_language)(),
+        Language::Rust => (RUST_PROFILE.ts_language)(),
     }
 }
 
@@ -71,6 +78,7 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Python => &PYTHON_QUERIES,
         Language::TypeScript => &TYPESCRIPT_QUERIES,
         Language::Tsx => &TSX_QUERIES,
+        Language::Rust => &RUST_QUERIES,
     }
 }
 
@@ -79,6 +87,7 @@ fn callers_src(lang: Language) -> &'static str {
         Language::Python => PYTHON_CALLERS_SRC,
         Language::TypeScript => TS_CALLERS_SRC,
         Language::Tsx => TSX_CALLERS_SRC,
+        Language::Rust => RUST_CALLERS_SRC,
     }
 }
 
@@ -86,6 +95,7 @@ fn implementors_src(lang: Language) -> &'static str {
     match lang {
         Language::Python => PYTHON_IMPLEMENTORS_SRC,
         Language::TypeScript | Language::Tsx => TS_IMPLEMENTORS_SRC,
+        Language::Rust => RUST_IMPLEMENTORS_SRC,
     }
 }
 
@@ -117,7 +127,7 @@ fn compiled_implementors(lang: Language) -> &'static Query {
 /// is not resolution: `ns.Base` and a local `Base` are indistinguishable
 /// afterwards, exactly as two same-named definitions already are.
 fn last_segment(name: &str) -> &str {
-    name.split(['<', '('])
+    name.split(['<', '(', '!'])
         .next()
         .unwrap_or(name)
         .trim()
@@ -181,8 +191,12 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
     out
 }
 
-/// One `(class_start_line, base_name)` per extends/implements clause entry
-/// in `src`, unfiltered. Keyed by the class declaration's own start line —
+/// One `(class_start_line, class_name, base_name)` per extends/implements
+/// clause entry in `src`, unfiltered. Keyed by the class declaration's own
+/// start line, with the name as a fallback join key for languages where the
+/// declaration and the heritage clause live in different places (Rust's
+/// `impl Trait for Type` is nowhere near `struct Type`) — see
+/// `structural_relations::compute_file_relations`. Primarily keyed by line —
 /// not name, not line-containment — deliberately: name alone
 /// over-attributes when two differently-nested classes in one file share a
 /// bare name (`Outer1.Config`/`Outer2.Config` both named `Config`), and
@@ -199,7 +213,7 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
 /// e.g. `const w = class implements Runnable {}`) are skipped — nothing to
 /// key them by, since anonymous classes have no declared symbol to attach to
 /// either.
-pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
+pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String, String)> {
     let query = compiled_implementors(lang);
     let base_idx = query
         .capture_index_for_name("base")
@@ -222,16 +236,22 @@ pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
             .iter()
             .find(|c| c.index == base_idx)
             .and_then(|c| c.node.utf8_text(src.as_bytes()).ok());
-        // Only used to confirm the class is named (skip anonymous classes);
-        // the line, not the name, is the actual join key.
-        let has_name = m.captures().iter().any(|c| c.index == name_idx);
+        let class_name = m
+            .captures()
+            .iter()
+            .find(|c| c.index == name_idx)
+            .and_then(|c| c.node.utf8_text(src.as_bytes()).ok());
         let class_line = m
             .captures()
             .iter()
             .find(|c| c.index == class_idx)
             .map(|c| line_of(src, c.node.byte_range().start));
-        if let (Some(base), true, Some(line)) = (base, has_name, class_line) {
-            out.push((line, last_segment(base).to_string()));
+        if let (Some(base), Some(class_name), Some(line)) = (base, class_name, class_line) {
+            out.push((
+                line,
+                last_segment(class_name).to_string(),
+                last_segment(base).to_string(),
+            ));
         }
     }
     out
@@ -243,7 +263,12 @@ mod tests {
 
     #[test]
     fn all_language_queries_compile() {
-        for lang in [Language::Python, Language::TypeScript, Language::Tsx] {
+        for lang in [
+            Language::Python,
+            Language::TypeScript,
+            Language::Tsx,
+            Language::Rust,
+        ] {
             compiled_callers(lang);
             compiled_implementors(lang);
         }
@@ -253,7 +278,22 @@ mod tests {
     fn abstract_class_bases_are_found() {
         let src = "abstract class Worker implements Runnable {\n  run() {}\n}\n";
         let bases = all_bases_in_file(Language::TypeScript, src);
-        assert_eq!(bases, vec![(1, "Runnable".to_string())], "{bases:?}");
+        assert_eq!(
+            bases,
+            vec![(1, "Worker".to_string(), "Runnable".to_string())],
+            "{bases:?}"
+        );
+    }
+
+    #[test]
+    fn rust_impl_blocks_report_the_type_as_the_implementor() {
+        let src = "struct Store;\nimpl Backend for Store {\n    fn get(&self) {}\n}\n";
+        let bases = all_bases_in_file(Language::Rust, src);
+        assert_eq!(
+            bases,
+            vec![(2, "Store".to_string(), "Backend".to_string())],
+            "{bases:?}"
+        );
     }
 
     #[test]
@@ -284,14 +324,14 @@ mod tests {
     fn qualified_and_generic_bases_are_reduced_to_their_last_segment() {
         let ts = "class Panel extends React.Component<Props> implements ns.Iface, Other<T> {}\n";
         let bases = all_bases_in_file(Language::TypeScript, ts);
-        let mut names: Vec<&str> = bases.iter().map(|(_, n)| n.as_str()).collect();
+        let mut names: Vec<&str> = bases.iter().map(|(_, _, n)| n.as_str()).collect();
         names.sort();
         assert_eq!(names, vec!["Component", "Iface", "Other"], "{bases:?}");
 
         let py = "class Repo(abc.ABC, Base, metaclass=Meta):\n    pass\n";
         let mut py_names: Vec<String> = all_bases_in_file(Language::Python, py)
             .into_iter()
-            .map(|(_, n)| n)
+            .map(|(_, _, n)| n)
             .collect();
         py_names.sort();
         assert_eq!(py_names, vec!["ABC", "Base"], "metaclass= must stay out");
