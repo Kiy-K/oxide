@@ -212,8 +212,16 @@ impl<'a> RelationGraph<'a> {
     }
 }
 
-/// Map `./utils/token` (+ language extensions / __init__ / index) to a file
-/// present in `files`. Returns None when ambiguous or missing.
+/// Map `./utils/token` (+ language extensions / `__init__` / `index` / Rust
+/// `::` paths) to a file present in `files`. Returns None when ambiguous or
+/// missing.
+///
+/// Go is deliberately unresolvable here: a Go import names a *package
+/// directory* holding many files, not one file, and most imports are
+/// module-qualified (`github.com/…`) or stdlib. Since this function's whole
+/// contract is "exactly one unambiguous file", Go imports are recorded on
+/// the symbol but never produce an `imported-definition` edge — a known gap
+/// listed in `docs/language-support/README.md`, not an accident.
 pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> Option<String> {
     let norm = module.trim_start_matches("@/");
     let joined = if let Some(rest) = norm.strip_prefix("./").or_else(|| norm.strip_prefix("../")) {
@@ -235,7 +243,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         norm.replace('.', "/")
     };
 
-    let candidates = [
+    let mut candidates = vec![
         format!("{joined}.py"),
         format!("{joined}.pyi"),
         format!("{joined}.ts"),
@@ -244,6 +252,30 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         format!("{joined}/index.ts"),
         format!("{joined}/index.tsx"),
     ];
+    // Rust `use` trees are `::`-separated and normally end in the *item*
+    // name, not the module: `crate::backend::Backend` names `backend`. Try
+    // the path with and without its last segment, at the repo root and under
+    // a `src/` layout, as both `X.rs` and `X/mod.rs`. Extra candidates are
+    // safe: more than one match still resolves to None below, so a wrong
+    // guess degrades to no edge rather than a false one.
+    if module.contains("::") {
+        let path = norm.replace("::", "/");
+        let path = path
+            .trim_start_matches("crate/")
+            .trim_start_matches("self/")
+            .trim_start_matches("super/");
+        let mut stems = vec![path.to_string()];
+        if let Some((head, _)) = path.rsplit_once('/') {
+            stems.push(head.to_string());
+        }
+        for stem in stems {
+            for prefix in ["", "src/"] {
+                for suffix in [".rs", "/mod.rs"] {
+                    candidates.push(format!("{prefix}{stem}{suffix}"));
+                }
+            }
+        }
+    }
     let matches: Vec<String> = candidates
         .into_iter()
         .filter(|c| files.contains(c.as_str()))
@@ -278,6 +310,28 @@ mod uses_narrowing_tests {
             calls: Vec::new(),
             bases: Vec::new(),
         }
+    }
+
+    #[test]
+    fn rust_use_paths_resolve_to_module_files() {
+        let files: HashSet<&str> = ["src/backend.rs", "src/net/mod.rs", "src/main.rs"]
+            .into_iter()
+            .collect();
+        // The trailing segment is the imported item, not a module.
+        assert_eq!(
+            resolve_module("crate::backend::Backend", "src/main.rs", &files),
+            Some("src/backend.rs".to_string())
+        );
+        // `X/mod.rs` layout, and a path that is already the module.
+        assert_eq!(
+            resolve_module("crate::net", "src/main.rs", &files),
+            Some("src/net/mod.rs".to_string())
+        );
+        // An external crate resolves to nothing rather than to something wrong.
+        assert_eq!(
+            resolve_module("std::collections::HashMap", "src/main.rs", &files),
+            None
+        );
     }
 
     #[test]

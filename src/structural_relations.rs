@@ -346,6 +346,16 @@ mod tests {
         store
             .replace_file("x.py", hash, &symbols, &[], &[])
             .unwrap();
+        // The scenario is "relations were added; extraction semantics were
+        // not", so the simulated pre-migration index must already carry the
+        // current extraction version — otherwise `update_base` rightly
+        // forces a full reparse and the backfill path under test never runs.
+        store
+            .set_meta(
+                "extraction_version",
+                &crate::storage::EXTRACTION_VERSION.to_string(),
+            )
+            .unwrap();
         assert!(
             store.all_symbol_relations().unwrap().is_empty(),
             "precondition: simulated pre-migration index has symbols but no relations"

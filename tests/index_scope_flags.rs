@@ -4,7 +4,7 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_base, update_embeddings, update_index_scoped, IndexOptions};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexBackend, SqliteStore, EXTRACTION_VERSION};
 use std::path::Path;
 
 fn write(path: &Path, content: &str) {
@@ -198,4 +198,31 @@ fn update_embeddings_after_update_base_matches_update_index_scoped() {
     assert_eq!(combined.reparsed_files, staged.reparsed_files);
     assert_eq!(combined.embedded_symbols, staged.embedded_symbols);
     assert_eq!(combined.reused_embeddings, staged.reused_embeddings);
+}
+
+#[test]
+fn a_stale_extraction_version_forces_a_reparse_without_any_flag() {
+    // Bumping EXTRACTION_VERSION makes `validate_index` refuse to *serve* an
+    // old index, but plain `oxide index` compares source hashes — so without
+    // this, an unchanged file would never be revisited and the closing
+    // `set_meta_all` would publish the new version over symbols still
+    // derived under the old extraction rules. Found by review.
+    let (tmp, mut store, emb) = seeded_repo();
+    assert_eq!(
+        store.get_meta("extraction_version").unwrap().as_deref(),
+        Some(EXTRACTION_VERSION.to_string().as_str()),
+        "a completed index publishes the current extraction version"
+    );
+
+    store.set_meta("extraction_version", "0").unwrap();
+    let r = update_index_scoped(tmp.path(), &mut store, &emb, &IndexOptions::default()).unwrap();
+    assert_eq!(
+        r.reparsed_files, 1,
+        "a stale extraction version must reparse even an untouched file"
+    );
+    assert_eq!(
+        store.get_meta("extraction_version").unwrap().as_deref(),
+        Some(EXTRACTION_VERSION.to_string().as_str()),
+        "and the run republishes the current version once the rows are current"
+    );
 }

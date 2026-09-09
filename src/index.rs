@@ -166,10 +166,22 @@ pub fn update_base(
     // content_hash already matches and no incremental run would revisit it.
     let backfill_lexical = store.get_meta(LEXICAL_INDEX_KEY)?.as_deref()
         != Some(LEXICAL_INDEX_VERSION.to_string().as_str());
+    // Same shape, same reason, for extraction semantics: when the stored
+    // `extraction_version` is not exactly this binary's, every file's stored
+    // symbols were derived under different rules and the content_hash
+    // shortcut would skip all of them — then the closing `set_meta_all`
+    // would publish the new version over rows that were never re-derived.
+    // `validate_index` refuses to *serve* such an index; this is what makes
+    // a plain `oxide index` actually repair it, without the user having to
+    // know about `-a`. On a fresh index the key is absent and this is true,
+    // which costs nothing: every file is new anyway.
+    let stale_extraction = store.get_meta("extraction_version")?.as_deref()
+        != Some(EXTRACTION_VERSION.to_string().as_str());
+    let force_reparse = opts.force_reparse || stale_extraction;
     let to_parse: Vec<(&String, u64)> = current
         .iter()
         .map(|(f, src)| (f, crate::symbols::content_hash(src)))
-        .filter(|(f, h)| opts.force_reparse || stored.get(*f).copied() != Some(*h))
+        .filter(|(f, h)| force_reparse || stored.get(*f).copied() != Some(*h))
         .collect();
     // Unchanged is relative to files we could actually read; unreadable files
     // are accounted separately below so the totals never silently disagree

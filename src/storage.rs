@@ -14,7 +14,17 @@ pub const SCHEMA_VERSION: u32 = 1;
 /// Symbol-extraction semantics version: id composition, hashing, or which
 /// fields feed comparisons. Bump when a change would make an old index's
 /// stored symbols not directly comparable to freshly-parsed ones.
-pub const EXTRACTION_VERSION: u32 = 1;
+///
+/// A bump alone is not enough, and must be paired with the forced reparse in
+/// `update_base` — `validate_index` refuses to serve a mismatched index, but
+/// plain `oxide index` compares source hashes, so an unchanged file would
+/// never be revisited and the version would be republished over stale rows.
+///
+/// 2: decorated definitions span their decorators (spans, `content_hash`,
+/// `signature` all move), base clauses capture qualified/generic names, JSX
+/// element usage counts as a call, and `mod`/`namespace` blocks qualify
+/// their members.
+pub const EXTRACTION_VERSION: u32 = 2;
 
 /// Meta key holding the in-flight embedding-space fingerprint while a
 /// provider migration is running. Non-empty means "the vectors in this index

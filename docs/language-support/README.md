@@ -48,6 +48,12 @@ per-language extractor and no language-specific retrieval behavior.
 - **The handwritten extractors are gone.** ~800 lines deleted; the tags path
   is the only extraction path.
 
+Because all of that changes spans, hashes and relations for files whose
+source never changed, `EXTRACTION_VERSION` is bumped to 2 and `update_base`
+now forces a full reparse whenever the stored version is not this binary's.
+An existing index repairs itself on the next plain `oxide index`; no `-a`
+and no manual `.oxide` deletion.
+
 ## Performance
 
 Measured with `scripts/perf.sh`, offline hashed embedder, under `nice -n 10`
@@ -117,6 +123,7 @@ their own right because no same-named struct in that file dedups them away
 
 | Language | Not extracted | Why |
 |---|---|---|
+| Go | import *resolution* | A Go import names a package *directory* of many files, and is usually module-qualified (`github.com/…`) or stdlib. `resolve_module`'s contract is "exactly one unambiguous file", so Go imports are recorded on the symbol but never produce an `imported-definition` edge. Rust `use` paths do resolve (`crate::backend::Backend` → `src/backend.rs`). |
 | all | import *bindings* (the names, not the module) | `SymbolKind::Import` is never produced. The `uses` precision this was wanted for came from file-level import resolution instead; per-name bindings would only help when two *imported* files define the same name. |
 | all | `exported` for Python/Rust/Go | The flag is derived only from TypeScript's `export` wrapper; Python is unconditionally `true`, Rust `pub` and Go's leading-capital convention are not read. |
 | Python | cross-file reference staleness within one run | Known, accepted, architectural — see AGENTS.md. |
