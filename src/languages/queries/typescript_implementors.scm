@@ -5,9 +5,16 @@
 ; `implements A, B` list or an `extends Base implements Iface` combination
 ; needs no enumerated positional pattern variants (unlike structural.rs's
 ; ast-grep patterns, which hand-list first/middle/last-position variants).
-; A qualified extends value (`ns.Base`) doesn't match `(identifier)` here,
-; matching structural.rs's ast-grep patterns, which also only match a bare
-; identifier in that position.
+; Three base-clause shapes beyond the bare identifier are matched and
+; reduced to their last segment by the caller: a qualified extends value
+; (`ns.Base`, `React.Component` — a `member_expression`), a qualified
+; implements type (`ns.Iface`, a `nested_type_identifier`), and a generic
+; implements type (`Iface<T>`, a `generic_type` whose `name` field is
+; captured directly so no angle-bracket stripping is needed). A generic
+; *extends* needs nothing extra: the grammar puts the type arguments in a
+; sibling field, so `extends Component<Props>` already captures `Component`.
+; `React.Component<Props>` used to yield no base at all — the single most
+; common class-heritage shape in a TSX codebase.
 ;
 ; Three top-level patterns cover the grammar's three class-heritage shapes:
 ; `class_declaration` (name required), `abstract_class_declaration` (name
@@ -22,7 +29,10 @@
   (class_heritage
     [
       (extends_clause value: (identifier) @base)
+      (extends_clause value: (member_expression) @base)
       (implements_clause (type_identifier) @base)
+      (implements_clause (nested_type_identifier) @base)
+      (implements_clause (generic_type name: (_) @base))
     ])) @class
 
 (abstract_class_declaration
@@ -30,7 +40,10 @@
   (class_heritage
     [
       (extends_clause value: (identifier) @base)
+      (extends_clause value: (member_expression) @base)
       (implements_clause (type_identifier) @base)
+      (implements_clause (nested_type_identifier) @base)
+      (implements_clause (generic_type name: (_) @base))
     ])) @class
 
 (class
@@ -38,5 +51,8 @@
   (class_heritage
     [
       (extends_clause value: (identifier) @base)
+      (extends_clause value: (member_expression) @base)
       (implements_clause (type_identifier) @base)
+      (implements_clause (nested_type_identifier) @base)
+      (implements_clause (generic_type name: (_) @base))
     ])) @class

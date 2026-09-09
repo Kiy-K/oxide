@@ -25,6 +25,15 @@ use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
 const PYTHON_CALLERS_SRC: &str = include_str!("languages/queries/python_callers.scm");
 const PYTHON_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/python_implementors.scm");
 const TS_CALLERS_SRC: &str = include_str!("languages/queries/typescript_callers.scm");
+/// TSX gets the shared TypeScript patterns plus JSX element usage. Kept as a
+/// concatenation rather than a duplicated file so the two grammars can never
+/// drift apart on the call-site patterns they do share; the JSX patterns
+/// cannot go in the shared file because `jsx_opening_element` does not exist
+/// in the TypeScript grammar and `Query::new` would reject the whole source.
+const TSX_CALLERS_SRC: &str = concat!(
+    include_str!("languages/queries/typescript_callers.scm"),
+    include_str!("languages/queries/tsx_callers.scm")
+);
 const TS_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/typescript_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
@@ -68,7 +77,8 @@ fn queries_for(lang: Language) -> &'static LangQueries {
 fn callers_src(lang: Language) -> &'static str {
     match lang {
         Language::Python => PYTHON_CALLERS_SRC,
-        Language::TypeScript | Language::Tsx => TS_CALLERS_SRC,
+        Language::TypeScript => TS_CALLERS_SRC,
+        Language::Tsx => TSX_CALLERS_SRC,
     }
 }
 
@@ -99,6 +109,23 @@ fn compiled_implementors(lang: Language) -> &'static Query {
     })
 }
 
+/// Last segment of a possibly-qualified, possibly-generic name: `abc.ABC`
+/// and `React.Component` become `ABC` and `Component`, `Iface<T>` becomes
+/// `Iface`. `calls`/`bases` are a bare-name tier by construction (see
+/// AGENTS.md) — the queries capture the qualified node so the relation
+/// exists at all, and this is where it is brought back onto that tier. It
+/// is not resolution: `ns.Base` and a local `Base` are indistinguishable
+/// afterwards, exactly as two same-named definitions already are.
+fn last_segment(name: &str) -> &str {
+    name.split(['<', '('])
+        .next()
+        .unwrap_or(name)
+        .trim()
+        .rsplit(['.', ':'])
+        .next()
+        .unwrap_or(name)
+}
+
 fn line_of(src: &str, byte: usize) -> u32 {
     1 + src[..byte.min(src.len())]
         .bytes()
@@ -112,9 +139,15 @@ fn parse(lang: Language, src: &str) -> Option<tree_sitter::Tree> {
     parser.parse(src, None)
 }
 
-/// One `(start_line, callee_name)` per call site in `src`, unfiltered — used
-/// by `structural_relations::compute_file_relations` to attribute each call
-/// to its enclosing symbol.
+/// One `(start_line, callee_name)` per call site in `src`, used by
+/// `structural_relations::compute_file_relations` to attribute each call to
+/// its enclosing symbol.
+///
+/// One filter: a JSX element whose name starts lowercase is an intrinsic
+/// (`<div>`, `<span>`), not a component. That is JSX's own rule for the
+/// distinction, not a heuristic invented here, and without it every
+/// component in a repo becomes a "caller" of `div` — and any symbol
+/// unlucky enough to be named `div` inherits them all.
 pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
     let query = compiled_callers(lang);
     let name_idx = query
@@ -135,13 +168,14 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
             .iter()
             .find(|c| c.index == name_idx)
             .and_then(|c| c.node.utf8_text(src.as_bytes()).ok());
-        let call_line = m
-            .captures()
-            .iter()
-            .find(|c| c.index == call_idx)
-            .map(|c| line_of(src, c.node.byte_range().start));
-        if let (Some(name), Some(line)) = (name, call_line) {
-            out.push((line, name.to_string()));
+        let call_node = m.captures().iter().find(|c| c.index == call_idx);
+        let call_line = call_node.map(|c| line_of(src, c.node.byte_range().start));
+        let intrinsic = call_node.is_some_and(|c| {
+            c.node.kind().starts_with("jsx_")
+                && name.is_some_and(|n| last_segment(n).starts_with(|ch: char| ch.is_lowercase()))
+        });
+        if let (Some(name), Some(line), false) = (name, call_line, intrinsic) {
+            out.push((line, last_segment(name).to_string()));
         }
     }
     out
@@ -197,7 +231,7 @@ pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
             .find(|c| c.index == class_idx)
             .map(|c| line_of(src, c.node.byte_range().start));
         if let (Some(base), true, Some(line)) = (base, has_name, class_line) {
-            out.push((line, base.to_string()));
+            out.push((line, last_segment(base).to_string()));
         }
     }
     out
@@ -231,6 +265,36 @@ mod tests {
         let src = "const w = class implements Runnable {\n  run() {}\n};\n";
         let bases = all_bases_in_file(Language::TypeScript, src);
         assert!(bases.is_empty(), "{bases:?}");
+    }
+
+    #[test]
+    fn jsx_components_are_calls_but_intrinsics_are_not() {
+        let src = "const a = <div><Button onClick={go} /><ns.Panel /></div>;\n";
+        let calls = all_calls_in_file(Language::Tsx, src);
+        let names: Vec<&str> = calls.iter().map(|(_, n)| n.as_str()).collect();
+        assert!(names.contains(&"Button"), "{names:?}");
+        assert!(
+            names.contains(&"Panel"),
+            "qualified element name: {names:?}"
+        );
+        assert!(!names.contains(&"div"), "intrinsic leaked in: {names:?}");
+    }
+
+    #[test]
+    fn qualified_and_generic_bases_are_reduced_to_their_last_segment() {
+        let ts = "class Panel extends React.Component<Props> implements ns.Iface, Other<T> {}\n";
+        let bases = all_bases_in_file(Language::TypeScript, ts);
+        let mut names: Vec<&str> = bases.iter().map(|(_, n)| n.as_str()).collect();
+        names.sort();
+        assert_eq!(names, vec!["Component", "Iface", "Other"], "{bases:?}");
+
+        let py = "class Repo(abc.ABC, Base, metaclass=Meta):\n    pass\n";
+        let mut py_names: Vec<String> = all_bases_in_file(Language::Python, py)
+            .into_iter()
+            .map(|(_, n)| n)
+            .collect();
+        py_names.sort();
+        assert_eq!(py_names, vec!["ABC", "Base"], "metaclass= must stay out");
     }
 
     #[test]

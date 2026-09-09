@@ -37,7 +37,10 @@
       "Button",
       "Panel"
     ],
-    "calls": [],
+    "calls": [
+      "Button",
+      "Panel"
+    ],
     "bases": []
   },
   {
@@ -117,7 +120,9 @@
       "render"
     ],
     "calls": [],
-    "bases": []
+    "bases": [
+      "Component"
+    ]
   },
   {
     "file": "src/Button.tsx",
@@ -135,7 +140,9 @@
     "references": [
       "Button"
     ],
-    "calls": [],
+    "calls": [
+      "Button"
+    ],
     "bases": []
   },
   {

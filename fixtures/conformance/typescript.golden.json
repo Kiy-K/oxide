@@ -197,6 +197,7 @@
     ],
     "calls": [],
     "bases": [
+      "Base",
       "Shape"
     ]
   },

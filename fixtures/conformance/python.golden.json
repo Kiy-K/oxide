@@ -94,7 +94,9 @@
       "key"
     ],
     "calls": [],
-    "bases": []
+    "bases": [
+      "ABC"
+    ]
   },
   {
     "file": "pkg/models.py",

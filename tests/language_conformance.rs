@@ -30,24 +30,18 @@
 //! later change is expected to flip — if one of these silently "fixes"
 //! itself, the golden diff is the alarm):
 //!
-//! - **Decorator lines are outside the span.** `Record` starts at the
-//!   `class` line, not `@dataclass`; same for `@property`/`@register`. The
-//!   second-order effect is visible too: `@register("svc")` above `run`
-//!   attributes the `register` call to `pkg/service.py:__module__`, not to
-//!   `run`, because the decorator line isn't inside any symbol's span.
-//! - **Qualified bases are dropped.** `class Record(abc.ABC)` and
-//!   `class Derived extends ns.Base` both record no base from the qualified
-//!   name; `Derived` keeps only `Shape` from its implements clause.
-//! - **Generic bases are dropped.** `class Panel extends
-//!   React.Component<ButtonProps>` records nothing at all.
-//! - **JSX element usage is not a call.** Rendering `<Button />` leaves
-//!   `calls` empty everywhere in the tsx golden, so `callers_of("Button")`
-//!   finds nothing; only the token-intersection `references` sees it.
 //! - **Import bindings are not stored.** `import { Base, Derived } from
 //!   './service'` records the module string only; the bound names survive
 //!   nowhere structured (`SymbolKind::Import` is never produced).
 //! - **Python symbols are unconditionally `exported: true`** — the flag has
 //!   no Python meaning today.
+//!
+//! Closed, and now pinned in the affirmative by the goldens: decorated
+//! definitions span their decorators (and a decorator's own call attributes
+//! to the decorated symbol), qualified and generic bases resolve to their
+//! last segment (`abc.ABC`, `ns.Base`, `React.Component<Props>`), and JSX
+//! element usage is a call (`<Button />`) while JSX intrinsics (`<div>`)
+//! are not.
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::update_index;
