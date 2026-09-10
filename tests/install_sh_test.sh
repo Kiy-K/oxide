@@ -111,9 +111,17 @@ package() {
 package "$OLD_VERSION"
 package "$NEW_VERSION"
 
+sum_archives() {
+    # macOS has no `sha256sum`, only `shasum`; both print "<hash>  <path>".
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256sum ./*.tar.gz
+    else
+        shasum -a 256 ./*.tar.gz
+    fi
+}
+
 rewrite_sums() {
-    ( cd "$RELEASE" && sha256sum ./*.tar.gz 2>/dev/null || shasum -a 256 ./*.tar.gz ) |
-        sed 's| \./| |' > "$RELEASE/SHA256SUMS"
+    ( cd "$RELEASE" && sum_archives ) | sed 's| \./| |' > "$RELEASE/SHA256SUMS"
 }
 rewrite_sums
 
@@ -126,6 +134,15 @@ install_oxide() {
     shift 2
     OXIDE_BASE_URL="$BASE_URL" sh "$INSTALLER" \
         --version "$version" --install-dir "$dest" "$@" > "$SANDBOX/out" 2>&1
+}
+
+inode_of() {
+    # `ls -i` on a single path this script constructed itself. shellcheck's
+    # advice to prefer `find` guards against odd filenames in a listing,
+    # which cannot arise here, and `stat` spells this differently on GNU and
+    # BSD.
+    # shellcheck disable=SC2012
+    ls -i "$1" | cut -d' ' -f1
 }
 
 # --- 1. clean first install ----------------------------------------------
@@ -155,9 +172,9 @@ check "version without a leading v is accepted" \
 # --- 3. upgrade in place -------------------------------------------------
 
 case_name "upgrade in place"
-before_inode="$(ls -i "$DEST/oxide" | cut -d' ' -f1)"
+before_inode="$(inode_of "$DEST/oxide")"
 install_oxide "$DEST" "$NEW_VERSION" || bad "upgrade exits 0"
-after_inode="$(ls -i "$DEST/oxide" | cut -d' ' -f1)"
+after_inode="$(inode_of "$DEST/oxide")"
 check "binary is replaced, not merely re-run" test "$before_inode" != "$after_inode"
 check "still executable after upgrade" test -x "$DEST/oxide"
 check "no staging file left behind" \
@@ -332,8 +349,7 @@ mkdir -p "$BROKEN/stage"
 printf '#!/nonexistent/interpreter\n' > "$BROKEN/stage/oxide"
 chmod 755 "$BROKEN/stage/oxide"
 tar -czf "$BROKEN/oxide-$NEW_VERSION-$TARGET.tar.gz" -C "$BROKEN/stage" .
-( cd "$BROKEN" && { sha256sum ./*.tar.gz 2>/dev/null || shasum -a 256 ./*.tar.gz; } |
-    sed 's| \./| |' > SHA256SUMS )
+( cd "$BROKEN" && sum_archives | sed 's| \./| |' > SHA256SUMS )
 if OXIDE_BASE_URL="file://$BROKEN" sh "$INSTALLER" \
     --version "$NEW_VERSION" --install-dir "$DEST" > "$SANDBOX/out" 2>&1; then
     bad "an unrunnable binary must fail"
@@ -432,10 +448,10 @@ HOME="$LIFE_HOME" "$RECORDED_PATH" install --agent codex --yes > "$SANDBOX/out" 
 check "MCP config records the absolute install path" \
     contains "$LIFE_HOME/.codex/config.toml" "$RECORDED_PATH"
 cp "$LIFE_HOME/.codex/config.toml" "$SANDBOX/config-before"
-before_inode="$(ls -i "$RECORDED_PATH" | cut -d' ' -f1)"
+before_inode="$(inode_of "$RECORDED_PATH")"
 
 install_oxide "$LIFE_BIN" "$NEW_VERSION" || bad "lifecycle upgrade exits 0"
-after_inode="$(ls -i "$RECORDED_PATH" | cut -d' ' -f1)"
+after_inode="$(inode_of "$RECORDED_PATH")"
 
 check "the upgrade actually replaced the binary" test "$before_inode" != "$after_inode"
 check "MCP config is byte-identical after the upgrade" \

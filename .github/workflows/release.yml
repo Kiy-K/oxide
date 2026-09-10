@@ -106,8 +106,9 @@ jobs:
       - name: Shell-check the installer
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
-          shellcheck -s sh install.sh
+          shellcheck -s sh install.sh tests/install_sh_test.sh
           sh -n install.sh
+          sh -n tests/install_sh_test.sh
 
   build:
     name: Build / ${{ matrix.target }}

@@ -297,8 +297,9 @@ case ":${PATH:-}:" in
         say ""
         say "  export PATH=\"$INSTALL_DIR:\$PATH\""
         say ""
-        say "Put that line in your shell profile (~/.bashrc, ~/.zshrc, or"
-        say "~/.config/fish/config.fish), then start a new shell and run:"
+        say "Put that line in your shell profile — ~/.bashrc, ~/.zshrc, or"
+        say "the fish equivalent at ~/.config/fish/config.fish — then start a"
+        say "new shell and run:"
         say "  oxide index"
         say "  oxide install     # connect OXIDE to your coding agents"
         ;;
