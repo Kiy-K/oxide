@@ -56,8 +56,13 @@ distinct ties were found and fixed empirically, each pinned by a regression
 test in `structural_relations.rs`'s own test module:
 
 1. A single top-level definition's span is numerically identical to the
-   file's Module fallback symbol's span — fixed by excluding Module from
-   the span competition entirely (a pure fallback, not a competitor).
+   file's synthetic Module fallback symbol's span — fixed by excluding
+   that symbol from the span competition entirely (a pure fallback, not a
+   competitor). **Only the synthetic one**: a declared Rust `mod` or
+   TypeScript `namespace` carries `SymbolKind::Module` too, since both
+   qualify their members, and excluding those sent every call inside
+   `mod b { .. }` to whichever `mod` came first in the file. The test is
+   `structural_relations::is_file_fallback`, not a kind check.
 2. Two functions nested on one physical line have byte-identical spans —
    fixed by a secondary tie-break on qualified-name length (longer name =
    more deeply nested = correct target).

@@ -39,9 +39,11 @@ use std::collections::HashMap;
 ///   whose span is numerically identical to that function's
 ///   (`parser.rs::parse_file_with` spans Module `1..=line_count`) —
 ///   `finds_method_style_calls_not_just_bare_calls` in
-///   `tests/precomputed_relations_conformance.rs`. Fixed by excluding
-///   Module from the numeric competition entirely: it's a pure fallback,
-///   not a competitor.
+///   `tests/precomputed_relations_conformance.rs`. Fixed by excluding that
+///   symbol from the numeric competition entirely: it's a pure fallback,
+///   not a competitor. Only the *synthetic* file symbol, though — a
+///   declared `mod`/`namespace` carries `SymbolKind::Module` too and is a
+///   real competitor (see [`is_file_fallback`]).
 /// - A function nested inside another function, both collapsed onto one
 ///   source line (`function outer() { function inner() { target(); } }`),
 ///   gives `outer` and `outer.inner` byte-identical spans — smallest-span
@@ -52,16 +54,23 @@ use std::collections::HashMap;
 ///   `outer`), so preferring the longest name among span-tied candidates
 ///   always prefers the innermost enclosing scope.
 ///
-/// Every file always has the Module fallback (`parse_file_with`'s module
-/// symbol), so a top-level call still resolves to *some* symbol, never
-/// `None`.
+/// Every file always has the synthetic Module fallback
+/// (`parse_file_with`'s module symbol), so a top-level call still resolves
+/// to *some* symbol, never `None`.
 fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
-    innermost(file_symbols, line, |s| s.kind != SymbolKind::Module).or_else(|| {
-        file_symbols
-            .iter()
-            .find(|s| s.kind == SymbolKind::Module)
-            .copied()
-    })
+    innermost(file_symbols, line, |s| !is_file_fallback(s))
+        .or_else(|| file_symbols.iter().find(|s| is_file_fallback(s)).copied())
+}
+
+/// The synthetic whole-file symbol `parse_file_with` appends, as opposed to
+/// a *declared* module — a Rust `mod` block or a TypeScript `namespace`,
+/// both of which carry `SymbolKind::Module` too since they qualify their
+/// members. Only the synthetic one is a pure fallback; excluding declared
+/// modules from the containment competition sent every call inside
+/// `mod b { .. }` to whichever `mod` happened to come first in the file
+/// (found by review).
+fn is_file_fallback(s: &Symbol) -> bool {
+    s.kind == SymbolKind::Module && s.qualified_name.ends_with(":__module__")
 }
 
 /// The single element of `it`, or `None` when it holds zero or more than
@@ -312,6 +321,27 @@ mod tests {
             .unwrap();
         assert_eq!(c1.bases, vec!["A".to_string()], "{:?}", c1.bases);
         assert_eq!(c2.bases, vec!["B".to_string()], "{:?}", c2.bases);
+    }
+
+    #[test]
+    fn a_declared_module_owns_its_own_module_level_calls() {
+        // Found by review: Rust `mod` blocks became Module-kind symbols so
+        // they could qualify their members, but `enclosing` excluded every
+        // Module from containment and then fell back to the first one in
+        // file order — so `start` was attributed to `mod a`, not `mod b`.
+        let tmp = tempfile::tempdir().unwrap();
+        write(
+            tmp.path(),
+            "m.rs",
+            "mod a {\n    const X: u32 = boot();\n}\n\nmod b {\n    const Y: u32 = start();\n}\n",
+        );
+        let store = indexed(tmp.path());
+
+        let symbols = load_symbols_with_relations(&store).unwrap();
+        let a = symbols.iter().find(|s| s.qualified_name == "a").unwrap();
+        let b = symbols.iter().find(|s| s.qualified_name == "b").unwrap();
+        assert_eq!(a.calls, vec!["boot".to_string()], "{:?}", a.calls);
+        assert_eq!(b.calls, vec!["start".to_string()], "{:?}", b.calls);
     }
 
     #[test]
