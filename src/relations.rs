@@ -212,6 +212,25 @@ impl<'a> RelationGraph<'a> {
     }
 }
 
+/// Directory of `file` with `ups` extra levels stripped, as a slash-suffixed
+/// prefix (empty string at the repo root). `None` when `ups` would climb
+/// past the root, which means the import cannot be resolved at all.
+fn dir_of(file: &str, ups: usize) -> Option<String> {
+    let mut parts: Vec<&str> = file.split('/').collect();
+    parts.pop()?; // drop the file name
+    if ups > parts.len() {
+        return None;
+    }
+    for _ in 0..ups {
+        parts.pop();
+    }
+    let mut p = parts.join("/");
+    if !p.is_empty() {
+        p.push('/');
+    }
+    Some(p)
+}
+
 /// Map `./utils/token` (+ language extensions / `__init__` / `index` / Rust
 /// `::` paths) to a file present in `files`. Returns None when ambiguous or
 /// missing.
@@ -260,18 +279,41 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
     // guess degrades to no edge rather than a false one.
     if module.contains("::") {
         let path = norm.replace("::", "/");
-        let path = path
-            .trim_start_matches("crate/")
-            .trim_start_matches("self/")
-            .trim_start_matches("super/");
-        let mut stems = vec![path.to_string()];
-        if let Some((head, _)) = path.rsplit_once('/') {
-            stems.push(head.to_string());
-        }
-        for stem in stems {
-            for prefix in ["", "src/"] {
-                for suffix in [".rs", "/mod.rs"] {
-                    candidates.push(format!("{prefix}{stem}{suffix}"));
+        // `self::x` is relative to the current file's own directory and
+        // `super::x` climbs one level per `super`, exactly like `./` and
+        // `../` — resolving either from the crate root probed a file that
+        // has nothing to do with the import.
+        // A relative path is already anchored to one directory; only a
+        // crate-root path needs the `src/` layout guess. `None` means the
+        // path is relative but climbs past the repo root — unresolvable, so
+        // it contributes no candidates rather than falling back to a
+        // crate-root reading of the same text.
+        let (prefixes, rest) = if let Some(rest) = path.strip_prefix("self/") {
+            (dir_of(from_file, 0).map(|d| vec![d]), rest.to_string())
+        } else if path.starts_with("super/") {
+            let mut ups = 0usize;
+            let mut rest = path.as_str();
+            while let Some(next) = rest.strip_prefix("super/") {
+                ups += 1;
+                rest = next;
+            }
+            (dir_of(from_file, ups).map(|d| vec![d]), rest.to_string())
+        } else {
+            (
+                Some(vec![String::new(), "src/".to_string()]),
+                path.trim_start_matches("crate/").to_string(),
+            )
+        };
+        if let Some(prefixes) = prefixes {
+            let mut stems = vec![rest.clone()];
+            if let Some((head, _)) = rest.rsplit_once('/') {
+                stems.push(head.to_string());
+            }
+            for stem in stems {
+                for prefix in &prefixes {
+                    for suffix in [".rs", "/mod.rs"] {
+                        candidates.push(format!("{prefix}{stem}{suffix}"));
+                    }
                 }
             }
         }
@@ -330,6 +372,35 @@ mod uses_narrowing_tests {
         // An external crate resolves to nothing rather than to something wrong.
         assert_eq!(
             resolve_module("std::collections::HashMap", "src/main.rs", &files),
+            None
+        );
+    }
+
+    #[test]
+    fn rust_self_and_super_paths_resolve_relative_to_the_importing_file() {
+        // Found by review: `self`/`super` were stripped and the remainder
+        // probed from the crate root, so `super::baz::Thing` in
+        // `src/foo/bar.rs` looked for `src/baz.rs` instead of `src/foo/../
+        // baz.rs` — a different file entirely, or none.
+        let files: HashSet<&str> = [
+            "src/foo/bar.rs",
+            "src/foo/sib.rs",
+            "src/baz.rs",
+            "src/foo/baz.rs",
+        ]
+        .into_iter()
+        .collect();
+        assert_eq!(
+            resolve_module("super::baz::Thing", "src/foo/bar.rs", &files),
+            Some("src/baz.rs".to_string())
+        );
+        assert_eq!(
+            resolve_module("self::sib::Thing", "src/foo/bar.rs", &files),
+            Some("src/foo/sib.rs".to_string())
+        );
+        // Climbing past the root resolves to nothing, not to a crate-root read.
+        assert_eq!(
+            resolve_module("super::super::super::baz", "src/foo/bar.rs", &files),
             None
         );
     }

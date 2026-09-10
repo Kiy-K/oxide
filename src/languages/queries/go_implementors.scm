@@ -17,6 +17,7 @@
           (type_identifier) @base
           (qualified_type name: (type_identifier) @base)
           (pointer_type (type_identifier) @base)
+          (pointer_type (qualified_type name: (type_identifier) @base))
         ])))) @class
 
 (type_spec

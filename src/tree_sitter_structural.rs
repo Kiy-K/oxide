@@ -311,6 +311,22 @@ mod tests {
     }
 
     #[test]
+    fn qualified_generic_traits_and_pointer_embeddings_are_matched() {
+        // Both found by review: the alternations covered the qualified and
+        // the generic shape, but not the two composed.
+        let rust = "impl external::Trait<T> for Local {}\n";
+        assert_eq!(
+            all_bases_in_file(Language::Rust, rust),
+            vec![(1, "Local".to_string(), "Trait".to_string())]
+        );
+        let go = "type Store struct {\n\t*pkg.Base\n}\n";
+        assert_eq!(
+            all_bases_in_file(Language::Go, go),
+            vec![(1, "Store".to_string(), "Base".to_string())]
+        );
+    }
+
+    #[test]
     fn rust_impl_blocks_report_the_type_as_the_implementor() {
         let src = "struct Store;\nimpl Backend for Store {\n    fn get(&self) {}\n}\n";
         let bases = all_bases_in_file(Language::Rust, src);

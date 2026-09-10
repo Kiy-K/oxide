@@ -15,6 +15,7 @@
     (type_identifier) @base
     (generic_type type: (type_identifier) @base)
     (scoped_type_identifier name: (type_identifier) @base)
+    (generic_type type: (scoped_type_identifier name: (type_identifier) @base))
   ]
   type: [
     (type_identifier) @name
