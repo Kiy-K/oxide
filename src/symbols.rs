@@ -52,6 +52,21 @@ pub enum SymbolKind {
     Import,
 }
 
+impl std::str::FromStr for Language {
+    type Err = anyhow::Error;
+    /// Derived from [`Language::ALL`] and [`Language::as_str`] rather than a
+    /// second hand-written match: the decode side used to be its own
+    /// `match` with a `_ => TypeScript` catch-all, so every Rust and Go
+    /// symbol read back out of SQLite came back labelled TypeScript.
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Language::ALL
+            .iter()
+            .copied()
+            .find(|l| l.as_str() == s)
+            .ok_or_else(|| anyhow::anyhow!("unknown language: {s}"))
+    }
+}
+
 impl std::str::FromStr for SymbolKind {
     type Err = anyhow::Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {

@@ -12,7 +12,7 @@
 //! | Dimension | Where |
 //! |---|---|
 //! | definitions + stable identity | golden `id` (FNV of file + qualified_name) |
-//! | kinds + qualified names | golden `kind` / `qualified_name` |
+//! | kinds + qualified names | golden `kind` / `language` / `qualified_name` |
 //! | parent/child containment | golden `parent` |
 //! | imports / re-exports | golden `imports` |
 //! | references | golden `references` |
@@ -71,6 +71,7 @@ struct SnapshotSymbol {
     file: String,
     qualified_name: String,
     kind: String,
+    language: String,
     parent: Option<String>,
     start_line: u32,
     end_line: u32,
@@ -128,6 +129,11 @@ fn snapshot(symbols: &[Symbol]) -> Vec<SnapshotSymbol> {
             file: s.file.clone(),
             qualified_name: s.qualified_name.clone(),
             kind: s.kind.to_string(),
+            // Round-trips through SQLite like every other field here: a
+            // decode path that silently mapped unknown languages onto
+            // TypeScript went unnoticed until review precisely because the
+            // snapshot did not carry this.
+            language: s.language.as_str().to_string(),
             parent: s.parent.clone(),
             start_line: s.start_line,
             end_line: s.end_line,

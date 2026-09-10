@@ -934,11 +934,13 @@ fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
             .get::<_, String>(3)?
             .parse()
             .unwrap_or(crate::symbols::SymbolKind::Function),
-        language: match r.get::<_, String>(4)?.as_str() {
-            "python" => Language::Python,
-            "tsx" => Language::Tsx,
-            _ => Language::TypeScript,
-        },
+        // Parsed via `Language::ALL`, not a second hand-written match —
+        // see `Language::from_str`. The fallback only covers a value this
+        // build has no variant for at all.
+        language: r
+            .get::<_, String>(4)?
+            .parse()
+            .unwrap_or(Language::TypeScript),
         start_line: r.get(5)?,
         end_line: r.get(6)?,
         content_hash: r.get::<_, i64>(7)? as u64,
