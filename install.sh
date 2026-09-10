@@ -253,6 +253,10 @@ Pass --install-dir with somewhere you own, e.g.
   ./install.sh --install-dir \"\$HOME/.local/bin\""
 
 dest="$INSTALL_DIR/$BIN"
+# `mv file dir` moves the file *into* the directory, so a directory sitting
+# where the binary belongs would silently produce $INSTALL_DIR/oxide/oxide
+# and an install that reports success while nothing is on PATH.
+[ ! -d "$dest" ] || die "$dest is a directory, not a binary; remove it or pass a different --install-dir"
 # Stage inside the destination directory so the final step is a same
 # filesystem `mv`, which replaces the old binary in one operation. That
 # matters beyond crash-safety: `oxide install` records this absolute path in

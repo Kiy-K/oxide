@@ -53,7 +53,10 @@ jobs:
           cargo_version="$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -1)"
           [ -n "$cargo_version" ] || { echo "::error::could not read version from Cargo.toml"; exit 1; }
 
-          lock_version="$(awk '/^name = "oxide"$/{found=1; next} found && /^version = /{gsub(/[version = "]/,""); print; exit}' Cargo.lock)"
+          # Extract the quoted value rather than stripping characters: a
+          # `gsub(/[version = "]/,"")` style parse silently turns
+          # `0.1.0-rc.1` into `0.1.0-c.1`, failing every release candidate.
+          lock_version="$(awk '/^name = "oxide"$/{f=1; next} f && /^version = /{match($0, /"[^"]*"/); print substr($0, RSTART+1, RLENGTH-2); exit}' Cargo.lock)"
           if [ "$lock_version" != "$cargo_version" ]; then
             echo "::error::Cargo.lock records oxide $lock_version but Cargo.toml says $cargo_version — run cargo build and commit the lockfile"
             exit 1

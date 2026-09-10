@@ -344,6 +344,17 @@ check "says the existing install was left alone" contains "$SANDBOX/out" "left a
 check "previous binary is untouched" cmp -s "$DEST/oxide" "$SANDBOX/known-good"
 check "previous binary still runs" sh -c "'$DEST/oxide' --version >/dev/null"
 
+case_name "a directory where the binary belongs"
+DIRDEST="$SANDBOX/dir-dest"
+mkdir -p "$DIRDEST/oxide"
+if install_oxide "$DIRDEST" "$NEW_VERSION"; then
+    bad "a directory at the destination must fail"
+else
+    ok "a directory at the destination fails"
+fi
+check "says the destination is a directory" contains "$SANDBOX/out" "is a directory"
+check "does not nest the binary inside it" test ! -e "$DIRDEST/oxide/oxide"
+
 # --- 12b. interrupting the install leaves the old binary alone -----------
 #
 # The dangerous window is between staging the new binary inside the
