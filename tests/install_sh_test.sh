@@ -344,6 +344,36 @@ check "says the existing install was left alone" contains "$SANDBOX/out" "left a
 check "previous binary is untouched" cmp -s "$DEST/oxide" "$SANDBOX/known-good"
 check "previous binary still runs" sh -c "'$DEST/oxide' --version >/dev/null"
 
+# --- 12b. interrupting the install leaves the old binary alone -----------
+#
+# The dangerous window is between staging the new binary inside the
+# destination directory and moving it over the old one. `cp` is called
+# exactly once, for that staging copy, so shimming it puts SIGINT precisely
+# there — deterministically, rather than hoping to hit a race.
+
+case_name "interrupted midway through installing"
+INTSHIM="$SANDBOX/int-shim"
+mkdir -p "$INTSHIM"
+REAL_CP="$(command -v cp)"
+cat > "$INTSHIM/cp" <<SHIM_EOF
+#!/bin/sh
+"$REAL_CP" "\$@"
+status=\$?
+kill -INT \$PPID 2>/dev/null
+exit \$status
+SHIM_EOF
+chmod +x "$INTSHIM/cp"
+if PATH="$INTSHIM:$PATH" OXIDE_BASE_URL="$BASE_URL" sh "$INSTALLER" \
+    --version "$OLD_VERSION" --install-dir "$DEST" > "$SANDBOX/out" 2>&1; then
+    bad "an interrupted install must not report success"
+else
+    ok "an interrupted install fails"
+fi
+check "previous binary is untouched" cmp -s "$DEST/oxide" "$SANDBOX/known-good"
+check "previous binary still runs" sh -c "'$DEST/oxide' --version >/dev/null"
+check "no staging file left behind" \
+    sh -c "! ls '$DEST'/.oxide.new.* >/dev/null 2>&1"
+
 # --- 13. the lifecycle property `oxide install` depends on ---------------
 #
 # `oxide install` writes the binary's absolute path into each coding agent's

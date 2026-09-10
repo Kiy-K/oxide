@@ -186,10 +186,20 @@ esac
 ARCHIVE="$BIN-$VERSION-$TARGET.tar.gz"
 
 TMPDIR_OXIDE=""
+STAGING=""
 cleanup() {
     [ -z "$TMPDIR_OXIDE" ] || rm -rf "$TMPDIR_OXIDE"
+    [ -z "$STAGING" ] || rm -f "$STAGING"
 }
-trap cleanup EXIT HUP INT TERM
+# EXIT does the cleaning; the signal traps only exit, which then fires EXIT.
+# They must exit rather than merely clean up: a POSIX shell resumes where it
+# left off once a signal handler returns, so a handler that just tidied the
+# temp directory would let a Ctrl-C land *between* staging the new binary and
+# moving it into place — and the interrupted upgrade would complete anyway.
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 129' HUP
+trap 'exit 143' TERM
 
 TMPDIR_OXIDE="$(mktemp -d "${TMPDIR:-/tmp}/oxide-install.XXXXXX")" ||
     die "could not create a temporary directory"
@@ -248,14 +258,12 @@ dest="$INSTALL_DIR/$BIN"
 # matters beyond crash-safety: `oxide install` records this absolute path in
 # each coding agent's MCP config, so an upgrade has to land on exactly this
 # path rather than remove and recreate it.
-staging="$INSTALL_DIR/.$BIN.new.$$"
-rm -f "$staging"
-cp "$staged" "$staging" || die "could not write to $INSTALL_DIR"
-chmod 755 "$staging" || die "could not set permissions on $staging"
-mv -f "$staging" "$dest" || {
-    rm -f "$staging"
-    die "could not install to $dest"
-}
+STAGING="$INSTALL_DIR/.$BIN.new.$$"
+rm -f "$STAGING"
+cp "$staged" "$STAGING" || die "could not write to $INSTALL_DIR"
+chmod 755 "$STAGING" || die "could not set permissions on $STAGING"
+mv -f "$STAGING" "$dest" || die "could not install to $dest"
+STAGING=""
 
 say "Installed $dest"
 say "$("$dest" --version)"
