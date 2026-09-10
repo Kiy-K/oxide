@@ -122,7 +122,18 @@ else
 fi
 
 fetch() {
-    # fetch URL DEST — non-zero (and no DEST left behind) on any HTTP failure.
+    # fetch URL DEST — non-zero (and no usable DEST) on any failure.
+    case "$1" in
+        # Handled here rather than by the downloader: GNU wget rejects
+        # file:// outright ("Unsupported scheme"), so an offline or mirrored
+        # install would work under curl and fail under wget.
+        file://*)
+            src="${1#file://}"
+            [ -f "$src" ] || return 1
+            cp "$src" "$2" || return 1
+            return 0
+            ;;
+    esac
     case "$DOWNLOADER" in
         curl) curl -fsSL --retry 3 -o "$2" "$1" ;;
         wget) wget -q -O "$2" "$1" ;;

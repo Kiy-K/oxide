@@ -281,7 +281,7 @@ check "unpacks nothing on mismatch" \
 case_name "no SHA-256 tool available"
 MINIMAL="$SANDBOX/minimal-path"
 mkdir -p "$MINIMAL"
-for tool in sh env uname mktemp curl wget tar cp chmod mv rm sed cut head tail mkdir cat ls grep; do
+for tool in sh env uname mktemp curl wget tar gzip cp chmod mv rm sed cut head tail mkdir cat ls grep; do
     real="$(command -v "$tool" 2>/dev/null || true)"
     [ -n "$real" ] && ln -sf "$real" "$MINIMAL/$tool"
 done
@@ -343,6 +343,30 @@ fi
 check "says the existing install was left alone" contains "$SANDBOX/out" "left alone"
 check "previous binary is untouched" cmp -s "$DEST/oxide" "$SANDBOX/known-good"
 check "previous binary still runs" sh -c "'$DEST/oxide' --version >/dev/null"
+
+case_name "installing without curl"
+if command -v wget >/dev/null 2>&1; then
+    NOCURL="$SANDBOX/no-curl-path"
+    mkdir -p "$NOCURL"
+    # Everything install.sh reaches for except curl. GNU wget rejects
+    # file:// outright, so this is also what proves the installer handles
+    # a local base URL itself rather than delegating it to the downloader.
+    for tool in sh env uname mktemp wget tar gzip cp chmod mv rm sed cut head tail mkdir cat ls grep sha256sum shasum; do
+        real="$(command -v "$tool" 2>/dev/null || true)"
+        [ -n "$real" ] && ln -sf "$real" "$NOCURL/$tool"
+    done
+    WGETDEST="$SANDBOX/wget-only"
+    if PATH="$NOCURL" OXIDE_BASE_URL="$BASE_URL" sh "$INSTALLER" \
+        --version "$NEW_VERSION" --install-dir "$WGETDEST" > "$SANDBOX/out" 2>&1; then
+        ok "installs with wget and no curl"
+    else
+        bad "installs with wget and no curl"
+        cat "$SANDBOX/out"
+    fi
+    check "the wget-installed binary runs" sh -c "'$WGETDEST/oxide' --version >/dev/null"
+else
+    ok "installing without curl (skipped: no wget on this machine)"
+fi
 
 case_name "a directory where the binary belongs"
 DIRDEST="$SANDBOX/dir-dest"
