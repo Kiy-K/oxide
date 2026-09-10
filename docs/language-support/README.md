@@ -59,7 +59,7 @@ and no manual `.oxide` deletion.
 ### Provenance
 
 Everything in this section was measured on **2026-09-10** against the
-`oxide` binary at commit **8a4b02e** (`cargo build --release -j 2`), with
+`oxide` binary at commit **c0f5bcc** (`cargo build --release -j 2`), with
 the offline hashed embedder — `OXIDE_EMBED_NATIVE=hashed`, with
 `OXIDE_EMBED_URL` and `OXIDE_EMBED_MODEL` unset, which is what
 `scripts/perf.sh` forces — so no model download or embedding server is
@@ -103,17 +103,17 @@ editing it, so a real checkout is never mutated.
 
 | repo | language | files | symbols | cold index | no-change | 1-file edit | peak RSS | index size |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| flask | Python | 80 | 1,755 | 849 ms | 27 ms | 164 ms | 28 MB | 7.0 MB |
-| darkreader | TS + TSX | 197 | 1,356 | 1,051 ms | 22 ms | 179 ms | 28 MB | 5.3 MB |
-| tokio | Rust | 547 | 7,136 | 5,944 ms | 126 ms | 289 ms | 50 MB | 33 MB |
-| gin | Go | 99 | 2,076 | 1,360 ms | 33 ms | 502 ms | 34 MB | 8.6 MB |
+| flask | Python | 80 | 1,755 | 865 ms | 31 ms | 180 ms | 28 MB | 6.9 MB |
+| darkreader | TS + TSX | 197 | 1,356 | 1,021 ms | 29 ms | 190 ms | 28 MB | 5.4 MB |
+| tokio | Rust | 547 | 7,155 | 5,666 ms | 131 ms | 315 ms | 51 MB | 33 MB |
+| gin | Go | 99 | 2,076 | 1,338 ms | 38 ms | 520 ms | 34 MB | 8.6 MB |
 
 Every single-file edit reported `+1 new, ~1 changed, 2 written, N reused` —
 incremental re-embedding holds for all four. The edit appends a real
 declaration rather than a comment: a trailing comment changes no symbol's
 span, so nothing re-embeds and the measurement is vacuous.
 
-gin's 502 ms edit is the outlier and is explained, not mysterious: the file
+gin's 520 ms edit is the outlier and is explained, not mysterious: the file
 `perf.sh` picks is the largest in the repo, and gin's is `context.go` at
 1,539 lines (with a 3,957-line `context_test.go` alongside), so the single
 file being reparsed is unusually large relative to a 99-file repo.
@@ -126,11 +126,14 @@ of 3:
 
 | repo | files | symbols | cold index | ms/symbol | no-change | index size |
 |---|--:|--:|--:|--:|--:|--:|
-| N=200, Python + TS only | 804 | 3,412 | 1,123 ms | 0.329 | 36 ms | 9.4 MB |
-| N=200, all four languages | 1,205 | 6,615 | 2,203 ms | 0.333 | 66 ms | 18 MB |
+| N=200, Python + TS only | 804 | 3,412 | 1,072 ms | 0.314 | 45 ms | 9.4 MB |
+| N=200, all four languages | 1,205 | 6,615 | 1,996 ms | 0.302 | 71 ms | 18 MB |
 
-0.333 against 0.329 ms/symbol is a 1% difference, well inside the spread of
-the runs themselves — adding Rust and Go costs the *same* per symbol. Files
+0.302 against 0.314 ms/symbol — adding Rust and Go costs the *same* per
+symbol within the spread of the runs themselves, and certainly not more.
+(An earlier measurement of the same pair at 8a4b02e read 0.333 vs 0.329,
+the difference in the other direction and equally small; treat the claim as
+"no per-symbol cost", not as a signed delta.) Files
 grow more slowly than symbols because Rust and Go modules are denser. The
 5x catastrophic-regression threshold in `docs/perf-baseline-v0.1.md` is
 nowhere near.
@@ -147,12 +150,14 @@ cold indexes each, same session:
 | binary | cold index | symbols | index size |
 |---|--:|--:|--:|
 | 43c9d1b (before this round) | 1,074 ms | 3,412 | 9.3 MB |
-| 8a4b02e (after) | 1,087 ms | 3,412 | 9.3 MB |
+| c0f5bcc (after) | 1,072 ms | 3,412 | 9.4 MB |
 
-1.2% apart, inside the spread of the individual runs (1053/1074/1088 vs
-1090/1087/1087), with identical symbol counts and index sizes. The
+Indistinguishable, with identical symbol counts. The individual runs for
+43c9d1b were 1053/1074/1088 — the after figure sits inside that spread. The
 decorator walk, the widened base-clause queries, the JSX patterns and the
-attribution ladder cost nothing measurable.
+attribution ladder cost nothing measurable. (The 43c9d1b row was measured
+earlier the same day, same corpus, same methodology, from a worktree at
+that commit.)
 
 ### Structural retrieval on real repositories
 
@@ -163,10 +168,10 @@ revisions as above:
   embedding); `implementors_of("IRoutes")` = `routergroup.go#IRouter`
   (interface embedding); `callers_of("Context")` returns real
   `Context.ClientIP`, `Context.Deadline`, … method calls.
-- **tokio (Rust)** — `implementors_of("AsyncRead")` returns 42 implementors
+- **tokio (Rust)** — `implementors_of("AsyncRead")` returns 43 implementors
   including `fs::File`, `BufReader`, both `ReadHalf`s and `Stdin`, plus the
   supertrait `AsyncBufRead`. `implementors_of("Future")` returns 64.
-- **OXIDE's own `src/` (Rust)** — 25 files, 601 symbols, 696 ms cold;
+- **OXIDE's own `src/` (Rust)** — 25 files, 611 symbols, 678 ms cold;
   `implementors_of("IndexBackend")` = `storage.rs#SqliteStore`;
   `implementors_of("LanguageExtractor")` = `languages/tags.rs#TagsExtractor`.
 
@@ -190,6 +195,7 @@ their own right because no same-named struct in that file dedups them away
 | Go | interface *satisfaction* | Structural and semantic in Go; `bases` means embedding only, by design. |
 | Go | named types vs aliases | `type Key string` lands on `Class`; only `type X = Y` is a true alias and it is not distinguished. |
 | Go | package `var` | Lands on `Constant` — OXIDE has no variable kind. |
+| Rust, Go | rarer grammar shapes, found empirically | The base/call queries cover the shapes that have actually been exercised — bare, qualified, generic, and their compositions — but the set is empirical, not exhaustive. Eight adversarial review rounds each turned up narrower ones (`impl external::Trait<T> for Local`, Go's `*pkg.Base` embedding) and the last rounds were finding compositions of shapes already covered separately. Expect more; each is a one-line `.scm` alternative plus a regression test. |
 | Java | everything | Not implemented. See `docs/java-feasibility/README.md`. |
 
 ## Next language worth adding
