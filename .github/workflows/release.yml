@@ -1,0 +1,411 @@
+name: Release
+
+# Tag-driven. `workflow_dispatch` runs everything except publishing, so a
+# target can be proven on a real runner before any tag exists — which is the
+# only way to honestly claim a platform is supported.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  # Every smoke test uses the deterministic offline provider. The shipped
+  # default would otherwise download ~23MB of Arctic weights per runner per
+  # job, for a check that is about packaging, not retrieval quality.
+  OXIDE_EMBED_NATIVE: hashed
+
+jobs:
+  # A tag must not turn an unverified binary into a public release, so the
+  # full correctness suite runs again here rather than trusting that the
+  # tagged commit was green on `main`.
+  gate:
+    name: Gate / Correctness
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy
+
+      - name: Restore Cargo cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-release-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml') }}
+
+      # The one place the version is decided. Everything downstream — archive
+      # names, the release title, the binary's own `--version` check — uses
+      # this output, so they cannot drift apart.
+      - name: Resolve and verify version
+        id: version
+        run: |
+          set -euo pipefail
+          cargo_version="$(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -1)"
+          [ -n "$cargo_version" ] || { echo "::error::could not read version from Cargo.toml"; exit 1; }
+
+          lock_version="$(awk '/^name = "oxide"$/{found=1; next} found && /^version = /{gsub(/[version = "]/,""); print; exit}' Cargo.lock)"
+          if [ "$lock_version" != "$cargo_version" ]; then
+            echo "::error::Cargo.lock records oxide $lock_version but Cargo.toml says $cargo_version — run cargo build and commit the lockfile"
+            exit 1
+          fi
+
+          if [ "${GITHUB_REF_TYPE:-}" = "tag" ]; then
+            tag="${GITHUB_REF_NAME}"
+            if [ "$tag" != "v${cargo_version}" ]; then
+              echo "::error::tag $tag does not match Cargo.toml version $cargo_version. Bump Cargo.toml (and Cargo.lock) or retag; CI will not rewrite the package version."
+              exit 1
+            fi
+            version="$tag"
+          else
+            # Dispatch run: build and smoke-test, publish nothing.
+            version="v${cargo_version}-dev"
+          fi
+
+          case "$version" in
+            *-rc*|*-alpha*|*-beta*|*-dev*) prerelease=true ;;
+            *) prerelease=false ;;
+          esac
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          echo "Releasing $version (prerelease=$prerelease)"
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Lint
+        run: cargo clippy -j 2 --all-targets -- -D warnings
+
+      - name: Lint without default features
+        run: cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
+
+      - name: Full unit and integration suite
+        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2
+
+      - name: Suite without default features
+        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features
+
+      - name: Canonical retrieval gate
+        run: |
+          cargo build --release -j 2
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL ./target/release/oxide eval --config fixtures/benchmark.json
+
+      - name: Shell-check the installer
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck -s sh install.sh
+          sh -n install.sh
+
+  build:
+    name: Build / ${{ matrix.target }}
+    needs: gate
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Native runners only. fastembed pulls a prebuilt ONNX Runtime for
+          # the host target and links it statically; cross-compiling would
+          # mean shipping a binary no job here has ever executed.
+          #
+          # Linux builds are pinned to 22.04 rather than 24.04 on purpose:
+          # the binary links glibc and libstdc++ dynamically, so the build
+          # image sets the oldest system it will run on. 22.04 (glibc 2.35)
+          # covers Debian 12, RHEL 9 and Amazon Linux 2023; 24.04 would not.
+          # These images start deprecating 2026-09-17 and go away 2027-04-17
+          # — move the pin (and re-measure the floor below) before then.
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-22.04
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-22.04-arm
+          - target: x86_64-apple-darwin
+            runner: macos-15-intel
+          - target: aarch64-apple-darwin
+            runner: macos-15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.0 --profile minimal
+
+      - name: Restore Cargo cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.target }}-cargo-release-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml') }}
+
+      - name: Build
+        run: cargo build --release -j 2
+
+      # Package first, then test what was packaged. Testing
+      # target/release/oxide would leave the archive itself unverified.
+      - name: Package
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ needs.gate.outputs.version }}"
+          archive="oxide-${version}-${{ matrix.target }}.tar.gz"
+          staging="$(mktemp -d)"
+          cp target/release/oxide "$staging/oxide"
+          cp README.md LICENSE "$staging/" 2>/dev/null || cp README.md "$staging/"
+          chmod 755 "$staging/oxide"
+          # `-C` so the archive holds bare names, not the temp path. Users
+          # untar into a scratch directory and expect `./oxide`.
+          tar -czf "$archive" -C "$staging" .
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+          ls -l "$archive"
+
+      - name: Record the binary's system requirements
+        if: runner.os == 'Linux'
+        run: |
+          echo "Dynamic dependencies:"
+          ldd target/release/oxide || true
+          echo "Highest glibc symbol version required:"
+          objdump -T target/release/oxide | sed -n 's/.*GLIBC_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1
+          echo "Highest libstdc++ symbol version required:"
+          objdump -T target/release/oxide | sed -n 's/.*GLIBCXX_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1
+
+      - name: Smoke-test the packaged binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          tar -xzf "${{ steps.package.outputs.archive }}" -C "$work"
+          bin="$work/oxide"
+          test -x "$bin"
+
+          # Version must match the tag this workflow is building, or the
+          # archive is named after something it does not contain.
+          reported="$("$bin" --version)"
+          echo "packaged binary reports: $reported"
+          expected="oxide $(sed -n 's/^version = "\(.*\)"$/\1/p' Cargo.toml | head -1)"
+          [ "$reported" = "$expected" ] || {
+            echo "::error::packaged binary reports '$reported', expected '$expected'"
+            exit 1
+          }
+
+          "$bin" --help > /dev/null
+          "$bin" index --help > /dev/null
+
+          # A real (small) repository, copied out of the source tree so the
+          # index is written to scratch.
+          repo="$work/repo"
+          cp -R fixtures/py_repo "$repo"
+          ( cd "$repo" && git init -q . )
+
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" index "$repo"
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" status "$repo" --json > "$work/status.json"
+          grep -q '"index_exists": true' "$work/status.json"
+          grep -q '"is_current": true' "$work/status.json"
+
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" query \
+            "where is the retry policy" --path "$repo" --json > "$work/pack.json"
+          grep -q '"items"' "$work/pack.json"
+
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" search \
+            RetryPolicy --path "$repo" --json > "$work/hits.json"
+          grep -q '"qualified_name"' "$work/hits.json"
+
+          # `oxide install` must run and describe a plan without writing
+          # anything — it is the surface install.sh points users at, so a
+          # crash here is a broken release, not a warning.
+          agent_home="$work/agent-home"
+          mkdir -p "$agent_home/.codex"
+          HOME="$agent_home" "$bin" install --agent codex --dry-run > "$work/install.txt"
+          grep -q 'mcp_servers.oxide' "$work/install.txt"
+          grep -q 'Dry run' "$work/install.txt"
+          test ! -s "$agent_home/.codex/config.toml" 2>/dev/null || {
+            echo "::error::--dry-run wrote to the agent config"; exit 1; }
+
+          echo "smoke test passed for ${{ matrix.target }}"
+
+      # Everything above pins the deterministic hashed provider, which is
+      # right for functional checks but means nothing above ever loads the
+      # ONNX runtime the shipped default uses — the 49MB of statically
+      # linked code every unconfigured user hits on their first `oxide
+      # index`. That can only be proven on the target itself, so it gets one
+      # explicit run (which downloads ~23MB of weights, once per runner).
+      - name: Prove the shipped default embedding provider loads
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          tar -xzf "${{ steps.package.outputs.archive }}" -C "$work"
+          bin="$work/oxide"
+          repo="$work/native-repo"
+          mkdir -p "$repo/src"
+          printf 'def handler():\n    return authenticate()\n\ndef authenticate():\n    return True\n' \
+            > "$repo/src/app.py"
+          ( cd "$repo" && git init -q . )
+
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL -u OXIDE_EMBED_NATIVE \
+            "$bin" index "$repo"
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL -u OXIDE_EMBED_NATIVE \
+            "$bin" status "$repo" --json > "$work/native-status.json"
+          cat "$work/native-status.json"
+          grep -q '"is_current": true' "$work/native-status.json"
+          # The default provider's own name, not `hashed-bow-256`: proof the
+          # ONNX model actually loaded rather than silently falling back.
+          grep -q '"embedder": "native:arctic-embed-xs-q"' "$work/native-status.json"
+          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL -u OXIDE_EMBED_NATIVE \
+            "$bin" query "where is authentication handled" --path "$repo" --json \
+            > "$work/native-pack.json"
+          grep -q '"items"' "$work/native-pack.json"
+          echo "native ONNX provider works on ${{ matrix.target }}"
+
+      - name: Checksum
+        shell: bash
+        run: |
+          archive="${{ steps.package.outputs.archive }}"
+          if command -v sha256sum >/dev/null; then
+            sha256sum "$archive" > "$archive.sha256"
+          else
+            shasum -a 256 "$archive" > "$archive.sha256"
+          fi
+          cat "$archive.sha256"
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: oxide-${{ matrix.target }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  # Installs from the archives this run just built, exactly the way a user
+  # would, and proves the property `oxide install` depends on: an upgrade
+  # replaces the binary at the same absolute path, so agent MCP config that
+  # recorded that path keeps working untouched.
+  installer:
+    name: Installer / Lifecycle (${{ matrix.runner }})
+    needs: [gate, build]
+    strategy:
+      fail-fast: false
+      matrix:
+        # Both OSes, because install.sh is POSIX shell over system tools that
+        # differ: macOS has BSD sed and no `sha256sum` (only `shasum`), so a
+        # Linux-only run would not exercise either fallback.
+        runner: [ubuntu-22.04, macos-15]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download built archives
+        uses: actions/download-artifact@v6
+        with:
+          pattern: oxide-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Assemble a local release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p local-release
+          cp artifacts/*.tar.gz local-release/
+          ( cd local-release && { sha256sum ./*.tar.gz 2>/dev/null || shasum -a 256 ./*.tar.gz; } |
+              sed 's| \./| |' > SHA256SUMS )
+          cat local-release/SHA256SUMS
+
+      - name: Run installer lifecycle tests against it
+        run: |
+          set -euo pipefail
+          OXIDE_TEST_RELEASE_DIR="$PWD/local-release" \
+          OXIDE_TEST_VERSION="${{ needs.gate.outputs.version }}" \
+            ./tests/install_sh_test.sh
+
+  publish:
+    name: Publish
+    needs: [gate, build, installer]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download built archives
+        uses: actions/download-artifact@v6
+        with:
+          pattern: oxide-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Assemble release assets
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp artifacts/*.tar.gz release/
+          # One SHA256SUMS over every archive, in the plain `sha256sum -c`
+          # format install.sh parses.
+          ( cd release && sha256sum ./*.tar.gz | sed 's| \./| |' > SHA256SUMS )
+          # The installer ships with the release too, so a user can audit and
+          # run the exact script that matches these artifacts.
+          cp install.sh release/install.sh
+          ls -l release
+          cat release/SHA256SUMS
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.gate.outputs.version }}
+          PRERELEASE: ${{ needs.gate.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+          notes="$(mktemp)"
+          cat > "$notes" <<EOF
+          ## Install
+
+          \`\`\`bash
+          curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/install.sh | sh
+          \`\`\`
+
+          Then:
+
+          \`\`\`bash
+          oxide --version
+          oxide index
+          oxide query "Where is authentication handled?"
+          oxide install    # connect OXIDE to your coding agents
+          \`\`\`
+
+          Installs to \`\$HOME/.local/bin/oxide\` by default. To pin this version:
+
+          \`\`\`bash
+          curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/install.sh | sh -s -- --version ${VERSION}
+          \`\`\`
+
+          ## Assets
+
+          Every archive contains a single \`oxide\` binary (ONNX Runtime is
+          statically linked, so there is nothing else to install) plus the
+          README and LICENSE. Verify with \`SHA256SUMS\`.
+
+          Linux builds are produced on Ubuntu 22.04 and require glibc 2.35 or
+          newer. macOS builds are produced on macOS 15.
+          EOF
+
+          flags=""
+          if [ "$PRERELEASE" = "true" ]; then flags="--prerelease"; fi
+
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes-file "$notes" \
+            $flags \
+            release/*

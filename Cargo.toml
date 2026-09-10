@@ -4,6 +4,11 @@ version = "0.1.0"
 edition = "2021"
 description = "A local Context Engine for coding agents, powered by Selective Code Indexing"
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Kiy-K/oxide"
+homepage = "https://github.com/Kiy-K/oxide"
+keywords = ["code-search", "retrieval", "mcp", "context", "tree-sitter"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
 anyhow = "1"

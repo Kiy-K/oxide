@@ -44,7 +44,8 @@ QUICK START
   oxide index
   oxide query \"Where is authentication handled?\"
 
-Run `oxide <command> --help` for one command's options.
+Run `oxide <command> --help` for one command's options, `oxide --version`
+for the installed version.
 ";
 
 /// An explicit, unparseable `--profile` fails loudly (matches how `--mode`
@@ -68,6 +69,11 @@ fn resolve_profile(explicit: Option<&str>, json: bool) -> Result<RetrievalMode, 
 #[command(
     name = "oxide",
     about = "Give coding agents the relevant code they need.",
+    // From CARGO_PKG_VERSION, so `oxide --version` and the crate version can
+    // never disagree — the release workflow checks the packaged binary's
+    // output against the tag, and that check is only meaningful if the
+    // number comes from Cargo.toml rather than a second hand-kept copy.
+    version,
     override_help = TOP_HELP,
     arg_required_else_help = true
 )]

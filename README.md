@@ -14,16 +14,99 @@ calls before it starts reading and editing.
 ## Install
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh
+```
+
+Then:
+
+```bash
+oxide --version
+oxide index
+oxide query "Where is authentication handled?"
+```
+
+`install.sh` downloads a prebuilt binary for your machine, verifies it
+against the release's published `SHA256SUMS` before unpacking anything
+executable, and installs it to `$HOME/.local/bin/oxide`. There is nothing
+else to install — ONNX Runtime is statically linked into the binary. No
+Rust, Cargo, Node, Python, or package manager is required.
+
+If `$HOME/.local/bin` is not on your `PATH`, the installer says so and
+prints the line to add.
+
+**`install.sh` and `oxide install` are different things.** `install.sh`
+installs the binary. [`oxide install`](#connecting-a-coding-agent) then
+connects that binary to your coding agents.
+
+### Installer options
+
+```bash
+# a specific release rather than the latest
+curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh -s -- --version v0.1.0
+
+# somewhere else
+curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh -s -- --install-dir ~/bin
+
+# read it first, then run it — it is one small POSIX shell script
+curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh -o install.sh
+less install.sh && sh install.sh --help
+```
+
+`--version` and `--install-dir` are also readable from `OXIDE_VERSION` and
+`OXIDE_INSTALL_DIR`.
+
+### Upgrading
+
+Re-run the same command. The installer replaces the binary at the same
+absolute path rather than removing and recreating it, which matters because
+`oxide install` records that path in each coding agent's MCP configuration —
+so an upgrade leaves every agent still pointing at a working binary, with no
+config change. If any step fails (bad checksum, missing asset, a binary that
+will not start on your machine), the installer stops and leaves the version
+you already had in place.
+
+### Uninstalling
+
+```bash
+oxide uninstall --agent all     # remove OXIDE from your coding agents first
+rm ~/.local/bin/oxide           # then the binary
+rm -rf /path/to/repo/.oxide     # any index you no longer want
+```
+
+Indexes live in `.oxide/` inside each repository you indexed. Downloaded
+model weights live in `$HF_HOME` (default `~/.cache/huggingface/hub`).
+
+### Platforms
+
+Prebuilt binaries are published for:
+
+| Target | Built on | Requires |
+|---|---|---|
+| `x86_64-unknown-linux-gnu` | Ubuntu 22.04 | glibc 2.35+ |
+| `aarch64-unknown-linux-gnu` | Ubuntu 22.04 | glibc 2.35+ |
+| `x86_64-apple-darwin` | macOS 15 | — |
+| `aarch64-apple-darwin` | macOS 15 | — |
+
+Windows is not published yet. On any other platform, build from source.
+
+### Building from source
+
+For contributors, or a platform with no prebuilt binary:
+
+```bash
+git clone https://github.com/Kiy-K/oxide.git
+cd oxide
 cargo build --release          # binary at target/release/oxide
 ```
 
 Requires Rust 1.98.0 (pinned in `rust-toolchain.toml`) and a `git` binary on
 PATH (used only for `review`).
 
-### Embeddings
+### Embeddings, and the first-use download
 
-Semantic search works with no configuration and no server. The default
-provider is `arctic-embed-xs-q` — a 384-dimension int8 ONNX model run
+Semantic search works with no configuration and no server, but the first
+command that needs it downloads a model. The default provider is
+`arctic-embed-xs-q` — a 384-dimension int8 ONNX model run
 in-process via fastembed, ~23 MB of weights fetched from Hugging Face the
 first time the model is loaded and cached thereafter. It is chosen on the
 21-task ContextBench evidence in `docs/cpu-embedding-survey/`: better
@@ -152,6 +235,11 @@ not claim token savings when native exploration telemetry is unavailable.
 - **Python**: modules, classes, functions, methods (decorator spans included), imports
 - **TypeScript/TSX**: functions, classes, methods, interfaces, type aliases,
   enums, exported declarations (incl. arrow-function consts), imports
+- **Rust**: modules, structs, enums, traits, impls, functions, methods, `use` paths
+- **Go**: packages, structs, interfaces, functions, methods, imports
+
+Per-language coverage, performance, and known gaps:
+[`docs/language-support/`](docs/language-support/README.md).
 - Discovery respects `.gitignore`, skips `.git`, build/cache/vendor dirs
   (`node_modules`, `target`, `dist`, `.next`, `__pycache__`, `.venv`, …),
   binaries (NUL sniff), lockfiles, and generated artifacts (`*.min.js`,
@@ -195,7 +283,7 @@ layout below maps onto that pipeline directly:
 src/
 ├── scanner      repo discovery & filtering (ignore crate + denylists)
 ├── parser       tree-sitter plumbing + LanguageExtractor trait
-├── languages    python.rs, typescript.rs (TS + TSX grammars)
+├── languages    LanguageProfile per grammar (python, typescript/tsx, rust, go)
 ├── symbols      core model, stable FNV-1a hashing
 ├── storage      SQLite index storage, schema, and transactions
 ├── index        incremental scanning, freshness, parsing, and embedding orchestration

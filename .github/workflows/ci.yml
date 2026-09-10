@@ -99,6 +99,17 @@ jobs:
         run: cargo build --release -j 2
       - name: Run canonical fixture benchmark
         run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL ./target/release/oxide eval --config fixtures/benchmark.json --json | tee benchmark.json
+      # The release build this job already produced is what install.sh
+      # packages, so the installer's own lifecycle tests ride along here
+      # rather than paying for a second release build.
+      - name: Shell-check the installer
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck -s sh install.sh tests/install_sh_test.sh
+
+      - name: Installer lifecycle tests
+        run: ./tests/install_sh_test.sh
+
       - name: Upload benchmark result
         if: always()
         uses: actions/upload-artifact@v7
