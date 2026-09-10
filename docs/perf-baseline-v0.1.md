@@ -31,15 +31,25 @@ baseline used for regression thresholds.
 TypeScript since language support widened. Measured under `nice -n 10`, so
 not directly comparable to the 2026-08-29 rows above:
 
-| repo size (files/symbols) | cold index | no-change reindex | single-edit reindex | search (best/3) | context (best/3) | peak RSS (cold) | index size |
-|---------------------------|-----------:|-------------------:|---------------------:|-----------------:|-------------------:|-----------------:|-----------:|
-| 1,205 / 6,615 (4 langs)   | 1,208 ms   | 41 ms               | 70 ms                 | 0.03 s            | 0.05 s              | 36.2 MB           | 18 MB      |
-| 804 / 3,412 (py+ts only)  | 664 ms     | 39 ms               | 54 ms                 | 0.02 s            | 0.03 s              | 29.1 MB           | 9.4 MB     |
+Binary at commit 8a4b02e, offline hashed embedder, `nice -n 10`, **median
+of 3 runs** each:
 
-The two rows were measured minutes apart in one session: adding Rust and Go
-costs 0.183 ms/symbol against Python+TypeScript's 0.195, i.e. slightly less
-per symbol, with files growing more slowly than symbols. Per-language real
-repositories are in `docs/language-support/README.md`.
+| repo size (files/symbols) | cold index | no-change reindex | single-edit reindex | peak RSS (cold) | index size |
+|---------------------------|-----------:|-------------------:|---------------------:|-----------------:|-----------:|
+| 1,205 / 6,615 (4 langs)   | 2,203 ms   | 66 ms               | 87 ms                 | 35 MB             | 18 MB      |
+| 804 / 3,412 (py+ts only)  | 1,123 ms   | 36 ms               | 58 ms                 | 28 MB             | 9.4 MB     |
+
+The two rows were measured in one session: 0.333 ms/symbol with Rust and Go
+against Python+TypeScript's 0.329 — a 1% difference, inside the runs' own
+spread, so the two new languages cost the same per symbol. Files grow more
+slowly than symbols because Rust and Go modules are denser.
+
+These absolutes are **not** comparable to the 2026-08-29 rows above, which
+were single runs without `nice` on a differently loaded machine; single
+runs of this same corpus a day apart differed by up to 1.7x while their
+ratios held. Full provenance (repo revisions, exact commands, environment)
+and per-language real repositories are in
+`docs/language-support/README.md`.
 
 `scripts/perf.sh` also accepts a repository path instead of a module count,
 copying it to a temp dir before indexing and editing it.

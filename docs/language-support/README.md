@@ -56,53 +56,108 @@ and no manual `.oxide` deletion.
 
 ## Performance
 
-Measured with `scripts/perf.sh`, offline hashed embedder, under `nice -n 10`
-on a shared laptop (Intel i7-13620H). Single runs, not medians — see
-`docs/perf-baseline-v0.1.md` on noise before calling any delta a regression.
+### Provenance
+
+Everything in this section was measured on **2026-09-10** against the
+`oxide` binary at commit **8a4b02e** (`cargo build --release -j 2`), with
+the offline hashed embedder — `OXIDE_EMBED_NATIVE=hashed`, with
+`OXIDE_EMBED_URL` and `OXIDE_EMBED_MODEL` unset, which is what
+`scripts/perf.sh` forces — so no model download or embedding server is
+involved and the numbers are reproducible without one. These are indexing
+and structural-retrieval measurements; they are **not** a retrieval-quality
+claim and do not touch `docs/canonical-baseline.md`'s ruler. The
+retrieval-quality gate for this whole round is
+`./target/release/oxide eval --config fixtures/benchmark.json`, unchanged
+throughout at vector-only recall@5 0.818 / hybrid 0.909.
+
+Machine: Intel i7-13620H, a shared laptop, every run under `nice -n 10`.
+**Each number is the median of 3 runs**, not a single run — single runs
+taken a day apart on this machine differed by up to 1.7x in absolute terms
+while their *ratios* held, so medians are the only comparable form. Do not
+compare these absolutes against `docs/perf-baseline-v0.1.md`'s 2026-08-29
+rows, which were single runs without `nice` on a differently loaded machine.
+
+Repositories, at these exact revisions:
+
+| repo | revision | how to get it |
+|---|---|---|
+| flask | `7ee9ceb71e868944a46e1ff00b506772a53a4f1d` | `~/.cache/oxide-contextbench/repos/flask` |
+| darkreader | `a787eb511f45159c8869d30e5a6ba1f91cb67709` | `~/.cache/oxide-contextbench/repos/darkreader` |
+| tokio | `1.52.1` | `~/.cargo/registry/src/*/tokio-1.52.1` |
+| gin | `dcaa4296d111981ffb31ac3eba90bb63e1eb5ab9` | `git clone --depth 1 https://github.com/gin-gonic/gin` |
+
+Commands, verbatim:
+
+```bash
+cargo build --release -j 2
+nice -n 10 scripts/perf.sh <repo-path>     # real repos; copies the repo first
+nice -n 10 scripts/perf.sh 200             # synthetic, all four languages
+cargo build --release -j 2 --example structural_probe
+nice -n 10 ./target/release/examples/structural_probe <repo-copy> <names...>
+```
+
+`scripts/perf.sh` copies the target repo to a temp dir before indexing and
+editing it, so a real checkout is never mutated.
 
 ### Real repositories, one per language
 
 | repo | language | files | symbols | cold index | no-change | 1-file edit | peak RSS | index size |
 |---|---|--:|--:|--:|--:|--:|--:|--:|
-| flask | Python | 80 | 1,755 | 501 ms | 30 ms | 104 ms | 29 MB | 7.0 MB |
-| darkreader | TS + TSX | 197 | 1,356 | 614 ms | 31 ms | 126 ms | 33 MB | 5.4 MB |
-| tokio 1.52.1 | Rust | 547 | 7,136 | 3,390 ms | 72 ms | 165 ms | 53 MB | 33 MB |
-| gin | Go | 99 | 2,076 | 778 ms | 32 ms | 298 ms | 35 MB | 8.6 MB |
+| flask | Python | 80 | 1,755 | 849 ms | 27 ms | 164 ms | 28 MB | 7.0 MB |
+| darkreader | TS + TSX | 197 | 1,356 | 1,051 ms | 22 ms | 179 ms | 28 MB | 5.3 MB |
+| tokio | Rust | 547 | 7,136 | 5,944 ms | 126 ms | 289 ms | 50 MB | 33 MB |
+| gin | Go | 99 | 2,076 | 1,360 ms | 33 ms | 502 ms | 34 MB | 8.6 MB |
 
 Every single-file edit reported `+1 new, ~1 changed, 2 written, N reused` —
 incremental re-embedding holds for all four. The edit appends a real
 declaration rather than a comment: a trailing comment changes no symbol's
 span, so nothing re-embeds and the measurement is vacuous.
 
-gin's 298 ms edit is the outlier and is explained, not mysterious: its
-largest source file is `context.go` at 1,539 lines (with a 3,957-line
-`context_test.go` alongside), so the one file being reparsed is unusually
-large relative to a 99-file repo.
+gin's 502 ms edit is the outlier and is explained, not mysterious: the file
+`perf.sh` picks is the largest in the repo, and gin's is `context.go` at
+1,539 lines (with a 3,957-line `context_test.go` alongside), so the single
+file being reparsed is unusually large relative to a 99-file repo.
 
 ### Synthetic scaling, and the cost of adding two languages
 
 `scripts/gen_bench_repo.py` now emits Rust and Go modules alongside Python
-and TypeScript. Both rows below were measured in the same session, minutes
-apart, on the same machine:
+and TypeScript. Both rows below were measured in the same session, medians
+of 3:
 
-| repo | files | symbols | cold index | ms/symbol | index size |
-|---|--:|--:|--:|--:|--:|
-| N=200, Python + TS only | 804 | 3,412 | 664 ms | 0.195 | 9.4 MB |
-| N=200, all four languages | 1,205 | 6,615 | 1,208 ms | 0.183 | 18 MB |
+| repo | files | symbols | cold index | ms/symbol | no-change | index size |
+|---|--:|--:|--:|--:|--:|--:|
+| N=200, Python + TS only | 804 | 3,412 | 1,123 ms | 0.329 | 36 ms | 9.4 MB |
+| N=200, all four languages | 1,205 | 6,615 | 2,203 ms | 0.333 | 66 ms | 18 MB |
 
-Adding Rust and Go is *slightly cheaper per symbol*, not more expensive —
-their modules are denser, so files grow more slowly than symbols. Well
-inside the 5x catastrophic-regression threshold.
+0.333 against 0.329 ms/symbol is a 1% difference, well inside the spread of
+the runs themselves — adding Rust and Go costs the *same* per symbol. Files
+grow more slowly than symbols because Rust and Go modules are denser. The
+5x catastrophic-regression threshold in `docs/perf-baseline-v0.1.md` is
+nowhere near.
 
-A Phase-1 regression check on the same corpus: the pre-work binary
-(43c9d1b) indexes the Python+TypeScript repo in 659 ms producing 3,412
-symbols and a 9.4 MB index; the current binary gives 664 ms, 3,412 symbols,
-9.4 MB. Identical within noise, despite the decorator walk, the widened
-base-clause queries, and the TSX JSX patterns.
+(To reproduce the Python+TypeScript-only row: generate with
+`python3 scripts/gen_bench_repo.py <dest> 200`, then delete `src/rs`,
+`src/go` and `src/retry.rs` before pointing `perf.sh` at it.)
+
+### Regression check against the pre-work binary
+
+Both binaries, the same generated Python+TypeScript corpus, median of 3
+cold indexes each, same session:
+
+| binary | cold index | symbols | index size |
+|---|--:|--:|--:|
+| 43c9d1b (before this round) | 1,074 ms | 3,412 | 9.3 MB |
+| 8a4b02e (after) | 1,087 ms | 3,412 | 9.3 MB |
+
+1.2% apart, inside the spread of the individual runs (1053/1074/1088 vs
+1090/1087/1087), with identical symbol counts and index sizes. The
+decorator walk, the widened base-clause queries, the JSX patterns and the
+attribution ladder cost nothing measurable.
 
 ### Structural retrieval on real repositories
 
-`cargo run --release --example structural_probe <repo> <names…>`:
+`cargo run --release --example structural_probe <repo> <names…>`, same
+revisions as above:
 
 - **gin (Go)** — `implementors_of("RouterGroup")` = `gin.go#Engine` (struct
   embedding); `implementors_of("IRoutes")` = `routergroup.go#IRouter`
@@ -110,9 +165,10 @@ base-clause queries, and the TSX JSX patterns.
   `Context.ClientIP`, `Context.Deadline`, … method calls.
 - **tokio (Rust)** — `implementors_of("AsyncRead")` returns 42 implementors
   including `fs::File`, `BufReader`, both `ReadHalf`s and `Stdin`, plus the
-  supertrait `AsyncBufRead`. `implementors_of("Future")` returns 60+.
-- **OXIDE itself (Rust)** — `implementors_of("IndexBackend")` =
-  `SqliteStore`; `implementors_of("LanguageExtractor")` = `TagsExtractor`.
+  supertrait `AsyncBufRead`. `implementors_of("Future")` returns 64.
+- **OXIDE's own `src/` (Rust)** — 25 files, 601 symbols, 696 ms cold;
+  `implementors_of("IndexBackend")` = `storage.rs#SqliteStore`;
+  `implementors_of("LanguageExtractor")` = `languages/tags.rs#TagsExtractor`.
 
 Two honest artifacts in the tokio list: `async_read.rs#Box` and `#Pin` are
 `impl AsyncRead for Box<T>` / `Pin<P>` blocks, which survive as symbols in
