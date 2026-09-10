@@ -27,7 +27,7 @@ fn main() {
                 })
             );
         } else {
-            eprintln!("error: {}", e.message);
+            eprintln!("error: {}", oxide::cli::render_human_error(&e));
         }
         std::process::exit(1);
     }

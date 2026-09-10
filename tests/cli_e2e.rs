@@ -797,16 +797,34 @@ fn index_scope_flags_are_wired_through_the_cli() {
     assert_eq!(combined["reused_embeddings"], 0);
 }
 
+/// `--rebuild` is the repair control a first-time user should see; the
+/// per-layer scopes still exist but are demoted out of the `-h` summary.
 #[test]
-fn index_help_documents_the_rebuild_scope_flags() {
-    let out = Command::new(env!("CARGO_BIN_EXE_oxide"))
-        .args(["index", "--help"])
-        .env("OXIDE_EMBED_NATIVE", "hashed")
-        .output()
-        .unwrap();
-    assert!(out.status.success());
-    let help = String::from_utf8_lossy(&out.stdout);
-    for flag in ["-a", "--all", "-g", "--graph", "-e", "--embeddings"] {
-        assert!(help.contains(flag), "help text missing {flag}:\n{help}");
+fn index_help_promotes_rebuild_and_demotes_the_per_layer_scopes() {
+    let help = |flag: &str| {
+        let out = Command::new(env!("CARGO_BIN_EXE_oxide"))
+            .args(["index", flag])
+            .env("OXIDE_EMBED_NATIVE", "hashed")
+            .output()
+            .unwrap();
+        assert!(out.status.success());
+        String::from_utf8_lossy(&out.stdout).into_owned()
+    };
+
+    let short = help("-h");
+    assert!(
+        short.contains("--rebuild"),
+        "-h missing --rebuild:\n{short}"
+    );
+    for demoted in ["--graph", "--embeddings", "--embedder"] {
+        assert!(
+            !short.contains(demoted),
+            "-h should not show the implementation-layer flag {demoted}:\n{short}"
+        );
+    }
+
+    let long = help("--help");
+    for flag in ["-a", "--rebuild", "-g", "--graph", "-e", "--embeddings"] {
+        assert!(long.contains(flag), "--help missing {flag}:\n{long}");
     }
 }

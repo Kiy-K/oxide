@@ -1,5 +1,6 @@
-//! CLI: index / status / search / review / stats / context / eval.
+//! CLI: index / query / search / status / watch / install / mcp / review / eval.
 
+use crate::agents::{self, Action, Agent, Paths, Plan};
 use crate::index::IndexOptions;
 use crate::retrieval::read_snippet;
 use crate::retrieval::{RetrievalMode, SearchMode};
@@ -8,17 +9,54 @@ use crate::service::{
     StatusResult,
 };
 use crate::storage::SqliteStore;
+use std::io::Write;
 
-/// An explicit, unparseable `--retrieval-mode` fails loudly (matches how
-/// `--mode` is validated above); an unset flag falls through to
-/// `RetrievalMode::resolve`'s env var / `Balanced`-default precedence.
-fn resolve_retrieval_mode(explicit: Option<&str>, json: bool) -> Result<RetrievalMode, CliError> {
+/// Hand-written because clap cannot group subcommands, and the grouping is
+/// the point: a first-time reader should see "what do I run first" before
+/// "what flags exist". Every public subcommand must appear here —
+/// `tests/cli_help.rs` asserts it, so this cannot silently drift.
+const TOP_HELP: &str = "\
+OXIDE
+Give coding agents the relevant code they need.
+
+USAGE
+  oxide <command> [options]
+
+GET STARTED
+  index       Index this repository
+  query       Find code relevant to a question or task
+  search      Search for code
+  status      Check the index
+  watch       Keep the index fresh
+
+AGENTS
+  install     Connect OXIDE to coding agents
+  uninstall   Remove agent integrations
+  mcp         Run the MCP server
+
+WORKFLOWS
+  review      Build context for a git diff
+
+DEVELOPER
+  eval        Run retrieval benchmarks
+
+QUICK START
+  oxide index
+  oxide query \"Where is authentication handled?\"
+
+Run `oxide <command> --help` for one command's options.
+";
+
+/// An explicit, unparseable `--profile` fails loudly (matches how `--mode`
+/// is validated); an unset flag falls through to `RetrievalMode::resolve`'s
+/// env var / `Balanced`-default precedence.
+fn resolve_profile(explicit: Option<&str>, json: bool) -> Result<RetrievalMode, CliError> {
     match explicit {
         Some(s) => RetrievalMode::parse(s).ok_or_else(|| {
             CliError::new(
                 "invalid_configuration",
                 ErrorAction::Stop,
-                format!("unknown retrieval-mode {s}; use fast|balanced|quality"),
+                format!("unknown profile {s}; use fast|balanced|quality"),
                 json,
             )
         }),
@@ -27,7 +65,12 @@ fn resolve_retrieval_mode(explicit: Option<&str>, json: bool) -> Result<Retrieva
 }
 
 #[derive(clap::Parser)]
-#[command(name = "oxide", about = "Local incremental code index and retrieval")]
+#[command(
+    name = "oxide",
+    about = "Give coding agents the relevant code they need.",
+    override_help = TOP_HELP,
+    arg_required_else_help = true
+)]
 pub struct Args {
     #[command(subcommand)]
     pub cmd: Cmd,
@@ -35,47 +78,74 @@ pub struct Args {
 
 #[derive(clap::Subcommand)]
 pub enum Cmd {
-    /// Index (or incrementally update) a repository. With no flags, this
-    /// only touches stale/changed layers — safe and cheap to run often.
+    /// Index this repository, or update an existing index.
+    ///
+    /// With no flags this only touches what changed on disk, so it is safe
+    /// and cheap to run as often as you like.
     Index {
-        /// Repository path.
+        /// Repository path. Defaults to the current directory.
         path: Option<String>,
+        /// Rebuild the whole index from scratch, even where nothing changed.
+        /// Use this if the index looks wrong after an OXIDE upgrade.
+        #[arg(short = 'a', long = "rebuild", alias = "all")]
+        rebuild: bool,
         /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
         /// Falls back to $OXIDE_EMBED_URL, then to the in-process model
         /// named by $OXIDE_EMBED_NATIVE (default: arctic-embed-xs-q, which
         /// downloads ~23MB of weights the first time it is loaded).
         /// OXIDE_EMBED_NATIVE=hashed selects the offline hashed embedder.
-        #[arg(long)]
+        #[arg(long, hide_short_help = true)]
         embedder: Option<String>,
-        /// Force rebuild of every indexing layer (base parse, graph, and
-        /// embeddings), even where nothing changed. Implies -g and -e, and
-        /// also reparses every file regardless of content hash. Reports
-        /// the cheap base/graph stage as soon as it finishes, then warns
-        /// before starting semantic indexing (often much slower on CPU).
-        #[arg(short = 'a', long = "all")]
-        all: bool,
-        /// Force rebuild of structural/graph relations for every existing
-        /// symbol, not just symbols in files that changed.
-        #[arg(short = 'g', long = "graph")]
+        /// Rebuild only structural/graph relations, for every existing
+        /// symbol rather than just symbols in files that changed.
+        #[arg(short = 'g', long = "graph", hide_short_help = true)]
         graph: bool,
-        /// Force rebuild of every symbol's embedding, regardless of
-        /// whether its stored embedding is already current.
-        #[arg(short = 'e', long = "embeddings")]
+        /// Rebuild only embeddings, for every symbol regardless of whether
+        /// its stored embedding is already current.
+        #[arg(short = 'e', long = "embeddings", hide_short_help = true)]
         embeddings: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
     },
-    /// Report repository/index freshness and serving state.
-    Status {
-        /// Repository path.
+    /// Find the code relevant to a question or a coding task.
+    ///
+    /// OXIDE returns a bounded working set of real code — it does not
+    /// answer the question itself.
+    ///
+    /// Examples:
+    ///   oxide query "Where is authentication handled?"
+    ///   oxide query "What code is relevant to fixing refresh-token validation?"
+    #[command(alias = "context")]
+    Query {
+        /// The question or task, in plain language.
+        #[arg(value_name = "TASK")]
+        question: Option<String>,
+        /// Repository path. Defaults to discovering from the current directory.
+        #[arg(long)]
         path: Option<String>,
+        /// Deprecated spelling of the positional TASK, kept so existing
+        /// `oxide context --task ...` callers keep working.
+        #[arg(short = 't', long = "task", hide = true, conflicts_with = "question")]
+        task_flag: Option<String>,
+        /// Token budget for the returned working set (estimate: chars/4).
+        #[arg(long, default_value_t = 4096)]
+        budget_tokens: usize,
+        /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
+        /// $OXIDE_RETRIEVAL_MODE, then balanced.
+        #[arg(long, alias = "retrieval-mode")]
+        profile: Option<String>,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
     },
-    /// Search the index.
+    /// Search for code by name, identifier, or phrase.
+    ///
+    /// Use `oxide query` instead when you have a question or a task rather
+    /// than an expression to look up.
     Search {
+        /// What to look for: a symbol name, an identifier, or a phrase.
+        #[arg(value_name = "QUERY")]
         query: String,
         /// Repository path. Defaults to discovering from the current directory.
         #[arg(long)]
@@ -83,21 +153,78 @@ pub enum Cmd {
         /// Max results.
         #[arg(short, long, default_value_t = 10)]
         limit: usize,
-        /// Retrieval mode.
+        /// How to match: lexical|semantic|hybrid.
         #[arg(short, long, default_value = "hybrid")]
         mode: String,
-        /// Disable structural expansion.
-        #[arg(long, default_value_t = false)]
-        no_expand: bool,
         /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
         /// $OXIDE_RETRIEVAL_MODE, then balanced.
-        #[arg(long)]
-        retrieval_mode: Option<String>,
+        #[arg(long, alias = "retrieval-mode")]
+        profile: Option<String>,
+        /// Disable structural expansion.
+        #[arg(long, default_value_t = false, hide_short_help = true)]
+        no_expand: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
     },
-    /// Assemble review context for a git diff.
+    /// Check whether this repository's index is present and current.
+    Status {
+        /// Repository path. Defaults to the current directory.
+        path: Option<String>,
+        /// Also show the embedder, pending work, and on-disk index details.
+        #[arg(short, long)]
+        verbose: bool,
+        /// Emit JSON.
+        #[arg(long)]
+        json: bool,
+    },
+    /// Keep the index fresh: reconcile, then follow filesystem changes
+    /// until stopped. Prefer `oxide index` for one-shot or CI use.
+    Watch {
+        /// Repository path. Defaults to the current directory.
+        path: Option<String>,
+        /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
+        /// Falls back to $OXIDE_EMBED_URL, then to the in-process model
+        /// named by $OXIDE_EMBED_NATIVE.
+        #[arg(long, hide_short_help = true)]
+        embedder: Option<String>,
+    },
+    /// Connect OXIDE to the coding agents installed on this machine.
+    ///
+    /// Detection is never permission: nothing is written until you have
+    /// seen and confirmed the exact change.
+    Install {
+        /// Agent to configure: claude|codex|opencode|antigravity|all.
+        /// Repeatable. Without this, OXIDE asks which of the detected
+        /// agents to configure.
+        #[arg(long, value_name = "NAME")]
+        agent: Vec<String>,
+        /// Show the exact changes and exit without writing anything.
+        #[arg(long)]
+        dry_run: bool,
+        /// Skip the confirmation prompt.
+        #[arg(short, long)]
+        yes: bool,
+    },
+    /// Remove OXIDE's MCP entry from coding agents.
+    ///
+    /// Only OXIDE's own entry is removed; the rest of each agent's
+    /// configuration is left exactly as it was.
+    Uninstall {
+        /// Agent to clean up: claude|codex|opencode|antigravity|all.
+        #[arg(long, value_name = "NAME")]
+        agent: Vec<String>,
+        /// Show the exact changes and exit without writing anything.
+        #[arg(long)]
+        dry_run: bool,
+        /// Skip the confirmation prompt.
+        #[arg(short, long)]
+        yes: bool,
+    },
+    /// Run the stdio MCP server. Coding agents launch this; you normally
+    /// do not run it by hand — see `oxide install`.
+    Mcp,
+    /// Build review context for a git diff.
     Review {
         /// Repository path. Defaults to discovering from the current directory.
         #[arg(long)]
@@ -105,29 +232,7 @@ pub enum Cmd {
         /// Diff range (commit, A..B). Empty means worktree vs HEAD.
         #[arg(long, default_value = "HEAD~1")]
         diff: String,
-        #[arg(long)]
-        json: bool,
-    },
-    /// Show index statistics.
-    Stats {
-        /// Repository path. Defaults to discovering from the current directory.
-        path: Option<String>,
-    },
-    /// Build a compact, ordered, budgeted context pack for a coding task.
-    Context {
-        /// Repository path. Defaults to discovering from the current directory.
-        #[arg(long)]
-        path: Option<String>,
-        /// Natural-language task description (also drives lexical retrieval).
-        #[arg(short = 't', long)]
-        task: String,
-        /// Token budget for the pack (estimate: chars/4).
-        #[arg(long, default_value_t = 4096)]
-        budget_tokens: usize,
-        /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
-        /// $OXIDE_RETRIEVAL_MODE, then balanced.
-        #[arg(long)]
-        retrieval_mode: Option<String>,
+        /// Emit JSON.
         #[arg(long)]
         json: bool,
     },
@@ -138,21 +243,11 @@ pub enum Cmd {
         #[arg(long)]
         json: bool,
     },
-    /// Run the minimal stdio MCP server for coding agents.
-    Mcp,
-    /// Reconcile, then keep the index fresh via filesystem events until
-    /// stopped. Prefer `oxide index` for one-shot/CI use; this is for a
-    /// long-running local session.
-    Watch {
-        /// Repository path.
+    /// Deprecated: folded into `oxide status --verbose`.
+    #[command(hide = true)]
+    Stats {
+        /// Repository path. Defaults to discovering from the current directory.
         path: Option<String>,
-        /// Embedding endpoint (OpenAI-compatible /v1/embeddings).
-        /// Falls back to $OXIDE_EMBED_URL, then to the in-process model
-        /// named by $OXIDE_EMBED_NATIVE (default: arctic-embed-xs-q, which
-        /// downloads ~23MB of weights the first time it is loaded).
-        /// OXIDE_EMBED_NATIVE=hashed selects the offline hashed embedder.
-        #[arg(long)]
-        embedder: Option<String>,
     },
 }
 
@@ -199,17 +294,84 @@ impl std::fmt::Display for CliError {
 
 impl std::error::Error for CliError {}
 
+/// What a human should see for a failure, and what to run next.
+///
+/// The machine-readable side is untouched: `code`, `action`, and the
+/// service `message` still go out verbatim under `--json`. This only
+/// rewrites the terminal rendering, where a sentence plus a command beats a
+/// diagnostic string with a path and a backticked hint embedded in it.
+pub fn render_human_error(error: &CliError) -> String {
+    let (headline, next) = match error.code.as_str() {
+        "index_missing" => (
+            "No OXIDE index was found for this repository.",
+            Some("oxide index"),
+        ),
+        "index_empty" => (
+            "The OXIDE index has no searchable symbols yet.",
+            Some("oxide index"),
+        ),
+        "index_stale" => (
+            "The OXIDE index is out of date for this repository.",
+            Some("oxide index"),
+        ),
+        "provider_mismatch" => (
+            "The index was built with a different embedding provider, so its \
+             vectors cannot be compared with this one's.",
+            Some("oxide index"),
+        ),
+        "index_incompatible" | "index_unreadable" => (
+            "The index cannot be used by this build of OXIDE.",
+            Some("rm -rf .oxide && oxide index"),
+        ),
+        // Discovery walks up for `.git`/`.oxide` and finds neither. An
+        // explicit path skips discovery entirely, so the way out is to name
+        // the directory once — after which `.oxide` makes it discoverable.
+        "repository_not_found" if error.message.starts_with("not inside a repository") => (
+            "This directory is not inside a git repository or an existing OXIDE index.",
+            Some("oxide index ."),
+        ),
+        "no_source_files" => (
+            "No supported source files were found here. OXIDE indexes Python, \
+             TypeScript/TSX, Rust, and Go.",
+            None,
+        ),
+        "embedder_unavailable" => (
+            "The embedding provider could not be reached, so semantic search \
+             is unavailable.",
+            Some("oxide search <query> --mode lexical"),
+        ),
+        // Everything else already says the useful thing (which path, which
+        // flag) in its own message; inventing a headline would lose that.
+        _ => (error.message.as_str(), error.action.next_command()),
+    };
+    match next {
+        Some(command) => format!("{headline}\n\nRun:\n  {command}"),
+        None => headline.to_string(),
+    }
+}
+
+impl ErrorAction {
+    /// The command that resolves this class of failure, when there is one.
+    fn next_command(&self) -> Option<&'static str> {
+        match self {
+            Self::Index => Some("oxide index"),
+            Self::Repair => Some("rm -rf .oxide && oxide index"),
+            Self::Retry | Self::FallBack | Self::Stop => None,
+        }
+    }
+}
+
 pub fn run(args: Args) -> Result<(), CliError> {
     match args.cmd {
         Cmd::Index {
             path,
             embedder,
-            all,
+            rebuild,
             graph,
             embeddings,
             json,
         } => {
-            let opts = if all {
+            let opts = if rebuild {
                 IndexOptions::all()
             } else {
                 IndexOptions {
@@ -218,16 +380,20 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     force_embeddings: embeddings,
                 }
             };
-            cmd_index(path.as_deref(), embedder.as_deref(), &opts, all, json)
+            cmd_index(path.as_deref(), embedder.as_deref(), &opts, rebuild, json)
         }
-        Cmd::Status { path, json } => cmd_status(path.as_deref(), json),
+        Cmd::Status {
+            path,
+            verbose,
+            json,
+        } => cmd_status(path.as_deref(), verbose, json),
         Cmd::Search {
             query,
             path,
             limit,
             mode,
             no_expand,
-            retrieval_mode,
+            profile,
             json,
         } => {
             let mode = match mode.as_str() {
@@ -250,31 +416,52 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     limit,
                     mode,
                     expand: !no_expand,
-                    retrieval_mode: resolve_retrieval_mode(retrieval_mode.as_deref(), json)?,
+                    retrieval_mode: resolve_profile(profile.as_deref(), json)?,
                 },
                 json,
             )
         }
         Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json),
         Cmd::Stats { path } => cmd_stats(path.as_deref()),
-        Cmd::Context {
+        Cmd::Query {
             path,
-            task,
+            question,
+            task_flag,
             budget_tokens,
-            retrieval_mode,
+            profile,
             json,
-        } => cmd_context(
-            path.as_deref(),
-            &task,
-            budget_tokens,
-            resolve_retrieval_mode(retrieval_mode.as_deref(), json)?,
-            json,
-        ),
+        } => {
+            let task = question.or(task_flag).ok_or_else(|| {
+                CliError::new(
+                    "invalid_configuration",
+                    ErrorAction::Stop,
+                    "missing the question to answer\n\nRun:\n  oxide query \"Where is authentication handled?\"",
+                    json,
+                )
+            })?;
+            cmd_query(
+                path.as_deref(),
+                &task,
+                budget_tokens,
+                resolve_profile(profile.as_deref(), json)?,
+                json,
+            )
+        }
         Cmd::Mcp => run_mcp(),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }
         Cmd::Watch { path, embedder } => cmd_watch(path.as_deref(), embedder.as_deref()),
+        Cmd::Install {
+            agent,
+            dry_run,
+            yes,
+        } => cmd_agents(&agent, dry_run, yes, true),
+        Cmd::Uninstall {
+            agent,
+            dry_run,
+            yes,
+        } => cmd_agents(&agent, dry_run, yes, false),
     }
 }
 
@@ -311,17 +498,17 @@ fn cmd_index(
     path: Option<&str>,
     embedder_url: Option<&str>,
     opts: &IndexOptions,
-    all: bool,
+    rebuild: bool,
     json: bool,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let root = service.root().to_path_buf();
-    // `-a`/`--all`: report the cheap base/graph stage as soon as it's done,
+    // `--rebuild`: report the cheap base/graph stage as soon as it's done,
     // with a warning before the (often much slower on CPU) embedding stage
-    // starts — so a user isn't left guessing whether a long-running `-a`
+    // starts — so a user isn't left guessing whether a long-running rebuild
     // is stuck. JSON mode stays a single structured result, like every
     // other command here, so the intermediate hook is a no-op there.
-    let result = if all && !json {
+    let result = if rebuild && !json {
         service.index_staged(embedder_url, opts, |base| {
             print_index_summary(&root, base);
             eprintln!(
@@ -388,7 +575,7 @@ fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliEr
     .map_err(|e| CliError::generic(e, json))
 }
 
-fn cmd_status(path: Option<&str>, json: bool) -> Result<(), CliError> {
+fn cmd_status(path: Option<&str>, verbose: bool, json: bool) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let status = service.status().map_err(|e| CliError::service(e, json))?;
     if json {
@@ -397,56 +584,132 @@ fn cmd_status(path: Option<&str>, json: bool) -> Result<(), CliError> {
             serde_json::to_string_pretty(&status).map_err(|e| CliError::generic(e, true))?
         );
     } else {
-        render_status(&status);
+        render_status(&status, verbose);
     }
     Ok(())
 }
 
-fn render_status(status: &StatusResult) {
-    println!("repository: {}", status.root);
-    println!(
-        "index:      {} ({})",
-        if status.index_exists {
-            "present"
-        } else {
-            "missing"
-        },
-        if status.is_current {
-            "current"
-        } else {
-            "stale"
+/// `1234` -> `1,234`. Counts are the numbers a human actually reads off
+/// `oxide status`, and unseparated five-digit symbol counts are hard to scan.
+fn thousands(n: usize) -> String {
+    let digits = n.to_string();
+    let mut out = String::with_capacity(digits.len() + digits.len() / 3);
+    for (i, c) in digits.chars().enumerate() {
+        if i > 0 && (digits.len() - i).is_multiple_of(3) {
+            out.push(',');
         }
+        out.push(c);
+    }
+    out
+}
+
+fn language_label(language: crate::symbols::Language) -> &'static str {
+    use crate::symbols::Language::*;
+    match language {
+        Python => "Python",
+        TypeScript => "TypeScript",
+        Tsx => "TSX",
+        Rust => "Rust",
+        Go => "Go",
+    }
+}
+
+fn status_row(marker: &str, label: &str, value: &str) {
+    println!("{marker} {label:<13}{value}");
+}
+
+fn render_status(status: &StatusResult, verbose: bool) {
+    println!("OXIDE status\n");
+    status_row("✓", "Repository", &status.root);
+    if !status.index_exists {
+        status_row("✗", "Index", "not found");
+    } else if status.is_current {
+        status_row("✓", "Index", "current");
+    } else {
+        status_row("!", "Index", "stale");
+    }
+    status_row(
+        if status.index_exists { "✓" } else { "·" },
+        "Code",
+        &format!(
+            "{} files · {} symbols",
+            thousands(status.files),
+            thousands(status.symbols)
+        ),
     );
-    println!(
-        "files:      {}  symbols: {}  embeddings: {}",
-        status.files, status.symbols, status.embeddings
-    );
-    println!(
-        "base:       {}  semantic: {}",
-        if status.base_fresh {
-            "fresh".to_string()
-        } else {
-            "stale".to_string()
-        },
-        if status.pending_embeddings == 0 {
-            "fresh".to_string()
-        } else {
-            format!("{} pending", status.pending_embeddings)
-        }
-    );
-    println!(
-        "embedder:   {}",
-        status.embedder.as_deref().unwrap_or("not indexed")
-    );
-    println!(
-        "languages:  {}",
-        status
+    let (semantic_marker, semantic) = if !status.index_exists {
+        ("·", "not indexed".to_string())
+    } else if !status.embedder_current {
+        ("!", "built with a different embedding provider".to_string())
+    } else if status.pending_embeddings > 0 {
+        (
+            "!",
+            format!("{} symbols pending", thousands(status.pending_embeddings)),
+        )
+    } else if !status.base_fresh {
+        // Every stored vector is current for what is stored — but files
+        // have changed since, so "ready" would overstate it.
+        ("!", "ready for the indexed content".to_string())
+    } else {
+        ("✓", "ready".to_string())
+    };
+    status_row(semantic_marker, "Semantic", &semantic);
+    // Every language this *build* extracts, not the ones present in this
+    // repo (the index does not track that) — so the row is labelled for
+    // what it actually reports, and is not marked as a health check.
+    status_row(
+        "\u{b7}",
+        "Supported",
+        &status
             .supported_languages
             .iter()
-            .map(crate::symbols::Language::as_str)
+            .map(|l| language_label(*l))
             .collect::<Vec<_>>()
-            .join(", ")
+            .join(" \u{b7} "),
     );
+
+    if verbose {
+        println!();
+        status_row(
+            " ",
+            "Embedder",
+            status.embedder.as_deref().unwrap_or("not indexed"),
+        );
+        status_row(
+            " ",
+            "Embeddings",
+            &format!(
+                "{} stored · {} pending",
+                thousands(status.embeddings),
+                thousands(status.pending_embeddings)
+            ),
+        );
+        status_row(
+            " ",
+            "Files",
+            if status.base_fresh {
+                "all indexed content matches disk"
+            } else {
+                "some indexed content is out of date"
+            },
+        );
+        let index_path = std::path::Path::new(&status.root)
+            .join(".oxide")
+            .join("index.db");
+        let size = std::fs::metadata(&index_path)
+            .map(|m| format!("{:.1} MB", m.len() as f64 / 1_048_576.0))
+            .unwrap_or_else(|_| "absent".to_string());
+        status_row(
+            " ",
+            "Index file",
+            &format!("{} ({size})", index_path.display()),
+        );
+        status_row(" ", "Schema", &status.schema_version.to_string());
+    }
+
+    if !status.index_exists || !status.is_current {
+        println!("\nRun:\n  oxide index");
+    }
 }
 
 fn cmd_search(
@@ -568,7 +831,18 @@ fn cmd_stats(path: Option<&str>) -> Result<(), CliError> {
     Ok(())
 }
 
-fn cmd_context(
+/// `path#Qualified.Name` -> `Qualified.Name`, and the module pseudo-symbol
+/// `path#path:__module__` -> `path (module)`. The full id stays in `--json`;
+/// this is only so the human "left out" list reads like symbol names.
+fn short_symbol_id(id: &str) -> String {
+    let name = id.split_once('#').map(|(_, rest)| rest).unwrap_or(id);
+    match name.strip_suffix(":__module__") {
+        Some(file) => format!("{file} (module)"),
+        None => name.to_string(),
+    }
+}
+
+fn cmd_query(
     path: Option<&str>,
     task: &str,
     budget_tokens: usize,
@@ -584,39 +858,452 @@ fn cmd_context(
             "{}",
             serde_json::to_string_pretty(&pack).map_err(|e| CliError::generic(e, true))?
         );
-    } else {
+        return Ok(());
+    }
+    println!("Relevant code for: {}\n", pack.task);
+    if pack.items.is_empty() {
+        println!("Nothing matched. Try different words, or `oxide search <name>`.");
+        return Ok(());
+    }
+    for (i, item) in pack.items.iter().enumerate() {
         println!(
-            "context for: {}\nembedder: {}  |  budget {} tok, used {} tok, {} items\n",
-            pack.task,
-            pack.embedder,
-            pack.budget_tokens,
-            pack.used_tokens,
-            pack.items.len()
+            "{:>2}. {}:{}-{}  {} [{}]",
+            i + 1,
+            item.evidence.file,
+            item.evidence.start_line,
+            item.evidence.end_line,
+            item.evidence.qualified_name,
+            item.evidence.kind,
         );
-        for (i, item) in pack.items.iter().enumerate() {
-            println!(
-                "{:>2}. [{:?}] {} [{}] {}:{}-{}  (~{} tok)\n    why: {}",
-                i + 1,
-                item.role,
-                item.evidence.qualified_name,
-                item.evidence.kind,
-                item.evidence.file,
-                item.evidence.start_line,
-                item.evidence.end_line,
-                item.est_tokens,
-                item.evidence.reasons.join("; ")
-            );
-        }
-        if !pack.omitted.is_empty() {
-            println!("\nomitted:");
-            for omitted in &pack.omitted {
-                println!("  - {}: {}", omitted.id, omitted.why);
-            }
-        }
         println!(
-            "\nused {} of {} token budget",
-            pack.used_tokens, pack.budget_tokens
+            "    {:?} · ~{} tok · {}",
+            item.role,
+            item.est_tokens,
+            item.evidence.reasons.join("; ")
         );
     }
+    if !pack.omitted.is_empty() {
+        println!("\nLeft out of the budget:");
+        for omitted in &pack.omitted {
+            println!("  - {}: {}", short_symbol_id(&omitted.id), omitted.why);
+        }
+    }
+    println!(
+        "\n{} items · {} of {} token budget used · embedder {}",
+        pack.items.len(),
+        pack.used_tokens,
+        pack.budget_tokens,
+        pack.embedder
+    );
     Ok(())
+}
+
+// ------------------------------------------------------- agent integrations
+
+fn cmd_agents(
+    requested: &[String],
+    dry_run: bool,
+    yes: bool,
+    install: bool,
+) -> Result<(), CliError> {
+    let json = false; // install/uninstall are interactive; no machine surface.
+    let paths = Paths::from_env().map_err(|e| CliError::generic(e, json))?;
+    let binary = std::env::current_exe().map_err(|e| {
+        CliError::generic(format!("cannot resolve the oxide binary path: {e}"), json)
+    })?;
+
+    let selected = select_agents(requested, &paths, install, json)?;
+    if selected.is_empty() {
+        return Ok(());
+    }
+
+    let plans: Vec<Plan> = selected
+        .iter()
+        .map(|agent| {
+            if install {
+                agents::plan_install(*agent, &paths, &binary)
+            } else {
+                agents::plan_uninstall(*agent, &paths)
+            }
+        })
+        .collect();
+
+    print_plans(&plans, &paths, install);
+
+    // A config OXIDE refuses to edit is a failure of the user's request,
+    // not a quiet no-op: it must not exit 0 as if the agent were wired up.
+    let blocked: Vec<String> = plans
+        .iter()
+        .filter_map(|p| match &p.action {
+            Action::Blocked { reason } => Some(format!("{}: {reason}", p.agent.display())),
+            _ => None,
+        })
+        .collect();
+
+    if !plans.iter().any(|p| p.action.writes()) {
+        if blocked.is_empty() {
+            println!("\nNothing to do.");
+            return Ok(());
+        }
+        return Err(agent_failure(blocked, json));
+    }
+    if dry_run {
+        println!("\nDry run: nothing was written.");
+        return Ok(());
+    }
+    if !yes && !confirm("Proceed?")? {
+        println!("Cancelled. Nothing was written.");
+        return Ok(());
+    }
+
+    let mut failures = blocked;
+    let mut changed = Vec::new();
+    for plan in plans.iter().filter(|p| p.action.writes()) {
+        match agents::apply(plan) {
+            Ok(()) => changed.push(plan),
+            Err(e) => failures.push(format!("{}: {e}", plan.agent.display())),
+        }
+    }
+
+    if !changed.is_empty() {
+        println!(
+            "\n{}:",
+            if install {
+                "Configured"
+            } else {
+                "Removed from"
+            }
+        );
+        for plan in &changed {
+            println!(
+                "  {:<18}{}",
+                plan.agent.display(),
+                paths.shorten(&plan.config_path)
+            );
+        }
+        let restart: Vec<&str> = changed
+            .iter()
+            .filter(|p| p.agent.needs_restart())
+            .map(|p| p.agent.display())
+            .collect();
+        if !restart.is_empty() {
+            println!("\nRestart {} to pick up the change.", join_and(&restart));
+        }
+        if install {
+            println!("\nThen, in this repository:\n  oxide index");
+        }
+    }
+
+    if failures.is_empty() {
+        Ok(())
+    } else {
+        Err(agent_failure(failures, json))
+    }
+}
+
+fn agent_failure(failures: Vec<String>, json: bool) -> CliError {
+    CliError::new(
+        "agent_config_failed",
+        ErrorAction::Stop,
+        format!(
+            "could not update {} agent configuration(s):\n  {}",
+            failures.len(),
+            failures.join("\n  ")
+        ),
+        json,
+    )
+}
+
+fn join_and(items: &[&str]) -> String {
+    match items {
+        [] => String::new(),
+        [one] => one.to_string(),
+        [rest @ .., last] => format!("{} and {last}", rest.join(", ")),
+    }
+}
+
+/// Resolve `--agent` flags, or ask. Detection alone never selects an agent:
+/// with no flags and a terminal, OXIDE lists what it found and waits.
+fn select_agents(
+    requested: &[String],
+    paths: &Paths,
+    install: bool,
+    json: bool,
+) -> Result<Vec<Agent>, CliError> {
+    let detected: Vec<Agent> = agents::ALL
+        .iter()
+        .copied()
+        .filter(|a| a.detected(paths))
+        .collect();
+
+    if !requested.is_empty() {
+        if requested
+            .iter()
+            .any(|r| r.trim().eq_ignore_ascii_case("all"))
+        {
+            if detected.is_empty() {
+                println!("No supported coding agents were detected on this machine.");
+                return Ok(Vec::new());
+            }
+            return Ok(detected);
+        }
+        let mut out = Vec::new();
+        for name in requested {
+            let agent = Agent::parse(name).ok_or_else(|| {
+                CliError::new(
+                    "invalid_configuration",
+                    ErrorAction::Stop,
+                    format!(
+                        "unknown agent {name}; use one of: {}, all",
+                        agents::ALL
+                            .iter()
+                            .map(|a| a.id())
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ),
+                    json,
+                )
+            })?;
+            if !out.contains(&agent) {
+                out.push(agent);
+            }
+        }
+        return Ok(out);
+    }
+
+    print_detection(&detected, paths);
+    if detected.is_empty() {
+        println!(
+            "\nSupported agents: {}.\nInstall one, or name it explicitly with --agent.",
+            agents::ALL
+                .iter()
+                .map(|a| a.display())
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
+        return Ok(Vec::new());
+    }
+    println!(
+        "\nWhich agents should OXIDE {}?",
+        if install {
+            "integrate with"
+        } else {
+            "be removed from"
+        }
+    );
+    print!("> ");
+    let _ = std::io::stdout().flush();
+    let Some(line) = read_answer(json)? else {
+        return Err(CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            format!(
+                "no answer to read from stdin\n\nRun:\n  oxide {} --agent all --yes",
+                if install { "install" } else { "uninstall" }
+            ),
+            json,
+        ));
+    };
+    if line.trim().is_empty() {
+        println!("Cancelled. Nothing was written.");
+        return Ok(Vec::new());
+    }
+    parse_selection(&line, &detected)
+        .map_err(|e| CliError::new("invalid_configuration", ErrorAction::Stop, e, json))
+}
+
+fn print_detection(detected: &[Agent], paths: &Paths) {
+    println!("Detected coding agents:\n");
+    for (i, agent) in agents::ALL.iter().enumerate() {
+        let state = if !detected.contains(agent) {
+            "not detected".to_string()
+        } else if agent.config_path(paths).exists() {
+            "✓ detected".to_string()
+        } else {
+            "✓ detected (no config file yet)".to_string()
+        };
+        println!("  [{}] {:<18}{state}", i + 1, agent.display());
+    }
+}
+
+/// Accepts `1,2`, `1 3`, `all`, or agent names — the shapes people actually
+/// type at a numbered list.
+fn parse_selection(input: &str, offered: &[Agent]) -> Result<Vec<Agent>, String> {
+    let mut out = Vec::new();
+    for token in input
+        .split([',', ' ', '\t', '\n'])
+        .map(str::trim)
+        .filter(|t| !t.is_empty())
+    {
+        if token.eq_ignore_ascii_case("all") {
+            return Ok(offered.to_vec());
+        }
+        let agent = match token.parse::<usize>() {
+            Ok(n) if n >= 1 && n <= agents::ALL.len() => agents::ALL[n - 1],
+            Ok(n) => return Err(format!("{n} is not one of the listed agents")),
+            Err(_) => Agent::parse(token).ok_or_else(|| format!("unknown agent {token}"))?,
+        };
+        if !out.contains(&agent) {
+            out.push(agent);
+        }
+    }
+    if out.is_empty() {
+        return Err("nothing selected".to_string());
+    }
+    Ok(out)
+}
+
+fn print_plans(plans: &[Plan], paths: &Paths, install: bool) {
+    println!(
+        "\nOXIDE will {}:\n",
+        if install {
+            "configure"
+        } else {
+            "remove its MCP server from"
+        }
+    );
+    for plan in plans {
+        println!("  {}", plan.agent.display());
+        println!("    config: {}", paths.shorten(&plan.config_path));
+        if !plan.detected {
+            println!("    note:   this agent was not detected on this machine");
+        }
+        match &plan.action {
+            Action::Add => {
+                println!("    add:    MCP server \"{}\"", agents::SERVER_NAME);
+                for line in plan.snippet.lines() {
+                    println!("            {line}");
+                }
+            }
+            Action::Update { was, now } => {
+                println!(
+                    "    update: MCP server \"{}\" (anything else in this entry is kept)",
+                    agents::SERVER_NAME
+                );
+                // Either side can be multi-line, so neither is squeezed
+                // onto the label's line.
+                print_block("was", was);
+                print_block("now", now);
+            }
+            Action::AlreadyConfigured => {
+                println!("    already configured — no change");
+            }
+            Action::Remove => {
+                println!("    remove: MCP server \"{}\"", agents::SERVER_NAME);
+            }
+            Action::NothingToRemove => {
+                println!("    no oxide entry present — no change");
+            }
+            Action::Blocked { reason } => {
+                println!("    skipped: {reason}");
+            }
+        }
+        println!();
+    }
+}
+
+/// One line from stdin, or `None` at end of input.
+///
+/// Deliberately not gated on `stdin().is_terminal()`: a piped answer is a
+/// real answer, and refusing to read one would make the confirmation step
+/// untestable and unscriptable. What is refused is *silence* — reaching end
+/// of input without an answer is an error, never an implied yes and never a
+/// no-op that exits 0 as though the work had been done.
+fn read_answer(json: bool) -> Result<Option<String>, CliError> {
+    let mut line = String::new();
+    let read = std::io::stdin()
+        .read_line(&mut line)
+        .map_err(|e| CliError::generic(e, json))?;
+    if read == 0 {
+        Ok(None)
+    } else {
+        Ok(Some(line))
+    }
+}
+
+fn print_block(label: &str, body: &str) {
+    for (i, line) in body.lines().enumerate() {
+        if i == 0 {
+            println!("            {label}: {line}");
+        } else {
+            println!("            {:width$}  {line}", "", width = label.len());
+        }
+    }
+}
+
+fn confirm(question: &str) -> Result<bool, CliError> {
+    print!("{question} [y/N] ");
+    let _ = std::io::stdout().flush();
+    let Some(line) = read_answer(false)? else {
+        return Err(CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            "no answer on stdin; re-run with --yes to accept the plan above, \
+             or --dry-run to only preview it",
+            false,
+        ));
+    };
+    Ok(matches!(
+        line.trim().to_ascii_lowercase().as_str(),
+        "y" | "yes"
+    ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn selection_accepts_numbers_names_and_all() {
+        let offered = vec![Agent::ClaudeCode, Agent::Codex];
+        assert_eq!(
+            parse_selection("1,2", &offered).unwrap(),
+            vec![Agent::ClaudeCode, Agent::Codex]
+        );
+        assert_eq!(
+            parse_selection(" codex ", &offered).unwrap(),
+            vec![Agent::Codex]
+        );
+        assert_eq!(parse_selection("all", &offered).unwrap(), offered);
+        assert_eq!(
+            parse_selection("2 2", &offered).unwrap(),
+            vec![Agent::Codex],
+            "a repeated pick must not queue two writes to one config"
+        );
+        assert!(parse_selection("9", &offered).is_err());
+        assert!(parse_selection("nope", &offered).is_err());
+    }
+
+    #[test]
+    fn thousands_separates_only_where_needed() {
+        assert_eq!(thousands(0), "0");
+        assert_eq!(thousands(999), "999");
+        assert_eq!(thousands(1_000), "1,000");
+        assert_eq!(thousands(3_821), "3,821");
+        assert_eq!(thousands(1_234_567), "1,234,567");
+    }
+
+    #[test]
+    fn actionable_errors_say_what_to_run() {
+        let err = CliError::new(
+            "index_missing",
+            ErrorAction::Index,
+            "index missing at /x/.oxide/index.db; run `oxide index /x`",
+            false,
+        );
+        let rendered = render_human_error(&err);
+        assert!(rendered.starts_with("No OXIDE index was found"));
+        assert!(rendered.ends_with("Run:\n  oxide index"));
+    }
+
+    #[test]
+    fn unrecognized_errors_keep_their_own_message() {
+        let err = CliError::new(
+            "repository_not_found",
+            ErrorAction::Stop,
+            "no such path: /nope",
+            false,
+        );
+        assert_eq!(render_human_error(&err), "no such path: /nope");
+    }
 }

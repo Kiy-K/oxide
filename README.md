@@ -71,19 +71,64 @@ working throughout.
 ## Usage
 
 ```bash
+oxide index                         # index (or incrementally update) this repo
+oxide query "Where is authentication handled?"   # question/task -> bounded working set
+oxide search AuthService            # expression -> ranked code matches
+oxide status                        # is the index present and current?
+oxide watch                         # keep the index fresh while you work
+oxide install                       # connect OXIDE to your coding agents
+```
+
+`query` and `search` are the two retrieval commands and they answer different
+questions: `query` takes a question or a coding task and returns a
+token-budgeted working set; `search` takes an expression and returns ranked
+matches. Neither generates an answer — OXIDE supplies context, it is not an
+LLM.
+
+More:
+
+```bash
+oxide status --verbose              # embedder, pending work, on-disk index
+oxide index --rebuild               # full rebuild after an OXIDE upgrade
+oxide search RetryPolicy --mode lexical   # exact identifier, no embeddings involved
+oxide query "fix refresh token validation" --profile quality --budget-tokens 4096
+oxide review --diff HEAD~1          # review context from a git diff
+oxide eval --config fixtures/benchmark.json   # committed benchmark
+```
+
+Every command takes `--json` for machine consumption:
+
+```bash
 oxide status --json
 oxide index . --json
 oxide search "where is authentication handled?" --json
-oxide context --task "fix refresh token validation" --budget-tokens 4096 --json
-
-oxide index .                       # index or incrementally update a repo
-oxide status .                      # show index freshness and counts
-oxide search RetryPolicy            # hybrid lexical+semantic+structural
-oxide search RetryPolicy --mode lexical   # exact identifier, no embeddings involved
-oxide review --diff HEAD~1          # review context from a git diff
-oxide stats
-oxide eval --config fixtures/benchmark.json   # committed benchmark
+oxide query "fix refresh token validation" --budget-tokens 4096 --json
 ```
+
+### Connecting a coding agent
+
+`oxide install` detects the coding agents on this machine and registers
+OXIDE's MCP server (`oxide mcp`) with the ones you pick. Supported:
+Claude Code, Codex, OpenCode, and Antigravity CLI.
+
+```bash
+oxide install                       # detect, ask, show the change, confirm
+oxide install --agent claude --agent codex --yes
+oxide install --dry-run             # print the exact change, write nothing
+oxide uninstall --agent claude      # remove only OXIDE's own entry
+```
+
+Detection is never permission: nothing is written until the exact
+configuration change has been shown and confirmed. Installs are idempotent,
+never duplicate an OXIDE entry, and leave every unrelated setting in the
+agent's config byte-for-byte intact.
+
+### Compatibility
+
+`oxide context --task ...` and `--retrieval-mode` are the pre-v0.1 spellings
+of `oxide query ...` and `--profile`; both still work. `oxide stats` is
+folded into `oxide status --verbose` and remains as a hidden alias. The MCP
+tool is still named `context`.
 
 Agent-facing commands use `--json` and write only the result to stdout. Runtime
 failures return a JSON object with `error.code`, `error.action`, and
@@ -279,7 +324,7 @@ needs no retrieval-specific orchestration:
 oxide status --json
 oxide index . --json
 oxide search "where is authentication handled?" --json
-oxide context --task "fix refresh token validation" --budget-tokens 4096 --json
+oxide query "fix refresh token validation" --budget-tokens 4096 --json
 ```
 
 Example machine-readable outputs:
