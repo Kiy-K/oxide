@@ -24,11 +24,16 @@
 ; inherent impl came back as a reference, so its methods never nested.
 
 (impl_item
-    type: (type_identifier) @name) @definition.class
-
-(impl_item
-    type: (generic_type
-        type: (type_identifier) @name)) @definition.class
+    type: [
+        (type_identifier) @name
+        (generic_type
+            type: (type_identifier) @name)
+        (scoped_type_identifier
+            name: (type_identifier) @name)
+        (generic_type
+            type: (scoped_type_identifier
+                name: (type_identifier) @name))
+    ]) @definition.class
 
 ; ADT definitions
 

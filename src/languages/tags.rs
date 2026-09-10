@@ -143,6 +143,13 @@ struct FileMeta {
     /// receiver is a field on the declaration itself, so the qualified name
     /// is derivable — just not from the flat tag list.
     go_receivers: Vec<(usize, String)>,
+    /// Rust only: start bytes of `impl_item` nodes. An impl block is
+    /// captured as a Class named after its type purely so the containment
+    /// stack can nest the impl's methods; when the same file also *declares*
+    /// that type, the impl's twin symbol must lose. `parser.rs`'s first-wins
+    /// dedup alone cannot decide that — it keeps whichever comes first, and
+    /// `impl Store {}` may legally precede `struct Store;`.
+    rust_impls: Vec<usize>,
     /// Go only: start bytes of `type_spec` nodes whose type is an
     /// `interface_type`. Upstream tags.scm gives every `type X ...` the same
     /// syntax type, so struct and interface are indistinguishable from tags
@@ -157,6 +164,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
     let imports = &mut meta.imports;
     match (lang, node.kind()) {
         (_, "decorator") => meta.decorators.push(node.byte_range()),
+        (Language::Rust, "impl_item") => meta.rust_impls.push(node.byte_range().start),
         (Language::Go, "import_spec") => {
             if let Some(path) = node.child_by_field_name("path") {
                 if let Ok(t) = path.utf8_text(src.as_bytes()) {
@@ -375,6 +383,9 @@ impl LanguageExtractor for TagsExtractor {
         defs.dedup_by(|a, b| a.start == b.start && a.end == b.end && a.name == b.name);
 
         let mut out = Vec::with_capacity(defs.len());
+        // Parallel to `out`: whether each symbol came from an `impl_item`
+        // rather than a declaration (see `FileMeta::rust_impls`).
+        let mut impl_derived: Vec<bool> = Vec::with_capacity(defs.len());
         // (qualified_name, start, end, is_container)
         let mut stack: Vec<(String, usize, usize, bool)> = Vec::new();
         for d in defs {
@@ -457,7 +468,27 @@ impl LanguageExtractor for TagsExtractor {
                 calls: Vec::new(),
                 bases: Vec::new(),
             });
+            impl_derived.push(meta.rust_impls.contains(&d.start));
             stack.push((qualified, d.start, d.end, is_container));
+        }
+        // Drop an impl block's stand-in symbol when the file also declares
+        // the type it names — the declaration is what a reader is looking
+        // for, and it may sit *after* the impl (see `FileMeta::rust_impls`).
+        // Done after the containment pass, so the impl's methods keep the
+        // qualified names it gave them.
+        if impl_derived.iter().any(|&b| b) {
+            let declared: std::collections::HashSet<String> = out
+                .iter()
+                .zip(&impl_derived)
+                .filter(|(_, &from_impl)| !from_impl)
+                .map(|(s, _)| s.qualified_name.clone())
+                .collect();
+            let mut idx = 0;
+            out.retain(|s| {
+                let from_impl = impl_derived[idx];
+                idx += 1;
+                !(from_impl && declared.contains(&s.qualified_name))
+            });
         }
         out
     }
@@ -562,6 +593,37 @@ class VersionedStore:
     }
 
     #[test]
+    fn an_impl_block_never_displaces_the_type_it_names() {
+        // Found by review: an inherent `impl Store` may legally precede
+        // `struct Store;`, and parser.rs's first-wins dedup would then keep
+        // the impl block and discard the declaration a reader is after.
+        let src = "impl Store {\n    fn new() -> Self { Store }\n}\n\npub struct Store;\n";
+        let syms = parse_file_with(&RUST_TAGS, "a.rs", src, Language::Rust);
+        let store = syms
+            .iter()
+            .find(|s| s.qualified_name == "Store")
+            .expect("Store survives");
+        assert_eq!(store.start_line, 5, "the declaration wins, not the impl");
+        // The impl's methods still keep the qualified name it gave them.
+        assert!(
+            syms.iter().any(|s| s.qualified_name == "Store.new"),
+            "{:?}",
+            syms.iter().map(|s| &s.qualified_name).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn a_scoped_impl_type_still_nests_and_relates() {
+        let src = "impl crate::store::Store {\n    fn helper() {}\n}\n";
+        let syms = parse_file_with(&RUST_TAGS, "c.rs", src, Language::Rust);
+        assert!(
+            syms.iter().any(|s| s.qualified_name == "Store.helper"),
+            "{:?}",
+            syms.iter().map(|s| &s.qualified_name).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
     fn export_const_with_non_function_value_is_captured() {
         // JavaScript's own @definition.constant pattern only matches the
         // rare `export x = <value>` bare-assignment form, not `export const
@@ -585,6 +647,7 @@ class VersionedStore:
     }
 
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
+    static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);
     static TYPESCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::TYPESCRIPT_PROFILE);
 }

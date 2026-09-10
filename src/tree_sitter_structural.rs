@@ -300,6 +300,17 @@ mod tests {
     }
 
     #[test]
+    fn rust_scoped_implementor_types_are_matched() {
+        let src = "pub struct Store;\n\nimpl Backend for crate::store::Store {\n    fn get(&self) {}\n}\n";
+        let bases = all_bases_in_file(Language::Rust, src);
+        assert_eq!(
+            bases,
+            vec![(3, "Store".to_string(), "Backend".to_string())],
+            "{bases:?}"
+        );
+    }
+
+    #[test]
     fn rust_impl_blocks_report_the_type_as_the_implementor() {
         let src = "struct Store;\nimpl Backend for Store {\n    fn get(&self) {}\n}\n";
         let bases = all_bases_in_file(Language::Rust, src);

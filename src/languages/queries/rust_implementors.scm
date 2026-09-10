@@ -1,5 +1,7 @@
 ; Rust's inheritance analogue is `impl Trait for Type`, so the base is the
-; trait and the implementor is the type. `@class` is the impl block, whose
+; trait and the implementor is the type. Both sides accept a qualified name
+; (`impl Backend for crate::store::Store`) and a generic one, reduced to the
+; final identifier by `last_segment` like every other name in this tier. `@class` is the impl block, whose
 ; line is what `structural_relations` attributes by; the impl block's own
 ; symbol is usually deduped away in favour of the `struct Foo` that declared
 ; the name, which is why attribution falls back to a unique same-named
@@ -17,6 +19,8 @@
   type: [
     (type_identifier) @name
     (generic_type type: (type_identifier) @name)
+    (scoped_type_identifier name: (type_identifier) @name)
+    (generic_type type: (scoped_type_identifier name: (type_identifier) @name))
   ]) @class
 
 (trait_item
