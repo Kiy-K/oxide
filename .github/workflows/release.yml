@@ -122,18 +122,26 @@ jobs:
           # the host target and links it statically; cross-compiling would
           # mean shipping a binary no job here has ever executed.
           #
-          # Linux builds are pinned to 22.04 rather than 24.04 on purpose:
-          # the binary links glibc and libstdc++ dynamically, so the build
-          # image sets the oldest system it will run on. 22.04 (glibc 2.35)
-          # covers Debian 12, RHEL 9 and Amazon Linux 2023; 24.04 would not.
-          # These images start deprecating 2026-09-17 and go away 2027-04-17
-          # — move the pin (and re-measure the floor below) before then.
+          # 24.04, not 22.04. The instinct is to build on the oldest image
+          # for the widest glibc reach, but that does not link: ort-sys's
+          # prebuilt ONNX Runtime is itself compiled against glibc 2.38+ and
+          # GCC 13's libstdc++, so on 22.04 it fails with undefined
+          # references to __isoc23_strtoll, _M_replace_cold and
+          # __cxa_call_terminate. The floor is set by that prebuilt, not by
+          # this choice. The "Record the binary's system requirements" step
+          # below measures what the artifact actually needs and records it
+          # in the job summary.
           - target: x86_64-unknown-linux-gnu
-            runner: ubuntu-22.04
+            runner: ubuntu-24.04
           - target: aarch64-unknown-linux-gnu
-            runner: ubuntu-22.04-arm
-          - target: x86_64-apple-darwin
-            runner: macos-15-intel
+            runner: ubuntu-24.04-arm
+          # No x86_64-apple-darwin: `ort-sys` publishes no prebuilt ONNX
+          # Runtime for it ("no prebuilt binaries available for target
+          # x86_64-apple-darwin"), so the build cannot even link. Shipping it
+          # would mean either building ONNX Runtime from source or shipping a
+          # --no-default-features binary with no semantic search under the
+          # same name; neither is a v0.1 story. install.sh names this
+          # explicitly rather than 404ing on a missing asset.
           - target: aarch64-apple-darwin
             runner: macos-15
     steps:
@@ -173,15 +181,23 @@ jobs:
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
           ls -l "$archive"
 
+      # The README tells users which systems these binaries run on. That
+      # claim has to come from the artifact, not from an assumption about
+      # the build image.
       - name: Record the binary's system requirements
         if: runner.os == 'Linux'
         run: |
+          set -euo pipefail
           echo "Dynamic dependencies:"
           ldd target/release/oxide || true
-          echo "Highest glibc symbol version required:"
-          objdump -T target/release/oxide | sed -n 's/.*GLIBC_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1
-          echo "Highest libstdc++ symbol version required:"
-          objdump -T target/release/oxide | sed -n 's/.*GLIBCXX_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1
+          glibc="$(objdump -T target/release/oxide | sed -n 's/.*GLIBC_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1)"
+          gxx="$(objdump -T target/release/oxide | sed -n 's/.*GLIBCXX_\([0-9.]*\).*/\1/p' | sort -V -u | tail -1)"
+          echo "Requires glibc >= $glibc, libstdc++ GLIBCXX >= $gxx"
+          {
+            echo "### ${{ matrix.target }} system requirements"
+            echo "- glibc >= \`$glibc\`"
+            echo "- libstdc++ GLIBCXX >= \`$gxx\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Smoke-test the packaged binary
         shell: bash
@@ -305,7 +321,10 @@ jobs:
         # Both OSes, because install.sh is POSIX shell over system tools that
         # differ: macOS has BSD sed and no `sha256sum` (only `shasum`), so a
         # Linux-only run would not exercise either fallback.
-        runner: [ubuntu-22.04, macos-15]
+        # ubuntu-24.04 for the same reason the build matrix uses it: this
+        # job runs the packaged binary, so it needs the glibc the artifact
+        # was linked against.
+        runner: [ubuntu-24.04, macos-15]
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v7
@@ -374,35 +393,70 @@ jobs:
           set -euo pipefail
           notes="$(mktemp)"
           cat > "$notes" <<EOF
-          ## Install
+          # OXIDE v0.1.0 is here 🚀
+
+          This is the first public release of OXIDE, a local Context Engine for
+          coding agents.
+
+          I built OXIDE around one idea:
+
+          > Maximize coding-agent utility per context token, not retrieval volume.
+
+          OXIDE indexes your repository at the symbol level, updates only what
+          changed, and gives your agent a bounded working set for the task in
+          front of it. Your code and index stay on your machine by default.
+
+          ## Get started ⚡
 
           \`\`\`bash
           curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/install.sh | sh
           \`\`\`
 
-          Then:
-
           \`\`\`bash
-          oxide --version
           oxide index
           oxide query "Where is authentication handled?"
-          oxide install    # connect OXIDE to your coding agents
+          oxide install
           \`\`\`
 
-          Installs to \`\$HOME/.local/bin/oxide\` by default. To pin this version:
+          \`oxide install\` connects OXIDE to Claude Code, Codex, OpenCode, or
+          Antigravity CLI over MCP. You can also use the JSON CLI from any agent.
+
+          ## What made v0.1 🎉
+
+          - Incremental indexing with stable symbol IDs and embedding reuse
+          - Token-budgeted queries, hybrid search, and context for Git diffs
+          - Python, TypeScript/TSX, Rust, and Go support
+          - Local ONNX embeddings by default, plus a zero-download offline mode
+          - \`status\` and \`watch\` commands for keeping the index fresh
+          - Checksummed, smoke-tested release archives
+
+          OXIDE returns evidence, not generated answers. Every result names the
+          file, symbol, line range, score, and reason it was selected.
+
+          ## Honest limits 🧭
+
+          This first release covers four language families. Relationships come
+          from syntax and identifier matching rather than compiler-grade type
+          resolution, and vector search is currently a brute-force scan. The
+          default embedder downloads about 23 MB of model weights on first use.
+
+          Prebuilt binaries are available for x86-64 Linux, ARM64 Linux, and
+          Apple Silicon macOS. Windows and Intel macOS are not available yet.
+
+          ## Install this exact version
 
           \`\`\`bash
           curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/install.sh | sh -s -- --version ${VERSION}
           \`\`\`
 
-          ## Assets
+          ## Release files 🔐
 
           Every archive contains a single \`oxide\` binary (ONNX Runtime is
-          statically linked, so there is nothing else to install) plus the
-          README and LICENSE. Verify with \`SHA256SUMS\`.
+          statically linked), plus the README and LICENSE. \`SHA256SUMS\` covers
+          every archive, and the release workflow runs the packaged binary before
+          publishing it.
 
-          Linux builds are produced on Ubuntu 22.04 and require glibc 2.35 or
-          newer. macOS builds are produced on macOS 15.
+          I'm excited to finally put OXIDE in other developers' hands. 🦀
           EOF
 
           flags=""

@@ -106,6 +106,22 @@ detect_target() {
         aarch64 | arm64) arch_part="aarch64" ;;
         *) die "unsupported architecture: $arch (OXIDE ships x86_64 and aarch64 builds)" ;;
     esac
+    # There is no Intel macOS build, and there cannot be one yet: the ONNX
+    # Runtime OXIDE links publishes no x86_64-apple-darwin artifact. Say so
+    # here rather than letting the download 404 on an asset that will never
+    # exist. Worth checking Rosetta first — an x86_64 shell on an Apple
+    # Silicon Mac reports x86_64 from `uname -m`.
+    if [ "$os_part" = "apple-darwin" ] && [ "$arch_part" = "x86_64" ]; then
+        die "Intel macOS is not supported: OXIDE's embedding runtime publishes no
+x86_64 macOS build.
+
+If this is an Apple Silicon Mac, you are in a Rosetta shell. Start a native
+one and re-run:
+  arch -arm64 /bin/sh
+
+Otherwise, build from source:
+  https://github.com/$REPO#building-from-source"
+    fi
     printf '%s-%s' "$arch_part" "$os_part"
 }
 
