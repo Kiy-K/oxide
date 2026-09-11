@@ -132,19 +132,74 @@ pub struct SearchHit {
     pub snippet: String,
 }
 
-/// Hybrid retrieval engine. Construction builds the lexical index once from a
-/// store snapshot; searches reuse it (batch vector loads, no per-symbol SQL).
-/// Vectors are loaded lazily on first semantic query and cached for the
-/// engine's lifetime, so multi-query sessions pay the load exactly once.
+/// Every indexed symbol, with `calls`/`bases` merged in from the relations
+/// side table, plus an id index. The one O(N) load retrieval still has,
+/// and it is only paid when something genuinely needs the whole corpus:
+/// structural expansion (`RelationGraph` answers `related_tests` by
+/// scanning every symbol, so it cannot be built from a candidate subset)
+/// or the in-memory lexical fallback. A long-lived process (`oxide mcp`)
+/// loads one per `(index_id, index_generation)` and hands it to every
+/// request's engine via [`RetrievalEngine::with_snapshot`].
+#[derive(Clone)]
+pub struct SymbolSnapshot {
+    pub symbols: Vec<Symbol>,
+    by_id: HashMap<u64, usize>,
+    /// Whether `calls`/`bases` were merged in. Search's own expansion
+    /// (`RelationGraph::neighbors`) never reads them, so it loads without;
+    /// `context.rs` (`callers_of`) needs them.
+    pub with_relations: bool,
+}
+
+impl SymbolSnapshot {
+    /// Every symbol with relations merged in — what a long-lived cache
+    /// should hold, since it serves both search and context.
+    pub fn load(store: &dyn IndexBackend) -> anyhow::Result<Self> {
+        let mut snapshot = Self::from_symbols(
+            crate::structural_relations::load_symbols_with_relations(store)?,
+        );
+        snapshot.with_relations = true;
+        Ok(snapshot)
+    }
+
+    fn load_without_relations(store: &dyn IndexBackend) -> anyhow::Result<Self> {
+        Ok(Self::from_symbols(store.all_symbols()?))
+    }
+
+    pub fn from_symbols(symbols: Vec<Symbol>) -> Self {
+        let by_id = symbols
+            .iter()
+            .enumerate()
+            .map(|(i, s)| (s.id(), i))
+            .collect();
+        Self {
+            symbols,
+            by_id,
+            with_relations: false,
+        }
+    }
+
+    pub fn get(&self, id: u64) -> Option<&Symbol> {
+        self.by_id.get(&id).map(|&i| &self.symbols[i])
+    }
+}
+
+/// Hybrid retrieval engine over a store snapshot. Candidate-first: a query
+/// is scored against the persisted postings and the embedding rows, the
+/// bounded top-K of each side is fused, and only those candidates are
+/// hydrated into `Symbol`s. Nothing here loads the whole corpus unless the
+/// request asks for structural expansion (see [`SymbolSnapshot`]).
 pub struct RetrievalEngine<'a> {
     store: &'a dyn IndexBackend,
     embedder: &'a dyn EmbeddingProvider,
-    /// Snapshot of indexed symbols taken at construction time.
-    symbols: Vec<Symbol>,
-    /// symbol id -> position in `symbols`.
-    by_id: HashMap<u64, usize>,
+    symbol_count: usize,
     lexical: LexicalSource,
-    vectors: std::cell::RefCell<Option<HashMap<u64, Vec<f32>>>>,
+    /// Loaded on first need, or supplied by a caller that already holds one.
+    snapshot: std::cell::OnceCell<std::borrow::Cow<'a, SymbolSnapshot>>,
+    /// Only populated when `snapshot` was already loaded *without*
+    /// relations by search-side expansion and a later call on the same
+    /// engine needs them — no production caller does both, so this is
+    /// correctness insurance, not a path that costs anything normally.
+    snapshot_with_relations: std::cell::OnceCell<SymbolSnapshot>,
 }
 
 /// Where BM25 postings come from for this engine.
@@ -160,220 +215,344 @@ enum LexicalSource {
     Memory(LexicalIndex),
 }
 
+/// Bounded top-K under [`cmp_score_id`]: a max-heap whose top is the
+/// *worst* retained entry, so admission is one comparison and the result
+/// is exactly the first K of a full sort — the comparator is a total
+/// order over distinct ids, so the retained set and its order are the
+/// same either way.
+struct TopK {
+    k: usize,
+    heap: std::collections::BinaryHeap<Worst>,
+}
+
+struct Worst(u64, f32);
+
+impl PartialEq for Worst {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+impl Eq for Worst {}
+impl PartialOrd for Worst {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl Ord for Worst {
+    /// `cmp_score_id` sorts best-first, so "greater" already means "sorts
+    /// later, i.e. worse": the heap's maximum is the eviction candidate.
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        cmp_score_id(&(self.0, self.1), &(other.0, other.1))
+    }
+}
+
+impl TopK {
+    fn new(k: usize) -> Self {
+        Self {
+            k,
+            heap: std::collections::BinaryHeap::with_capacity(k + 1),
+        }
+    }
+
+    fn push(&mut self, id: u64, score: f32) {
+        if self.k == 0 {
+            return;
+        }
+        if self.heap.len() < self.k {
+            self.heap.push(Worst(id, score));
+            return;
+        }
+        let worst = self.heap.peek().map(|w| (w.0, w.1)).unwrap_or((0, 0.0));
+        if cmp_score_id(&(id, score), &worst) == std::cmp::Ordering::Less {
+            self.heap.pop();
+            self.heap.push(Worst(id, score));
+        }
+    }
+
+    /// Retained entries, best first.
+    fn into_sorted(self) -> Vec<(u64, f32)> {
+        let mut out: Vec<(u64, f32)> = self.heap.into_iter().map(|w| (w.0, w.1)).collect();
+        out.sort_by(cmp_score_id);
+        out
+    }
+}
+
+/// The first `k` of `sort_by(cmp_score_id)`, without sorting the rest.
+fn top_k_by_score(mut items: Vec<(u64, f32)>, k: usize) -> Vec<(u64, f32)> {
+    if items.len() > k {
+        if k == 0 {
+            return Vec::new();
+        }
+        items.select_nth_unstable_by(k - 1, cmp_score_id);
+        items.truncate(k);
+    }
+    items.sort_by(cmp_score_id);
+    items
+}
+
 impl<'a> RetrievalEngine<'a> {
     pub fn new(store: &'a dyn IndexBackend, embedder: &'a dyn EmbeddingProvider) -> Self {
-        let symbols = store.all_symbols().unwrap_or_default();
-        let root = store
-            .get_meta("root")
-            .ok()
-            .flatten()
-            .map(std::path::PathBuf::from);
+        Self::build(store, embedder, None)
+    }
+
+    /// Like [`Self::new`], but reuse an already-loaded snapshot instead of
+    /// loading one on demand — the long-running-process path.
+    pub fn with_snapshot(
+        store: &'a dyn IndexBackend,
+        embedder: &'a dyn EmbeddingProvider,
+        snapshot: &'a SymbolSnapshot,
+    ) -> Self {
+        Self::build(store, embedder, Some(snapshot))
+    }
+
+    fn build(
+        store: &'a dyn IndexBackend,
+        embedder: &'a dyn EmbeddingProvider,
+        snapshot: Option<&'a SymbolSnapshot>,
+    ) -> Self {
+        let cell = std::cell::OnceCell::new();
+        if let Some(s) = snapshot {
+            let _ = cell.set(std::borrow::Cow::Borrowed(s));
+        }
+        let engine = Self {
+            store,
+            embedder,
+            symbol_count: 0,
+            lexical: LexicalSource::Persisted,
+            snapshot: cell,
+            snapshot_with_relations: std::cell::OnceCell::new(),
+        };
         // Trust the persisted postings only on an exact generation match.
         // Anything else — no key, an older format, a run interrupted before
         // it published — means the tables may cover only part of the corpus,
         // which would silently shrink BM25's view of the repo instead of
-        // failing. Falling back rebuilds in memory, and the next `oxide
+        // failing. Falling back rebuilds in memory (which needs every
+        // symbol, so it forces the snapshot load), and the next `oxide
         // index` repairs the persisted copy.
-        let lexical = match store.get_meta(crate::storage::LEXICAL_INDEX_KEY) {
-            Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string() => {
-                LexicalSource::Persisted
-            }
-            _ => LexicalSource::Memory(LexicalIndex::build(&symbols, root.as_deref())),
+        let persisted = matches!(
+            store.get_meta(crate::storage::LEXICAL_INDEX_KEY),
+            Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string()
+        );
+        let (lexical, symbol_count) = if persisted {
+            (
+                LexicalSource::Persisted,
+                store.symbol_count().unwrap_or_default(),
+            )
+        } else {
+            let root = store
+                .get_meta("root")
+                .ok()
+                .flatten()
+                .map(std::path::PathBuf::from);
+            let symbols = &engine.snapshot().symbols;
+            (
+                LexicalSource::Memory(LexicalIndex::build(symbols, root.as_deref())),
+                symbols.len(),
+            )
         };
-        let by_id = symbols
-            .iter()
-            .enumerate()
-            .map(|(i, s)| (s.id(), i))
-            .collect();
         Self {
-            store,
-            embedder,
-            symbols,
-            by_id,
+            symbol_count,
             lexical,
-            vectors: std::cell::RefCell::new(None),
+            ..engine
         }
+    }
+
+    pub fn embedder(&self) -> &'a dyn EmbeddingProvider {
+        self.embedder
+    }
+
+    /// The full corpus, loaded on first use (without relations unless a
+    /// caller supplied a snapshot that has them). A failed load degrades
+    /// to an empty snapshot (no expansion) rather than failing the search,
+    /// the same contract the old eager `all_symbols().unwrap_or_default()`
+    /// had.
+    pub fn snapshot(&self) -> &SymbolSnapshot {
+        self.snapshot.get_or_init(|| {
+            std::borrow::Cow::Owned(
+                SymbolSnapshot::load_without_relations(self.store)
+                    .unwrap_or_else(|_| SymbolSnapshot::from_symbols(Vec::new())),
+            )
+        })
+    }
+
+    /// The full corpus with `calls`/`bases` merged in, for
+    /// `RelationGraph::callers_of`/`implementors_of`. Unlike
+    /// [`Self::snapshot`] this propagates a failed load: `build_context`
+    /// always reported an unreadable `symbols`/`symbol_relations` table
+    /// rather than quietly returning direct hits with no structural
+    /// evidence, and still does.
+    pub fn snapshot_with_relations(&self) -> anyhow::Result<&SymbolSnapshot> {
+        if self.snapshot.get().is_none() {
+            let loaded = SymbolSnapshot::load(self.store)?;
+            let _ = self.snapshot.set(std::borrow::Cow::Owned(loaded));
+        }
+        let loaded = self.snapshot.get().expect("set above");
+        if loaded.with_relations {
+            return Ok(loaded);
+        }
+        if self.snapshot_with_relations.get().is_none() {
+            let _ = self
+                .snapshot_with_relations
+                .set(SymbolSnapshot::load(self.store)?);
+        }
+        Ok(self.snapshot_with_relations.get().expect("set above"))
+    }
+
+    /// Candidate ids → symbols. From the snapshot when one is already
+    /// loaded, otherwise a bounded `WHERE id IN (...)` read — never a full
+    /// table load. Ids with no row (a symbol removed between two reads on
+    /// a non-snapshotting connection) are simply absent.
+    fn hydrate(&self, ids: impl IntoIterator<Item = u64>) -> HashMap<u64, Symbol> {
+        if let Some(snapshot) = self.snapshot.get() {
+            return ids
+                .into_iter()
+                .filter_map(|id| snapshot.get(id).map(|s| (id, s.clone())))
+                .collect();
+        }
+        let ids: Vec<u64> = ids.into_iter().collect();
+        self.store
+            .symbols_by_ids(&ids)
+            .unwrap_or_default()
+            .into_iter()
+            .map(|s| (s.id(), s))
+            .collect()
     }
 
     /// Materialize the query's postings from whichever source this engine
     /// has. A store read that fails degrades to no lexical evidence for this
     /// query rather than failing the search, matching how a failed vector
-    /// load is already handled.
+    /// scan is already handled.
     fn prepare_lexical(&self, query: &str) -> crate::lexical::LexicalQuery {
         match &self.lexical {
             LexicalSource::Memory(idx) => idx.prepare(query),
             LexicalSource::Persisted => {
-                crate::lexical::prepare_from_store(self.store, self.symbols.len(), query)
+                crate::lexical::prepare_from_store(self.store, self.symbol_count, query)
                     .unwrap_or_else(|_| crate::lexical::LexicalQuery::empty())
             }
         }
     }
 
+    /// Exhaustive dot-product scan, streamed: one embedding row is decoded,
+    /// scored against `qv` and dropped before the next is read, and only
+    /// the `k` best `(id, score)` pairs are retained. O(N·dim) time, O(k)
+    /// memory. Rows whose stored vector is not exactly `qv.len()` long are
+    /// skipped, and the dot product is the same sequential `f32` sum the
+    /// materialized version computed, so scores are bit-identical.
+    fn semantic_top_k(&self, qv: &[f32], k: usize) -> Vec<(u64, f32)> {
+        let mut top = TopK::new(k);
+        if qv.is_empty() {
+            return Vec::new();
+        }
+        let scanned = self.store.for_each_embedding(&mut |id, dim, bytes| {
+            let len = dim.min(bytes.len() / 4);
+            if len != qv.len() {
+                return;
+            }
+            let mut dot = 0.0f32;
+            for (a, c) in qv.iter().zip(bytes.as_chunks::<4>().0.iter().take(len)) {
+                dot += a * f32::from_le_bytes(*c);
+            }
+            top.push(id, dot);
+        });
+        // A scan that fails part-way must not rank from whatever it managed
+        // to read: drop semantic evidence for this query entirely, exactly
+        // as the materialized `all_embeddings().unwrap_or_default()` did.
+        match scanned {
+            Ok(()) => top.into_sorted(),
+            Err(_) => Vec::new(),
+        }
+    }
+
     pub fn search(&self, query: &str, opts: &SearchOptions) -> anyhow::Result<Vec<SearchHit>> {
-        if self.symbols.is_empty() {
+        if self.symbol_count == 0 {
             return Ok(Vec::new());
         }
-        let lookup =
-            |id: &u64| -> Option<&Symbol> { self.by_id.get(id).map(|&i| &self.symbols[i]) };
 
-        // Vector cache load happens synchronously (once per engine lifetime,
-        // cheap on a cache hit) so the two independent evidence providers
-        // below only ever need a read-only borrow, which is what lets them
-        // run on separate threads: `RefCell` itself is never `Sync`, but a
-        // `Ref`'s target is a plain `HashMap`, and `&HashMap` is `Sync`.
-        // Degrades gracefully: a failed load (e.g. a corrupt embeddings
-        // table) drops semantic evidence for this query instead of failing
-        // the whole search — lexical evidence alone is still useful.
-        if opts.mode != SearchMode::LexicalOnly && self.vectors.borrow().is_none() {
-            let loaded = self
-                .store
-                .all_embeddings()
-                .map(|rows| {
-                    rows.into_iter()
-                        .map(|(id, (_, v))| (id, v))
-                        .collect::<HashMap<_, _>>()
-                })
-                .unwrap_or_default();
-            *self.vectors.borrow_mut() = Some(loaded);
-        }
-        let vectors_guard = self.vectors.borrow();
-        let embeddings: Option<&HashMap<u64, Vec<f32>>> = vectors_guard.as_ref();
-
-        // ---- lexical + semantic stages, concurrently ----
-        // Independent evidence providers: BM25 is pure in-memory CPU work,
-        // semantic scoring's `embed_query` may be a blocking HTTP round trip
-        // (`HttpEmbedder`). Serializing them (the old code did) pays their
-        // latency sum; run them on separate OS threads so a request pays the
-        // max instead. Plain `std::thread::scope` (no tokio task) because
-        // this must work identically from a fully synchronous caller (the
-        // `oxide context`/`oxide search` CLI path runs with no async runtime
-        // at all) and from inside MCP's `spawn_blocking` closure alike.
-        // Bind the specific Sync fields the closures need — capturing `self`
-        // wholesale would drag in `store: &dyn IndexBackend` and
-        // `vectors: RefCell<..>`, neither of which is `Sync`, even though
-        // the closures below never touch them.
-        // The persisted lexical source reads postings through `store: &dyn
-        // IndexBackend`, and `SqliteStore` is not `Sync`, so lexical work
-        // cannot move onto a spawned thread the way it used to. Inverting
-        // which side is spawned keeps the pair concurrent anyway: the
-        // *semantic* side gets the thread (its `embed_query` may be a
-        // blocking HTTP round trip, and it touches nothing unsendable),
-        // while lexical runs here, on the thread that owns the store.
-        // Request latency stays max(lexical, semantic) rather than their
-        // sum — doing the posting lookups before the scope would have made
-        // a long, many-token query pay both in series.
+        // ---- lexical + semantic stages ----
+        // The two evidence providers are independent, and semantic
+        // scoring's `embed_query` may be a blocking HTTP round trip
+        // (`HttpEmbedder`) or a real model forward pass (`NativeEmbedder`),
+        // so it runs on its own OS thread while BM25 runs here, on the
+        // thread that owns the (non-`Sync`) store. Plain `std::thread::scope`
+        // (no tokio task) because this must work identically from a fully
+        // synchronous caller (the `oxide context`/`oxide search` CLI path
+        // runs with no async runtime at all) and from inside MCP's
+        // `spawn_blocking` closure alike. The vector scan itself needs the
+        // store too, so it follows on this thread once the query vector is
+        // back: a request pays max(lexical, embed_query) + scan, and the
+        // scan is a bounded-memory streaming read (`semantic_top_k`).
         //
         // `catch_unwind` preserves the old contract that a panicking
         // evidence provider drops its own evidence instead of taking the
-        // whole search down; on a spawned thread `join` gave that for free.
-        let symbols = &self.symbols;
+        // whole search down; on a spawned thread `join` gives that for free.
         let embedder = self.embedder;
-        let (lex_result, vec_scores) = std::thread::scope(|scope| {
-            let vec_handle = scope.spawn(|| -> HashMap<u64, f32> {
-                let Some(embeddings) = embeddings else {
-                    return HashMap::new();
-                };
-                let qv = embedder.embed_query(query);
-                let mut out = HashMap::with_capacity(embeddings.len());
-                for s in symbols {
-                    if let Some(v) = embeddings.get(&s.id()) {
-                        if v.len() != qv.len() || v.is_empty() {
-                            continue;
-                        }
-                        let dot: f32 = qv.iter().zip(v.iter()).map(|(a, b)| a * b).sum();
-                        out.insert(s.id(), dot);
-                    }
+        let want_semantic = opts.mode != SearchMode::LexicalOnly;
+        let want_lexical = opts.mode != SearchMode::VectorOnly;
+        let (lex_result, qv) = std::thread::scope(|scope| {
+            let vec_handle = scope.spawn(|| -> Vec<f32> {
+                if !want_semantic {
+                    return Vec::new();
                 }
-                out
+                embedder.embed_query(query)
             });
-            // A panicking provider thread must not take the whole search
-            // down with it — treat it the same as "no evidence from this
-            // provider" rather than propagating the panic.
-            let lex = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                crate::lexical::score(&self.prepare_lexical(query), 1.5, 0.75)
-            }))
-            .unwrap_or_default();
-            let vec = vec_handle.join().unwrap_or_default();
-            (lex, vec)
+            let lex = if want_lexical {
+                std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    crate::lexical::score(&self.prepare_lexical(query), 1.5, 0.75)
+                }))
+                .unwrap_or_default()
+            } else {
+                Default::default()
+            };
+            let qv = vec_handle.join().unwrap_or_default();
+            (lex, qv)
         });
         let (lex_scores, lex_total_idf) = lex_result;
+        let vec_ranked: Vec<(u64, f32)> = if want_semantic {
+            self.semantic_top_k(&qv, FUSION_CANDIDATE_LIMIT)
+        } else {
+            Vec::new()
+        };
+        let lex_ranked: Vec<(u64, f32)> = top_k_by_score(
+            lex_scores.iter().map(|(id, s)| (*id, s.0)).collect(),
+            FUSION_CANDIDATE_LIMIT,
+        );
 
         // ---- fuse ----
         let mut rrf: HashMap<u64, f32> = HashMap::new();
         let mut reasons: HashMap<u64, Vec<String>> = HashMap::new();
-        let note = |rrf: &mut HashMap<u64, f32>,
-                    reasons: &mut HashMap<u64, Vec<String>>,
-                    ranked: Vec<(u64, f32, String)>,
-                    weight: f32| {
-            for (rank, (id, score, why)) in ranked.into_iter().enumerate() {
-                *rrf.entry(id).or_insert(0.0) += weight / (FUSION_RRF_K + rank as f32 + 1.0);
+        let mut note = |ranked: &[(u64, f32)], why: &str, weight: f32| {
+            for (rank, (id, score)) in ranked.iter().enumerate() {
+                *rrf.entry(*id).or_insert(0.0) += weight / (FUSION_RRF_K + rank as f32 + 1.0);
                 reasons
-                    .entry(id)
+                    .entry(*id)
                     .or_default()
                     .push(format!("{why}={score:.3}"));
             }
         };
 
         match opts.mode {
-            SearchMode::LexicalOnly => {
-                let mut ranked: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
-                ranked.sort_by(cmp_score_id);
-                note(
-                    &mut rrf,
-                    &mut reasons,
-                    ranked
-                        .into_iter()
-                        .take(FUSION_CANDIDATE_LIMIT)
-                        .map(|(id, s)| (id, s, "lexical".into()))
-                        .collect(),
-                    1.0,
-                );
-            }
-            SearchMode::VectorOnly => {
-                let mut ranked: Vec<_> = vec_scores.clone().into_iter().collect();
-                ranked.sort_by(cmp_score_id);
-                note(
-                    &mut rrf,
-                    &mut reasons,
-                    ranked
-                        .into_iter()
-                        .take(FUSION_CANDIDATE_LIMIT)
-                        .map(|(id, s)| (id, s, "semantic".into()))
-                        .collect(),
-                    1.0,
-                );
-            }
+            SearchMode::LexicalOnly => note(&lex_ranked, "lexical", 1.0),
+            SearchMode::VectorOnly => note(&vec_ranked, "semantic", 1.0),
             SearchMode::Hybrid => {
-                let mut lr: Vec<_> = lex_scores.iter().map(|(id, s)| (*id, s.0)).collect();
-                lr.sort_by(cmp_score_id);
-                let lrr: Vec<(u64, f32, String)> = lr
-                    .into_iter()
-                    .take(FUSION_CANDIDATE_LIMIT)
-                    .map(|(id, s)| (id, s, "lexical".into()))
-                    .collect();
-                note(&mut rrf, &mut reasons, lrr, FUSION_LEXICAL_WEIGHT);
-
-                let mut vr: Vec<_> = vec_scores.iter().map(|(id, s)| (*id, *s)).collect();
-                vr.sort_by(cmp_score_id);
-                let vrr: Vec<(u64, f32, String)> = vr
-                    .into_iter()
-                    .take(FUSION_CANDIDATE_LIMIT)
-                    .map(|(id, s)| (id, s, "semantic".into()))
-                    .collect();
-                note(&mut rrf, &mut reasons, vrr, FUSION_SEMANTIC_WEIGHT);
+                note(&lex_ranked, "lexical", FUSION_LEXICAL_WEIGHT);
+                note(&vec_ranked, "semantic", FUSION_SEMANTIC_WEIGHT);
             }
         }
+
+        // Only the fused candidates become `Symbol`s.
+        let mut symbols: HashMap<u64, Symbol> = self.hydrate(rrf.keys().copied());
+        let lookup = |symbols: &HashMap<u64, Symbol>, id: &u64| -> Option<Symbol> {
+            symbols.get(id).cloned()
+        };
 
         // ---- optional term-coverage corroboration (experiment) ----
         // See docs/term-coverage-eval/README.md. `alpha` is 0.0 (a no-op,
         // byte-identical to pre-experiment scoring) unless
         // `$OXIDE_TERM_COVERAGE_ALPHA` is set — this never runs in shipped
         // Fast/Balanced/Quality behavior by default, independent of
-        // `RetrievalMode` entirely. `VectorOnly` is excluded: the lexical
-        // thread runs unconditionally regardless of `opts.mode`, so boosting
-        // there would inject lexical evidence into the arm
+        // `RetrievalMode` entirely. `VectorOnly` is excluded so the arm
         // `tests/benchmark_gate.rs` uses as the hybrid-vs-vector-only
-        // control.
+        // control carries no lexical evidence at all.
         //
         // Bounded *additive* bonus relative to this query's top fused
         // score, not the original multiplicative `1 + alpha*coverage`
@@ -398,7 +577,10 @@ impl<'a> RetrievalEngine<'a> {
         // in that sweep. Excluding them here, rather than changing how
         // `coverage`/`lex_scores` are computed, keeps the frozen BM25/
         // lexical-index baseline (`LexicalIndex::build`/`search`) untouched
-        // for every other caller and for alpha=0.
+        // for every other caller and for alpha=0. `lex_scores` is the full
+        // BM25 map (every posting-matched doc, not just the fused top-K),
+        // so a semantic-only candidate with a weak lexical score still
+        // receives its coverage share exactly as before.
         let term_coverage_alpha = resolve_term_coverage_alpha();
         if term_coverage_alpha > 0.0
             && matches!(opts.mode, SearchMode::Hybrid | SearchMode::LexicalOnly)
@@ -410,7 +592,7 @@ impl<'a> RetrievalEngine<'a> {
                     let Some((_, _, matched_idf)) = lex_scores.get(id) else {
                         continue;
                     };
-                    if lookup(id).map(|s| s.kind) == Some(SymbolKind::Module) {
+                    if symbols.get(id).map(|s| s.kind) == Some(SymbolKind::Module) {
                         continue;
                     }
                     let coverage = (matched_idf / lex_total_idf).clamp(0.0, 1.0);
@@ -426,9 +608,9 @@ impl<'a> RetrievalEngine<'a> {
         let mut hits: Vec<SearchHit> = rrf
             .iter()
             .filter_map(|(id, score)| {
-                let s = lookup(id)?;
+                let s = lookup(&symbols, id)?;
                 Some(SearchHit {
-                    symbol: s.clone(),
+                    symbol: s,
                     score: *score,
                     reasons: reasons.get(id).cloned().unwrap_or_default(),
                     snippet: String::new(),
@@ -438,26 +620,30 @@ impl<'a> RetrievalEngine<'a> {
         hits.sort_by(cmp_hit);
 
         // ---- structural expansion ----
+        // The only stage that needs the whole corpus (see `SymbolSnapshot`),
+        // and it is reached only when the caller asked for expansion, the
+        // mode allows it, and there is a strong lexical seed to expand from.
         let base_scores = rrf.clone();
         if opts.expand && opts.retrieval_mode != RetrievalMode::Fast && !hits.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
-            let strong: Vec<&Symbol> = hits
+            let strong: Vec<Symbol> = hits
                 .iter()
                 .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
-                .filter_map(|h| lookup(&h.symbol.id()))
-                .filter(|s| {
+                .filter(|h| {
                     lex_scores
-                        .get(&s.id())
+                        .get(&h.symbol.id())
                         .map(|(sc, _, _)| *sc >= max_lex * EXPANSION_STRONG_SEED_FRACTION)
                         .unwrap_or(false)
                         && max_lex > 0.0
                 })
+                .map(|h| h.symbol.clone())
                 .take(3)
                 .collect();
             if !strong.is_empty() {
-                let graph = RelationGraph::build(&self.symbols);
+                let snapshot = self.snapshot();
+                let graph = RelationGraph::build(&snapshot.symbols);
                 let mut expansions: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
-                for seed in strong {
+                for seed in &strong {
                     let boost_base = rrf.get(&seed.id()).copied().unwrap_or(0.001);
                     for (rel, cand) in graph.neighbors(seed) {
                         if cand.id() == seed.id() {
@@ -469,6 +655,7 @@ impl<'a> RetrievalEngine<'a> {
                         if !e.1.contains(&why) {
                             e.1.push(why);
                         }
+                        symbols.entry(cand.id()).or_insert_with(|| cand.clone());
                     }
                 }
                 for (id, (boost, whys)) in expansions {
@@ -493,10 +680,12 @@ impl<'a> RetrievalEngine<'a> {
         let mut direct_hits: Vec<SearchHit> = Vec::new();
         let mut expanded_hits: Vec<SearchHit> = Vec::new();
         for (id, score) in &rrf {
-            let Some(s) = lookup(id) else { continue };
+            let Some(s) = lookup(&symbols, id) else {
+                continue;
+            };
             let base = base_scores.get(id).copied().unwrap_or(0.0);
             let hit = SearchHit {
-                symbol: s.clone(),
+                symbol: s,
                 // Expansion-only context ranks by its expansion score; real
                 // matches keep their stable pre-expansion score.
                 score: if base > 0.0 { base } else { *score },
@@ -1449,5 +1638,415 @@ mod tests {
                 "VectorOnly must be immune to the lexical-only signal"
             );
         }
+    }
+
+    /// Deterministic LCG so the parity tests below are reproducible without
+    /// a `rand` dependency.
+    fn lcg(seed: &mut u64) -> u64 {
+        *seed = seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
+        *seed >> 11
+    }
+
+    /// The bounded heap must retain exactly the first K of a full sort —
+    /// same set, same order — including under heavy score ties, where the
+    /// id tie-break is what decides membership at the K boundary.
+    #[test]
+    fn bounded_top_k_equals_full_sort_then_take() {
+        let mut seed = 7u64;
+        for &n in &[0usize, 1, 5, 199, 200, 201, 1000, 5000] {
+            // Coarse scores force many exact ties.
+            let items: Vec<(u64, f32)> = (0..n)
+                .map(|_| (lcg(&mut seed), (lcg(&mut seed) % 7) as f32 / 3.0))
+                .collect();
+            for &k in &[0usize, 1, 25, 50, 100, 200, 500] {
+                let mut expected = items.clone();
+                expected.sort_by(cmp_score_id);
+                expected.truncate(k);
+                let mut heap = TopK::new(k);
+                for &(id, score) in &items {
+                    heap.push(id, score);
+                }
+                assert_eq!(heap.into_sorted(), expected, "n={n} k={k} (heap)");
+                assert_eq!(
+                    top_k_by_score(items.clone(), k),
+                    expected,
+                    "n={n} k={k} (select)"
+                );
+            }
+        }
+    }
+
+    /// The streaming scan must produce bit-identical scores and the same
+    /// ranking as the materialized `all_embeddings` + full sort it replaced,
+    /// including its rules for skipping wrong-length vectors.
+    #[test]
+    fn streaming_semantic_scan_matches_materialized_scan_exactly() {
+        let mut store = seed_store();
+        let emb = HashedEmbedder::default();
+        let mut seed = 99u64;
+        let mut syms = Vec::new();
+        for i in 0..600 {
+            syms.push(sym(
+                &format!("src/m{}.py", i % 40),
+                &format!("f{i}"),
+                SymbolKind::Function,
+                &format!(
+                    "def f{i}(): retry {} backoff {}",
+                    lcg(&mut seed) % 50,
+                    i % 9
+                ),
+                &[],
+            ));
+        }
+        for i in 0..40 {
+            let file = format!("src/m{i}.py");
+            let in_file: Vec<Symbol> = syms.iter().filter(|s| s.file == file).cloned().collect();
+            store.replace_file(&file, 1, &in_file, &[], &[]).unwrap();
+        }
+        for (i, s) in syms.iter().enumerate() {
+            let mut v = emb.embed(&crate::embeddings::symbol_embed_text(s));
+            // Every fifth row is a wrong-dimension vector that both paths
+            // must skip; one is empty.
+            if i % 5 == 0 {
+                v.truncate(if i % 10 == 0 { 0 } else { v.len() / 2 });
+            }
+            store.put_embedding(s.id(), &v).unwrap();
+        }
+        let engine = RetrievalEngine::new(&store, &emb);
+        for query in ["retry backoff", "f7", "payment schedule", "backoff 3"] {
+            let qv = emb.embed_query(query);
+            // Oracle: the pre-streaming implementation, verbatim.
+            let all = store.all_embeddings().unwrap();
+            let mut oracle: Vec<(u64, f32)> = Vec::new();
+            for s in &syms {
+                if let Some((_, v)) = all.get(&s.id()) {
+                    if v.len() != qv.len() || v.is_empty() {
+                        continue;
+                    }
+                    let dot: f32 = qv.iter().zip(v.iter()).map(|(a, b)| a * b).sum();
+                    oracle.push((s.id(), dot));
+                }
+            }
+            oracle.sort_by(cmp_score_id);
+            for &k in &[1usize, 25, 200, 500] {
+                let got = engine.semantic_top_k(&qv, k);
+                let want: Vec<(u64, f32)> = oracle.iter().copied().take(k).collect();
+                assert_eq!(got.len(), want.len(), "{query} k={k}");
+                for (g, w) in got.iter().zip(want.iter()) {
+                    assert_eq!(g.0, w.0, "{query} k={k}: id order");
+                    assert_eq!(g.1.to_bits(), w.1.to_bits(), "{query} k={k}: score bits");
+                }
+            }
+        }
+    }
+
+    /// Delegating store that counts whole-corpus loads, so the test below
+    /// can assert candidate-first retrieval never performs one unless
+    /// expansion genuinely needs it.
+    struct CountingStore<'a> {
+        inner: &'a SqliteStore,
+        full_loads: std::cell::Cell<usize>,
+        /// Fail the embedding scan after this many rows (simulates an
+        /// unreadable row mid-table).
+        fail_scan_after: Option<usize>,
+        fail_relations: bool,
+    }
+
+    impl<'a> CountingStore<'a> {
+        fn new(inner: &'a SqliteStore) -> Self {
+            Self {
+                inner,
+                full_loads: std::cell::Cell::new(0),
+                fail_scan_after: None,
+                fail_relations: false,
+            }
+        }
+    }
+
+    impl IndexBackend for CountingStore<'_> {
+        fn get_meta(&self, key: &str) -> anyhow::Result<Option<String>> {
+            self.inner.get_meta(key)
+        }
+        fn set_meta(&mut self, _: &str, _: &str) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn set_meta_all(&mut self, _: &str, _: &[(&str, &str)]) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn file_hashes(&self) -> anyhow::Result<HashMap<String, u64>> {
+            self.inner.file_hashes()
+        }
+        fn replace_file(
+            &mut self,
+            _: &str,
+            _: u64,
+            _: &[Symbol],
+            _: &[(u64, Vec<String>, Vec<String>)],
+            _: &[crate::lexical::DocPostings],
+        ) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn remove_files(&mut self, _: &[String]) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn put_file_lexical(
+            &mut self,
+            _: &str,
+            _: u64,
+            _: &[crate::lexical::DocPostings],
+        ) -> anyhow::Result<bool> {
+            unreachable!()
+        }
+        fn lexical_totals(&self) -> anyhow::Result<(usize, i64)> {
+            self.inner.lexical_totals()
+        }
+        fn lexical_postings(&self, term: &str) -> anyhow::Result<Vec<(u64, u32, u32)>> {
+            self.inner.lexical_postings(term)
+        }
+        fn all_symbols(&self) -> anyhow::Result<Vec<Symbol>> {
+            self.full_loads.set(self.full_loads.get() + 1);
+            self.inner.all_symbols()
+        }
+        fn symbol_count(&self) -> anyhow::Result<usize> {
+            self.inner.symbol_count()
+        }
+        fn symbols_by_ids(&self, ids: &[u64]) -> anyhow::Result<Vec<Symbol>> {
+            self.inner.symbols_by_ids(ids)
+        }
+        fn symbol_hash(&self, id: u64) -> anyhow::Result<Option<u64>> {
+            self.inner.symbol_hash(id)
+        }
+        fn put_embedding(&mut self, _: u64, _: &[f32]) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn put_embeddings_batch(&mut self, _: &str, _: &[(u64, Vec<f32>)]) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn embedding_with_hash(&self, id: u64) -> anyhow::Result<Option<(u64, Vec<f32>)>> {
+            self.inner.embedding_with_hash(id)
+        }
+        fn all_embeddings(&self) -> anyhow::Result<HashMap<u64, (u64, Vec<f32>)>> {
+            self.full_loads.set(self.full_loads.get() + 1);
+            self.inner.all_embeddings()
+        }
+        fn for_each_embedding(
+            &self,
+            visit: &mut dyn FnMut(u64, usize, &[u8]),
+        ) -> anyhow::Result<()> {
+            let Some(limit) = self.fail_scan_after else {
+                return self.inner.for_each_embedding(visit);
+            };
+            let mut seen = 0usize;
+            self.inner.for_each_embedding(&mut |id, dim, bytes| {
+                if seen < limit {
+                    visit(id, dim, bytes);
+                }
+                seen += 1;
+            })?;
+            anyhow::bail!("simulated unreadable embedding row after {limit} rows")
+        }
+        fn begin_embedding_migration(&mut self, _: &str) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn put_symbol_relations_batch(
+            &mut self,
+            _: &[(u64, Vec<String>, Vec<String>)],
+        ) -> anyhow::Result<()> {
+            unreachable!()
+        }
+        fn all_symbol_relations(&self) -> anyhow::Result<crate::storage::SymbolRelations> {
+            if self.fail_relations {
+                anyhow::bail!("simulated unreadable symbol_relations table");
+            }
+            self.inner.all_symbol_relations()
+        }
+    }
+
+    /// A scan that fails part-way must drop *all* semantic evidence for
+    /// the query (the search degrades to lexical-only, as it always did on
+    /// a failed vector load), never rank from the rows it got through.
+    #[test]
+    fn a_failed_embedding_scan_yields_no_semantic_evidence_not_partial_evidence() {
+        let mut store = seed_store();
+        let emb = HashedEmbedder::default();
+        let syms: Vec<Symbol> = (0..20)
+            .map(|i| {
+                sym(
+                    "src/m.py",
+                    &format!("retry_{i}"),
+                    SymbolKind::Function,
+                    &format!("def retry_{i}(): backoff"),
+                    &[],
+                )
+            })
+            .collect();
+        store.replace_file("src/m.py", 1, &syms, &[], &[]).unwrap();
+        for s in &syms {
+            store
+                .put_embedding(s.id(), &emb.embed(&crate::embeddings::symbol_embed_text(s)))
+                .unwrap();
+        }
+        let mut failing = CountingStore::new(&store);
+        failing.fail_scan_after = Some(5);
+        let engine = RetrievalEngine::new(&failing, &emb);
+        let opts = SearchOptions {
+            limit: 20,
+            mode: SearchMode::Hybrid,
+            expand: false,
+            retrieval_mode: RetrievalMode::default(),
+        };
+        let hits = engine.search("retry backoff", &opts).unwrap();
+        assert!(!hits.is_empty(), "lexical evidence still serves the query");
+        assert!(
+            hits.iter()
+                .all(|h| h.reasons.iter().all(|r| !r.starts_with("semantic"))),
+            "partial scan must contribute nothing: {:?}",
+            hits.iter().map(|h| &h.reasons).collect::<Vec<_>>()
+        );
+        let vec_only = SearchOptions {
+            mode: SearchMode::VectorOnly,
+            ..opts
+        };
+        assert!(engine
+            .search("retry backoff", &vec_only)
+            .unwrap()
+            .is_empty());
+    }
+
+    /// `build_context` reported an unreadable relations table before the
+    /// snapshot refactor; it must still do so rather than serving direct
+    /// hits with the structural stage silently skipped.
+    #[test]
+    fn context_propagates_a_failed_relations_load() {
+        let mut store = seed_store();
+        let emb = HashedEmbedder::default();
+        let s = sym(
+            "src/m.py",
+            "retry_policy",
+            SymbolKind::Function,
+            "def retry_policy():",
+            &[],
+        );
+        store
+            .replace_file("src/m.py", 1, std::slice::from_ref(&s), &[], &[])
+            .unwrap();
+        store
+            .put_embedding(
+                s.id(),
+                &emb.embed(&crate::embeddings::symbol_embed_text(&s)),
+            )
+            .unwrap();
+        let mut failing = CountingStore::new(&store);
+        failing.fail_relations = true;
+        let engine = RetrievalEngine::new(&failing, &emb);
+        let err = crate::context::build_context_with(
+            std::path::Path::new("/nonexistent"),
+            &engine,
+            "retry policy",
+            &crate::context::ContextOptions::default(),
+        )
+        .unwrap_err();
+        assert!(err.to_string().contains("symbol_relations"), "{err}");
+        // Search-side expansion keeps its degrade-not-fail contract.
+        let hits = engine
+            .search("retry_policy", &SearchOptions::default())
+            .unwrap();
+        assert_eq!(hits[0].symbol.qualified_name, "retry_policy");
+    }
+
+    /// Candidate-first: on a persisted lexical index, a search without
+    /// expansion (or in `Fast` mode) must never call `all_symbols` or
+    /// `all_embeddings`; with expansion it loads the corpus at most once,
+    /// and only after a strong seed exists. Results are identical to the
+    /// eager engine either way.
+    #[test]
+    fn search_hydrates_only_candidates_unless_expansion_needs_the_corpus() {
+        let tmp = tempfile::tempdir().unwrap();
+        std::fs::create_dir_all(tmp.path().join("src")).unwrap();
+        for i in 0..30 {
+            std::fs::write(
+                tmp.path().join(format!("src/m{i}.py")),
+                format!("def retry_policy_{i}():\n    return {i}\n\ndef helper_{i}():\n    return retry_policy_{i}()\n"),
+            )
+            .unwrap();
+        }
+        let mut store = SqliteStore::open(&tmp.path().join(".oxide/index.db")).unwrap();
+        let emb = HashedEmbedder::default();
+        crate::index::update_index(tmp.path(), &mut store, &emb).unwrap();
+        assert_eq!(
+            store
+                .get_meta(crate::storage::LEXICAL_INDEX_KEY)
+                .unwrap()
+                .as_deref(),
+            Some("1"),
+            "test needs the persisted lexical path"
+        );
+        let counting = CountingStore::new(&store);
+        let eager = RetrievalEngine::new(&store, &emb);
+        let lazy = RetrievalEngine::new(&counting, &emb);
+        assert_eq!(
+            counting.full_loads.get(),
+            0,
+            "construction must not load the corpus"
+        );
+
+        let same = |a: &[SearchHit], b: &[SearchHit]| {
+            assert_eq!(a.len(), b.len());
+            for (x, y) in a.iter().zip(b) {
+                assert_eq!(x.symbol.id(), y.symbol.id());
+                assert_eq!(x.score.to_bits(), y.score.to_bits());
+                assert_eq!(x.reasons, y.reasons);
+            }
+        };
+        for mode in [
+            SearchMode::LexicalOnly,
+            SearchMode::VectorOnly,
+            SearchMode::Hybrid,
+        ] {
+            let opts = SearchOptions {
+                limit: 10,
+                mode,
+                expand: false,
+                retrieval_mode: RetrievalMode::default(),
+            };
+            same(
+                &eager.search("retry policy 7", &opts).unwrap(),
+                &lazy.search("retry policy 7", &opts).unwrap(),
+            );
+            let fast = SearchOptions {
+                expand: true,
+                retrieval_mode: RetrievalMode::Fast,
+                ..opts
+            };
+            same(
+                &eager.search("retry policy 7", &fast).unwrap(),
+                &lazy.search("retry policy 7", &fast).unwrap(),
+            );
+        }
+        assert_eq!(
+            counting.full_loads.get(),
+            0,
+            "no expansion ⇒ no corpus load"
+        );
+
+        let expand = SearchOptions {
+            limit: 10,
+            mode: SearchMode::Hybrid,
+            expand: true,
+            retrieval_mode: RetrievalMode::default(),
+        };
+        same(
+            &eager.search("retry policy 7", &expand).unwrap(),
+            &lazy.search("retry policy 7", &expand).unwrap(),
+        );
+        assert_eq!(
+            counting.full_loads.get(),
+            1,
+            "expansion loads the corpus exactly once"
+        );
+        lazy.search("helper 3", &expand).unwrap();
+        assert_eq!(counting.full_loads.get(), 1, "…and the engine keeps it");
     }
 }

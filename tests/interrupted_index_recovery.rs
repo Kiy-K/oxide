@@ -320,3 +320,112 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
     assert!(status.index_exists);
     assert!(status.embedder_current);
 }
+
+/// A real `kill -9` mid-run, with the bulk WAL checkpoint policy in force
+/// (`IndexBackend::begin_bulk_writes` raises `wal_autocheckpoint` for the
+/// base pass, so an interrupted run can leave a multi-megabyte WAL that
+/// was never checkpointed). SQLite must replay that WAL on the next open,
+/// the torn index must still be refused by read commands (nothing was
+/// published), and a follow-up `oxide index` must complete and serve
+/// correct results — never a "falsely current" index.
+#[test]
+fn sigkill_mid_index_under_bulk_checkpointing_recovers_on_the_next_run() {
+    pin_offline_embedder();
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    // Large enough that indexing runs for a while and writes more WAL than
+    // the default 4 MB checkpoint threshold would allow to accumulate.
+    for i in 0..1500 {
+        let mut body = String::new();
+        for j in 0..12 {
+            body.push_str(&format!(
+                "def handler_{i}_{j}(request, retry_policy):\n    \"\"\"Handle route {i}/{j}.\"\"\"\n    return retry_policy.apply(request, {j})\n\n"
+            ));
+        }
+        write(&root.join(format!("src/pkg{}/mod_{i}.py", i % 40)), &body);
+    }
+    write(
+        &root.join("src/zz_last.py"),
+        "def zebra_quantum_flux():\n    return 42\n",
+    );
+    let mut child = std::process::Command::new(env!("CARGO_BIN_EXE_oxide"))
+        .args(["index", "."])
+        .env("OXIDE_EMBED_NATIVE", "hashed")
+        .current_dir(root)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .unwrap();
+    // Kill once the writer has clearly been committing for a while (a
+    // WAL of several MB means many file transactions have landed and,
+    // under the bulk policy, none of them has been checkpointed yet).
+    let wal = root.join(".oxide/index.db-wal");
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+    let mut wal_size;
+    loop {
+        wal_size = std::fs::metadata(&wal).map(|m| m.len()).unwrap_or(0);
+        if wal_size > 6 * 1024 * 1024 {
+            break;
+        }
+        if let Ok(Some(_)) = child.try_wait() {
+            break;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "indexer never reached the kill point"
+        );
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    let finished = child.try_wait().unwrap().is_some();
+    let _ = child.kill();
+    let _ = child.wait();
+    assert!(
+        !finished,
+        "indexer finished before the kill point (WAL peaked at {wal_size} bytes); \
+         enlarge the corpus"
+    );
+    assert!(
+        wal_size > 4 * 1024 * 1024,
+        "kill must land with real un-checkpointed WAL"
+    );
+
+    // The torn index is intact (WAL replayed) but unpublished: refused.
+    let service = service_for(root);
+    let err = service.search("handler", search_request()).unwrap_err();
+    assert!(
+        matches!(err.action(), ErrorAction::Repair | ErrorAction::Index),
+        "torn index must not be served: {err}"
+    );
+    {
+        let store = SqliteStore::open_read_only(&root.join(".oxide/index.db")).unwrap();
+        assert!(
+            store.get_meta("root").unwrap().is_none(),
+            "nothing was published"
+        );
+        assert!(store.get_meta("lexical_index_version").unwrap().is_none());
+        let some = store.symbol_count().unwrap();
+        assert!(some > 0, "committed files survive the kill");
+        assert!(some < 1500 * 13 + 2, "…but not all of them");
+    }
+
+    let result = service.index(None, &IndexOptions::default()).unwrap();
+    assert_eq!(result.errored_files, 0);
+    let status = service.status().unwrap();
+    assert!(status.is_current, "fully healthy after recovery");
+    assert_eq!(status.files, 1501);
+    assert_eq!(status.symbols, 1500 * 13 + 2);
+    let hits = service
+        .search("zebra_quantum_flux", search_request())
+        .unwrap();
+    assert!(
+        hits.iter()
+            .any(|h| h.qualified_name == "zebra_quantum_flux"),
+        "{hits:?}"
+    );
+    // The WAL was brought back under the normal policy on completion.
+    let wal_after = std::fs::metadata(&wal).map(|m| m.len()).unwrap_or(0);
+    assert!(
+        wal_after < 32 * 1024 * 1024,
+        "WAL left at {wal_after} bytes"
+    );
+}

@@ -40,19 +40,57 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 - Retrieval expansion must never displace direct hits: direct results keep
   their pre-expansion scores; expansion-only items are appended after. The
   benchmark gate depends on this invariant (`src/retrieval.rs`).
-- `RetrievalEngine::search` runs lexical (BM25) and semantic (embed_query +
-  dot-product scan) concurrently via plain `std::thread::scope` — not a tokio
-  task. This is deliberate: `oxide context`/`oxide search` from the CLI run
-  fully synchronously with no tokio runtime at all (`cli.rs::run_mcp`'s own
-  comment says so), while MCP already runs the whole service call inside
-  `spawn_blocking`. `std::thread::scope` is the one primitive that works
-  identically from both without adding a Cargo.toml tokio feature. The
-  closures inside the scope capture narrow field references
-  (`&self.lexical`, `&self.symbols`, `self.embedder`), never `self` — `self:
-  &RetrievalEngine` is not `Send` (it holds `store: &dyn IndexBackend` and
-  `vectors: RefCell<..>`, neither `Sync`) even though the closures never
-  touch those fields; capturing `self` wholesale fails to compile for a
-  reason that has nothing to do with what the closure actually reads.
+- Retrieval is **candidate-first** (docs/sqlite-request-path/README.md):
+  `RetrievalEngine::search` scores BM25 over postings and streams the
+  embedding rows through a bounded top-200 heap (`semantic_top_k`), then
+  hydrates only the fused candidates via `symbols_by_ids`. Nothing on the
+  request path may call `all_symbols`/`all_embeddings` — the one exception
+  is `SymbolSnapshot`, loaded lazily and only when structural expansion
+  needs the whole corpus (`RelationGraph::related_tests` scans every
+  symbol by contract), or injected by `oxide mcp`'s process cache.
+  `search_hydrates_only_candidates_unless_expansion_needs_the_corpus`
+  pins this with a counting store. The heap's comparator is
+  `cmp_score_id`, the same total order the old full sort used, so the
+  retained set and its order are identical; the dot product stays a
+  sequential `f32` sum so scores are bit-identical
+  (`streaming_semantic_scan_matches_materialized_scan_exactly`).
+  `FUSION_CANDIDATE_LIMIT` is a ranking input, not a tuning knob: a
+  different depth changes RRF's inputs.
+- `RetrievalEngine::search` runs `embed_query` on its own OS thread via
+  plain `std::thread::scope` — not a tokio task — while BM25 runs on the
+  calling thread, then the vector scan follows on the calling thread once
+  the query vector is back (both stages read through `store: &dyn
+  IndexBackend`, and `SqliteStore` is not `Sync`). This is deliberate:
+  `oxide context`/`oxide search` from the CLI run fully synchronously with
+  no tokio runtime at all (`cli.rs::run_mcp`'s own comment says so), while
+  MCP already runs the whole service call inside `spawn_blocking`.
+  `std::thread::scope` is the one primitive that works identically from
+  both without adding a Cargo.toml tokio feature. The spawned closure
+  captures only `self.embedder`, never `self` — `self: &RetrievalEngine`
+  is not `Send` (it holds the store reference and `OnceCell`s), even
+  though the closure never touches those fields.
+- `meta.index_generation` is bumped inside **every** write transaction
+  (`storage.rs::bump_generation`; `tests/index_generation.rs` enumerates
+  the nine paths) and `meta.index_id` is a per-database random identity
+  set on writer open. Together they key `oxide mcp`'s process cache
+  (`service.rs::ProcessCache`: symbol snapshot, row counts, embedder):
+  equal `(index_id, index_generation, schema/extraction/embedding/lexical
+  keys)` read inside a request's own read snapshot ⇒ identical content.
+  A new write path that forgets the bump lets a cached snapshot outlive
+  the content it was built from; the generation alone is not unique
+  across a deleted-and-rebuilt `.oxide`, which is what `index_id` is for.
+  `PRAGMA data_version` was deliberately not used: it is only comparable
+  between reads on the same connection, and every request opens its own.
+- `update_base` runs inside `IndexBackend::begin/end_bulk_writes`, which
+  raises `wal_autocheckpoint` to `BULK_WAL_AUTOCHECKPOINT_PAGES` (16 MB)
+  for the full-corpus pass and restores SQLite's 4 MB default on every
+  exit path. Disabling checkpoints outright let the WAL reach 1.16 GB for
+  a 46 MB database; `synchronous=NORMAL` and `mmap_size` were measured
+  and not shipped (docs/sqlite-request-path/README.md §5). `oxide watch`'s
+  per-batch `update_base_for_files` writes keep the default.
+- `tests/query_plans.rs` pins `EXPLAIN QUERY PLAN` for every request-path
+  statement with and without `ANALYZE` statistics. A statement that starts
+  scanning `symbols` or `lexical_postings` fails that test on purpose.
 - `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval.rs`) only gates
   the *bounded structural-relation expansion* stage in `context.rs`'s own
   expansion loop — never the always-on lexical+semantic stage, and never

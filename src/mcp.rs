@@ -112,7 +112,7 @@ impl OxideServer {
         let mode = optional_retrieval_mode(&arguments)?;
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
-                Ok(service) => service,
+                Ok(service) => service.with_process_cache(),
                 Err(error) => return Ok(service_error_result(error)),
             };
             match service.context(&task, budget, mode) {
@@ -136,7 +136,7 @@ impl OxideServer {
         let retrieval_mode = optional_retrieval_mode(&arguments)?;
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
-                Ok(service) => service,
+                Ok(service) => service.with_process_cache(),
                 Err(error) => return Ok(service_error_result(error)),
             };
             let result = service.search(

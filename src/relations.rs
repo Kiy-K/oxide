@@ -11,6 +11,12 @@ pub struct RelationGraph<'a> {
     children_of: HashMap<&'a str, Vec<&'a Symbol>>,
     defs_by_name: HashMap<&'a str, Vec<&'a Symbol>>,
     files: HashSet<&'a str>,
+    /// Non-module symbols per file, in corpus order — `resolve_import`
+    /// used to rescan every symbol per import, and a seed can have dozens.
+    by_file: HashMap<&'a str, Vec<&'a Symbol>>,
+    /// `is_test_symbol` filtered once, in corpus order — `related_tests`
+    /// used to lowercase every symbol's file and name per seed.
+    test_symbols: Vec<&'a Symbol>,
     /// Reverse indexes over `Symbol::calls`/`bases` (experimental,
     /// `structural_relations` — empty on every symbol unless that module's
     /// opt-in second pass ran). Built lazily via `OnceCell`, not in
@@ -43,6 +49,8 @@ impl<'a> RelationGraph<'a> {
         let mut children_of: HashMap<&str, Vec<&Symbol>> = HashMap::new();
         let mut defs_by_name: HashMap<&str, Vec<&Symbol>> = HashMap::new();
         let mut files = HashSet::new();
+        let mut by_file: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+        let mut test_symbols = Vec::new();
         for s in symbols {
             by_qualified.insert(s.qualified_name.as_str(), s);
             if let Some(p) = &s.parent {
@@ -51,6 +59,12 @@ impl<'a> RelationGraph<'a> {
                 defs_by_name.entry(s.name.as_str()).or_default().push(s);
             }
             files.insert(s.file.as_str());
+            if s.kind != SymbolKind::Module {
+                by_file.entry(s.file.as_str()).or_default().push(s);
+            }
+            if is_test_symbol(s) {
+                test_symbols.push(s);
+            }
         }
         Self {
             symbols,
@@ -58,6 +72,8 @@ impl<'a> RelationGraph<'a> {
             children_of,
             defs_by_name,
             files,
+            by_file,
+            test_symbols,
             callers_of_index: OnceCell::new(),
             implementors_of_index: OnceCell::new(),
         }
@@ -111,17 +127,17 @@ impl<'a> RelationGraph<'a> {
         let Some(target) = resolve_module(module, from_file, &self.files) else {
             return Vec::new();
         };
-        self.symbols
-            .iter()
-            .filter(move |s| s.file == target && s.kind != SymbolKind::Module)
-            .collect()
+        self.by_file
+            .get(target.as_str())
+            .cloned()
+            .unwrap_or_default()
     }
 
     /// Related tests: test-file symbols referencing the seed's bare name.
     pub fn related_tests(&self, seed: &Symbol) -> Vec<&'a Symbol> {
-        self.symbols
+        self.test_symbols
             .iter()
-            .filter(|s| is_test_symbol(s))
+            .copied()
             .filter(|t| t.references.iter().any(|r| r == &seed.name) || t.name.contains(&seed.name))
             .collect()
     }

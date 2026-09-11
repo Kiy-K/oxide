@@ -321,3 +321,90 @@ fn concurrent_mcp_reads_return_valid_results() {
         }
     });
 }
+
+/// `oxide mcp` caches the loaded symbol snapshot across requests
+/// (`RepositoryService::with_process_cache`). That cache is keyed by the
+/// index's generation counter, so a reindex performed by *another process*
+/// while the server is running must be visible on the very next call —
+/// both for a symbol that appeared and for one that disappeared.
+#[test]
+fn a_live_server_sees_an_out_of_process_reindex_on_the_next_call() {
+    let root = tempfile::tempdir().unwrap();
+    write(
+        root.path(),
+        "src/auth.py",
+        "def refresh_token(token):\n    return token\n\ndef stale_helper():\n    return 1\n",
+    );
+    index(root.path());
+    let mut server = McpProcess::start(root.path());
+
+    let ids = |response: &Value| -> Vec<String> {
+        let hits: Value =
+            serde_json::from_str(response["result"]["content"][0]["text"].as_str().unwrap())
+                .unwrap();
+        hits.as_array()
+            .unwrap()
+            .iter()
+            .map(|h| h["id"].as_str().unwrap().to_string())
+            .collect()
+    };
+    // Two calls so the second is definitely served from the warm cache.
+    for _ in 0..2 {
+        let hits = ids(&server.request(call(
+            "search",
+            json!({"query": "stale_helper", "path": ".", "limit": 5}),
+        )));
+        assert!(
+            hits.iter().any(|id| id.ends_with("#stale_helper")),
+            "{hits:?}"
+        );
+    }
+
+    // Reindex from a separate process: one symbol removed, one added.
+    write(
+        root.path(),
+        "src/auth.py",
+        "def refresh_token(token):\n    return token\n\ndef fresh_helper():\n    return 2\n",
+    );
+    index(root.path());
+
+    let hits = ids(&server.request(call(
+        "search",
+        json!({"query": "fresh_helper", "path": ".", "limit": 5}),
+    )));
+    assert!(
+        hits.iter().any(|id| id.ends_with("#fresh_helper")),
+        "{hits:?}"
+    );
+    assert!(
+        !hits.iter().any(|id| id.ends_with("#stale_helper")),
+        "{hits:?}"
+    );
+    let hits = ids(&server.request(call(
+        "search",
+        json!({"query": "stale_helper", "path": ".", "limit": 5}),
+    )));
+    assert!(
+        !hits.iter().any(|id| id.ends_with("#stale_helper")),
+        "{hits:?}"
+    );
+
+    // Context runs the structural stage over the cached snapshot; it too
+    // must only ever name symbols that currently exist.
+    let context = server.request(call(
+        "context",
+        json!({"task": "fresh helper refresh token", "path": ".", "token_budget": 512}),
+    ));
+    let payload: Value =
+        serde_json::from_str(context["result"]["content"][0]["text"].as_str().unwrap()).unwrap();
+    let names: Vec<&str> = payload["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|i| i["id"].as_str().unwrap())
+        .collect();
+    assert!(
+        !names.iter().any(|n| n.ends_with("#stale_helper")),
+        "{names:?}"
+    );
+}

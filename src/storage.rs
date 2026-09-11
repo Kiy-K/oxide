@@ -35,6 +35,26 @@ pub const EXTRACTION_VERSION: u32 = 2;
 /// `set_meta_all` that publishes the completed identity.
 pub const EMBEDDING_MIGRATION_KEY: &str = "embedding_migration";
 
+/// Meta key holding a per-database random identity, written once by
+/// [`SqliteStore::open`] when the schema is created (or on the first
+/// writer open of an index that predates it). Pairs with
+/// [`INDEX_GENERATION_KEY`] to form a cache key: the generation alone
+/// restarts at 1 whenever `.oxide` is deleted and rebuilt, so a
+/// long-lived process holding "generation 7 of the old database" must not
+/// mistake the new database's generation 7 for the same content.
+pub const INDEX_ID_KEY: &str = "index_id";
+
+/// Meta key holding a monotonically increasing counter bumped inside
+/// **every** write transaction this store commits (symbols, embeddings,
+/// relations, lexical postings, meta). Two reads of the same
+/// `(index_id, index_generation)` are guaranteed to see identical
+/// database content, which is what lets a long-running process
+/// (`oxide mcp`) reuse a loaded symbol snapshot across requests instead of
+/// reloading every symbol per call. Explicit rather than `PRAGMA
+/// data_version` because the latter is only comparable between two reads
+/// on the *same* connection, and every request opens its own.
+pub const INDEX_GENERATION_KEY: &str = "index_generation";
+
 /// Storage abstraction. Small by design: swap SQLite for something else by
 /// implementing this trait.
 /// One parsed file: (repo-relative path, content hash, source text, symbols).
@@ -122,6 +142,16 @@ pub trait IndexBackend {
     /// length)`, one row per matching document.
     fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>>;
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
+    /// `COUNT(*)` over `symbols` — BM25's document count, without loading a
+    /// single row. Must be read in the same snapshot as the postings it
+    /// normalizes (`open_read_only` holds one for the connection's life).
+    fn symbol_count(&self) -> Result<usize>;
+    /// The symbols with these ids, in no particular order; ids with no row
+    /// are simply absent. `calls`/`bases` are left empty, as in
+    /// [`Self::all_symbols`]. This is the hydration step of candidate-first
+    /// retrieval: scoring runs over postings and vector rows alone, and
+    /// only the bounded candidate set is ever turned into `Symbol`s.
+    fn symbols_by_ids(&self, ids: &[u64]) -> Result<Vec<Symbol>>;
     fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
     fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()>;
     /// Same effect as calling [`Self::put_embedding`] once per item, but as
@@ -158,8 +188,16 @@ pub trait IndexBackend {
         items: &[(u64, Vec<f32>)],
     ) -> Result<()>;
     fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
-    /// All embeddings in one shot (avoids per-symbol queries in retrieval).
+    /// All embeddings in one shot. The indexer's staleness pass and tests
+    /// use it; retrieval no longer does (see [`Self::for_each_embedding`]).
     fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
+    /// Visit every stored embedding as `(symbol_id, stored dim, raw
+    /// little-endian f32 bytes)` without materializing the table: one row
+    /// is decoded, scored and dropped before the next is read, so an
+    /// exhaustive scan holds O(1) vectors in memory instead of O(N). The
+    /// blob is the same bytes [`Self::all_embeddings`] decodes; callers
+    /// apply the same `take(dim)` rule.
+    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()>;
     /// Clear every vector AND record `fingerprint_json` under
     /// [`EMBEDDING_MIGRATION_KEY`] as **one** transaction — the crash-safety
     /// primitive for a provider switch, and deliberately the *only* way to
@@ -213,7 +251,30 @@ pub trait IndexBackend {
     /// `all_symbols` directly whenever `RelationGraph::callers_of`/
     /// `implementors_of` are needed.
     fn all_symbol_relations(&self) -> Result<SymbolRelations>;
+    /// Bracket a full-corpus write pass (`update_base`). The SQLite backend
+    /// raises its WAL auto-checkpoint threshold for the duration — see
+    /// [`BULK_WAL_AUTOCHECKPOINT_PAGES`] — and restores the default after,
+    /// so a long-lived writer (`oxide watch`) keeps normal checkpointing
+    /// for its small per-batch writes. No-ops by default.
+    fn begin_bulk_writes(&mut self) -> Result<()> {
+        Ok(())
+    }
+    fn end_bulk_writes(&mut self) -> Result<()> {
+        Ok(())
+    }
 }
+
+/// `PRAGMA wal_autocheckpoint` (in pages) while a full-corpus base pass is
+/// writing — 16 MB at the default 4 KB page, against SQLite's 1000-page
+/// (4 MB) default. Measured on the 13k-symbol pylint corpus
+/// (docs/sqlite-request-path/README.md): cold index −21%, p95 commit
+/// latency 13 → 3.5 ms (fewer checkpoints landing inside commits), WAL
+/// peak 17 → ≤32 MB. Disabling checkpoints outright was faster still but
+/// let the WAL reach 1.16 GB for a 46 MB database, and 16000 pages bought
+/// only noise-level time for a 71 MB WAL; this is the bounded point.
+pub const BULK_WAL_AUTOCHECKPOINT_PAGES: u32 = 4000;
+/// SQLite's own default, restored by [`IndexBackend::end_bulk_writes`].
+const DEFAULT_WAL_AUTOCHECKPOINT_PAGES: u32 = 1000;
 
 pub struct SqliteStore {
     conn: Connection,
@@ -389,7 +450,50 @@ pub fn is_locked_error(e: &anyhow::Error) -> bool {
         .any(is_locked)
 }
 
+/// Advance [`INDEX_GENERATION_KEY`] inside `tx`. Every write path calls
+/// this so the counter is a complete record of "something changed"; a
+/// write path that forgot would let a cached snapshot outlive the content
+/// it was built from (`tests/index_generation.rs` pins each path).
+fn bump_generation(tx: &rusqlite::Transaction<'_>) -> Result<()> {
+    tx.execute(
+        "INSERT INTO meta(key,value) VALUES(?1,'1')
+         ON CONFLICT(key) DO UPDATE SET value = CAST(value AS INTEGER) + 1",
+        [INDEX_GENERATION_KEY],
+    )?;
+    Ok(())
+}
+
 impl SqliteStore {
+    /// `(index_id, index_generation)` if both are present — absent on an
+    /// index no writer has opened since these keys existed, in which case a
+    /// caller must not cache anything derived from it.
+    pub fn generation(&self) -> Result<Option<(String, u64)>> {
+        let id = self.get_meta(INDEX_ID_KEY)?;
+        let generation = self.get_meta(INDEX_GENERATION_KEY)?;
+        Ok(match (id, generation) {
+            (Some(id), Some(g)) => g.parse::<u64>().ok().map(|g| (id, g)),
+            _ => None,
+        })
+    }
+
+    /// `EXPLAIN QUERY PLAN` rows for `sql`, one detail string per row —
+    /// diagnostic only, used by `tests/query_plans.rs` to pin that the
+    /// request-path statements stay index-driven whatever `ANALYZE`
+    /// statistics an index happens to carry.
+    pub fn explain_query_plan(&self, sql: &str) -> Result<Vec<String>> {
+        let mut stmt = self.conn.prepare(&format!("EXPLAIN QUERY PLAN {sql}"))?;
+        let rows = stmt.query_map([], |r| r.get::<_, String>(3))?;
+        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
+    }
+
+    /// Run `ANALYZE` (experiment support for `tests/query_plans.rs` and
+    /// `docs/sqlite-request-path/`): persists `sqlite_stat1`, which is
+    /// exactly what a `PRAGMA optimize` would feed the planner.
+    pub fn analyze(&self) -> Result<()> {
+        self.conn.execute_batch("ANALYZE;")?;
+        Ok(())
+    }
+
     pub fn open(path: &Path) -> Result<Self> {
         if let Some(dir) = path.parent() {
             std::fs::create_dir_all(dir)?;
@@ -443,6 +547,29 @@ impl SqliteStore {
                 }
             }
         }
+        // Identity for the generation counter (see `INDEX_ID_KEY`). Not a
+        // cryptographic need — just distinct across rebuilds of the same
+        // path, which time + pid + path give. `OR IGNORE`: set once, kept.
+        let path_str = path.to_string_lossy();
+        let pid = std::process::id().to_le_bytes();
+        let nanos = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0)
+            .to_le_bytes();
+        let seed =
+            crate::symbols::fnv1a64_iter([path_str.as_bytes(), pid.as_slice(), nanos.as_slice()]);
+        conn.execute(
+            "INSERT OR IGNORE INTO meta(key,value) VALUES(?1,?2)",
+            rusqlite::params![INDEX_ID_KEY, format!("{seed:016x}")],
+        )?;
+        // Generation 0 = "keyable, nothing written by this counter yet".
+        // An index that predates the counter becomes keyable on its first
+        // writer open (any `oxide index` run), with no reindex needed.
+        conn.execute(
+            "INSERT OR IGNORE INTO meta(key,value) VALUES(?1,'0')",
+            [INDEX_GENERATION_KEY],
+        )?;
         Ok(Self { conn })
     }
 
@@ -513,10 +640,15 @@ impl IndexBackend for SqliteStore {
     }
 
     fn set_meta(&mut self, key: &str, value: &str) -> Result<()> {
-        self.conn.execute(
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tx.execute(
             "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
             [key, value],
         )?;
+        bump_generation(&tx)?;
+        tx.commit()?;
         Ok(())
     }
 
@@ -531,6 +663,7 @@ impl IndexBackend for SqliteStore {
                 [*key, *value],
             )?;
         }
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
     }
@@ -657,6 +790,7 @@ impl IndexBackend for SqliteStore {
             }
         }
         insert_postings(&tx, postings)?;
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
     }
@@ -702,6 +836,7 @@ impl IndexBackend for SqliteStore {
             }
         }
         insert_postings(&tx, postings)?;
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(true)
     }
@@ -744,6 +879,7 @@ impl IndexBackend for SqliteStore {
             tx.execute("DELETE FROM symbols WHERE file = ?1", [f])?;
             tx.execute("DELETE FROM files WHERE path = ?1", [f])?;
         }
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
     }
@@ -755,6 +891,33 @@ impl IndexBackend for SqliteStore {
              FROM symbols ORDER BY file, start_line",
         )?;
         let rows = stmt.query_map([], row_to_symbol)?;
+        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
+    }
+
+    fn symbol_count(&self) -> Result<usize> {
+        Ok(self
+            .conn
+            .query_row("SELECT COUNT(*) FROM symbols", [], |r| r.get::<_, i64>(0))?
+            as usize)
+    }
+
+    fn symbols_by_ids(&self, ids: &[u64]) -> Result<Vec<Symbol>> {
+        if ids.is_empty() {
+            return Ok(Vec::new());
+        }
+        // One prepared statement for any candidate count: the id list
+        // travels as a JSON array and `json_each` turns it into an
+        // ephemeral table the planner probes `symbols` by rowid from
+        // (`tests/query_plans.rs` pins that this stays a rowid lookup and
+        // never a scan). ids cross as the same `as i64` bit-cast every
+        // other statement uses.
+        let json = serde_json::to_string(&ids.iter().map(|&id| id as i64).collect::<Vec<_>>())?;
+        let mut stmt = self.conn.prepare_cached(
+            "SELECT file, qualified_name, name, kind, language, start_line, end_line,
+                    content_hash, signature, imports_json, exported, parent, references_json
+             FROM symbols WHERE id IN (SELECT value FROM json_each(?1))",
+        )?;
+        let rows = stmt.query_map([json], row_to_symbol)?;
         Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
     }
 
@@ -774,11 +937,16 @@ impl IndexBackend for SqliteStore {
             return Ok(());
         };
         let bytes: Vec<u8> = vec.iter().flat_map(|f| f.to_le_bytes()).collect();
-        self.conn.execute(
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tx.execute(
             "INSERT OR REPLACE INTO embeddings(symbol_id, content_hash, dim, vec)
              VALUES(?1,?2,?3,?4)",
             rusqlite::params![symbol_id as i64, chash as i64, vec.len() as i32, bytes],
         )?;
+        bump_generation(&tx)?;
+        tx.commit()?;
         Ok(())
     }
 
@@ -811,6 +979,7 @@ impl IndexBackend for SqliteStore {
                 ])?;
             }
         }
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
     }
@@ -863,6 +1032,21 @@ impl IndexBackend for SqliteStore {
         Ok(out)
     }
 
+    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()> {
+        let mut stmt = self
+            .conn
+            .prepare_cached("SELECT symbol_id, dim, vec FROM embeddings")?;
+        let mut rows = stmt.query([])?;
+        while let Some(row) = rows.next()? {
+            let id = row.get::<_, i64>(0)? as u64;
+            let dim = row.get::<_, i32>(1)?.max(0) as usize;
+            // `as_blob` borrows the row buffer; nothing is copied per row.
+            let bytes = row.get_ref(2)?.as_blob()?;
+            visit(id, dim, bytes);
+        }
+        Ok(())
+    }
+
     fn begin_embedding_migration(&mut self, fingerprint_json: &str) -> Result<()> {
         let tx = self
             .conn
@@ -872,6 +1056,7 @@ impl IndexBackend for SqliteStore {
             "INSERT INTO meta(key,value) VALUES(?1,?2) ON CONFLICT(key) DO UPDATE SET value=?2",
             [EMBEDDING_MIGRATION_KEY, fingerprint_json],
         )?;
+        bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
     }
@@ -896,7 +1081,22 @@ impl IndexBackend for SqliteStore {
                 }
             }
         }
+        bump_generation(&tx)?;
         tx.commit()?;
+        Ok(())
+    }
+
+    fn begin_bulk_writes(&mut self) -> Result<()> {
+        self.conn.execute_batch(&format!(
+            "PRAGMA wal_autocheckpoint = {BULK_WAL_AUTOCHECKPOINT_PAGES};"
+        ))?;
+        Ok(())
+    }
+
+    fn end_bulk_writes(&mut self) -> Result<()> {
+        self.conn.execute_batch(&format!(
+            "PRAGMA wal_autocheckpoint = {DEFAULT_WAL_AUTOCHECKPOINT_PAGES};"
+        ))?;
         Ok(())
     }
 
@@ -958,7 +1158,7 @@ fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
 }
 
 /// Index statistics for `oxide stats`.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct IndexStats {
     pub files: usize,
     pub symbols: usize,

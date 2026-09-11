@@ -194,6 +194,20 @@ pub fn update_base_reporting(
     opts: &IndexOptions,
     progress: &dyn ProgressSink,
 ) -> Result<IndexReport> {
+    // Bulk checkpoint policy for the whole pass; restored on every exit
+    // path so a watcher's long-lived connection is never left in bulk mode.
+    store.begin_bulk_writes()?;
+    let result = update_base_inner(root, store, opts, progress);
+    store.end_bulk_writes()?;
+    result
+}
+
+fn update_base_inner(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    opts: &IndexOptions,
+    progress: &dyn ProgressSink,
+) -> Result<IndexReport> {
     let started = std::time::Instant::now();
     let mut report = IndexReport::default();
 

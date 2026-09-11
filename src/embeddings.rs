@@ -1203,7 +1203,9 @@ fn resolve_native_profile(configured: Option<&str>) -> Option<String> {
 /// embedder: the two are different embedding spaces, and quietly swapping
 /// them would trip `update_index`'s fingerprint check and wipe every stored
 /// vector on the next run.
-pub fn open_embedder(explicit: Option<&str>) -> anyhow::Result<Box<dyn EmbeddingProvider>> {
+pub fn open_embedder(
+    explicit: Option<&str>,
+) -> anyhow::Result<Box<dyn EmbeddingProvider + Send + Sync>> {
     let url = explicit
         .map(str::to_string)
         .or_else(|| std::env::var("OXIDE_EMBED_URL").ok());

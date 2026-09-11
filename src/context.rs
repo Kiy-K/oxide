@@ -118,6 +118,19 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
+    build_context_with(root, &engine, task, opts)
+}
+
+/// [`build_context`] over a caller-built engine — the way a long-running
+/// process passes in a cached [`crate::retrieval::SymbolSnapshot`]
+/// (`RetrievalEngine::with_snapshot`) so the structural stage below reads
+/// it instead of reloading every symbol per request.
+pub fn build_context_with(
+    root: &Path,
+    engine: &RetrievalEngine<'_>,
+    task: &str,
+    opts: &ContextOptions,
+) -> Result<ContextPack> {
     // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
     // `task` reaches both the lexical scorer and the embedder unmodified.
@@ -162,8 +175,10 @@ pub fn build_context(
     // Structural expansion around strong primaries only (same rule as search:
     // expansion supplements, never displaces direct hits).
     if !seeds.is_empty() {
-        let symbols = crate::structural_relations::load_symbols_with_relations(store)?;
-        let graph = RelationGraph::build(&symbols);
+        // The one whole-corpus load in this pipeline: `RelationGraph`
+        // needs every symbol (see `SymbolSnapshot`). Shared with the
+        // engine, so a caller-supplied snapshot serves it too.
+        let graph = RelationGraph::build(&engine.snapshot_with_relations()?.symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
         for seed in seeds.iter().take(5) {
@@ -456,7 +471,7 @@ pub fn build_context(
         // Query formatting is now internal to the provider (`embed_query`),
         // so the text reaching lexical/embedding stages is `task` itself.
         query_used: query.to_string(),
-        embedder: embedder.name().to_string(),
+        embedder: engine.embedder().name().to_string(),
         budget_tokens: opts.budget_tokens,
         used_tokens: used,
         omitted: dropped,

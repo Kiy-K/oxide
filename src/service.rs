@@ -3,24 +3,25 @@
 //! This module keeps repository lifecycle, error classification, and wire DTOs
 //! out of the argument parser. Retrieval and context algorithms stay below it.
 
-use crate::context::{build_context, ContextOptions, Omitted, Role};
+use crate::context::{build_context_with, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
-use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
 use crate::storage::{
     IndexBackend, IndexStats, SqliteStore, EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION,
-    SCHEMA_VERSION,
+    LEXICAL_INDEX_KEY, SCHEMA_VERSION,
 };
 use crate::symbols::{Language, Symbol, SymbolKind};
 use serde::Serialize;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex, OnceLock};
 
 const MAX_SEARCH_RESULTS: usize = 100;
 
@@ -268,6 +269,73 @@ pub struct ContextResult {
 
 pub struct RepositoryService {
     root: PathBuf,
+    /// Reuse loaded repository state across calls (see [`ProcessCache`]).
+    /// Off for one-shot CLI commands, on for `oxide mcp`.
+    use_process_cache: bool,
+}
+
+/// What a long-running host keeps between requests. Everything here is
+/// keyed so a stale entry can never be served: a snapshot is reused only
+/// when the index's `(index_id, index_generation)` and every
+/// compatibility key it depends on (`schema_version`,
+/// `extraction_version`, embedding identity, lexical generation) read
+/// back identical *inside the request's own read snapshot*, and the
+/// embedder is reused only for the same configured provider name. A miss
+/// simply loads and replaces. Memory is one symbol snapshot per repository
+/// root the process has served, which for MCP is normally one.
+#[derive(Default)]
+struct ProcessCache {
+    snapshots: Mutex<HashMap<PathBuf, Arc<CachedSnapshot>>>,
+    embedder: Mutex<Option<(String, Arc<dyn EmbeddingProvider + Send + Sync>)>>,
+}
+
+/// `(cache key, matching entry if any)` — `None` when the cache is off or
+/// the index cannot be keyed.
+type CacheLookup = Option<(Vec<String>, Option<Arc<CachedSnapshot>>)>;
+
+struct CachedSnapshot {
+    key: Vec<String>,
+    snapshot: SymbolSnapshot,
+    /// Row counts at this generation — `validate_index`'s completeness
+    /// check needs them, and `COUNT(*)` over the embeddings table walks
+    /// every row's page, so it is an O(N) read worth keying too.
+    stats: IndexStats,
+}
+
+static PROCESS_CACHE: OnceLock<ProcessCache> = OnceLock::new();
+
+fn process_cache() -> &'static ProcessCache {
+    PROCESS_CACHE.get_or_init(ProcessCache::default)
+}
+
+/// Meta values a cached snapshot must match, in a fixed order. `None`
+/// when the index carries no generation counter (never touched by a writer
+/// that has one), in which case nothing derived from it may be cached.
+fn snapshot_key(store: &SqliteStore) -> Result<Option<Vec<String>>, ServiceError> {
+    let Some((id, generation)) = store
+        .generation()
+        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+    else {
+        return Ok(None);
+    };
+    let mut key = vec![id, generation.to_string()];
+    for k in [
+        "schema_version",
+        "extraction_version",
+        "embedding_fingerprint",
+        "embedder",
+        "dim",
+        LEXICAL_INDEX_KEY,
+        EMBEDDING_MIGRATION_KEY,
+    ] {
+        key.push(
+            store
+                .get_meta(k)
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+                .unwrap_or_default(),
+        );
+    }
+    Ok(Some(key))
 }
 
 impl RepositoryService {
@@ -301,11 +369,122 @@ impl RepositoryService {
                 format!("repository path is not a directory: {}", root.display()),
             ));
         }
-        Ok(Self { root })
+        Ok(Self {
+            root,
+            use_process_cache: false,
+        })
+    }
+
+    /// Keep loaded repository state (symbol snapshot, embedding provider)
+    /// alive across calls on this process — for hosts that serve many
+    /// requests, like `oxide mcp`. One-shot commands gain nothing from it
+    /// and would only pay the up-front corpus load.
+    pub fn with_process_cache(mut self) -> Self {
+        self.use_process_cache = true;
+        self
     }
 
     pub fn root(&self) -> &Path {
         &self.root
+    }
+
+    /// The cache entry for this repository at the store's current
+    /// generation, if the cache is on, the index is keyable, and an entry
+    /// with exactly this key exists.
+    fn cache_lookup(&self, store: &SqliteStore) -> Result<CacheLookup, ServiceError> {
+        if !self.use_process_cache {
+            return Ok(None);
+        }
+        let Some(key) = snapshot_key(store)? else {
+            return Ok(None);
+        };
+        let hit = process_cache()
+            .snapshots
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .get(&self.root)
+            .filter(|c| c.key == key)
+            .map(Arc::clone);
+        Ok(Some((key, hit)))
+    }
+
+    /// Row counts for validation: from the cache entry when it matches
+    /// (identical generation ⇒ identical counts), else counted now.
+    fn stats_for(
+        &self,
+        store: &SqliteStore,
+        lookup: &CacheLookup,
+    ) -> Result<IndexStats, ServiceError> {
+        if let Some((_, Some(hit))) = lookup {
+            return Ok(hit.stats.clone());
+        }
+        store
+            .stats()
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))
+    }
+
+    /// The cached snapshot for this repository at the store's current
+    /// generation, loading (and replacing) it on a miss. Called only after
+    /// `validate_index` accepted the index, so a miss never loads a corpus
+    /// the request is about to reject. `None` when the cache is off or the
+    /// index cannot be keyed.
+    fn cached_snapshot(
+        &self,
+        store: &SqliteStore,
+        lookup: CacheLookup,
+        stats: &IndexStats,
+    ) -> Result<Option<Arc<CachedSnapshot>>, ServiceError> {
+        let Some((key, hit)) = lookup else {
+            return Ok(None);
+        };
+        if let Some(hit) = hit {
+            return Ok(Some(hit));
+        }
+        // Loaded inside the same read transaction that produced `key`, so
+        // the snapshot cannot describe a different generation than its key.
+        let snapshot = SymbolSnapshot::load(store)
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+        let entry = Arc::new(CachedSnapshot {
+            key,
+            snapshot,
+            stats: stats.clone(),
+        });
+        process_cache()
+            .snapshots
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .insert(self.root.clone(), Arc::clone(&entry));
+        Ok(Some(entry))
+    }
+
+    /// The configured embedding provider, constructed once per process
+    /// when the cache is on — `NativeEmbedder::new` loads an ONNX model,
+    /// which is most of a small repository's request latency.
+    fn embedder(&self) -> Result<Arc<dyn EmbeddingProvider + Send + Sync>, ServiceError> {
+        if !self.use_process_cache {
+            let provider = open_embedder(None)
+                .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
+            return Ok(Arc::from(provider));
+        }
+        let name = crate::embeddings::configured_provider_name(None);
+        let cache = process_cache();
+        if let Some((cached_name, provider)) = cache
+            .embedder
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .as_ref()
+        {
+            if *cached_name == name {
+                return Ok(Arc::clone(provider));
+            }
+        }
+        let provider: Arc<dyn EmbeddingProvider + Send + Sync> = Arc::from(
+            open_embedder(None)
+                .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?,
+        );
+        *cache.embedder.lock().unwrap_or_else(|e| e.into_inner()) =
+            Some((name, Arc::clone(&provider)));
+        Ok(provider)
     }
 
     pub fn index(
@@ -455,17 +634,24 @@ impl RepositoryService {
         request: SearchRequest,
     ) -> Result<Vec<Evidence>, ServiceError> {
         let store = self.open_index_for_read()?;
-        let provider: Box<dyn EmbeddingProvider> = if request.mode == SearchMode::LexicalOnly {
-            Box::new(HashedEmbedder::default())
-        } else {
-            open_embedder(None)
-                .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?
-        };
+        let provider: Arc<dyn EmbeddingProvider + Send + Sync> =
+            if request.mode == SearchMode::LexicalOnly {
+                Arc::new(HashedEmbedder::default())
+            } else {
+                self.embedder()?
+            };
+        let lookup = self.cache_lookup(&store)?;
+        let stats = self.stats_for(&store, &lookup)?;
         self.validate_index(
             &store,
             (request.mode != SearchMode::LexicalOnly).then_some(provider.as_ref()),
+            &stats,
         )?;
-        let engine = RetrievalEngine::new(&store, provider.as_ref());
+        let cached = self.cached_snapshot(&store, lookup, &stats)?;
+        let engine = match &cached {
+            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+            None => RetrievalEngine::new(&store, provider.as_ref()),
+        };
         let hits = engine
             .search(
                 query,
@@ -505,13 +691,18 @@ impl RepositoryService {
         retrieval_mode: RetrievalMode,
     ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
-        let provider = open_embedder(None)
-            .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
-        self.validate_index(&store, Some(provider.as_ref()))?;
-        let pack = build_context(
+        let provider = self.embedder()?;
+        let lookup = self.cache_lookup(&store)?;
+        let stats = self.stats_for(&store, &lookup)?;
+        self.validate_index(&store, Some(provider.as_ref()), &stats)?;
+        let cached = self.cached_snapshot(&store, lookup, &stats)?;
+        let engine = match &cached {
+            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+            None => RetrievalEngine::new(&store, provider.as_ref()),
+        };
+        let pack = build_context_with(
             &self.root,
-            &store,
-            provider.as_ref(),
+            &engine,
             task,
             &ContextOptions {
                 budget_tokens,
@@ -561,7 +752,10 @@ impl RepositoryService {
         let store = self.open_index_for_read()?;
         let provider = open_embedder(None)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
-        self.validate_index(&store, Some(provider.as_ref()))?;
+        let stats = store
+            .stats()
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+        self.validate_index(&store, Some(provider.as_ref()), &stats)?;
         let context = build_review_context(&self.root, &store, provider.as_ref(), diff)
             .map_err(|e| ServiceError::from_error(ErrorCode::ReviewFailed, e))?;
         if !provider.is_available() {
@@ -582,6 +776,7 @@ impl RepositoryService {
         &self,
         store: &SqliteStore,
         expected_embedder: Option<&dyn EmbeddingProvider>,
+        stats: &IndexStats,
     ) -> Result<(), ServiceError> {
         let indexed_root = store
             .get_meta("root")
@@ -635,9 +830,6 @@ impl RepositoryService {
                 ));
             }
         }
-        let stats = store
-            .stats()
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
         if stats.files == 0 || stats.symbols == 0 {
             return Err(ServiceError::new(
                 ErrorCode::IndexEmpty,
@@ -894,10 +1086,13 @@ mod tests {
             update_index(&root, &mut store, &indexed).unwrap();
         }
 
-        let service = RepositoryService { root: root.clone() };
+        let service = RepositoryService {
+            root: root.clone(),
+            use_process_cache: false,
+        };
         let store = service.open_index_for_read().unwrap();
         let err = service
-            .validate_index(&store, Some(&configured))
+            .validate_index(&store, Some(&configured), &store.stats().unwrap())
             .unwrap_err();
         assert_eq!(err.code(), "provider_mismatch");
 
@@ -907,7 +1102,9 @@ mod tests {
             dim: 4,
             fp: base_fingerprint("bare"),
         };
-        service.validate_index(&store, Some(&same)).unwrap();
+        service
+            .validate_index(&store, Some(&same), &store.stats().unwrap())
+            .unwrap();
     }
 
     #[test]
@@ -933,7 +1130,10 @@ mod tests {
                 .unwrap();
         }
 
-        let service = RepositoryService { root: root.clone() };
+        let service = RepositoryService {
+            root: root.clone(),
+            use_process_cache: false,
+        };
         let store = service.open_index_for_read().unwrap();
         // A provider with the same name+dim but a different fingerprint
         // still validates: no stored fingerprint means the fallback (name+dim
@@ -944,7 +1144,7 @@ mod tests {
             fp: base_fingerprint("gemma-code-retrieval"),
         };
         service
-            .validate_index(&store, Some(&different_profile))
+            .validate_index(&store, Some(&different_profile), &store.stats().unwrap())
             .unwrap();
 
         // A name/dim mismatch still fails, as it always has.
@@ -954,7 +1154,7 @@ mod tests {
             fp: base_fingerprint("bare"),
         };
         let err = service
-            .validate_index(&store, Some(&different_dim))
+            .validate_index(&store, Some(&different_dim), &store.stats().unwrap())
             .unwrap_err();
         assert_eq!(err.code(), "provider_mismatch");
     }
@@ -1021,5 +1221,75 @@ mod tests {
         let evidence = Evidence::from_symbol(&symbol, 1.0, Vec::new(), "return token".into());
         assert_eq!(evidence.id, "src/auth.py#Auth.refresh");
         assert_eq!(evidence.file, "src/auth.py");
+    }
+
+    /// The process cache must be hit on a repeat call at the same
+    /// generation and replaced — never served stale — once a write lands.
+    #[test]
+    fn process_cache_hits_at_the_same_generation_and_reloads_after_a_write() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+        let emb = HashedEmbedder::default();
+        {
+            let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+            update_index(&root, &mut store, &emb).unwrap();
+        }
+        let service = RepositoryService {
+            root: root.clone(),
+            use_process_cache: true,
+        };
+        let store = service.open_index_for_read().unwrap();
+        let stats = store.stats().unwrap();
+        let lookup = service.cache_lookup(&store).unwrap();
+        assert!(
+            matches!(lookup, Some((_, None))),
+            "keyable, nothing cached yet"
+        );
+        let first = service
+            .cached_snapshot(&store, lookup, &stats)
+            .unwrap()
+            .unwrap();
+        let lookup = service.cache_lookup(&store).unwrap();
+        assert!(
+            matches!(lookup, Some((_, Some(_)))),
+            "second lookup is a hit"
+        );
+        assert_eq!(service.stats_for(&store, &lookup).unwrap().symbols, 2);
+        let second = service
+            .cached_snapshot(&store, lookup, &stats)
+            .unwrap()
+            .unwrap();
+        assert!(Arc::ptr_eq(&first, &second), "same generation ⇒ same entry");
+        assert!(first.snapshot.with_relations);
+        assert_eq!(first.snapshot.symbols.len(), 2); // module + thing
+        drop(store);
+
+        std::fs::write(
+            root.join("src/thing.py"),
+            "def thing():\n    return 1\n\ndef other():\n    return 2\n",
+        )
+        .unwrap();
+        {
+            let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+            update_index(&root, &mut store, &emb).unwrap();
+        }
+        let store = service.open_index_for_read().unwrap();
+        let stats = store.stats().unwrap();
+        let lookup = service.cache_lookup(&store).unwrap();
+        assert!(matches!(lookup, Some((_, None))), "new generation ⇒ miss");
+        let third = service
+            .cached_snapshot(&store, lookup, &stats)
+            .unwrap()
+            .unwrap();
+        assert!(!Arc::ptr_eq(&first, &third), "a write must invalidate");
+        assert_eq!(third.snapshot.symbols.len(), 3);
+        assert_ne!(first.key, third.key);
+
+        let off = RepositoryService {
+            root: root.clone(),
+            use_process_cache: false,
+        };
+        assert!(off.cache_lookup(&store).unwrap().is_none());
     }
 }
