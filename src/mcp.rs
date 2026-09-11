@@ -26,7 +26,7 @@ use rmcp::model::{
 use rmcp::{tool, tool_handler, tool_router, ErrorData as McpError, ServerHandler};
 use serde_json::{json, Value};
 
-const SERVER_INSTRUCTIONS: &str = "Use context for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits.";
+const SERVER_INSTRUCTIONS: &str = "Use query for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits.";
 const DEFAULT_CONTEXT_BUDGET: usize = 4096;
 const DEFAULT_SEARCH_LIMIT: usize = 10;
 
@@ -49,14 +49,14 @@ impl OxideServer {
 const RETRIEVAL_MODE_DESCRIPTION: &str =
     "Relevance/latency tradeoff. Omit for balanced (the default for an unconfigured agent).";
 
-fn context_input_schema() -> JsonObject {
+fn query_input_schema() -> JsonObject {
     object(json!({
         "type": "object",
         "properties": {
             "task": {"type": "string"},
             "path": {"type": "string"},
-            "token_budget": {"type": "integer", "minimum": 0},
-            "mode": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
+            "budget_tokens": {"type": "integer", "minimum": 0},
+            "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
         },
         "required": ["task"],
         "additionalProperties": false,
@@ -70,21 +70,26 @@ fn search_input_schema() -> JsonObject {
             "query": {"type": "string"},
             "path": {"type": "string"},
             "limit": {"type": "integer", "minimum": 0, "maximum": 100},
-            "mode": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
+            "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
         },
         "required": ["query"],
         "additionalProperties": false,
     }))
 }
 
-/// Parses the optional `mode` argument (fast|balanced|quality). Absent means
+/// Parses the optional `profile` argument (fast|balanced|quality) — the
+/// CLI's `--profile`, deliberately not called `mode` here because the CLI's
+/// `--mode` is `search`'s lexical|semantic|hybrid switch. Absent means
 /// `RetrievalMode::resolve(None)` — the process's `$OXIDE_RETRIEVAL_MODE`, or
 /// `Balanced` for a fully unconfigured agent. An explicit but unparseable
 /// value fails loudly rather than silently falling back.
 fn optional_retrieval_mode(arguments: &JsonObject) -> Result<RetrievalMode, McpError> {
-    match optional_string(arguments, "mode")? {
+    match optional_string(arguments, "profile")? {
         Some(s) => RetrievalMode::parse(s).ok_or_else(|| {
-            McpError::invalid_params(format!("mode must be fast|balanced|quality, got {s}"), None)
+            McpError::invalid_params(
+                format!("profile must be fast|balanced|quality, got {s}"),
+                None,
+            )
         }),
         None => Ok(RetrievalMode::resolve(None)),
     }
@@ -100,15 +105,15 @@ fn object(value: Value) -> JsonObject {
 #[tool_router]
 impl OxideServer {
     #[tool(
-        name = "context",
-        description = "Build a bounded working set for an unfamiliar coding task.",
-        input_schema = context_input_schema()
+        name = "query",
+        description = "Find the code relevant to a question or a coding task: a bounded, ranked working set (same as `oxide query`).",
+        input_schema = query_input_schema()
     )]
-    async fn context(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["task", "path", "token_budget", "mode"])?;
+    async fn query(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
+        reject_unknown(&arguments, &["task", "path", "budget_tokens", "profile"])?;
         let task = required_string(&arguments, "task")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
-        let budget = optional_usize(&arguments, "token_budget")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
+        let budget = optional_usize(&arguments, "budget_tokens")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
         let mode = optional_retrieval_mode(&arguments)?;
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
@@ -125,11 +130,11 @@ impl OxideServer {
 
     #[tool(
         name = "search",
-        description = "Find repository code relevant to a focused implementation question.",
+        description = "Search for code by name, identifier, or phrase (same as `oxide search`).",
         input_schema = search_input_schema()
     )]
     async fn search(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["query", "path", "limit", "mode"])?;
+        reject_unknown(&arguments, &["query", "path", "limit", "profile"])?;
         let query = required_string(&arguments, "query")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);

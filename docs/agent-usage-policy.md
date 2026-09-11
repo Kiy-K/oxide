@@ -79,7 +79,7 @@ edit
 tests / build / lint
 ```
 
-`oxide context` is the default entry point for an unfamiliar task — it
+`oxide query` (alias `context`; the MCP tool is also `query`) is the default entry point for an unfamiliar task — it
 returns a budgeted, ranked, deduplicated pack in one call instead of many
 exploratory searches. `oxide search` is for a narrower follow-up question
 once you already have a task-level context pack and need one more specific
@@ -90,13 +90,13 @@ reading/editing when the task doesn't need discovery.
 
 ## Index and freshness behavior
 
-- OXIDE's read commands (`status`, `search`, `context`) never index, never
+- OXIDE's read commands (`status`, `search`, `query`) never index, never
   repair, and never mutate the index, even when it is missing or stale.
   A missing index fails with a clear `index_missing` error and an `index`
   action hint — the agent (or the human driving it) decides whether and
   when to run `oxide index`, OXIDE never does it silently.
 - Do not reflexively call `oxide status` or `oxide index` before every
-  `search`/`context` call. Index once per session (or when you know the
+  `search`/`query` call. Index once per session (or when you know the
   repository changed since the last index), not per query.
 - Every JSON error carries a stable `code` and an `action`
   (`index` / `repair` / `retry` / `fall_back` / `stop`) — use `action` to
@@ -129,7 +129,7 @@ expanded with example CLI syntax (that belongs in `README.md`'s
 ## OXIDE
 
 For unfamiliar repository work where the implementation path is not
-already known, use `oxide context` before broad grep/read exploration.
+already known, use `oxide query` before broad grep/read exploration.
 Use `oxide search` for focused follow-up discovery. For exact known-file
 or literal tasks, use normal tools directly. Read source before editing.
 ```

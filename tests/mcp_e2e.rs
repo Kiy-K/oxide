@@ -143,12 +143,31 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
         .iter()
         .map(|tool| tool["name"].as_str().unwrap())
         .collect();
-    assert_eq!(names, ["context", "search"]);
+    assert_eq!(names, ["query", "search"]);
     assert!(tools
         .iter()
         .all(|tool| tool["inputSchema"]["additionalProperties"] == false));
     assert_eq!(tools[0]["inputSchema"]["required"], json!(["task"]));
     assert_eq!(tools[1]["inputSchema"]["required"], json!(["query"]));
+    // Argument names mirror the CLI flags (`oxide query TASK --budget-tokens
+    // --profile`, `oxide search QUERY --limit --profile`); in particular the
+    // relevance profile is `profile`, never `mode`, because the CLI's
+    // `--mode` is search's lexical|semantic|hybrid switch.
+    let keys = |tool: &Value| -> Vec<String> {
+        let mut k: Vec<String> = tool["inputSchema"]["properties"]
+            .as_object()
+            .unwrap()
+            .keys()
+            .cloned()
+            .collect();
+        k.sort();
+        k
+    };
+    assert_eq!(
+        keys(&tools[0]),
+        ["budget_tokens", "path", "profile", "task"]
+    );
+    assert_eq!(keys(&tools[1]), ["limit", "path", "profile", "query"]);
 }
 
 #[test]
@@ -163,8 +182,8 @@ fn context_and_search_return_service_evidence_over_real_protocol() {
     let mut server = McpProcess::start(root.path());
 
     let context = server.request(call(
-        "context",
-        json!({"task": "fix refresh token validation", "path": ".", "token_budget": 128}),
+        "query",
+        json!({"task": "fix refresh token validation", "path": ".", "budget_tokens": 128}),
     ));
     assert_eq!(context["id"], 2);
     assert_eq!(context["result"]["isError"], false);
@@ -190,7 +209,7 @@ fn malformed_parameters_and_service_failures_preserve_structured_semantics() {
     let root = tempfile::tempdir().unwrap();
     let mut server = McpProcess::start(root.path());
 
-    let malformed = server.request(call("context", json!({"task": 42})));
+    let malformed = server.request(call("query", json!({"task": 42})));
     assert_eq!(malformed["error"]["code"], -32602);
 
     let missing = server.request(call(
@@ -216,7 +235,7 @@ fn unavailable_embedder_preserves_fallback_action() {
     index(root.path());
     let mut server = McpProcess::start_with_embedder_url(root.path(), "http://127.0.0.1:1");
 
-    let response = server.request(call("context", json!({"task": "find thing", "path": "."})));
+    let response = server.request(call("query", json!({"task": "find thing", "path": "."})));
     let payload: Value =
         serde_json::from_str(response["result"]["content"][0]["text"].as_str().unwrap()).unwrap();
     assert_eq!(payload["error"]["code"], "embedder_unavailable");
@@ -257,7 +276,7 @@ fn repository_and_incompatible_index_errors_keep_service_actions() {
     let missing_root = tempfile::tempdir().unwrap();
     let mut missing_server = McpProcess::start(missing_root.path());
     let missing = missing_server.request(call(
-        "context",
+        "query",
         json!({"task": "find code", "path": missing_root.path().join("missing")}),
     ));
     let missing_payload: Value =
@@ -392,8 +411,8 @@ fn a_live_server_sees_an_out_of_process_reindex_on_the_next_call() {
     // Context runs the structural stage over the cached snapshot; it too
     // must only ever name symbols that currently exist.
     let context = server.request(call(
-        "context",
-        json!({"task": "fresh helper refresh token", "path": ".", "token_budget": 512}),
+        "query",
+        json!({"task": "fresh helper refresh token", "path": ".", "budget_tokens": 512}),
     ));
     let payload: Value =
         serde_json::from_str(context["result"]["content"][0]["text"].as_str().unwrap()).unwrap();

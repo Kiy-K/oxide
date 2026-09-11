@@ -7,6 +7,7 @@ server's RSS. `OXIDE_EMBED_NATIVE` defaults to `hashed` (offline).
 usage: scripts/mcp_bench.py <oxide binary> <repo_path> "<query>" [n]"""
 import json, os, subprocess, sys, time
 binary, repo, query = sys.argv[1:4]
+binary = os.path.abspath(binary)
 n = int(sys.argv[4]) if len(sys.argv) > 4 else 8
 env = dict(os.environ, OXIDE_EMBED_NATIVE=os.environ.get("OXIDE_EMBED_NATIVE", "hashed"))
 env.pop("OXIDE_EMBED_URL", None); env.pop("OXIDE_EMBED_MODEL", None)
@@ -21,7 +22,7 @@ def call(msg):
 call({"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"bench","version":"0"}}})
 p.stdin.write((json.dumps({"jsonrpc":"2.0","method":"notifications/initialized"})+"\n").encode()); p.stdin.flush()
 res = {}
-for tool, args in [("search", {"query": query, "limit": 10}), ("context", {"task": query, "token_budget": 4096})]:
+for tool, args in [("search", {"query": query, "limit": 10}), ("query", {"task": query, "budget_tokens": 4096})]:
     lat = []
     for i in range(n):
         t = time.perf_counter()

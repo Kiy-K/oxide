@@ -33,7 +33,7 @@ this skill, not a safer default.
 For an unfamiliar coding task, start with one context call:
 
 ```bash
-oxide context --task "<task description>" --budget-tokens 4096 --json
+oxide query "<task description>" --budget-tokens 4096 --json
 ```
 
 Then **read the actual source** of the files/symbols it returns — the
@@ -50,7 +50,7 @@ search instead of another full context call:
 oxide search "<specific repository question>" --json
 ```
 
-Don't loop `context`/`search` calls hoping for a better answer to the same
+Don't loop `query`/`search` calls hoping for a better answer to the same
 question — one context call plus at most a couple of targeted searches is
 the normal shape of a task. If results are still weak, switch to normal
 repository exploration (grep, follow imports, read directory structure).
@@ -60,10 +60,10 @@ repository exploration (grep, follow imports, read directory structure).
 - `oxide index [PATH]` builds or incrementally updates the index. Run it
   once per session, or when you know the repo changed materially since the
   last index — not before every query.
-- `status`/`search`/`context` are read-only: they never index, repair, or
+- `status`/`search`/`query` are read-only: they never index, repair, or
   modify anything, even when the index is missing or stale. Don't call
   `oxide status` reflexively before every search — if the index is missing,
-  `search`/`context` fail with a clear `index_missing` error telling you to
+  `search`/`query` fail with a clear `index_missing` error telling you to
   index.
 - Every JSON error has `code` and `action` (`index`/`repair`/`retry`/
   `fall_back`/`stop`). Use `action` to decide what to do, not the message

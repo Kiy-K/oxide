@@ -27,7 +27,7 @@ not duplicated retrieval logic.
 
 | operation | class | why |
 |-----------|-------|-----|
-| `context` | **AGENT CORE** | Default entry point for unfamiliar-task discovery: one call returns a budgeted, ranked, deduplicated working set. |
+| `query` (CLI alias `context`) | **AGENT CORE** | Default entry point for unfamiliar-task discovery: one call returns a budgeted, ranked, deduplicated working set. |
 | `search` | **AGENT CORE** | Narrower follow-up after a context pack when one specific question remains. |
 | `index` | **HUMAN/ADMIN** | Read tools surface `index_missing` or `index_stale` with `action: "index"`; the agent or human decides when to run the CLI index command. |
 | `status` | **HUMAN/ADMIN** | Read-tool errors already expose the actionable state needed by an agent; humans use status for inspection and scripting. |
@@ -36,7 +36,9 @@ not duplicated retrieval logic.
 | `eval` | **DIAGNOSTIC/INTERNAL** | The committed benchmark is for maintainers and CI. |
 
 The CLI retains every human/admin command. Only the agent-facing MCP tool list
-is scoped to `context` and `search`, based on the Phase 1.2 evaluation,
+is scoped to `query` and `search` — the same names and argument spellings
+(`task`, `budget_tokens`, `profile`; `query`, `limit`, `profile`) as the CLI
+commands — based on the Phase 1.2 evaluation,
 the Phase 2 transport report, and the Phase 2.1 real-agent evaluation in
 `docs/evals/phase-2.1/`.
 
