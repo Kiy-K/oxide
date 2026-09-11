@@ -75,6 +75,63 @@ impl IndexOptions {
     }
 }
 
+/// One indexing stage, for progress reporting only. Stages are observed,
+/// never steered: a sink cannot change what the pipeline does.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Stage {
+    Model,
+    Scan,
+    Relations,
+    Parse,
+    Store,
+    Embed,
+    Finalize,
+}
+
+impl Stage {
+    pub fn label(self) -> &'static str {
+        match self {
+            Stage::Model => "Loading semantic model...",
+            Stage::Scan => "Scanning repository...",
+            Stage::Relations => "Refreshing relations...",
+            Stage::Parse => "Parsing...",
+            Stage::Store => "Storing symbols...",
+            Stage::Embed => "Embedding...",
+            Stage::Finalize => "Finalizing...",
+        }
+    }
+}
+
+/// Receives progress from the indexing pipeline. `Sync` because the parse
+/// and embed stages report from their worker threads. `advance` may be
+/// called for every item; a sink that draws should throttle itself.
+pub trait ProgressSink: Sync {
+    fn begin(&self, stage: Stage);
+    fn advance(&self, stage: Stage, done: usize, total: usize);
+    fn end(&self, stage: Stage, summary: &str);
+}
+
+/// The sink every non-interactive caller gets: MCP, the watcher, tests.
+pub struct NoProgress;
+
+impl ProgressSink for NoProgress {
+    fn begin(&self, _: Stage) {}
+    fn advance(&self, _: Stage, _: usize, _: usize) {}
+    fn end(&self, _: Stage, _: &str) {}
+}
+
+fn count_summary(done: usize, total: usize) -> String {
+    if total == 0 {
+        "nothing to do".to_string()
+    } else {
+        format!(
+            "{}/{}",
+            crate::term::thousands(done),
+            crate::term::thousands(total)
+        )
+    }
+}
+
 /// Run incremental indexing of the repo at `root` into `store`. Equivalent
 /// to `update_index_scoped` with `IndexOptions::default()` — the plain
 /// incremental contract every pre-existing caller of this function keeps
@@ -127,11 +184,23 @@ pub fn update_base(
     store: &mut dyn IndexBackend,
     opts: &IndexOptions,
 ) -> Result<IndexReport> {
+    update_base_reporting(root, store, opts, &NoProgress)
+}
+
+/// [`update_base`] with stage/progress reporting; identical work.
+pub fn update_base_reporting(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    opts: &IndexOptions,
+    progress: &dyn ProgressSink,
+) -> Result<IndexReport> {
     let started = std::time::Instant::now();
     let mut report = IndexReport::default();
 
+    progress.begin(Stage::Scan);
     let files = scanner::scan_repo(root)?;
     report.scanned_files = files.len();
+    progress.end(Stage::Scan, &format!("{} files", files.len()));
 
     // Single read per file: bytes → UTF-8 string → hash + parse reuse it.
     let mut current: HashMap<String, String> = HashMap::with_capacity(files.len());
@@ -150,8 +219,6 @@ pub fn update_base(
 
     // One snapshot reused for deletions, change detection and name matching.
     let existing = store.all_symbols()?;
-    let before_symbols: HashMap<u64, u64> =
-        existing.iter().map(|s| (s.id(), s.content_hash)).collect();
 
     // Deletions and stale entries.
     let removed: Vec<String> = stored
@@ -240,7 +307,12 @@ pub fn update_base(
                     .push(s.clone());
             }
         }
-        for (file, file_symbols) in unchanged_by_file {
+        let relation_total = unchanged_by_file.len();
+        if relation_total > 0 {
+            progress.begin(Stage::Relations);
+        }
+        for (i, (file, file_symbols)) in unchanged_by_file.into_iter().enumerate() {
+            progress.advance(Stage::Relations, i + 1, relation_total);
             let (Some(src), Some(lang)) = (
                 current.get(file),
                 scanner::language_for_path(Path::new(file)),
@@ -268,16 +340,22 @@ pub fn update_base(
                 }
             }
         }
+        if relation_total > 0 {
+            progress.end(
+                Stage::Relations,
+                &count_summary(relation_total, relation_total),
+            );
+        }
     }
 
     parse_and_persist_changed_files(
         to_parse,
         &current,
         &existing,
-        &before_symbols,
         unreadable_files,
         store,
         &mut report,
+        progress,
     )?;
 
     // Publish the lexical generation only now, after every file in the
@@ -370,8 +448,6 @@ pub fn update_base_for_files(
 
     let stored = store.file_hashes()?;
     let existing = store.all_symbols()?;
-    let before_symbols: HashMap<u64, u64> =
-        existing.iter().map(|s| (s.id(), s.content_hash)).collect();
 
     let mut current: HashMap<String, String> = HashMap::with_capacity(changed_paths.len());
     let mut unreadable_files: usize = 0;
@@ -427,10 +503,10 @@ pub fn update_base_for_files(
         to_parse,
         &current,
         &existing,
-        &before_symbols,
         unreadable_files,
         store,
         &mut report,
+        &NoProgress,
     )?;
 
     report.duration_ms = started.elapsed().as_millis();
@@ -460,18 +536,18 @@ pub fn update_base_for_files(
 /// (repo-wide) and `update_base_for_files` (fs-event-scoped, for the
 /// auto-indexing watcher) share one implementation of the part that never
 /// differs between them — only how `to_parse`/`current`/`existing` are
-/// computed differs by caller. `existing` and `before_symbols` are always
-/// repo-wide snapshots (`store.all_symbols()`) even when `to_parse` is
+/// computed differs by caller. `existing` is always a repo-wide snapshot
+/// (`store.all_symbols()`, taken before any write) even when `to_parse` is
 /// scoped: reference resolution needs the whole project's known names
 /// regardless of how many files changed this run.
 fn parse_and_persist_changed_files(
     to_parse: Vec<(&String, u64)>,
     current: &HashMap<String, String>,
     existing: &[Symbol],
-    before_symbols: &HashMap<u64, u64>,
     unreadable_files: usize,
     store: &mut dyn IndexBackend,
     report: &mut IndexReport,
+    progress: &dyn ProgressSink,
 ) -> Result<()> {
     // Parsing is pure CPU over independent files: fan out across a small
     // bounded pool (laptop-friendly cap) and collect in order.
@@ -480,12 +556,16 @@ fn parse_and_persist_changed_files(
         .unwrap_or(1)
         .clamp(1, 4);
     let chunk_size = to_parse.len().div_ceil(workers.max(1));
+    let parse_total = to_parse.len();
+    let parse_done = std::sync::atomic::AtomicUsize::new(0);
     let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
     let mut results: Vec<(Vec<ParsedFile>, usize)> = Vec::with_capacity(workers);
+    progress.begin(Stage::Parse);
     std::thread::scope(|scope| {
         let mut handles = Vec::new();
         for (w, chunk) in to_parse.chunks(chunk_size.max(1)).enumerate() {
             let current = &current;
+            let parse_done = &parse_done;
             results.push((Vec::new(), 0));
             handles.push(scope.spawn(move || {
                 let mut out = Vec::with_capacity(chunk.len());
@@ -509,6 +589,8 @@ fn parse_and_persist_changed_files(
                         src: src.clone(),
                         symbols: syms,
                     });
+                    let done = parse_done.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
+                    progress.advance(Stage::Parse, done, parse_total);
                 }
                 (w, out, unresolved)
             }));
@@ -528,6 +610,7 @@ fn parse_and_persist_changed_files(
     }
     report.reparsed_files = parsed.len();
     report.errored_files = unreadable_files + parse_unresolved;
+    progress.end(Stage::Parse, &count_summary(parsed.len(), parse_total));
 
     // Known bare definition names across the project (for reference matching).
     let mut known_names: HashSet<String> = existing
@@ -581,6 +664,8 @@ fn parse_and_persist_changed_files(
     // an otherwise-still-present file (not just a whole-file deletion) is a
     // real deletion too. Group the pre-edit snapshot by file so that delta is
     // counted, not just symbols new/changed_symbols above it.
+    let before_symbols: HashMap<u64, u64> =
+        existing.iter().map(|s| (s.id(), s.content_hash)).collect();
     let mut existing_ids_by_file: HashMap<&str, HashSet<u64>> = HashMap::new();
     for s in existing {
         existing_ids_by_file
@@ -589,7 +674,9 @@ fn parse_and_persist_changed_files(
             .insert(s.id());
     }
 
-    for pf in &parsed {
+    progress.begin(Stage::Store);
+    for (i, pf) in parsed.iter().enumerate() {
+        progress.advance(Stage::Store, i + 1, parsed.len());
         let mut new_ids: HashSet<u64> = HashSet::with_capacity(pf.symbols.len());
         for s in &pf.symbols {
             new_ids.insert(s.id());
@@ -631,6 +718,7 @@ fn parse_and_persist_changed_files(
         let postings = crate::lexical::compute_file_postings(&pf.symbols, &pf.src);
         store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations, &postings)?;
     }
+    progress.end(Stage::Store, &count_summary(parsed.len(), parsed.len()));
     Ok(())
 }
 
@@ -647,6 +735,18 @@ pub fn update_embeddings(
     embedder: &dyn crate::embeddings::EmbeddingProvider,
     opts: &IndexOptions,
     report: &mut IndexReport,
+) -> Result<()> {
+    update_embeddings_reporting(root, store, embedder, opts, report, &NoProgress)
+}
+
+/// [`update_embeddings`] with stage/progress reporting; identical work.
+pub fn update_embeddings_reporting(
+    root: &Path,
+    store: &mut dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+    opts: &IndexOptions,
+    report: &mut IndexReport,
+    progress: &dyn ProgressSink,
 ) -> Result<()> {
     let started = std::time::Instant::now();
     let workers = std::thread::available_parallelism()
@@ -701,6 +801,9 @@ pub fn update_embeddings(
         })
         .collect();
     let chunk_size = to_embed.len().div_ceil(workers.max(1));
+    let embed_total = to_embed.len();
+    let embed_done = std::sync::atomic::AtomicUsize::new(0);
+    progress.begin(Stage::Embed);
     // Batched path: providers with batch endpoints (HTTP) get one request per
     // chunk; the thread pool stays useful for per-text providers.
     if to_embed.len() < 8 || std::env::var("OXIDE_EMBED_URL").is_ok() {
@@ -721,15 +824,25 @@ pub fn update_embeddings(
             }
             report.embedded_symbols += batch.len();
             store.put_embeddings_batch(&expected_space, &batch)?;
+            let done = embed_done.fetch_add(chunk.len(), std::sync::atomic::Ordering::Relaxed)
+                + chunk.len();
+            progress.advance(Stage::Embed, done, embed_total);
         }
     } else {
         let computed: Vec<Vec<(u64, Vec<f32>)>> = std::thread::scope(|scope| {
             let mut handles = Vec::new();
             for chunk in to_embed.chunks(chunk_size.max(1)) {
-                handles.push(scope.spawn(|| {
+                let embed_done = &embed_done;
+                handles.push(scope.spawn(move || {
                     chunk
                         .iter()
-                        .map(|s| (s.id(), embedder.embed_document(&symbol_embed_text(s))))
+                        .map(|s| {
+                            let vector = embedder.embed_document(&symbol_embed_text(s));
+                            let done =
+                                embed_done.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
+                            progress.advance(Stage::Embed, done, embed_total);
+                            (s.id(), vector)
+                        })
                         .collect::<Vec<_>>()
                 }));
             }
@@ -764,6 +877,9 @@ pub fn update_embeddings(
         }
     }
 
+    progress.end(Stage::Embed, &count_summary(embed_total, embed_total));
+
+    progress.begin(Stage::Finalize);
     let root_str = root.display().to_string();
     let dim_str = embedder.dim().to_string();
     let schema_str = SCHEMA_VERSION.to_string();
@@ -785,6 +901,7 @@ pub fn update_embeddings(
             (EMBEDDING_MIGRATION_KEY, ""),
         ],
     )?;
+    progress.end(Stage::Finalize, "done");
     // Additive, not an overwrite: a caller running this right after
     // `update_base` (the normal case) already has that stage's duration in
     // `report.duration_ms` and wants the combined total, not just this

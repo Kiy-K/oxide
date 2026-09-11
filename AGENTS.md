@@ -196,6 +196,22 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   (~0.3 GB RSS with the capped profile; Q4_K_M third-party quants are broken,
   stick to official Q8_0).
 
+## Terminal output and telemetry
+
+- `src/term.rs` is the only module that produces ANSI escapes. Human
+  renderers take a `Paint` (built once per stream from `--color`,
+  `NO_COLOR`, `TERM=dumb`, and isatty) and never write escapes themselves;
+  the `--json` paths and `mcp.rs` never touch a `Paint` at all, which is
+  what keeps the machine surfaces byte-clean. Indexing progress is a
+  `ProgressSink` (`index.rs`) fed to `index_staged`; only the CLI installs
+  a drawing sink, on stderr — an indicatif spinner when stderr is a real
+  terminal (`TERM` set and not `dumb`), one plain line per stage
+  otherwise. `tests/terminal_output.rs` pins the matrix.
+- Telemetry is Sentry panic reporting and nothing else, off unless
+  `OXIDE_TELEMETRY` opts in; `src/telemetry.rs` + `TELEMETRY.md` are the
+  contract and `tests/telemetry.rs` watches the wire. Don't add any other
+  network call outside the embedding provider path.
+
 ## JSON output contracts
 
 `oxide search/context/review --json` feed coding agents. Pack items and search

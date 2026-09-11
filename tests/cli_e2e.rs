@@ -766,9 +766,9 @@ fn index_scope_flags_are_wired_through_the_cli() {
     assert!(all_json["changed_files"].as_u64().unwrap() > 0);
     assert_eq!(all_json["reused_embeddings"], 0);
 
-    // -a in human (non-JSON) mode reports the base/graph stage before
-    // warning and continuing into semantic indexing — two summaries, one
-    // warning line, in that order.
+    // -a in human (non-JSON) mode narrates its stages on stderr, so a long
+    // rebuild is never silent even when redirected, and stdout carries
+    // exactly one summary.
     let out = run(tmp.path(), &["index", ".", "-a"]);
     assert!(
         out.status.success(),
@@ -776,15 +776,18 @@ fn index_scope_flags_are_wired_through_the_cli() {
         String::from_utf8_lossy(&out.stderr)
     );
     let stdout = String::from_utf8_lossy(&out.stdout);
-    let indexed_lines = stdout.matches("indexed ").count();
     assert_eq!(
-        indexed_lines, 2,
-        "expected base-stage + final summary: {stdout}"
+        stdout.matches("✓ Indexed ").count(),
+        1,
+        "expected one final summary: {stdout}"
     );
     let stderr = String::from_utf8_lossy(&out.stderr);
+    for stage in ["Parsing... 1/1", "Embedding... ", "Finalizing... done"] {
+        assert!(stderr.contains(stage), "missing stage `{stage}`: {stderr}");
+    }
     assert!(
-        stderr.contains("continuing to semantic indexing"),
-        "missing the CPU-time warning: {stderr}"
+        !stderr.contains('\r') && !stderr.contains("\x1b["),
+        "redirected progress must be plain lines: {stderr:?}"
     );
 
     // Combining flags is accepted and each still does its own job.

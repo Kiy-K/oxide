@@ -1,19 +1,21 @@
 fn main() {
     use clap::Parser;
 
-    // Guard held for the whole process: dropping it flushes queued events on exit.
-    // Captures panics (and, with send_default_pii, the reporting machine's IP) automatically.
-    // ClientOptions is #[non_exhaustive], so it must be built via Default + field
-    // assignment rather than a `..Default::default()` struct-update literal.
-    let mut sentry_options = sentry::ClientOptions::default();
-    sentry_options.release = sentry::release_name!();
-    sentry_options.send_default_pii = true;
-    let _guard = sentry::init((
-        "https://220500416743d04ad4597d88eec7cb8e@o4511784788557824.ingest.us.sentry.io/4512021829779456",
-        sentry_options,
-    ));
+    // Rust ignores SIGPIPE, so `oxide status | head -1` would panic on the
+    // first write after `head` exits. Restore the default: quietly die like
+    // every other CLI in the pipeline.
+    #[cfg(unix)]
+    // SAFETY: setting a signal disposition before any thread exists.
+    unsafe {
+        libc::signal(libc::SIGPIPE, libc::SIG_DFL);
+    }
+
+    // `None` unless OXIDE_TELEMETRY opts in — see TELEMETRY.md. Held for the
+    // whole process so a report queued by a panic is flushed on exit.
+    let _telemetry = oxide::telemetry::init();
 
     let args = oxide::cli::Args::parse_from(std::env::args_os());
+    let color = args.color;
     if let Err(e) = oxide::cli::run(args) {
         if e.json {
             println!(
@@ -27,7 +29,12 @@ fn main() {
                 })
             );
         } else {
-            eprintln!("error: {}", oxide::cli::render_human_error(&e));
+            let paint = oxide::term::Paint::for_stderr(color);
+            eprintln!(
+                "{} {}",
+                paint.err("error:"),
+                oxide::cli::render_human_error(&e, &paint)
+            );
         }
         std::process::exit(1);
     }

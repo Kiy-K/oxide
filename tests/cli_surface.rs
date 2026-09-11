@@ -156,7 +156,7 @@ fn query_takes_the_task_positionally_in_both_output_modes() {
         "human output has no code in it:\n{text}"
     );
     assert!(
-        text.contains("token budget used"),
+        text.contains("context tokens"),
         "human output does not report the budget:\n{text}"
     );
 
@@ -283,9 +283,7 @@ fn status_is_readable_before_indexing_when_current_and_when_stale() {
     let tmp = sample_repo();
 
     let missing = stdout_of(&run(tmp.path(), &["status"]));
-    assert!(missing.contains("OXIDE status"), "{missing}");
-    assert!(missing.contains("Index"), "{missing}");
-    assert!(missing.contains("not found"), "{missing}");
+    assert!(missing.contains("Index not found"), "{missing}");
     assert!(
         missing.contains("Run:\n  oxide index"),
         "a missing index must say what to run:\n{missing}"
@@ -293,8 +291,8 @@ fn status_is_readable_before_indexing_when_current_and_when_stale() {
 
     run(tmp.path(), &["index", ".", "--json"]);
     let current = stdout_of(&run(tmp.path(), &["status"]));
-    assert!(current.contains("current"), "{current}");
-    assert!(current.contains("Semantic"), "{current}");
+    assert!(current.contains("Index current"), "{current}");
+    assert!(current.contains("Semantic search ready"), "{current}");
     assert!(current.contains("Python"), "{current}");
     assert!(
         !current.contains("Run:"),
@@ -307,7 +305,7 @@ fn status_is_readable_before_indexing_when_current_and_when_stale() {
         "class AuthService:\n    def refresh_token(self, token):\n        return None\n",
     );
     let stale = stdout_of(&run(tmp.path(), &["status"]));
-    assert!(stale.contains("stale"), "{stale}");
+    assert!(stale.contains("Index stale"), "{stale}");
     assert!(
         stale.contains("Run:\n  oxide index"),
         "a stale index must say what to run:\n{stale}"

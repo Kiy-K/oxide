@@ -9,6 +9,7 @@ use crate::service::{
     StatusResult,
 };
 use crate::storage::SqliteStore;
+use crate::term::{duration, thousands, ColorChoice, Paint, StderrProgress};
 use std::io::Write;
 
 /// Hand-written because clap cannot group subcommands, and the grouping is
@@ -43,6 +44,9 @@ DEVELOPER
 QUICK START
   oxide index
   oxide query \"Where is authentication handled?\"
+
+OPTIONS
+  --color <auto|always|never>   Color output (default: auto; honors NO_COLOR)
 
 Run `oxide <command> --help` for one command's options, `oxide --version`
 for the installed version.
@@ -80,6 +84,11 @@ fn resolve_profile(explicit: Option<&str>, json: bool) -> Result<RetrievalMode, 
 pub struct Args {
     #[command(subcommand)]
     pub cmd: Cmd,
+    /// When to color output: auto (only on a terminal, and never when
+    /// NO_COLOR is set), always, or never. Only human-readable output is
+    /// ever colored; `--json` never is.
+    #[arg(long, global = true, value_enum, default_value_t = ColorChoice::Auto, value_name = "WHEN")]
+    pub color: ColorChoice,
 }
 
 #[derive(clap::Subcommand)]
@@ -306,7 +315,7 @@ impl std::error::Error for CliError {}
 /// service `message` still go out verbatim under `--json`. This only
 /// rewrites the terminal rendering, where a sentence plus a command beats a
 /// diagnostic string with a path and a backticked hint embedded in it.
-pub fn render_human_error(error: &CliError) -> String {
+pub fn render_human_error(error: &CliError, paint: &Paint) -> String {
     let (headline, next) = match error.code.as_str() {
         "index_missing" => (
             "No OXIDE index was found for this repository.",
@@ -351,7 +360,7 @@ pub fn render_human_error(error: &CliError) -> String {
         _ => (error.message.as_str(), error.action.next_command()),
     };
     match next {
-        Some(command) => format!("{headline}\n\nRun:\n  {command}"),
+        Some(command) => format!("{headline}\n\nRun:\n  {}", paint.bold(command)),
         None => headline.to_string(),
     }
 }
@@ -368,6 +377,8 @@ impl ErrorAction {
 }
 
 pub fn run(args: Args) -> Result<(), CliError> {
+    let color = args.color;
+    let paint = Paint::for_stdout(color);
     match args.cmd {
         Cmd::Index {
             path,
@@ -386,13 +397,13 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     force_embeddings: embeddings,
                 }
             };
-            cmd_index(path.as_deref(), embedder.as_deref(), &opts, rebuild, json)
+            cmd_index(path.as_deref(), embedder.as_deref(), &opts, json, color)
         }
         Cmd::Status {
             path,
             verbose,
             json,
-        } => cmd_status(path.as_deref(), verbose, json),
+        } => cmd_status(path.as_deref(), verbose, json, paint),
         Cmd::Search {
             query,
             path,
@@ -425,9 +436,10 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     retrieval_mode: resolve_profile(profile.as_deref(), json)?,
                 },
                 json,
+                paint,
             )
         }
-        Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json),
+        Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json, paint),
         Cmd::Stats { path } => cmd_stats(path.as_deref()),
         Cmd::Query {
             path,
@@ -451,100 +463,137 @@ pub fn run(args: Args) -> Result<(), CliError> {
                 budget_tokens,
                 resolve_profile(profile.as_deref(), json)?,
                 json,
+                paint,
             )
         }
         Cmd::Mcp => run_mcp(),
         Cmd::Eval { config, json } => {
             crate::eval::cmd_eval(&config, json).map_err(|e| CliError::generic(e, json))
         }
-        Cmd::Watch { path, embedder } => cmd_watch(path.as_deref(), embedder.as_deref()),
+        Cmd::Watch { path, embedder } => cmd_watch(path.as_deref(), embedder.as_deref(), paint),
         Cmd::Install {
             agent,
             dry_run,
             yes,
-        } => cmd_agents(&agent, dry_run, yes, true),
+        } => cmd_agents(&agent, dry_run, yes, true, paint),
         Cmd::Uninstall {
             agent,
             dry_run,
             yes,
-        } => cmd_agents(&agent, dry_run, yes, false),
+        } => cmd_agents(&agent, dry_run, yes, false, paint),
     }
 }
 
-fn print_index_summary(root: &std::path::Path, result: &IndexResult) {
+fn print_index_summary(root: &std::path::Path, result: &IndexResult, p: &Paint) {
+    let touched = result.changed_files
+        + result.removed_files
+        + result.embedded_symbols
+        + result.relations_refreshed_symbols;
+    let (headline, note) = if touched == 0 {
+        (
+            "Index current",
+            format!("(nothing changed, {})", duration(result.duration_ms)),
+        )
+    } else {
+        ("Indexed", format!("in {}", duration(result.duration_ms)))
+    };
     println!(
-        "indexed {}: {} files scanned, {} unchanged, {} reparsed, {} removed, {} errored",
-        root.display(),
-        result.scanned_files,
-        result.reused_files,
-        result.changed_files,
-        result.removed_files,
-        result.errored_files
+        "{} {} {} {}",
+        p.check(),
+        p.bold(headline),
+        p.bold(&root.display().to_string()),
+        p.dim(&note)
+    );
+    println!(
+        "  {}",
+        p.dim(&format!(
+            "{} files · {} reparsed · {} unchanged · {} removed",
+            thousands(result.scanned_files),
+            thousands(result.changed_files),
+            thousands(result.reused_files),
+            thousands(result.removed_files)
+        ))
+    );
+    println!(
+        "  {}",
+        p.dim(&format!(
+            "{} symbols new · {} changed · {} deleted",
+            thousands(result.new_symbols),
+            thousands(result.changed_symbols),
+            thousands(result.deleted_symbols)
+        ))
     );
     let graph_note = if result.relations_refreshed_symbols > 0 {
         format!(
-            "; graph: {} symbols refreshed",
-            result.relations_refreshed_symbols
+            " · graph refreshed for {} symbols",
+            thousands(result.relations_refreshed_symbols)
         )
     } else {
         String::new()
     };
     println!(
-        "symbols: +{} new, ~{} changed, -{} deleted; embeddings: {} written, {} reused{graph_note}",
-        result.new_symbols,
-        result.changed_symbols,
-        result.deleted_symbols,
-        result.embedded_symbols,
-        result.reused_embeddings
+        "  {}",
+        p.dim(&format!(
+            "{} embeddings written · {} reused{graph_note}",
+            thousands(result.embedded_symbols),
+            thousands(result.reused_embeddings)
+        ))
     );
-    println!("took {}ms", result.duration_ms);
+    if result.errored_files > 0 {
+        println!(
+            "{} {}",
+            p.bang(),
+            p.warn(&format!(
+                "{} file(s) could not be read and were skipped",
+                thousands(result.errored_files)
+            ))
+        );
+    }
 }
 
 fn cmd_index(
     path: Option<&str>,
     embedder_url: Option<&str>,
     opts: &IndexOptions,
-    rebuild: bool,
     json: bool,
+    color: ColorChoice,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let root = service.root().to_path_buf();
-    // `--rebuild`: report the cheap base/graph stage as soon as it's done,
-    // with a warning before the (often much slower on CPU) embedding stage
-    // starts — so a user isn't left guessing whether a long-running rebuild
-    // is stuck. JSON mode stays a single structured result, like every
-    // other command here, so the intermediate hook is a no-op there.
-    let result = if rebuild && !json {
-        service.index_staged(embedder_url, opts, |base| {
-            print_index_summary(&root, base);
-            eprintln!(
-                "oxide: base/graph stage done — continuing to semantic indexing, \
-                 which can take noticeably longer on CPU..."
-            );
-        })
-    } else {
-        service.index(embedder_url, opts)
+    // Stage progress goes to stderr (live on a terminal, one line per stage
+    // otherwise) so stdout is only ever the summary. `--json` gets exactly
+    // the result on stdout and nothing else (`tests/cli_e2e.rs` asserts
+    // stderr stays empty).
+    let progress = (!json).then(|| StderrProgress::new(color));
+    let result = match &progress {
+        Some(sink) => service.index_staged(embedder_url, opts, sink),
+        None => service.index(embedder_url, opts),
     }
     .map_err(|e| CliError::service(e, json))?;
+    drop(progress);
     if json {
         println!(
             "{}",
             serde_json::to_string_pretty(&result).map_err(|e| CliError::generic(e, true))?
         );
     } else {
-        print_index_summary(&root, &result);
+        print_index_summary(&root, &result, &Paint::for_stdout(color));
     }
     Ok(())
 }
 
-fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliError> {
+fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>, p: Paint) -> Result<(), CliError> {
     let json = false; // `oxide watch` is an interactive/long-running command, no --json mode.
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let root = service.root().to_path_buf();
 
     // `watcher::run` registers the filesystem watch before reconciling, so
     // no edit in this command's startup window can be missed.
-    println!("oxide: reconciling {} before watching...", root.display());
+    println!(
+        "{} Reconciling {} before watching...",
+        p.dot(),
+        p.bold(&root.display().to_string())
+    );
 
     let lock = crate::watcher::WatchLock::acquire(&root).map_err(|e| CliError::generic(e, json))?;
     let embedder =
@@ -553,8 +602,10 @@ fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliEr
         .map_err(|e| CliError::generic(e, json))?;
 
     println!(
-        "oxide: watching {} for changes (ctrl-c to stop)...",
-        root.display()
+        "{} Watching {} {}",
+        p.check(),
+        p.bold(&root.display().to_string()),
+        p.dim("(ctrl-c to stop)")
     );
     let stop = std::sync::atomic::AtomicBool::new(false);
     crate::watcher::run(
@@ -565,15 +616,22 @@ fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliEr
         &stop,
         |report| {
             if report.scanned_files > 0 {
+                let marker = if report.errored_files > 0 {
+                    p.bang()
+                } else {
+                    p.check()
+                };
                 println!(
-                    "oxide: {} file(s) changed — {} reparsed, {} removed, {} errored; \
-                 {} embedded, {} reused",
-                    report.scanned_files,
-                    report.reparsed_files,
-                    report.removed_files,
-                    report.errored_files,
-                    report.embedded_symbols,
-                    report.reused_embeddings
+                    "{marker} {} file(s) changed {}",
+                    thousands(report.scanned_files),
+                    p.dim(&format!(
+                        "· {} reparsed · {} removed · {} errored · {} embedded · {} reused",
+                        report.reparsed_files,
+                        report.removed_files,
+                        report.errored_files,
+                        report.embedded_symbols,
+                        report.reused_embeddings
+                    ))
                 );
             }
         },
@@ -581,7 +639,7 @@ fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>) -> Result<(), CliEr
     .map_err(|e| CliError::generic(e, json))
 }
 
-fn cmd_status(path: Option<&str>, verbose: bool, json: bool) -> Result<(), CliError> {
+fn cmd_status(path: Option<&str>, verbose: bool, json: bool, p: Paint) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let status = service.status().map_err(|e| CliError::service(e, json))?;
     if json {
@@ -590,23 +648,9 @@ fn cmd_status(path: Option<&str>, verbose: bool, json: bool) -> Result<(), CliEr
             serde_json::to_string_pretty(&status).map_err(|e| CliError::generic(e, true))?
         );
     } else {
-        render_status(&status, verbose);
+        render_status(&status, verbose, &p);
     }
     Ok(())
-}
-
-/// `1234` -> `1,234`. Counts are the numbers a human actually reads off
-/// `oxide status`, and unseparated five-digit symbol counts are hard to scan.
-fn thousands(n: usize) -> String {
-    let digits = n.to_string();
-    let mut out = String::with_capacity(digits.len() + digits.len() / 3);
-    for (i, c) in digits.chars().enumerate() {
-        if i > 0 && (digits.len() - i).is_multiple_of(3) {
-            out.push(',');
-        }
-        out.push(c);
-    }
-    out
 }
 
 fn language_label(language: crate::symbols::Language) -> &'static str {
@@ -620,69 +664,82 @@ fn language_label(language: crate::symbols::Language) -> &'static str {
     }
 }
 
-fn status_row(marker: &str, label: &str, value: &str) {
-    println!("{marker} {label:<13}{value}");
-}
-
-fn render_status(status: &StatusResult, verbose: bool) {
-    println!("OXIDE status\n");
-    status_row("✓", "Repository", &status.root);
-    if !status.index_exists {
-        status_row("✗", "Index", "not found");
+fn render_status(status: &StatusResult, verbose: bool, p: &Paint) {
+    // Headline: the one fact a user came for, with the marker doubling as
+    // the word so the state survives without color.
+    let (marker, state) = if !status.index_exists {
+        (p.cross(), p.err("Index not found"))
     } else if status.is_current {
-        status_row("✓", "Index", "current");
+        (p.check(), p.ok("Index current"))
     } else {
-        status_row("!", "Index", "stale");
+        (p.bang(), p.warn("Index stale"))
+    };
+    println!("{marker} {}", p.bold(&state));
+    println!("  {}", p.dim(&status.root));
+    if status.index_exists {
+        println!(
+            "  {}",
+            p.dim(&format!(
+                "{} files · {} symbols",
+                thousands(status.files),
+                thousands(status.symbols)
+            ))
+        );
     }
-    status_row(
-        if status.index_exists { "✓" } else { "·" },
-        "Code",
-        &format!(
-            "{} files · {} symbols",
-            thousands(status.files),
-            thousands(status.symbols)
-        ),
-    );
+
     let (semantic_marker, semantic) = if !status.index_exists {
-        ("·", "not indexed".to_string())
+        (p.dot(), p.dim("Semantic search not indexed"))
     } else if !status.embedder_current {
-        ("!", "built with a different embedding provider".to_string())
+        (
+            p.bang(),
+            p.warn("Semantic search built with a different embedding provider"),
+        )
     } else if status.pending_embeddings > 0 {
         (
-            "!",
-            format!("{} symbols pending", thousands(status.pending_embeddings)),
+            p.bang(),
+            p.warn(&format!(
+                "Semantic search {} symbols pending",
+                thousands(status.pending_embeddings)
+            )),
         )
     } else if !status.base_fresh {
         // Every stored vector is current for what is stored — but files
         // have changed since, so "ready" would overstate it.
-        ("!", "ready for the indexed content".to_string())
+        (
+            p.bang(),
+            p.warn("Semantic search ready for the indexed content only"),
+        )
     } else {
-        ("✓", "ready".to_string())
+        (p.check(), p.ok("Semantic search ready"))
     };
-    status_row(semantic_marker, "Semantic", &semantic);
+    println!("{semantic_marker} {semantic}");
     // Every language this *build* extracts, not the ones present in this
-    // repo (the index does not track that) — so the row is labelled for
-    // what it actually reports, and is not marked as a health check.
-    status_row(
-        "\u{b7}",
-        "Supported",
-        &status
-            .supported_languages
-            .iter()
-            .map(|l| language_label(*l))
-            .collect::<Vec<_>>()
-            .join(" \u{b7} "),
+    // repo (the index does not track that) — labelled for what it reports.
+    println!(
+        "{} {}",
+        p.dot(),
+        p.dim(&format!(
+            "Supports {}",
+            status
+                .supported_languages
+                .iter()
+                .map(|l| language_label(*l))
+                .collect::<Vec<_>>()
+                .join(" · ")
+        ))
     );
 
     if verbose {
         println!();
-        status_row(
-            " ",
+        // Pad before styling: a width applied to an escaped string counts
+        // the escape bytes and misaligns the column on a terminal.
+        let row =
+            |label: &str, value: &str| println!("  {}{value}", p.dim(&format!("{label:<12}")));
+        row(
             "Embedder",
             status.embedder.as_deref().unwrap_or("not indexed"),
         );
-        status_row(
-            " ",
+        row(
             "Embeddings",
             &format!(
                 "{} stored · {} pending",
@@ -690,8 +747,7 @@ fn render_status(status: &StatusResult, verbose: bool) {
                 thousands(status.pending_embeddings)
             ),
         );
-        status_row(
-            " ",
+        row(
             "Files",
             if status.base_fresh {
                 "all indexed content matches disk"
@@ -705,16 +761,12 @@ fn render_status(status: &StatusResult, verbose: bool) {
         let size = std::fs::metadata(&index_path)
             .map(|m| format!("{:.1} MB", m.len() as f64 / 1_048_576.0))
             .unwrap_or_else(|_| "absent".to_string());
-        status_row(
-            " ",
-            "Index file",
-            &format!("{} ({size})", index_path.display()),
-        );
-        status_row(" ", "Schema", &status.schema_version.to_string());
+        row("Index file", &format!("{} ({size})", index_path.display()));
+        row("Schema", &status.schema_version.to_string());
     }
 
     if !status.index_exists || !status.is_current {
-        println!("\nRun:\n  oxide index");
+        println!("\nRun:\n  {}", p.bold("oxide index"));
     }
 }
 
@@ -723,6 +775,7 @@ fn cmd_search(
     query: &str,
     request: SearchRequest,
     json: bool,
+    p: Paint,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let hits = service
@@ -735,7 +788,7 @@ fn cmd_search(
         );
     } else {
         for hit in &hits {
-            println!("{}", render_evidence(hit));
+            println!("{}", render_evidence(hit, &p));
             println!();
         }
         if hits.is_empty() {
@@ -745,25 +798,57 @@ fn cmd_search(
     Ok(())
 }
 
-fn render_evidence(hit: &Evidence) -> String {
+/// `a←b` → `a ← b`, `lexical=2.6` → `lexical`: the scores and arrows stay
+/// verbatim in `--json`; a person only needs the kind of evidence.
+fn describe_reasons(reasons: &[String]) -> String {
+    let mut out: Vec<String> = Vec::with_capacity(reasons.len());
+    for reason in reasons {
+        let human = if let Some((rel, seed)) = reason.split_once('←') {
+            let seed = short_symbol_id(seed);
+            match rel {
+                "test" => format!("tests {seed}"),
+                "uses" => format!("used by {seed}"),
+                "imported-definition" => format!("imported by {seed}"),
+                "caller" | "ast-grep-caller" => format!("calls {seed}"),
+                "parent" => format!("parent of {seed}"),
+                "child" => format!("child of {seed}"),
+                "sibling" => format!("sibling of {seed}"),
+                other => format!("{other} ← {seed}"),
+            }
+        } else {
+            reason
+                .split_once('=')
+                .map_or(reason.as_str(), |(k, _)| k)
+                .to_string()
+        };
+        if !out.contains(&human) {
+            out.push(human);
+        }
+    }
+    out.join(", ")
+}
+
+fn render_evidence(hit: &Evidence, p: &Paint) -> String {
+    let location = format!("{}:{}–{}", hit.file, hit.start_line, hit.end_line);
     format!(
-        "{}:{}-{} [{}] {}\n  score {:.4}  why: {}\n{}",
-        hit.file,
-        hit.start_line,
-        hit.end_line,
-        hit.kind,
-        hit.qualified_name,
-        hit.score,
-        hit.reasons.join("; "),
+        "{}  {}  {}\n  {}\n{}",
+        p.bold(&location),
+        p.accent(&hit.qualified_name),
+        p.dim(&hit.kind.to_string()),
+        p.dim(&format!(
+            "{} · score {:.4}",
+            describe_reasons(&hit.reasons),
+            hit.score
+        )),
         hit.snippet
             .lines()
-            .map(|line| format!("  │ {line}"))
+            .map(|line| format!("  {} {line}", p.dim("│")))
             .collect::<Vec<_>>()
             .join("\n")
     )
 }
 
-fn cmd_review(path: Option<&str>, diff: &str, json: bool) -> Result<(), CliError> {
+fn cmd_review(path: Option<&str>, diff: &str, json: bool, p: Paint) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let ctx = service
         .review(diff)
@@ -775,31 +860,38 @@ fn cmd_review(path: Option<&str>, diff: &str, json: bool) -> Result<(), CliError
         );
     } else {
         println!(
-            "review context for {} ({})",
-            service.root().display(),
-            ctx.range
+            "{} {} {}",
+            p.bold("Review context for"),
+            p.bold(&service.root().display().to_string()),
+            p.dim(&format!("({})", ctx.range))
         );
-        println!("changed files: {}", ctx.changed_files.join(", "));
+        println!(
+            "{}",
+            p.dim(&format!("changed files: {}", ctx.changed_files.join(", ")))
+        );
         for c in &ctx.changed_symbols {
             println!(
-                "\n● changed: {} [{}] {}:{}-{} (+{})",
-                c.symbol.qualified_name,
-                c.symbol.kind,
-                c.symbol.file,
-                c.symbol.start_line,
-                c.symbol.end_line,
-                c.added_lines
+                "\n{} {} {} {}",
+                p.warn("● changed"),
+                p.accent(&c.symbol.qualified_name),
+                p.dim(&c.symbol.kind.to_string()),
+                p.dim(&format!(
+                    "{}:{}–{} (+{})",
+                    c.symbol.file, c.symbol.start_line, c.symbol.end_line, c.added_lines
+                ))
             );
         }
         for r in &ctx.related {
             println!(
-                "\n◇ related: {} [{}] {}:{}-{}\n  why: {}\n{}",
-                r.symbol.qualified_name,
-                r.symbol.kind,
-                r.symbol.file,
-                r.symbol.start_line,
-                r.symbol.end_line,
-                r.reasons.join("; "),
+                "\n{} {} {} {}\n  {}\n{}",
+                p.dim("◇ related"),
+                p.accent(&r.symbol.qualified_name),
+                p.dim(&r.symbol.kind.to_string()),
+                p.dim(&format!(
+                    "{}:{}–{}",
+                    r.symbol.file, r.symbol.start_line, r.symbol.end_line
+                )),
+                p.dim(&describe_reasons(&r.reasons)),
                 read_snippet(
                     &service.root().join(&r.symbol.file),
                     r.symbol.start_line,
@@ -807,7 +899,7 @@ fn cmd_review(path: Option<&str>, diff: &str, json: bool) -> Result<(), CliError
                     16
                 )
                 .lines()
-                .map(|line| format!("  │ {line}"))
+                .map(|line| format!("  {} {line}", p.dim("│")))
                 .collect::<Vec<_>>()
                 .join("\n")
             );
@@ -854,6 +946,7 @@ fn cmd_query(
     budget_tokens: usize,
     retrieval_mode: RetrievalMode,
     json: bool,
+    p: Paint,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let pack = service
@@ -866,40 +959,92 @@ fn cmd_query(
         );
         return Ok(());
     }
-    println!("Relevant code for: {}\n", pack.task);
+    println!(
+        "{} {}\n",
+        p.bold("Relevant code for"),
+        p.bold(&format!("\"{}\"", pack.task))
+    );
     if pack.items.is_empty() {
-        println!("Nothing matched. Try different words, or `oxide search <name>`.");
+        println!(
+            "Nothing matched. Try different words, or {}.",
+            p.bold("oxide search <name>")
+        );
         return Ok(());
     }
-    for (i, item) in pack.items.iter().enumerate() {
-        println!(
-            "{:>2}. {}:{}-{}  {} [{}]",
-            i + 1,
-            item.evidence.file,
-            item.evidence.start_line,
-            item.evidence.end_line,
-            item.evidence.qualified_name,
-            item.evidence.kind,
-        );
-        println!(
-            "    {:?} · ~{} tok · {}",
-            item.role,
-            item.est_tokens,
-            item.evidence.reasons.join("; ")
-        );
+    // Grouped by file, files in order of their best-ranked item, items in
+    // pack order within a file: a file heading is what the eye navigates
+    // by, and the ranking still shows through the order of the headings.
+    let name_width = pack
+        .items
+        .iter()
+        .map(|item| item.evidence.qualified_name.chars().count())
+        .max()
+        .unwrap_or(0)
+        .min(48);
+    let mut files: Vec<&str> = Vec::new();
+    for item in &pack.items {
+        if !files.contains(&item.evidence.file.as_str()) {
+            files.push(&item.evidence.file);
+        }
+    }
+    for (i, file) in files.iter().enumerate() {
+        if i > 0 {
+            println!();
+        }
+        println!("{}", p.bold(file));
+        for item in pack.items.iter().filter(|it| it.evidence.file == *file) {
+            let ev = &item.evidence;
+            let role = match item.role {
+                crate::context::Role::Primary => String::new(),
+                crate::context::Role::Dependency => "  dependency".to_string(),
+                crate::context::Role::Test => "  test".to_string(),
+            };
+            let name = short_symbol_id(&ev.qualified_name);
+            let pad = name_width.saturating_sub(name.chars().count());
+            println!(
+                "  {}{}  {}{}",
+                p.accent(&name),
+                " ".repeat(pad),
+                p.dim(&format!(
+                    "{}–{}  {}  ~{} tok",
+                    ev.start_line,
+                    ev.end_line,
+                    ev.kind,
+                    thousands(item.est_tokens)
+                )),
+                p.dim(&role)
+            );
+            println!(
+                "    {}",
+                p.dim(&format!("↳ {}", describe_reasons(&ev.reasons)))
+            );
+        }
     }
     if !pack.omitted.is_empty() {
-        println!("\nLeft out of the budget:");
-        for omitted in &pack.omitted {
-            println!("  - {}: {}", short_symbol_id(&omitted.id), omitted.why);
+        println!("\n{}", p.bold("Left out of the budget"));
+        let names: Vec<String> = pack
+            .omitted
+            .iter()
+            .map(|o| short_symbol_id(&o.id))
+            .collect();
+        let width = names.iter().map(|n| n.chars().count()).max().unwrap_or(0);
+        for (name, omitted) in names.iter().zip(&pack.omitted) {
+            println!(
+                "  {name}{}  {}",
+                " ".repeat(width - name.chars().count()),
+                p.dim(&omitted.why)
+            );
         }
     }
     println!(
-        "\n{} items · {} of {} token budget used · embedder {}",
-        pack.items.len(),
-        pack.used_tokens,
-        pack.budget_tokens,
-        pack.embedder
+        "\n{}",
+        p.dim(&format!(
+            "{} items · {} / {} context tokens · embedder {}",
+            pack.items.len(),
+            thousands(pack.used_tokens),
+            thousands(pack.budget_tokens),
+            pack.embedder
+        ))
     );
     Ok(())
 }
@@ -911,6 +1056,7 @@ fn cmd_agents(
     dry_run: bool,
     yes: bool,
     install: bool,
+    p: Paint,
 ) -> Result<(), CliError> {
     let json = false; // install/uninstall are interactive; no machine surface.
     let paths = Paths::from_env().map_err(|e| CliError::generic(e, json))?;
@@ -918,7 +1064,7 @@ fn cmd_agents(
         CliError::generic(format!("cannot resolve the oxide binary path: {e}"), json)
     })?;
 
-    let selected = select_agents(requested, &paths, install, json)?;
+    let selected = select_agents(requested, &paths, install, json, &p)?;
     if selected.is_empty() {
         return Ok(());
     }
@@ -934,7 +1080,7 @@ fn cmd_agents(
         })
         .collect();
 
-    print_plans(&plans, &paths, install);
+    print_plans(&plans, &paths, install, &p);
 
     // A config OXIDE refuses to edit is a failure of the user's request,
     // not a quiet no-op: it must not exit 0 as if the agent were wired up.
@@ -948,13 +1094,13 @@ fn cmd_agents(
 
     if !plans.iter().any(|p| p.action.writes()) {
         if blocked.is_empty() {
-            println!("\nNothing to do.");
+            println!("\n{} Nothing to do.", p.check());
             return Ok(());
         }
         return Err(agent_failure(blocked, json));
     }
     if dry_run {
-        println!("\nDry run: nothing was written.");
+        println!("\n{} Dry run: nothing was written.", p.dot());
         return Ok(());
     }
     if !yes && !confirm("Proceed?")? {
@@ -973,18 +1119,19 @@ fn cmd_agents(
 
     if !changed.is_empty() {
         println!(
-            "\n{}:",
-            if install {
+            "\n{} {}",
+            p.check(),
+            p.bold(if install {
                 "Configured"
             } else {
                 "Removed from"
-            }
+            })
         );
         for plan in &changed {
             println!(
                 "  {:<18}{}",
                 plan.agent.display(),
-                paths.shorten(&plan.config_path)
+                p.dim(&paths.shorten(&plan.config_path))
             );
         }
         let restart: Vec<&str> = changed
@@ -996,7 +1143,7 @@ fn cmd_agents(
             println!("\nRestart {} to pick up the change.", join_and(&restart));
         }
         if install {
-            println!("\nThen, in this repository:\n  oxide index");
+            println!("\nThen, in this repository:\n  {}", p.bold("oxide index"));
         }
     }
 
@@ -1035,6 +1182,7 @@ fn select_agents(
     paths: &Paths,
     install: bool,
     json: bool,
+    p: &Paint,
 ) -> Result<Vec<Agent>, CliError> {
     let detected: Vec<Agent> = agents::ALL
         .iter()
@@ -1077,7 +1225,7 @@ fn select_agents(
         return Ok(out);
     }
 
-    print_detection(&detected, paths);
+    print_detection(&detected, paths, p);
     if detected.is_empty() {
         println!(
             "\nSupported agents: {}.\nInstall one, or name it explicitly with --agent.",
@@ -1118,17 +1266,21 @@ fn select_agents(
         .map_err(|e| CliError::new("invalid_configuration", ErrorAction::Stop, e, json))
 }
 
-fn print_detection(detected: &[Agent], paths: &Paths) {
-    println!("Detected coding agents:\n");
+fn print_detection(detected: &[Agent], paths: &Paths, p: &Paint) {
+    println!("{}\n", p.bold("Detected coding agents"));
     for (i, agent) in agents::ALL.iter().enumerate() {
         let state = if !detected.contains(agent) {
-            "not detected".to_string()
+            p.dim("not detected")
         } else if agent.config_path(paths).exists() {
-            "✓ detected".to_string()
+            format!("{} detected", p.check())
         } else {
-            "✓ detected (no config file yet)".to_string()
+            format!("{} detected {}", p.check(), p.dim("(no config file yet)"))
         };
-        println!("  [{}] {:<18}{state}", i + 1, agent.display());
+        println!(
+            "  {} {:<18}{state}",
+            p.dim(&format!("[{}]", i + 1)),
+            agent.display()
+        );
     }
 }
 
@@ -1159,49 +1311,65 @@ fn parse_selection(input: &str, offered: &[Agent]) -> Result<Vec<Agent>, String>
     Ok(out)
 }
 
-fn print_plans(plans: &[Plan], paths: &Paths, install: bool) {
+fn print_plans(plans: &[Plan], paths: &Paths, install: bool, p: &Paint) {
     println!(
-        "\nOXIDE will {}:\n",
-        if install {
-            "configure"
+        "\n{}\n",
+        p.bold(if install {
+            "OXIDE will configure:"
         } else {
-            "remove its MCP server from"
-        }
+            "OXIDE will remove its MCP server from:"
+        })
     );
     for plan in plans {
-        println!("  {}", plan.agent.display());
-        println!("    config: {}", paths.shorten(&plan.config_path));
+        println!("  {}", p.bold(plan.agent.display()));
+        println!(
+            "    {} {}",
+            p.dim("config:"),
+            paths.shorten(&plan.config_path)
+        );
         if !plan.detected {
-            println!("    note:   this agent was not detected on this machine");
+            println!(
+                "    {}",
+                p.warn("note:   this agent was not detected on this machine")
+            );
         }
         match &plan.action {
             Action::Add => {
-                println!("    add:    MCP server \"{}\"", agents::SERVER_NAME);
+                println!(
+                    "    {} MCP server \"{}\"",
+                    p.dim("add:   "),
+                    agents::SERVER_NAME
+                );
                 for line in plan.snippet.lines() {
-                    println!("            {line}");
+                    println!("            {}", p.dim(line));
                 }
             }
             Action::Update { was, now } => {
                 println!(
-                    "    update: MCP server \"{}\" (anything else in this entry is kept)",
+                    "    {} MCP server \"{}\" (anything else in this entry is kept)",
+                    p.dim("update:"),
                     agents::SERVER_NAME
                 );
                 // Either side can be multi-line, so neither is squeezed
                 // onto the label's line.
-                print_block("was", was);
-                print_block("now", now);
+                print_block("was", was, p);
+                print_block("now", now, p);
             }
             Action::AlreadyConfigured => {
-                println!("    already configured — no change");
+                println!("    {} already configured — no change", p.check());
             }
             Action::Remove => {
-                println!("    remove: MCP server \"{}\"", agents::SERVER_NAME);
+                println!(
+                    "    {} MCP server \"{}\"",
+                    p.dim("remove:"),
+                    agents::SERVER_NAME
+                );
             }
             Action::NothingToRemove => {
-                println!("    no oxide entry present — no change");
+                println!("    {} no oxide entry present — no change", p.dot());
             }
             Action::Blocked { reason } => {
-                println!("    skipped: {reason}");
+                println!("    {} {}", p.bang(), p.warn(&format!("skipped: {reason}")));
             }
         }
         println!();
@@ -1227,12 +1395,17 @@ fn read_answer(json: bool) -> Result<Option<String>, CliError> {
     }
 }
 
-fn print_block(label: &str, body: &str) {
+fn print_block(label: &str, body: &str, p: &Paint) {
     for (i, line) in body.lines().enumerate() {
         if i == 0 {
-            println!("            {label}: {line}");
+            println!("            {}: {}", p.dim(label), p.dim(line));
         } else {
-            println!("            {:width$}  {line}", "", width = label.len());
+            println!(
+                "            {:width$}  {}",
+                "",
+                p.dim(line),
+                width = label.len()
+            );
         }
     }
 }
@@ -1281,15 +1454,6 @@ mod tests {
     }
 
     #[test]
-    fn thousands_separates_only_where_needed() {
-        assert_eq!(thousands(0), "0");
-        assert_eq!(thousands(999), "999");
-        assert_eq!(thousands(1_000), "1,000");
-        assert_eq!(thousands(3_821), "3,821");
-        assert_eq!(thousands(1_234_567), "1,234,567");
-    }
-
-    #[test]
     fn actionable_errors_say_what_to_run() {
         let err = CliError::new(
             "index_missing",
@@ -1297,7 +1461,7 @@ mod tests {
             "index missing at /x/.oxide/index.db; run `oxide index /x`",
             false,
         );
-        let rendered = render_human_error(&err);
+        let rendered = render_human_error(&err, &Paint::plain());
         assert!(rendered.starts_with("No OXIDE index was found"));
         assert!(rendered.ends_with("Run:\n  oxide index"));
     }
@@ -1310,6 +1474,9 @@ mod tests {
             "no such path: /nope",
             false,
         );
-        assert_eq!(render_human_error(&err), "no such path: /nope");
+        assert_eq!(
+            render_human_error(&err, &Paint::plain()),
+            "no such path: /nope"
+        );
     }
 }

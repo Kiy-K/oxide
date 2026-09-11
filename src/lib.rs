@@ -19,5 +19,7 @@ pub mod service;
 pub mod storage;
 pub mod structural_relations;
 pub mod symbols;
+pub mod telemetry;
+pub mod term;
 pub mod tree_sitter_structural;
 pub mod watcher;

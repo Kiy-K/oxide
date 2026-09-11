@@ -5,7 +5,10 @@
 
 use crate::context::{build_context, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
-use crate::index::{update_base, update_embeddings, IndexOptions, IndexReport};
+use crate::index::{
+    update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
+    ProgressSink, Stage,
+};
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
@@ -310,20 +313,19 @@ impl RepositoryService {
         embedder_url: Option<&str>,
         opts: &IndexOptions,
     ) -> Result<IndexResult, ServiceError> {
-        self.index_staged(embedder_url, opts, |_| {})
+        self.index_staged(embedder_url, opts, &NoProgress)
     }
 
-    /// Like [`Self::index`], but calls `on_base_done` with the base-stage
-    /// result (scan/parse/symbols/graph, no embeddings yet) before starting
-    /// the embedding stage — the hook `oxide index -a` uses to report the
-    /// cheap layers as done and warn that semantic indexing is next, before
-    /// a potentially much longer wait. `index()` passes a no-op hook, so
-    /// this is the only implementation both go through.
+    /// Like [`Self::index`], but reports each stage (model load, scan,
+    /// parse, embed, finalize) to `progress` as it runs — what the
+    /// interactive `oxide index` draws so a long embedding stage is never
+    /// silent. `index()` passes [`NoProgress`], so this is the only
+    /// implementation both go through; MCP never reaches a drawing sink.
     pub fn index_staged(
         &self,
         embedder_url: Option<&str>,
         opts: &IndexOptions,
-        on_base_done: impl FnOnce(&IndexResult),
+        progress: &dyn ProgressSink,
     ) -> Result<IndexResult, ServiceError> {
         if scanner::scan_repo(&self.root)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?
@@ -337,14 +339,22 @@ impl RepositoryService {
                 ),
             ));
         }
+        progress.begin(Stage::Model);
         let embedder = open_embedder(embedder_url)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
+        progress.end(Stage::Model, "ready");
         let mut store = self.open_index_for_write()?;
-        let mut report: IndexReport = update_base(&self.root, &mut store, opts)
+        let mut report: IndexReport = update_base_reporting(&self.root, &mut store, opts, progress)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
-        on_base_done(&report.clone().into());
-        update_embeddings(&self.root, &mut store, embedder.as_ref(), opts, &mut report)
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
+        update_embeddings_reporting(
+            &self.root,
+            &mut store,
+            embedder.as_ref(),
+            opts,
+            &mut report,
+            progress,
+        )
+        .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
         let result: IndexResult = report.into();
         if result.embed_failures > 0 || !embedder.is_available() {
             return Err(ServiceError::new(

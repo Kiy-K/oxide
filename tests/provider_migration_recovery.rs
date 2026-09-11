@@ -489,7 +489,7 @@ fn embedder_initialization_failure_leaves_an_existing_index_byte_identical() {
         .index_staged(
             Some("http://127.0.0.1:1/v1/embeddings"),
             &IndexOptions::default(),
-            |_| {},
+            &oxide::index::NoProgress,
         )
         .expect_err("an unreachable endpoint must fail the run");
     assert_eq!(err.code(), "embedder_unavailable", "{err:?}");

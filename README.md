@@ -35,15 +35,24 @@ oxide install
 
 ```text
 $ oxide query "Where is retry behavior implemented?" --budget-tokens 800
-Relevant code for: Where is retry behavior implemented?
+Relevant code for "Where is retry behavior implemented?"
 
- 1. oxidepy/notifiers.py:31-33  notify_after_final_attempt [function]
- 2. oxidepy/retry.py:31-37      RetryPolicy.should_retry [method]
- 3. oxidepy/notifiers.py:9-10   Notifier.notify [method]
+oxidepy/notifiers.py
+  notify_after_final_attempt  31–33  function  ~70 tok
+    ↳ lexical, semantic, calls RetryPolicy.should_retry
+  Notifier.notify             9–10   method    ~32 tok
+    ↳ lexical, semantic
+
+oxidepy/retry.py
+  RetryPolicy.should_retry    31–37  method    ~119 tok
+    ↳ lexical, semantic
  ...
 
-6 items · 429 of 800 token budget used
+6 items · 429 / 800 context tokens · embedder hashed-bow-256
 ```
+
+Output is colored on a terminal and plain everywhere else (`--json`, pipes,
+`NO_COLOR`, `--color never`); every state is readable without color.
 
 This example comes from OXIDE's committed Python fixture using the offline
 hashed embedder.
@@ -281,6 +290,15 @@ instead of serving incompatible vectors. Lexical search remains available:
 ```bash
 oxide search AuthService --mode lexical
 ```
+
+## Privacy
+
+OXIDE runs locally and phones home to nothing by default. Your code, paths,
+queries, index, and MCP traffic never leave the machine. The only optional
+telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
+even then it sends a panic's stack trace and platform details with no
+personal identifiers. [`TELEMETRY.md`](TELEMETRY.md) spells out exactly what
+is and is not collected and how to verify it on the wire.
 
 ## Installation details
 
