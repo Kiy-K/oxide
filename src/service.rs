@@ -187,6 +187,15 @@ pub struct IndexResult {
     pub relations_refreshed_symbols: usize,
     #[serde(skip)]
     pub duration_ms: u128,
+    /// Presentation only, like `duration_ms` — never on the wire. Whether
+    /// the store held no symbols before this run: the counters alone can't
+    /// tell a first build from an edit that happened to touch every file.
+    #[serde(skip)]
+    pub fresh_index: bool,
+    /// Presentation only. Symbols in the store after the run, so a full
+    /// build can report the corpus rather than "0 changed".
+    #[serde(skip)]
+    pub total_symbols: usize,
 }
 
 impl From<IndexReport> for IndexResult {
@@ -205,6 +214,8 @@ impl From<IndexReport> for IndexResult {
             errored_files: r.errored_files,
             relations_refreshed_symbols: r.relations_refreshed_symbols,
             duration_ms: r.duration_ms,
+            fresh_index: false,
+            total_symbols: 0,
         }
     }
 }
@@ -531,11 +542,17 @@ impl RepositoryService {
                 ),
             ));
         }
-        progress.begin(Stage::Model);
+        progress.begin(Stage::Model, None);
         let embedder = open_embedder(embedder_url)
             .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
         progress.end(Stage::Model, "ready");
         let mut store = self.open_index_for_write()?;
+        let stats = |store: &SqliteStore| {
+            store
+                .stats()
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))
+        };
+        let fresh_index = stats(&store)?.symbols == 0;
         let mut report: IndexReport = update_base_reporting(&self.root, &mut store, opts, progress)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
         update_embeddings_reporting(
@@ -547,7 +564,9 @@ impl RepositoryService {
             progress,
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::IndexFailed, e))?;
-        let result: IndexResult = report.into();
+        let mut result: IndexResult = report.into();
+        result.fresh_index = fresh_index;
+        result.total_symbols = stats(&store)?.symbols;
         if result.embed_failures > 0 || !embedder.is_available() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,

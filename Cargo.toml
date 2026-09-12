@@ -64,9 +64,17 @@ notify = { version = "8", default-features = false, features = [
 ] }
 tree-sitter-rust = "0.24"
 tree-sitter-go = "0.25"
-# Live stage spinner for `oxide index` (`term.rs`). No `wasmbind`; `unicode-width`
-# so non-ASCII labels measure correctly when the line is cleared and redrawn.
-indicatif = { version = "0.18", default-features = false, features = ["unicode-width"] }
+# Step/spinner visual language for `term.rs`'s interactive renderer (Clack-style
+# markers: ◇ ◒ ✓ ✗). `cliclack::ProgressBar` wraps `indicatif::ProgressBar`
+# internally (no draw-target override — defaults to stderr, auto-hidden off a
+# real terminal), which is why there is no separate direct `indicatif`
+# dependency here: `term.rs` still gates construction on its own `interactive`
+# check first, so the non-TTY plain-line fallback never touches either crate.
+cliclack = "0.5"
+# Terminal primitives cliclack itself is built on; `term.rs` calls
+# `set_colors_enabled`/`set_colors_enabled_stderr` directly so `--color` and
+# `NO_COLOR` (already decided by `Paint`) also govern cliclack's own styling.
+console = "0.16"
 tree-sitter-java = "0.23.5"
 # Ruby. Upstream ships a `tags.scm`, so this is grammar + queries only —
 # no new identity rule beyond the singleton-method receiver prefix

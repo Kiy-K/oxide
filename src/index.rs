@@ -92,11 +92,11 @@ impl Stage {
     pub fn label(self) -> &'static str {
         match self {
             Stage::Model => "Loading semantic model...",
-            Stage::Scan => "Scanning repository...",
-            Stage::Relations => "Refreshing relations...",
-            Stage::Parse => "Parsing...",
-            Stage::Store => "Storing symbols...",
-            Stage::Embed => "Embedding...",
+            Stage::Scan => "Scanning files...",
+            Stage::Relations => "Resolving references...",
+            Stage::Parse => "Parsing source...",
+            Stage::Store => "Indexing codebase...",
+            Stage::Embed => "Embedding symbols...",
             Stage::Finalize => "Finalizing...",
         }
     }
@@ -105,8 +105,14 @@ impl Stage {
 /// Receives progress from the indexing pipeline. `Sync` because the parse
 /// and embed stages report from their worker threads. `advance` may be
 /// called for every item; a sink that draws should throttle itself.
+///
+/// `total` on `begin` is `Some(n)` when the item count is known up front
+/// (Relations/Parse/Store/Embed all compute it before their loop starts) and
+/// `None` for stages with no per-item counter (Model, Scan, Finalize) — a
+/// drawing sink uses this to choose a determinate bar vs. an indeterminate
+/// spinner without needing to promote itself mid-stage on first `advance`.
 pub trait ProgressSink: Sync {
-    fn begin(&self, stage: Stage);
+    fn begin(&self, stage: Stage, total: Option<usize>);
     fn advance(&self, stage: Stage, done: usize, total: usize);
     fn end(&self, stage: Stage, summary: &str);
 }
@@ -115,7 +121,7 @@ pub trait ProgressSink: Sync {
 pub struct NoProgress;
 
 impl ProgressSink for NoProgress {
-    fn begin(&self, _: Stage) {}
+    fn begin(&self, _: Stage, _: Option<usize>) {}
     fn advance(&self, _: Stage, _: usize, _: usize) {}
     fn end(&self, _: Stage, _: &str) {}
 }
@@ -211,7 +217,7 @@ fn update_base_inner(
     let started = std::time::Instant::now();
     let mut report = IndexReport::default();
 
-    progress.begin(Stage::Scan);
+    progress.begin(Stage::Scan, None);
     let files = scanner::scan_repo(root)?;
     report.scanned_files = files.len();
     progress.end(Stage::Scan, &format!("{} files", files.len()));
@@ -323,7 +329,7 @@ fn update_base_inner(
         }
         let relation_total = unchanged_by_file.len();
         if relation_total > 0 {
-            progress.begin(Stage::Relations);
+            progress.begin(Stage::Relations, Some(relation_total));
         }
         for (i, (file, file_symbols)) in unchanged_by_file.into_iter().enumerate() {
             progress.advance(Stage::Relations, i + 1, relation_total);
@@ -574,7 +580,7 @@ fn parse_and_persist_changed_files(
     let parse_done = std::sync::atomic::AtomicUsize::new(0);
     let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
     let mut results: Vec<(Vec<ParsedFile>, usize)> = Vec::with_capacity(workers);
-    progress.begin(Stage::Parse);
+    progress.begin(Stage::Parse, Some(parse_total));
     std::thread::scope(|scope| {
         let mut handles = Vec::new();
         for (w, chunk) in to_parse.chunks(chunk_size.max(1)).enumerate() {
@@ -688,7 +694,7 @@ fn parse_and_persist_changed_files(
             .insert(s.id());
     }
 
-    progress.begin(Stage::Store);
+    progress.begin(Stage::Store, Some(parsed.len()));
     for (i, pf) in parsed.iter().enumerate() {
         progress.advance(Stage::Store, i + 1, parsed.len());
         let mut new_ids: HashSet<u64> = HashSet::with_capacity(pf.symbols.len());
@@ -817,7 +823,7 @@ pub fn update_embeddings_reporting(
     let chunk_size = to_embed.len().div_ceil(workers.max(1));
     let embed_total = to_embed.len();
     let embed_done = std::sync::atomic::AtomicUsize::new(0);
-    progress.begin(Stage::Embed);
+    progress.begin(Stage::Embed, Some(embed_total));
     // Batched path: providers with batch endpoints (HTTP) get one request per
     // chunk; the thread pool stays useful for per-text providers.
     if to_embed.len() < 8 || std::env::var("OXIDE_EMBED_URL").is_ok() {
@@ -893,7 +899,7 @@ pub fn update_embeddings_reporting(
 
     progress.end(Stage::Embed, &count_summary(embed_total, embed_total));
 
-    progress.begin(Stage::Finalize);
+    progress.begin(Stage::Finalize, None);
     let root_str = root.display().to_string();
     let dim_str = embedder.dim().to_string();
     let schema_str = SCHEMA_VERSION.to_string();

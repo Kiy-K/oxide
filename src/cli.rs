@@ -498,26 +498,83 @@ pub fn run(args: Args) -> Result<(), CliError> {
     }
 }
 
-fn print_index_summary(root: &std::path::Path, result: &IndexResult, p: &Paint) {
+/// The one line a user reads after `oxide index`, shaped by what the run
+/// actually did: a full build (`Indexed`/`Reindexed` — the counts are the
+/// whole corpus), an incremental one (`Updated` — just the files that
+/// changed and the symbols in them), a derived-layer rebuild (`Refreshed`,
+/// from `-e`/`-g`), or nothing at all (`Up to date`, no duration: it was
+/// instant and the number says nothing). The breakdown lines beneath are
+/// unchanged and still carry every counter.
+fn print_index_summary(result: &IndexResult, rebuilt: bool, p: &Paint) {
     let touched = result.changed_files
         + result.removed_files
         + result.embedded_symbols
         + result.relations_refreshed_symbols;
-    let (headline, note) = if touched == 0 {
-        (
-            "Index current",
-            format!("(nothing changed, {})", duration(result.duration_ms)),
-        )
-    } else {
-        ("Indexed", format!("in {}", duration(result.duration_ms)))
+    // A file that vanished or turned unreadable between scan and parse is
+    // not stored and not counted as touched, so it must be reported on
+    // every path — including the shortcut below, or "Up to date" would
+    // hide it.
+    let warn_errored = || {
+        if result.errored_files > 0 {
+            println!(
+                "{} {}",
+                p.bang(),
+                p.warn(&format!(
+                    "{} file(s) could not be read and were skipped",
+                    thousands(result.errored_files)
+                ))
+            );
+        }
     };
-    println!(
-        "{} {} {} {}",
-        p.check(),
-        p.bold(headline),
-        p.bold(&root.display().to_string()),
-        p.dim(&note)
-    );
+    if touched == 0 {
+        println!(
+            "{} {} {}",
+            p.check(),
+            p.bold("Up to date"),
+            p.dim("· no changes found")
+        );
+        warn_errored();
+        return;
+    }
+    let full_build = result.fresh_index || rebuilt;
+    let files_touched = result.changed_files + result.removed_files;
+    let took = p.dim(&format!("in {}", duration(result.duration_ms)));
+    // Blank line first: on a terminal the stage lines just finished on
+    // stderr, and the result should read as its own block.
+    println!();
+    if full_build {
+        println!(
+            "{} {} {} files · {} symbols {took}",
+            p.check(),
+            p.bold(if result.fresh_index {
+                "Indexed"
+            } else {
+                "Reindexed"
+            }),
+            thousands(result.scanned_files),
+            thousands(result.total_symbols),
+        );
+    } else if files_touched > 0 {
+        println!(
+            "{} {} {} files · {} symbols {took}",
+            p.check(),
+            p.bold("Updated"),
+            thousands(files_touched),
+            thousands(result.new_symbols + result.changed_symbols + result.deleted_symbols),
+        );
+    } else {
+        // `-e`/`-g` on a clean tree: nothing on disk changed, one derived
+        // layer was rebuilt. Say which, not "Updated 0 files".
+        let what = if result.embedded_symbols > 0 {
+            format!("{} embeddings", thousands(result.embedded_symbols))
+        } else {
+            format!(
+                "graph for {} symbols",
+                thousands(result.relations_refreshed_symbols)
+            )
+        };
+        println!("{} {} {what} {took}", p.check(), p.bold("Refreshed"));
+    }
     println!(
         "  {}",
         p.dim(&format!(
@@ -553,15 +610,14 @@ fn print_index_summary(root: &std::path::Path, result: &IndexResult, p: &Paint) 
             thousands(result.reused_embeddings)
         ))
     );
-    if result.errored_files > 0 {
-        println!(
-            "{} {}",
-            p.bang(),
-            p.warn(&format!(
-                "{} file(s) could not be read and were skipped",
-                thousands(result.errored_files)
-            ))
-        );
+    warn_errored();
+    // Closes the block only after a full build — the one run long enough
+    // to have shown every stage. A 200ms incremental update doesn't need a
+    // second confirmation under its one-line result. No marker: the ✓ above
+    // already carries the state, so this reads as a footer, not a second
+    // event.
+    if full_build {
+        println!("  {}", p.bold("Done!"));
     }
 }
 
@@ -573,7 +629,6 @@ fn cmd_index(
     color: ColorChoice,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
-    let root = service.root().to_path_buf();
     // Stage progress goes to stderr (live on a terminal, one line per stage
     // otherwise) so stdout is only ever the summary. `--json` gets exactly
     // the result on stdout and nothing else (`tests/cli_e2e.rs` asserts
@@ -591,7 +646,7 @@ fn cmd_index(
             serde_json::to_string_pretty(&result).map_err(|e| CliError::generic(e, true))?
         );
     } else {
-        print_index_summary(&root, &result, &Paint::for_stdout(color));
+        print_index_summary(&result, opts.force_reparse, &Paint::for_stdout(color));
     }
     Ok(())
 }
@@ -690,7 +745,7 @@ fn render_status(status: &StatusResult, verbose: bool, p: &Paint) {
     let (marker, state) = if !status.index_exists {
         (p.cross(), p.err("Index not found"))
     } else if status.is_current {
-        (p.check(), p.ok("Index current"))
+        (p.check(), p.ok("Index up to date"))
     } else {
         (p.bang(), p.warn("Index stale"))
     };

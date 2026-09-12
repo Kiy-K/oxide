@@ -186,19 +186,40 @@ fn every_state_is_readable_without_color() {
     let missing = text(&piped(tmp.path(), &["status"], &[]).stdout);
     assert!(missing.starts_with("✗ Index not found"), "{missing}");
 
+    // A first build: the block opens on a blank line (the stage lines on
+    // stderr just ended), says what was indexed in whole-corpus terms, and
+    // closes with an indented footer.
     let indexed = text(&piped(tmp.path(), &["index", "."], &[]).stdout);
-    assert!(indexed.starts_with("✓ Indexed "), "{indexed}");
+    assert!(indexed.starts_with("\n✓ Indexed 1 files · "), "{indexed}");
+    assert!(indexed.contains(" symbols in "), "{indexed}");
     assert!(indexed.contains("symbols new"), "{indexed}");
     assert!(indexed.contains("embeddings written"), "{indexed}");
+    assert!(indexed.ends_with("  Done!\n"), "{indexed}");
 
     let current = text(&piped(tmp.path(), &["status"], &[]).stdout);
-    assert!(current.starts_with("✓ Index current"), "{current}");
+    assert!(current.starts_with("✓ Index up to date"), "{current}");
     assert!(current.contains("✓ Semantic search ready"), "{current}");
     assert!(current.contains("· Supports Python"), "{current}");
 
+    // Nothing to do: one line, no duration, no footer, no leading blank.
     let unchanged = text(&piped(tmp.path(), &["index", "."], &[]).stdout);
-    assert!(unchanged.starts_with("✓ Index current "), "{unchanged}");
-    assert!(unchanged.contains("(nothing changed, "), "{unchanged}");
+    assert_eq!(unchanged, "✓ Up to date · no changes found\n");
+
+    // An incremental change: counts are the touched files, not the corpus,
+    // and the footer is reserved for full builds.
+    write(
+        tmp.path(),
+        "src/auth.py",
+        "class AuthService:\n    def refresh_token(self, token):\n        return token\n",
+    );
+    let updated = text(&piped(tmp.path(), &["index", "."], &[]).stdout);
+    assert!(updated.starts_with("\n✓ Updated 1 files · "), "{updated}");
+    assert!(!updated.contains("Done!"), "{updated}");
+
+    // `-e` on a clean tree rebuilt a derived layer, not files.
+    let refreshed = text(&piped(tmp.path(), &["index", ".", "-e"], &[]).stdout);
+    assert!(refreshed.starts_with("\n✓ Refreshed "), "{refreshed}");
+    assert!(refreshed.contains(" embeddings in "), "{refreshed}");
 
     write(tmp.path(), "src/auth.py", "def x():\n    return 1\n");
     let stale = text(&piped(tmp.path(), &["status"], &[]).stdout);
@@ -236,23 +257,28 @@ fn a_terminal_gets_color_and_progress_unless_told_otherwise() {
         indexed.contains('\r'),
         "no live redraw on a pty:\n{indexed:?}"
     );
-    assert!(
-        indexed
-            .chars()
-            .any(|c| ('\u{2800}'..='\u{28ff}').contains(&c)),
-        "no spinner frame on a pty:\n{indexed:?}"
-    );
     let plain = strip_ansi(&indexed);
+    // Every completed stage is one cliclack step line, marker first. The
+    // exact spinner glyphs are the theme's business; that *some* non-ASCII
+    // marker was drawn is ours.
+    assert!(
+        plain
+            .chars()
+            .any(|c| c as u32 > 0x7f && c != '✓' && c != '·'),
+        "no step marker on a pty:\n{plain:?}"
+    );
     for stage in [
         "Loading semantic model... ready",
-        "Scanning repository... 1 files",
-        "Parsing... 1/1",
-        "Embedding... ",
+        "Scanning files... 1 files",
+        "Parsing source... 1/1",
+        "Indexing codebase... 1/1",
+        "Embedding symbols... ",
         "Finalizing... done",
     ] {
         assert!(plain.contains(stage), "missing stage `{stage}`:\n{plain}");
     }
     assert!(plain.contains("✓ Indexed "), "{plain}");
+    assert!(plain.contains("  Done!"), "{plain}");
 
     let status = on_pty(tmp.path(), &["status"], &[]).unwrap();
     assert!(status.contains(ESC), "{status}");
@@ -275,12 +301,12 @@ fn a_terminal_gets_color_and_progress_unless_told_otherwise() {
     // piped tests above are that case; here CI=1 on a real pty must not
     // change the terminal behavior either way.)
     let ci = on_pty(tmp.path(), &["status"], &[("CI", "1")]).unwrap();
-    assert!(ci.contains("Index current"), "{ci}");
+    assert!(ci.contains("Index up to date"), "{ci}");
 
     // Progress goes to stderr: stdout alone stays exactly the summary.
     let out = piped(tmp.path(), &["index", "."], &[]);
     assert!(
-        text(&out.stdout).starts_with("✓ Index current"),
+        text(&out.stdout).starts_with("✓ Up to date"),
         "{}",
         text(&out.stdout)
     );

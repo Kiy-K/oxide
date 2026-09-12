@@ -264,10 +264,30 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   `NO_COLOR`, `TERM=dumb`, and isatty) and never write escapes themselves;
   the `--json` paths and `mcp.rs` never touch a `Paint` at all, which is
   what keeps the machine surfaces byte-clean. Indexing progress is a
-  `ProgressSink` (`index.rs`) fed to `index_staged`; only the CLI installs
-  a drawing sink, on stderr — an indicatif spinner when stderr is a real
+  `ProgressSink` (`index.rs`) fed to `index_staged` — `begin(stage,
+  total)` carries the item count when it is known up front, so the sink
+  picks a determinate bar vs. a spinner without guessing; only the CLI
+  installs a drawing sink, on stderr — a cliclack step (`◒ … ◇ …`, one
+  printed line per finished stage, `✗` on error) when stderr is a real
   terminal (`TERM` set and not `dumb`), one plain line per stage
-  otherwise. `tests/terminal_output.rs` pins the matrix.
+  otherwise, and the plain path never constructs a widget at all.
+  `term.rs` is the only module that names `cliclack` or `console`: it
+  installs `OxideTheme` (drops cliclack's `│` guide line, elapsed clock,
+  and two-space gutter) and pushes `Paint`'s decision into
+  `console::set_colors_enabled{,_stderr}` so `--color`/`NO_COLOR` govern
+  cliclack's styling too — there is no separate direct `indicatif`
+  dependency because `cliclack::ProgressBar` already wraps it. Stage
+  lines advance by full-width padding + terminal wrap (indicatif's
+  drawing model), which is why a zero-size pty (`script … /dev/null`
+  without `stty rows/cols`) shows them collapsed onto one line — a
+  harness artifact, not a bug. `tests/terminal_output.rs` pins the matrix.
+- The `oxide index` result block is context-sensitive (`cli.rs::
+  print_index_summary`): `Indexed`/`Reindexed` (fresh store or `-a`,
+  whole-corpus counts from two `#[serde(skip)]` presentation fields on
+  `IndexResult`, plus a `Done!` footer), `Updated` (files touched +
+  symbols new/changed/deleted), `Refreshed` (`-e`/`-g` on a clean tree),
+  `Up to date` (one line, no duration). Those skipped fields never reach
+  `--json`; `tests/cli_surface.rs` pins the JSON shape.
 - Telemetry is Sentry panic reporting and nothing else, off unless
   `OXIDE_TELEMETRY` opts in; `src/telemetry.rs` + `TELEMETRY.md` are the
   contract and `tests/telemetry.rs` watches the wire. Don't add any other

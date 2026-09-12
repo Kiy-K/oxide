@@ -777,12 +777,16 @@ fn index_scope_flags_are_wired_through_the_cli() {
     );
     let stdout = String::from_utf8_lossy(&out.stdout);
     assert_eq!(
-        stdout.matches("✓ Indexed ").count(),
+        stdout.matches("✓ Reindexed ").count(),
         1,
         "expected one final summary: {stdout}"
     );
     let stderr = String::from_utf8_lossy(&out.stderr);
-    for stage in ["Parsing... 1/1", "Embedding... ", "Finalizing... done"] {
+    for stage in [
+        "Parsing source... 1/1",
+        "Embedding symbols... ",
+        "Finalizing... done",
+    ] {
         assert!(stderr.contains(stage), "missing stage `{stage}`: {stderr}");
     }
     assert!(

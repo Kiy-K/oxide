@@ -291,7 +291,7 @@ fn status_is_readable_before_indexing_when_current_and_when_stale() {
 
     run(tmp.path(), &["index", ".", "--json"]);
     let current = stdout_of(&run(tmp.path(), &["status"]));
-    assert!(current.contains("Index current"), "{current}");
+    assert!(current.contains("Index up to date"), "{current}");
     assert!(current.contains("Semantic search ready"), "{current}");
     assert!(current.contains("Python"), "{current}");
     assert!(

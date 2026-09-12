@@ -9,8 +9,14 @@
 //!
 //! Color is never the only signal. Markers (`✓ ! ✗ ·`) and words carry the
 //! state; color only makes them faster to scan.
+//!
+//! This module is also the abstraction boundary for the UI crates: cliclack
+//! (stage steps, spinners, success/error states) and console (terminal
+//! primitives, the global color switch cliclack styles through). No other
+//! module names either crate; commands only ever see `Paint` and
+//! [`StderrProgress`].
 
-use indicatif::{ProgressBar, ProgressStyle};
+use cliclack::{ProgressBar, Theme, ThemeState};
 use std::io::{IsTerminal, Write};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Mutex;
@@ -165,19 +171,56 @@ pub fn duration(ms: u128) -> String {
 /// knows whether the cursor needs rescuing.
 static LINE_ACTIVE: AtomicBool = AtomicBool::new(false);
 
+/// cliclack's default theme, minus three things that fight this CLI's own
+/// layout: the `│` guide line it prints under every finished step (doubles
+/// the height of a six-stage run), the `[00:00:00]` elapsed clock and
+/// 30-column bar block on determinate stages (a fake-precision look for a
+/// 300ms parse), and the two-space gutter after the marker (every other
+/// line OXIDE prints — `✓ Indexed …`, `! Index stale` — uses one). Kept:
+/// the `◒◐◓◑` spinner, `◇` for a finished step, `▲`/`■` for cancel/error,
+/// and the state colors. Grouped (`MultiProgress`) rendering is not
+/// overridden because nothing here groups; stages are strictly sequential.
+struct OxideTheme;
+
+impl Theme for OxideTheme {
+    fn default_progress_template(&self) -> String {
+        "{msg} {bar:20.magenta} {human_pos}/{human_len}".into()
+    }
+
+    fn format_progress_start(&self, template: &str, grouped: bool, last: bool) -> String {
+        self.format_progress_with_state(
+            &format!("{{spinner:.magenta}} {template}"),
+            grouped,
+            last,
+            &ThemeState::Active,
+        )
+    }
+
+    fn format_progress_with_state(
+        &self,
+        msg: &str,
+        _grouped: bool,
+        _last: bool,
+        state: &ThemeState,
+    ) -> String {
+        match state {
+            ThemeState::Active => msg.to_string(),
+            _ => format!("{} {msg}", self.state_symbol(state)),
+        }
+    }
+}
+
 /// Stage/progress reporting on stderr, so stdout stays pipeable.
 ///
-/// On a terminal each stage is a live spinner line (`⠹ Embedding...
-/// 6,204/9,817`) animated by indicatif's steady-tick thread, so even a stage
-/// with no counter (loading the model) visibly moves; when it completes the
-/// line is left in place with the spinner cleared. Redirected stderr, CI,
-/// and `TERM=dumb` get one plain line per completed stage and no redraws,
-/// so logs stay short and stable. Never constructed for `--json`, which
-/// `tests/cli_e2e.rs` requires to leave stderr empty.
-///
-/// indicatif redraws with `\r` and clear-to-end-of-line — cursor control,
-/// not color, so `--color never` still animates; only the spinner glyph's
-/// color follows the `Paint` decision.
+/// On a terminal each stage is a live cliclack step (`◒ Embedding
+/// symbols... 6,204/9,817`) that finishes as one printed `✓`/`✗` line —
+/// cliclack owns line placement and redraw (it wraps `indicatif::ProgressBar`
+/// on the default stderr draw target, which hides itself off a real terminal
+/// or under `TERM=dumb`, the same test this struct's own `interactive` gate
+/// makes explicitly). Redirected stderr, CI, and `TERM=dumb` get one plain
+/// line per completed stage and no redraws, and never construct a cliclack
+/// widget at all. Never constructed for `--json`, which `tests/cli_e2e.rs`
+/// requires to leave stderr empty.
 pub struct StderrProgress {
     paint: Paint,
     interactive: bool,
@@ -187,36 +230,25 @@ pub struct StderrProgress {
 impl StderrProgress {
     pub fn new(choice: ColorChoice) -> Self {
         // Same gate indicatif applies before it would hide itself, kept
-        // explicit here so the plain-line fallback and the spinner can
-        // never both be silent for the same stream.
+        // explicit here so the plain-line fallback and the interactive
+        // renderer can never both be silent for the same stream.
         let interactive = std::io::stderr().is_terminal()
             && env("TERM").is_some_and(|t| !t.is_empty() && t != "dumb");
+        let paint = Paint::for_stderr(choice);
+        // cliclack paints through `console::style()`, which is gated by
+        // these process-wide flags rather than by our own `Paint` — sync
+        // them once so `--color always`/`never` and `NO_COLOR` govern both.
+        console::set_colors_enabled(paint.is_on());
+        console::set_colors_enabled_stderr(paint.is_on());
         if interactive {
+            cliclack::set_theme(OxideTheme);
             install_interrupt_cleanup();
         }
         Self {
-            paint: Paint::for_stderr(choice),
+            paint,
             interactive,
             bar: Mutex::new(None),
         }
-    }
-
-    fn style(&self, with_counts: bool) -> ProgressStyle {
-        let spinner = if self.paint.is_on() {
-            "{spinner:.cyan}"
-        } else {
-            "{spinner}"
-        };
-        let counts = if with_counts {
-            " {human_pos}/{human_len}"
-        } else {
-            ""
-        };
-        ProgressStyle::with_template(&format!("{spinner} {{msg}}{counts}"))
-            .expect("static template")
-            // Braille frames, then a blank: a finished stage keeps its line
-            // but gives up the marker column to the `✓` summary that follows.
-            .tick_chars("⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏ ")
     }
 
     fn lock(&self) -> std::sync::MutexGuard<'_, Option<ProgressBar>> {
@@ -225,44 +257,62 @@ impl StderrProgress {
 }
 
 impl Drop for StderrProgress {
-    /// An error mid-stage must not leave the failure message glued onto a
-    /// live spinner line: freeze the last frame and move to a fresh line.
+    /// An error or Ctrl-C mid-stage must not leave the failure glued onto a
+    /// live line: `.error()` finishes the widget with failure styling and
+    /// its own trailing newline (cliclack renders finished steps through
+    /// `ProgressBar::println`, the documented way to print alongside a live
+    /// bar without racing its redraw thread).
     fn drop(&mut self) {
         if let Some(bar) = self.lock().take() {
-            bar.abandon();
-            end_line();
+            bar.error("interrupted");
         }
         LINE_ACTIVE.store(false, Ordering::Relaxed);
     }
 }
 
 impl crate::index::ProgressSink for StderrProgress {
-    fn begin(&self, stage: crate::index::Stage) {
+    fn begin(&self, stage: crate::index::Stage, total: Option<usize>) {
         if !self.interactive {
             return;
         }
-        let bar = ProgressBar::new_spinner()
-            .with_style(self.style(false))
-            .with_message(self.paint.dim(stage.label()));
-        bar.enable_steady_tick(Duration::from_millis(80));
+        // A known total gets a determinate bar; an unknown one (Model, Scan,
+        // Finalize) gets a spinner — never a fake percentage.
+        let bar = match total {
+            Some(n) => ProgressBar::new(n as u64),
+            None => ProgressBar::new(0).with_spinner_template(),
+        };
+        bar.start(self.paint.dim(stage.label()));
         LINE_ACTIVE.store(true, Ordering::Relaxed);
+        if stage == crate::index::Stage::Model {
+            // A cold model load is fastembed downloading ~23MB of ONNX
+            // weights; nothing here can cheaply tell "downloading" from
+            // "loading from cache" without reaching into the embeddings
+            // module, so this triggers on elapsed time instead — if the
+            // stage is still running after 1.5s it's slow enough to
+            // explain. `is_finished()` guards the common cached (fast)
+            // case, where this fires after the bar has already moved on to
+            // a later stage: `set_message` on a finished bar is inert.
+            let hint = bar.clone();
+            std::thread::spawn(move || {
+                std::thread::sleep(Duration::from_millis(1500));
+                if !hint.is_finished() {
+                    hint.set_message(
+                        "Preparing semantic search... (first run may take a bit longer)",
+                    );
+                }
+            });
+        }
         *self.lock() = Some(bar);
     }
 
-    fn advance(&self, _stage: crate::index::Stage, done: usize, total: usize) {
+    fn advance(&self, _stage: crate::index::Stage, done: usize, _total: usize) {
         if !self.interactive {
             return;
         }
-        let guard = self.lock();
-        let Some(bar) = guard.as_ref() else {
-            return;
-        };
-        // Every symbol reports; indicatif rate-limits the actual redraws.
-        if bar.length().is_none() {
-            bar.set_style(self.style(true));
-            bar.set_length(total as u64);
+        // Every item reports; indicatif rate-limits the actual redraws.
+        if let Some(bar) = self.lock().as_ref() {
+            bar.set_position(done as u64);
         }
-        bar.set_position(done as u64);
     }
 
     fn end(&self, stage: crate::index::Stage, summary: &str) {
@@ -274,37 +324,28 @@ impl crate::index::ProgressSink for StderrProgress {
             return;
         }
         if let Some(bar) = self.lock().take() {
-            // The summary already carries the counts; drop the `{pos}/{len}`
-            // suffix so a finished stage reads as one sentence.
-            bar.set_style(self.style(false));
-            bar.finish_with_message(line);
-            end_line();
+            bar.stop(line);
         }
         LINE_ACTIVE.store(false, Ordering::Relaxed);
     }
 }
 
-/// A finished or abandoned standalone bar leaves the cursor at the end of
-/// its line (only a `MultiProgress` moves past finished bars), so the next
-/// stage — or an error message — would otherwise start on the same line.
-fn end_line() {
-    let mut err = std::io::stderr().lock();
-    let _ = writeln!(err);
-    let _ = err.flush();
-}
-
-/// Ctrl-C while a spinner line is live would leave the shell prompt on the
-/// same line as `⠹ Embedding... 3,012/9,817`. The default disposition kills
-/// the process without running any `Drop`, so a handler terminates the line
-/// first. Only `write` and `_exit` — both async-signal-safe — run inside
-/// it; the exit status is the conventional 128+SIGINT.
+/// Ctrl-C while a stage line is live would leave the shell prompt on the
+/// same line as `◒ Embedding symbols... 3,012/9,817`. The default
+/// disposition kills the process without running any `Drop`, so a handler
+/// terminates the line first — and shows the cursor (`\x1b[?25h`) in case a
+/// future cliclack/indicatif version hides it during animation; showing an
+/// already-visible cursor is a no-op. Only `write` and `_exit` — both
+/// async-signal-safe — run inside it; the exit status is the conventional
+/// 128+SIGINT.
 #[cfg(unix)]
 fn install_interrupt_cleanup() {
     extern "C" fn on_interrupt(_: libc::c_int) {
         if LINE_ACTIVE.load(Ordering::Relaxed) {
-            // SAFETY: write(2) on fd 2 with a valid one-byte buffer.
+            const RESCUE: &[u8] = b"\n\x1b[?25h";
+            // SAFETY: write(2) on fd 2 with a valid buffer of known length.
             unsafe {
-                libc::write(2, b"\n".as_ptr().cast(), 1);
+                libc::write(2, RESCUE.as_ptr().cast(), RESCUE.len());
             }
         }
         // SAFETY: _exit never returns and touches no process state.
