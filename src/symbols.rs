@@ -9,8 +9,12 @@ pub enum Language {
     Python,
     TypeScript,
     Tsx,
+    /// JavaScript and JSX, both parsed with the TSX grammar — see
+    /// `languages::JAVASCRIPT_PROFILE`.
+    JavaScript,
     Rust,
     Go,
+    Java,
 }
 
 impl Language {
@@ -23,8 +27,10 @@ impl Language {
         Language::Python,
         Language::TypeScript,
         Language::Tsx,
+        Language::JavaScript,
         Language::Rust,
         Language::Go,
+        Language::Java,
     ];
 
     pub fn as_str(&self) -> &'static str {
@@ -32,8 +38,10 @@ impl Language {
             Language::Python => "python",
             Language::TypeScript => "typescript",
             Language::Tsx => "tsx",
+            Language::JavaScript => "javascript",
             Language::Rust => "rust",
             Language::Go => "go",
+            Language::Java => "java",
         }
     }
 }

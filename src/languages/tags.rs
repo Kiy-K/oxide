@@ -155,6 +155,103 @@ struct FileMeta {
     /// syntax type, so struct and interface are indistinguishable from tags
     /// alone.
     go_interfaces: Vec<usize>,
+    /// Java only: `(method/constructor declaration start byte, normalized
+    /// parameter-type list)`, e.g. `(256, "String,String")`. See
+    /// [`java_signature`].
+    java_params: Vec<(usize, String)>,
+}
+
+/// One Java parameter type, normalized the way the JVM's own overload rules
+/// are: generics erased (`List<String>` and `List<Integer>` cannot coexist
+/// as overloads, so keeping the argument would only make two names for what
+/// Java treats as one), package qualifiers dropped to the last segment
+/// (`java.util.Set` and an imported `Set` are the same type written two
+/// ways), array dimensions kept (`byte[]` really is a distinct overload).
+/// Parameter *names*, `final`, and parameter annotations never appear: they
+/// are separate grammar children, and renaming a parameter — or annotating
+/// it — must not change a symbol's persisted identity.
+fn java_type_name(text: &str) -> String {
+    // Strip every balanced `<...>` region first, so dimensions belonging to
+    // an array-of-generic (`List<String>[]`) survive the erasure.
+    let mut base = String::new();
+    let mut depth = 0usize;
+    for ch in text.chars() {
+        match ch {
+            '<' => depth += 1,
+            '>' => depth = depth.saturating_sub(1),
+            _ if depth == 0 => base.push(ch),
+            _ => {}
+        }
+    }
+    let dims = base.matches('[').count();
+    let head = base.split('[').next().unwrap_or(&base);
+    let short = head.rsplit('.').next().unwrap_or(head).trim();
+    // A *type* annotation (JSR-308: `java.util.@NonNull List`) lives inside
+    // the type node, unlike a parameter annotation, which the grammar puts
+    // in a sibling `modifiers`. Without dropping it here, adding or removing
+    // `@NonNull` would rewrite the method's qualified name — and therefore
+    // its persisted id — for a method that did not change, orphaning its
+    // embedding and re-embedding it on the next index.
+    let mut out: String = short
+        .split_whitespace()
+        .filter(|t| !t.starts_with('@'))
+        .collect();
+    for _ in 0..dims {
+        out.push_str("[]");
+    }
+    out
+}
+
+/// Comma-joined normalized parameter types of a `formal_parameters` node, in
+/// declaration order — the discriminator that keeps Java overloads apart.
+///
+/// Java overloading is idiomatic and pervasive, so without this every
+/// `Store.get(...)` in a file collapses to the qualified name `Store.get`
+/// and `parser.rs::parse_file_with`'s first-wins dedup silently drops the
+/// rest (docs/java-feasibility/README.md's blocker). Putting the signature
+/// in the *name* rather than changing `Symbol::id`'s composition is what
+/// makes this safe: the id formula is still `FNV1a(file + \0 +
+/// qualified_name)`, so every Python/TypeScript/TSX/Rust/Go id in every
+/// existing index is bit-identical and nothing re-embeds
+/// (`tests/language_conformance.rs`'s committed goldens are the proof).
+///
+/// A `spread_parameter` (`int... flags`) has no `type` field — its type is
+/// its first named child — and erases to an array, exactly as the JVM does,
+/// so `f(int...)` and `f(int[])` normalize alike and cannot both exist.
+fn java_signature(params: Node<'_>, src: &str) -> String {
+    let mut out: Vec<String> = Vec::new();
+    let mut cur = params.walk();
+    for child in params.named_children(&mut cur) {
+        match child.kind() {
+            "formal_parameter" => {
+                if let Some(t) = child.child_by_field_name("type") {
+                    if let Ok(text) = t.utf8_text(src.as_bytes()) {
+                        out.push(java_type_name(text));
+                    }
+                }
+            }
+            "spread_parameter" => {
+                // Unlike `formal_parameter`, a spread parameter exposes no
+                // `type` field — its type is a positional child. It is not
+                // reliably the *first* one, though: `final int... flags` and
+                // `@NonNull String... xs` put a `modifiers` node ahead of it,
+                // which produced `f(final[])` and `f([])` and, worse, moved
+                // the method's persisted id whenever somebody added `final`
+                // or an annotation (found by review).
+                if let Some(t) = child
+                    .named_children(&mut child.walk())
+                    .find(|c| c.kind() != "modifiers")
+                {
+                    if let Ok(text) = t.utf8_text(src.as_bytes()) {
+                        out.push(format!("{}[]", java_type_name(text)));
+                    }
+                }
+            }
+            // `receiver_parameter` (`Outer Outer.this`) is not an argument.
+            _ => {}
+        }
+    }
+    out.join(",")
 }
 
 /// One narrow walk collecting the things no tag capture exposes:
@@ -196,6 +293,44 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     }
                 }
             }
+        }
+        (Language::Java, "import_declaration") => {
+            // The dotted path as written, minus `static`/`*` decoration —
+            // same "raw module string" contract Python, TypeScript and Rust
+            // record. `relations::resolve_module` never resolves these to a
+            // file (Java's package layout is a directory tree whose leaf is
+            // the *type*, and most imports are JDK or third-party), so they
+            // inform lexical text and nothing else — the same known gap Go
+            // imports have.
+            if let Ok(t) = node.utf8_text(src.as_bytes()) {
+                let path = t
+                    .trim_start_matches("import")
+                    .trim()
+                    .trim_start_matches("static")
+                    .trim()
+                    .trim_end_matches(';')
+                    .trim()
+                    .trim_end_matches(".*")
+                    .trim();
+                if !path.is_empty() {
+                    imports.push(path.to_string());
+                }
+            }
+            return;
+        }
+        (
+            Language::Java,
+            "method_declaration" | "constructor_declaration" | "compact_constructor_declaration",
+        ) => {
+            // A compact constructor (`record R { R { .. } }`) declares no
+            // parameter list at all, so its signature is empty — which is
+            // correct: a record has exactly one, and it can never be
+            // overloaded against itself.
+            let sig = node
+                .child_by_field_name("parameters")
+                .map(|p| java_signature(p, src))
+                .unwrap_or_default();
+            meta.java_params.push((node.byte_range().start, sig));
         }
         (Language::Go, "type_spec") => {
             if node
@@ -247,7 +382,39 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
             }
             return;
         }
-        (Language::TypeScript | Language::Tsx, "import_statement" | "export_statement") => {
+        (Language::JavaScript, "call_expression") => {
+            // CommonJS `require('./util')`. ESM is handled by the shared
+            // arm below (JavaScript uses the TSX grammar, so `import_
+            // statement`/`export_statement` are the same nodes), but a `.js`
+            // or `.cjs` file is as likely to use `require`, and
+            // `relations::resolve_module` resolves `./util` identically
+            // either way. Only a literal single-argument call counts —
+            // `require(dynamic)` names no module.
+            let is_require = node
+                .child_by_field_name("function")
+                .and_then(|f| f.utf8_text(src.as_bytes()).ok())
+                == Some("require");
+            if is_require {
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    if args.named_child_count() == 1 {
+                        if let Some(arg) = args.named_child(0) {
+                            if matches!(arg.kind(), "string") {
+                                if let Ok(t) = arg.utf8_text(src.as_bytes()) {
+                                    let m = t.trim_matches(|c| c == '\'' || c == '"');
+                                    if !m.is_empty() {
+                                        imports.push(m.to_string());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        (
+            Language::TypeScript | Language::Tsx | Language::JavaScript,
+            "import_statement" | "export_statement",
+        ) => {
             if node.kind() == "export_statement" {
                 meta.exports.push(node.byte_range());
             }
@@ -423,6 +590,16 @@ impl LanguageExtractor for TagsExtractor {
             {
                 Some((_, recv)) => (Some(recv.clone()), format!("{recv}.{}", d.name)),
                 None => (parent, qualified),
+            };
+            // Java methods and constructors carry their normalized parameter
+            // types, so overloads stay distinct symbols instead of colliding
+            // under `parse_file_with`'s dedup — see [`java_signature`].
+            // Scoped to the declarations `collect_meta` recorded, so a Java
+            // class/enum/record name is untouched and no other language sees
+            // any change at all.
+            let qualified = match meta.java_params.iter().find(|(start, _)| *start == d.start) {
+                Some((_, sig)) => format!("{qualified}({sig})"),
+                None => qualified,
             };
             // Module counts as a container so a Rust `mod` block and a
             // TypeScript `namespace` qualify their members (`mod net { fn
@@ -646,6 +823,117 @@ class VersionedStore:
         );
     }
 
+    #[test]
+    fn java_overloads_survive_as_distinct_symbols() {
+        // The blocker docs/java-feasibility/README.md named: all three
+        // `get`s normalize to the qualified name `Store.get` without a
+        // signature, and `parse_file_with`'s first-wins dedup then keeps one
+        // and silently drops two — routine data loss for a language where
+        // overloading is idiomatic.
+        let src = "\
+class Store {
+  String get(String key) { return key; }
+  String get(String key, String fallback) { return fallback; }
+  String get(byte[] raw) { return new String(raw); }
+}
+";
+        let syms = parse_file_with(&JAVA_TAGS, "Store.java", src, Language::Java);
+        let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
+        assert!(names.contains(&"Store.get(String)"), "{names:?}");
+        assert!(names.contains(&"Store.get(String,String)"), "{names:?}");
+        assert!(names.contains(&"Store.get(byte[])"), "{names:?}");
+        let mut ids: Vec<u64> = syms.iter().map(|s| s.id()).collect();
+        ids.sort();
+        ids.dedup();
+        assert_eq!(ids.len(), syms.len(), "overloads must not collide on id");
+    }
+
+    #[test]
+    fn java_identity_ignores_parameter_names_annotations_and_formatting() {
+        // Identity must be the *types*, or every parameter rename re-embeds
+        // the symbol and every `final`/`@Nullable` edit looks like a new
+        // declaration.
+        let a = "class S { void f(final @Nullable java.util.List<String> items, int... n) {} }\n";
+        let b = "class S { void f(java.util.List<Integer> other, int[] n) {} }\n";
+        let pick = |src: &str| {
+            parse_file_with(&JAVA_TAGS, "S.java", src, Language::Java)
+                .into_iter()
+                .find(|s| s.kind == SymbolKind::Method)
+                .map(|s| (s.id(), s.qualified_name))
+                .unwrap()
+        };
+        let (id_a, name_a) = pick(a);
+        let (id_b, name_b) = pick(b);
+        assert_eq!(
+            name_a, "S.f(List,int[])",
+            "generics erase, varargs array-ify"
+        );
+        assert_eq!(name_a, name_b);
+        assert_eq!(id_a, id_b);
+    }
+
+    #[test]
+    fn java_type_normalization_matches_the_jvms_own_overload_rules() {
+        assert_eq!(java_type_name("java.util.Map<String, String>"), "Map");
+        assert_eq!(java_type_name("byte[]"), "byte[]");
+        assert_eq!(java_type_name("List<String>[]"), "List[]");
+        assert_eq!(java_type_name("int[][]"), "int[][]");
+        assert_eq!(java_type_name("String []"), "String[]");
+        assert_eq!(java_type_name("int"), "int");
+        assert_eq!(java_type_name("T"), "T");
+        // JSR-308 type annotations sit *inside* the type node, unlike the
+        // parameter annotations the grammar keeps in a sibling `modifiers`.
+        // Letting one through would move the symbol's persisted id whenever
+        // somebody adds or removes `@NonNull` — the exact churn this
+        // normalization exists to prevent (found reviewing this change).
+        assert_eq!(java_type_name("java.util.@NonNull List<String>"), "List");
+        assert_eq!(java_type_name("@NonNull String"), "String");
+        assert_eq!(
+            java_type_name("@NonNull String"),
+            java_type_name("String"),
+            "annotating a parameter type must not re-identify the method"
+        );
+    }
+
+    #[test]
+    fn javascript_gets_the_tsx_grammar_esm_and_commonjs() {
+        // JavaScript has no grammar or query files of its own: it runs on
+        // TSX plus the TypeScript tags query. This pins the four things that
+        // buys — JSX component usage parsing at all, class heritage, arrow
+        // assignments, and `export` — plus CommonJS `require`, which is the
+        // one import form the shared TypeScript arm cannot see.
+        let src = "\
+import Button from './Button';
+const ns = require('./ns');
+export class Panel extends React.Component {
+  render() { return <Button label={this.props.l} />; }
+}
+export const scale = (x) => x * 2;
+";
+        let syms = parse_file_with(&JAVASCRIPT_TAGS, "a.jsx", src, Language::JavaScript);
+        let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
+        assert!(names.contains(&"Panel"), "{names:?}");
+        assert!(names.contains(&"Panel.render"), "{names:?}");
+        assert!(names.contains(&"scale"), "{names:?}");
+        assert!(
+            syms.iter().find(|s| s.name == "Panel").unwrap().exported,
+            "export wrapping is read through the shared TypeScript arm"
+        );
+        let imports = &syms.first().unwrap().imports;
+        assert!(imports.contains(&"./Button".to_string()), "{imports:?}");
+        assert!(imports.contains(&"./ns".to_string()), "{imports:?}");
+    }
+
+    #[test]
+    fn a_dynamic_require_names_no_module() {
+        let src = "const a = require(name);\nconst b = require('x', 'y');\n";
+        let syms = parse_file_with(&JAVASCRIPT_TAGS, "a.js", src, Language::JavaScript);
+        assert!(syms.first().unwrap().imports.is_empty());
+    }
+
+    static JAVA_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::JAVA_PROFILE);
+    static JAVASCRIPT_TAGS: TagsExtractor =
+        TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
     static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);
     static TYPESCRIPT_TAGS: TagsExtractor =

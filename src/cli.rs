@@ -659,8 +659,10 @@ fn language_label(language: crate::symbols::Language) -> &'static str {
         Python => "Python",
         TypeScript => "TypeScript",
         Tsx => "TSX",
+        JavaScript => "JavaScript",
         Rust => "Rust",
         Go => "Go",
+        Java => "Java",
     }
 }
 

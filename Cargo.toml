@@ -67,6 +67,7 @@ tree-sitter-go = "0.25"
 # Live stage spinner for `oxide index` (`term.rs`). No `wasmbind`; `unicode-width`
 # so non-ASCII labels measure correctly when the line is cleared and redrawn.
 indicatif = { version = "0.18", default-features = false, features = ["unicode-width"] }
+tree-sitter-java = "0.23.5"
 
 [features]
 default = ["native-embed"]

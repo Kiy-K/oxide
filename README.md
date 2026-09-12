@@ -13,7 +13,7 @@ coding agents a bounded set of relevant symbols for each task.
 - Incremental: unchanged files are not reparsed; unchanged symbols reuse embeddings.
 - Agent-neutral: use the CLI, JSON, or MCP from the agent you already run.
 - Token-budgeted: `query` returns a working set sized for the context window you choose.
-- Multi-language: Python, TypeScript/TSX, Rust, and Go.
+- Multi-language: Python, TypeScript/TSX, JavaScript/JSX, Rust, Go, and Java.
 
 ## Install
 
@@ -101,20 +101,6 @@ Every evidence item includes its repository-relative path, qualified name,
 line range, score, selection reasons, and source snippet. Context packs also
 report their estimated token use and why candidates were omitted.
 
-## Supported languages
-
-| Language | Indexed definitions |
-|---|---|
-| Python | modules, classes, functions, methods, constants |
-| TypeScript / TSX | functions, classes, methods, interfaces, type aliases, enums, exported declarations |
-| Rust | modules, structs, enums, traits, impls, functions, methods |
-| Go | packages, structs, interfaces, functions, methods, constants |
-
-OXIDE also extracts imports, references, calls, inheritance, and containment
-where the language grammar exposes them. See the
-[language coverage matrix](docs/language-support/README.md) for exact behavior
-and known gaps. The committed conformance fixtures are the source of truth.
-
 ## Coding-agent integrations
 
 `oxide install` detects supported agents, shows the exact configuration change,
@@ -173,6 +159,12 @@ an Intel i7-13620H laptop under `nice -n 10`, using the offline hashed embedder.
 | Dark Reader | TypeScript / TSX | 197 | 1,356 | 1,021 ms | 29 ms | 190 ms |
 | Tokio | Rust | 547 | 7,155 | 5,666 ms | 131 ms | 315 ms |
 | Gin | Go | 99 | 2,076 | 1,338 ms | 38 ms | 520 ms |
+| Tailwind CSS | JavaScript | 133 | 268 | 210 ms | 10 ms | 100 ms |
+| Gson | Java | 264 | 4,388 | 2,010 ms | 80 ms | 270 ms |
+
+The Tailwind CSS and Gson rows were measured later than the four above, in
+their own session; compare them against each other, not against the earlier
+rows in absolute terms.
 
 The measurements describe indexing behavior, not retrieval quality. Exact
 revisions, commands, memory use, index sizes, and unsupported constructs are in
@@ -195,8 +187,12 @@ for the protocol, results, and caveats.
 
 ## Limitations
 
-- OXIDE supports four language families today. Java, C/C++, C#, Ruby, PHP, and
-  plain JavaScript are not indexed.
+- OXIDE supports six language families today. C/C++, C#, Ruby, and PHP are not
+  indexed.
+- Java extraction is syntactic: fields, annotation-type elements, and method
+  references (`Foo::bar`) are not extracted, and the parameter-type
+  normalization behind overload identity uses erasure-style last-segment names
+  rather than resolved types.
 - Reference and structural relations use syntax and identifier-name matching,
   not compiler-grade name or type resolution. Ambiguous names can produce
   false positives or miss a cross-file relationship.

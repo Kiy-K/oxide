@@ -1,0 +1,548 @@
+[
+  {
+    "file": "src/App.jsx",
+    "qualified_name": "src/App.jsx:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 23,
+    "exported": false,
+    "id": 12694384236655952605,
+    "content_hash": 4527878746309917253,
+    "imports": [
+      "./service",
+      "react"
+    ],
+    "references": [
+      "App",
+      "Base",
+      "Panel",
+      "mount",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/App.jsx",
+    "qualified_name": "App",
+    "kind": "function",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 13,
+    "exported": true,
+    "id": 5534242172200501884,
+    "content_hash": 9908508620624669058,
+    "imports": [
+      "./service",
+      "react"
+    ],
+    "references": [
+      "Panel"
+    ],
+    "calls": [
+      "Panel",
+      "map"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/App.jsx",
+    "qualified_name": "Panel",
+    "kind": "class",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 15,
+    "end_line": 19,
+    "exported": true,
+    "id": 14569685818559262363,
+    "content_hash": 1660389994448652728,
+    "imports": [
+      "./service",
+      "react"
+    ],
+    "references": [
+      "render"
+    ],
+    "calls": [],
+    "bases": [
+      "Component"
+    ]
+  },
+  {
+    "file": "src/App.jsx",
+    "qualified_name": "Panel.render",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Panel",
+    "start_line": 16,
+    "end_line": 18,
+    "exported": false,
+    "id": 6211146604717101590,
+    "content_hash": 17122638955355619246,
+    "imports": [
+      "./service",
+      "react"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/App.jsx",
+    "qualified_name": "mount",
+    "kind": "function",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 21,
+    "end_line": 23,
+    "exported": true,
+    "id": 8967748651427675836,
+    "content_hash": 769343018954585259,
+    "imports": [
+      "./service",
+      "react"
+    ],
+    "references": [
+      "Base"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.js",
+    "qualified_name": "src/broken.js:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": false,
+    "id": 169192667082822693,
+    "content_hash": 7190400339447392664,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/legacy.cjs",
+    "qualified_name": "src/legacy.cjs:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 9,
+    "exported": false,
+    "id": 11286919149109238635,
+    "content_hash": 11259574276812719673,
+    "imports": [
+      "./ns"
+    ],
+    "references": [
+      "Base",
+      "Store",
+      "get",
+      "make"
+    ],
+    "calls": [
+      "require"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/legacy.cjs",
+    "qualified_name": "Store",
+    "kind": "class",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 7,
+    "exported": false,
+    "id": 15085018768268288808,
+    "content_hash": 11418866413428273604,
+    "imports": [
+      "./ns"
+    ],
+    "references": [
+      "get"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/legacy.cjs",
+    "qualified_name": "Store.get",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Store",
+    "start_line": 4,
+    "end_line": 6,
+    "exported": false,
+    "id": 17626350555768394482,
+    "content_hash": 120364109143644355,
+    "imports": [
+      "./ns"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/legacy.cjs",
+    "qualified_name": "make",
+    "kind": "function",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 9,
+    "end_line": 9,
+    "exported": false,
+    "id": 1513405372692356564,
+    "content_hash": 11302169696492920386,
+    "imports": [
+      "./ns"
+    ],
+    "references": [
+      "Base",
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.js",
+    "qualified_name": "Base",
+    "kind": "class",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": true,
+    "id": 15092541728515780697,
+    "content_hash": 8465227505856261821,
+    "imports": [],
+    "references": [
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.js",
+    "qualified_name": "src/ns.js:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": false,
+    "id": 9548477604998828849,
+    "content_hash": 17028124445026892857,
+    "imports": [],
+    "references": [
+      "Base",
+      "area"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/ns.js",
+    "qualified_name": "Base.area",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Base",
+    "start_line": 2,
+    "end_line": 4,
+    "exported": false,
+    "id": 8648790932796891235,
+    "content_hash": 14815747887393127778,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "src/service.js:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 31,
+    "exported": false,
+    "id": 14262886178538194361,
+    "content_hash": 9495461014056179820,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Base",
+      "Derived",
+      "Level",
+      "area",
+      "compute",
+      "constructor",
+      "helper",
+      "run",
+      "scale"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Base",
+    "kind": "class",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 12,
+    "exported": true,
+    "id": 14180793037949933830,
+    "content_hash": 16605153043967792089,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "area",
+      "constructor"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Base.constructor",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Base",
+    "start_line": 5,
+    "end_line": 7,
+    "exported": false,
+    "id": 18183457960285910000,
+    "content_hash": 13988260235825252130,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Base.area",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Base",
+    "start_line": 9,
+    "end_line": 11,
+    "exported": false,
+    "id": 14398827342354847042,
+    "content_hash": 13740011955356102413,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Derived",
+    "kind": "class",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 14,
+    "end_line": 25,
+    "exported": true,
+    "id": 15691711954159434649,
+    "content_hash": 16544955056262969316,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Base",
+      "area",
+      "compute",
+      "helper",
+      "run"
+    ],
+    "calls": [],
+    "bases": [
+      "Base"
+    ]
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Derived.run",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Derived",
+    "start_line": 15,
+    "end_line": 17,
+    "exported": false,
+    "id": 13162939181591455710,
+    "content_hash": 1343994627305816366,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "area"
+    ],
+    "calls": [
+      "area"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Derived.area",
+    "kind": "method",
+    "language": "javascript",
+    "parent": "Derived",
+    "start_line": 19,
+    "end_line": 24,
+    "exported": false,
+    "id": 2016246278045055831,
+    "content_hash": 14773383690995922134,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "compute",
+      "helper"
+    ],
+    "calls": [
+      "helper"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "Derived.area.helper",
+    "kind": "function",
+    "language": "javascript",
+    "parent": "Derived.area",
+    "start_line": 20,
+    "end_line": 22,
+    "exported": false,
+    "id": 16220236005286837982,
+    "content_hash": 15948048400500845668,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "compute"
+    ],
+    "calls": [
+      "compute"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "scale",
+    "kind": "function",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 27,
+    "end_line": 27,
+    "exported": false,
+    "id": 8292147104136575504,
+    "content_hash": 14397598990139777540,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "compute"
+    ],
+    "calls": [
+      "compute"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/service.js",
+    "qualified_name": "compute",
+    "kind": "function",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 29,
+    "end_line": 31,
+    "exported": true,
+    "id": 13941429682955926609,
+    "content_hash": 7871655609219881667,
+    "imports": [
+      "./ns",
+      "./types"
+    ],
+    "references": [
+      "Level"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.js",
+    "qualified_name": "Level",
+    "kind": "constant",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 4,
+    "exported": true,
+    "id": 17922167418085575108,
+    "content_hash": 4225834441821062049,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.js",
+    "qualified_name": "src/types.js:__module__",
+    "kind": "module",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 6,
+    "exported": false,
+    "id": 762272090769325693,
+    "content_hash": 15933322698886509770,
+    "imports": [],
+    "references": [
+      "DEFAULT_TIMEOUT",
+      "Level"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/types.js",
+    "qualified_name": "DEFAULT_TIMEOUT",
+    "kind": "constant",
+    "language": "javascript",
+    "parent": null,
+    "start_line": 6,
+    "end_line": 6,
+    "exported": true,
+    "id": 9389725787774787197,
+    "content_hash": 10834826283345063296,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]

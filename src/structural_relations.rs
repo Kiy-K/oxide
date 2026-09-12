@@ -222,6 +222,76 @@ mod tests {
         store
     }
 
+    /// Java annotations do **not** create an attribution tie, and this test
+    /// exists so nobody later "fixes" them for one.
+    ///
+    /// A Java declaration node includes its own `modifiers` (annotations
+    /// among them), so an annotated class's `start_line` is the annotation's
+    /// line and `all_bases_in_file`'s `@class` capture reports that same
+    /// line — the two agree by construction, unlike Python/TypeScript where
+    /// `decorator_extended_start` widens the symbol past the node the query
+    /// reports. Realistically-formatted annotated nested classes attribute
+    /// correctly, asserted below.
+    ///
+    /// What *does* misattribute is packing a method and a nested class onto
+    /// one source line, which collapses their spans to zero and leaves
+    /// `enclosing`'s longest-qualified-name tie-break picking the innermost
+    /// name for both — the LANG-002 tie
+    /// (`docs/review/structural-and-language.md`), pinned here as the known
+    /// behavior it is. It is reproducible verbatim in TypeScript
+    /// (`function outer() { a(); function inner() { b(); } }` gives
+    /// `outer.inner` both calls) and is unchanged by the annotation:
+    /// removing `@Deprecated` below produces the identical, equally wrong
+    /// attribution. Fixing it needs byte-range attribution rather than line
+    /// numbers, which is a change to every language at once.
+    #[test]
+    fn java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does() {
+        let calls_of = |src: &str, qname: &str| -> Vec<String> {
+            let syms = crate::parser::parse_file("T.java", src, Language::Java);
+            compute_file_relations(&syms, src, Language::Java)
+                .into_iter()
+                .find(|(id, _, _)| {
+                    syms.iter()
+                        .any(|s| s.id() == *id && s.qualified_name == qname)
+                })
+                .map(|(_, calls, _)| calls)
+                .unwrap_or_default()
+        };
+
+        // Realistic formatting: each declaration on its own line.
+        let formatted = "\
+class Outer {
+  void top() { a(); }
+
+  @Deprecated
+  static class Inner {
+    void ping() { b(); }
+  }
+}
+";
+        assert_eq!(calls_of(formatted, "Outer.top()"), vec!["a".to_string()]);
+        assert_eq!(
+            calls_of(formatted, "Outer.Inner.ping()"),
+            vec!["b".to_string()]
+        );
+
+        // Packed onto one line, annotated and not: identical outcomes, so
+        // the annotation is demonstrably not the cause.
+        let packed_annotated =
+            "class Outer {\n  void top() { a(); } @Deprecated class Inner { void ping() { b(); } }\n}\n";
+        let packed_plain =
+            "class Outer {\n  void top() { a(); } class Inner { void ping() { b(); } }\n}\n";
+        assert_eq!(
+            calls_of(packed_annotated, "Outer.Inner.ping()"),
+            calls_of(packed_plain, "Outer.Inner.ping()"),
+            "the annotation must not change attribution at all"
+        );
+        assert!(
+            calls_of(packed_plain, "Outer.top()").is_empty(),
+            "known LANG-002 tie: one-line packing sends top()'s call inward"
+        );
+    }
+
     #[test]
     fn update_index_populates_relations_directly_no_second_pass_needed() {
         let tmp = tempfile::tempdir().unwrap();

@@ -31,7 +31,30 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 
 - Symbol ids = `FNV1a(file + \0 + qualified_name)` and are persisted. They make
   incremental re-embedding work (unchanged content_hash ⇒ embedding reused).
-  Never change id composition casually.
+  Never change id composition casually. **Java is the one language whose
+  `qualified_name` carries a signature** (`Store.get(String,String)`,
+  `tags.rs::java_signature`) — because Java overloading is idiomatic and
+  without it `parse_file_with`'s first-wins dedup silently drops every
+  overload but one. That was done by changing Java's *name*, never the id
+  *formula*, which is exactly why it cost no cross-language re-embed: the
+  five pre-existing conformance goldens are byte-identical, and
+  `java_overloads_keep_distinct_ids_without_touching_other_languages`
+  asserts no other language's names ever contain `(`. Any future
+  overload-bearing language (C#, C++) must follow the same route. The
+  normalization is erasure-shaped — generics dropped, package qualifiers
+  reduced to the last segment, varargs turned into arrays, parameter names
+  and annotations excluded — so a parameter rename never re-embeds and two
+  spellings of the same type never split a symbol.
+- JavaScript/JSX has **no grammar and no `.scm` of its own**: `Language::
+  JavaScript` runs on the TSX grammar with the TypeScript tags/locals query
+  and the TSX callers/implementors queries (`languages::JAVASCRIPT_PROFILE`).
+  TSX is a syntactic superset of JavaScript and resolves `<` the way a
+  `.jsx` file does; 261/261 real `.js` files across tailwindcss and
+  openlibrary parse with zero ERROR/MISSING nodes. Forking those queries
+  into `javascript_*.scm` copies would reintroduce exactly the drift
+  `TSX_CALLERS_SRC`'s concatenation already exists to prevent. The one
+  JavaScript-specific line anywhere is CommonJS `require()` in
+  `collect_meta`, which the shared TypeScript import arm cannot see.
 - All ids/hashes cross SQLite as `as i64` bit-casts (u64 → i64 → u64). The
   casts look like bugs; they are not.
 - Duplicate qualified names per file are deduped (first wins) in
@@ -277,7 +300,8 @@ identity everywhere is `path#QualifiedName`.
 
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.
   Language support = add a `LanguageProfile` + `.scm` queries and register
-  in `src/parser.rs` (currently python, typescript/tsx, rust, go — see
+  in `src/parser.rs` (currently python, typescript/tsx, javascript/jsx,
+  rust, go, java — see
   `docs/language-support/README.md` for the coverage matrix, per-language
   performance, and what each language still misses). Behavior per language
   is pinned by `tests/language_conformance.rs`'s committed goldens under

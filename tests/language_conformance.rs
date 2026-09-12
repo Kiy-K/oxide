@@ -64,7 +64,15 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const LANGUAGES: &[&str] = &["python", "typescript", "tsx", "rust", "go"];
+const LANGUAGES: &[&str] = &[
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "rust",
+    "go",
+    "java",
+];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 struct SnapshotSymbol {
@@ -202,6 +210,64 @@ fn tsx_conformance() {
 }
 
 #[test]
+fn javascript_conformance() {
+    check_golden("javascript", &snapshot_of("javascript"));
+}
+
+#[test]
+fn java_conformance() {
+    check_golden("java", &snapshot_of("java"));
+}
+
+/// The whole safety argument for signature-aware Java qualified names: the
+/// id formula (`FNV1a(file + \0 + qualified_name)`) is untouched, and Java
+/// is the only language whose names carry a signature — so no existing
+/// Python/TypeScript/TSX/Rust/Go id can move, and no existing index
+/// re-embeds. The five committed goldens already pin every one of those
+/// ids; this asserts the other half directly, that Java overloads really do
+/// get distinct ids rather than colliding into one symbol.
+#[test]
+fn java_overloads_keep_distinct_ids_without_touching_other_languages() {
+    let java = snapshot_of("java");
+    let gets: Vec<&SnapshotSymbol> = java
+        .iter()
+        .filter(|s| s.file.ends_with("Store.java") && s.qualified_name.starts_with("Store.get("))
+        .collect();
+    assert_eq!(
+        gets.len(),
+        3,
+        "all three Store.get overloads must survive: {:?}",
+        java.iter().map(|s| &s.qualified_name).collect::<Vec<_>>()
+    );
+    let mut ids: Vec<u64> = gets.iter().map(|s| s.id).collect();
+    ids.sort();
+    ids.dedup();
+    assert_eq!(ids.len(), 3, "overload ids collided");
+    // Parameter *names* and formatting are not identity: only the
+    // normalized types are. Renaming a parameter must not re-embed.
+    assert!(
+        java.iter()
+            .any(|s| s.qualified_name == "Store.put(String,String,int[])"),
+        "varargs erase to an array and annotations/`final` are dropped: {:?}",
+        java.iter().map(|s| &s.qualified_name).collect::<Vec<_>>()
+    );
+    assert!(
+        java.iter()
+            .any(|s| s.qualified_name == "Store.all(List,Set)"),
+        "generics erase and package qualifiers drop to the last segment"
+    );
+    // No other language grew a signature.
+    for lang in ["python", "typescript", "tsx", "javascript", "rust", "go"] {
+        assert!(
+            !snapshot_of(lang)
+                .iter()
+                .any(|s| s.qualified_name.contains('(')),
+            "{lang}: qualified names must not carry a signature"
+        );
+    }
+}
+
+#[test]
 fn rust_conformance() {
     check_golden("rust", &snapshot_of("rust"));
 }
@@ -265,6 +331,18 @@ fn single_file_edit_touches_only_that_file() {
             "Appended",
         ),
         (
+            "javascript",
+            "src/service.js",
+            "\nexport function appended() {\n  return compute();\n}\n",
+            "appended",
+        ),
+        (
+            "java",
+            "src/Store.java",
+            "\nclass Appended {\n  void run() {}\n}\n",
+            "Appended",
+        ),
+        (
             "rust",
             "src/backend.rs",
             "\npub fn appended() -> u32 {\n    build()\n}\n",
@@ -311,6 +389,8 @@ fn broken_files_do_not_abort_indexing() {
         ("python", "pkg/broken.py", "pkg/models.py"),
         ("typescript", "src/broken.ts", "src/service.ts"),
         ("tsx", "src/broken.tsx", "src/Button.tsx"),
+        ("javascript", "src/broken.js", "src/service.js"),
+        ("java", "src/Broken.java", "src/Store.java"),
         ("rust", "src/broken.rs", "src/store.rs"),
         ("go", "store/broken.go", "store/store.go"),
     ];

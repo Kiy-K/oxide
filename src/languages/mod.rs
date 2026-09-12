@@ -10,6 +10,7 @@ const TS_TAGS: &str = include_str!("queries/typescript_tags.scm");
 const TS_LOCALS: &str = include_str!("queries/typescript_locals.scm");
 const RUST_TAGS: &str = include_str!("queries/rust_tags.scm");
 const GO_TAGS: &str = include_str!("queries/go_tags.scm");
+const JAVA_TAGS: &str = include_str!("queries/java_tags.scm");
 
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
@@ -32,6 +33,31 @@ pub static TSX_PROFILE: LanguageProfile = LanguageProfile {
     locals_query: TS_LOCALS,
 };
 
+/// JavaScript and JSX, parsed with the **TSX** grammar and the TypeScript
+/// tags/locals queries — not a separate `tree-sitter-javascript` grammar and
+/// not duplicated `.scm` files.
+///
+/// TSX is `tree-sitter-javascript` plus TypeScript's additions, so it is a
+/// syntactic superset of JavaScript; the one place the two grammars
+/// genuinely disagree is `<`, and TSX resolves it the way a `.jsx` file
+/// does (JSX element, not a type assertion — that reading is `.ts`-only).
+/// Measured before adopting: 261/261 real `.js` files across tailwindcss and
+/// openlibrary parse with zero ERROR/MISSING nodes, as do hand-written
+/// probes of the ambiguity traps (`const lt = 1 < 2 > 0`, `/a<b>c/g`),
+/// private fields, static blocks, generators, optional chaining and CJS.
+///
+/// Sharing the queries rather than forking them is the same argument
+/// `TSX_CALLERS_SRC` already makes for its concatenation: two copies of the
+/// same call/definition patterns drift, and every TypeScript pattern that
+/// isn't JavaScript (`interface_declaration`, `type_alias_declaration`)
+/// simply never matches in a `.js` file.
+pub static JAVASCRIPT_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::JavaScript,
+    ts_language: || tree_sitter_typescript::LANGUAGE_TSX.into(),
+    tags_query: TS_TAGS,
+    locals_query: TS_LOCALS,
+};
+
 pub static RUST_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Rust,
     ts_language: || tree_sitter_rust::LANGUAGE.into(),
@@ -43,5 +69,18 @@ pub static GO_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Go,
     ts_language: || tree_sitter_go::LANGUAGE.into(),
     tags_query: GO_TAGS,
+    locals_query: "",
+};
+
+/// Java. Upstream `tree-sitter-java`'s `tags.scm` covers only classes,
+/// interfaces and methods (see `docs/java-feasibility/README.md`), so the
+/// query is OXIDE-owned: constructors, enums, records and annotation types
+/// are appended. Method and constructor *qualified names* carry a
+/// normalized parameter-type list (`Store.get(String,String)`) — see
+/// `tags.rs::java_signature` for why that is required and why it is safe.
+pub static JAVA_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::Java,
+    ts_language: || tree_sitter_java::LANGUAGE.into(),
+    tags_query: JAVA_TAGS,
     locals_query: "",
 };

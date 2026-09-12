@@ -15,8 +15,13 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         (_, "py") | (_, "pyi") => Some(Python),
         (_, "ts") if !name.ends_with(".d.ts") => Some(TypeScript),
         ("", "tsx") | (_, "tsx") => Some(Tsx),
+        // JavaScript and JSX both go through the TSX grammar
+        // (`languages::JAVASCRIPT_PROFILE`), so one Language covers all four
+        // extensions. `.min.js` is already rejected by DENYLIST_SUFFIXES.
+        (_, "js") | (_, "jsx") | (_, "mjs") | (_, "cjs") => Some(JavaScript),
         (_, "rs") => Some(Rust),
         (_, "go") => Some(Go),
+        (_, "java") => Some(Java),
         _ => None,
     }
 }

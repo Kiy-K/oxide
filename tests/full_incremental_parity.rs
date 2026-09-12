@@ -215,3 +215,127 @@ fn incremental_mutation_sequence_matches_clean_full_rebuild() {
 
     assert_parity(&incremental, &full);
 }
+
+/// The same full-vs-incremental parity contract, exercised against the two
+/// languages added after the test above was written — and in particular
+/// against the mutation Java's signature-bearing qualified names make
+/// uniquely interesting.
+///
+/// Three Java edits matter here and nothing else in the suite reaches them:
+///
+/// - **adding an overload** must add exactly one symbol and leave its
+///   siblings' ids and hashes alone (before signatures, it added nothing at
+///   all — `parse_file_with`'s first-wins dedup dropped it silently);
+/// - **renaming a parameter** must *not* move the symbol's qualified name or
+///   id, only its `content_hash`, since the source did change;
+/// - **changing a parameter type** must move the id, retiring the old symbol
+///   and creating a new one — the one Java edit that is a delete plus an
+///   insert rather than an update.
+///
+/// If incremental and full disagree on any of those, an index that has been
+/// edited over time silently diverges from what a rebuild would produce.
+#[test]
+fn javascript_and_java_reach_the_same_state_incrementally_as_from_scratch() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    let emb = HashedEmbedder::default();
+    let mut incremental = SqliteStore::open(Path::new(":memory:")).unwrap();
+
+    write(
+        &root.join("src/Store.java"),
+        "package a;\n\nclass Store {\n  String get(String key) {\n    return key;\n  }\n\n  String get(byte[] raw) {\n    return new String(raw);\n  }\n}\n",
+    );
+    write(
+        &root.join("src/App.jsx"),
+        "import { Store } from './store';\n\nexport function App() {\n  return <Panel store={new Store()} />;\n}\n",
+    );
+    write(
+        &root.join("src/store.js"),
+        "export class Store {\n  get(key) {\n    return key;\n  }\n}\n",
+    );
+    update_index(root, &mut incremental, &emb).unwrap();
+
+    let ids_of = |store: &SqliteStore, file: &str| -> HashMap<String, (u64, u64)> {
+        store
+            .all_symbols()
+            .unwrap()
+            .into_iter()
+            .filter(|s| s.file == file)
+            .map(|s| (s.qualified_name.clone(), (s.id(), s.content_hash)))
+            .collect()
+    };
+    let before = ids_of(&incremental, "src/Store.java");
+    assert!(before.contains_key("Store.get(String)"), "{before:?}");
+    assert!(before.contains_key("Store.get(byte[])"), "{before:?}");
+
+    // --- add a third overload ---
+    write(
+        &root.join("src/Store.java"),
+        "package a;\n\nclass Store {\n  String get(String key) {\n    return key;\n  }\n\n  String get(byte[] raw) {\n    return new String(raw);\n  }\n\n  String get(String key, String fallback) {\n    return fallback;\n  }\n}\n",
+    );
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.reparsed_files, 1);
+    let after_add = ids_of(&incremental, "src/Store.java");
+    assert!(
+        after_add.contains_key("Store.get(String,String)"),
+        "an added overload must be a new symbol, not a silent no-op: {after_add:?}"
+    );
+    assert_eq!(
+        before.get("Store.get(String)"),
+        after_add.get("Store.get(String)"),
+        "an unrelated overload's id and hash must not move"
+    );
+
+    // --- rename a parameter: same identity, new content ---
+    write(
+        &root.join("src/Store.java"),
+        "package a;\n\nclass Store {\n  String get(String lookupKey) {\n    return lookupKey;\n  }\n\n  String get(byte[] raw) {\n    return new String(raw);\n  }\n\n  String get(String key, String fallback) {\n    return fallback;\n  }\n}\n",
+    );
+    update_index(root, &mut incremental, &emb).unwrap();
+    let after_rename = ids_of(&incremental, "src/Store.java");
+    let (id_before, hash_before) = after_add["Store.get(String)"];
+    let (id_after, hash_after) = after_rename["Store.get(String)"];
+    assert_eq!(
+        id_before, id_after,
+        "renaming a parameter must not re-identify the method"
+    );
+    assert_ne!(
+        hash_before, hash_after,
+        "the body did change, so the hash must move and the symbol re-embed"
+    );
+
+    // --- change a parameter type: a retire plus an insert ---
+    write(
+        &root.join("src/Store.java"),
+        "package a;\n\nclass Store {\n  String get(CharSequence lookupKey) {\n    return lookupKey.toString();\n  }\n\n  String get(byte[] raw) {\n    return new String(raw);\n  }\n\n  String get(String key, String fallback) {\n    return fallback;\n  }\n}\n",
+    );
+    update_index(root, &mut incremental, &emb).unwrap();
+    let after_retype = ids_of(&incremental, "src/Store.java");
+    assert!(
+        !after_retype.contains_key("Store.get(String)"),
+        "the old signature must be gone, not left behind: {after_retype:?}"
+    );
+    assert!(
+        after_retype.contains_key("Store.get(CharSequence)"),
+        "{after_retype:?}"
+    );
+
+    // --- JavaScript: edit a JSX file and rename a module ---
+    write(
+        &root.join("src/App.jsx"),
+        "import { Store } from './store';\n\nexport function App() {\n  return <Panel store={new Store()} />;\n}\n\nexport const useStore = () => new Store();\n",
+    );
+    update_index(root, &mut incremental, &emb).unwrap();
+    std::fs::remove_file(root.join("src/store.js")).unwrap();
+    write(
+        &root.join("src/store.mjs"),
+        "export class Store {\n  get(key) {\n    return key;\n  }\n}\n",
+    );
+    let r = update_index(root, &mut incremental, &emb).unwrap();
+    assert_eq!(r.removed_files, 1);
+    assert_eq!(r.reparsed_files, 1);
+
+    let mut full = SqliteStore::open(Path::new(":memory:")).unwrap();
+    update_index(root, &mut full, &emb).unwrap();
+    assert_parity(&incremental, &full);
+}

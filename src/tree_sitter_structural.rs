@@ -17,7 +17,10 @@
 //! `@base`, `@call`, `@class`), and callers filter/attribute in Rust after
 //! matching.
 
-use crate::languages::{GO_PROFILE, PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE};
+use crate::languages::{
+    GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE,
+    TYPESCRIPT_PROFILE,
+};
 use crate::symbols::Language;
 use std::sync::OnceLock;
 use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
@@ -39,6 +42,8 @@ const RUST_CALLERS_SRC: &str = include_str!("languages/queries/rust_callers.scm"
 const RUST_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/rust_implementors.scm");
 const GO_CALLERS_SRC: &str = include_str!("languages/queries/go_callers.scm");
 const GO_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/go_implementors.scm");
+const JAVA_CALLERS_SRC: &str = include_str!("languages/queries/java_callers.scm");
+const JAVA_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/java_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -69,14 +74,24 @@ static GO_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static JAVASCRIPT_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
+static JAVA_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
         Language::Python => (PYTHON_PROFILE.ts_language)(),
         Language::TypeScript => (TYPESCRIPT_PROFILE.ts_language)(),
         Language::Tsx => (TSX_PROFILE.ts_language)(),
+        Language::JavaScript => (JAVASCRIPT_PROFILE.ts_language)(),
         Language::Rust => (RUST_PROFILE.ts_language)(),
         Language::Go => (GO_PROFILE.ts_language)(),
+        Language::Java => (JAVA_PROFILE.ts_language)(),
     }
 }
 
@@ -85,8 +100,10 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Python => &PYTHON_QUERIES,
         Language::TypeScript => &TYPESCRIPT_QUERIES,
         Language::Tsx => &TSX_QUERIES,
+        Language::JavaScript => &JAVASCRIPT_QUERIES,
         Language::Rust => &RUST_QUERIES,
         Language::Go => &GO_QUERIES,
+        Language::Java => &JAVA_QUERIES,
     }
 }
 
@@ -94,18 +111,23 @@ fn callers_src(lang: Language) -> &'static str {
     match lang {
         Language::Python => PYTHON_CALLERS_SRC,
         Language::TypeScript => TS_CALLERS_SRC,
-        Language::Tsx => TSX_CALLERS_SRC,
+        // JavaScript runs on the TSX grammar, so it gets the TSX call
+        // patterns verbatim — JSX element usage included, which is the
+        // point: `<Button />` in a `.jsx` file is a call of `Button`.
+        Language::Tsx | Language::JavaScript => TSX_CALLERS_SRC,
         Language::Rust => RUST_CALLERS_SRC,
         Language::Go => GO_CALLERS_SRC,
+        Language::Java => JAVA_CALLERS_SRC,
     }
 }
 
 fn implementors_src(lang: Language) -> &'static str {
     match lang {
         Language::Python => PYTHON_IMPLEMENTORS_SRC,
-        Language::TypeScript | Language::Tsx => TS_IMPLEMENTORS_SRC,
+        Language::TypeScript | Language::Tsx | Language::JavaScript => TS_IMPLEMENTORS_SRC,
         Language::Rust => RUST_IMPLEMENTORS_SRC,
         Language::Go => GO_IMPLEMENTORS_SRC,
+        Language::Java => JAVA_IMPLEMENTORS_SRC,
     }
 }
 
@@ -334,6 +356,105 @@ mod tests {
             bases,
             vec![(2, "Store".to_string(), "Backend".to_string())],
             "{bases:?}"
+        );
+    }
+
+    #[test]
+    fn java_extends_and_implements_each_produce_their_own_base() {
+        // Upstream tags reports `type_list` once per name but at the
+        // *clause's* range, so `Backend` and `Cloneable` come out sharing a
+        // byte range and nothing can tell them apart — the reason Java gets
+        // an OXIDE-owned implementors query (docs/java-feasibility).
+        let src = "@Service\nclass Store extends Base implements Backend, Cloneable {\n}\n";
+        let mut bases = all_bases_in_file(Language::Java, src);
+        bases.sort();
+        assert_eq!(
+            bases,
+            vec![
+                // Line 1, not 2: Java's declaration node includes its
+                // annotations, so the class's own `start_line` is the
+                // annotation's — and the two must agree or
+                // `structural_relations` cannot attribute the clause.
+                (1, "Store".to_string(), "Backend".to_string()),
+                (1, "Store".to_string(), "Base".to_string()),
+                (1, "Store".to_string(), "Cloneable".to_string()),
+            ],
+            "{bases:?}"
+        );
+    }
+
+    #[test]
+    fn java_interface_enum_and_record_heritage_is_matched() {
+        for (src, want) in [
+            (
+                "interface A extends B, C {}\n",
+                vec![
+                    (1, "A".to_string(), "B".to_string()),
+                    (1, "A".to_string(), "C".to_string()),
+                ],
+            ),
+            (
+                "enum Mode implements Named {\n  FAST\n}\n",
+                vec![(1, "Mode".to_string(), "Named".to_string())],
+            ),
+            (
+                "record Point(int x) implements Comparable<Point> {}\n",
+                vec![(1, "Point".to_string(), "Comparable".to_string())],
+            ),
+        ] {
+            let mut got = all_bases_in_file(Language::Java, src);
+            got.sort();
+            assert_eq!(got, want, "{src}");
+        }
+    }
+
+    #[test]
+    fn java_calls_cover_invocations_and_constructions_but_not_method_references() {
+        let src = "\
+class S {
+  void run() {
+    helper();
+    other.compute();
+    new java.util.ArrayList<String>();
+    list.forEach(S::consume);
+  }
+}
+";
+        let mut calls: Vec<String> = all_calls_in_file(Language::Java, src)
+            .into_iter()
+            .map(|(_, n)| n)
+            .collect();
+        calls.sort();
+        assert_eq!(
+            calls,
+            vec!["ArrayList", "compute", "forEach", "helper"],
+            "a method reference names no unambiguous callee and is skipped"
+        );
+    }
+
+    #[test]
+    fn javascript_reuses_the_tsx_call_and_heritage_patterns_jsx_included() {
+        let src = "\
+class Panel extends React.Component {
+  render() {
+    return <Button label={fmt(this.props.l)} />;
+  }
+}
+function App() { return <div><Panel /></div>; }
+";
+        assert_eq!(
+            all_bases_in_file(Language::JavaScript, src),
+            vec![(1, "Panel".to_string(), "Component".to_string())]
+        );
+        let mut calls: Vec<String> = all_calls_in_file(Language::JavaScript, src)
+            .into_iter()
+            .map(|(_, n)| n)
+            .collect();
+        calls.sort();
+        assert_eq!(
+            calls,
+            vec!["Button", "Panel", "fmt"],
+            "JSX components count as calls; the `div` intrinsic does not"
         );
     }
 

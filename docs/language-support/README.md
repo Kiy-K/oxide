@@ -13,20 +13,21 @@ per-language extractor and no language-specific retrieval behavior.
 
 ## Coverage matrix
 
-| Dimension | Python | TypeScript | TSX | Rust | Go |
-|---|---|---|---|---|---|
-| definitions + stable ids | yes | yes | yes | yes | yes |
-| kinds | class/function/method/constant | + interface/type_alias/enum | same as TS | class/enum/type_alias/interface(trait)/module(mod)/method | class/interface/method/function/constant |
-| qualified names | containment | containment | containment | containment (incl. `impl` blocks) | receiver (`Store.Get`) |
-| parent/child containment | yes | yes | yes | yes | interface members only |
-| imports | `import` / `from … import` | `import` / `export … from` | same as TS | `use` trees | `import` specs |
-| references | token intersection | token intersection | token intersection | token intersection | token intersection |
-| calls | calls + attribute calls | calls + member calls | + JSX elements | + macro invocations | calls + selector calls |
-| inheritance | base classes, incl. `abc.ABC` | `extends`/`implements`, incl. qualified + generic | same as TS | `impl Trait for T`, supertrait bounds | struct/interface embedding |
-| decorator-inclusive spans | yes | yes | yes | n/a | n/a |
-| broken files | module fallback | module fallback | module fallback | module fallback | module fallback |
-| determinism | pinned | pinned | pinned | pinned | pinned |
-| incremental single-file edit | pinned | pinned | pinned | pinned | pinned |
+| Dimension | Python | TypeScript | TSX | JavaScript / JSX | Rust | Go | Java |
+|---|---|---|---|---|---|---|---|
+| grammar | python | typescript | tsx | **tsx** (shared) | rust | go | java |
+| definitions + stable ids | yes | yes | yes | yes | yes | yes | yes |
+| kinds | class/function/method/constant | + interface/type_alias/enum | same as TS | class/function/method/constant (TS-only kinds never match) | class/enum/type_alias/interface(trait)/module(mod)/method | class/interface/method/function/constant | class/interface/enum/method |
+| qualified names | containment | containment | containment | containment | containment (incl. `impl` blocks) | receiver (`Store.Get`) | containment **+ parameter signature** (`Store.get(String,String)`) |
+| parent/child containment | yes | yes | yes | yes | yes | interface members only | yes (incl. inner/nested classes) |
+| imports | `import` / `from … import` | `import` / `export … from` | same as TS | same as TS **+ CommonJS `require()`** | `use` trees | `import` specs | `import` / `import static` |
+| references | token intersection | token intersection | token intersection | token intersection | token intersection | token intersection | token intersection |
+| calls | calls + attribute calls | calls + member calls | + JSX elements | same as TSX (JSX included) | + macro invocations | calls + selector calls | invocations + `new X(...)` |
+| inheritance | base classes, incl. `abc.ABC` | `extends`/`implements`, incl. qualified + generic | same as TS | same as TS | `impl Trait for T`, supertrait bounds | struct/interface embedding | `extends`/`implements` on class, interface, enum, record |
+| decorator/annotation-inclusive spans | yes | yes | yes | yes | n/a | n/a | yes (free — annotations sit inside the declaration node) |
+| broken files | module fallback | module fallback | module fallback | module fallback | module fallback | module fallback | module fallback |
+| determinism | pinned | pinned | pinned | pinned | pinned | pinned | pinned |
+| incremental single-file edit | pinned | pinned | pinned | pinned | pinned | pinned | pinned |
 
 ## What Python and TypeScript gained in this round
 
@@ -196,22 +197,59 @@ their own right because no same-named struct in that file dedups them away
 | Go | named types vs aliases | `type Key string` lands on `Class`; only `type X = Y` is a true alias and it is not distinguished. |
 | Go | package `var` | Lands on `Constant` — OXIDE has no variable kind. |
 | Rust, Go | rarer grammar shapes, found empirically | The base/call queries cover the shapes that have actually been exercised — bare, qualified, generic, and their compositions — but the set is empirical, not exhaustive. Eight adversarial review rounds each turned up narrower ones (`impl external::Trait<T> for Local`, Go's `*pkg.Base` embedding) and the last rounds were finding compositions of shapes already covered separately. Expect more; each is a one-line `.scm` alternative plus a regression test. |
-| Java | everything | Not implemented. See `docs/java-feasibility/README.md`. |
+| TypeScript, TSX, JavaScript | accessor pairs and static/instance name pairs | `get x()` and `set x(v)` both qualify as `A.x`, and `static run()` alongside an instance `run()` both qualify as `A.run`; `parse_file_with`'s first-wins dedup keeps one of each. Pre-existing TypeScript behavior, verified byte-identical in JavaScript because the two share a grammar and a query — separating them means putting a discriminator in the qualified name (the route Java's overloads took), which would move every existing TypeScript symbol's id and re-embed every TypeScript index. Not worth that for a shape where both halves sit on adjacent lines. |
+| JavaScript | a grammar of its own | `.js`/`.jsx`/`.mjs`/`.cjs` are parsed with the **TSX** grammar and the TypeScript tags/locals and TSX callers/implementors queries. TSX is a syntactic superset of JavaScript and resolves `<` the way a `.jsx` file does; 261/261 real `.js` files across tailwindcss and openlibrary parse with zero ERROR/MISSING nodes, as do the ambiguity traps (`const lt = 1 < 2 > 0`, `/a<b>c/g`), private fields, static blocks, generators and CJS. Forking the queries into `javascript_*.scm` copies would reintroduce exactly the drift `TSX_CALLERS_SRC`'s concatenation exists to prevent. |
+| JavaScript | `module.exports` as an export | The `exported` flag comes from an ESM `export` wrapper only; CommonJS export assignment is not read. `require()` *is* read, as an import. |
+| Java | fields | Instance and static fields produce no symbol. OXIDE has no variable kind, and Java fields are numerous enough that mapping them onto `Constant` (the way a Go package `var` is) would be mostly noise. Not asked for; easy to add as one `.scm` pattern if it turns out to matter. |
+| Java | annotation-type elements | `String value();` inside an `@interface` is an `annotation_type_element_declaration`, not a `method_declaration`, so the `@interface` itself is a symbol (kind `interface`) but its elements are not. |
+| Java | method references (`Foo::bar`) | The grammar gives two identifiers with no field distinguishing receiver from member, so the callee would be a guess. Deliberately absent from `java_callers.scm` under the same "conservative call relations" rule the rest of the call queries follow. |
+| all | a method and a nested declaration packed onto **one source line** | `void top() { a(); } class Inner { void ping() { b(); } }` collapses both spans to zero lines, and `structural_relations::enclosing`'s longest-qualified-name tie-break then attributes `a()` to `Inner.ping` as well. Language-independent and pre-existing — the identical shape in TypeScript (`function outer() { a(); function inner() { b(); } }`) does the same thing, and it is the LANG-002 tie in `docs/review/structural-and-language.md`. Java annotations do **not** cause it (removing `@Deprecated` changes nothing); pinned both ways by `structural_relations.rs::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does`. Fixing it needs byte-range attribution instead of line numbers, which touches every language at once. |
+| Java | package declaration / true type resolution | Qualified names stay file-scoped, exactly as Python modules are. Parameter types in a signature are normalized by erasure and last-segment name, not resolved — so `com.a.Key` and `com.b.Key` are one type as far as overload identity is concerned. Two overloads that differ *only* that way would collide; no real Java API does that. |
 
 ## Next language worth adding
 
-Not Java. The spike (`docs/java-feasibility/README.md`) found the grammar
-builds cleanly against the pinned tree-sitter 0.27 and every `tags.scm` gap
-is ordinary work — but Java overloading collides on OXIDE's
-`(file, qualified_name)` symbol identity, and that identity is a pinned,
-cross-language invariant whose change re-embeds every index in every
-language. Settle the overload question on its own terms first; adding Java
-before then ships a language whose most common construct is silently
-truncated.
+Java shipped, and with it the answer to the overload question that was
+blocking it — see `docs/java-feasibility/README.md`'s "Resolution". The fix
+was to put a normalized parameter signature in Java's `qualified_name`, which
+changes one *input* to the symbol-id formula for one language rather than the
+formula itself, so no other language's ids moved and no existing index
+re-embedded. JavaScript shipped alongside it for a different reason entirely:
+it needed no new grammar, no new queries and no new identity rule, only a
+`LanguageProfile` pointing at machinery that was already there.
 
-The cheaper next steps, in order: **C#** and **Java** share the overload
-problem, so both wait on the same decision. **Ruby** and **PHP** have
-upstream tags and no identity conflict, making them the closest thing to
-mechanical additions left. **C/C++** has both the overload problem and a
-preprocessor that makes byte-range containment unreliable — the expensive
-one, and the least worth attempting under a no-semantic-resolution rule.
+**C#** is now the obvious next one: it has the same overload problem Java had,
+and Java's answer transfers directly. **Ruby** and **PHP** still have upstream
+tags and no identity conflict, making them the closest thing to mechanical
+additions left. **C/C++** remains the expensive one — overloads plus a
+preprocessor that makes byte-range containment unreliable — and the least
+worth attempting under a no-semantic-resolution rule.
+
+## What JavaScript and Java cost
+
+Measured **2026-09-12** against this round's binary, same methodology as the
+section above (release build, offline hashed embedder, `nice -n 10`, medians
+of 3). These are a *separate session* from the four-repo table above: compare
+them with each other, not in absolute terms against those rows.
+
+| repo | revision | language | files | symbols | cold index | no-change | 1-file edit | peak RSS | index size |
+|---|---|---|--:|--:|--:|--:|--:|--:|--:|
+| tailwindcss | `~/.cache/oxide-contextbench/repos/tailwindcss` | JavaScript | 133 | 268 | 210 ms | 10 ms | 100 ms | 23 MB | 936 KB |
+| gson | `8b4b55051489132190cb8d1c61eb9dc7f5381295` | Java | 264 | 4,388 | 2,010 ms | 80 ms | 270 ms | 40 MB | 26 MB |
+| flask (control) | `7ee9ceb71e868944a46e1ff00b506772a53a4f1d` | Python | 80 | **1,755** | 540 ms | 30 ms | 130 ms | 28 MB | 7.0 MB |
+
+The flask row is the regression control, and the number that matters in it is
+**1,755 symbols — identical to the row measured before this round**. Adding
+two languages changed no existing language's extraction at all; the five
+committed conformance goldens say the same thing field-for-field.
+
+Both new languages hold the incremental-re-embedding contract: tailwindcss's
+one-file edit reported `1 new, 1 changed, 2 written, 266 reused`, gson's
+`2 new, 1 changed, 3 written, 4,385 reused`.
+
+`scripts/perf.sh` needed two fixes to produce this table, both worth knowing
+about. It learned the new extensions for its single-file-edit probe, and it
+stopped grepping OXIDE's human output for timings: the v0.1.1 terminal
+styling pass renamed the `took Nms` line it had been parsing, so the harness
+had been silently failing (`set -e` on an empty `grep`) since that commit. It
+now reads `--json` for counts and `/usr/bin/time` for wall clock, neither of
+which can drift with a rendering change.

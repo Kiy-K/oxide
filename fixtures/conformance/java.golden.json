@@ -1,0 +1,569 @@
+[
+  {
+    "file": "src/Backend.java",
+    "qualified_name": "src/Backend.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 7,
+    "exported": false,
+    "id": 2136669750027432501,
+    "content_hash": 4415511044160122841,
+    "imports": [],
+    "references": [
+      "Backend",
+      "get"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Backend.java",
+    "qualified_name": "Backend",
+    "kind": "interface",
+    "language": "java",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 7,
+    "exported": false,
+    "id": 12135807332644175796,
+    "content_hash": 15745076520779161358,
+    "imports": [],
+    "references": [
+      "get"
+    ],
+    "calls": [],
+    "bases": [
+      "AutoCloseable"
+    ]
+  },
+  {
+    "file": "src/Backend.java",
+    "qualified_name": "Backend.get(String)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Backend",
+    "start_line": 4,
+    "end_line": 4,
+    "exported": false,
+    "id": 4434976787840528142,
+    "content_hash": 6431335971687478345,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Backend.java",
+    "qualified_name": "Backend.get(String,String)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Backend",
+    "start_line": 6,
+    "end_line": 6,
+    "exported": false,
+    "id": 7603441362167323586,
+    "content_hash": 3910366921728387697,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.java",
+    "qualified_name": "src/Base.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 7,
+    "exported": false,
+    "id": 8375034516177376265,
+    "content_hash": 9570032284610659821,
+    "imports": [],
+    "references": [
+      "Base",
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.java",
+    "qualified_name": "Base",
+    "kind": "class",
+    "language": "java",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 7,
+    "exported": false,
+    "id": 6628677859094875834,
+    "content_hash": 5592019508930983465,
+    "imports": [],
+    "references": [
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.java",
+    "qualified_name": "Base.find(String)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Base",
+    "start_line": 6,
+    "end_line": 6,
+    "exported": false,
+    "id": 14750106895664912664,
+    "content_hash": 10351488232338421570,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Broken.java",
+    "qualified_name": "src/Broken.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": false,
+    "id": 9104477931172522409,
+    "content_hash": 792454903296964799,
+    "imports": [],
+    "references": [
+      "Broken",
+      "oops"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Broken.java",
+    "qualified_name": "Broken",
+    "kind": "class",
+    "language": "java",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 5,
+    "exported": false,
+    "id": 16304681742547011934,
+    "content_hash": 17478817881617595628,
+    "imports": [],
+    "references": [
+      "oops"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Broken.java",
+    "qualified_name": "Broken.oops()",
+    "kind": "method",
+    "language": "java",
+    "parent": "Broken",
+    "start_line": 4,
+    "end_line": 5,
+    "exported": false,
+    "id": 10385846518775682417,
+    "content_hash": 18409989045145233303,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Marker.java",
+    "qualified_name": "src/Marker.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 5,
+    "exported": false,
+    "id": 2138013285783987929,
+    "content_hash": 13296803842412205160,
+    "imports": [],
+    "references": [
+      "Marker"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Marker.java",
+    "qualified_name": "Marker",
+    "kind": "interface",
+    "language": "java",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 5,
+    "exported": false,
+    "id": 10524415535918956714,
+    "content_hash": 971646869066648083,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Point.java",
+    "qualified_name": "src/Point.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 14,
+    "exported": false,
+    "id": 16524331152509646685,
+    "content_hash": 1086853337245702725,
+    "imports": [],
+    "references": [
+      "Point",
+      "compareTo"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Point.java",
+    "qualified_name": "Point",
+    "kind": "class",
+    "language": "java",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 14,
+    "exported": false,
+    "id": 16236171135427541208,
+    "content_hash": 2395119564236466844,
+    "imports": [],
+    "references": [
+      "compareTo"
+    ],
+    "calls": [],
+    "bases": [
+      "Comparable"
+    ]
+  },
+  {
+    "file": "src/Point.java",
+    "qualified_name": "Point.Point()",
+    "kind": "method",
+    "language": "java",
+    "parent": "Point",
+    "start_line": 4,
+    "end_line": 8,
+    "exported": false,
+    "id": 1767956855251955567,
+    "content_hash": 15531961934332109162,
+    "imports": [],
+    "references": [],
+    "calls": [
+      "IllegalArgumentException"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Point.java",
+    "qualified_name": "Point.compareTo(Point)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Point",
+    "start_line": 10,
+    "end_line": 13,
+    "exported": false,
+    "id": 17748926021260027010,
+    "content_hash": 4106504371457937710,
+    "imports": [],
+    "references": [
+      "Point"
+    ],
+    "calls": [
+      "compare"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "src/Store.java:__module__",
+    "kind": "module",
+    "language": "java",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 47,
+    "exported": false,
+    "id": 2391438548024286459,
+    "content_hash": 7568281353094915219,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [
+      "Backend",
+      "Base",
+      "Inner",
+      "Mode",
+      "Store",
+      "all",
+      "find",
+      "get",
+      "ping",
+      "put"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store",
+    "kind": "class",
+    "language": "java",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 47,
+    "exported": false,
+    "id": 18125817746026305474,
+    "content_hash": 944237274771507694,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [
+      "Backend",
+      "Base",
+      "Inner",
+      "Mode",
+      "all",
+      "find",
+      "get",
+      "ping",
+      "put"
+    ],
+    "calls": [],
+    "bases": [
+      "Backend",
+      "Base",
+      "Cloneable"
+    ]
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.Store(Map)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 10,
+    "end_line": 12,
+    "exported": false,
+    "id": 4670577419209402099,
+    "content_hash": 16307783871091214552,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.Store()",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 14,
+    "end_line": 16,
+    "exported": false,
+    "id": 7826520457067594658,
+    "content_hash": 11606179816514350528,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [
+      "of"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.get(String)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 18,
+    "end_line": 21,
+    "exported": false,
+    "id": 1947351088821602468,
+    "content_hash": 11353375799439300079,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [
+      "find"
+    ],
+    "calls": [
+      "find"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.get(String,String)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 23,
+    "end_line": 25,
+    "exported": false,
+    "id": 16463214966267153216,
+    "content_hash": 2339769340150037603,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [
+      "get"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.get(byte[])",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 27,
+    "end_line": 29,
+    "exported": false,
+    "id": 11769687732411994989,
+    "content_hash": 12174374196427910668,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [
+      "String"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.put(String,String,int[])",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 31,
+    "end_line": 33,
+    "exported": false,
+    "id": 12961579939971032590,
+    "content_hash": 8202285255101275000,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [
+      "emptyList"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.all(List,Set)",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 35,
+    "end_line": 37,
+    "exported": false,
+    "id": 16616996063639049758,
+    "content_hash": 13960945689419600915,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.Inner",
+    "kind": "class",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 39,
+    "end_line": 41,
+    "exported": false,
+    "id": 9128962072801068378,
+    "content_hash": 1123922448371948093,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [
+      "ping"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.Inner.ping()",
+    "kind": "method",
+    "language": "java",
+    "parent": "Store.Inner",
+    "start_line": 40,
+    "end_line": 40,
+    "exported": false,
+    "id": 201984292166758578,
+    "content_hash": 17915486860929433448,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.java",
+    "qualified_name": "Store.Mode",
+    "kind": "enum",
+    "language": "java",
+    "parent": "Store",
+    "start_line": 43,
+    "end_line": 46,
+    "exported": false,
+    "id": 5728567129019741220,
+    "content_hash": 11400124268124339188,
+    "imports": [
+      "java.util.Collections.emptyList",
+      "java.util.List",
+      "java.util.Map"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]
