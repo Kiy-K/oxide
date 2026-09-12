@@ -149,3 +149,84 @@ Absence of that analysis in a PR adding a bespoke walker is the finding.
 **Exceptions:** a language with no upstream `tree-sitter-tags` `tags.scm` at
 all is a legitimate reason for a different approach — but the PR must state
 that explicitly, not silently default to a walker out of familiarity.
+
+---
+
+### LANG-004 — A new language may change its own `qualified_name` shape, never the id formula
+**Severity:** BLOCKER · **Scope:** anything that alters how
+`Symbol::qualified_name` is built, `Symbol::id`, or
+`parser.rs::parse_file_with`'s dedup.
+
+**Invariant:** symbol ids are `FNV1a(file + \0 + qualified_name)` and are
+persisted; an id that moves orphans a stored embedding and re-embeds a
+symbol whose source never changed. Java is the precedent for the only safe
+way to buy overload-distinct identity: put the discriminator in *that
+language's* `qualified_name` (`Store.get(String,String)`,
+`tags.rs::java_signature`), gated on the language, leaving the formula and
+every other language's names untouched. Changing the formula itself — or
+adding a component every language pays for — is a cross-language
+re-embedding migration, not a language addition.
+
+Whatever goes into a name must also be *stable against edits that do not
+change the declaration*. Java's normalization is erasure-shaped for exactly
+that reason: generics dropped, package qualifiers reduced to the last
+segment, varargs turned into arrays, and parameter names, `final` and
+parameter **and type** annotations excluded. The type-annotation case
+(`java.util.@NonNull List`) is the one that is easy to miss — it lives
+*inside* the type node rather than in a sibling `modifiers`, and letting it
+through re-identifies a method every time somebody annotates a parameter.
+
+**What constitutes a violation:** a change to `Symbol::id`; a
+`qualified_name` change not gated on one language; a discriminator that
+includes anything a reformat, rename, or annotation edit can move; silently
+accepting `parse_file_with`'s first-wins dedup for a language whose
+idiomatic code collides under it (which is what makes the loss *silent* —
+the second declaration is dropped with no diagnostic).
+
+**Evidence required:** the committed conformance goldens for every
+*pre-existing* language, unchanged — they record each symbol's `id` and
+`content_hash`, so a byte-identical diff is proof no other language moved.
+Plus a test asserting the new language's colliding declarations really do
+get distinct ids, and one asserting the stability property above
+(`tests/language_conformance.rs::java_overloads_keep_distinct_ids_without_
+touching_other_languages`, `tests/full_incremental_parity.rs::javascript_
+and_java_reach_the_same_state_incrementally_as_from_scratch`).
+
+**Exceptions:** none for the formula. A language reusing another's grammar
+and `.scm` files wholesale (JavaScript on TSX) needs no identity change at
+all and is the cheaper path when it applies.
+
+---
+
+### LANG-005 — A consumer of a repo-wide relation lookup that cannot use the seed-pool scope must bring its own
+**Severity:** BLOCKER · **Scope:** new callers of
+`RelationGraph::callers_of`/`implementors_of`; `src/blast_radius.rs`.
+
+**Invariant:** LANG-001 requires a bounded file scope before a repo-wide
+lookup reaches output, and names the seed pool's files as that bound. Blast
+radius (`--blast-radius`) is the one sanctioned consumer that cannot use
+it — surfacing a caller in a file the seed search *didn't* return is the
+feature — so it carries its own bound instead: hard caps on seeds, per-seed
+members, total members, distinct files, and the single transitive hop
+(`config.rs`'s `BLAST_RADIUS_*`). The caps live in one accumulator
+(`Bounded::push`) precisely so no traversal branch can be written that skips
+one, and the traversal order is fixed (seeds in rank order, relations in a
+fixed order, each relation's own result pre-sorted by `RelationGraph`) so
+truncation cuts the same set every run.
+
+The transitive hop has two additional requirements that are easy to get
+wrong: it must read its next key from `Symbol::name`, never from the tail of
+a qualified name (Java's names carry a signature, so slicing yields
+`get(String)` and matches nothing), and it must be taken from a *snapshot*
+of the distance-1 results, never from the accumulator as it grows.
+
+**What constitutes a violation:** a new caller of either lookup with neither
+LANG-001's seed-pool scope nor an explicit bound of its own; a cap enforced
+at a call site rather than in the accumulator; a traversal that feeds its
+own output back in; truncating a list that was not sorted first.
+
+**Evidence required:** a test that drives the traversal past every cap at
+once and asserts each still holds, a determinism test over repeated runs,
+and — for anything reaching the request path — evidence that the disabled
+path costs nothing (blast radius: no whole-corpus snapshot load on `search`
+unless asked).

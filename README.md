@@ -79,6 +79,7 @@ starts reading and editing.
 oxide index                         # create or incrementally update the index
 oxide query "fix token refresh"     # build a token-budgeted working set
 oxide search RetryPolicy            # find ranked symbol matches
+oxide search RetryPolicy --blast-radius   # ... plus who would be affected
 oxide status                        # check freshness and provider compatibility
 oxide watch                         # update the index as files change
 oxide review --diff HEAD~1          # collect context for a Git diff
@@ -100,6 +101,58 @@ oxide search RefreshToken --json
 Every evidence item includes its repository-relative path, qualified name,
 line range, score, selection reasons, and source snippet. Context packs also
 report their estimated token use and why candidates were omitted.
+
+## Blast radius
+
+`--blast-radius` adds one question to either command: if I change this, what
+else is involved? It reports a small, bounded neighborhood around the top
+matches — direct callers, implementors and subtypes, related tests, and one
+tightly capped hop past the direct callers.
+
+```bash
+oxide search TokenStore --blast-radius
+oxide query "change how tokens refresh" --blast-radius
+```
+
+```
+src/store.py:1–3  TokenStore  class
+  blast radius
+    · src/handler1.py:4  handler1 calls this
+    · src/cache.py:4     MemoryStore implements this
+    · src/router.py:4    route reaches this
+```
+
+It is deliberately small rather than complete: at most twelve members across
+at most eight files, drawn from at most three seeds. The flag changes nothing
+else. On `search` it is attached after ranking and never reorders or rescores
+a result; on `query` its members compete for the same token budget as
+everything else in the pack. With the flag absent no lookup runs and the JSON
+is byte-identical to a build without the feature, so existing `--json` and MCP
+consumers are unaffected.
+
+Blast radius is built on the same precomputed structural relations the rest of
+retrieval uses, which are matched on bare names without type resolution. Treat
+a member as a lead worth reading, not as proof of impact.
+
+## Supported languages
+
+| Language | Indexed definitions |
+|---|---|
+| Python | modules, classes, functions, methods, constants |
+| TypeScript / TSX | functions, classes, methods, interfaces, type aliases, enums, exported declarations |
+| JavaScript / JSX | functions, classes, methods, arrow-function assignments, exported declarations, JSX component usage |
+| Rust | modules, structs, enums, traits, impls, functions, methods |
+| Go | packages, structs, interfaces, functions, methods, constants |
+| Java | classes, interfaces, enums, records, annotation types, methods, constructors |
+
+Java method and constructor names carry a normalized parameter-type list
+(`Store.get(String,String)`), so overloads stay distinct symbols instead of
+collapsing into one.
+
+OXIDE also extracts imports, references, calls, inheritance, and containment
+where the language grammar exposes them. See the
+[language coverage matrix](docs/language-support/README.md) for exact behavior
+and known gaps. The committed conformance fixtures are the source of truth.
 
 ## Coding-agent integrations
 

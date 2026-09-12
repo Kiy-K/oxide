@@ -165,9 +165,12 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
     };
     assert_eq!(
         keys(&tools[0]),
-        ["budget_tokens", "path", "profile", "task"]
+        ["blast_radius", "budget_tokens", "path", "profile", "task"]
     );
-    assert_eq!(keys(&tools[1]), ["limit", "path", "profile", "query"]);
+    assert_eq!(
+        keys(&tools[1]),
+        ["blast_radius", "limit", "path", "profile", "query"]
+    );
 }
 
 #[test]
@@ -426,4 +429,68 @@ fn a_live_server_sees_an_out_of_process_reindex_on_the_next_call() {
         !names.iter().any(|n| n.ends_with("#stale_helper")),
         "{names:?}"
     );
+}
+
+#[test]
+fn blast_radius_is_opt_in_over_the_protocol_and_absent_by_default() {
+    // The MCP surface's compatibility contract: a client that predates the
+    // argument sends nothing, and the payload it gets back carries no trace
+    // of the feature — not an empty array, nothing. Passing it explicitly is
+    // what turns the extra evidence on.
+    let root = tempfile::tempdir().unwrap();
+    write(
+        root.path(),
+        "src/store.py",
+        "class TokenStore:\n    def refresh(self, token):\n        return token\n",
+    );
+    write(
+        root.path(),
+        "src/handler.py",
+        "from .store import TokenStore\n\n\ndef handle(request):\n    return TokenStore().refresh(request)\n",
+    );
+    index(root.path());
+    let mut server = McpProcess::start(root.path());
+
+    let plain = server.request(call("search", json!({"query": "TokenStore", "path": "."})));
+    let plain_text = plain["result"]["content"][0]["text"].as_str().unwrap();
+    assert!(
+        !plain_text.contains("blast_radius"),
+        "default search payload carried blast-radius evidence: {plain_text}"
+    );
+
+    let asked = server.request(call(
+        "search",
+        json!({"query": "TokenStore", "path": ".", "blast_radius": true}),
+    ));
+    assert_eq!(asked["result"]["isError"], false);
+    let asked_text = asked["result"]["content"][0]["text"].as_str().unwrap();
+    let hits: Value = serde_json::from_str(asked_text).unwrap();
+    let members: Vec<&Value> = hits
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|h| h.get("blast_radius"))
+        .flat_map(|b| b.as_array().unwrap())
+        .collect();
+    assert!(
+        !members.is_empty(),
+        "no blast radius returned: {asked_text}"
+    );
+    assert!(members
+        .iter()
+        .all(|m| m["id"].is_string() && m["relation"].is_string()));
+
+    // Same for query, and a non-boolean is a protocol-level argument error
+    // rather than a tool result, like every other malformed argument here.
+    let ctx = server.request(call(
+        "query",
+        json!({"task": "refresh a token", "path": ".", "blast_radius": true}),
+    ));
+    assert_eq!(ctx["result"]["isError"], false);
+
+    let bad = server.request(call(
+        "search",
+        json!({"query": "TokenStore", "path": ".", "blast_radius": "yes"}),
+    ));
+    assert_eq!(bad["error"]["code"], -32602, "{bad}");
 }

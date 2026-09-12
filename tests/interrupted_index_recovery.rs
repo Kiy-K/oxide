@@ -61,6 +61,7 @@ fn search_request() -> SearchRequest {
         mode: SearchMode::LexicalOnly,
         expand: false,
         retrieval_mode: RetrievalMode::default(),
+        blast_radius: false,
     }
 }
 
@@ -95,7 +96,7 @@ fn schema_only_index_is_rejected_not_treated_as_healthy() {
     );
 
     let ctx_err = service
-        .context("thing", 128, RetrievalMode::default())
+        .context("thing", 128, RetrievalMode::default(), false)
         .expect_err("context must also fail structurally, not return a deceptive empty pack");
     assert!(matches!(
         ctx_err.action(),

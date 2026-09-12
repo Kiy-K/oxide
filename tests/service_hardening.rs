@@ -66,13 +66,14 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
                 mode: SearchMode::VectorOnly,
                 expand: false,
                 retrieval_mode: RetrievalMode::default(),
+                blast_radius: false,
             },
         )
         .unwrap_err();
     assert_eq!(err.code(), "provider_mismatch");
 
     let err = service
-        .context("understand thing", 512, RetrievalMode::default())
+        .context("understand thing", 512, RetrievalMode::default(), false)
         .unwrap_err();
     assert_eq!(err.code(), "provider_mismatch");
 
@@ -87,6 +88,7 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
                 mode: SearchMode::LexicalOnly,
                 expand: false,
                 retrieval_mode: RetrievalMode::default(),
+                blast_radius: false,
             },
         )
         .unwrap();
@@ -116,13 +118,14 @@ fn incompatible_index_version_is_a_structured_error_not_a_guess() {
                 mode: SearchMode::LexicalOnly,
                 expand: false,
                 retrieval_mode: RetrievalMode::default(),
+                blast_radius: false,
             },
         )
         .unwrap_err();
     assert_eq!(err.code(), "index_incompatible");
 
     let err = service
-        .context("understand thing", 128, RetrievalMode::default())
+        .context("understand thing", 128, RetrievalMode::default(), false)
         .unwrap_err();
     assert_eq!(err.code(), "index_incompatible");
 }
@@ -160,6 +163,7 @@ fn index_without_version_meta_is_incompatible_not_legacy_compatible() {
                 mode: SearchMode::LexicalOnly,
                 expand: false,
                 retrieval_mode: RetrievalMode::default(),
+                blast_radius: false,
             },
         )
         .unwrap_err();

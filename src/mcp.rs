@@ -49,6 +49,11 @@ impl OxideServer {
 const RETRIEVAL_MODE_DESCRIPTION: &str =
     "Relevance/latency tradeoff. Omit for balanced (the default for an unconfigured agent).";
 
+/// Omitting the argument is the pre-feature behavior exactly: no lookup
+/// runs and the serialized result carries no extra field, so a client that
+/// predates this sees no change.
+const BLAST_RADIUS_DESCRIPTION: &str = "Also report the bounded impact neighborhood of the top matches: direct callers, implementors and related tests. Off by default; never changes which results are returned or how they rank.";
+
 fn query_input_schema() -> JsonObject {
     object(json!({
         "type": "object",
@@ -57,6 +62,7 @@ fn query_input_schema() -> JsonObject {
             "path": {"type": "string"},
             "budget_tokens": {"type": "integer", "minimum": 0},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
+            "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
         },
         "required": ["task"],
         "additionalProperties": false,
@@ -71,6 +77,7 @@ fn search_input_schema() -> JsonObject {
             "path": {"type": "string"},
             "limit": {"type": "integer", "minimum": 0, "maximum": 100},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
+            "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
         },
         "required": ["query"],
         "additionalProperties": false,
@@ -110,17 +117,21 @@ impl OxideServer {
         input_schema = query_input_schema()
     )]
     async fn query(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["task", "path", "budget_tokens", "profile"])?;
+        reject_unknown(
+            &arguments,
+            &["task", "path", "budget_tokens", "profile", "blast_radius"],
+        )?;
         let task = required_string(&arguments, "task")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let budget = optional_usize(&arguments, "budget_tokens")?.unwrap_or(DEFAULT_CONTEXT_BUDGET);
         let mode = optional_retrieval_mode(&arguments)?;
+        let blast_radius = optional_bool(&arguments, "blast_radius")?.unwrap_or(false);
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
                 Ok(service) => service.with_process_cache(),
                 Err(error) => return Ok(service_error_result(error)),
             };
-            match service.context(&task, budget, mode) {
+            match service.context(&task, budget, mode, blast_radius) {
                 Ok(result) => tool_success(result),
                 Err(error) => Ok(service_error_result(error)),
             }
@@ -134,11 +145,15 @@ impl OxideServer {
         input_schema = search_input_schema()
     )]
     async fn search(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
-        reject_unknown(&arguments, &["query", "path", "limit", "profile"])?;
+        reject_unknown(
+            &arguments,
+            &["query", "path", "limit", "profile", "blast_radius"],
+        )?;
         let query = required_string(&arguments, "query")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);
         let retrieval_mode = optional_retrieval_mode(&arguments)?;
+        let blast_radius = optional_bool(&arguments, "blast_radius")?.unwrap_or(false);
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
                 Ok(service) => service.with_process_cache(),
@@ -151,6 +166,7 @@ impl OxideServer {
                     mode: SearchMode::Hybrid,
                     expand: true,
                     retrieval_mode,
+                    blast_radius,
                 },
             );
             match result {
@@ -242,6 +258,16 @@ fn optional_usize(arguments: &JsonObject, key: &str) -> Result<Option<usize>, Mc
     let value = usize::try_from(value)
         .map_err(|_| McpError::invalid_params(format!("{key} is too large"), None))?;
     Ok(Some(value))
+}
+
+fn optional_bool(arguments: &JsonObject, key: &str) -> Result<Option<bool>, McpError> {
+    match arguments.get(key) {
+        None => Ok(None),
+        Some(value) => value
+            .as_bool()
+            .map(Some)
+            .ok_or_else(|| McpError::invalid_params(format!("{key} must be a boolean"), None)),
+    }
 }
 
 fn tool_success(payload: impl serde::Serialize) -> Result<CallToolResult, McpError> {

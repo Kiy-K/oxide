@@ -40,6 +40,27 @@ Then **read the actual source** of the files/symbols it returns — the
 snippets in the pack are for orientation, not for editing from. Never edit
 based on an OXIDE snippet alone.
 
+## Before a change with reach
+
+When the task is a *change* whose blast radius matters — a signature change,
+a rename, removing a behavior, or deciding whether something is safe to
+touch — add `--blast-radius` to either command:
+
+```bash
+oxide search "<symbol>" --blast-radius --json
+oxide query "<change description>" --blast-radius --json
+```
+
+It returns a bounded neighborhood (direct callers, implementors/subtypes,
+related tests, one capped hop further) attached to the top matches. Leave it
+off for plain "where is this" questions: on `query` its members compete for
+the same token budget as everything else, and on `search` it costs an extra
+whole-corpus load.
+
+Every member is a lead to go read, not a complete impact set — the relations
+behind it are name-matched, not type-resolved, and the list is truncated
+rather than extended when there is more.
+
 ## Targeted follow-up
 
 If a specific question remains after reading the context pack (e.g. "where

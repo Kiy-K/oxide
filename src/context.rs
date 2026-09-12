@@ -8,6 +8,7 @@
 //! Every inclusion and omission carries its reason.
 
 use crate::config::{
+    BLAST_RADIUS_CONTEXT_ITEMS, BLAST_RADIUS_MAX_SEEDS, BLAST_RADIUS_SCORE_FRACTION,
     CONTEXT_CHARS_PER_TOKEN, CONTEXT_DEFAULT_BUDGET_TOKENS, CONTEXT_EXPANSION_PER_SEED,
     CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS, CONTEXT_MAX_CANDIDATES,
     CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
@@ -87,6 +88,10 @@ pub struct ContextOptions {
     /// Candidate pool before packing.
     pub max_candidates: usize,
     pub retrieval_mode: RetrievalMode,
+    /// Also offer the top seeds' bounded impact neighborhood
+    /// (`blast_radius.rs`) as candidates. Opt-in: `false` runs no extra
+    /// lookup and produces a byte-identical pack.
+    pub blast_radius: bool,
 }
 
 impl Default for ContextOptions {
@@ -96,6 +101,7 @@ impl Default for ContextOptions {
             budget_tokens: CONTEXT_DEFAULT_BUDGET_TOKENS,
             max_candidates: CONTEXT_MAX_CANDIDATES,
             retrieval_mode: RetrievalMode::default(),
+            blast_radius: false,
         }
     }
 }
@@ -270,6 +276,44 @@ pub fn build_context_with(
                         role: Role::Dependency,
                     });
                 }
+            }
+        }
+
+        // ---- blast radius (opt-in) --------------------------------------
+        // The one evidence source here that deliberately reaches *outside*
+        // the seed pool's files — a caller in an unretrieved file is what
+        // the question is for — so it carries its own hard caps instead
+        // (`blast_radius.rs`). Injected as ordinary candidates rather than
+        // attached as a separate section: that is what keeps it inside the
+        // existing token budget, per-file diversity cap and role ordering
+        // with no second allocator to keep in sync. Dependency role and a
+        // sub-expansion score, so it can never displace a primary or
+        // outrank the structural expansion above.
+        if opts.blast_radius {
+            let anchors: Vec<&Symbol> = seeds
+                .iter()
+                .take(BLAST_RADIUS_MAX_SEEDS)
+                .map(|h| &h.symbol)
+                .collect();
+            let by_qname: HashMap<&str, f32> = seeds
+                .iter()
+                .map(|h| (h.symbol.qualified_name.as_str(), h.score))
+                .collect();
+            for (item, sym) in crate::blast_radius::compute(&graph, &anchors, true)
+                .into_iter()
+                .take(BLAST_RADIUS_CONTEXT_ITEMS)
+            {
+                let seed_score = by_qname.get(item.via.as_str()).copied().unwrap_or(0.0);
+                order_note(Candidate {
+                    symbol: sym.clone(),
+                    score: seed_score * BLAST_RADIUS_SCORE_FRACTION,
+                    reasons: vec![format!("blast-radius:{}←{}", item.relation, item.via)],
+                    role: if is_test_symbol(sym) {
+                        Role::Test
+                    } else {
+                        Role::Dependency
+                    },
+                });
             }
         }
     }

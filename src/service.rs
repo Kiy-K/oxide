@@ -3,12 +3,14 @@
 //! This module keeps repository lifecycle, error classification, and wire DTOs
 //! out of the argument parser. Retrieval and context algorithms stay below it.
 
+use crate::blast_radius::BlastItem;
 use crate::context::{build_context_with, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
+use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
@@ -160,6 +162,12 @@ pub struct SearchRequest {
     pub mode: SearchMode,
     pub expand: bool,
     pub retrieval_mode: RetrievalMode,
+    /// Attach each top hit's bounded impact neighborhood
+    /// (`blast_radius.rs`). Opt-in and strictly additive: ranking, scores
+    /// and hit order are computed before this and never consult it, and
+    /// with it off the serialized result is byte-identical to before the
+    /// feature existed (`blast_radius` skips serialization when empty).
+    pub blast_radius: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -246,6 +254,11 @@ pub struct Evidence {
     pub score: f32,
     pub reasons: Vec<String>,
     pub snippet: String,
+    /// Bounded impact neighborhood, present only when the caller asked for
+    /// it *and* this hit was one of the anchored seeds. Absent from JSON
+    /// when empty, so every existing consumer sees the shape it always saw.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub blast_radius: Vec<BlastItem>,
 }
 
 #[derive(Debug, Serialize)]
@@ -669,7 +682,34 @@ impl RepositoryService {
                 "embedding provider became unavailable during search",
             ));
         }
-        let evidence: Vec<_> = hits
+        // Computed before the hits are consumed below, and only when asked:
+        // this is the one path that needs the whole-corpus snapshot with
+        // relations merged in, so with the flag off nothing loads it.
+        let blast: Vec<(BlastItem, String)> = if request.blast_radius {
+            // Only the anchored prefix is cloned: `compute` truncates to the
+            // same cap, and a `--limit 100` search has no business copying
+            // 100 symbols to feed a 3-seed traversal.
+            let seeds: Vec<Symbol> = hits
+                .iter()
+                .take(crate::config::BLAST_RADIUS_MAX_SEEDS)
+                .map(|h| h.symbol.clone())
+                .collect();
+            let snapshot = engine
+                .snapshot_with_relations()
+                .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))?;
+            let graph = RelationGraph::build(&snapshot.symbols);
+            let anchors: Vec<&Symbol> = seeds.iter().collect();
+            crate::blast_radius::compute(&graph, &anchors, true)
+                .into_iter()
+                .map(|(item, _)| {
+                    let via_id = item.via_id.clone();
+                    (item, via_id)
+                })
+                .collect()
+        } else {
+            Vec::new()
+        };
+        let mut evidence: Vec<Evidence> = hits
             .into_iter()
             .map(|mut hit| {
                 hit.snippet = crate::retrieval::read_snippet(
@@ -681,6 +721,18 @@ impl RepositoryService {
                 Evidence::from_symbol(&hit.symbol, hit.score, hit.reasons, hit.snippet)
             })
             .collect();
+        // Attached to the seed each member was reached from, so the evidence
+        // stays next to the thing it is evidence about. Hit order and scores
+        // are already final at this point and are not touched.
+        // Joined on `path#QualifiedName`, not the bare qualified name: two
+        // files can each define a `Store`, and both can be hits in the same
+        // result, so a name-keyed join would hang one seed's neighborhood
+        // off the other's hit.
+        for (item, via_id) in blast {
+            if let Some(target) = evidence.iter_mut().find(|e| e.id == via_id) {
+                target.blast_radius.push(item);
+            }
+        }
         Ok(evidence)
     }
 
@@ -689,6 +741,7 @@ impl RepositoryService {
         task: &str,
         budget_tokens: usize,
         retrieval_mode: RetrievalMode,
+        blast_radius: bool,
     ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
         let provider = self.embedder()?;
@@ -707,6 +760,7 @@ impl RepositoryService {
             &ContextOptions {
                 budget_tokens,
                 retrieval_mode,
+                blast_radius,
                 ..ContextOptions::default()
             },
         )
@@ -963,6 +1017,7 @@ impl Evidence {
             score,
             reasons,
             snippet,
+            blast_radius: Vec::new(),
         }
     }
 }

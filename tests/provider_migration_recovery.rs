@@ -66,6 +66,7 @@ fn search_request(mode: SearchMode) -> SearchRequest {
         mode,
         expand: false,
         retrieval_mode: RetrievalMode::default(),
+        blast_radius: false,
     }
 }
 

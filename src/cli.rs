@@ -150,6 +150,11 @@ pub enum Cmd {
         /// $OXIDE_RETRIEVAL_MODE, then balanced.
         #[arg(long, alias = "retrieval-mode")]
         profile: Option<String>,
+        /// Also pull in the bounded impact neighborhood of the top matches:
+        /// direct callers, implementors and related tests. Stays inside the
+        /// same token budget.
+        #[arg(long)]
+        blast_radius: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -178,6 +183,11 @@ pub enum Cmd {
         /// Disable structural expansion.
         #[arg(long, default_value_t = false, hide_short_help = true)]
         no_expand: bool,
+        /// Also report the bounded impact neighborhood of the top matches:
+        /// direct callers, implementors and related tests. Never changes
+        /// which results are returned or how they rank.
+        #[arg(long)]
+        blast_radius: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -411,6 +421,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             mode,
             no_expand,
             profile,
+            blast_radius,
             json,
         } => {
             let mode = match mode.as_str() {
@@ -434,6 +445,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     mode,
                     expand: !no_expand,
                     retrieval_mode: resolve_profile(profile.as_deref(), json)?,
+                    blast_radius,
                 },
                 json,
                 paint,
@@ -447,6 +459,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             task_flag,
             budget_tokens,
             profile,
+            blast_radius,
             json,
         } => {
             let task = question.or(task_flag).ok_or_else(|| {
@@ -462,6 +475,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                 &task,
                 budget_tokens,
                 resolve_profile(profile.as_deref(), json)?,
+                blast_radius,
                 json,
                 paint,
             )
@@ -812,6 +826,10 @@ fn describe_reasons(reasons: &[String]) -> String {
                 "uses" => format!("used by {seed}"),
                 "imported-definition" => format!("imported by {seed}"),
                 "caller" | "ast-grep-caller" => format!("calls {seed}"),
+                "blast-radius:caller" => format!("blast radius: calls {seed}"),
+                "blast-radius:transitive-caller" => format!("blast radius: reaches {seed}"),
+                "blast-radius:implementor" => format!("blast radius: implements {seed}"),
+                "blast-radius:test" => format!("blast radius: tests {seed}"),
                 "parent" => format!("parent of {seed}"),
                 "child" => format!("child of {seed}"),
                 "sibling" => format!("sibling of {seed}"),
@@ -830,9 +848,21 @@ fn describe_reasons(reasons: &[String]) -> String {
     out.join(", ")
 }
 
+/// `caller` → `calls this`, keeping the human line readable without
+/// repeating the seed's name on every row (the heading already carries it).
+fn describe_blast_relation(relation: &str) -> &'static str {
+    match relation {
+        "caller" => "calls this",
+        "transitive-caller" => "reaches this",
+        "implementor" => "implements this",
+        "test" => "tests this",
+        _ => "related",
+    }
+}
+
 fn render_evidence(hit: &Evidence, p: &Paint) -> String {
     let location = format!("{}:{}–{}", hit.file, hit.start_line, hit.end_line);
-    format!(
+    let mut out = format!(
         "{}  {}  {}\n  {}\n{}",
         p.bold(&location),
         p.accent(&hit.qualified_name),
@@ -847,7 +877,23 @@ fn render_evidence(hit: &Evidence, p: &Paint) -> String {
             .map(|line| format!("  {} {line}", p.dim("│")))
             .collect::<Vec<_>>()
             .join("\n")
-    )
+    );
+    if !hit.blast_radius.is_empty() {
+        out.push_str(&format!("\n  {}", p.dim("blast radius")));
+        for item in &hit.blast_radius {
+            out.push_str(&format!(
+                "\n    {} {}  {}",
+                p.dim("·"),
+                p.accent(&format!("{}:{}", item.file, item.start_line)),
+                p.dim(&format!(
+                    "{} {}",
+                    item.qualified_name,
+                    describe_blast_relation(item.relation)
+                ))
+            ));
+        }
+    }
+    out
 }
 
 fn cmd_review(path: Option<&str>, diff: &str, json: bool, p: Paint) -> Result<(), CliError> {
@@ -947,12 +993,13 @@ fn cmd_query(
     task: &str,
     budget_tokens: usize,
     retrieval_mode: RetrievalMode,
+    blast_radius: bool,
     json: bool,
     p: Paint,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let pack = service
-        .context(task, budget_tokens, retrieval_mode)
+        .context(task, budget_tokens, retrieval_mode, blast_radius)
         .map_err(|e| CliError::service(e, json))?;
     if json {
         println!(

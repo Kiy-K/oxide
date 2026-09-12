@@ -49,3 +49,49 @@ pub(crate) const TERM_COVERAGE_ALPHA_DEFAULT: f32 = 0.0;
 /// [0,1]) can never be dethroned by coverage alone, while still being able
 /// to break near-ties in favor of genuine multi-term corroboration.
 pub(crate) const TERM_COVERAGE_MAX_BONUS_FRACTION: f32 = 0.15;
+
+/// Blast radius (`--blast-radius`): the bounded impact neighborhood of a
+/// query's top seeds. Every value here is a hard cap, not a tuning knob —
+/// `RelationGraph::callers_of`/`implementors_of` are repo-wide by
+/// construction (AGENTS.md), so these are what stop a neighborhood from
+/// becoming a graph dump. See `src/blast_radius.rs` for why this feature
+/// cannot reuse `context.rs`'s seed-pool file scope and carries its own.
+///
+/// All of it is inert unless the caller opts in: with the flag absent, no
+/// lookup runs, no snapshot is loaded for it, and output is byte-identical.
+pub(crate) const BLAST_RADIUS_MAX_SEEDS: usize = 3;
+/// **Direct** members per seed (callers, implementors, tests). The
+/// transitive hop is budgeted separately by [`BLAST_RADIUS_TRANSITIVE_MAX`]
+/// and does *not* count against this, so one seed's worst case is
+/// `BLAST_RADIUS_PER_SEED + BLAST_RADIUS_TRANSITIVE_MAX` members, and
+/// `BLAST_RADIUS_MAX_ITEMS` is the only cap on the whole neighborhood.
+///
+/// Deliberate, and the same shape `context.rs`'s own
+/// `STRUCTURAL_CALLER_HITS_PER_SEED` already takes against
+/// `CONTEXT_EXPANSION_PER_SEED`: an independently-bounded evidence source
+/// gets its own budget rather than competing for another one's. Folding the
+/// hop into this cap would starve it exactly when there are four direct
+/// callers — and the hop's whole value is reaching past them.
+pub(crate) const BLAST_RADIUS_PER_SEED: usize = 4;
+/// The hard ceiling on a whole neighborhood, across every seed and both
+/// distances. Unlike the per-seed caps this one is absolute.
+pub(crate) const BLAST_RADIUS_MAX_ITEMS: usize = 12;
+pub(crate) const BLAST_RADIUS_MAX_FILES: usize = 8;
+/// The single transitive hop's own budget, across all seeds. Separate from
+/// [`BLAST_RADIUS_PER_SEED`] on purpose — see its note.
+pub(crate) const BLAST_RADIUS_TRANSITIVE_MAX: usize = 3;
+
+/// How many blast-radius members reach `build_context`'s candidate pool.
+/// Deliberately far below `BLAST_RADIUS_MAX_ITEMS`: in `oxide query` these
+/// compete for the same token budget as the primaries, so the pack takes
+/// the most direct few rather than the whole neighborhood. `oxide search`
+/// attaches the full bounded list instead — it carries no snippets there.
+pub(crate) const BLAST_RADIUS_CONTEXT_ITEMS: usize = 4;
+
+/// Score a blast-radius candidate receives in the context pack, as a
+/// fraction of its seed's. Below the 0.4 the two existing expansion sources
+/// use, so an opt-in extra evidence source can break into the pack but
+/// never outranks the structural expansion that was already there — and
+/// above the relevance floor (0.15), so a direct caller of the top hit is
+/// not immediately dropped as a weak tail.
+pub(crate) const BLAST_RADIUS_SCORE_FRACTION: f32 = 0.35;

@@ -88,6 +88,26 @@ thing (e.g., "where else is this function called").
 Do not treat OXIDE calls as a required checklist step. Skip straight to
 reading/editing when the task doesn't need discovery.
 
+### Blast radius
+
+`--blast-radius` (MCP: `"blast_radius": true`) adds one thing to either
+call: the small, bounded neighborhood that would be involved if the top
+matches changed — direct callers, implementors and subtypes, related tests,
+and one capped hop past the direct callers.
+
+Use it when the task is a **change** whose reach you need before editing: a
+signature change, a rename, removing or narrowing a behavior, or judging
+whether something is safe to touch. Do *not* turn it on by default for
+questions that are only "where is this" — it costs tokens on `query` (its
+members compete for the same budget as the rest of the pack) and an extra
+whole-corpus load on `search`.
+
+Treat every member as a lead to go read, never as a complete impact set.
+It is built on the same bare-name structural relations as the rest of
+retrieval, so it misses relations that need real type resolution, and a
+same-named symbol elsewhere can appear in it. It is also deliberately
+truncated — a long list is cut, not grown.
+
 ## Index and freshness behavior
 
 - OXIDE's read commands (`status`, `search`, `query`) never index, never

@@ -365,7 +365,15 @@ identity everywhere is `path#QualifiedName`.
   `context.rs` enforces this the same way it always has, with a
   `scope_files` filter built from the seed pool's own files (capped),
   applied to the `callers_of` result before use — see
-  `docs/review/structural-and-language.md`'s LANG-001. Attribution (mapping
+  `docs/review/structural-and-language.md`'s LANG-001. **The one sanctioned
+  exception is `blast_radius.rs`**, which must reach files the seed search
+  did *not* surface (that is the feature), and therefore carries its own
+  explicit bound instead: hard caps on seeds, per-seed members, total
+  members, distinct files, and the single transitive hop
+  (`config.rs`'s `BLAST_RADIUS_*`), all enforced in one accumulator so no
+  traversal branch can skip one. A third consumer needs the same treatment:
+  an explicit bound of its own, not an unfiltered repo-wide result.
+  Attribution (mapping
   a raw call-site/base-clause line back to the `Symbol` it belongs to,
   `structural_relations::enclosing`) has three known ties, each found
   empirically and fixed with a specific tie-break, each pinned by its own
