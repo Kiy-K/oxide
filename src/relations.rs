@@ -283,6 +283,9 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         format!("{joined}.pyi"),
         format!("{joined}.ts"),
         format!("{joined}.tsx"),
+        // Ruby `require_relative './base'` is a real path, minus the
+        // extension — the same shape TypeScript's `./base` already has.
+        format!("{joined}.rb"),
         format!("{joined}/__init__.py"),
         format!("{joined}/index.ts"),
         format!("{joined}/index.tsx"),

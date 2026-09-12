@@ -677,6 +677,7 @@ fn language_label(language: crate::symbols::Language) -> &'static str {
         Rust => "Rust",
         Go => "Go",
         Java => "Java",
+        Ruby => "Ruby",
     }
 }
 

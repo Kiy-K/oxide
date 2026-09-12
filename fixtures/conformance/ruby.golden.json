@@ -1,0 +1,539 @@
+[
+  {
+    "file": "lib/base.rb",
+    "qualified_name": "Acme",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 10,
+    "exported": false,
+    "id": 10628171230471816720,
+    "content_hash": 3296193651596332643,
+    "imports": [],
+    "references": [
+      "Base",
+      "STORAGE_ROOT",
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/base.rb",
+    "qualified_name": "lib/base.rb:__module__",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 10,
+    "exported": false,
+    "id": 569838976170930821,
+    "content_hash": 3400236451973592990,
+    "imports": [],
+    "references": [
+      "Base",
+      "STORAGE_ROOT",
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/base.rb",
+    "qualified_name": "Acme.Base",
+    "kind": "class",
+    "language": "ruby",
+    "parent": "Acme",
+    "start_line": 3,
+    "end_line": 9,
+    "exported": false,
+    "id": 6187231030240353592,
+    "content_hash": 6072058988581140463,
+    "imports": [],
+    "references": [
+      "STORAGE_ROOT",
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/base.rb",
+    "qualified_name": "Acme.Base.STORAGE_ROOT",
+    "kind": "constant",
+    "language": "ruby",
+    "parent": "Acme.Base",
+    "start_line": 4,
+    "end_line": 4,
+    "exported": false,
+    "id": 3694996198388368575,
+    "content_hash": 9787210440833327123,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/base.rb",
+    "qualified_name": "Acme.Base.find",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Base",
+    "start_line": 6,
+    "end_line": 8,
+    "exported": false,
+    "id": 16259117639519963674,
+    "content_hash": 8366851637352171758,
+    "imports": [],
+    "references": [],
+    "calls": [
+      "raise"
+    ],
+    "bases": []
+  },
+  {
+    "file": "lib/broken.rb",
+    "qualified_name": "lib/broken.rb:__module__",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 3,
+    "exported": false,
+    "id": 13786850624172584089,
+    "content_hash": 13788139917656890240,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/loggable.rb",
+    "qualified_name": "lib/loggable.rb:__module__",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 9,
+    "exported": false,
+    "id": 9956763511696808057,
+    "content_hash": 7580786461684125487,
+    "imports": [
+      "logger"
+    ],
+    "references": [
+      "log"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/loggable.rb",
+    "qualified_name": "Acme",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 9,
+    "exported": false,
+    "id": 3315283746403228242,
+    "content_hash": 16054360874465134160,
+    "imports": [
+      "logger"
+    ],
+    "references": [
+      "log"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/loggable.rb",
+    "qualified_name": "Acme.Loggable",
+    "kind": "module",
+    "language": "ruby",
+    "parent": "Acme",
+    "start_line": 4,
+    "end_line": 8,
+    "exported": false,
+    "id": 13219431074893737796,
+    "content_hash": 13660230520690846767,
+    "imports": [
+      "logger"
+    ],
+    "references": [
+      "log"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/loggable.rb",
+    "qualified_name": "Acme.Loggable.log",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Loggable",
+    "start_line": 5,
+    "end_line": 7,
+    "exported": false,
+    "id": 12756385746401645096,
+    "content_hash": 18406821889074254595,
+    "imports": [
+      "logger"
+    ],
+    "references": [],
+    "calls": [
+      "Logger",
+      "info"
+    ],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "lib/store.rb:__module__",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 40,
+    "exported": false,
+    "id": 3002562879810432389,
+    "content_hash": 5122747448303564088,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "Base",
+      "DEFAULTS",
+      "Store",
+      "VERSION",
+      "create",
+      "fetch",
+      "find",
+      "get",
+      "initialize",
+      "log",
+      "reset"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 40,
+    "exported": false,
+    "id": 11906056793998382913,
+    "content_hash": 6983333187588168484,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "Base",
+      "DEFAULTS",
+      "Store",
+      "VERSION",
+      "create",
+      "fetch",
+      "find",
+      "get",
+      "initialize",
+      "log",
+      "reset"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store",
+    "kind": "class",
+    "language": "ruby",
+    "parent": "Acme",
+    "start_line": 6,
+    "end_line": 39,
+    "exported": false,
+    "id": 12567516130802515980,
+    "content_hash": 9398902957441288641,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "Base",
+      "DEFAULTS",
+      "VERSION",
+      "create",
+      "fetch",
+      "find",
+      "get",
+      "initialize",
+      "log",
+      "reset"
+    ],
+    "calls": [
+      "attr_accessor"
+    ],
+    "bases": [
+      "Base",
+      "Enumerable",
+      "Loggable"
+    ]
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.VERSION",
+    "kind": "constant",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 10,
+    "end_line": 10,
+    "exported": false,
+    "id": 2796321053331702226,
+    "content_hash": 1617444067224567734,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "DEFAULTS"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.DEFAULTS",
+    "kind": "constant",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 11,
+    "end_line": 11,
+    "exported": false,
+    "id": 7372113107519026387,
+    "content_hash": 13581332020435692896,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.initialize",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 15,
+    "end_line": 17,
+    "exported": false,
+    "id": 1021788291240572641,
+    "content_hash": 9675537377828303511,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.find",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 19,
+    "end_line": 22,
+    "exported": false,
+    "id": 11411438797317159402,
+    "content_hash": 13005609961365458279,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "log"
+    ],
+    "calls": [
+      "log",
+      "parse"
+    ],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.get",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 24,
+    "end_line": 26,
+    "exported": false,
+    "id": 7117769960004584894,
+    "content_hash": 16446155542243968056,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "find"
+    ],
+    "calls": [
+      "find"
+    ],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.fetch",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 28,
+    "end_line": 28,
+    "exported": false,
+    "id": 12419377522347939204,
+    "content_hash": 3925338046314012746,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "get"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.self.create",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 30,
+    "end_line": 32,
+    "exported": false,
+    "id": 16113087496156275090,
+    "content_hash": 55471284407734960,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/store.rb",
+    "qualified_name": "Acme.Store.self.reset",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Acme.Store",
+    "start_line": 35,
+    "end_line": 37,
+    "exported": false,
+    "id": 7214349424383782620,
+    "content_hash": 4409279583544958129,
+    "imports": [
+      "base",
+      "json",
+      "loggable"
+    ],
+    "references": [
+      "create"
+    ],
+    "calls": [
+      "create"
+    ],
+    "bases": []
+  },
+  {
+    "file": "lib/widget.rb",
+    "qualified_name": "lib/widget.rb:__module__",
+    "kind": "module",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 8,
+    "exported": false,
+    "id": 2589934494265084761,
+    "content_hash": 11108988751778970708,
+    "imports": [
+      "store"
+    ],
+    "references": [
+      "Store",
+      "Widget",
+      "get",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/widget.rb",
+    "qualified_name": "Widget",
+    "kind": "class",
+    "language": "ruby",
+    "parent": null,
+    "start_line": 4,
+    "end_line": 8,
+    "exported": false,
+    "id": 10676212825651506775,
+    "content_hash": 584270629785972286,
+    "imports": [
+      "store"
+    ],
+    "references": [
+      "Store",
+      "get",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "lib/widget.rb",
+    "qualified_name": "Widget.render",
+    "kind": "method",
+    "language": "ruby",
+    "parent": "Widget",
+    "start_line": 5,
+    "end_line": 7,
+    "exported": false,
+    "id": 7090069678265344342,
+    "content_hash": 5716327033658014178,
+    "imports": [
+      "store"
+    ],
+    "references": [
+      "Store",
+      "get"
+    ],
+    "calls": [
+      "Store",
+      "get"
+    ],
+    "bases": []
+  }
+]

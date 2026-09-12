@@ -72,6 +72,7 @@ const LANGUAGES: &[&str] = &[
     "rust",
     "go",
     "java",
+    "ruby",
 ];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -257,7 +258,15 @@ fn java_overloads_keep_distinct_ids_without_touching_other_languages() {
         "generics erase and package qualifiers drop to the last segment"
     );
     // No other language grew a signature.
-    for lang in ["python", "typescript", "tsx", "javascript", "rust", "go"] {
+    for lang in [
+        "python",
+        "typescript",
+        "tsx",
+        "javascript",
+        "rust",
+        "go",
+        "ruby",
+    ] {
         assert!(
             !snapshot_of(lang)
                 .iter()
@@ -265,6 +274,38 @@ fn java_overloads_keep_distinct_ids_without_touching_other_languages() {
             "{lang}: qualified names must not carry a signature"
         );
     }
+}
+
+#[test]
+fn ruby_conformance() {
+    check_golden("ruby", &snapshot_of("ruby"));
+}
+
+/// Ruby's own identity decision, the counterpart of
+/// `java_overloads_keep_distinct_ids_without_touching_other_languages`: a
+/// singleton (class-level) method and a same-named instance method are two
+/// symbols, kept apart by the receiver prefix the source itself writes
+/// (`Store.self.create`) rather than by any change to `Symbol::id`'s
+/// composition. `class << self` bodies get the same treatment even though
+/// they write no `self.` per method.
+#[test]
+fn ruby_singleton_methods_do_not_collide_with_instance_methods() {
+    let ruby = snapshot_of("ruby");
+    let names: Vec<&str> = ruby.iter().map(|s| s.qualified_name.as_str()).collect();
+    for want in [
+        "Acme.Store.self.create",
+        "Acme.Store.self.reset",
+        "Acme.Store.get",
+        "Acme.Store.find",
+    ] {
+        assert!(names.contains(&want), "missing {want}: {names:?}");
+    }
+    // Ruby qualified names must stay `.`-joined like every other language's
+    // — the prefix is part of the *name*, not a new separator.
+    assert!(
+        !names.iter().any(|n| n.contains('#')),
+        "ruby introduced a new qualified-name separator: {names:?}"
+    );
 }
 
 #[test]
@@ -343,6 +384,12 @@ fn single_file_edit_touches_only_that_file() {
             "Appended",
         ),
         (
+            "ruby",
+            "lib/store.rb",
+            "\nmodule Acme\n  class Appended\n    def run\n      1\n    end\n  end\nend\n",
+            "run",
+        ),
+        (
             "rust",
             "src/backend.rs",
             "\npub fn appended() -> u32 {\n    build()\n}\n",
@@ -391,6 +438,7 @@ fn broken_files_do_not_abort_indexing() {
         ("tsx", "src/broken.tsx", "src/Button.tsx"),
         ("javascript", "src/broken.js", "src/service.js"),
         ("java", "src/Broken.java", "src/Store.java"),
+        ("ruby", "lib/broken.rb", "lib/store.rb"),
         ("rust", "src/broken.rs", "src/store.rs"),
         ("go", "store/broken.go", "store/store.go"),
     ];

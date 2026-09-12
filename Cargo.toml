@@ -68,6 +68,10 @@ tree-sitter-go = "0.25"
 # so non-ASCII labels measure correctly when the line is cleared and redrawn.
 indicatif = { version = "0.18", default-features = false, features = ["unicode-width"] }
 tree-sitter-java = "0.23.5"
+# Ruby. Upstream ships a `tags.scm`, so this is grammar + queries only —
+# no new identity rule beyond the singleton-method receiver prefix
+# (`languages/tags.rs::FileMeta::ruby_singletons`).
+tree-sitter-ruby = "0.23.1"
 
 [features]
 default = ["native-embed"]

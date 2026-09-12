@@ -29,6 +29,27 @@ per-language extractor and no language-specific retrieval behavior.
 | determinism | pinned | pinned | pinned | pinned | pinned | pinned | pinned |
 | incremental single-file edit | pinned | pinned | pinned | pinned | pinned | pinned | pinned |
 
+### Coverage matrix, continued
+
+Split into a second table purely so neither is unreadable; these languages
+go through exactly the same path as the ones above.
+
+| Dimension | Ruby |
+|---|---|
+| grammar | ruby |
+| definitions + stable ids | yes |
+| kinds | class/module/method/function/constant |
+| qualified names | containment **+ singleton receiver prefix** (`Store.self.create`) |
+| parent/child containment | yes (`module` nests like a namespace) |
+| imports | `require` / `require_relative` / `load`, literal string argument only |
+| references | token intersection |
+| calls | calls and method calls; `Foo.new` attributes to `Foo` |
+| inheritance | `<` **plus `include`/`extend`/`prepend` mixins**, direct children of the class or module body |
+| decorator/annotation-inclusive spans | n/a |
+| broken files | module fallback |
+| determinism | pinned |
+| incremental single-file edit | pinned |
+
 ## What Python and TypeScript gained in this round
 
 - **Decorated definitions span their decorators.** `@app.route`,
@@ -203,6 +224,11 @@ their own right because no same-named struct in that file dedups them away
 | Java | fields | Instance and static fields produce no symbol. OXIDE has no variable kind, and Java fields are numerous enough that mapping them onto `Constant` (the way a Go package `var` is) would be mostly noise. Not asked for; easy to add as one `.scm` pattern if it turns out to matter. |
 | Java | annotation-type elements | `String value();` inside an `@interface` is an `annotation_type_element_declaration`, not a `method_declaration`, so the `@interface` itself is a symbol (kind `interface`) but its elements are not. |
 | Java | method references (`Foo::bar`) | The grammar gives two identifiers with no field distinguishing receiver from member, so the callee would be a guess. Deliberately absent from `java_callers.scm` under the same "conservative call relations" rule the rest of the call queries follow. |
+| Ruby | `attr_accessor` / `attr_reader` / `attr_writer` | These synthesize methods at *runtime* from a method call; they are not declarations, so there is no span to hash, no signature to show, and N symbols would share one line. Recorded as an ordinary call on the enclosing class instead. Adding them means inventing spans, which is a different contract from every other symbol OXIDE stores. |
+| Ruby | a `class Foo::Bar` name's namespace | The declared symbol is `Bar`, not `Foo.Bar` — `scope_resolution` in a class name reduces to its last segment, the same bare-name tier `calls`/`bases` live on. A `class Foo::Bar` and a `Bar` nested inside `module Foo` in the same file would collide. |
+| Ruby | `define_method`, `method_missing`, `instance_eval` | Metaprogramming defines methods with no syntactic declaration at all. Out of scope by the same rule as `attr_accessor`, and unrecoverable without running the code. |
+| Ruby | `exported` | Ruby's `private`/`public`/`protected` are method calls that switch a mode for everything after them, so the flag would need statement-order tracking inside a class body. Left `false`, like Rust and Go. |
+| Ruby | a conditional or block-nested `include` | Only a direct child of the class/module body counts as a base. An `include` behind `if RUBY_VERSION > "3"` is conditional behavior, and walking deeper would also attribute a nested class's mixins to its enclosing one. |
 | all | a method and a nested declaration packed onto **one source line** | `void top() { a(); } class Inner { void ping() { b(); } }` collapses both spans to zero lines, and `structural_relations::enclosing`'s longest-qualified-name tie-break then attributes `a()` to `Inner.ping` as well. Language-independent and pre-existing — the identical shape in TypeScript (`function outer() { a(); function inner() { b(); } }`) does the same thing, and it is the LANG-002 tie in `docs/review/structural-and-language.md`. Java annotations do **not** cause it (removing `@Deprecated` changes nothing); pinned both ways by `structural_relations.rs::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does`. Fixing it needs byte-range attribution instead of line numbers, which touches every language at once. |
 | Java | package declaration / true type resolution | Qualified names stay file-scoped, exactly as Python modules are. Parameter types in a signature are normalized by erasure and last-segment name, not resolved — so `com.a.Key` and `com.b.Key` are one type as far as overload identity is concerned. Two overloads that differ *only* that way would collide; no real Java API does that. |
 

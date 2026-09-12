@@ -18,8 +18,8 @@
 //! matching.
 
 use crate::languages::{
-    GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PYTHON_PROFILE, RUST_PROFILE, TSX_PROFILE,
-    TYPESCRIPT_PROFILE,
+    GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PYTHON_PROFILE, RUBY_PROFILE, RUST_PROFILE,
+    TSX_PROFILE, TYPESCRIPT_PROFILE,
 };
 use crate::symbols::Language;
 use std::sync::OnceLock;
@@ -44,6 +44,8 @@ const GO_CALLERS_SRC: &str = include_str!("languages/queries/go_callers.scm");
 const GO_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/go_implementors.scm");
 const JAVA_CALLERS_SRC: &str = include_str!("languages/queries/java_callers.scm");
 const JAVA_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/java_implementors.scm");
+const RUBY_CALLERS_SRC: &str = include_str!("languages/queries/ruby_callers.scm");
+const RUBY_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/ruby_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -82,6 +84,10 @@ static JAVA_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static RUBY_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
@@ -92,6 +98,7 @@ fn ts_language(lang: Language) -> tree_sitter::Language {
         Language::Rust => (RUST_PROFILE.ts_language)(),
         Language::Go => (GO_PROFILE.ts_language)(),
         Language::Java => (JAVA_PROFILE.ts_language)(),
+        Language::Ruby => (RUBY_PROFILE.ts_language)(),
     }
 }
 
@@ -104,6 +111,7 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Rust => &RUST_QUERIES,
         Language::Go => &GO_QUERIES,
         Language::Java => &JAVA_QUERIES,
+        Language::Ruby => &RUBY_QUERIES,
     }
 }
 
@@ -118,6 +126,7 @@ fn callers_src(lang: Language) -> &'static str {
         Language::Rust => RUST_CALLERS_SRC,
         Language::Go => GO_CALLERS_SRC,
         Language::Java => JAVA_CALLERS_SRC,
+        Language::Ruby => RUBY_CALLERS_SRC,
     }
 }
 
@@ -128,6 +137,7 @@ fn implementors_src(lang: Language) -> &'static str {
         Language::Rust => RUST_IMPLEMENTORS_SRC,
         Language::Go => GO_IMPLEMENTORS_SRC,
         Language::Java => JAVA_IMPLEMENTORS_SRC,
+        Language::Ruby => RUBY_IMPLEMENTORS_SRC,
     }
 }
 
@@ -455,6 +465,74 @@ function App() { return <div><Panel /></div>; }
             calls,
             vec!["Button", "Panel", "fmt"],
             "JSX components count as calls; the `div` intrinsic does not"
+        );
+    }
+
+    #[test]
+    fn ruby_mixins_count_as_bases_alongside_real_inheritance() {
+        // `include`/`extend`/`prepend` are how Ruby actually composes
+        // behavior; `<` is the only true inheritance it has. Both land in
+        // `bases`, and a qualified mixin reduces to its last segment.
+        let src = "\
+module Acme
+  class Store < Base
+    include Loggable
+    extend ActiveSupport::Concern
+  end
+end
+";
+        let mut bases = all_bases_in_file(Language::Ruby, src);
+        bases.sort();
+        assert_eq!(
+            bases,
+            vec![
+                (2, "Store".to_string(), "Base".to_string()),
+                (2, "Store".to_string(), "Concern".to_string()),
+                (2, "Store".to_string(), "Loggable".to_string()),
+            ],
+            "{bases:?}"
+        );
+    }
+
+    #[test]
+    fn ruby_conditional_mixins_are_not_declared_bases() {
+        // Only a *direct* child of the class body counts. An `include`
+        // behind a conditional is conditional behavior, and walking deeper
+        // would also hand a nested class's mixins to its enclosing one.
+        let src = "\
+class Store
+  if RUBY_VERSION > \"3\"
+    include Modern
+  end
+  class Inner
+    include Nested
+  end
+end
+";
+        let bases = all_bases_in_file(Language::Ruby, src);
+        let names: Vec<&str> = bases.iter().map(|(_, _, b)| b.as_str()).collect();
+        assert_eq!(names, vec!["Nested"], "{bases:?}");
+    }
+
+    #[test]
+    fn ruby_construction_attributes_to_the_class_not_to_new() {
+        let src = "\
+def build
+  Acme::Store.new(\"x\").get(1)
+  helper(2)
+  include Thing
+end
+";
+        let mut calls: Vec<String> = all_calls_in_file(Language::Ruby, src)
+            .into_iter()
+            .map(|(_, n)| n)
+            .collect();
+        calls.sort();
+        assert_eq!(
+            calls,
+            vec!["Store", "get", "helper"],
+            "`new` resolves to the constructed class, and a declaration \
+             macro already recorded as a base is not also a call"
         );
     }
 

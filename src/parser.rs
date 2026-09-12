@@ -26,6 +26,7 @@ static GO_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages
 static JAVASCRIPT_TAGS: tags::TagsExtractor =
     tags::TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
 static JAVA_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::JAVA_PROFILE);
+static RUBY_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::RUBY_PROFILE);
 
 /// The only extraction path: grammar + declarative tags.scm +
 /// normalization, not a bespoke per-language walker. The handwritten
@@ -41,6 +42,7 @@ pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
         Language::Rust => &RUST_TAGS,
         Language::Go => &GO_TAGS,
         Language::Java => &JAVA_TAGS,
+        Language::Ruby => &RUBY_TAGS,
     }
 }
 

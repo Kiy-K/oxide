@@ -10,7 +10,10 @@ use std::sync::mpsc;
 pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
     use crate::symbols::Language::*;
     let name = path.file_name()?.to_str()?;
-    let ext = path.extension()?.to_str()?;
+    // Not `path.extension()?`: a few languages' most load-bearing files
+    // carry no extension at all (`Rakefile`, `Gemfile`), and bailing here
+    // would make the name arms below unreachable.
+    let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
     match (name, ext) {
         (_, "py") | (_, "pyi") => Some(Python),
         (_, "ts") if !name.ends_with(".d.ts") => Some(TypeScript),
@@ -22,6 +25,12 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         (_, "rs") => Some(Rust),
         (_, "go") => Some(Go),
         (_, "java") => Some(Java),
+        // `.rake`/`.gemspec` are Ruby source with a different extension, and
+        // the three Ruby files a repo root is most likely to carry
+        // (`Rakefile`, `Gemfile`, `*.gemspec`) have no extension at all —
+        // hence the name arm.
+        (_, "rb") | (_, "rake") | (_, "gemspec") => Some(Ruby),
+        ("Rakefile" | "Gemfile", _) => Some(Ruby),
         _ => None,
     }
 }

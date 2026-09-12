@@ -11,6 +11,7 @@ const TS_LOCALS: &str = include_str!("queries/typescript_locals.scm");
 const RUST_TAGS: &str = include_str!("queries/rust_tags.scm");
 const GO_TAGS: &str = include_str!("queries/go_tags.scm");
 const JAVA_TAGS: &str = include_str!("queries/java_tags.scm");
+const RUBY_TAGS: &str = include_str!("queries/ruby_tags.scm");
 
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
@@ -82,5 +83,17 @@ pub static JAVA_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Java,
     ts_language: || tree_sitter_java::LANGUAGE.into(),
     tags_query: JAVA_TAGS,
+    locals_query: "",
+};
+
+/// Ruby. Upstream `tree-sitter-ruby`'s `tags.scm` covers methods, classes
+/// and modules; constants are appended and its two `@reference.call`
+/// patterns are dropped (see `queries/ruby_tags.scm`). `locals_query` stays
+/// empty like every other profile but Java-adjacent TypeScript's — the only
+/// upstream pattern that needed it was one of the dropped ones.
+pub static RUBY_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::Ruby,
+    ts_language: || tree_sitter_ruby::LANGUAGE.into(),
+    tags_query: RUBY_TAGS,
     locals_query: "",
 };

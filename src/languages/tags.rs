@@ -159,6 +159,19 @@ struct FileMeta {
     /// parameter-type list)`, e.g. `(256, "String,String")`. See
     /// [`java_signature`].
     java_params: Vec<(usize, String)>,
+    /// Ruby only: `(method declaration start byte, receiver prefix)` for
+    /// every *singleton* (class-level) method — `def self.create` gives
+    /// `(start, "self.")`, `def Foo.bar` gives `(start, "Foo.")`, and a
+    /// `def` inside a `class << self` block gives `"self."` too.
+    ///
+    /// Ruby tags report a singleton method under its bare name, so
+    /// `def get` and `def self.get` in one class both qualify as `Store.get`
+    /// and `parser.rs::parse_file_with`'s first-wins dedup silently drops
+    /// the second — the same failure Java overloads had. The prefix is
+    /// exactly what the source writes (`Store.self.create`), so it needs no
+    /// separator of its own and `qualified_name.rsplit('.')` still yields
+    /// the bare name.
+    ruby_singletons: Vec<(usize, String)>,
 }
 
 /// One Java parameter type, normalized the way the JVM's own overload rules
@@ -331,6 +344,65 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                 .map(|p| java_signature(p, src))
                 .unwrap_or_default();
             meta.java_params.push((node.byte_range().start, sig));
+        }
+        (Language::Ruby, "singleton_method") => {
+            if let Some(obj) = node.child_by_field_name("object") {
+                if let Ok(t) = obj.utf8_text(src.as_bytes()) {
+                    meta.ruby_singletons
+                        .push((node.byte_range().start, format!("{t}.")));
+                }
+            }
+        }
+        (Language::Ruby, "singleton_class") => {
+            // `class << self` — every `def` directly inside is a singleton
+            // method written without the `self.` prefix. The block itself is
+            // not tagged as a definition (its `value` is `self`, not a
+            // constant), so the methods nest under the *enclosing* class and
+            // would collide with same-named instance methods there.
+            let is_self = node
+                .child_by_field_name("value")
+                .is_some_and(|v| v.kind() == "self");
+            if is_self {
+                if let Some(body) = node.child_by_field_name("body") {
+                    for m in body.named_children(&mut body.walk()) {
+                        if m.kind() == "method" {
+                            meta.ruby_singletons
+                                .push((m.byte_range().start, "self.".to_string()));
+                        }
+                    }
+                }
+            }
+        }
+        (Language::Ruby, "call") => {
+            // `require 'json'`, `require_relative '../lib/base'`, `load`.
+            // Ruby has no import statement — these are ordinary method calls,
+            // which is also why only a literal single string argument counts:
+            // `require File.join(dir, x)` names no module, exactly as
+            // JavaScript's `require(dynamic)` doesn't.
+            let is_require = node
+                .child_by_field_name("method")
+                .and_then(|f| f.utf8_text(src.as_bytes()).ok())
+                .is_some_and(|m| matches!(m, "require" | "require_relative" | "load"));
+            if is_require {
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    if args.named_child_count() == 1 {
+                        if let Some(arg) = args.named_child(0) {
+                            if arg.kind() == "string" {
+                                if let Some(content) = arg
+                                    .named_children(&mut arg.walk())
+                                    .find(|c| c.kind() == "string_content")
+                                {
+                                    if let Ok(t) = content.utf8_text(src.as_bytes()) {
+                                        if !t.is_empty() {
+                                            imports.push(t.to_string());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         (Language::Go, "type_spec") => {
             if node
@@ -591,6 +663,20 @@ impl LanguageExtractor for TagsExtractor {
                 Some((_, recv)) => (Some(recv.clone()), format!("{recv}.{}", d.name)),
                 None => (parent, qualified),
             };
+            // Ruby singleton methods carry their receiver prefix, so a
+            // class method never collides with a same-named instance method
+            // — see [`FileMeta::ruby_singletons`].
+            let (parent, qualified) = match meta
+                .ruby_singletons
+                .iter()
+                .find(|(start, _)| *start == d.start)
+            {
+                Some((_, prefix)) => match &parent {
+                    Some(p) => (parent.clone(), format!("{p}.{prefix}{}", d.name)),
+                    None => (parent.clone(), format!("{prefix}{}", d.name)),
+                },
+                None => (parent, qualified),
+            };
             // Java methods and constructors carry their normalized parameter
             // types, so overloads stay distinct symbols instead of colliding
             // under `parse_file_with`'s dedup — see [`java_signature`].
@@ -699,6 +785,52 @@ class B:
             syms.iter().filter(|s| s.name == "get").count(),
             2,
             "{names:?}"
+        );
+    }
+
+    #[test]
+    fn ruby_singleton_methods_survive_alongside_instance_methods() {
+        // Without the receiver prefix both spellings qualify as `Store.get`
+        // and `parse_file_with`'s first-wins dedup drops one of them
+        // outright — the same silent loss Java overloads had.
+        let src = "\
+class Store
+  def get(k)
+    1
+  end
+
+  def self.get(k)
+    2
+  end
+
+  class << self
+    def reset
+      3
+    end
+  end
+end
+";
+        let syms = parse_file_with(&RUBY_TAGS, "store.rb", src, Language::Ruby);
+        let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
+        assert!(names.contains(&"Store.get"), "{names:?}");
+        assert!(names.contains(&"Store.self.get"), "{names:?}");
+        assert!(names.contains(&"Store.self.reset"), "{names:?}");
+    }
+
+    #[test]
+    fn ruby_requires_are_imports_and_dynamic_ones_are_not() {
+        let src = "\
+require 'json'
+require_relative '../lib/base'
+load \"tasks.rb\"
+require File.join(dir, 'x')
+";
+        let mut imports = RUBY_TAGS.collect_imports(src);
+        imports.sort();
+        assert_eq!(
+            imports,
+            vec!["../lib/base", "json", "tasks.rb"],
+            "a computed require names no module"
         );
     }
 
@@ -935,6 +1067,7 @@ export const scale = (x) => x * 2;
     static JAVASCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
+    static RUBY_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUBY_PROFILE);
     static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);
     static TYPESCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::TYPESCRIPT_PROFILE);
