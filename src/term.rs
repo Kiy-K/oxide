@@ -275,6 +275,13 @@ impl crate::index::ProgressSink for StderrProgress {
         if !self.interactive {
             return;
         }
+        // A stage with nothing to do is not worth a line on a terminal (an
+        // up-to-date run would otherwise print three "nothing to do" steps);
+        // the plain/log path still records it. `end` tolerates the missing
+        // bar.
+        if total == Some(0) {
+            return;
+        }
         // A known total gets a determinate bar; an unknown one (Model, Scan,
         // Finalize) gets a spinner — never a fake percentage.
         let bar = match total {
