@@ -28,26 +28,43 @@ fi
 
 cd "$WORK/repo"
 
-# Peak RSS (KB) for a command via /usr/bin/time -v; command's own stdout is
-# preserved in $1 (a file path) so callers can still parse "took Nms" etc.
+# Peak RSS (KB) and wall-clock ms for a command via /usr/bin/time -v, printed
+# as "RSS_KB MS"; the command's own stdout is preserved in $1 (a file path) so
+# callers can still parse its `--json` report.
+#
+# Wall clock comes from `time` rather than from OXIDE's own "in 201ms" line:
+# that line is human output and has already been reformatted once (the v0.1.1
+# terminal-styling pass replaced the `took Nms` this harness used to grep,
+# silently breaking it), while `--json` deliberately omits the duration. An
+# external clock cannot drift from either.
 run_rss() {
   local outfile="$1"
   shift
   local timelog
   timelog="$(mktemp)"
   /usr/bin/time -v "$@" >"$outfile" 2>"$timelog"
-  grep 'Maximum resident set size' "$timelog" | grep -o '[0-9]*'
+  local rss elapsed
+  rss="$(grep 'Maximum resident set size' "$timelog" | grep -o '[0-9]*')"
+  # "0:01.23" or "1:02:03"; seconds-with-fraction is the only field that
+  # varies in practice, so parse the whole thing rather than assume a shape.
+  elapsed="$(grep 'Elapsed (wall clock)' "$timelog" | awk '{print $NF}')"
   rm -f "$timelog"
+  printf '%s %s\n' "$rss" "$(python3 -c "
+import sys
+parts = [float(p) for p in sys.argv[1].split(':')]
+total = 0.0
+for p in parts:
+    total = total * 60 + p
+print(round(total * 1000))
+" "$elapsed")"
 }
 
 cold_out="$(mktemp)"
-cold_rss=$(run_rss "$cold_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
-cold=$(grep '^took' "$cold_out" | grep -o '[0-9]*')
+read -r cold_rss cold < <(run_rss "$cold_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index . --json)
 rm -f "$cold_out"
 
 warm_out="$(mktemp)"
-warm_rss=$(run_rss "$warm_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
-warm=$(grep '^took' "$warm_out" | grep -o '[0-9]*')
+read -r warm_rss warm < <(run_rss "$warm_out" "${OFFLINE_EMBEDDER[@]}" "$BIN" index . --json)
 rm -f "$warm_out"
 
 # touch exactly one file: the synthetic repo's known service module when it is
@@ -68,6 +85,11 @@ else:
         ".py": "\ndef perf_edit_probe():\n    return 1\n",
         ".ts": "\nexport function perfEditProbe(): number {\n  return 1;\n}\n",
         ".tsx": "\nexport function perfEditProbe(): number {\n  return 1;\n}\n",
+        ".js": "\nexport function perfEditProbe() {\n  return 1;\n}\n",
+        ".jsx": "\nexport function perfEditProbe() {\n  return 1;\n}\n",
+        ".mjs": "\nexport function perfEditProbe() {\n  return 1;\n}\n",
+        ".cjs": "\nfunction perfEditProbe() {\n  return 1;\n}\nmodule.exports.perfEditProbe = perfEditProbe;\n",
+        ".java": "\nclass PerfEditProbe {\n  int run() {\n    return 1;\n  }\n}\n",
         ".rs": "\npub fn perf_edit_probe() -> u32 {\n    1\n}\n",
         ".go": "\nfunc perfEditProbe() int {\n\treturn 1\n}\n",
     }
@@ -79,9 +101,13 @@ else:
     print(f"edited {target}")
 EOF
 edit_out_file="$(mktemp)"
-edit_rss=$(run_rss "$edit_out_file" "${OFFLINE_EMBEDDER[@]}" "$BIN" index .)
-edit_ms=$(grep '^took' "$edit_out_file" | grep -o '[0-9]*')
-embed_line=$(grep 'symbols:' "$edit_out_file")
+read -r edit_rss edit_ms < <(run_rss "$edit_out_file" "${OFFLINE_EMBEDDER[@]}" "$BIN" index . --json)
+embed_line=$(python3 -c "
+import json, sys
+r = json.load(open(sys.argv[1]))
+print('{new_symbols} new, {changed_symbols} changed, {embedded_symbols} written, '
+      '{reused_embeddings} reused'.format(**r))
+" "$edit_out_file")
 rm -f "$edit_out_file"
 
 # search latency: best of 3 hybrid searches
