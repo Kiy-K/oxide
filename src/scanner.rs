@@ -31,6 +31,7 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         // hence the name arm.
         (_, "rb") | (_, "rake") | (_, "gemspec") => Some(Ruby),
         ("Rakefile" | "Gemfile", _) => Some(Ruby),
+        (_, "php") | (_, "phtml") => Some(Php),
         _ => None,
     }
 }

@@ -404,6 +404,59 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                 }
             }
         }
+        (Language::Php, "namespace_use_declaration") => {
+            // `use App\Contracts\Backend;` — the dotted (here
+            // backslash-separated) path as written, minus any `as` alias,
+            // the same raw-module-string contract Java's imports record.
+            // `relations::resolve_module` never resolves one: PSR-4 maps a
+            // namespace prefix onto a directory through `composer.json`,
+            // which OXIDE does not read, so these inform lexical text only.
+            for clause in node.named_children(&mut node.walk()) {
+                if clause.kind() != "namespace_use_clause" {
+                    continue;
+                }
+                if let Some(path) = clause
+                    .named_children(&mut clause.walk())
+                    .find(|c| matches!(c.kind(), "qualified_name" | "name"))
+                {
+                    if let Ok(t) = path.utf8_text(src.as_bytes()) {
+                        let t = t.trim_start_matches('\\');
+                        if !t.is_empty() {
+                            imports.push(t.to_string());
+                        }
+                    }
+                }
+            }
+            return;
+        }
+        (
+            Language::Php,
+            "include_expression"
+            | "include_once_expression"
+            | "require_expression"
+            | "require_once_expression",
+        ) => {
+            // Only a bare literal string counts. The `__DIR__ . '/x.php'`
+            // concatenation idiom is deliberately not read: its string is a
+            // *fragment* of a path rooted at the including file's own
+            // directory, which `relations::resolve_module` has no notion
+            // of, and half a path recorded as a module string would resolve
+            // to nothing while looking like it had been handled.
+            if let Some(arg) = node.named_children(&mut node.walk()).next() {
+                if arg.kind() == "string" {
+                    if let Some(content) = arg
+                        .named_children(&mut arg.walk())
+                        .find(|c| c.kind() == "string_content")
+                    {
+                        if let Ok(t) = content.utf8_text(src.as_bytes()) {
+                            if !t.is_empty() {
+                                imports.push(t.to_string());
+                            }
+                        }
+                    }
+                }
+            }
+        }
         (Language::Go, "type_spec") => {
             if node
                 .child_by_field_name("type")
@@ -835,6 +888,41 @@ require File.join(dir, 'x')
     }
 
     #[test]
+    fn php_methods_are_methods_and_enum_cases_are_constants() {
+        // Upstream tags `method_declaration` as `@definition.function`, and
+        // `tags.rs` only reclassifies for Python — so without the retag in
+        // `php_tags.scm` every PHP method would read as a free function.
+        let src = "<?php\nenum Mode: string {\n    case Fast = 'fast';\n    public function label(): string { return 'x'; }\n}\n";
+        let syms = parse_file_with(&PHP_TAGS, "Mode.php", src, Language::Php);
+        let by = |n: &str| {
+            syms.iter()
+                .find(|s| s.qualified_name == n)
+                .unwrap_or_else(|| panic!("missing {n}: {syms:?}"))
+                .kind
+        };
+        assert_eq!(by("Mode"), SymbolKind::Enum);
+        assert_eq!(by("Mode.Fast"), SymbolKind::Constant);
+        assert_eq!(by("Mode.label"), SymbolKind::Method);
+    }
+
+    #[test]
+    fn php_imports_take_use_statements_and_literal_includes_only() {
+        let src = "<?php\nuse App\\Contracts\\Backend;\nuse App\\Support\\Loggable as Log;\ninclude 'legacy.php';\nrequire_once __DIR__ . '/helpers.php';\n";
+        let mut imports = PHP_TAGS.collect_imports(src);
+        imports.sort();
+        assert_eq!(
+            imports,
+            vec![
+                "App\\Contracts\\Backend",
+                "App\\Support\\Loggable",
+                "legacy.php"
+            ],
+            "an alias is not part of the module path, and a concatenated \
+             `__DIR__ . '...'` is half a path, not a module"
+        );
+    }
+
+    #[test]
     fn content_hash_matches_span_text_reconstruction() {
         // content_hash is computed once at extract time; span_text() is
         // recomputed on demand from start_line/end_line. If extract() ever
@@ -1067,6 +1155,7 @@ export const scale = (x) => x * 2;
     static JAVASCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
+    static PHP_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PHP_PROFILE);
     static RUBY_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUBY_PROFILE);
     static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);
     static TYPESCRIPT_TAGS: TagsExtractor =

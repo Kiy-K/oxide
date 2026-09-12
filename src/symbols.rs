@@ -16,6 +16,7 @@ pub enum Language {
     Go,
     Java,
     Ruby,
+    Php,
 }
 
 impl Language {
@@ -33,6 +34,7 @@ impl Language {
         Language::Go,
         Language::Java,
         Language::Ruby,
+        Language::Php,
     ];
 
     pub fn as_str(&self) -> &'static str {
@@ -45,6 +47,7 @@ impl Language {
             Language::Go => "go",
             Language::Java => "java",
             Language::Ruby => "ruby",
+            Language::Php => "php",
         }
     }
 }

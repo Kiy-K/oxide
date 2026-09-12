@@ -678,6 +678,7 @@ fn language_label(language: crate::symbols::Language) -> &'static str {
         Go => "Go",
         Java => "Java",
         Ruby => "Ruby",
+        Php => "PHP",
     }
 }
 

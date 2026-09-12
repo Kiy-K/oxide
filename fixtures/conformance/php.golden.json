@@ -1,0 +1,613 @@
+[
+  {
+    "file": "src/Base.php",
+    "qualified_name": "src/Base.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 12,
+    "exported": false,
+    "id": 3990948708681447431,
+    "content_hash": 6090409992607194020,
+    "imports": [],
+    "references": [
+      "Base",
+      "STORAGE_ROOT",
+      "Store",
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.php",
+    "qualified_name": "App\\Store",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 9482704236448718273,
+    "content_hash": 7667205125226579705,
+    "imports": [],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.php",
+    "qualified_name": "STORAGE_ROOT",
+    "kind": "constant",
+    "language": "php",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 5,
+    "exported": false,
+    "id": 17724138266989156478,
+    "content_hash": 5008465099313406174,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.php",
+    "qualified_name": "Base",
+    "kind": "class",
+    "language": "php",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 12,
+    "exported": false,
+    "id": 355369665249580381,
+    "content_hash": 15776188361486400324,
+    "imports": [],
+    "references": [
+      "find"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Base.php",
+    "qualified_name": "Base.find",
+    "kind": "method",
+    "language": "php",
+    "parent": "Base",
+    "start_line": 11,
+    "end_line": 11,
+    "exported": false,
+    "id": 4151682923550607925,
+    "content_hash": 5790411829773216563,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Broken.php",
+    "qualified_name": "src/Broken.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 6,
+    "exported": false,
+    "id": 15349904316827426659,
+    "content_hash": 15127810659574749668,
+    "imports": [],
+    "references": [
+      "Broken"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Broken.php",
+    "qualified_name": "Broken",
+    "kind": "class",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 6,
+    "exported": false,
+    "id": 4883790203998283005,
+    "content_hash": 1883425766974425872,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Cacheable.php",
+    "qualified_name": "src/Cacheable.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 13,
+    "exported": false,
+    "id": 17840057569144623761,
+    "content_hash": 14502517963476436228,
+    "imports": [],
+    "references": [
+      "CACHE_TTL",
+      "Cacheable",
+      "Store",
+      "cache"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Cacheable.php",
+    "qualified_name": "App\\Store",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 6607983879203839469,
+    "content_hash": 7383711291707870533,
+    "imports": [],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Cacheable.php",
+    "qualified_name": "Cacheable",
+    "kind": "interface",
+    "language": "php",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 13,
+    "exported": false,
+    "id": 1527575701322007449,
+    "content_hash": 8783507831283029271,
+    "imports": [],
+    "references": [
+      "CACHE_TTL",
+      "cache"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Cacheable.php",
+    "qualified_name": "Cacheable.CACHE_TTL",
+    "kind": "constant",
+    "language": "php",
+    "parent": "Cacheable",
+    "start_line": 7,
+    "end_line": 7,
+    "exported": false,
+    "id": 7463179295024067848,
+    "content_hash": 8042375837717263002,
+    "imports": [],
+    "references": [
+      "cache"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Cacheable.php",
+    "qualified_name": "Cacheable.cache",
+    "kind": "method",
+    "language": "php",
+    "parent": "Cacheable",
+    "start_line": 9,
+    "end_line": 12,
+    "exported": false,
+    "id": 14128607398211747495,
+    "content_hash": 8171080755194380306,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "src/Mode.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 14,
+    "exported": false,
+    "id": 18079265753235856791,
+    "content_hash": 10820968376198868686,
+    "imports": [],
+    "references": [
+      "Fast",
+      "Mode",
+      "Readable",
+      "Slow",
+      "Store",
+      "read"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "App\\Store",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 16344871413292127363,
+    "content_hash": 14257835376742915527,
+    "imports": [],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "Mode",
+    "kind": "enum",
+    "language": "php",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 14,
+    "exported": false,
+    "id": 15442747693571448377,
+    "content_hash": 14089327060101395303,
+    "imports": [],
+    "references": [
+      "Fast",
+      "Readable",
+      "Slow",
+      "read"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "Mode.Fast",
+    "kind": "constant",
+    "language": "php",
+    "parent": "Mode",
+    "start_line": 7,
+    "end_line": 7,
+    "exported": false,
+    "id": 10568723066856391944,
+    "content_hash": 10957546759539725262,
+    "imports": [],
+    "references": [
+      "Slow"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "Mode.Slow",
+    "kind": "constant",
+    "language": "php",
+    "parent": "Mode",
+    "start_line": 8,
+    "end_line": 8,
+    "exported": false,
+    "id": 16675274769200621235,
+    "content_hash": 5237578725410575054,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Mode.php",
+    "qualified_name": "Mode.read",
+    "kind": "method",
+    "language": "php",
+    "parent": "Mode",
+    "start_line": 10,
+    "end_line": 13,
+    "exported": false,
+    "id": 3827924424416016554,
+    "content_hash": 15140067013079828101,
+    "imports": [],
+    "references": [],
+    "calls": [
+      "ucfirst"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Readable.php",
+    "qualified_name": "src/Readable.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 8,
+    "exported": false,
+    "id": 11754319045322966301,
+    "content_hash": 14922222270347996507,
+    "imports": [],
+    "references": [
+      "Readable",
+      "Store",
+      "read"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Readable.php",
+    "qualified_name": "App\\Store",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 6625323185190484576,
+    "content_hash": 2147723916540610278,
+    "imports": [],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Readable.php",
+    "qualified_name": "Readable",
+    "kind": "interface",
+    "language": "php",
+    "parent": null,
+    "start_line": 5,
+    "end_line": 8,
+    "exported": false,
+    "id": 4304253951365675891,
+    "content_hash": 7257578978118661290,
+    "imports": [],
+    "references": [
+      "read"
+    ],
+    "calls": [],
+    "bases": [
+      "Countable"
+    ]
+  },
+  {
+    "file": "src/Readable.php",
+    "qualified_name": "Readable.read",
+    "kind": "method",
+    "language": "php",
+    "parent": "Readable",
+    "start_line": 7,
+    "end_line": 7,
+    "exported": false,
+    "id": 6315356960160233928,
+    "content_hash": 7513332191301513599,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "src/Store.php:__module__",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 42,
+    "exported": false,
+    "id": 15144001391826928465,
+    "content_hash": 8389203577153413671,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [
+      "Base",
+      "Cacheable",
+      "Readable",
+      "Store",
+      "VERSION",
+      "__construct",
+      "build",
+      "create",
+      "find",
+      "read"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "App\\Store",
+    "kind": "module",
+    "language": "php",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 13720388395855578934,
+    "content_hash": 10757487104243798072,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store",
+    "kind": "class",
+    "language": "php",
+    "parent": null,
+    "start_line": 8,
+    "end_line": 37,
+    "exported": false,
+    "id": 5944821533223913685,
+    "content_hash": 8132361559214776660,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [
+      "Base",
+      "Cacheable",
+      "Readable",
+      "VERSION",
+      "__construct",
+      "create",
+      "find",
+      "read"
+    ],
+    "calls": [],
+    "bases": [
+      "Base",
+      "Cacheable",
+      "JsonSerializable",
+      "Readable"
+    ]
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store.VERSION",
+    "kind": "constant",
+    "language": "php",
+    "parent": "Store",
+    "start_line": 12,
+    "end_line": 12,
+    "exported": false,
+    "id": 3651244018336540691,
+    "content_hash": 10443709361081707019,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store.__construct",
+    "kind": "method",
+    "language": "php",
+    "parent": "Store",
+    "start_line": 16,
+    "end_line": 19,
+    "exported": false,
+    "id": 1161332471532746276,
+    "content_hash": 13660540858114408347,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store.find",
+    "kind": "method",
+    "language": "php",
+    "parent": "Store",
+    "start_line": 21,
+    "end_line": 25,
+    "exported": false,
+    "id": 2589927293598031065,
+    "content_hash": 8930595475786936714,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [],
+    "calls": [
+      "write"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store.read",
+    "kind": "method",
+    "language": "php",
+    "parent": "Store",
+    "start_line": 27,
+    "end_line": 31,
+    "exported": false,
+    "id": 11203195286736549302,
+    "content_hash": 17124836557388869344,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [
+      "find"
+    ],
+    "calls": [
+      "find"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "Store.create",
+    "kind": "method",
+    "language": "php",
+    "parent": "Store",
+    "start_line": 33,
+    "end_line": 36,
+    "exported": false,
+    "id": 14712711964262529324,
+    "content_hash": 4496867014060688273,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.php",
+    "qualified_name": "build",
+    "kind": "function",
+    "language": "php",
+    "parent": null,
+    "start_line": 39,
+    "end_line": 42,
+    "exported": false,
+    "id": 17781284979565663188,
+    "content_hash": 18300808418295126034,
+    "imports": [
+      "App\\Support\\Logger",
+      "legacy.php"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [
+      "Store"
+    ],
+    "bases": []
+  }
+]

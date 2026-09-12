@@ -34,21 +34,21 @@ per-language extractor and no language-specific retrieval behavior.
 Split into a second table purely so neither is unreadable; these languages
 go through exactly the same path as the ones above.
 
-| Dimension | Ruby |
-|---|---|
-| grammar | ruby |
-| definitions + stable ids | yes |
-| kinds | class/module/method/function/constant |
-| qualified names | containment **+ singleton receiver prefix** (`Store.self.create`) |
-| parent/child containment | yes (`module` nests like a namespace) |
-| imports | `require` / `require_relative` / `load`, literal string argument only |
-| references | token intersection |
-| calls | calls and method calls; `Foo.new` attributes to `Foo` |
-| inheritance | `<` **plus `include`/`extend`/`prepend` mixins**, direct children of the class or module body |
-| decorator/annotation-inclusive spans | n/a |
-| broken files | module fallback |
-| determinism | pinned |
-| incremental single-file edit | pinned |
+| Dimension | Ruby | PHP |
+|---|---|---|
+| grammar | ruby | php (not `php_only`) |
+| definitions + stable ids | yes | yes |
+| kinds | class/module/method/function/constant | class/interface(+trait)/enum/module(namespace)/method/function/constant |
+| qualified names | containment **+ singleton receiver prefix** (`Store.self.create`) | containment |
+| parent/child containment | yes (`module` nests like a namespace) | yes; a braceless `namespace X;` spans its own statement only, so file-level declarations stay top-level (like a Java package) |
+| imports | `require` / `require_relative` / `load`, literal string argument only | `use` statements (alias dropped) + `include`/`require`(`_once`) with a literal string |
+| references | token intersection | token intersection |
+| calls | calls and method calls; `Foo.new` attributes to `Foo` | free, `->`, `::`, and `new X()`; `new self/static/parent` excluded |
+| inheritance | `<` **plus `include`/`extend`/`prepend` mixins**, direct children of the class or module body | `extends`/`implements` **plus trait `use`**, direct children of the declaration body |
+| decorator/annotation-inclusive spans | n/a | yes, free — a PHP 8 `#[Attr]` sits inside the declaration node, as Java's annotations do |
+| broken files | module fallback | module fallback |
+| determinism | pinned | pinned |
+| incremental single-file edit | pinned | pinned |
 
 ## What Python and TypeScript gained in this round
 
@@ -229,6 +229,11 @@ their own right because no same-named struct in that file dedups them away
 | Ruby | `define_method`, `method_missing`, `instance_eval` | Metaprogramming defines methods with no syntactic declaration at all. Out of scope by the same rule as `attr_accessor`, and unrecoverable without running the code. |
 | Ruby | `exported` | Ruby's `private`/`public`/`protected` are method calls that switch a mode for everything after them, so the flag would need statement-order tracking inside a class body. Left `false`, like Rust and Go. |
 | Ruby | a conditional or block-nested `include` | Only a direct child of the class/module body counts as a base. An `include` behind `if RUBY_VERSION > "3"` is conditional behavior, and walking deeper would also attribute a nested class's mixins to its enclosing one. |
+| PHP | properties | `private string $name;` produces no symbol. Upstream tags it `@definition.field`, which OXIDE has no kind for — the same call Java's fields got, for the same reason. |
+| PHP | `use` *resolution* | PSR-4 maps a namespace prefix onto a directory through `composer.json`, which OXIDE does not read, so a `use App\Contracts\Backend;` is recorded on the symbol but never produces an `imported-definition` edge. Same standing gap Go and Java imports have. |
+| PHP | `require_once __DIR__ . '/x.php'` | Only a bare literal string counts as an import. The concatenation idiom's string is a *fragment* of a path rooted at the including file's own directory, which `resolve_module` has no notion of; recording half a path would resolve to nothing while looking handled. |
+| PHP | `define()`, variable functions, variable classes | `define('FOO', 1)` is an ordinary call, and `$fn()` / `new $cls` name a runtime value. Skipped under the same rule as Ruby's bare identifiers and Java's method references. |
+| PHP | trait conflict resolution (`insteadof`, `as`) | A `use A, B { A::run insteadof B; }` records both traits as bases and ignores the adaptation block. `bases` is a bare-name tier; which half of a conflict wins is semantics. |
 | all | a method and a nested declaration packed onto **one source line** | `void top() { a(); } class Inner { void ping() { b(); } }` collapses both spans to zero lines, and `structural_relations::enclosing`'s longest-qualified-name tie-break then attributes `a()` to `Inner.ping` as well. Language-independent and pre-existing — the identical shape in TypeScript (`function outer() { a(); function inner() { b(); } }`) does the same thing, and it is the LANG-002 tie in `docs/review/structural-and-language.md`. Java annotations do **not** cause it (removing `@Deprecated` changes nothing); pinned both ways by `structural_relations.rs::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does`. Fixing it needs byte-range attribution instead of line numbers, which touches every language at once. |
 | Java | package declaration / true type resolution | Qualified names stay file-scoped, exactly as Python modules are. Parameter types in a signature are normalized by erasure and last-segment name, not resolved — so `com.a.Key` and `com.b.Key` are one type as far as overload identity is concerned. Two overloads that differ *only* that way would collide; no real Java API does that. |
 

@@ -73,6 +73,7 @@ const LANGUAGES: &[&str] = &[
     "go",
     "java",
     "ruby",
+    "php",
 ];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -309,6 +310,11 @@ fn ruby_singleton_methods_do_not_collide_with_instance_methods() {
 }
 
 #[test]
+fn php_conformance() {
+    check_golden("php", &snapshot_of("php"));
+}
+
+#[test]
 fn rust_conformance() {
     check_golden("rust", &snapshot_of("rust"));
 }
@@ -390,6 +396,12 @@ fn single_file_edit_touches_only_that_file() {
             "run",
         ),
         (
+            "php",
+            "src/Store.php",
+            "\nfunction appended(): int\n{\n    return build();\n}\n",
+            "appended",
+        ),
+        (
             "rust",
             "src/backend.rs",
             "\npub fn appended() -> u32 {\n    build()\n}\n",
@@ -439,6 +451,7 @@ fn broken_files_do_not_abort_indexing() {
         ("javascript", "src/broken.js", "src/service.js"),
         ("java", "src/Broken.java", "src/Store.java"),
         ("ruby", "lib/broken.rb", "lib/store.rb"),
+        ("php", "src/Broken.php", "src/Store.php"),
         ("rust", "src/broken.rs", "src/store.rs"),
         ("go", "store/broken.go", "store/store.go"),
     ];
