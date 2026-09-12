@@ -28,6 +28,7 @@ static JAVASCRIPT_TAGS: tags::TagsExtractor =
 static JAVA_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::JAVA_PROFILE);
 static RUBY_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::RUBY_PROFILE);
 static PHP_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::PHP_PROFILE);
+static C_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::C_PROFILE);
 
 /// The only extraction path: grammar + declarative tags.scm +
 /// normalization, not a bespoke per-language walker. The handwritten
@@ -45,6 +46,7 @@ pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
         Language::Java => &JAVA_TAGS,
         Language::Ruby => &RUBY_TAGS,
         Language::Php => &PHP_TAGS,
+        Language::C => &C_TAGS,
     }
 }
 

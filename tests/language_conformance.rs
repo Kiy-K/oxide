@@ -74,6 +74,7 @@ const LANGUAGES: &[&str] = &[
     "java",
     "ruby",
     "php",
+    "c",
 ];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -315,6 +316,44 @@ fn php_conformance() {
 }
 
 #[test]
+fn c_conformance() {
+    check_golden("c", &snapshot_of("c"));
+}
+
+/// C's identity decision: a forward declaration and the definition it
+/// precedes share one qualified name, and the prototype is always first —
+/// so `parse_file_with`'s first-wins dedup would keep a one-line, body-free
+/// symbol and drop the real function. `FileMeta::c_prototypes` makes the
+/// prototype a stand-in that loses, the same rule a Rust `impl` block's
+/// twin symbol already follows. A prototype with no definition beside it
+/// still survives, which is what makes a header useful.
+#[test]
+fn c_definitions_win_over_prototypes_and_lone_prototypes_survive() {
+    let c = snapshot_of("c");
+    let find = |file: &str, name: &str| {
+        c.iter()
+            .find(|s| s.file == file && s.qualified_name == name)
+            .unwrap_or_else(|| panic!("missing {file}#{name}"))
+    };
+    // Defined *after* its forward declaration, and the definition wins.
+    let log_miss = find("src/store.c", "log_miss");
+    assert!(
+        log_miss.end_line > log_miss.start_line,
+        "prototype won over the definition: {log_miss:?}"
+    );
+    assert_eq!(
+        c.iter()
+            .filter(|s| s.file == "src/store.c" && s.qualified_name == "log_miss")
+            .count(),
+        1
+    );
+    // Header-only prototypes are still symbols — a header whose functions
+    // vanished would be worse than useless.
+    let retain = find("src/base.h", "base_retain");
+    assert_eq!(retain.start_line, retain.end_line);
+}
+
+#[test]
 fn rust_conformance() {
     check_golden("rust", &snapshot_of("rust"));
 }
@@ -402,6 +441,12 @@ fn single_file_edit_touches_only_that_file() {
             "appended",
         ),
         (
+            "c",
+            "src/store.c",
+            "\nint appended(void)\n{\n    return MIN(1, 2);\n}\n",
+            "appended",
+        ),
+        (
             "rust",
             "src/backend.rs",
             "\npub fn appended() -> u32 {\n    build()\n}\n",
@@ -452,6 +497,7 @@ fn broken_files_do_not_abort_indexing() {
         ("java", "src/Broken.java", "src/Store.java"),
         ("ruby", "lib/broken.rb", "lib/store.rb"),
         ("php", "src/Broken.php", "src/Store.php"),
+        ("c", "src/broken.c", "src/store.c"),
         ("rust", "src/broken.rs", "src/store.rs"),
         ("go", "store/broken.go", "store/store.go"),
     ];

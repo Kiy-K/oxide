@@ -65,8 +65,15 @@ impl TagsExtractor {
 }
 
 struct RawDef {
+    /// Byte range the symbol's span, hash and containment all use — the
+    /// tag's own range, except where a language widens it (C functions, see
+    /// [`FileMeta::c_function_spans`]).
     start: usize,
     end: usize,
+    /// The tag's *unwidened* start byte. Every per-language map in
+    /// [`FileMeta`] is keyed by it, so widening a span can never silently
+    /// unhook a lookup.
+    tag_start: usize,
     line_start: u32,
     line_end: u32,
     name: String,
@@ -82,6 +89,19 @@ fn byte_to_line(bytes: &[u8], offset: usize) -> u32 {
         .iter()
         .filter(|&&b| b == b'\n')
         .count() as u32
+}
+
+/// 1-indexed row of a span's last *content* byte. A node's byte range can
+/// end past the newline that terminates it — C's `preproc_def` does, since
+/// the directive is newline-terminated — and taking that offset's row
+/// verbatim puts the symbol's `end_line` on the *following* line, so
+/// `#define A` would report a span covering the `#define B` under it.
+fn span_end_line(bytes: &[u8], end: usize) -> u32 {
+    let mut end = end.min(bytes.len());
+    while end > 0 && (bytes[end - 1] as char).is_whitespace() {
+        end -= 1;
+    }
+    byte_to_line(bytes, end)
 }
 
 /// Matches the old extractors' own body reconstruction (and `Symbol::
@@ -172,6 +192,39 @@ struct FileMeta {
     /// separator of its own and `qualified_name.rsplit('.')` still yields
     /// the bare name.
     ruby_singletons: Vec<(usize, String)>,
+    /// C only: `(function_declarator start byte, enclosing
+    /// function_definition byte range)`.
+    ///
+    /// `c_tags.scm` tags the *declarator*, because a return type can carry
+    /// any number of pointer levels and no finite set of query patterns can
+    /// enumerate the wrappers those add above the declarator. The price is
+    /// that the tag's range is `name(params)` with no body at all — and a
+    /// symbol without its body has the wrong `content_hash`, the wrong
+    /// span, and contributes none of the body tokens the lexical index
+    /// weights. This restores the real range.
+    c_function_spans: Vec<(usize, Range<usize>)>,
+    /// C only: start bytes of `function_declarator`s that are bare
+    /// *prototypes* (`static void helper(int);`) rather than definitions.
+    ///
+    /// A `.c` file that forward-declares a static and then defines it
+    /// produces two tags with one qualified name, and `parse_file_with`'s
+    /// first-wins dedup keeps whichever comes first — which is always the
+    /// prototype, a one-line symbol with no body. Treated exactly like
+    /// [`Self::rust_impls`]: a stand-in that loses to a real declaration of
+    /// the same name in the same file.
+    c_prototypes: Vec<usize>,
+}
+
+/// The `function_declarator` at the bottom of a declarator chain, looking
+/// through the pointer/array/attribute wrappers a return type can add
+/// (`char **f(void)`, `__attribute__((pure)) int g(void)`). Recursive
+/// rather than depth-enumerated because the chain has no bound.
+fn function_declarator_of<'a>(node: Node<'a>) -> Option<Node<'a>> {
+    let decl = node.child_by_field_name("declarator")?;
+    if decl.kind() == "function_declarator" {
+        return Some(decl);
+    }
+    function_declarator_of(decl)
 }
 
 /// One Java parameter type, normalized the way the JVM's own overload rules
@@ -344,6 +397,56 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                 .map(|p| java_signature(p, src))
                 .unwrap_or_default();
             meta.java_params.push((node.byte_range().start, sig));
+        }
+        (Language::C, "function_definition") => {
+            if let Some(fd) = function_declarator_of(node) {
+                meta.c_function_spans
+                    .push((fd.byte_range().start, node.byte_range()));
+            }
+        }
+        (Language::C, "declaration") => {
+            if let Some(fd) = function_declarator_of(node) {
+                meta.c_prototypes.push(fd.byte_range().start);
+            }
+        }
+        (Language::C, "preproc_include") => {
+            // `#include "util.h"` is resolved by the compiler relative to
+            // the including file's own directory, so it is recorded as
+            // `./util.h` — the same spelling TypeScript writes for the same
+            // meaning, which is what lets `relations::resolve_module` treat
+            // it without knowing any C. `#include <stdio.h>` is a search
+            // path OXIDE has no view of and is recorded verbatim, where it
+            // informs lexical text and resolves to nothing.
+            if let Some(path) = node.child_by_field_name("path") {
+                match path.kind() {
+                    "string_literal" => {
+                        if let Some(content) = path
+                            .named_children(&mut path.walk())
+                            .find(|c| c.kind() == "string_content")
+                        {
+                            if let Ok(t) = content.utf8_text(src.as_bytes()) {
+                                if !t.is_empty() {
+                                    let rel = if t.starts_with("./") || t.starts_with("../") {
+                                        t.to_string()
+                                    } else {
+                                        format!("./{t}")
+                                    };
+                                    imports.push(rel);
+                                }
+                            }
+                        }
+                    }
+                    "system_lib_string" => {
+                        if let Ok(t) = path.utf8_text(src.as_bytes()) {
+                            let t = t.trim_matches(|c| c == '<' || c == '>');
+                            if !t.is_empty() {
+                                imports.push(t.to_string());
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
         }
         (Language::Ruby, "singleton_method") => {
             if let Some(obj) = node.child_by_field_name("object") {
@@ -646,9 +749,18 @@ impl LanguageExtractor for TagsExtractor {
                     let Ok(name) = std::str::from_utf8(&bytes[tag.name_range.clone()]) else {
                         continue;
                     };
+                    // C tags the declarator, not the definition, so the
+                    // body is outside the tag's range until this puts it
+                    // back — see `FileMeta::c_function_spans`.
+                    let span = meta
+                        .c_function_spans
+                        .iter()
+                        .find(|(start, _)| *start == tag.range.start)
+                        .map_or(tag.range.clone(), |(_, r)| r.clone());
                     defs.push(RawDef {
-                        start: tag.range.start,
-                        end: tag.range.end,
+                        start: span.start,
+                        end: span.end,
+                        tag_start: tag.range.start,
                         // Containment below still keys off the raw tag
                         // range, so absorbing a decorator can never
                         // re-parent anything — only the span widens.
@@ -657,10 +769,10 @@ impl LanguageExtractor for TagsExtractor {
                             decorator_extended_start(
                                 src,
                                 decorators,
-                                export_anchor(export_ranges, tag.range.start, tag.range.end),
+                                export_anchor(export_ranges, span.start, span.end),
                             ),
                         ),
-                        line_end: byte_to_line(bytes, tag.range.end),
+                        line_end: span_end_line(bytes, span.end),
                         name: name.to_string(),
                         kind,
                     });
@@ -675,9 +787,15 @@ impl LanguageExtractor for TagsExtractor {
         defs.dedup_by(|a, b| a.start == b.start && a.end == b.end && a.name == b.name);
 
         let mut out = Vec::with_capacity(defs.len());
-        // Parallel to `out`: whether each symbol came from an `impl_item`
-        // rather than a declaration (see `FileMeta::rust_impls`).
-        let mut impl_derived: Vec<bool> = Vec::with_capacity(defs.len());
+        // Parallel to `out`: whether each symbol is a *stand-in* for a
+        // declaration rather than the declaration itself — a Rust `impl`
+        // block's twin symbol (`FileMeta::rust_impls`) or a C prototype
+        // (`FileMeta::c_prototypes`). Both lose to a real declaration of the
+        // same name in the same file, and neither can be decided by
+        // `parser.rs`'s first-wins dedup, which keeps whichever comes first:
+        // `impl Store {}` may legally precede `struct Store;`, and a C
+        // forward declaration always precedes its definition.
+        let mut stand_in: Vec<bool> = Vec::with_capacity(defs.len());
         // (qualified_name, start, end, is_container)
         let mut stack: Vec<(String, usize, usize, bool)> = Vec::new();
         for d in defs {
@@ -699,7 +817,7 @@ impl LanguageExtractor for TagsExtractor {
                 && in_class
             {
                 SymbolKind::Method
-            } else if meta.go_interfaces.contains(&d.start) {
+            } else if meta.go_interfaces.contains(&d.tag_start) {
                 // Every Go `type X ...` carries one syntax type upstream;
                 // only the parse tree says which are interfaces.
                 SymbolKind::Interface
@@ -711,7 +829,7 @@ impl LanguageExtractor for TagsExtractor {
             let (parent, qualified) = match meta
                 .go_receivers
                 .iter()
-                .find(|(start, _)| *start == d.start)
+                .find(|(start, _)| *start == d.tag_start)
             {
                 Some((_, recv)) => (Some(recv.clone()), format!("{recv}.{}", d.name)),
                 None => (parent, qualified),
@@ -722,7 +840,7 @@ impl LanguageExtractor for TagsExtractor {
             let (parent, qualified) = match meta
                 .ruby_singletons
                 .iter()
-                .find(|(start, _)| *start == d.start)
+                .find(|(start, _)| *start == d.tag_start)
             {
                 Some((_, prefix)) => match &parent {
                     Some(p) => (parent.clone(), format!("{p}.{prefix}{}", d.name)),
@@ -736,7 +854,11 @@ impl LanguageExtractor for TagsExtractor {
             // Scoped to the declarations `collect_meta` recorded, so a Java
             // class/enum/record name is untouched and no other language sees
             // any change at all.
-            let qualified = match meta.java_params.iter().find(|(start, _)| *start == d.start) {
+            let qualified = match meta
+                .java_params
+                .iter()
+                .find(|(start, _)| *start == d.tag_start)
+            {
                 Some((_, sig)) => format!("{qualified}({sig})"),
                 None => qualified,
             };
@@ -784,26 +906,26 @@ impl LanguageExtractor for TagsExtractor {
                 calls: Vec::new(),
                 bases: Vec::new(),
             });
-            impl_derived.push(meta.rust_impls.contains(&d.start));
+            stand_in.push(
+                meta.rust_impls.contains(&d.tag_start) || meta.c_prototypes.contains(&d.tag_start),
+            );
             stack.push((qualified, d.start, d.end, is_container));
         }
-        // Drop an impl block's stand-in symbol when the file also declares
-        // the type it names — the declaration is what a reader is looking
-        // for, and it may sit *after* the impl (see `FileMeta::rust_impls`).
-        // Done after the containment pass, so the impl's methods keep the
-        // qualified names it gave them.
-        if impl_derived.iter().any(|&b| b) {
+        // Drop a stand-in when the file also carries the real declaration
+        // it names. Done after the containment pass, so an impl block's
+        // methods keep the qualified names it gave them.
+        if stand_in.iter().any(|&b| b) {
             let declared: std::collections::HashSet<String> = out
                 .iter()
-                .zip(&impl_derived)
-                .filter(|(_, &from_impl)| !from_impl)
+                .zip(&stand_in)
+                .filter(|(_, &is_stand_in)| !is_stand_in)
                 .map(|(s, _)| s.qualified_name.clone())
                 .collect();
             let mut idx = 0;
             out.retain(|s| {
-                let from_impl = impl_derived[idx];
+                let is_stand_in = stand_in[idx];
                 idx += 1;
-                !(from_impl && declared.contains(&s.qualified_name))
+                !(is_stand_in && declared.contains(&s.qualified_name))
             });
         }
         out
@@ -919,6 +1041,62 @@ require File.join(dir, 'x')
             ],
             "an alias is not part of the module path, and a concatenated \
              `__DIR__ . '...'` is half a path, not a module"
+        );
+    }
+
+    #[test]
+    fn c_function_spans_cover_the_body_through_any_pointer_depth() {
+        // The tag is on the `function_declarator`, so without
+        // `FileMeta::c_function_spans` every C function would be a
+        // one-line, body-free symbol — wrong span, wrong hash, and none of
+        // the body tokens the lexical index weights. The pointer levels are
+        // the reason the widening is done in Rust rather than by
+        // enumerating query patterns.
+        let src = "\
+char **argv_of(int n)
+{
+    return 0;
+}
+
+static int plain(void)
+{
+    return 1;
+}
+";
+        let syms = parse_file_with(&C_TAGS, "a.c", src, Language::C);
+        for (name, start, end) in [("argv_of", 1, 4), ("plain", 6, 9)] {
+            let f = syms.iter().find(|s| s.qualified_name == name).unwrap();
+            assert_eq!((f.start_line, f.end_line), (start, end), "{name}");
+            assert_eq!(f.content_hash, content_hash(f.span_text(src)));
+        }
+    }
+
+    #[test]
+    fn c_prototype_loses_to_a_definition_but_survives_alone() {
+        let both = "static void helper(int x);\n\nstatic void helper(int x)\n{\n    (void)x;\n}\n";
+        let syms = parse_file_with(&C_TAGS, "a.c", both, Language::C);
+        let h: Vec<&Symbol> = syms.iter().filter(|s| s.name == "helper").collect();
+        assert_eq!(h.len(), 1, "{h:?}");
+        assert_eq!((h[0].start_line, h[0].end_line), (3, 6));
+
+        let header = "int base_retain(struct base *b);\n";
+        let syms = parse_file_with(&C_TAGS, "b.h", header, Language::C);
+        assert!(
+            syms.iter().any(|s| s.qualified_name == "base_retain"),
+            "a header whose functions vanished would be worse than useless"
+        );
+    }
+
+    #[test]
+    fn c_includes_are_relative_when_quoted_and_verbatim_when_angled() {
+        let src = "#include <stdio.h>\n#include \"util.h\"\n#include \"../lib/base.h\"\n";
+        let mut imports = C_TAGS.collect_imports(src);
+        imports.sort();
+        assert_eq!(
+            imports,
+            vec!["../lib/base.h", "./util.h", "stdio.h"],
+            "a quoted include resolves against the including file's own \
+             directory, which `./` is how OXIDE already spells"
         );
     }
 
@@ -1155,6 +1333,7 @@ export const scale = (x) => x * 2;
     static JAVASCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
+    static C_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::C_PROFILE);
     static PHP_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PHP_PROFILE);
     static RUBY_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUBY_PROFILE);
     static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);

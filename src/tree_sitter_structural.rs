@@ -18,8 +18,8 @@
 //! matching.
 
 use crate::languages::{
-    GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PHP_PROFILE, PYTHON_PROFILE, RUBY_PROFILE,
-    RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE,
+    C_PROFILE, GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PHP_PROFILE, PYTHON_PROFILE,
+    RUBY_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE,
 };
 use crate::symbols::Language;
 use std::sync::OnceLock;
@@ -48,6 +48,8 @@ const RUBY_CALLERS_SRC: &str = include_str!("languages/queries/ruby_callers.scm"
 const RUBY_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/ruby_implementors.scm");
 const PHP_CALLERS_SRC: &str = include_str!("languages/queries/php_callers.scm");
 const PHP_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/php_implementors.scm");
+const C_CALLERS_SRC: &str = include_str!("languages/queries/c_callers.scm");
+const C_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/c_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -94,6 +96,10 @@ static PHP_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static C_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
@@ -106,6 +112,7 @@ fn ts_language(lang: Language) -> tree_sitter::Language {
         Language::Java => (JAVA_PROFILE.ts_language)(),
         Language::Ruby => (RUBY_PROFILE.ts_language)(),
         Language::Php => (PHP_PROFILE.ts_language)(),
+        Language::C => (C_PROFILE.ts_language)(),
     }
 }
 
@@ -120,6 +127,7 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Java => &JAVA_QUERIES,
         Language::Ruby => &RUBY_QUERIES,
         Language::Php => &PHP_QUERIES,
+        Language::C => &C_QUERIES,
     }
 }
 
@@ -136,6 +144,7 @@ fn callers_src(lang: Language) -> &'static str {
         Language::Java => JAVA_CALLERS_SRC,
         Language::Ruby => RUBY_CALLERS_SRC,
         Language::Php => PHP_CALLERS_SRC,
+        Language::C => C_CALLERS_SRC,
     }
 }
 
@@ -148,6 +157,7 @@ fn implementors_src(lang: Language) -> &'static str {
         Language::Java => JAVA_IMPLEMENTORS_SRC,
         Language::Ruby => RUBY_IMPLEMENTORS_SRC,
         Language::Php => PHP_IMPLEMENTORS_SRC,
+        Language::C => C_IMPLEMENTORS_SRC,
     }
 }
 
@@ -582,6 +592,37 @@ end
             "`new self()` names the enclosing class under another spelling, \
              and a variable call names a runtime value"
         );
+    }
+
+    #[test]
+    fn c_first_member_struct_embedding_is_the_only_base_relation() {
+        // First member only: any-position would report ordinary
+        // composition — a struct that merely holds another — as
+        // inheritance.
+        let embed = "struct derived {\n    struct base base;\n    int extra;\n};\n";
+        assert_eq!(
+            all_bases_in_file(Language::C, embed),
+            vec![(1, "derived".to_string(), "base".to_string())]
+        );
+        let compose = "struct holder {\n    int tag;\n    struct base b;\n};\n";
+        assert!(
+            all_bases_in_file(Language::C, compose).is_empty(),
+            "composition is not inheritance"
+        );
+    }
+
+    #[test]
+    fn c_calls_include_dispatch_through_a_struct_field() {
+        // `s->ops->read(buf)` is how C does virtual dispatch; a query that
+        // only matched bare identifiers would miss every one.
+        let src =
+            "int run(struct store *s) {\n    helper(1);\n    return s->ops->read(s->buf);\n}\n";
+        let mut calls: Vec<String> = all_calls_in_file(Language::C, src)
+            .into_iter()
+            .map(|(_, n)| n)
+            .collect();
+        calls.sort();
+        assert_eq!(calls, vec!["helper", "read"]);
     }
 
     #[test]

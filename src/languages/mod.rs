@@ -13,6 +13,7 @@ const GO_TAGS: &str = include_str!("queries/go_tags.scm");
 const JAVA_TAGS: &str = include_str!("queries/java_tags.scm");
 const RUBY_TAGS: &str = include_str!("queries/ruby_tags.scm");
 const PHP_TAGS: &str = include_str!("queries/php_tags.scm");
+const C_TAGS: &str = include_str!("queries/c_tags.scm");
 
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
@@ -107,5 +108,13 @@ pub static PHP_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Php,
     ts_language: || tree_sitter_php::LANGUAGE_PHP.into(),
     tags_query: PHP_TAGS,
+    locals_query: "",
+};
+
+/// C.
+pub static C_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::C,
+    ts_language: || tree_sitter_c::LANGUAGE.into(),
+    tags_query: C_TAGS,
     locals_query: "",
 };

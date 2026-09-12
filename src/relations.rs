@@ -286,6 +286,10 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         // Ruby `require_relative './base'` is a real path, minus the
         // extension — the same shape TypeScript's `./base` already has.
         format!("{joined}.rb"),
+        // The path as written, extension included — C's `#include
+        // "util.h"` (recorded as `./util.h`) already names a file, so
+        // appending a language extension to it could only miss.
+        joined.clone(),
         format!("{joined}/__init__.py"),
         format!("{joined}/index.ts"),
         format!("{joined}/index.tsx"),

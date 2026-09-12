@@ -75,6 +75,10 @@ tree-sitter-ruby = "0.23.1"
 # PHP, on the `LANGUAGE_PHP` grammar (template-aware) rather than
 # `LANGUAGE_PHP_ONLY` — a real `.php` file opens with `<?php` inside text.
 tree-sitter-php = "0.24.2"
+# C. Upstream's `tags.scm` is five patterns with the wrong kinds for
+# OXIDE's IR, so `queries/c_tags.scm` is OXIDE-owned; the grammar is what
+# this dependency is for.
+tree-sitter-c = "0.24.2"
 
 [features]
 default = ["native-embed"]
