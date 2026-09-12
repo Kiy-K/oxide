@@ -34,23 +34,23 @@ per-language extractor and no language-specific retrieval behavior.
 Split into a second table purely so neither is unreadable; these languages
 go through exactly the same path as the ones above.
 
-| Dimension | Ruby | PHP | C |
-|---|---|---|---|
-| grammar | ruby | php (not `php_only`) | c |
-| extensions | `.rb`, `.rake`, `.gemspec`, `Rakefile`, `Gemfile` | `.php`, `.phtml` | `.c`, `.h` |
-| definitions + stable ids | yes | yes | yes |
-| kinds | class/module/method/function/constant | class/interface(+trait)/enum/module(namespace)/method/function/constant | function/class(struct+union)/enum/type_alias(typedef)/constant(`#define`, enumerator, file-scope variable) |
-| qualified names | containment **+ singleton receiver prefix** (`Store.self.create`) | containment | containment (flat in practice; an enumerator nests under its `enum`/`typedef`) |
-| parent/child containment | yes (`module` nests like a namespace) | yes; a braceless `namespace X;` spans its own statement only, so file-level declarations stay top-level (like a Java package) | enumerators under their enum only — C has no other nesting |
-| imports | `require` / `require_relative` / `load`, literal string argument only | `use` statements (alias dropped) + `include`/`require`(`_once`) with a literal string | `#include "x.h"` recorded as `./x.h` and **resolved** to a file; `#include <x.h>` recorded verbatim and never resolved |
-| references | token intersection | token intersection | token intersection |
-| calls | calls and method calls; `Foo.new` attributes to `Foo` | free, `->`, `::`, and `new X()`; `new self/static/parent` excluded | direct calls **and dispatch through a struct field** (`s->ops->read()`) |
-| inheritance | `<` **plus `include`/`extend`/`prepend` mixins**, direct children of the class or module body | `extends`/`implements` **plus trait `use`**, direct children of the declaration body | **first-member struct embedding** only — the same evidence, and the same meaning, Go's embedding has |
-| declaration vs definition | n/a | n/a | a prototype loses to a definition of the same name in the same file; a lone prototype survives, so a header is still useful |
-| decorator/annotation-inclusive spans | n/a | yes, free — a PHP 8 `#[Attr]` sits inside the declaration node, as Java's annotations do | n/a |
-| broken files | module fallback | module fallback | module fallback |
-| determinism | pinned | pinned | pinned |
-| incremental single-file edit | pinned | pinned | pinned |
+| Dimension | Ruby | PHP | C | C++ |
+|---|---|---|---|---|
+| grammar | ruby | php (not `php_only`) | c | cpp |
+| extensions | `.rb`, `.rake`, `.gemspec`, `Rakefile`, `Gemfile` | `.php`, `.phtml` | `.c`, plus `.h` when C parses at least as cleanly | `.cc`, `.cpp`, `.cxx`, `.hh`, `.hpp`, `.hxx`, plus `.h` when C++ parses more cleanly |
+| definitions + stable ids | yes | yes | yes | yes |
+| kinds | class/module/method/function/constant | class/interface(+trait)/enum/module(namespace)/method/function/constant | function/class(struct+union)/enum/type_alias(typedef)/constant(`#define`, enumerator, file-scope variable) | class/struct/enum/namespace/function |
+| qualified names | containment **+ singleton receiver prefix** (`Store.self.create`) | containment | containment (flat in practice; an enumerator nests under its `enum`/`typedef`) | containment **+ normalized parameter types and trailing cv/ref qualifiers** (`Store.get(const std::vector<int>&)const`) |
+| parent/child containment | yes (`module` nests like a namespace) | yes; a braceless `namespace X;` spans its own statement only, so file-level declarations stay top-level (like a Java package) | enumerators under their enum only — C has no other nesting | namespaces and class bodies; qualified out-of-class definitions rejoin their class |
+| imports | `require` / `require_relative` / `load`, literal string argument only | `use` statements (alias dropped) + `include`/`require`(`_once`) with a literal string | `#include "x.h"` recorded as `./x.h` and **resolved** to a file; `#include <x.h>` recorded verbatim and never resolved | same include rule as C |
+| references | token intersection | token intersection | token intersection | token intersection |
+| calls | calls and method calls; `Foo.new` attributes to `Foo` | free, `->`, `::`, and `new X()`; `new self/static/parent` excluded | direct calls **and dispatch through a struct field** (`s->ops->read()`) | direct calls and member dispatch |
+| inheritance | `<` **plus `include`/`extend`/`prepend` mixins**, direct children of the class or module body | `extends`/`implements` **plus trait `use`**, direct children of the declaration body | **first-member struct embedding** only — the same evidence, and the same meaning, Go's embedding has | declared `class`/`struct` bases; access specifiers are excluded |
+| declaration vs definition | n/a | n/a | a prototype loses to a definition of the same name in the same file; a lone prototype survives, so a header is still useful | same stand-in rule, after signature and scope normalization |
+| decorator/annotation-inclusive spans | n/a | yes, free — a PHP 8 `#[Attr]` sits inside the declaration node, as Java's annotations do | n/a | n/a |
+| broken files | module fallback | module fallback | module fallback | module fallback |
+| determinism | pinned | pinned | pinned | pinned |
+| incremental single-file edit | pinned | pinned | pinned | pinned |
 
 ## What Python and TypeScript gained in this round
 
@@ -241,7 +241,9 @@ their own right because no same-named struct in that file dedups them away
 | C | struct fields, function parameters | No variable kind, same call as Java's fields and PHP's properties. |
 | C | `typedef struct { ... } foo_t;` as a base | The struct is anonymous, so there is no `name:` to key an embedding relation by — the same reason an anonymous class expression is skipped in TypeScript. The `typedef` itself is still a symbol. |
 | C | header/source pairing | A prototype in `a.h` and its definition in `a.c` are two symbols in two files, related only by the ordinary `#include`-backed `uses` edge. Pairing them would need a notion of translation units that OXIDE does not have and a build system it does not read. |
-| C | `.h` as a C++ header | `.h` is parsed with the **C** grammar. A `.h` full of C++ will produce parse errors and degrade toward the module fallback. Deciding otherwise needs the C++ grammar (see below). |
+| C, C++ | ambiguous `.h` | OXIDE parses the header with both grammars and chooses the one with fewer ERROR/MISSING nodes. On a tie, explicit C++ syntax (`::`, namespace/class declarations, template declarations, access labels) selects C++; all other ties stay C to preserve historic C identity. The corpus evidence motivates this per-file decision: redis `669b2a1` (312 headers) favored C by erroring files (96 vs 98), while fmt `e5d13d8` (26 headers) favored C++ (20 vs 24) and had far fewer C++ error nodes (1,083 vs 15,333). No build-system or sibling-file heuristic is used. |
+| C++ | preprocessor-dependent declarations and header/source pairing | Same boundary as C: OXIDE reads source as written and treats declarations in different files as distinct symbols linked only by ordinary include-backed relations. |
+| C++ | fields, macros, template specialization resolution | There is no variable kind, macros require preprocessing, and resolving a template specialization needs semantic analysis rather than the syntax-only contract. |
 | all | a method and a nested declaration packed onto **one source line** | `void top() { a(); } class Inner { void ping() { b(); } }` collapses both spans to zero lines, and `structural_relations::enclosing`'s longest-qualified-name tie-break then attributes `a()` to `Inner.ping` as well. Language-independent and pre-existing — the identical shape in TypeScript (`function outer() { a(); function inner() { b(); } }`) does the same thing, and it is the LANG-002 tie in `docs/review/structural-and-language.md`. Java annotations do **not** cause it (removing `@Deprecated` changes nothing); pinned both ways by `structural_relations.rs::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does`. Fixing it needs byte-range attribution instead of line numbers, which touches every language at once. |
 | Java | package declaration / true type resolution | Qualified names stay file-scoped, exactly as Python modules are. Parameter types in a signature are normalized by erasure and last-segment name, not resolved — so `com.a.Key` and `com.b.Key` are one type as far as overload identity is concerned. Two overloads that differ *only* that way would collide; no real Java API does that. |
 
@@ -256,12 +258,10 @@ re-embedded. JavaScript shipped alongside it for a different reason entirely:
 it needed no new grammar, no new queries and no new identity rule, only a
 `LanguageProfile` pointing at machinery that was already there.
 
-**C#** is now the obvious next one: it has the same overload problem Java had,
-and Java's answer transfers directly. **Ruby** and **PHP** still have upstream
-tags and no identity conflict, making them the closest thing to mechanical
-additions left. **C/C++** remains the expensive one — overloads plus a
-preprocessor that makes byte-range containment unreliable — and the least
-worth attempting under a no-semantic-resolution rule.
+**C#** is now the obvious next one: it has the same overload problem Java and
+C++ had, and the qualified-name route transfers directly. It still needs its
+own grammar measurement and a C#-specific type normalizer; neither should be
+assumed from C++ syntax.
 
 ## What JavaScript and Java cost
 

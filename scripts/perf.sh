@@ -95,6 +95,7 @@ else:
         ".rb": "\ndef perf_edit_probe\n  1\nend\n",
         ".php": "\nfunction perf_edit_probe(): int\n{\n    return 1;\n}\n",
         ".c": "\nint perf_edit_probe(void)\n{\n    return 1;\n}\n",
+        ".cpp": "\nint perf_edit_probe()\n{\n    return 1;\n}\n",
         ".h": "\nint perf_edit_probe(void);\n",
     }
     cands = [f for f in pathlib.Path(".").rglob("*")

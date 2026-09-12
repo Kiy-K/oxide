@@ -18,8 +18,8 @@
 //! matching.
 
 use crate::languages::{
-    C_PROFILE, GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PHP_PROFILE, PYTHON_PROFILE,
-    RUBY_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE,
+    CPP_PROFILE, C_PROFILE, GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PHP_PROFILE,
+    PYTHON_PROFILE, RUBY_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE,
 };
 use crate::symbols::Language;
 use std::sync::OnceLock;
@@ -50,6 +50,8 @@ const PHP_CALLERS_SRC: &str = include_str!("languages/queries/php_callers.scm");
 const PHP_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/php_implementors.scm");
 const C_CALLERS_SRC: &str = include_str!("languages/queries/c_callers.scm");
 const C_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/c_implementors.scm");
+const CPP_CALLERS_SRC: &str = include_str!("languages/queries/cpp_callers.scm");
+const CPP_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/cpp_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -100,6 +102,10 @@ static C_QUERIES: LangQueries = LangQueries {
     callers: OnceLock::new(),
     implementors: OnceLock::new(),
 };
+static CPP_QUERIES: LangQueries = LangQueries {
+    callers: OnceLock::new(),
+    implementors: OnceLock::new(),
+};
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
     match lang {
@@ -113,6 +119,7 @@ fn ts_language(lang: Language) -> tree_sitter::Language {
         Language::Ruby => (RUBY_PROFILE.ts_language)(),
         Language::Php => (PHP_PROFILE.ts_language)(),
         Language::C => (C_PROFILE.ts_language)(),
+        Language::Cpp => (CPP_PROFILE.ts_language)(),
     }
 }
 
@@ -128,6 +135,7 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Ruby => &RUBY_QUERIES,
         Language::Php => &PHP_QUERIES,
         Language::C => &C_QUERIES,
+        Language::Cpp => &CPP_QUERIES,
     }
 }
 
@@ -145,6 +153,7 @@ fn callers_src(lang: Language) -> &'static str {
         Language::Ruby => RUBY_CALLERS_SRC,
         Language::Php => PHP_CALLERS_SRC,
         Language::C => C_CALLERS_SRC,
+        Language::Cpp => CPP_CALLERS_SRC,
     }
 }
 
@@ -158,6 +167,7 @@ fn implementors_src(lang: Language) -> &'static str {
         Language::Ruby => RUBY_IMPLEMENTORS_SRC,
         Language::Php => PHP_IMPLEMENTORS_SRC,
         Language::C => C_IMPLEMENTORS_SRC,
+        Language::Cpp => CPP_IMPLEMENTORS_SRC,
     }
 }
 
@@ -623,6 +633,40 @@ end
             .collect();
         calls.sort();
         assert_eq!(calls, vec!["helper", "read"]);
+    }
+
+    #[test]
+    fn c_embedding_requires_a_direct_first_member() {
+        let src = "\
+struct base { int x; };
+struct value_holder { struct base value; };
+struct pointer_holder { struct base *value; };
+struct array_holder { struct base value[2]; };
+";
+        assert_eq!(
+            all_bases_in_file(Language::C, src),
+            vec![(2, "value_holder".to_string(), "base".to_string())]
+        );
+    }
+
+    #[test]
+    fn cpp_bases_ignore_access_specifiers() {
+        let src = "class Store {};\nclass MemoryStore : public Store {};\n";
+        assert_eq!(
+            all_bases_in_file(Language::Cpp, src),
+            vec![(2, "MemoryStore".to_string(), "Store".to_string())]
+        );
+    }
+
+    #[test]
+    fn cpp_calls_include_qualified_and_member_dispatch() {
+        let src = "void h() { f(); ns::g(); A::make(); obj.run(); }\n";
+        let mut calls: Vec<String> = all_calls_in_file(Language::Cpp, src)
+            .into_iter()
+            .map(|(_, name)| name)
+            .collect();
+        calls.sort();
+        assert_eq!(calls, vec!["f", "g", "make", "run"]);
     }
 
     #[test]

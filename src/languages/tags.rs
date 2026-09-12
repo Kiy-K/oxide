@@ -181,16 +181,15 @@ struct FileMeta {
     java_params: Vec<(usize, String)>,
     /// Ruby only: `(method declaration start byte, receiver prefix)` for
     /// every *singleton* (class-level) method — `def self.create` gives
-    /// `(start, "self.")`, `def Foo.bar` gives `(start, "Foo.")`, and a
-    /// `def` inside a `class << self` block gives `"self."` too.
+    /// `(start, "self.")`, `def Foo.bar` gives `(start, "Foo.self.")`,
+    /// and a `def` inside a `class << self` block gives `"self."` too.
     ///
     /// Ruby tags report a singleton method under its bare name, so
     /// `def get` and `def self.get` in one class both qualify as `Store.get`
     /// and `parser.rs::parse_file_with`'s first-wins dedup silently drops
     /// the second — the same failure Java overloads had. The prefix is
-    /// exactly what the source writes (`Store.self.create`), so it needs no
-    /// separator of its own and `qualified_name.rsplit('.')` still yields
-    /// the bare name.
+    /// The inserted `.self.` marks an explicit singleton receiver as
+    /// class-level, so `def Foo.bar` cannot collide with `Foo#bar`.
     ruby_singletons: Vec<(usize, String)>,
     /// C only: `(function_declarator start byte, enclosing
     /// function_definition byte range)`.
@@ -213,6 +212,13 @@ struct FileMeta {
     /// [`Self::rust_impls`]: a stand-in that loses to a real declaration of
     /// the same name in the same file.
     c_prototypes: Vec<usize>,
+    /// C++ mirrors C's declaration-vs-definition and body-span rules, with
+    /// signatures and qualified out-of-class methods layered on top.
+    cpp_function_spans: Vec<(usize, Range<usize>)>,
+    cpp_prototypes: Vec<usize>,
+    cpp_params: Vec<(usize, String, String)>,
+    cpp_casts: Vec<(usize, String)>,
+    cpp_scopes: Vec<(usize, String)>,
 }
 
 /// The `function_declarator` at the bottom of a declarator chain, looking
@@ -320,6 +326,118 @@ fn java_signature(params: Node<'_>, src: &str) -> String {
     out.join(",")
 }
 
+/// C++ overload identity keeps template arguments (unlike Java's JVM-shaped
+/// erasure), normalizes punctuation whitespace, and ignores parameter names
+/// and defaults. `const`/`volatile` qualifiers on the type and `&`/`&&`
+/// declarators remain because they can distinguish overloads.
+fn cpp_type_name(text: &str) -> String {
+    let mut out = String::new();
+    let mut pending_space = false;
+    for ch in text.trim().chars() {
+        if ch.is_whitespace() {
+            pending_space = !out.is_empty();
+            continue;
+        }
+        let punctuation = matches!(ch, ':' | '<' | '>' | ',' | '*' | '&' | '[' | ']');
+        if pending_space && !punctuation && !out.ends_with([':', '<', ',', '*', '&', '[']) {
+            out.push(' ');
+        }
+        if punctuation && out.ends_with(' ') {
+            out.pop();
+        }
+        out.push(ch);
+        pending_space = false;
+    }
+    out
+}
+
+fn cpp_declarator_suffix(node: Node<'_>, src: &str) -> String {
+    match node.kind() {
+        "identifier" | "field_identifier" => String::new(),
+        "reference_declarator" | "pointer_declarator" => {
+            let Some(inner) = node.named_child(0) else {
+                return String::new();
+            };
+            let prefix = &src[node.start_byte()..inner.start_byte()];
+            let mut suffix: String = prefix.chars().filter(|c| matches!(c, '*' | '&')).collect();
+            suffix.push_str(&cpp_declarator_suffix(inner, src));
+            suffix
+        }
+        "array_declarator" => {
+            let Some(inner) = node.named_child(0) else {
+                return String::new();
+            };
+            let mut suffix = cpp_declarator_suffix(inner, src);
+            suffix
+                .push_str(&src[inner.end_byte()..node.end_byte()].replace(char::is_whitespace, ""));
+            suffix
+        }
+        "parenthesized_declarator" => node
+            .named_child(0)
+            .map(|inner| cpp_declarator_suffix(inner, src))
+            .unwrap_or_default(),
+        _ => String::new(),
+    }
+}
+
+fn cpp_parameter_type(param: Node<'_>, src: &str) -> Option<String> {
+    let ty = param.child_by_field_name("type")?;
+    let mut prefix = param
+        .named_children(&mut param.walk())
+        .filter(|child| child.kind() == "type_qualifier")
+        .filter_map(|child| child.utf8_text(src.as_bytes()).ok())
+        .collect::<Vec<_>>();
+    prefix.push(ty.utf8_text(src.as_bytes()).ok()?);
+    let mut out = cpp_type_name(&prefix.join(" "));
+    if let Some(declarator) = param.child_by_field_name("declarator") {
+        out.push_str(&cpp_declarator_suffix(declarator, src));
+    }
+    Some(out)
+}
+
+fn cpp_signature(params: Node<'_>, src: &str) -> String {
+    params
+        .named_children(&mut params.walk())
+        .filter(|child| {
+            matches!(
+                child.kind(),
+                "parameter_declaration" | "optional_parameter_declaration"
+            )
+        })
+        .filter_map(|child| cpp_parameter_type(child, src))
+        .collect::<Vec<_>>()
+        .join(",")
+}
+
+fn cpp_method_qualifier(declarator: Node<'_>, src: &str) -> String {
+    let Some(params) = declarator.child_by_field_name("parameters") else {
+        return String::new();
+    };
+    let mut is_const = false;
+    let mut is_volatile = false;
+    let mut reference = None;
+    for child in declarator.named_children(&mut declarator.walk()) {
+        if child.start_byte() < params.end_byte() {
+            continue;
+        }
+        let Ok(text) = child.utf8_text(src.as_bytes()) else {
+            continue;
+        };
+        match (child.kind(), text.trim()) {
+            ("type_qualifier", "const") => is_const = true,
+            ("type_qualifier", "volatile") => is_volatile = true,
+            ("ref_qualifier", "&" | "&&") => reference = Some(text.trim()),
+            _ => {}
+        }
+    }
+    format!(
+        "{}{}{}",
+        if is_const { "const" } else { "" },
+        if is_volatile { "volatile" } else { "" },
+        reference.unwrap_or_default()
+    )
+}
+
 /// One narrow walk collecting the things no tag capture exposes:
 /// import module strings, `export` wrapper ranges, and (for languages with
 /// no export concept) nothing. Not a general extractor — four node kinds.
@@ -409,7 +527,60 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                 meta.c_prototypes.push(fd.byte_range().start);
             }
         }
-        (Language::C, "preproc_include") => {
+        (Language::Cpp, "function_definition") => {
+            if let Some(fd) = function_declarator_of(node) {
+                meta.cpp_function_spans
+                    .push((fd.byte_range().start, node.byte_range()));
+            }
+        }
+        (Language::Cpp, "declaration") | (Language::Cpp, "field_declaration") => {
+            if let Some(fd) = function_declarator_of(node) {
+                meta.cpp_prototypes.push(fd.byte_range().start);
+            }
+        }
+        (Language::Cpp, "function_declarator") => {
+            let sig = node
+                .child_by_field_name("parameters")
+                .map(|params| cpp_signature(params, src))
+                .unwrap_or_default();
+            meta.cpp_params.push((
+                node.byte_range().start,
+                sig,
+                cpp_method_qualifier(node, src),
+            ));
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                if let Ok(name) = declarator.utf8_text(src.as_bytes()) {
+                    if let Some((scope, _)) = name.rsplit_once("::") {
+                        meta.cpp_scopes
+                            .push((node.byte_range().start, scope.replace("::", ".")));
+                    }
+                }
+            }
+        }
+        (Language::Cpp, "operator_cast") => {
+            let Some(ty) = node.child_by_field_name("type") else {
+                return;
+            };
+            let Some(declarator) = node.child_by_field_name("declarator") else {
+                return;
+            };
+            let Some(params) = declarator.child_by_field_name("parameters") else {
+                return;
+            };
+            let Ok(ty) = ty.utf8_text(src.as_bytes()) else {
+                return;
+            };
+            meta.cpp_casts.push((
+                node.byte_range().start,
+                format!(
+                    "operator {}({}){}",
+                    cpp_type_name(ty),
+                    cpp_signature(params, src),
+                    cpp_method_qualifier(declarator, src)
+                ),
+            ));
+        }
+        (Language::C | Language::Cpp, "preproc_include") => {
             // `#include "util.h"` is resolved by the compiler relative to
             // the including file's own directory, so it is recorded as
             // `./util.h` — the same spelling TypeScript writes for the same
@@ -451,26 +622,32 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
         (Language::Ruby, "singleton_method") => {
             if let Some(obj) = node.child_by_field_name("object") {
                 if let Ok(t) = obj.utf8_text(src.as_bytes()) {
-                    meta.ruby_singletons
-                        .push((node.byte_range().start, format!("{t}.")));
+                    let prefix = if obj.kind() == "self" {
+                        "self.".to_string()
+                    } else {
+                        format!("{t}.self.")
+                    };
+                    meta.ruby_singletons.push((node.byte_range().start, prefix));
                 }
             }
         }
         (Language::Ruby, "singleton_class") => {
-            // `class << self` — every `def` directly inside is a singleton
-            // method written without the `self.` prefix. The block itself is
-            // not tagged as a definition (its `value` is `self`, not a
-            // constant), so the methods nest under the *enclosing* class and
-            // would collide with same-named instance methods there.
-            let is_self = node
-                .child_by_field_name("value")
-                .is_some_and(|v| v.kind() == "self");
-            if is_self {
+            // `class << receiver` writes singleton methods without a method
+            // receiver. The block is not a definition tag, so restore the
+            // same explicit singleton marker `def receiver.method` uses.
+            if let Some(value) = node.child_by_field_name("value") {
+                let prefix = if value.kind() == "self" {
+                    "self.".to_string()
+                } else if let Ok(value) = value.utf8_text(src.as_bytes()) {
+                    format!("{value}.self.")
+                } else {
+                    return;
+                };
                 if let Some(body) = node.child_by_field_name("body") {
                     for m in body.named_children(&mut body.walk()) {
                         if m.kind() == "method" {
                             meta.ruby_singletons
-                                .push((m.byte_range().start, "self.".to_string()));
+                                .push((m.byte_range().start, prefix.clone()));
                         }
                     }
                 }
@@ -749,6 +926,12 @@ impl LanguageExtractor for TagsExtractor {
                     let Ok(name) = std::str::from_utf8(&bytes[tag.name_range.clone()]) else {
                         continue;
                     };
+                    let name = meta
+                        .cpp_casts
+                        .iter()
+                        .find(|(start, _)| *start == tag.range.start)
+                        .map(|(_, name)| name.as_str())
+                        .unwrap_or(name);
                     // C tags the declarator, not the definition, so the
                     // body is outside the tag's range until this puts it
                     // back — see `FileMeta::c_function_spans`.
@@ -756,7 +939,14 @@ impl LanguageExtractor for TagsExtractor {
                         .c_function_spans
                         .iter()
                         .find(|(start, _)| *start == tag.range.start)
-                        .map_or(tag.range.clone(), |(_, r)| r.clone());
+                        .map(|(_, r)| r.clone())
+                        .or_else(|| {
+                            meta.cpp_function_spans
+                                .iter()
+                                .find(|(start, _)| *start == tag.range.start)
+                                .map(|(_, r)| r.clone())
+                        })
+                        .unwrap_or(tag.range.clone());
                     defs.push(RawDef {
                         start: span.start,
                         end: span.end,
@@ -862,6 +1052,33 @@ impl LanguageExtractor for TagsExtractor {
                 Some((_, sig)) => format!("{qualified}({sig})"),
                 None => qualified,
             };
+            // C++ out-of-class definitions carry a `Store::method`
+            // declarator, while the class-body declaration is contained by
+            // `Store`. Keep that source scope so both resolve to one
+            // qualified name before the prototype stand-in loses.
+            let (parent, qualified) = match meta
+                .cpp_scopes
+                .iter()
+                .find(|(start, _)| *start == d.tag_start)
+            {
+                Some((_, scope)) => {
+                    let scoped = match &parent {
+                        Some(p) if scope.starts_with(&format!("{p}.")) => scope.clone(),
+                        Some(p) => format!("{p}.{scope}"),
+                        None => scope.clone(),
+                    };
+                    (Some(scoped.clone()), format!("{scoped}.{}", d.name))
+                }
+                None => (parent, qualified),
+            };
+            let qualified = match meta
+                .cpp_params
+                .iter()
+                .find(|(start, _, _)| *start == d.tag_start)
+            {
+                Some((_, sig, suffix)) => format!("{qualified}({sig}){suffix}"),
+                None => qualified,
+            };
             // Module counts as a container so a Rust `mod` block and a
             // TypeScript `namespace` qualify their members (`mod net { fn
             // get }` -> `net.get`). Without it every `mod` in a file
@@ -907,7 +1124,9 @@ impl LanguageExtractor for TagsExtractor {
                 bases: Vec::new(),
             });
             stand_in.push(
-                meta.rust_impls.contains(&d.tag_start) || meta.c_prototypes.contains(&d.tag_start),
+                meta.rust_impls.contains(&d.tag_start)
+                    || meta.c_prototypes.contains(&d.tag_start)
+                    || meta.cpp_prototypes.contains(&d.tag_start),
             );
             stack.push((qualified, d.start, d.end, is_container));
         }
@@ -984,12 +1203,34 @@ class Store
     end
   end
 end
+
+class << Store
+  def from_receiver(k)
+    4
+  end
+end
 ";
         let syms = parse_file_with(&RUBY_TAGS, "store.rb", src, Language::Ruby);
         let names: Vec<&str> = syms.iter().map(|s| s.qualified_name.as_str()).collect();
         assert!(names.contains(&"Store.get"), "{names:?}");
         assert!(names.contains(&"Store.self.get"), "{names:?}");
         assert!(names.contains(&"Store.self.reset"), "{names:?}");
+        assert!(names.contains(&"Store.self.from_receiver"), "{names:?}");
+    }
+
+    #[test]
+    fn cpp_type_definitions_do_not_lose_to_forward_declarations() {
+        let src = "class Forward;\nclass Forward { void live(); };\n";
+        let syms = parse_file_with(&CPP_TAGS, "forward.cpp", src, Language::Cpp);
+        let ty = syms
+            .iter()
+            .find(|s| s.qualified_name == "Forward")
+            .expect("missing definition");
+        assert_eq!(ty.start_line, 2, "forward declaration won: {syms:?}");
+        assert!(
+            syms.iter().any(|s| s.qualified_name == "Forward.live()"),
+            "member vanished with the forward declaration: {syms:?}"
+        );
     }
 
     #[test]
@@ -1098,6 +1339,19 @@ static int plain(void)
             "a quoted include resolves against the including file's own \
              directory, which `./` is how OXIDE already spells"
         );
+    }
+
+    #[test]
+    fn cpp_spans_and_imports_follow_c_while_signatures_keep_templates() {
+        let src = "#include \"store.hpp\"\nint Store::get(const std::vector< int >& ids)\n{\n    return ids.size();\n}\n";
+        let syms = parse_file_with(&CPP_TAGS, "store.cpp", src, Language::Cpp);
+        let get = syms
+            .iter()
+            .find(|s| s.qualified_name == "Store.get(const std::vector<int>&)")
+            .expect("C++ out-of-class method keeps its scope and signature");
+        assert_eq!((get.start_line, get.end_line), (2, 5));
+        assert_eq!(get.content_hash, content_hash(get.span_text(src)));
+        assert_eq!(CPP_TAGS.collect_imports(src), vec!["./store.hpp"]);
     }
 
     #[test]
@@ -1334,6 +1588,7 @@ export const scale = (x) => x * 2;
         TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
     static PYTHON_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
     static C_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::C_PROFILE);
+    static CPP_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::CPP_PROFILE);
     static PHP_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::PHP_PROFILE);
     static RUBY_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUBY_PROFILE);
     static RUST_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::RUST_PROFILE);

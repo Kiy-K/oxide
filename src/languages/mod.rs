@@ -14,6 +14,7 @@ const JAVA_TAGS: &str = include_str!("queries/java_tags.scm");
 const RUBY_TAGS: &str = include_str!("queries/ruby_tags.scm");
 const PHP_TAGS: &str = include_str!("queries/php_tags.scm");
 const C_TAGS: &str = include_str!("queries/c_tags.scm");
+const CPP_TAGS: &str = include_str!("queries/cpp_tags.scm");
 
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
@@ -116,5 +117,15 @@ pub static C_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::C,
     ts_language: || tree_sitter_c::LANGUAGE.into(),
     tags_query: C_TAGS,
+    locals_query: "",
+};
+
+/// C++ uses a dedicated grammar: it is not a C superset in the direction a
+/// parser needs, because templates and qualified declarators are ordinary
+/// declarations rather than parse errors.
+pub static CPP_PROFILE: LanguageProfile = LanguageProfile {
+    language: Language::Cpp,
+    ts_language: || tree_sitter_cpp::LANGUAGE.into(),
+    tags_query: CPP_TAGS,
     locals_query: "",
 };

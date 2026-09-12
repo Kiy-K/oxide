@@ -18,6 +18,7 @@ pub enum Language {
     Ruby,
     Php,
     C,
+    Cpp,
 }
 
 impl Language {
@@ -37,6 +38,7 @@ impl Language {
         Language::Ruby,
         Language::Php,
         Language::C,
+        Language::Cpp,
     ];
 
     pub fn as_str(&self) -> &'static str {
@@ -51,6 +53,7 @@ impl Language {
             Language::Ruby => "ruby",
             Language::Php => "php",
             Language::C => "c",
+            Language::Cpp => "cpp",
         }
     }
 }

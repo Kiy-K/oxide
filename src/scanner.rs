@@ -33,8 +33,64 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         ("Rakefile" | "Gemfile", _) => Some(Ruby),
         (_, "php") | (_, "phtml") => Some(Php),
         (_, "c") | (_, "h") => Some(C),
+        // `.h` remains C until corpus measurements establish whether the
+        // C++ grammar is the better default; that decision is not inferable
+        // from a file name or its siblings.
+        (_, "cc") | (_, "cpp") | (_, "cxx") | (_, "hh") | (_, "hpp") | (_, "hxx") => Some(Cpp),
         _ => None,
     }
+}
+
+fn error_nodes(language: tree_sitter::Language, src: &str) -> usize {
+    fn count(node: tree_sitter::Node<'_>) -> usize {
+        let mut total = usize::from(node.is_error() || node.is_missing());
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            total += count(child);
+        }
+        total
+    }
+
+    let mut parser = tree_sitter::Parser::new();
+    if parser.set_language(&language).is_err() {
+        return usize::MAX;
+    }
+    parser
+        .parse(src, None)
+        .map_or(usize::MAX, |tree| count(tree.root_node()))
+}
+
+fn has_cpp_header_syntax(src: &str) -> bool {
+    src.lines().map(str::trim).any(|line| {
+        line.contains("::")
+            || line.starts_with("namespace ") && line.contains('{')
+            || line.starts_with("class ") && line.contains('{')
+            || line.starts_with("template<")
+            || line.starts_with("template <")
+            || matches!(line, "public:" | "private:" | "protected:")
+    })
+}
+
+/// Resolve an extension, then disambiguate `.h` by parsing its actual source
+/// with both C-family grammars. Explicit C++ syntax breaks a parser-score
+/// tie; otherwise C wins so an ordinary C header keeps its historic language
+/// and persisted ids. No build system or unrelated sibling file is consulted.
+pub fn language_for_source(path: &Path, src: &str) -> Option<crate::symbols::Language> {
+    use crate::symbols::Language::{Cpp, C};
+
+    let language = language_for_path(path)?;
+    if language != C || path.extension().and_then(|ext| ext.to_str()) != Some("h") {
+        return Some(language);
+    }
+    let c_errors = error_nodes(tree_sitter_c::LANGUAGE.into(), src);
+    let cpp_errors = error_nodes(tree_sitter_cpp::LANGUAGE.into(), src);
+    Some(
+        if cpp_errors < c_errors || (cpp_errors == c_errors && has_cpp_header_syntax(src)) {
+            Cpp
+        } else {
+            C
+        },
+    )
 }
 
 /// Directories never worth indexing even when not gitignored.
@@ -276,6 +332,26 @@ mod tests {
             .unwrap();
         let files = scan_repo(root).unwrap();
         assert!(files.is_empty(), "{files:?}");
+    }
+
+    #[test]
+    fn ambiguous_headers_choose_the_lower_error_grammar_and_keep_c_on_a_tie() {
+        assert_eq!(
+            language_for_source(Path::new("store.h"), "struct Store { int id; };"),
+            Some(crate::symbols::Language::C)
+        );
+        assert_eq!(
+            language_for_source(
+                Path::new("store.h"),
+                include_str!("../fixtures/conformance/cpp/src/Store.cpp")
+            ),
+            Some(crate::symbols::Language::Cpp)
+        );
+        assert_eq!(
+            language_for_source(Path::new("empty.h"), "// no declarations\n"),
+            Some(crate::symbols::Language::C),
+            "a tie preserves the historic C routing"
+        );
     }
 
     #[test]

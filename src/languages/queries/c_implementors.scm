@@ -17,4 +17,5 @@
     .
     (field_declaration
       type: (struct_specifier
-        name: (type_identifier) @base)))) @class
+        name: (type_identifier) @base)
+      declarator: (field_identifier)))) @class

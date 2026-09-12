@@ -75,6 +75,7 @@ const LANGUAGES: &[&str] = &[
     "ruby",
     "php",
     "c",
+    "cpp",
 ];
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
@@ -259,7 +260,7 @@ fn java_overloads_keep_distinct_ids_without_touching_other_languages() {
             .any(|s| s.qualified_name == "Store.all(List,Set)"),
         "generics erase and package qualifiers drop to the last segment"
     );
-    // No other language grew a signature.
+    // Only Java and C++ carry signatures.
     for lang in [
         "python",
         "typescript",
@@ -268,6 +269,8 @@ fn java_overloads_keep_distinct_ids_without_touching_other_languages() {
         "rust",
         "go",
         "ruby",
+        "php",
+        "c",
     ] {
         assert!(
             !snapshot_of(lang)
@@ -320,6 +323,11 @@ fn c_conformance() {
     check_golden("c", &snapshot_of("c"));
 }
 
+#[test]
+fn cpp_conformance() {
+    check_golden("cpp", &snapshot_of("cpp"));
+}
+
 /// C's identity decision: a forward declaration and the definition it
 /// precedes share one qualified name, and the prototype is always first —
 /// so `parse_file_with`'s first-wins dedup would keep a one-line, body-free
@@ -351,6 +359,65 @@ fn c_definitions_win_over_prototypes_and_lone_prototypes_survive() {
     // vanished would be worse than useless.
     let retain = find("src/base.h", "base_retain");
     assert_eq!(retain.start_line, retain.end_line);
+}
+
+/// C++ overloads, qualified out-of-class definitions, and operators all use
+/// a normalized discriminator of parameter types plus trailing cv/ref
+/// qualifiers. Without it `parse_file_with` silently drops declarations
+/// after the first matching qualified name.
+#[test]
+fn cpp_overloads_keep_distinct_scoped_symbols() {
+    let cpp = snapshot_of("cpp");
+    let names: Vec<&str> = cpp.iter().map(|s| s.qualified_name.as_str()).collect();
+    for want in [
+        "acme.Store.Store(int)",
+        "acme.Store.~Store()",
+        "acme.Store.get(int)const",
+        "acme.Store.get(const std::vector<int>&)const",
+        "acme.Store.operator==(const Store&)const",
+        "acme.Qualified.get()&",
+        "acme.Qualified.get()&&",
+        "acme.Qualified.put()",
+        "acme.Qualified.put()const",
+        "acme.Convert.operator bool()const",
+        "acme.Convert.operator int()const",
+    ] {
+        assert!(names.contains(&want), "missing {want}: {names:?}");
+    }
+    let gets: Vec<&SnapshotSymbol> = cpp
+        .iter()
+        .filter(|s| s.qualified_name.starts_with("acme.Store.get("))
+        .collect();
+    assert_eq!(gets.len(), 2, "overloads collapsed: {names:?}");
+    assert_ne!(gets[0].id, gets[1].id, "overload ids collided");
+    assert_eq!(
+        names
+            .iter()
+            .filter(|name| name.starts_with("acme.Qualified.get()"))
+            .count(),
+        2,
+        "cv/ref overloads collapsed: {names:?}"
+    );
+    assert!(
+        gets.iter().all(|s| s.end_line > s.start_line),
+        "a declaration won over its definition: {gets:?}"
+    );
+}
+
+#[test]
+fn cpp_header_uses_the_cpp_grammar_when_its_source_is_unambiguously_cpp() {
+    let cpp = snapshot_of("cpp");
+    assert!(
+        cpp.iter().any(|s| {
+            s.file == "include/Widget.h"
+                && s.qualified_name == "acme.Widget.render()"
+                && s.language == "cpp"
+        }),
+        "ambiguous .h routing failed: {:?}",
+        cpp.iter()
+            .filter(|s| s.file == "include/Widget.h")
+            .collect::<Vec<_>>()
+    );
 }
 
 #[test]
@@ -447,6 +514,12 @@ fn single_file_edit_touches_only_that_file() {
             "appended",
         ),
         (
+            "cpp",
+            "src/Store.cpp",
+            "\nint appended()\n{\n    return 1;\n}\n",
+            "appended()",
+        ),
+        (
             "rust",
             "src/backend.rs",
             "\npub fn appended() -> u32 {\n    build()\n}\n",
@@ -498,6 +571,7 @@ fn broken_files_do_not_abort_indexing() {
         ("ruby", "lib/broken.rb", "lib/store.rb"),
         ("php", "src/Broken.php", "src/Store.php"),
         ("c", "src/broken.c", "src/store.c"),
+        ("cpp", "src/broken.cpp", "src/Store.cpp"),
         ("rust", "src/broken.rs", "src/store.rs"),
         ("go", "store/broken.go", "store/store.go"),
     ];

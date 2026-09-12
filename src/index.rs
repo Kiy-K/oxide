@@ -327,10 +327,10 @@ fn update_base_inner(
         }
         for (i, (file, file_symbols)) in unchanged_by_file.into_iter().enumerate() {
             progress.advance(Stage::Relations, i + 1, relation_total);
-            let (Some(src), Some(lang)) = (
-                current.get(file),
-                scanner::language_for_path(Path::new(file)),
-            ) else {
+            let Some(src) = current.get(file) else {
+                continue;
+            };
+            let Some(lang) = scanner::language_for_source(Path::new(file), src) else {
                 continue;
             };
             if refresh_relations {
@@ -588,14 +588,14 @@ fn parse_and_persist_changed_files(
                 // future scanner bug must be counted, never silently dropped.
                 let mut unresolved = 0usize;
                 for (rel, hash) in chunk {
-                    let lang = match scanner::language_for_path(Path::new(rel)) {
+                    let src = &current[*rel];
+                    let lang = match scanner::language_for_source(Path::new(rel), src) {
                         Some(l) => l,
                         None => {
                             unresolved += 1;
                             continue;
                         }
                     };
-                    let src = &current[*rel];
                     let syms = crate::parser::parse_file(rel, src, lang);
                     out.push(ParsedFile {
                         file: (*rel).clone(),
@@ -715,7 +715,7 @@ fn parse_and_persist_changed_files(
         // (reparsed) files, matching `extract_references` above: an
         // unchanged file keeps its existing `symbol_relations` rows
         // untouched, same incremental contract as everything else here.
-        let relations = scanner::language_for_path(Path::new(&pf.file))
+        let relations = scanner::language_for_source(Path::new(&pf.file), &pf.src)
             .map(|lang| {
                 crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang)
             })

@@ -24,7 +24,7 @@ pub const SCHEMA_VERSION: u32 = 1;
 /// `signature` all move), base clauses capture qualified/generic names, JSX
 /// element usage counts as a call, and `mod`/`namespace` blocks qualify
 /// their members.
-pub const EXTRACTION_VERSION: u32 = 2;
+pub const EXTRACTION_VERSION: u32 = 3;
 
 /// Meta key holding the in-flight embedding-space fingerprint while a
 /// provider migration is running. Non-empty means "the vectors in this index

@@ -1,0 +1,491 @@
+[
+  {
+    "file": "include/Widget.h",
+    "qualified_name": "include/Widget.h:__module__",
+    "kind": "module",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 8,
+    "exported": false,
+    "id": 2747352316266986377,
+    "content_hash": 12448931820626056730,
+    "imports": [],
+    "references": [
+      "Widget",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "include/Widget.h",
+    "qualified_name": "acme",
+    "kind": "module",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 8,
+    "exported": false,
+    "id": 3804412864890492919,
+    "content_hash": 12081699920672436490,
+    "imports": [],
+    "references": [
+      "Widget",
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "include/Widget.h",
+    "qualified_name": "acme.Widget",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 4,
+    "end_line": 7,
+    "exported": false,
+    "id": 12795700466043935490,
+    "content_hash": 1971409440122628947,
+    "imports": [],
+    "references": [
+      "render"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "include/Widget.h",
+    "qualified_name": "acme.Widget.render()",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Widget",
+    "start_line": 6,
+    "end_line": 6,
+    "exported": false,
+    "id": 3064105960912289160,
+    "content_hash": 3644007804513367467,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "src/Store.cpp:__module__",
+    "kind": "module",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 52,
+    "exported": false,
+    "id": 15256562388414357865,
+    "content_hash": 12223639751453494713,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Convert",
+      "Forward",
+      "MemoryStore",
+      "Qualified",
+      "Store",
+      "get",
+      "put",
+      "value"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme",
+    "kind": "module",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 52,
+    "exported": false,
+    "id": 16261595141474333576,
+    "content_hash": 14654101086298974703,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Convert",
+      "Forward",
+      "MemoryStore",
+      "Qualified",
+      "Store",
+      "get",
+      "put",
+      "value"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 5,
+    "end_line": 12,
+    "exported": false,
+    "id": 7865645064692608833,
+    "content_hash": 17582947581310745035,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "get"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.MemoryStore",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 14,
+    "end_line": 15,
+    "exported": false,
+    "id": 14630164638040786466,
+    "content_hash": 4458530499687548963,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": [
+      "Store"
+    ]
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Qualified",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 17,
+    "end_line": 23,
+    "exported": false,
+    "id": 2176641756029467154,
+    "content_hash": 2317252934917807187,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "get",
+      "put"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Qualified.get()&",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Qualified",
+    "start_line": 19,
+    "end_line": 19,
+    "exported": false,
+    "id": 9855258295915729426,
+    "content_hash": 14688439003821531290,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Qualified.get()&&",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Qualified",
+    "start_line": 20,
+    "end_line": 20,
+    "exported": false,
+    "id": 1706548701124488883,
+    "content_hash": 6608034823765513297,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "put"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Qualified.put()const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Qualified",
+    "start_line": 21,
+    "end_line": 21,
+    "exported": false,
+    "id": 16565789636970449224,
+    "content_hash": 9438239798812648782,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Qualified.put()",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Qualified",
+    "start_line": 22,
+    "end_line": 22,
+    "exported": false,
+    "id": 4621474720062778076,
+    "content_hash": 3276225031596711385,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Convert",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 25,
+    "end_line": 29,
+    "exported": false,
+    "id": 11986875813238585801,
+    "content_hash": 11480202017604651040,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Convert.operator bool()const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Convert",
+    "start_line": 27,
+    "end_line": 27,
+    "exported": false,
+    "id": 15133100728616464316,
+    "content_hash": 11134841969680094608,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Convert.operator int()const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Convert",
+    "start_line": 28,
+    "end_line": 28,
+    "exported": false,
+    "id": 293085090232171658,
+    "content_hash": 16540459860099678884,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Forward",
+    "kind": "class",
+    "language": "cpp",
+    "parent": "acme",
+    "start_line": 32,
+    "end_line": 35,
+    "exported": false,
+    "id": 13835209011648599495,
+    "content_hash": 13911591302686827678,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "value"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Forward.value()const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Forward",
+    "start_line": 34,
+    "end_line": 34,
+    "exported": false,
+    "id": 2615349436584894857,
+    "content_hash": 5319598052311087596,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store.Store(int)",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Store",
+    "start_line": 37,
+    "end_line": 37,
+    "exported": false,
+    "id": 1914687331776418899,
+    "content_hash": 10520741449388756556,
+    "imports": [
+      "vector"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store.~Store()",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Store",
+    "start_line": 38,
+    "end_line": 38,
+    "exported": false,
+    "id": 7921841652566770602,
+    "content_hash": 10555241593654683040,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store.get(int)const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Store",
+    "start_line": 40,
+    "end_line": 42,
+    "exported": false,
+    "id": 2521921705459985854,
+    "content_hash": 2388205540124595686,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store.get(const std::vector<int>&)const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Store",
+    "start_line": 44,
+    "end_line": 46,
+    "exported": false,
+    "id": 12723278981331102439,
+    "content_hash": 8658502005271408468,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [
+      "size"
+    ],
+    "bases": []
+  },
+  {
+    "file": "src/Store.cpp",
+    "qualified_name": "acme.Store.operator==(const Store&)const",
+    "kind": "function",
+    "language": "cpp",
+    "parent": "acme.Store",
+    "start_line": 48,
+    "end_line": 50,
+    "exported": false,
+    "id": 2078143488287680765,
+    "content_hash": 4929244846434281110,
+    "imports": [
+      "vector"
+    ],
+    "references": [
+      "Store"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.cpp",
+    "qualified_name": "src/broken.cpp:__module__",
+    "kind": "module",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 4,
+    "exported": false,
+    "id": 9184023735870140009,
+    "content_hash": 7509634914809028232,
+    "imports": [],
+    "references": [
+      "oops"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "src/broken.cpp",
+    "qualified_name": "oops()",
+    "kind": "function",
+    "language": "cpp",
+    "parent": null,
+    "start_line": 3,
+    "end_line": 3,
+    "exported": false,
+    "id": 12272663576968682091,
+    "content_hash": 5049821059173960257,
+    "imports": [],
+    "references": [],
+    "calls": [],
+    "bases": []
+  }
+]
