@@ -95,3 +95,61 @@ pub(crate) const BLAST_RADIUS_CONTEXT_ITEMS: usize = 4;
 /// above the relevance floor (0.15), so a direct caller of the top hit is
 /// not immediately dropped as a weak tail.
 pub(crate) const BLAST_RADIUS_SCORE_FRACTION: f32 = 0.35;
+
+/// Git-aware context (`--git` on `oxide query`, always-on for `oxide
+/// review`): current diff, recent commits, and bounded co-change history —
+/// see `src/gitctx.rs`. Every value here is a hard cap on local `git`
+/// subprocess calls, not a tuning knob: co-change in particular is capped
+/// on commits-per-file scanned, files-per-commit tolerated (a mass
+/// reformat/dependency-bump commit is noise, not signal), and how many
+/// changed files get co-change computed at all, so subprocess count never
+/// scales with diff size. No index-time precompute in v1 — measure first.
+///
+pub(crate) const GIT_RECENT_COMMITS_LIMIT: usize = 10;
+/// Commits scanned (`git log -n`) per file when computing co-change.
+pub(crate) const GIT_COCHANGE_COMMIT_WINDOW: usize = 50;
+/// A commit touching more files than this is dropped from the co-change
+/// tally entirely, not truncated — a partial file list from a mass
+/// reformat/dependency bump is still noise.
+pub(crate) const GIT_COCHANGE_MAX_FILES_PER_COMMIT: usize = 20;
+/// How many of the current diff's changed files get co-change computed at
+/// all, sorted by path first — bounds subprocess count regardless of how
+/// large the diff is.
+pub(crate) const GIT_COCHANGE_MAX_TARGET_FILES: usize = 5;
+/// Top co-changed files kept per target file, sorted `(count desc, path
+/// asc)` before truncating — most pairs co-change once, so the tie-break is
+/// load-bearing for determinism, not cosmetic.
+pub(crate) const GIT_COCHANGE_MAX_FANOUT: usize = 5;
+
+// The six constants below are consumed by `context.rs`'s git
+// candidate-injection block, landing in the next commit —
+// `#[allow(dead_code)]` on each is temporary WIP staging, not a permanent
+// suppression.
+
+/// Symbols pulled per co-changed file into the context pack (first
+/// non-module symbols by declaration order).
+#[allow(dead_code)]
+pub(crate) const GIT_COCHANGE_SYMBOLS_PER_FILE: usize = 2;
+/// Changed-symbol candidates admitted to the context pool.
+#[allow(dead_code)]
+pub(crate) const GIT_CHANGED_CONTEXT_ITEMS: usize = 8;
+/// Callers/tests pulled per changed symbol via the same `RelationGraph`
+/// structural expansion already built for the query's seeds.
+#[allow(dead_code)]
+pub(crate) const GIT_NEIGHBOR_HITS_PER_CHANGED: usize = 2;
+
+/// Score fractions (of the top seed's score), all below
+/// [`BLAST_RADIUS_SCORE_FRACTION`] (git evidence stays lower priority than
+/// direct/structural evidence, per design) and all above
+/// [`CONTEXT_RELEVANCE_FLOOR_FRACTION`] (0.15) so they don't get silently
+/// floored out of every query that also has one strong primary. Three
+/// tiers, not one: "changed in the current diff" is a fact, "callers of a
+/// changed symbol" is one structural hop removed from that fact, and
+/// "historically co-changed" is a heuristic — co-change is deliberately the
+/// lowest of the three.
+#[allow(dead_code)]
+pub(crate) const GIT_CHANGED_SCORE_FRACTION: f32 = 0.28;
+#[allow(dead_code)]
+pub(crate) const GIT_NEIGHBOR_SCORE_FRACTION: f32 = 0.20;
+#[allow(dead_code)]
+pub(crate) const GIT_COCHANGE_SCORE_FRACTION: f32 = 0.16;

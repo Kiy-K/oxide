@@ -7,6 +7,7 @@ pub mod credentials;
 pub mod embedding_cache;
 pub mod embeddings;
 pub mod eval;
+pub mod gitctx;
 pub mod gitutil;
 pub mod index;
 pub mod languages;
