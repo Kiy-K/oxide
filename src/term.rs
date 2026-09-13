@@ -143,6 +143,23 @@ impl Paint {
     }
 }
 
+/// Reads a secret (an API key) from stdin, masking each keystroke via
+/// cliclack's `password()` widget when stdin is a real interactive
+/// terminal, so it never lands in scrollback or a terminal-recording tool.
+/// Falls back to a plain line read when stdin is not a terminal (piped
+/// input, scripted `--api-key-env` use, tests) — there is no keystroke echo
+/// to hide in that case, and the existing plain-line prompts already work
+/// that way.
+pub fn prompt_password(label: &str) -> std::io::Result<String> {
+    if std::io::stdin().is_terminal() {
+        cliclack::password(label).mask('*').interact()
+    } else {
+        let mut line = String::new();
+        std::io::stdin().read_line(&mut line)?;
+        Ok(line.trim().to_string())
+    }
+}
+
 /// `1234` -> `1,234`. Counts are what a human reads off `oxide status`, and
 /// unseparated five-digit symbol counts are hard to scan.
 pub fn thousands(n: usize) -> String {

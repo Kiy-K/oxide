@@ -473,6 +473,41 @@ check "uninstall removes the entry it wrote" \
 check "unrelated agent settings survive" \
     contains "$LIFE_HOME/.codex/config.toml" 'theme = "dark"'
 
+# --- 14. oxide setup prompt is always skippable ---------------------------
+#
+# `oxide setup` (Voyage/Jina/OpenAI-compatible remote embeddings) is asked
+# about once, right after install — but must never block a script or a
+# piped `curl | sh` install that has no controlling terminal.
+
+case_name "setup prompt: \$OXIDE_SKIP_SETUP always skips, even with a tty"
+SKIPDEST="$SANDBOX/skip-setup"
+if OXIDE_SKIP_SETUP=1 install_oxide "$SKIPDEST" "$NEW_VERSION"; then
+    ok "install with OXIDE_SKIP_SETUP=1 exits 0"
+else
+    bad "install with OXIDE_SKIP_SETUP=1 exits 0"
+fi
+check "does not ask about a remote embedding provider" \
+    sh -c "! grep -qF 'remote embedding provider' '$SANDBOX/out'"
+
+case_name "setup prompt: no controlling tty skips without hanging"
+NOTTYDEST="$SANDBOX/no-tty-setup"
+if command -v setsid >/dev/null 2>&1; then
+    # Redirecting stdin alone does not detach /dev/tty (a human running this
+    # script from a real terminal still has one) — `setsid` genuinely
+    # removes the controlling terminal, the same way CI runners have none.
+    if OXIDE_BASE_URL="$BASE_URL" setsid sh "$INSTALLER" \
+        --version "$NEW_VERSION" --install-dir "$NOTTYDEST" \
+        < /dev/null > "$SANDBOX/out" 2>&1; then
+        ok "install with no controlling tty exits 0 (does not hang)"
+    else
+        bad "install with no controlling tty exits 0 (does not hang)"
+    fi
+    check "does not ask about a remote embedding provider" \
+        sh -c "! grep -qF 'remote embedding provider' '$SANDBOX/out'"
+else
+    ok "setup prompt: no controlling tty (skipped: no setsid on this machine)"
+fi
+
 # --- summary --------------------------------------------------------------
 
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"

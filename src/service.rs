@@ -196,6 +196,13 @@ pub struct IndexResult {
     /// build can report the corpus rather than "0 changed".
     #[serde(skip)]
     pub total_symbols: usize,
+    /// Presentation only, like the two fields above. Whether the provider
+    /// that ran this indexing pass is a remote one (`EmbeddingProvider::
+    /// is_remote`) — `cmd_index`'s large-repo hint only fires when this is
+    /// `false`, since recommending remote embeddings to someone already
+    /// using them would be nonsensical.
+    #[serde(skip)]
+    pub embedder_is_remote: bool,
 }
 
 impl From<IndexReport> for IndexResult {
@@ -216,6 +223,7 @@ impl From<IndexReport> for IndexResult {
             duration_ms: r.duration_ms,
             fresh_index: false,
             total_symbols: 0,
+            embedder_is_remote: false,
         }
     }
 }
@@ -567,6 +575,7 @@ impl RepositoryService {
         let mut result: IndexResult = report.into();
         result.fresh_index = fresh_index;
         result.total_symbols = stats(&store)?.symbols;
+        result.embedder_is_remote = embedder.is_remote();
         if result.embed_failures > 0 || !embedder.is_available() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,
@@ -695,7 +704,13 @@ impl RepositoryService {
                 },
             )
             .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))?;
-        if !provider.is_available() {
+        // A local/native provider going unavailable mid-call is a real
+        // failure to surface (today's behavior, unchanged). A remote
+        // provider going unavailable already logged why (`RemoteHttpClient::
+        // post_json`) — the lexical-still-good `hits` computed above remain
+        // useful, so return them rather than discarding a real result for a
+        // component this call never strictly needed.
+        if !provider.is_available() && !provider.is_remote() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,
                 "embedding provider became unavailable during search",
@@ -784,7 +799,9 @@ impl RepositoryService {
             },
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
-        if !provider.is_available() {
+        // See the identical guard in `search` above for why remote/local are
+        // treated differently here.
+        if !provider.is_available() && !provider.is_remote() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,
                 "embedding provider became unavailable during context retrieval",
@@ -831,7 +848,9 @@ impl RepositoryService {
         self.validate_index(&store, Some(provider.as_ref()), &stats)?;
         let context = build_review_context(&self.root, &store, provider.as_ref(), diff)
             .map_err(|e| ServiceError::from_error(ErrorCode::ReviewFailed, e))?;
-        if !provider.is_available() {
+        // See the identical guard in `search` above for why remote/local are
+        // treated differently here.
+        if !provider.is_available() && !provider.is_remote() {
             return Err(ServiceError::new(
                 ErrorCode::EmbedderUnavailable,
                 "embedding provider became unavailable during review retrieval",

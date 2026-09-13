@@ -320,3 +320,42 @@ case ":${PATH:-}:" in
         say "  oxide install     # connect OXIDE to your coding agents"
         ;;
 esac
+
+# `oxide setup` configures an optional remote embedding provider (Voyage,
+# Jina, or an OpenAI-compatible endpoint) — never required, and local
+# embedding needs no setup at all. Asked here, once, right after install.
+#
+# `curl -fsSL ... | sh`'s stdin IS the piped script text, so both this
+# prompt and `oxide setup` itself must read/write /dev/tty directly (the
+# same technique rustup/Homebrew's installers use) rather than plain
+# stdin/stdout — otherwise a piped install would immediately fail with no
+# answer available. When there is no controlling tty (CI, `sh install.sh
+# < /dev/null`) or $OXIDE_SKIP_SETUP is set, this is skipped entirely and
+# install.sh never blocks.
+#
+# `[ -r /dev/tty ]` alone is not enough: the special file's permission bits
+# are world-readable regardless of whether a controlling terminal actually
+# exists, so a process with none (a container, `setsid`, most CI runners)
+# still passes that check and then fails to open it (ENXIO) the moment it's
+# actually used. `tty -s </dev/tty` actually attempts the open and reports
+# via its exit status — deliberately not `: </dev/tty` (a shell special
+# builtin): POSIX requires a non-interactive shell to exit immediately on a
+# *special builtin's* redirection failure even inside an `if` condition,
+# bypassing the usual `set -e` exemption there, which turned this
+# availability check into a hard failure of the whole installer the first
+# time it was tried. `tty` is an ordinary external command, so its failure
+# here is just this `if`'s condition, same as any other check.
+if [ -z "${OXIDE_SKIP_SETUP:-}" ] && tty -s < /dev/tty > /dev/null 2>&1; then
+    say ""
+    printf '%s' "Configure a remote embedding provider now (Voyage/Jina/OpenAI-compatible)? Local embedding needs no setup and stays private to this machine. [y/N] " > /dev/tty
+    reply=""
+    read -r reply < /dev/tty || reply=""
+    case "$reply" in
+        [yY] | [yY][eE][sS])
+            "$dest" setup < /dev/tty > /dev/tty 2>&1 || true
+            ;;
+        *)
+            say "Skipped. Run \`oxide setup\` any time to configure one."
+            ;;
+    esac
+fi

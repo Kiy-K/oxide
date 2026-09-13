@@ -29,6 +29,7 @@ GET STARTED
   search      Search for code
   status      Check the index
   watch       Keep the index fresh
+  setup       Configure a remote embedding provider (optional; local is the default)
 
 AGENTS
   install     Connect OXIDE to coding agents
@@ -274,6 +275,34 @@ pub enum Cmd {
         /// Repository path. Defaults to discovering from the current directory.
         path: Option<String>,
     },
+    /// Configure a remote embedding provider (Voyage, Jina, or a generic
+    /// OpenAI-compatible endpoint), or show what's configured.
+    ///
+    /// Local embedding needs none of this and stays the default — this is
+    /// only for opting into a remote provider for higher-quality embeddings
+    /// or very large codebases. Source-code excerpts and queries leave this
+    /// machine once a remote provider is enabled.
+    Setup {
+        /// Provider to configure: voyage|jina|openai-compatible. Prompts if omitted.
+        #[arg(long)]
+        provider: Option<String>,
+        /// Read the API key from this environment variable instead of
+        /// prompting — for scripted/CI setup.
+        #[arg(long, value_name = "VAR")]
+        api_key_env: Option<String>,
+        /// Endpoint URL. Required for --provider openai-compatible; prompts if omitted there.
+        #[arg(long)]
+        base_url: Option<String>,
+        /// Model name. Prompts if omitted (a sensible default is offered).
+        #[arg(long)]
+        model: Option<String>,
+        /// Skip the privacy-warning confirmation.
+        #[arg(short, long)]
+        yes: bool,
+        /// Print the current configuration (redacted) and exit.
+        #[arg(long)]
+        show: bool,
+    },
 }
 
 #[derive(Debug)]
@@ -495,6 +524,22 @@ pub fn run(args: Args) -> Result<(), CliError> {
             dry_run,
             yes,
         } => cmd_agents(&agent, dry_run, yes, false, paint),
+        Cmd::Setup {
+            provider,
+            api_key_env,
+            base_url,
+            model,
+            yes,
+            show,
+        } => cmd_setup(
+            provider.as_deref(),
+            api_key_env.as_deref(),
+            base_url.as_deref(),
+            model.as_deref(),
+            yes,
+            show,
+            paint,
+        ),
     }
 }
 
@@ -647,8 +692,29 @@ fn cmd_index(
         );
     } else {
         print_index_summary(&result, opts.force_reparse, &Paint::for_stdout(color));
+        maybe_recommend_remote_embeddings(&result);
     }
     Ok(())
+}
+
+/// A large repo on the local embedder is a plausible candidate for remote
+/// embeddings (better quality/throughput) — but this only ever *suggests*
+/// `oxide setup`, never switches anything. Interactive-only (never
+/// `--json`/MCP, matching how the privacy warning itself only ever appears
+/// inside `oxide setup`'s own interactive path).
+const LARGE_REPO_REMOTE_HINT_THRESHOLD: usize = 20_000;
+
+fn maybe_recommend_remote_embeddings(result: &IndexResult) {
+    if !result.embedder_is_remote && result.total_symbols > LARGE_REPO_REMOTE_HINT_THRESHOLD {
+        eprintln!(
+            "\nnote: this is a large repository ({} symbols). A remote embedding \
+             provider (Voyage, Jina, or an OpenAI-compatible endpoint) can improve \
+             semantic search quality/throughput at that scale — source-code excerpts \
+             and queries would leave this machine. Run `oxide setup` to opt in; local \
+             embedding remains the default either way.",
+            thousands(result.total_symbols)
+        );
+    }
 }
 
 fn cmd_watch(path: Option<&str>, embedder_url: Option<&str>, p: Paint) -> Result<(), CliError> {
@@ -1481,6 +1547,220 @@ fn print_plans(plans: &[Plan], paths: &Paths, install: bool, p: &Paint) {
             }
         }
         println!();
+    }
+}
+
+fn normalize_provider_arg(s: &str, json: bool) -> Result<&'static str, CliError> {
+    crate::remote_embed::normalize_provider(s).ok_or_else(|| {
+        CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            format!("unknown provider {s:?}; use voyage|jina|openai-compatible"),
+            json,
+        )
+    })
+}
+
+fn prompt_line(label: &str, json: bool) -> Result<String, CliError> {
+    print!("{label}: ");
+    let _ = std::io::stdout().flush();
+    let line = read_answer(json)?.ok_or_else(|| {
+        CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            "no answer on stdin",
+            json,
+        )
+    })?;
+    Ok(line.trim().to_string())
+}
+
+fn prompt_provider(json: bool) -> Result<&'static str, CliError> {
+    println!("Choose an embedding provider:");
+    println!("  [1] Voyage AI       (voyage-code-3, voyage-3, ...)");
+    println!("  [2] Jina AI         (jina-embeddings-v3, ...)");
+    println!("  [3] OpenAI-compatible endpoint (OpenAI, self-hosted, ...)");
+    let line = prompt_line("> ", json)?;
+    match line.as_str() {
+        "1" => Ok("voyage"),
+        "2" => Ok("jina"),
+        "3" => Ok("openai-compatible"),
+        other => normalize_provider_arg(other, json),
+    }
+}
+
+/// `oxide setup`: configure a remote embedding provider, or show what's
+/// configured. No `--json` mode — like `install`/`uninstall`, this is an
+/// interactive/scripted command, not a machine surface.
+fn cmd_setup(
+    provider_arg: Option<&str>,
+    api_key_env: Option<&str>,
+    base_url_arg: Option<&str>,
+    model_arg: Option<&str>,
+    yes: bool,
+    show: bool,
+    p: Paint,
+) -> Result<(), CliError> {
+    let json = false;
+    let config_dir =
+        crate::user_config::oxide_config_dir().map_err(|e| CliError::generic(e, json))?;
+
+    if show {
+        let cfg = crate::user_config::UserConfig::load(&config_dir)
+            .map_err(|e| CliError::generic(e, json))?;
+        print_setup_status(&cfg, &config_dir, &p);
+        return Ok(());
+    }
+
+    let provider = match provider_arg {
+        Some(s) => normalize_provider_arg(s, json)?,
+        None => prompt_provider(json)?,
+    };
+
+    let base_url = if provider == "openai-compatible" {
+        Some(match base_url_arg {
+            Some(u) => u.to_string(),
+            None => prompt_line("Endpoint URL (OpenAI-compatible /v1/embeddings)", json)?,
+        })
+    } else if base_url_arg.is_some() {
+        // Voyage/Jina have one fixed public endpoint each — a configured
+        // override would otherwise be saved and then silently ignored by
+        // `remote_embed::build`, sending the key/excerpts to the real
+        // endpoint anyway with no indication anything was dropped.
+        return Err(CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            format!(
+                "--base-url is only supported for --provider openai-compatible (not {provider})"
+            ),
+            json,
+        ));
+    } else {
+        None
+    };
+
+    let default_model = crate::remote_embed::default_model_hint(provider);
+    let model = match model_arg {
+        Some(m) => m.to_string(),
+        None => {
+            let answer = prompt_line(&format!("Model [{default_model}]"), json)?;
+            if answer.is_empty() {
+                default_model.to_string()
+            } else {
+                answer
+            }
+        }
+    };
+
+    let api_key = match api_key_env {
+        Some(var) => std::env::var(var).map_err(|_| {
+            CliError::new(
+                "invalid_configuration",
+                ErrorAction::Stop,
+                format!("${var} is not set"),
+                json,
+            )
+        })?,
+        None => crate::term::prompt_password(&format!(
+            "{} API key",
+            crate::remote_embed::provider_display(provider)
+        ))
+        .map_err(|e| CliError::generic(e, json))?,
+    };
+    if api_key.trim().is_empty() {
+        return Err(CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            "no API key given; nothing was saved",
+            json,
+        ));
+    }
+
+    println!("\n{}", p.warn("⚠ Remote embeddings enabled"));
+    println!(
+        "\nSource-code excerpts and queries will be sent to {}.",
+        crate::remote_embed::provider_display(provider)
+    );
+    println!("Local embedding keeps repository data on this machine.\n");
+    if !yes && !confirm("Continue?")? {
+        println!("Cancelled. Nothing was saved.");
+        return Ok(());
+    }
+
+    let candidate =
+        crate::remote_embed::build(provider, &model, base_url.as_deref(), None, None, &api_key)
+            .map_err(|e| {
+                CliError::new(
+                    "invalid_configuration",
+                    ErrorAction::Stop,
+                    format!(
+                        "could not reach {} with the given key/endpoint: {e}\n\nnothing was saved",
+                        crate::remote_embed::provider_display(provider)
+                    ),
+                    json,
+                )
+            })?;
+    let dim = candidate.dim();
+
+    crate::credentials::set_key(&config_dir, provider, &api_key)
+        .map_err(|e| CliError::generic(e, json))?;
+    let cfg = crate::user_config::UserConfig {
+        provider: Some(provider.to_string()),
+        model: Some(model),
+        base_url,
+        vector_dim: Some(dim),
+        remote_consent_ack: true,
+        remote_consent_at: Some(crate::user_config::now_iso8601()),
+    };
+    cfg.save(&config_dir)
+        .map_err(|e| CliError::generic(e, json))?;
+
+    println!(
+        "{} Saved to {}",
+        p.check(),
+        config_dir.join("config.toml").display()
+    );
+    Ok(())
+}
+
+fn print_setup_status(
+    cfg: &crate::user_config::UserConfig,
+    config_dir: &std::path::Path,
+    p: &Paint,
+) {
+    match &cfg.provider {
+        Some(provider) if cfg.remote_consent_ack => {
+            println!("{} Remote embedding configured", p.bold("Provider:"));
+            println!("  provider: {provider}");
+            println!(
+                "  model:    {}",
+                cfg.model.as_deref().unwrap_or("(default)")
+            );
+            if let Some(url) = &cfg.base_url {
+                println!("  base_url: {url}");
+            }
+            if let Some(dim) = cfg.vector_dim {
+                println!("  vector dim: {dim}");
+            }
+            let has_key = crate::credentials::has_key(config_dir, provider);
+            println!(
+                "  api_key:  {}",
+                if has_key {
+                    crate::credentials::REDACTED
+                } else {
+                    "not set"
+                }
+            );
+            if let Some(at) = &cfg.remote_consent_at {
+                println!("  consent acknowledged: {at}");
+            }
+        }
+        _ => {
+            println!(
+                "{} local (Arctic XS-Q). Run `oxide setup` to configure a remote provider.",
+                p.bold("Provider:")
+            );
+        }
     }
 }
 
