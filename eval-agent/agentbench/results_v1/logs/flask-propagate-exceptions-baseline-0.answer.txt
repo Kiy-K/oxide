@@ -1,0 +1,14 @@
+Flask re-raises an unhandled exception in `Flask.handle_exception()` when:
+
+- `app.config["PROPAGATE_EXCEPTIONS"]` is explicitly truthy; or
+- `PROPAGATE_EXCEPTIONS` is `None` (its default), and either `app.testing` or `app.debug` is enabled.
+
+If `PROPAGATE_EXCEPTIONS` is explicitly `False`, Flask logs the exception and returns a 500 response instead.
+
+The fallback is:
+
+```python
+propagate = self.testing or self.debug
+```
+
+defined in [`src/flask/app.py`]( /tmp/oxide-agentbench-np2r09z9/flask-propagate-exceptions-baseline-0/src/flask/app.py:1393 ).

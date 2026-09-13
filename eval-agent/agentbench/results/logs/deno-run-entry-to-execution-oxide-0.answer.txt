@@ -1,0 +1,45 @@
+For the normal `deno run script.js` path (without `--watch`, stdin, or `--eszip`):
+
+1. `main` — [`cli/main.rs:3-8`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/main.rs:3)  
+   The binary entry point delegates to `deno::main()`.
+
+2. `deno::main` — [`cli/lib.rs:863`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib.rs:863)  
+   Collects arguments, resolves flags through `resolve_flags_and_init`, initializes V8, and invokes `run_subcommand`.
+
+3. `run_subcommand` — [`cli/lib.rs:296`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib.rs:296)  
+   Matches `DenoSubcommand::Run` and dispatches the ordinary case to `tools::run::run_script(...)` at [`cli/lib.rs:337-345`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib.rs:337).
+
+4. `tools::run::run_script` — [`cli/tools/run/mod.rs:170`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/tools/run/mod.rs:170)  
+   Resolves `script.js` into `main_module`, creates a `CliMainWorkerFactory`, and calls `create_main_worker_with_unconfigured_runtime` at [`cli/tools/run/mod.rs:227-240`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/tools/run/mod.rs:227).
+
+5. `CliMainWorkerFactory::create_main_worker_with_unconfigured_runtime` — [`cli/worker.rs:573`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/worker.rs:573)  
+   Delegates to `create_custom_worker`, which resolves npm entry points if necessary and calls the lower-level library worker factory at [`cli/worker.rs:596-676`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/worker.rs:596).
+
+6. `LibMainWorkerFactory::create_custom_worker` — [`cli/lib/worker.rs:653`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib/worker.rs:653)  
+   Builds `WorkerOptions`, then calls `MainWorker::bootstrap_from_options` at [`cli/lib/worker.rs:785-786`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib/worker.rs:785).
+
+7. `MainWorker::bootstrap_from_options` — [`runtime/worker.rs:440-457`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/runtime/worker.rs:440)  
+   Constructs the runtime and invokes `MainWorker::bootstrap`, which executes the runtime bootstrap function from `runtime/js/99_main.js` at [`runtime/worker.rs:819-848`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/runtime/worker.rs:819). This initializes Deno’s runtime globals; it does not execute `script.js`.
+
+8. `tools::run::run_script` calls `CliMainWorker::run` — [`cli/tools/run/mod.rs:243-246`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/tools/run/mod.rs:243).
+
+9. `CliMainWorker::run` → `run_to_completion` — [`cli/worker.rs:80-178`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/worker.rs:80) and [`cli/worker.rs:221-234`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/worker.rs:221).  
+   After preload modules, `run_to_completion` calls `CliMainWorker::execute_main_module`.
+
+10. `CliMainWorker::execute_main_module` — [`cli/worker.rs:374-377`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/worker.rs:374)  
+    Delegates to `LibMainWorker::execute_main_module`.
+
+11. `LibMainWorker::execute_main_module` — [`cli/lib/worker.rs:950-952`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/cli/lib/worker.rs:950)  
+    First calls `MainWorker::preload_main_module`, then `MainWorker::evaluate_module`.
+
+12. `MainWorker::preload_main_module` — [`runtime/worker.rs:917-923`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/runtime/worker.rs:917)  
+    Calls `JsRuntime::load_main_es_module`, which recursively loads, registers, and instantiates `script.js` and its dependencies through `drive_es_module_load` at [`libs/core/runtime/jsruntime.rs:3286-3376`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/libs/core/runtime/jsruntime.rs:3286).
+
+13. `MainWorker::evaluate_module` — [`runtime/worker.rs:933-957`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/runtime/worker.rs:933)  
+    Calls `JsRuntime::mod_evaluate(id)`.
+
+14. `JsRuntime::mod_evaluate` — [`libs/core/runtime/jsruntime.rs:3195-3203`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/libs/core/runtime/jsruntime.rs:3195)  
+    Delegates to `ModuleMap::mod_evaluate`.
+
+15. `ModuleMap::mod_evaluate` — [`libs/core/modules/map/evaluation.rs:47-92`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/libs/core/modules/map/evaluation.rs:47)  
+    The actual target-module execution begins at V8’s `module.evaluate(...)` call on [`libs/core/modules/map/evaluation.rs:80-81`](/tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-oxide-0/libs/core/modules/map/evaluation.rs:80). V8 then evaluates the module graph, including `script.js`’s top-level code.

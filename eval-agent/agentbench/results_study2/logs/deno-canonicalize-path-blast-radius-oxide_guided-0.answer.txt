@@ -1,0 +1,27 @@
+The blast radius is 21 caller files under `cli/`, containing 42 call expressions:
+
+```text
+cli/args/flags.rs
+cli/args/mod.rs
+cli/graph_util.rs
+cli/lib.rs
+cli/lsp/config.rs
+cli/node_compat_shim.rs
+cli/task_runner.rs
+cli/tools/bundle/html.rs
+cli/tools/bundle/mod.rs
+cli/tools/coverage/reporter.rs
+cli/tools/desktop.rs
+cli/tools/fmt.rs
+cli/tools/installer/global.rs
+cli/tools/jupyter/install.rs
+cli/tools/lint/mod.rs
+cli/tools/run/hmr.rs
+cli/tools/task.rs
+cli/tools/test/mod.rs
+cli/tools/x.rs
+cli/util/file_watcher.rs
+cli/util/temp.rs
+```
+
+`cli/util/fs.rs` defines the target function but is not a caller. The unrelated `runtime/ops/fs_events.rs` function was excluded. OXIDE was unavailable because this checkout lacks its index, so I verified the results against exact repository source search.

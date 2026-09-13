@@ -1,0 +1,18 @@
+Blast radius: 37 caller files, plus the utility definition itself.
+
+Direct/internal callers:
+
+- `src/lib/substituteClassApplyAtRules.js`
+- `src/lib/substituteVariantsAtRules.js`
+
+All 32 plugin files using the injected `e` alias:
+
+`backgroundColor.js`, `backgroundPosition.js`, `backgroundSize.js`, `borderColor.js`, `borderRadius.js`, `borderWidth.js`, `boxShadow.js`, `cursor.js`, `fill.js`, `flex.js`, `flexGrow.js`, `flexShrink.js`, `fontFamily.js`, `fontSize.js`, `fontWeight.js`, `height.js`, `inset.js`, `letterSpacing.js`, `lineHeight.js`, `listStyleType.js`, `margin.js`, `maxHeight.js`, `maxWidth.js`, `minHeight.js`, `minWidth.js`, `negativeMargin.js`, `objectPosition.js`, `opacity.js`, `padding.js`, `stroke.js`, `textColor.js`, and `width.js` under `src/plugins/`.
+
+Tests containing actual calls:
+
+- `__tests__/escapeClassName.test.js`
+- `__tests__/processPlugins.test.js`
+- `__tests__/variantsAtRule.test.js`
+
+`src/util/processPlugins.js` is the alias-injection point (`e: escapeClassName`), but it does not call the function itself. The five plugin tests that assign `e: escapeClassName` only wire the alias; they do not independently call it.

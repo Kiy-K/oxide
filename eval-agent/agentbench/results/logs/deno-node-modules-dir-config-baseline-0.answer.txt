@@ -1,0 +1,120 @@
+`nodeModulesDir` flows through this chain:
+
+1. Config parsing
+
+`deno.json` is parsed as JSONC into `ConfigFileJson`; `nodeModulesDir` is initially retained as `Option<serde_json::Value>`:
+
+[libs/config/deno_json/mod.rs:1501-1519](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/config/deno_json/mod.rs:1501)
+
+[libs/config/deno_json/mod.rs:1830-1845](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/config/deno_json/mod.rs:1830)
+
+The value is then converted to `NodeModulesDirMode`:
+
+- `"auto"` or `true` → `Auto`
+- `"manual"` → `Manual`
+- `"none"` or `false` → `None`
+- any other value → configuration error
+
+[libs/config/deno_json/mod.rs:1333-1403](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/config/deno_json/mod.rs:1333)
+
+The workspace reads this option only from the workspace root’s `deno.json`:
+
+[libs/config/workspace/mod.rs:1801-1813](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/config/workspace/mod.rs:1801)
+
+2. CLI/workspace factory precedence
+
+`CliFactory` passes any `--node-modules-dir` CLI override into `WorkspaceFactoryOptions`:
+
+[cli/factory.rs:1571-1633](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/cli/factory.rs:1571)
+
+The resolver computes the raw mode in this order:
+
+1. npm process state
+2. CLI flag
+3. root `deno.json`’s `nodeModulesDir`
+4. defaults based on `package.json`, vendor mode, or global-cache mode
+
+[libs/resolver/factory.rs:340-386](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/resolver/factory.rs:340)
+
+For package-manager subcommands, `Manual` is promoted to `Auto` so those commands can populate `node_modules`:
+
+[libs/resolver/factory.rs:388-406](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/resolver/factory.rs:388)
+
+`Auto` and `Manual` select a local `node_modules`; `None` selects the global npm cache. The local path is normally `<workspace-root>/node_modules`:
+
+[libs/resolver/factory.rs:442-487](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/resolver/factory.rs:442)
+
+3. Managed installer selection
+
+The npm installer is not created for `Manual`/BYONM mode or when npm is disabled:
+
+[libs/npm_installer/factory.rs:467-475](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/factory.rs:467)
+
+When a local path exists, the installer factory chooses either the isolated or hoisted filesystem installer and passes it the resolved `node_modules` path:
+
+[libs/npm_installer/factory.rs:483-525](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/factory.rs:483)
+
+4. The decision to install
+
+For `run`, `serve`, and related execution paths, `maybe_npm_install` checks the explicitly specified mode:
+
+```rust
+cli_options.specified_node_modules_dir()? == Some(NodeModulesDirMode::Auto)
+```
+
+If true, and a managed installer is available, it calls:
+
+```rust
+npm_installer.ensure_top_level_package_json_install().await?
+```
+
+[cli/tools/run/mod.rs:450-471](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/cli/tools/run/mod.rs:450)
+
+The module-graph path performs the same guard and call:
+
+[cli/graph_util.rs:1011-1025](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/cli/graph_util.rs:1011)
+
+`ensure_top_level_package_json_install`:
+
+- runs only once per installer;
+- initializes the npm resolution;
+- reads npm dependencies from the top-level `package.json`;
+- skips work if there are no dependencies or all are already resolvable;
+- otherwise adds the package requirements to the npm resolution.
+
+[libs/npm_installer/lib.rs:483-523](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/lib.rs:483)
+
+5. Actual materialization into `node_modules`
+
+If the caching strategy is eager and new resolution was required, the caller invokes:
+
+```rust
+npm_installer.cache_packages(PackageCaching::All).await?
+```
+
+[cli/tools/run/mod.rs:460-470](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/cli/tools/run/mod.rs:460)
+
+That delegates to the selected filesystem installer. The local installer snapshots the npm resolution and synchronizes it to disk:
+
+[libs/npm_installer/local.rs:1266-1286](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/local.rs:1266)
+
+For the hoisted installer, the equivalent synchronization is here:
+
+[libs/npm_installer/hoisted.rs:1095-1115](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/hoisted.rs:1095)
+
+The actual local-directory creation occurs in `sync_resolution_with_fs`: it creates the `node_modules` directory and then lays out/clones the resolved packages:
+
+[libs/npm_installer/hoisted.rs:350-410](/tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-baseline-0/libs/npm_installer/hoisted.rs:350)
+
+So the decisive condition is:
+
+```text
+root deno.json nodeModulesDir
+  → NodeModulesDirMode::Auto
+  → managed npm installer with a local node_modules path
+  → ensure_top_level_package_json_install()
+  → cache_packages(PackageCaching::All)
+  → filesystem installer synchronizes packages into node_modules
+```
+
+Deno does not shell out to an external `npm install` command here; “npm install” is Deno’s internal npm resolution and filesystem-installation pipeline.

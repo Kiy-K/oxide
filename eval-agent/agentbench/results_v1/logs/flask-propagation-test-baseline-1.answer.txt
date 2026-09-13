@@ -1,0 +1,15 @@
+The rule is pinned by [`tests/test_basic.py:test_exception_propagation`](</tmp/oxide-agentbench-np2r09z9/flask-propagation-test-baseline-1/tests/test_basic.py:1536>).
+
+It parametrizes `key` over:
+
+- `"TESTING"`
+- `"PROPAGATE_EXCEPTIONS"`
+- `"DEBUG"`
+- `None`
+
+For every case, it first sets `app.testing = False`, defines a view that raises `ZeroDivisionError`, and then:
+
+- If `key` is one of the three config keys, it sets `app.config[key] = True` and asserts `client.get("/")` raises `ZeroDivisionError` via `pytest.raises`.
+- If `key is None`, it leaves those settings unchanged and asserts `client.get("/").status_code == 500`.
+
+Thus, enabling any of `TESTING`, `PROPAGATE_EXCEPTIONS`, or `DEBUG` causes the exception to propagate; with none enabled, Flask returns a 500 response.

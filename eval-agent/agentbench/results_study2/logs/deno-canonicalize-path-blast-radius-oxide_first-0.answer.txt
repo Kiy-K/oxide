@@ -1,0 +1,25 @@
+There are 21 affected files under `cli/`, containing 42 call sites:
+
+- [cli/args/mod.rs:753](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/args/mod.rs:753)
+- [cli/args/flags.rs:578](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/args/flags.rs:578)
+- [cli/graph_util.rs:1334](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/graph_util.rs:1334)
+- [cli/lib.rs:472](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/lib.rs:472)
+- [cli/lsp/config.rs:1944](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/lsp/config.rs:1944)
+- [cli/node_compat_shim.rs:198](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/node_compat_shim.rs:198)
+- [cli/task_runner.rs:332](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/task_runner.rs:332)
+- [cli/tools/bundle/mod.rs:2589](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/bundle/mod.rs:2589)
+- [cli/tools/bundle/html.rs:392](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/bundle/html.rs:392)
+- [cli/tools/coverage/reporter.rs:275](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/coverage/reporter.rs:275)
+- [cli/tools/desktop.rs:1178](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/desktop.rs:1178)
+- [cli/tools/fmt.rs:123](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/fmt.rs:123)
+- [cli/tools/jupyter/install.rs:45](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/jupyter/install.rs:45)
+- [cli/tools/lint/mod.rs:160](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/lint/mod.rs:160)
+- [cli/tools/run/hmr.rs:154](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/run/hmr.rs:154)
+- [cli/tools/task.rs:734](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/task.rs:734)
+- [cli/tools/test/mod.rs:2237](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/test/mod.rs:2237)
+- [cli/tools/x.rs:242](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/x.rs:242)
+- [cli/tools/installer/global.rs:2337](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/tools/installer/global.rs:2337)
+- [cli/util/file_watcher.rs:536](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide/agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/util/file_watcher.rs:536)
+- [cli/util/temp.rs:41](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-canonicalize-path-blast-radius-oxide_first-0/cli/util/temp.rs:41)
+
+The unrelated same-named function in `runtime/ops/fs_events.rs` is not included. `canonicalize_path_maybe_not_exists` calls are also excluded.

@@ -1,0 +1,26 @@
+The call path is:
+
+1. Public API: [`seaborn.lineplot()`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/relational.py:597>)  
+   Re-exported through [`seaborn/__init__.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/__init__.py:4>).
+
+2. It creates [`_LinePlotter`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/relational.py:346>), whose base class is `_RelationalPlotter`, ultimately inheriting from [`VectorPlotter`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/_oldcore.py:613>).
+
+3. `lineplot()` initializes semantic mappings via `VectorPlotter.map_hue()`, `map_size()`, and `map_style()`, attaches the plotter with `VectorPlotter._attach()`, and calls:
+
+   ```python
+   p.plot(ax, kwargs)
+   ```
+
+   at [`relational.py:639`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/relational.py:639>).
+
+4. That dispatches to [`_LinePlotter.plot()`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/relational.py:378>). It uses `VectorPlotter.iter_data()` to produce semantic data subsets and optionally `EstimateAggregator` for aggregation.
+
+5. The line is drawn by calling the matplotlib Axes method:
+
+   ```python
+   ax.plot(sub_data["x"], sub_data["y"], **kws)
+   ```
+
+   at [`relational.py:453`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-0/seaborn/relational.py:453>), or the same `ax.plot(...)` call at line 451 for `units`-grouped data.
+
+The exact matplotlib method is `matplotlib.axes.Axes.plot`, implemented externally in `matplotlib/axes/_axes.py`. Internally, matplotlib’s `Axes.plot()` creates `Line2D` objects and registers them through `Axes.add_line()`.

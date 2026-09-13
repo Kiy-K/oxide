@@ -1,0 +1,22 @@
+The blast radius is 37 files containing actual calls:
+
+- 32 built-in plugins calling the plugin-provided `e` alias:
+
+  `src/plugins/{backgroundColor,backgroundPosition,backgroundSize,borderColor,borderRadius,borderWidth,boxShadow,cursor,fill,flex,flexGrow,flexShrink,fontFamily,fontSize,fontWeight,height,inset,letterSpacing,lineHeight,listStyleType,margin,maxHeight,maxWidth,minHeight,minWidth,negativeMargin,objectPosition,opacity,padding,stroke,textColor,width}.js`
+
+- Direct library callers:
+
+  - [src/lib/substituteClassApplyAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/src/lib/substituteClassApplyAtRules.js:30)
+  - [src/lib/substituteVariantsAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/src/lib/substituteVariantsAtRules.js:9)
+
+- Test callers:
+
+  - [__tests__/escapeClassName.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/__tests__/escapeClassName.test.js:4)
+  - [__tests__/variantsAtRule.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/__tests__/variantsAtRule.test.js:306)
+  - [__tests__/processPlugins.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/__tests__/processPlugins.test.js:581)
+
+[processPlugins.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-1/src/util/processPlugins.js:39) does not call the function, but it exposes `escapeClassName` as the plugin `e` alias. Consequently, every external/user plugin using `e(...)` would also need updating, even though those callers are outside this repository.
+
+The plugin tests that inject `escapeClassName` as `e` are affected indirectly, but contain no call expression themselves:
+
+`__tests__/plugins/{backgroundColor,borderColor,fill,stroke,textColor}.test.js`.

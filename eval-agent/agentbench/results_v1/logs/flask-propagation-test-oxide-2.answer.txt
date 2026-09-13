@@ -1,0 +1,12 @@
+The test is [`tests/test_basic.py:1535`](</tmp/oxide-agentbench-np2r09z9/flask-propagation-test-oxide-2/tests/test_basic.py:1535>), function `test_exception_propagation`.
+
+It parametrizes `key` over:
+
+```python
+["TESTING", "PROPAGATE_EXCEPTIONS", "DEBUG", None]
+```
+
+The test first sets `app.testing = False`, then defines a `/` view that triggers `1 // 0`.
+
+- For `TESTING`, `PROPAGATE_EXCEPTIONS`, or `DEBUG`, it sets that config key to `True` and asserts `client.get("/")` raises `ZeroDivisionError`.
+- For `None`, it changes no config value and asserts `client.get("/")` returns a response with status code `500`.

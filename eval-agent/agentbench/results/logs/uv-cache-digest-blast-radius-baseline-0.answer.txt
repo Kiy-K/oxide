@@ -1,0 +1,22 @@
+`cache_digest(...)` has 29 call sites across 13 caller files:
+
+Production code:
+
+- `crates/uv-build-frontend/src/lib.rs:509` — 1
+- `crates/uv-cache/src/wheel.rs:32,35,38,41,44` — 5
+- `crates/uv-client/src/flat_index.rs:208` — 1
+- `crates/uv-distribution-filename/src/wheel.rs:136` — 1
+- `crates/uv-distribution-types/src/build_info.rs:52` — 1
+- `crates/uv-git/src/resolver.rs:234` — 1
+- `crates/uv-git/src/source.rs:69,158` — 2
+- `crates/uv-python/src/downloads.rs:1132` — 1
+- `crates/uv-python/src/interpreter.rs:705,1143,1164` — 3
+- `crates/uv/src/commands/project/environment.rs:311` — 1
+- `crates/uv/src/commands/project/mod.rs:734,747,749,907,915,923,1262,1267,1573` — 9
+
+Tests:
+
+- `crates/uv/tests/project/edit.rs:665,669` — 2
+- `crates/uv/tests/python/venv.rs:317` — 1
+
+The function itself is defined in `crates/uv-cache-key/src/digest.rs:11`; `crates/uv-cache-key/src/lib.rs` only re-exports it and does not call it.

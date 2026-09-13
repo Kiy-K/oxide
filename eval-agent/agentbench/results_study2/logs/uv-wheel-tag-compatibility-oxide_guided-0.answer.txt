@@ -1,0 +1,9 @@
+Wheel compatibility is computed in `crates/uv-platform-tags/src/tags.rs`:
+
+- Resolver entry point: [`VersionMapLazy::wheel_compatibility`](.../crates/uv-resolver/src/version_map.rs:812), which calls `filename.compatibility(tags)`.
+- Filename delegation: [`WheelTag::compatibility`](.../crates/uv-distribution-filename/src/wheel_tag.rs:42), dispatching to either `Tags::compatibility_tag` for a single tag or `Tags::compatibility` for multi-tag wheels.
+- Actual matching: [`Tags::compatibility`](.../crates/uv-platform-tags/src/tags.rs:367), which evaluates Python → ABI → platform combinations and returns the highest platform priority. Single-tag matching is implemented by [`Tags::compatibility_tag`](.../crates/uv-platform-tags/src/tags.rs:418).
+
+Before that normal matching, uv performs a free-threaded-Python ABI check. If the target interpreter is free-threaded, at least one wheel ABI must be compatible—`none`, `abi3t`, or a free-threaded CPython ABI such as `cp313t`. Otherwise it immediately returns `IncompatibleTag::FreethreadedAbi` ([lines 376–385](.../crates/uv-platform-tags/src/tags.rs:376)). The same guard exists for single-tag wheels ([lines 424–425](.../crates/uv-platform-tags/src/tags.rs:424)).
+
+Separately, when resolver tags are unavailable, `VersionMapLazy::wheel_compatibility` falls back to checking the wheel’s ABI version against `requires-python` via `matches_wheel_tag` ([lines 820–826](.../crates/uv-resolver/src/version_map.rs:820)).

@@ -1,0 +1,30 @@
+The call path is:
+
+1. `seaborn.lineplot()` is re-exported by [`seaborn/__init__.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/__init__.py:1>) from [`seaborn/relational.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/relational.py:597>).
+
+2. `relational.lineplot()`:
+   - Builds semantic variables with inherited `VectorPlotter.get_semantics()` from [`seaborn/_oldcore.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/_oldcore.py:651>).
+   - Instantiates `_LinePlotter`, defined in [`seaborn/relational.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/relational.py:346>).
+   - Attaches it to the axes through inherited `VectorPlotter._attach()` in [`seaborn/_oldcore.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/_oldcore.py:1155>).
+   - Calls `_LinePlotter.plot(ax, kwargs)` at [`relational.py:639`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/relational.py:639>).
+
+3. `_LinePlotter.plot()`:
+   - Iterates semantic subsets using inherited `VectorPlotter.iter_data()` in [`seaborn/_oldcore.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/_oldcore.py:973>).
+   - Optionally aggregates data through `EstimateAggregator.__call__()` in [`seaborn/_statistics.py`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/_statistics.py:480>).
+   - Draws each line with either:
+
+```python
+lines.extend(ax.plot(unit_data["x"], unit_data["y"], **kws))
+```
+
+or:
+
+```python
+lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+```
+
+at [`seaborn/relational.py:448–453`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/relational.py:448>).
+
+The exact Matplotlib method is `matplotlib.axes.Axes.plot`, invoked as the bound method `ax.plot(...)`. It creates and returns `Line2D` artists.
+
+There is also an earlier “scout” call to the same `Axes.plot` method inside `_default_color()` in [`seaborn/utils.py:88`](</tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-2/seaborn/utils.py:88>) to obtain the next default color; the calls at `_LinePlotter.plot()` are the ones that draw the actual data lines.

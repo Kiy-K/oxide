@@ -20,3 +20,5 @@ __pycache__
 /target
 CLAUDE.local.md
 .worktrees/
+.env
+eval-agent/agentbench/.run_tmp/

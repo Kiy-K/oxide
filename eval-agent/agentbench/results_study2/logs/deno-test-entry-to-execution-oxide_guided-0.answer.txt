@@ -1,0 +1,92 @@
+Call path for `deno test path/to/foo_test.ts`:
+
+1. Process entry:
+   [`cli/main.rs:3`](.../cli/main.rs:3) → `deno::main()`
+
+2. CLI initialization and argument parsing:
+   [`cli/lib.rs:863`](.../cli/lib.rs:863) → `cli::main()`
+   - Collects argv.
+   - [`resolve_flags_and_init`](.../cli/lib.rs:967) parses `deno test` via `flags_from_vec_with_initial_cwd`.
+
+3. Subcommand dispatch:
+   [`run_subcommand`](.../cli/lib.rs:124) matches `DenoSubcommand::Test` at [`cli/lib.rs:456`](.../cli/lib.rs:456), then calls:
+
+   - `tools::test::run_tests(...)` for normal execution
+   - `tools::test::run_tests_with_watch(...)` for `--watch`
+
+4. Test discovery, type-checking, and worker setup:
+   [`run_tests`](.../cli/tools/test/mod.rs:2353)
+   - Finds test specifiers with `fetch_specifiers_with_test_mode`.
+   - Type-checks them.
+   - Creates a `CliMainWorkerFactory`.
+   - Calls [`test_specifiers`](.../cli/tools/test/mod.rs:1715).
+
+5. Per-file test execution:
+   `test_specifiers` creates one task per test module and calls [`test_specifier`](.../cli/tools/test/mod.rs:880) inside `create_and_run_current_thread`.
+
+6. Worker creation and test-runtime installation:
+   `test_specifier` calls [`configure_main_worker`](.../cli/tools/test/mod.rs:763), which invokes `CliMainWorkerFactory::create_custom_worker`.
+
+   In [`cli/worker.rs:596`](.../cli/worker.rs:596), `create_custom_worker`:
+
+   - Creates the worker with `WorkerExecutionMode::Test`.
+   - Lazy-loads `ext:cli/40_test.js` and related test runtime modules at [`cli/worker.rs:678`](.../cli/worker.rs:678).
+   - Installs the `deno_test` extension, including the `op_register_test` op.
+
+7. Test module evaluation and registration:
+   `configure_main_worker` executes preload modules and then the test module through:
+
+   - `worker.execute_preload_modules()`
+   - `worker.execute_side_module()` at [`cli/tools/test/mod.rs:846`](.../cli/tools/test/mod.rs:846)
+
+   While the test module is evaluated, each `Deno.test(...)` call follows:
+
+   `Deno.test` → [`test`](.../cli/js/40_test.js:512) → [`testInner`](.../cli/js/40_test.js:364)
+
+   `testInner`:
+
+   - Builds the test description.
+   - Wraps the user callback with [`wrapTest`](.../cli/js/40_test.js:872).
+   - Calls `op_register_test(...)` at [`cli/js/40_test.js:486`](.../cli/js/40_test.js:486).
+
+   The Rust op is [`op_register_test`](.../cli/ops/testing.rs:129). It stores the wrapped V8 function and its description in `TestContainer` via `TestContainer::register` at [`cli/tools/test/mod.rs:240`](.../cli/tools/test/mod.rs).
+
+8. Begin executing registered tests:
+   After module evaluation, [`test_specifier_inner`](.../cli/tools/test/mod.rs:972) calls [`run_tests_for_worker`](.../cli/tools/test/mod.rs:1218).
+
+   `run_tests_for_worker` removes the registered functions from `TestContainer`, then passes them to [`run_tests_for_worker_inner`](.../cli/tools/test/mod.rs:1434).
+
+   `run_tests_for_worker_inner` filters and orders them through `compute_tests_to_run`, then iterates through each selected `(TestDescription, Function)` pair.
+
+9. Exact invocation boundary:
+   For each test, `run_tests_for_worker_inner` calls [`invoke_test_function`](.../cli/tools/test/mod.rs:1351) at [`cli/tools/test/mod.rs:1560`](.../cli/tools/test/mod.rs:1560).
+
+   `invoke_test_function` calls the stored JavaScript wrapper with:
+
+   ```rust
+   let call = worker.js_runtime.call(function);
+   ```
+
+   at [`cli/tools/test/mod.rs:1364`](.../cli/tools/test/mod.rs:1364), then awaits it through `with_event_loop_promise`.
+
+10. Wrapper-to-user-callback transition:
+
+    The stored function is `outerWrapped`, created by [`wrapOuter`](.../cli/js/40_test.js:227). It calls the inner wrapper:
+
+    ```js
+    const result = await fn(desc)
+    ```
+
+    at [`cli/js/40_test.js:239`](.../cli/js/40_test.js:239).
+
+    The inner wrapper, created by [`wrapInner`](.../cli/js/40_test.js:256), finally invokes the original callback registered by the test module:
+
+    ```js
+    await fn(MapPrototypeGet(testStates, desc.id).context);
+    ```
+
+    at [`cli/js/40_test.js:300`](.../cli/js/40_test.js:300).
+
+Thus, the actual user callback invocation is:
+
+`invoke_test_function` → `worker.js_runtime.call(outerWrapped)` → `wrapOuter` → `wrapInner` → original `Deno.test()` callback at `cli/js/40_test.js:300`.

@@ -1,0 +1,43 @@
+uv uses two layers of cache freshness.
+
+1. It constructs a refresh policy at startup:
+
+- `--refresh` → `Refresh::All(timestamp)`
+- `--refresh-package NAME` → `Refresh::Packages([NAME], [], timestamp)`
+- no flag → `Refresh::None(timestamp)`
+
+The timestamp is captured when the policy is created. [`Refresh::from_args`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-cache/src/lib.rs:1495)>
+
+2. For each cache entry, uv checks whether the entry’s filesystem metadata timestamp is before that cutoff:
+
+- `--refresh`: all entries older than the invocation timestamp are `Stale`.
+- `--refresh-package NAME`: only entries associated with that normalized package name are checked; unrelated package entries are immediately considered `Fresh`.
+- An entry created or rewritten during the current invocation has a timestamp at or after the cutoff and remains `Fresh`.
+- Missing entries are `Missing`.
+
+[`Cache::freshness`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-cache/src/lib.rs:368>)
+
+For a package’s PyPI Simple metadata, uv stores an entry under the `simple-v25` bucket, keyed by index and package name, then calls `freshness(..., Some(package_name), ...)`. [`simple_detail_single_index`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/registry_client.rs:556)>
+
+The result maps as follows:
+
+- `Fresh` → normal HTTP cache behavior; if the cached response is still within its HTTP freshness lifetime, reuse it without a request.
+- `Stale` → uv uses `CacheControl::MustRevalidate`, adding `Cache-Control: no-cache` when checking the existing entry. This forces an HTTP revalidation request.
+- `Missing` → make a normal fresh request.
+
+[`CacheControl` conversion](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/cached_client.rs:170), [`CachedClient::get_cacheable`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/cached_client.rs:240)>
+
+Revalidation does not necessarily download the body again:
+
+- HTTP `304 Not Modified` → reuse the cached metadata and update its cache policy/timestamp.
+- A modified/new response → parse and replace the cached metadata.
+- A missing or invalid cache entry → fetch and recreate it.
+
+[`send_cached_handle_stale`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/cached_client.rs:588)>
+
+Two important edge cases:
+
+- The root `/simple/` index entry is checked with `package = None`; the package refresh logic treats that as applicable, so `--refresh-package NAME` can also force revalidation of that root entry if it is fetched. [`fetch_remote_simple_index`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/registry_client.rs:811)>
+- Offline operation uses `AllowStale`, which directly returns a matching cached response even when stale. [`CachedClient::get_cacheable`](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/cached_client.rs:250)>
+
+Also, an explicitly configured index `cache-control` override takes precedence over uv’s `Refresh` policy for Simple API requests; in that case the HTTP cache-control override governs whether the entry is reused or revalidated. [`simple_api_cache_control_for` usage](</tmp/oxide-agentbench-orup7es6/uv-cache-freshness-refresh-baseline-0/crates/uv-client/src/registry_client.rs:561)>

@@ -1,0 +1,21 @@
+`SourceDist` is defined in [`crates/uv-distribution-types/src/lib.rs:222`]( /tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-oxide-0/crates/uv-distribution-types/src/lib.rs:222 ).
+
+Its variants are:
+
+- `Registry(RegistrySourceDist)`
+- `DirectUrl(DirectUrlSourceDist)`
+- `GitDirectory(GitDirectorySourceDist)`
+- `GitPath(GitPathSourceDist)`
+- `Path(PathSourceDist)`
+- `Directory(DirectorySourceDist)`
+
+The function with a separate build path for every variant is [`SourceDistributionBuilder::download_and_build`]( /tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-oxide-0/crates/uv-distribution/src/source/mod.rs:261 ). Its `match` handles each variant independently:
+
+- `Registry` → `url` or `archive`
+- `DirectUrl` → `url`
+- `GitDirectory` → `git_source_tree`
+- `GitPath` → `git_archive`
+- `Directory` → `source_tree`
+- `Path` → `archive`
+
+[`DistributionDatabase::build_wheel`]( /tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-oxide-0/crates/uv-distribution/src/distribution_database.rs:452 ) calls this function to perform the conversion.

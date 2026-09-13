@@ -1,0 +1,15 @@
+There are exactly two classes implementing `DevToolsStorage`, both in [`src/background/devtools.ts`](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-0/src/background/devtools.ts):
+
+- `LocalStorageWrapper` ([line 13](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-0/src/background/devtools.ts:13))  
+  Uses the browser’s global `localStorage` for `get`, `set`, `remove`, and `has`. It is selected when `localStorage` exists and is non-null:
+
+  ```ts
+  typeof localStorage !== 'undefined' && localStorage != null
+  ```
+
+  This is the normal browser/extension runtime.
+
+- `TempStorage` ([line 46](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-0/src/background/devtools.ts:46))  
+  Uses an in-memory `Map`. It is selected when `localStorage` is unavailable or null—for example, in a non-browser environment such as a test or server-side runtime.
+
+The choice happens once in the `DevTools` constructor ([lines 68–71](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-0/src/background/devtools.ts:68)). The selected implementation is stored in `this.store` and used for the lifetime of that `DevTools` instance; it is not switched dynamically if the environment changes.

@@ -1,0 +1,62 @@
+uv uses two layers of freshness checks.
+
+1. Refresh policy
+
+The CLI creates a refresh policy at command startup:
+
+- `--refresh` → `Refresh::All(timestamp)`
+- `--refresh-package NAME` → `Refresh::Packages([NAME], [], timestamp)`
+- no refresh → `Refresh::None(timestamp)`
+
+See [`Refresh::from_args`](.../crates/uv-cache/src/lib.rs:1495).
+
+For a cache entry, uv:
+
+- immediately considers it fresh if refresh is disabled;
+- considers it fresh if it is not associated with a selected package;
+- otherwise compares the entry’s filesystem timestamp with the refresh timestamp.
+
+An entry is fresh when:
+
+```text
+entry_timestamp >= refresh_timestamp
+```
+
+and stale when it is older. On Unix, the timestamp is the file’s `ctime`; on other platforms it is `mtime`. See [`Cache::freshness`](.../crates/uv-cache/src/lib.rs:368) and [`Timestamp::from_metadata`](.../crates/uv-cache-info/src/timestamp.rs:20).
+
+This means entries created or rewritten during the current uv invocation are not immediately refreshed again.
+
+For a package’s PyPI Simple metadata, the cache entry is:
+
+```text
+simple-v25/<index-cache-directory>/<normalized-package>.rkyv
+```
+
+and the package name is passed into the freshness check. See [`simple_detail_single_index`](.../crates/uv-client/src/registry_client.rs:556).
+
+2. HTTP cache policy
+
+The refresh result is converted as follows:
+
+- `Fresh` or `Missing` → `CacheControl::None`
+- `Stale` → `CacheControl::MustRevalidate`
+
+See [`From<Freshness> for CacheControl`](.../crates/uv-client/src/cached_client.rs:182).
+
+For a stale existing entry, the cached client adds `Cache-Control: no-cache`, sends the cached validators such as ETag or Last-Modified, and revalidates with the index. See [`read_cache`](.../crates/uv-client/src/cached_client.rs:500).
+
+The result is then:
+
+- `304 Not Modified` → reuse the cached payload, but rewrite the cache entry with refreshed HTTP cache metadata;
+- changed `200` response → parse and replace the cached payload;
+- missing entry → fetch, parse, and cache it;
+- otherwise, if the entry is refresh-fresh, the normal HTTP cache policy decides whether it can be reused without a request.
+
+Thus, `--refresh` generally means “force revalidation,” not necessarily “download the complete response again.” A conditional request may result in the old cached Simple metadata being reused.
+
+Important edge cases:
+
+- `--refresh-package NAME` only marks entries associated with that normalized package stale; `--refresh` marks all entries stale.
+- A Simple API root/index entry is checked with no package argument, so package-scoped refresh can also mark that entry stale because the package-match condition treats an unspecified package as applicable.
+- If an index has explicit `cache-control.api` configuration, uv uses that as `CacheControl::Override` before applying the refresh freshness result. See [`registry_client.rs`](.../crates/uv-client/src/registry_client.rs:561) and [`Index::simple_api_cache_control`](.../crates/uv-distribution-types/src/index.rs:592).
+- Offline requests use `AllowStale`, meaning an available cached response can be used without revalidation; normal settings validation generally rejects combining offline mode with refresh.

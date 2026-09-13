@@ -1,0 +1,17 @@
+The constraining test is [`test_check_net_resolved_ipv4_mapped_ipv6`](</home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-net-deny-ipv6-mapped-tests-oxide_first-0/runtime/permissions/lib.rs:6402>).
+
+It iterates over deny rules:
+
+- `127.0.0.1`
+- `127.0.0.0/8`
+- `127.0.0.1:8080`
+
+For each rule, it asserts:
+
+- `example.com:8080` is allowed before DNS resolution.
+- Resolved `127.0.0.1:8080` is denied.
+- Resolved `::ffff:127.0.0.1:8080` is also denied.
+- Unrelated resolved addresses—`192.168.1.1`, `::ffff:192.168.1.1`, and `::1`—remain allowed.
+- For the port-specific rule `127.0.0.1:8080`, `::ffff:127.0.0.1:9090` is allowed.
+
+Thus, an IPv4 deny rule must apply to the equivalent IPv4-mapped IPv6 address after resolution, while preserving port specificity.

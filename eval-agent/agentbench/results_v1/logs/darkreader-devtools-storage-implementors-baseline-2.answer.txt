@@ -1,0 +1,17 @@
+There are exactly two classes implementing `DevToolsStorage`:
+
+- `LocalStorageWrapper` — [`src/background/devtools.ts:13`](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-2/src/background/devtools.ts:13)
+
+  Uses the browser’s global `localStorage` for `get`, `set`, `remove`, and `has`. It is selected when `localStorage` exists and is non-null:
+
+  ```ts
+  typeof localStorage !== 'undefined' && localStorage != null
+  ```
+
+  This is the normal browser-extension runtime path, and its data persists in browser storage. Individual storage errors are caught and logged; they do not cause a switch to `TempStorage`.
+
+- `TempStorage` — [`src/background/devtools.ts:46`](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-2/src/background/devtools.ts:46)
+
+  Stores values in an in-memory `Map`. It is selected when `localStorage` is unavailable or `null`, such as certain test, server-side, or restricted execution environments. Its data lasts only for the lifetime of that `DevTools` instance.
+
+The selection occurs in the `DevTools` constructor at [`src/background/devtools.ts:68`](/tmp/oxide-agentbench/darkreader-devtools-storage-implementors-baseline-2/src/background/devtools.ts:68). `DevTools` is instantiated by `Extension` at [`src/background/extension.ts:49`](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-baseline-2/src/background/extension.ts:49).

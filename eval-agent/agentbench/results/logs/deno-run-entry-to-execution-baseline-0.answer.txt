@@ -1,0 +1,122 @@
+For a normal `deno run script.js` invocation (not `--watch`, stdin, eszip, or a native npm binary), the call path is:
+
+1. Binary entry point  
+   [`cli/main.rs:3`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/main.rs:3)  
+   `main()` → `deno::main()`
+
+2. CLI initialization and argument processing  
+   [`cli/lib.rs:863`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib.rs:863)  
+   `deno::main()`:
+
+   - collects `env::args_os()`
+   - calls `resolve_flags_and_init(...)`
+   - initializes V8
+   - runs the async future with `create_and_run_current_thread_with_maybe_metrics(...)`
+   - calls `run_subcommand(...)`
+
+3. Subcommand dispatch  
+   [`cli/lib.rs:124`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib.rs:124)  
+   `run_subcommand(...)` matches `DenoSubcommand::Run(run_flags)` and schedules the branch through:
+
+   [`cli/lib.rs:115`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib.rs:115)  
+   `spawn_subcommand(...)`
+
+   The normal branch calls:
+
+   [`cli/lib.rs:338`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib.rs:338)  
+   `tools::run::run_script(WorkerExecutionMode::Run, ...)`
+
+4. Resolve the target module and construct the worker  
+   [`cli/tools/run/mod.rs:170`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/tools/run/mod.rs:170)  
+   `run_script(...)`:
+
+   - creates `CliFactory`
+   - resolves `script.js` via `cli_options.resolve_main_module_with_resolver(...)`
+   - creates the worker factory via `CliFactory::create_cli_main_worker_factory_with_roots(...)`
+   - creates the worker via `CliMainWorkerFactory::create_main_worker_with_unconfigured_runtime(...)`
+
+   The latter delegates to:
+
+   [`cli/worker.rs:596`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/worker.rs:596)  
+   `CliMainWorkerFactory::create_custom_worker(...)`
+
+   which delegates to:
+
+   [`cli/lib/worker.rs:654`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib/worker.rs:654)  
+   `LibMainWorkerFactory::create_custom_worker(...)`
+
+   That creates the `CliModuleLoader`, builds `WorkerOptions`, and bootstraps the runtime through:
+
+   [`runtime/worker.rs:441`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/runtime/worker.rs:441)  
+   `MainWorker::bootstrap_from_options(...)`
+
+5. Start execution  
+   Back in `run_script`, [`cli/tools/run/mod.rs:243`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/tools/run/mod.rs:243):
+
+   `worker.run().await`
+
+   calls:
+
+   [`cli/worker.rs:80`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/worker.rs:80)  
+   `CliMainWorker::run(...)`
+
+   which calls `run_to_completion(...)` at [`cli/worker.rs:224`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/worker.rs:224), then:
+
+   [`cli/worker.rs:233`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/worker.rs:233)  
+   `CliMainWorker::execute_main_module(...)`
+
+   → [`cli/lib/worker.rs:950`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/cli/lib/worker.rs:950)  
+   `LibMainWorker::execute_main_module(...)`
+
+   → [`runtime/worker.rs:989`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/runtime/worker.rs:989)  
+   `MainWorker::execute_main_module(...)`
+
+6. Load and instantiate the module graph  
+   `MainWorker::execute_main_module(...)` calls:
+
+   - `preload_main_module(...)`
+   - `evaluate_module(...)`
+
+   [`runtime/worker.rs:918`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/runtime/worker.rs:918)  
+   `preload_main_module(...)` → `JsRuntime::load_main_es_module(...)`
+
+   [`libs/core/runtime/jsruntime.rs:3235`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/runtime/jsruntime.rs:3235)  
+   `JsRuntime::load_main_es_module(...)` → `drive_es_module_load(true, ...)`
+
+   [`libs/core/runtime/jsruntime.rs:3317`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/runtime/jsruntime.rs:3317)  
+   creates `RecursiveModuleLoad::main(...)`, which loads dependencies through the configured `CliModuleLoader` and then instantiates the root module at [`jsruntime.rs:3367`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/runtime/jsruntime.rs:3367).
+
+7. Point where the target script actually begins executing  
+   [`runtime/worker.rs:933`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/runtime/worker.rs:933)  
+   `MainWorker::evaluate_module(...)` calls:
+
+   `self.js_runtime.mod_evaluate(id)`
+
+   [`libs/core/runtime/jsruntime.rs:3195`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/runtime/jsruntime.rs:3195)  
+   `JsRuntime::mod_evaluate(...)` delegates to:
+
+   [`libs/core/modules/map/evaluation.rs:47`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/modules/map/evaluation.rs:47)  
+   `ModuleMap::mod_evaluate(...)`
+
+   The actual V8 execution begins at:
+
+   [`libs/core/modules/map/evaluation.rs:81`]( /tmp/oxide-agentbench-orup7es6/deno-run-entry-to-execution-baseline-0/libs/core/modules/map/evaluation.rs:81)  
+   `module.evaluate(tc_scope)`
+
+So the key execution boundary is:
+
+```text
+deno::main
+  → run_subcommand
+  → tools::run::run_script
+  → CliMainWorker::run
+  → CliMainWorker::run_to_completion
+  → LibMainWorker::execute_main_module
+  → MainWorker::execute_main_module
+  → JsRuntime::load_main_es_module
+  → JsRuntime::mod_evaluate
+  → ModuleMap::mod_evaluate
+  → v8::Module::evaluate
+```
+
+The final `v8::Module::evaluate(...)` call is where `script.js`’s module body starts executing.

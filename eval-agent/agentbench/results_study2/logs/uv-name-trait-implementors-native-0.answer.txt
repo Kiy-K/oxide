@@ -1,0 +1,24 @@
+The `Name` trait is defined in:
+
+- [`crates/uv-distribution-types/src/traits.rs:16`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/traits.rs:16)
+
+It requires:
+
+```rust
+fn name(&self) -> &PackageName;
+```
+
+There are **10 distinct files** implementing `Name`:
+
+- [`crates/uv-distribution-types/src/any.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/any.rs)
+- [`crates/uv-distribution-types/src/cached.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/cached.rs)
+- [`crates/uv-distribution-types/src/installed.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/installed.rs)
+- [`crates/uv-distribution-types/src/lib.rs`]( /home/khoi/Projects/oxide/eval-agent/bench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/lib.rs)
+- [`crates/uv-distribution-types/src/requested.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/requested.rs)
+- [`crates/uv-distribution-types/src/resolved.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-distribution-types/src/resolved.rs)
+- [`crates/uv-resolver/src/candidate_selector.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-resolver/src/candidate_selector.rs)
+- [`crates/uv-resolver/src/resolution/mod.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-resolver/src/resolution/mod.rs)
+- [`crates/uv-resolver/src/resolution/requirements_txt.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv-resolver/src/resolution/requirements_txt.rs)
+- [`crates/uv/src/commands/pip/operations.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-native-0/crates/uv/src/commands/pip/operations.rs)
+
+These files contain **31 total `impl Name` blocks**.

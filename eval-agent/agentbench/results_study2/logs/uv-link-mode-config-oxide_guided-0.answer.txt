@@ -1,0 +1,19 @@
+The flow is:
+
+1. `LinkMode` is defined in [`crates/uv-fs/src/link.rs:13-37`](...): `Clone`, `Copy`, `Hardlink`, and `Symlink`. Defaults are clone on macOS/Linux and hardlink elsewhere.
+
+2. The configuration value is declared as `Option<LinkMode>` in the settings schema at [`crates/uv-settings/src/settings.rs:830`](...) and [`:1171`](...). It is also exposed through `--link-mode` / `UV_LINK_MODE` in [`crates/uv-cli/src/lib.rs:6092-6107`](...).
+
+3. Settings are converted into resolver/installer options ([`crates/uv-settings/src/settings.rs:2214-2276`](...)), passed into the install operation, then carried by `Installer::with_link_mode` ([`crates/uv-installer/src/installer.rs:29-47`](...)).
+
+4. Installation passes the selected mode to `install_wheel` ([`crates/uv-installer/src/installer.rs:172-192`](...)). `link_wheel_files` constructs `LinkOptions` and applies it to the wheel directory ([`crates/uv-install-wheel/src/linker.rs:251-269`](...)).
+
+The one mode requiring an extra corrective step is **`Clone`**. After linking, uv explicitly updates the `site-packages` directory mtime:
+
+```rust
+if used_link_mode == LinkMode::Clone {
+    update_site_packages_mtime(site_packages);
+}
+```
+
+This is needed because cloning does not update the directory mtime, while CPython’s import machinery uses that mtime to detect newly added packages. Without the update, installed packages may not become importable until import-cache invalidation occurs ([`crates/uv-install-wheel/src/linker.rs:271-278`](...)).

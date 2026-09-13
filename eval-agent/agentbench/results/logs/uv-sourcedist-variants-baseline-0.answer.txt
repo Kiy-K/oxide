@@ -1,0 +1,21 @@
+`SourceDist` is defined in [crates/uv-distribution-types/src/lib.rs:222](/tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-baseline-0/crates/uv-distribution-types/src/lib.rs:222).
+
+Its variants are:
+
+- `Registry(RegistrySourceDist)`
+- `DirectUrl(DirectUrlSourceDist)`
+- `GitDirectory(GitDirectorySourceDist)`
+- `GitPath(GitPathSourceDist)`
+- `Path(PathSourceDist)`
+- `Directory(DirectorySourceDist)`
+
+The function with a distinct build path for each variant is `SourceDistributionBuilder::download_and_build` in [crates/uv-distribution/src/source/mod.rs:261](/tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-baseline-0/crates/uv-distribution/src/source/mod.rs:261). Its match arms dispatch to:
+
+- Registry → `archive` or `url`
+- Direct URL → `url`
+- Git directory → `git_source_tree`
+- Git path → `git_archive`
+- Directory → `source_tree`
+- Local path → `archive`
+
+The per-variant dispatch is visible at [mod.rs:268–372](/tmp/oxide-agentbench-orup7es6/uv-sourcedist-variants-baseline-0/crates/uv-distribution/src/source/mod.rs:268).

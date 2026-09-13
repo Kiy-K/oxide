@@ -1,0 +1,9 @@
+Flask re-raises an unhandled view exception in `Flask.handle_exception()` when the effective `PROPAGATE_EXCEPTIONS` value is truthy:
+
+- If `app.config["PROPAGATE_EXCEPTIONS"]` is explicitly set, its value is used.
+- If it is `None` (the default), Flask falls back to `app.testing or app.debug`.
+- Therefore, propagation occurs when `PROPAGATE_EXCEPTIONS=True`, or when it is unset and either testing or debug mode is enabled.
+
+When the effective value is false, Flask logs the exception and returns an `InternalServerError` (generic 500), possibly through a registered 500 handler.
+
+Relevant method: [`Flask.handle_exception`]( /tmp/oxide-agentbench-np2r09z9/flask-propagate-exceptions-oxide-1/src/flask/app.py:1363).

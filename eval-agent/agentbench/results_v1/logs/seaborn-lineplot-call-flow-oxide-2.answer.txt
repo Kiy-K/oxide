@@ -1,0 +1,41 @@
+`seaborn.lineplot()` is publicly re-exported from `seaborn/relational.py` via [`seaborn/__init__.py:5`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/__init__.py:5).
+
+Call path:
+
+1. [`lineplot()`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/relational.py:597)
+   - Calls inherited `VectorPlotter.get_semantics()`.
+   - Instantiates `_LinePlotter`.
+
+2. [`_LinePlotter`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/relational.py:346)
+   - Inherits `_RelationalPlotter`, which inherits `VectorPlotter`.
+   - `VectorPlotter.__init__()` in [`seaborn/_oldcore.py:632`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/_oldcore.py:632) assigns plot variables and initializes semantic mappings.
+   - `lineplot()` configures hue, size, and style mappings at lines 619–621.
+
+3. `lineplot()` obtains or uses an `Axes`, attaches the plotter through inherited [`VectorPlotter._attach()`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/_oldcore.py:1155), then calls:
+
+   ```python
+   p.plot(ax, kwargs)
+   ```
+
+   at [`seaborn/relational.py:639`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/relational.py:639).
+
+4. [`_LinePlotter.plot()`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/relational.py:378)
+   - Iterates semantic subsets using inherited [`VectorPlotter.iter_data()`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/_oldcore.py:973).
+   - Aggregates data when an estimator is configured.
+   - Makes the actual line-drawing call:
+
+   ```python
+   lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+   ```
+
+   at [`seaborn/relational.py:453`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-2/seaborn/relational.py:453).
+
+   With `units=...`, it instead calls:
+
+   ```python
+   lines.extend(ax.plot(unit_data["x"], unit_data["y"], **kws))
+   ```
+
+   at line 451.
+
+The exact Matplotlib method is `matplotlib.axes.Axes.plot`—invoked as `ax.plot(...)`—implemented in Matplotlib’s `matplotlib/axes/_axes.py`. Seaborn then applies semantic styling to the returned `Line2D` objects.

@@ -1,0 +1,39 @@
+The call path is:
+
+1. `seaborn.lineplot()` — [`seaborn/relational.py:597`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-1/seaborn/relational.py:597)
+   - Extracts semantic variables with `VectorPlotter.get_semantics()`.
+   - Instantiates `_LinePlotter`.
+   - Configures hue, size, and style mappings.
+   - Attaches the plotter to the target Axes with `VectorPlotter._attach()`.
+
+2. `_LinePlotter` — [`seaborn/relational.py:346`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-1/seaborn/relational.py:346)
+   - Inherits from `_RelationalPlotter`, which inherits from `VectorPlotter`.
+   - Its `plot(self, ax, kws)` method performs grouping, sorting, optional aggregation, and line drawing.
+
+3. Supporting inherited methods — [`seaborn/_oldcore.py`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-1/seaborn/_oldcore.py)
+
+   - `VectorPlotter.get_semantics()`
+   - `VectorPlotter.__init__()`
+   - `VectorPlotter._attach()`
+   - `VectorPlotter.iter_data()`
+   - Semantic mapping classes: `HueMapping`, `SizeMapping`, and `StyleMapping`
+
+4. Optional aggregation:
+   - `_LinePlotter.plot()` constructs `EstimateAggregator` and applies it to grouped data.
+   - `EstimateAggregator` lives in [`seaborn/_statistics.py:454`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-1/seaborn/_statistics.py:454).
+
+5. Actual line draw:
+
+   ```python
+   lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+   ```
+
+   This occurs at [`seaborn/relational.py:453`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-1/seaborn/relational.py:453), or at line 451 when `units` creates multiple lines.
+
+The exact matplotlib method called is:
+
+```python
+matplotlib.axes._axes.Axes.plot
+```
+
+implemented in Matplotlib’s `axes/_axes.py`. It creates the `Line2D` artist and adds it to the Axes. Seaborn also calls the same `Axes.plot` method once in `_default_color()` as a temporary “scout” plot to obtain the next default color.

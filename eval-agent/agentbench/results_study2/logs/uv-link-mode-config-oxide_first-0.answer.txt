@@ -1,0 +1,13 @@
+The trace is:
+
+1. `LinkMode` is defined in [`crates/uv-fs/src/link.rs:26`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv-fs/src/link.rs:26) with `Clone`, `Copy`, `Hardlink`, and `Symlink`. Its platform default is clone on macOS/Linux and hardlink elsewhere.
+
+2. Persistent configuration is represented by `link_mode` in [`crates/uv-settings/src/settings.rs:568`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv-settings/src/settings.rs:568), exposed as `link-mode` in the configuration schema at [`:1171`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv-settings/src/settings.rs:1171).
+
+3. The CLI/environment value is declared as `--link-mode` / `UV_LINK_MODE` in [`crates/uv-cli/src/lib.rs:7450`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv-cli/src/lib.rs:7450). Settings merge command-line/package configuration with top-level configuration at [`crates/uv/src/settings.rs:4992`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv/src/settings.rs:4992), then resolve the default at [`:5145`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv/src/settings.rs:5145).
+
+4. During installation, the resolved mode is passed into `uv_installer::Installer` via [`with_link_mode`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv/src/commands/pip/operations.rs:1134), then into `install_wheel`, and finally `link_wheel_files`.
+
+The special mode is **`clone`**. After linking, [`link_wheel_files`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-link-mode-config-oxide_first-0/crates/uv-install-wheel/src/linker.rs:271) explicitly updates the `site-packages` directory’s modification time.
+
+Why: cloning does not update the directory mtime, but CPython uses that mtime when deciding whether its import-directory cache must be refreshed. Updating it ensures newly installed packages are importable without manual cache invalidation.

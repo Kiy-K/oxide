@@ -1,0 +1,14 @@
+The blast radius is 35 files containing actual one-argument calls:
+
+- Direct calls:
+  - `__tests__/escapeClassName.test.js`
+  - `src/lib/substituteClassApplyAtRules.js`
+
+- Calls through the plugin-provided `e` alias:
+  - `__tests__/processPlugins.test.js`
+  - `__tests__/variantsAtRule.test.js`
+  - `src/lib/substituteVariantsAtRules.js`
+  - 32 built-in plugins:
+    `backgroundColor.js`, `backgroundPosition.js`, `backgroundSize.js`, `borderColor.js`, `borderRadius.js`, `borderWidth.js`, `boxShadow.js`, `cursor.js`, `fill.js`, `flex.js`, `flexGrow.js`, `flexShrink.js`, `fontFamily.js`, `fontSize.js`, `fontWeight.js`, `height.js`, `inset.js`, `letterSpacing.js`, `lineHeight.js`, `listStyleType.js`, `margin.js`, `maxHeight.js`, `maxWidth.js`, `minHeight.js`, `minWidth.js`, `negativeMargin.js`, `objectPosition.js`, `opacity.js`, `padding.js`, `stroke.js`, `textColor.js`, and `width.js` under `src/plugins/`.
+
+Additionally, `src/util/processPlugins.js` exposes `escapeClassName` as `e`, and five plugin tests pass it as `e`; these are alias-wiring sites rather than call sites. Any external/custom plugin using the public `e(className)` API would also need updating.

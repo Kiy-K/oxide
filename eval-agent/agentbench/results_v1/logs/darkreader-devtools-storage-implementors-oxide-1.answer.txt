@@ -1,0 +1,20 @@
+There are exactly two classes implementing `DevToolsStorage`, both in [src/background/devtools.ts](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-oxide-1/src/background/devtools.ts):
+
+- `LocalStorageWrapper` ([line 13](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-oxide-1/src/background/devtools.ts:13))  
+  Uses the browser’s global `localStorage` for `get`, `set`, `remove`, and `has`. It is selected when `localStorage` exists and is non-null:
+
+  ```ts
+  typeof localStorage !== 'undefined' && localStorage != null
+  ```
+
+- `TempStorage` ([line 46](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-oxide-1/src/background/devtools.ts:46))  
+  Uses an in-memory `Map<string, string>`. It is selected when `localStorage` is unavailable or null.
+
+The selection occurs once in the `DevTools` constructor ([lines 68–71](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-oxide-1/src/background/devtools.ts:68)). `DevTools` is instantiated during background initialization by `new Extension()` ([src/background/index.ts:8](/tmp/oxide-agentbench-np2r09z9/darkreader-devtools-storage-implementors-oxide-1/src/background/index.ts:8), [src/background/extension.ts:49](/tmp/oxide-agentbench-oxide-1/src/background/extension.ts:49)).
+
+Thus:
+
+- MV2/background-page environments generally choose `LocalStorageWrapper`.
+- Environments without `localStorage`, including the MV3 service-worker background context, choose `TempStorage`.
+- If `localStorage` exists but an individual operation throws, `LocalStorageWrapper` remains selected; its methods merely catch and log the error. It does not switch to `TempStorage`.
+- `TempStorage` data is ephemeral and scoped to that `DevTools` instance.

@@ -1,0 +1,7 @@
+Flask re-raises an unhandled view exception in `Flask.handle_exception()` when `PROPAGATE_EXCEPTIONS` resolves to `True`.
+
+Resolution is:
+
+- `PROPAGATE_EXCEPTIONS=True`: re-raise the exception.
+- `PROPAGATE_EXCEPTIONS=False`: log it and return a generic 500 response.
+- `PROPAGATE_EXCEPTIONS=None` (the default): fall back to `app.testing or app.debug`; therefore it propagates when either testing mode or debug mode is enabled.

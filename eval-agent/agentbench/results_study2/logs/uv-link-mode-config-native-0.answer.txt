@@ -1,0 +1,18 @@
+`link-mode` is defined and propagated through this path:
+
+1. Configuration sources:
+   - CLI `--link-mode` and `UV_LINK_MODE` are declared in [`uv-cli/src/lib.rs`](.../crates/uv-cli/src/lib.rs:6092) and [`uv-static/src/env_vars.rs`](.../crates/uv-static/src/env_vars.rs:171).
+   - Project configuration uses `tool.uv.link-mode`, represented by `ResolverInstallerSchema.link_mode` and converted into settings in [`uv-settings/src/settings.rs`](.../crates/uv-settings/src/settings.rs:2046) and [`uv-settings/src/settings.rs`](.../crates/uv-settings/src/settings.rs:2235).
+   - Settings resolution combines command-line values with config values and falls back to `LinkMode::default()` in [`uv/src/settings.rs`](.../crates/uv/src/settings.rs:4992) and [`uv/src/settings.rs`](.../crates/uv/src/settings.rs:5145). The default is `clone` on macOS/Linux and `hardlink` elsewhere, defined in [`uv-fs/src/link.rs`](.../crates/uv-fs/src/link.rs:39).
+
+2. Install application:
+   - The resolved mode is passed to `Installer::with_link_mode` from the install plan in [`uv/src/commands/pip/operations.rs`](.../crates/uv/src/commands/pip/operations.rs:1129).
+   - `uv-installer` forwards it to `install_wheel` for each wheel in [`uv-installer/src/installer.rs`](.../crates/uv-installer/src/installer.rs:157).
+   - `install_wheel` calls `link_wheel_files` in [`uv-install-wheel/src/install.rs`](.../crates/uv-install-wheel/src/install.rs:91).
+   - `link_wheel_files` invokes `link_dir`, placing the wheel contents in the selected `site-packages` directory in [`uv-install-wheel/src/linker.rs`](.../crates/uv-install-wheel/src/linker.rs:251).
+
+The one mode requiring an extra corrective step is `clone`.
+
+After cloning, uv explicitly updates the `site-packages` directory mtime via `update_site_packages_mtime` ([`uv-install-wheel/src/linker.rs`](.../crates/uv-install-wheel/src/linker.rs:271)). Directory cloning does not update the directory mtime, while CPython uses that mtime to decide whether to rescan for packages. Without the update, newly installed packages might not be importable until import-cache invalidation occurs manually.
+
+This applies when the actual mode returned by `link_dir` is `Clone`; a clone request may fall back to another mode if cloning is unsupported.

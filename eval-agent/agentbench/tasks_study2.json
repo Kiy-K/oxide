@@ -1,0 +1,88 @@
+[
+  {
+    "id": "deno-test-entry-to-execution",
+    "repo": "denoland/deno",
+    "repo_url": "https://github.com/denoland/deno.git",
+    "base_commit": "336da420f4343cbb1dcbd5eed9d075ff555ed6ee",
+    "language": "rust",
+    "shape": "trace_call_flow",
+    "prompt": "Trace the call path from Deno's `deno test` subcommand entry point down to the point where an individual Deno.test() callback registered by a test module actually gets invoked. Name the functions/files involved at each hop.",
+    "reference_answer": "`DenoSubcommand::Test` dispatch in cli/lib.rs (~lines 456-482) calls `tools::test::run_tests(flags, test_flags)` (cli/tools/test/mod.rs:2353) when not in watch mode. `run_tests()` resolves test module specifiers and typechecks them, then calls `test_specifiers(...)` (function defined at line 1715, called from ~line 2437) to actually run them. For each specifier, `test_specifier_inner()` (line 971) dispatches the module's `load` event on a `MainWorker`, then calls `run_tests_for_worker()` (line 987; full function at line 1218), which calls `run_tests_for_worker_inner()` (line 1236/1434) -- this is where each individual Deno.test() callback registered by that module actually gets invoked inside the V8 isolate.",
+    "gold_files": ["cli/lib.rs", "cli/tools/test/mod.rs"],
+    "notes": "Verified by reading the DenoSubcommand::Test dispatch in cli/lib.rs and the run_tests -> test_specifiers -> test_specifier_inner -> run_tests_for_worker -> run_tests_for_worker_inner chain directly in cli/tools/test/mod.rs."
+  },
+  {
+    "id": "deno-net-deny-ipv6-mapped-tests",
+    "repo": "denoland/deno",
+    "repo_url": "https://github.com/denoland/deno.git",
+    "base_commit": "336da420f4343cbb1dcbd5eed9d075ff555ed6ee",
+    "language": "rust",
+    "shape": "find_tests_constraining_behavior",
+    "prompt": "Deno's --deny-net permission rule can be written as an IPv4 literal (e.g. 127.0.0.1). Which test constrains whether that deny rule ALSO blocks a connection that resolves to the equivalent IPv4-mapped IPv6 address (e.g. ::ffff:127.0.0.1), and what exactly does it assert?",
+    "reference_answer": "runtime/permissions/lib.rs's `test_check_net_resolved_ipv4_mapped_ipv6` (~line 6401) tests this for three deny-rule forms (\"127.0.0.1\", \"127.0.0.0/8\", \"127.0.0.1:8080\"): it asserts `check_net_resolved()` (line 4796) rejects a resolved IP of either \"127.0.0.1\" or \"::ffff:127.0.0.1\" at the denied port, while unrelated addresses (\"192.168.1.1\", \"::ffff:192.168.1.1\", \"::1\") remain allowed. This guards against a permission bypass where a hostname resolves to an IPv4-mapped IPv6 address that numerically represents a denied IPv4 address.",
+    "gold_files": ["runtime/permissions/lib.rs"],
+    "notes": "Verified by reading test_check_net_resolved_ipv4_mapped_ibv6 directly (runtime/permissions/lib.rs ~line 6401-6440) and confirming check_net_resolved's definition site at line 4796 in the same file."
+  },
+  {
+    "id": "deno-canonicalize-path-blast-radius",
+    "repo": "denoland/deno",
+    "repo_url": "https://github.com/denoland/deno.git",
+    "base_commit": "336da420f4343cbb1dcbd5eed9d075ff555ed6ee",
+    "language": "rust",
+    "shape": "estimate_blast_radius",
+    "prompt": "Someone proposes adding a required parameter to canonicalize_path (defined in cli/util/fs.rs). Estimate the blast radius: which files under cli/ call canonicalize_path(...) and would need updating? Note: a second, unrelated function with the same name also exists elsewhere in the codebase -- make sure you scope to the right one.",
+    "reference_answer": "canonicalize_path is defined in cli/util/fs.rs (line 61). A second, unrelated, private function with the same name exists in runtime/ops/fs_events.rs -- not part of this blast radius. 22 files under cli/ import and call the cli/util/fs.rs version (e.g. via `use crate::util::fs::canonicalize_path`): cli/args/flags.rs, cli/args/mod.rs, cli/graph_util.rs, cli/lib.rs, cli/lsp/config.rs, cli/node_compat_shim.rs, cli/task_runner.rs, cli/tools/bundle/html.rs, cli/tools/bundle/mod.rs, cli/tools/coverage/reporter.rs, cli/tools/desktop.rs, cli/tools/fmt.rs, cli/tools/installer/global.rs, cli/tools/jupyter/install.rs, cli/tools/lint/mod.rs, cli/tools/run/hmr.rs, cli/tools/task.rs, cli/tools/test/mod.rs, cli/tools/x.rs, cli/util/file_watcher.rs, cli/util/fs.rs (definition + internal use), and cli/util/temp.rs.",
+    "gold_files": [
+      "cli/util/fs.rs", "cli/args/flags.rs", "cli/args/mod.rs", "cli/graph_util.rs", "cli/lib.rs",
+      "cli/lsp/config.rs", "cli/node_compat_shim.rs", "cli/task_runner.rs", "cli/tools/bundle/html.rs",
+      "cli/tools/bundle/mod.rs", "cli/tools/coverage/reporter.rs", "cli/tools/desktop.rs", "cli/tools/fmt.rs",
+      "cli/tools/installer/global.rs", "cli/tools/jupyter/install.rs", "cli/tools/lint/mod.rs",
+      "cli/tools/run/hmr.rs", "cli/tools/task.rs", "cli/tools/test/mod.rs", "cli/tools/x.rs",
+      "cli/util/file_watcher.rs", "cli/util/temp.rs"
+    ],
+    "notes": "Verified via grep -rl 'canonicalize_path(' --include=*.rs cli/ (22 files including the definition) and confirming a separate, unrelated private canonicalize_path exists in runtime/ops/fs_events.rs -- a deliberate gotcha for scope discipline."
+  },
+  {
+    "id": "uv-link-mode-config",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "config_to_implementation",
+    "prompt": "uv's --link-mode option (clone/copy/hardlink/symlink) controls how installed wheel files land in site-packages. Trace where the config value is defined and applied during install, and find the one link mode that requires an extra corrective step afterward -- what is that step and why is it needed?",
+    "reference_answer": "`LinkMode` is defined in crates/uv-fs/src/link.rs (~line 26: Clone/Copy/Hardlink/Symlink), defaulting to Clone on macOS/iOS/Linux. `link_wheel_files()` in crates/uv-install-wheel/src/linker.rs (~line 252) calls `link_dir(...)` with the configured link mode, which returns the mode actually used (`used_link_mode`, since Clone can fall back if the filesystem doesn't support it). If `used_link_mode == LinkMode::Clone`, it calls `update_site_packages_mtime(site_packages)` (~line 281) to force-bump the site-packages directory's mtime to now -- because CPython's `importlib._bootstrap_external` uses directory mtime to decide whether to re-scan for newly-installed packages, and a copy-on-write clone doesn't naturally update that mtime the way a real file copy would, which would otherwise leave newly-cloned packages invisible to Python's import system.",
+    "gold_files": ["crates/uv-fs/src/link.rs", "crates/uv-install-wheel/src/linker.rs"],
+    "notes": "Verified by reading LinkMode's definition/default in crates/uv-fs/src/link.rs and link_wheel_files()'s Clone-specific update_site_packages_mtime call in crates/uv-install-wheel/src/linker.rs (~lines 252-281)."
+  },
+  {
+    "id": "uv-name-trait-implementors",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "find_implementors_of_interface",
+    "prompt": "uv has a `Name` trait (in uv-distribution-types) requiring a name() method that returns a distribution's package name. Find where it's defined and how many distinct files across the codebase implement it.",
+    "reference_answer": "`Name` is defined in crates/uv-distribution-types/src/traits.rs (~line 16): `fn name(&self) -> &PackageName`. It is implemented in 10 files across at least 3 crates: crates/uv-distribution-types/src/{any.rs, cached.rs, installed.rs, lib.rs, requested.rs, resolved.rs}, crates/uv-resolver/src/{candidate_selector.rs, resolution/mod.rs, resolution/requirements_txt.rs}, and crates/uv/src/commands/pip/operations.rs -- reflecting the many different distribution-representation types (registry/URL/git/path/installed/cached/etc.) that all need to answer \"what package is this.\"",
+    "gold_files": [
+      "crates/uv-distribution-types/src/traits.rs", "crates/uv-distribution-types/src/any.rs",
+      "crates/uv-distribution-types/src/cached.rs", "crates/uv-distribution-types/src/installed.rs",
+      "crates/uv-distribution-types/src/lib.rs", "crates/uv-distribution-types/src/requested.rs",
+      "crates/uv-distribution-types/src/resolved.rs", "crates/uv-resolver/src/candidate_selector.rs",
+      "crates/uv-resolver/src/resolution/mod.rs", "crates/uv-resolver/src/resolution/requirements_txt.rs",
+      "crates/uv/src/commands/pip/operations.rs"
+    ],
+    "notes": "Verified via grep -rln '^impl Name for' --include=*.rs crates/ -- exactly 10 implementor files plus the trait's own definition file."
+  },
+  {
+    "id": "uv-wheel-tag-compatibility",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "locate_impl_from_behavior",
+    "prompt": "When resolving a package, uv must pick the best-matching wheel among several candidates for the target Python/platform. Where is wheel-tag compatibility actually computed, and what special-case check runs before the normal python/abi/platform tag matching?",
+    "reference_answer": "`Tags::compatibility()` (crates/uv-platform-tags/src/tags.rs, ~line 367) computes this. Before the normal python-tag -> abi-tag -> platform-tag nested lookup (which accumulates a `TagPriority` for compatible combinations), it runs a special-case check when the target interpreter `is_freethreaded`: only wheels whose ABI tag is `none` (pure Python), `abi3t`, or a free-threaded CPython ABI (e.g. `cp313t`) are considered compatible at all -- any other ABI immediately returns `TagCompatibility::Incompatible(IncompatibleTag::FreethreadedAbi)` before the main matching loop runs. Call sites like crates/uv-resolver/src/version_map.rs (~line 814, `filename.compatibility(tags)`) use the resulting compatibility/priority to choose among candidate wheels for a package version.",
+    "gold_files": ["crates/uv-platform-tags/src/tags.rs", "crates/uv-resolver/src/version_map.rs"],
+    "notes": "Verified by reading Tags::compatibility() in full (crates/uv-platform-tags/src/tags.rs ~lines 367-410) and one real call site in crates/uv-resolver/src/version_map.rs (~line 814)."
+  }
+]

@@ -1,0 +1,29 @@
+The call path is:
+
+1. `seaborn.lineplot()`  
+   Defined in [`seaborn/relational.py:597`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/relational.py:597) and re-exported by [`seaborn/__init__.py`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/__init__.py).
+
+2. It constructs `_LinePlotter`, a subclass of `_RelationalPlotter` → `VectorPlotter`.
+
+3. After semantic mapping and axes attachment, `lineplot()` calls:
+
+   ```python
+   p.plot(ax, kwargs)
+   ```
+
+   at [`seaborn/relational.py:639`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/relational.py:639).
+
+4. `_LinePlotter.plot()`  
+   Defined at [`seaborn/relational.py:378`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/relational.py:378). It iterates over semantic subsets using the inherited `VectorPlotter.iter_data()` from [`seaborn/_oldcore.py:973`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/_oldcore.py:973), optionally aggregates the data, and draws each line.
+
+5. The actual matplotlib call is:
+
+   ```python
+   lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+   ```
+
+   at [`seaborn/relational.py:453`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-baseline-1/seaborn/relational.py:453).
+
+   With `units=...`, it instead calls the same method once per unit at line 451.
+
+The exact matplotlib method is `matplotlib.axes.Axes.plot` (implemented in Matplotlib’s `matplotlib/axes/_axes.py`). It creates `Line2D` artists and adds them to the axes internally. Seaborn then applies hue, size, and style properties to the returned `Line2D` objects.

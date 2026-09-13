@@ -1,0 +1,15 @@
+The blast radius is 37 repository files containing actual call sites:
+
+- 32 core plugins under `src/plugins/`:
+  `backgroundColor`, `backgroundPosition`, `backgroundSize`, `borderColor`, `borderRadius`, `borderWidth`, `boxShadow`, `cursor`, `fill`, `flex`, `flexGrow`, `flexShrink`, `fontFamily`, `fontSize`, `fontWeight`, `height`, `inset`, `letterSpacing`, `lineHeight`, `listStyleType`, `margin`, `maxHeight`, `maxWidth`, `minHeight`, `minWidth`, `negativeMargin`, `objectPosition`, `opacity`, `padding`, `stroke`, `textColor`, and `width`.
+
+- Direct internal consumers:
+  - [src/lib/substituteClassApplyAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-0/src/lib/substituteClassApplyAtRules.js)
+  - [src/lib/substituteVariantsAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-0/src/lib/substituteVariantsAtRules.js)
+
+- Tests exercising the API:
+  - [__tests__/escapeClassName.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-0/__tests__/escapeClassName.test.js)
+  - [__tests__/processPlugins.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-0/__tests__/processPlugins.test.js)
+  - [__tests__/variantsAtRule.test.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-0/__tests__/variantsAtRule.test.js)
+
+`src/util/processPlugins.js` hands `escapeClassName` to plugins as `e`, but does not call it itself. The six plugin-specific test files that assign `e: escapeClassName` are dependency-injection setup sites, not additional call sites. External plugins using the public `e` API would also need updating.

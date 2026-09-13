@@ -1,0 +1,11 @@
+The tests are in [`crates/uv-normalize/src/lib.rs`](/tmp/oxide-agentbench-orup7es6/uv-package-name-normalization-tests-baseline-0/crates/uv-normalize/src/lib.rs):
+
+- `tests::normalize` (lines 174–191) asserts all of these normalize to `friendly-bard`:
+
+  `friendly-bard`, `Friendly-Bard`, `FRIENDLY-BARD`, `friendly.bard`, `friendly_bard`, `friendly--bard`, `friendly-.bard`, and `FrIeNdLy-._.-bArD`.
+
+- `tests::failures` (lines 224–239) asserts these are rejected by both validation paths:
+
+  `""`, `" starts-with-space"`, `"-starts-with-dash"`, `"ends-with-dash-"`, `"ends-with-space "`, `"includes!invalid-char"`, `"space in middle"`, and `"alpha-α"`.
+
+`tests::check` additionally verifies which inputs are already normalized versus valid-but-requiring normalization.

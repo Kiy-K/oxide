@@ -1,0 +1,45 @@
+The flow is:
+
+1. **Config is resolved** in [`src/index.js:33`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/index.js:33), which calls [`resolveConfig`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/resolveConfig.js:41). The `variants` object is merged at [`resolveConfig.js:45`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/resolveConfig.js:45).
+
+2. **The config is read and exposed to plugins** by [`src/util/processPlugins.js:28`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/processPlugins.js:28). Its `variants(path)` helper returns:
+
+   ```js
+   _.get(config.variants, path, defaultValue)
+   ```
+
+   Thus the background-color plugin’s call at [`src/plugins/backgroundColor.js:17`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/plugins/backgroundColor.js:17) turns:
+
+   ```js
+   variants: {
+     backgroundColor: ['responsive', 'hover']
+   }
+   ```
+
+   into `['responsive', 'hover']`.
+
+3. **The variant list is threaded into the generated utility** through `addUtilities` in [`processPlugins.js:41`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/processPlugins.js:41). The utility rules are wrapped as:
+
+   ```css
+   @variants responsive, hover {
+     .bg-red-500 { ... }
+   }
+   ```
+
+   by [`src/util/wrapWithVariants.js:5`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/wrapWithVariants.js:5).
+
+4. **The wrapper is expanded** by [`src/lib/substituteVariantsAtRules.js:31`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/lib/substituteVariantsAtRules.js:31). It parses the variant names, adds the implicit `default` variant, and invokes each variant generator at [`substituteVariantsAtRules.js:47`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/lib/substituteVariantsAtRules.js:47).
+
+5. **The final pseudo-class selector rewrite happens in** [`src/lib/substituteVariantsAtRules.js:6`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/lib/substituteVariantsAtRules.js:6). The `hover` generator calls `modifySelectors` and returns:
+
+   ```js
+   `.${e(`${pseudoClass}${separator}${className}`)}:${pseudoClass}`
+   ```
+
+   With `pseudoClass = 'hover'`, `separator = ':'`, and `className = 'bg-red-500'`, this produces:
+
+   ```css
+   .hover\:bg-red-500:hover
+   ```
+
+Responsive variants take a separate final path: [`src/lib/substituteResponsiveAtRules.js:23`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/lib/substituteResponsiveAtRules.js:23) rewrites the class using [`src/util/buildSelectorVariant.js:4`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-oxide-0/src/util/buildSelectorVariant.js:4) and places it inside the screen-specific media query.

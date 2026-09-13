@@ -1,0 +1,64 @@
+Call path in the checked-out source:
+
+1. `cli/lib.rs:main()`  
+   Collects argv, calls `resolve_flags_and_init(...)`, initializes V8, then calls:
+
+2. `cli/lib.rs:run_subcommand(...)`  
+   Matches `DenoSubcommand::Test(test_flags)` and dispatches either:
+
+   - `tools::test::run_tests(...)`, or
+   - `tools::test::run_tests_with_watch(...)`.
+
+3. `cli/tools/test/mod.rs:run_tests(...)`  
+   Resolves test files, type-checks them, creates a `CliMainWorkerFactory`, and calls:
+
+4. `cli/tools/test/mod.rs:test_specifiers(...)`  
+   Creates one worker task per test module and invokes:
+
+5. `cli/tools/test/mod.rs:test_specifier(...)`  
+   Calls `configure_main_worker(...)`, which creates a `MainWorker` in test mode and installs the `deno_test` extension containing `op_register_test`.
+
+6. `cli/tools/test/mod.rs:configure_main_worker(...)`  
+   Executes preload modules and then `worker.execute_side_module().await`. During test-module evaluation, a user call such as:
+
+   ```ts
+   Deno.test("example", callback);
+   ```
+
+   reaches:
+
+7. `cli/js/40_test.js:test()` → `testInner(...)`  
+   `testInner` wraps the supplied callback with `wrapTest(...)`, then calls `op_register_test(...)`.
+
+8. `cli/ops/testing.rs:op_register_test(...)`  
+   Receives the wrapped V8 function and stores it in the current `TestContainer` through `TestContainer::register(...)` in `cli/tools/test/mod.rs`.
+
+9. `cli/tools/test/mod.rs:test_specifier_inner(...)`  
+   After module evaluation and `dispatch_load_event()`, calls:
+
+10. `cli/tools/test/mod.rs:run_tests_for_worker(...)`  
+    Takes the registered descriptions, functions, and hooks, then calls:
+
+11. `cli/tools/test/mod.rs:run_tests_for_worker_inner(...)`  
+    `compute_tests_to_run(...)` selects the functions to execute. For each selected test, it calls:
+
+12. `cli/tools/test/mod.rs:invoke_test_function(...)`  
+    This performs `worker.js_runtime.call(function)` and awaits it with `with_event_loop_promise(...)`.
+
+The JavaScript wrapper chain then reaches the user callback:
+
+```text
+worker.js_runtime.call(function)
+  → cli/js/40_test.js:wrapOuter(...): outerWrapped()
+  → assertExit(...): exitSanitizer()
+  → wrapInner(...): innerWrapped(desc)
+  → await fn(test context)
+```
+
+The final `fn` at `cli/js/40_test.js:wrapInner`, line 300, is the original callback supplied to `Deno.test()`. Thus the individual callback is actually invoked by:
+
+```js
+await fn(MapPrototypeGet(testStates, desc.id).context);
+```
+
+in [`cli/js/40_test.js:300`](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-test-entry-to-execution-oxide_first-0/cli/js/40_test.js:300).

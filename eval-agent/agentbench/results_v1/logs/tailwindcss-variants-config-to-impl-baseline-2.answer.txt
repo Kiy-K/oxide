@@ -1,0 +1,68 @@
+The flow is:
+
+1. `src/index.js` resolves the user config with `resolveConfig`, which preserves/merges `config.variants`:
+
+   [`src/index.js:33-43`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/index.js:33)  
+   [`src/util/resolveConfig.js:41-48`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/resolveConfig.js:41)
+
+2. The `backgroundColor` plugin reads its configured variants through the injected `variants()` API:
+
+   [`src/plugins/backgroundColor.js:5-18`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/plugins/backgroundColor.js:5)
+
+   Specifically:
+
+   ```js
+   addUtilities(utilities, variants('backgroundColor'))
+   ```
+
+3. That `variants()` API is implemented in `src/util/processPlugins.js`. It reads either:
+
+   ```js
+   config.variants.backgroundColor
+   ```
+
+   or, when `config.variants` is a global array, returns that array directly:
+
+   [`src/util/processPlugins.js:28-38`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/processPlugins.js:28)
+
+4. `addUtilities()` receives the resulting `['responsive', 'hover']` array and stores it by wrapping the generated utility rules in a PostCSS at-rule:
+
+   ```css
+   @variants responsive, hover {
+     .bg-red-500 { background-color: red; }
+   }
+   ```
+
+   This happens through [`wrapWithVariants.js:5-12`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/wrapWithVariants.js:5), called by [`processPlugins.js:41-60`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/processPlugins.js:41).
+
+5. During the PostCSS pipeline, `src/processTailwindFeatures.js` runs `substituteVariantsAtRules`:
+
+   [`src/processTailwindFeatures.js:19-26`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/processTailwindFeatures.js:19)
+
+6. `src/lib/substituteVariantsAtRules.js` reads the `@variants` parameters, ensures the base/default rule is included, and invokes each variant generator:
+
+   [`src/lib/substituteVariantsAtRules.js:31-51`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/lib/substituteVariantsAtRules.js:31)
+
+   The `hover` generator is defined in that same file. It calls `modifySelectors()` and rewrites the selector to:
+
+   ```js
+   `.${e(`${pseudoClass}${separator}${className}`)}:${pseudoClass}`
+   ```
+
+   [`src/lib/substituteVariantsAtRules.js:6-10`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/lib/substituteVariantsAtRules.js:6)
+
+   Thus:
+
+   ```css
+   .bg-red-500
+   ```
+
+   becomes:
+
+   ```css
+   .hover\:bg-red-500:hover
+   ```
+
+   The cloning and selector-modification plumbing is implemented by [`generateVariantFunction.js:5-33`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/generateVariantFunction.js:5).
+
+For `responsive`, `substituteVariantsAtRules.js` moves the rules into `@responsive`. The eventual responsive selector rewrite is performed by [`src/lib/substituteResponsiveAtRules.js:23-39`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/lib/substituteResponsiveAtRules.js:23), which calls [`src/util/buildSelectorVariant.js:4-14`](/tmp/oxide-agentbench-np2r09z9/tailwindcss-variants-config-to-impl-baseline-2/src/util/buildSelectorVariant.js:4) to turn a class into selectors such as `.sm\:bg-red-500` inside the corresponding media query.

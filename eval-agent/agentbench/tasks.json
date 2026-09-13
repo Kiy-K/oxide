@@ -1,0 +1,85 @@
+[
+  {
+    "id": "deno-run-entry-to-execution",
+    "repo": "denoland/deno",
+    "repo_url": "https://github.com/denoland/deno.git",
+    "base_commit": "336da420f4343cbb1dcbd5eed9d075ff555ed6ee",
+    "language": "rust",
+    "shape": "trace_call_flow",
+    "prompt": "Trace the call path from Deno's binary entry point to the point where a `deno run script.js` invocation actually begins executing the target script's module. Name the functions/files involved at each hop.",
+    "reference_answer": "cli/main.rs's `pub fn main()` calls `deno::main()`, which is defined in cli/lib.rs (the file split exists, per its own comment, so tests can run without building a binary). `deno::main()` parses CLI flags and dispatches on the subcommand; for `DenoSubcommand::Run(run_flags)` (cli/lib.rs, ~line 296) it spawns `tools::run::run_script(...)` (cli/tools/run/mod.rs, line 170). `run_script` builds a `CliFactory`, resolves `main_module`, builds a `CliMainWorkerFactory` via `factory.create_cli_main_worker_factory_with_roots(roots)`, and calls `worker_factory.create_main_worker_with_unconfigured_runtime(...)` (defined in cli/worker.rs, line 573) to construct the `MainWorker`. Finally `worker.run().await` is called -- this is where the target module actually begins executing inside the V8 isolate.",
+    "gold_files": ["cli/main.rs", "cli/lib.rs", "cli/tools/run/mod.rs", "cli/worker.rs"],
+    "notes": "Verified by reading cli/main.rs::main(), grepping DenoSubcommand::Run/run_script in cli/lib.rs, reading run_script in cli/tools/run/mod.rs, and confirming create_main_worker_with_unconfigured_runtime's definition site in cli/worker.rs."
+  },
+  {
+    "id": "deno-node-modules-dir-config",
+    "repo": "denoland/deno",
+    "repo_url": "https://github.com/denoland/deno.git",
+    "base_commit": "336da420f4343cbb1dcbd5eed9d075ff555ed6ee",
+    "language": "rust",
+    "shape": "config_to_implementation",
+    "prompt": "The `nodeModulesDir` setting in deno.json controls whether Deno creates a local node_modules folder for npm-compatible dependencies. Trace exactly how that config value flows from parsing to the point where Deno actually decides to run an npm install into node_modules.",
+    "reference_answer": "The `nodeModulesDir` field (parsed in libs/config/deno_json/mod.rs) resolves to a `NodeModulesDirMode` enum (`Manual`/`Auto`/`None`) via `WorkspaceFactory::node_modules_dir_mode()` (libs/resolver/factory.rs, line 388) -- which also coerces `Manual` to `Auto` when the running subcommand is a package-manager subcommand, so that subcommand can still manage node_modules. `CliOptions::specified_node_modules_dir()` (cli/args/mod.rs, ~line 953) exposes the resolved value elsewhere in the CLI. At module-graph-build time, cli/graph_util.rs's `build_graph_with_npm_resolution_and_build_options` (~line 1012-1017) checks whether the mode is exactly `NodeModulesDirMode::Auto`; if so it calls the npm installer's `ensure_top_level_package_json_install()` and, for an eager npm-caching strategy, `cache_packages(PackageCaching::All)` -- the actual point where the setting causes npm dependencies to be installed into node_modules.",
+    "gold_files": ["libs/config/deno_json/mod.rs", "libs/resolver/factory.rs", "cli/args/mod.rs", "cli/graph_util.rs"],
+    "notes": "Verified via grep for node_modules_dir_mode/NodeModulesDirMode across cli/ and libs/, reading factory.rs's node_modules_dir_mode() (with its Manual->Auto coercion for package-manager subcommands), and graph_util.rs's Auto-mode check driving ensure_top_level_package_json_install()."
+  },
+  {
+    "id": "uv-sourcedist-variants",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "find_implementors_of_interface",
+    "prompt": "uv represents a Python source distribution's origin via the `SourceDist` enum. Find where it's defined, list its variants, and find the function that has a distinct code path for building each variant into a wheel.",
+    "reference_answer": "`SourceDist` is defined in crates/uv-distribution-types/src/lib.rs (~line 222) with 6 variants: `Registry(RegistrySourceDist)`, `DirectUrl(DirectUrlSourceDist)`, `GitDirectory(GitDirectorySourceDist)`, `GitPath(GitPathSourceDist)`, `Path(PathSourceDist)`, `Directory(DirectorySourceDist)`. `SourceDistributionBuilder::download_and_build()` in crates/uv-distribution/src/source/mod.rs (~lines 261-360) has a `match &source` with a distinct arm for all 6 variants (registry download+cache, direct-URL fetch, cloning a git repo at a subdirectory or path, and reading a local path/directory) -- each handling that source kind's specific fetch-then-build logic. The same 6-arm pattern repeats for metadata-only resolution in `download_and_build_metadata()` (~lines 432-523) in the same file.",
+    "gold_files": ["crates/uv-distribution-types/src/lib.rs", "crates/uv-distribution/src/source/mod.rs"],
+    "notes": "Verified via grep -n 'pub enum SourceDist' in uv-distribution-types/src/lib.rs and grep -n 'SourceDist::' in uv-distribution/src/source/mod.rs, confirming a 6-arm match in both download_and_build and download_and_build_metadata."
+  },
+  {
+    "id": "uv-cache-digest-blast-radius",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "estimate_blast_radius",
+    "prompt": "Someone proposes changing `cache_digest` (in uv-cache-key) to take an additional required parameter. Estimate the blast radius: which files across the uv codebase call cache_digest(...) and would need updating?",
+    "reference_answer": "`cache_digest<H: CacheKey>(hashable: &H) -> String` is defined in crates/uv-cache-key/src/digest.rs (line 11). It is called from 9 files across 7 other crates: crates/uv-build-frontend/src/lib.rs, crates/uv-cache/src/wheel.rs, crates/uv-client/src/flat_index.rs, crates/uv-distribution-filename/src/wheel.rs, crates/uv-distribution-types/src/build_info.rs, crates/uv-git/src/resolver.rs, crates/uv-git/src/source.rs, crates/uv-python/src/downloads.rs, and crates/uv-python/src/interpreter.rs. Total blast radius: 1 definition file + 9 caller files across 7 crates = 10 files.",
+    "gold_files": [
+      "crates/uv-cache-key/src/digest.rs",
+      "crates/uv-build-frontend/src/lib.rs",
+      "crates/uv-cache/src/wheel.rs",
+      "crates/uv-client/src/flat_index.rs",
+      "crates/uv-distribution-filename/src/wheel.rs",
+      "crates/uv-distribution-types/src/build_info.rs",
+      "crates/uv-git/src/resolver.rs",
+      "crates/uv-git/src/source.rs",
+      "crates/uv-python/src/downloads.rs",
+      "crates/uv-python/src/interpreter.rs"
+    ],
+    "notes": "Verified via grep -rl 'cache_digest(' across crates/*/src -- exactly 9 caller files plus the definition file."
+  },
+  {
+    "id": "uv-cache-freshness-refresh",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "locate_impl_from_behavior",
+    "prompt": "When a user runs uv with --refresh (or --refresh-package NAME), how does uv decide whether a given cached entry (e.g. a package's PyPI 'simple' metadata) should be treated as stale and re-fetched from the index, vs. reused from cache?",
+    "reference_answer": "`Cache::freshness()` (crates/uv-cache/src/lib.rs, line 372) implements this. It reads the active `Refresh` policy: `Refresh::None` means everything is `Freshness::Fresh` (never force-refetch); `Refresh::All(timestamp)` or `Refresh::Packages(names, paths, timestamp)` (only when the specific package/path is in scope) compare the cache entry's file mtime against the refresh policy's timestamp (set once, at the moment --refresh was invoked) -- if the entry is older than that timestamp it's `Freshness::Stale`, and if it doesn't exist at all it's `Freshness::Missing`. Callers like `RegistryClient`'s simple-metadata fetch (crates/uv-client/src/registry_client.rs, ~line 568) convert this into an HTTP `CacheControl` policy (`CacheControl::from(freshness)`) passed into the actual network fetch, so a Stale/Missing result forces a real re-check against the package index instead of trusting the local cache blindly.",
+    "gold_files": ["crates/uv-cache/src/lib.rs", "crates/uv-client/src/registry_client.rs"],
+    "notes": "Verified by reading Cache::freshness() in full (crates/uv-cache/src/lib.rs:372-404) and one of its 5 call sites (crates/uv-client/src/registry_client.rs:569) converting the result into a CacheControl policy."
+  },
+  {
+    "id": "uv-package-name-normalization-tests",
+    "repo": "astral-sh/uv",
+    "repo_url": "https://github.com/astral-sh/uv.git",
+    "base_commit": "c0df400a4cf4aad88f7f34bb2ac3ebb5a8f3839e",
+    "language": "rust",
+    "shape": "find_tests_constraining_behavior",
+    "prompt": "Python package names get normalized before comparison (case folded, runs of -/_/. collapsed to a single -). Which test(s) pin the exact set of inputs that must all normalize to the same name, and which pin inputs that must be rejected entirely as invalid names?",
+    "reference_answer": "crates/uv-normalize/src/lib.rs's test module: `normalize()` asserts that \"friendly-bard\", \"Friendly-Bard\", \"FRIENDLY-BARD\", \"friendly.bard\", \"friendly_bard\", \"friendly--bard\", \"friendly-.bard\", and \"FrIeNdLy-._.-bArD\" all normalize (via `validate_and_normalize_ref`) to exactly \"friendly-bard\". `check()` asserts `is_normalized()` is true only for already-normalized forms (\"friendly-bard\", \"friendlybard\") and false for the same non-normalized variants used in `normalize()`. `failures()` asserts inputs like \"\" (empty), \" starts-with-space\", \"-starts-with-dash\", \"ends-with-dash-\", \"ends-with-space \", \"includes!invalid-char\", \"space in middle\", and a non-ASCII name (\"alpha-α\") are rejected as invalid names entirely, not merely normalized differently.",
+    "gold_files": ["crates/uv-normalize/src/lib.rs"],
+    "notes": "Verified by reading the normalize()/check()/failures() test functions directly in crates/uv-normalize/src/lib.rs (lines ~173-235)."
+  }
+]

@@ -1,0 +1,20 @@
+The `Name` trait is defined in [`crates/uv-distribution-types/src/traits.rs:16`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/traits.rs:16):
+
+```rust
+pub trait Name {
+    fn name(&self) -> &PackageName;
+}
+```
+
+There are implementations in **10 distinct files**, comprising **32 `impl Name for ...` blocks**:
+
+- [`crates/uv-distribution-types/src/lib.rs:932`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/lib.rs:932) — 15 implementations
+- [`crates/uv-distribution-types/src/installed.rs:535`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/installed.rs:535) — 6
+- [`crates/uv-distribution-types/src/resolved.rs:164`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/resolved.rs:164) — 2
+- [`crates/uv-distribution-types/src/cached.rs:205`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/cached.rs:205) — 3
+- [`crates/uv-distribution-types/src/requested.rs:30`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/requested.rs:30) — 1
+- [`crates/uv-distribution-types/src/any.rs:30`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-distribution-types/src/any.rs:30) — 1
+- [`crates/uv-resolver/src/candidate_selector.rs:1000`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-resolver/src/candidate_selector.rs:1000) — 1
+- [`crates/uv-resolver/src/resolution/requirements_txt.rs:209`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-resolver/src/resolution/requirements_txt.rs:209) — 1
+- [`crates/uv-resolver/src/resolution/mod.rs:73`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv-resolver/src/resolution/mod.rs:73) — 1
+- [`crates/uv/src/commands/pip/operations.rs:428`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_guided-0/crates/uv/src/commands/pip/operations.rs:428) — 1

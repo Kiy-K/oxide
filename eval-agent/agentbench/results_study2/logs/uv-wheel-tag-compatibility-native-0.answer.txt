@@ -1,0 +1,14 @@
+Wheel-tag compatibility is computed in [`uv-platform-tags/src/tags.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-wheel-tag-compatibility-native-0/crates/uv-platform-tags/src/tags.rs:367), primarily by `Tags::compatibility`. It checks the Cartesian product of the wheel’s Python, ABI, and platform tags against the environment’s precomputed tag map, returning either:
+
+- `Compatible(TagPriority)`, used to rank matching wheels
+- `Incompatible(IncompatibleTag::Python | Abi | Platform | ...)`
+
+[`WheelFilename::compatibility`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-wheel-tag-compatibility-native-0/crates/uv-distribution-filename/src/wheel.rs:107) delegates to this logic; multi-tag wheels use `Tags::compatibility`, while single-tag wheels use `Tags::compatibility_tag` through [`wheel_tag.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-wheel-tag-compatibility-native-0/crates/uv-distribution-filename/src/wheel_tag.rs:40). The resolver invokes it in [`version_map.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-wheel-tag-compatibility-native-0/crates/uv-resolver/src/version_map.rs:812), and the priority is retained for tie-breaking.
+
+Before normal Python/ABI/platform matching, free-threaded Python gets a special ABI check. If the target is free-threaded, at least one wheel ABI must be:
+
+- `none`
+- `abi3t`
+- a free-threaded CPython ABI such as `cp313t`
+
+Otherwise compatibility immediately returns `Incompatible(FreethreadedAbi)` ([`tags.rs`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-wheel-tag-compatibility-native-0/crates/uv-platform-tags/src/tags.rs:376)).

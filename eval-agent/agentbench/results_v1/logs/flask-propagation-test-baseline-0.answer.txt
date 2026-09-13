@@ -1,0 +1,14 @@
+The rule is pinned by [`tests/test_basic.py:1536`](/tmp/oxide-agentbench-np2r09z9/flask-propagation-test-baseline-0/tests/test_basic.py:1536), in `test_exception_propagation`.
+
+It parametrizes `key` over:
+
+- `"TESTING"`
+- `"PROPAGATE_EXCEPTIONS"`
+- `"DEBUG"`
+- `None`
+
+The test first sets `app.testing = False`, then defines a view that raises `ZeroDivisionError`.
+
+For each non-`None` key, it sets `app.config[key] = True` and asserts that `client.get("/")` raises `ZeroDivisionError` via `pytest.raises`, proving the exception propagates.
+
+For `key is None`, it leaves those configuration values unchanged and asserts that `client.get("/")` returns a response with status code `500`.

@@ -1,0 +1,15 @@
+The test is [`test_check_net_resolved_ipv4_mapped_ipv6`]( /home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-net-deny-ipv6-mapped-tests-native-0/runtime/permissions/lib.rs:6402).
+
+It tries these deny rules:
+
+- `127.0.0.1`
+- `127.0.0.0/8`
+- `127.0.0.1:8080`
+
+For each, it asserts:
+
+- `example.com:8080` passes the pre-resolution check.
+- Resolved `127.0.0.1:8080` is denied.
+- Resolved `::ffff:127.0.0.1:8080` is also denied.
+- Unrelated addresses—including `::ffff:192.168.1.1` and `::1`—remain allowed.
+- For the port-specific rule, mapped IPv6 `::ffff:127.0.0.1:9090` is allowed.

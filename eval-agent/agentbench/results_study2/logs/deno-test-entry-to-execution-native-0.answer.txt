@@ -1,0 +1,256 @@
+The checked-out source traces the path as follows:
+
+1. Process entry
+
+`cli/main.rs:3-8`
+
+```rust
+deno::main()
+```
+
+This delegates to:
+
+`cli/lib.rs:863` — `main()`
+
+- Collects argv.
+- Calls `resolve_flags_and_init(...)` at `cli/lib.rs:939`.
+- That calls `flags_from_vec_with_initial_cwd(...)`, which parses `deno test`.
+- Calls `run_subcommand(...)` at `cli/lib.rs:950`.
+
+2. `deno test` subcommand dispatch
+
+`cli/lib.rs:124` — `run_subcommand(...)`
+
+The `DenoSubcommand::Test(test_flags)` arm is at `cli/lib.rs:456-483`. It invokes:
+
+`cli/tools/test/mod.rs:2353` — `run_tests(...)`
+
+3. Discover and prepare test modules
+
+`cli/tools/test/mod.rs:2353` — `run_tests(...)`
+
+This function:
+
+- Resolves test options and discovers test specifiers.
+- Type-checks them.
+- Creates a `CliMainWorkerFactory`.
+- Calls `test_specifiers(...)` at `cli/tools/test/mod.rs:2437`.
+
+`cli/tools/test/mod.rs:1715` — `test_specifiers(...)`
+
+For each test module, it creates a worker task and calls:
+
+`cli/tools/test/mod.rs:880` — `test_specifier(...)`
+
+4. Create the test worker and load test runtime support
+
+`cli/tools/test/mod.rs:894` — `configure_main_worker(...)`
+
+This calls:
+
+`cli/tools/test/mod.rs:766-790` — `CliMainWorkerFactory::create_custom_worker(...)`
+
+with:
+
+```rust
+WorkerExecutionMode::Test
+```
+
+The test worker factory injects the test JavaScript modules in:
+
+`cli/worker.rs:678-697`
+
+Notably:
+
+```text
+ext:cli/40_test.js
+```
+
+`cli/js/40_test.js:882` installs the implementation:
+
+```js
+globalThis.Deno.test = test;
+```
+
+The Rust testing extension is also installed by `configure_main_worker(...)`:
+
+`cli/tools/test/mod.rs:774`
+
+```rust
+ops::testing::deno_test::init(...)
+```
+
+Its registered native ops include:
+
+`cli/ops/testing.rs:32-50`
+
+```text
+op_register_test
+op_register_test_hook
+...
+```
+
+5. Evaluate the user’s test module
+
+`cli/tools/test/mod.rs:867` — `configure_main_worker(...)`
+
+```rust
+check_res(worker.execute_side_module().await)?;
+```
+
+`execute_side_module()` evaluates the test module. During that evaluation, a user call such as:
+
+```js
+Deno.test("example", () => {
+  // user callback
+});
+```
+
+dispatches to:
+
+`cli/js/40_test.js:511-518` — `test(...)`
+
+which calls:
+
+`cli/js/40_test.js:364` — `testInner(...)`
+
+`testInner(...)`:
+
+- Normalizes the arguments.
+- Wraps the user callback using `wrapTest(...)` at `cli/js/40_test.js:483`.
+- Calls the native registration op at `cli/js/40_test.js:486-501`:
+
+```js
+op_register_test(testDesc.fn, ...)
+```
+
+6. Register the callback natively
+
+`cli/ops/testing.rs:129` — `op_register_test(...)`
+
+The callback arrives as a V8 function:
+
+```rust
+#[scoped] function: v8::Global<v8::Function>
+```
+
+The op stores it in the worker’s `TestContainer` through:
+
+`cli/tools/test/mod.rs:243` — `TestContainer::register(...)`
+
+The container retains:
+
+- The test description.
+- The wrapped callback in `test_functions`.
+
+7. Begin execution after module loading
+
+`cli/tools/test/mod.rs:972` — `test_specifier_inner(...)`
+
+After module evaluation and `dispatch_load_event()`, it calls:
+
+`cli/tools/test/mod.rs:987`
+
+```rust
+run_tests_for_worker(...)
+```
+
+`cli/tools/test/mod.rs:1218` — `run_tests_for_worker(...)`
+
+This extracts the registered descriptions and V8 functions from `TestContainer`, then calls:
+
+`cli/tools/test/mod.rs:1434` — `run_tests_for_worker_inner(...)`
+
+The registered tests are selected by:
+
+`cli/tools/test/mod.rs:1283` — `compute_tests_to_run(...)`
+
+8. Invoke the individual registered callback
+
+Inside `run_tests_for_worker_inner(...)`, the selected callback is reached at:
+
+`cli/tools/test/mod.rs:1560-1569`
+
+```rust
+invoke_test_function(
+  worker,
+  &function,
+  ...
+)
+```
+
+`cli/tools/test/mod.rs:1351` — `invoke_test_function(...)`
+
+The actual native-to-JavaScript invocation occurs at:
+
+`cli/tools/test/mod.rs:1364`
+
+```rust
+let call = worker.js_runtime.call(function);
+```
+
+The returned promise is driven by:
+
+`cli/tools/test/mod.rs:1369-1371`
+
+```rust
+worker
+  .js_runtime
+  .with_event_loop_promise(call, PollEventLoopOptions::default())
+```
+
+9. JavaScript wrapper chain to the user callback
+
+The registered `function` is the wrapper produced by:
+
+`cli/js/40_test.js:872` — `wrapTest(desc)`
+
+Its wrapper chain is:
+
+```text
+wrapTest
+  → wrapOuter
+    → assertExit
+      → wrapInner
+        → original user callback
+```
+
+Relevant calls:
+
+- `wrapTest(...)` creates `wrapInner(desc.fn)`, then `assertExit(...)`, then `wrapOuter(...)`.
+- `wrapOuter(...)` calls `fn(desc)` at `cli/js/40_test.js:239`.
+- `wrapInner(...)` calls the wrapped test function with its context at `cli/js/40_test.js:300`.
+- Therefore the original user-provided `Deno.test()` callback is ultimately invoked at:
+
+`cli/js/40_test.js:300`
+
+```js
+await fn(MapPrototypeGet(testStates, desc.id).context);
+```
+
+So the core execution path is:
+
+```text
+cli/main.rs
+  → cli/lib.rs::main
+  → cli/lib.rs::resolve_flags_and_init
+  → cli/lib.rs::run_subcommand
+  → cli/tools/test/mod.rs::run_tests
+  → test_specifiers
+  → test_specifier
+  → configure_main_worker
+  → execute_side_module
+  → cli/js/40_test.js::test
+  → testInner
+  → cli/ops/testing.rs::op_register_test
+  → TestContainer::register
+  → test_specifier_inner
+  → run_tests_for_worker
+  → run_tests_for_worker_inner
+  → invoke_test_function
+  → JsRuntime::call
+  → wrapOuter
+  → assertExit
+  → wrapInner
+  → user Deno.test() callback
+```

@@ -1,0 +1,6 @@
+Flask re-raises an unhandled view exception in `Flask.handle_exception()` when:
+
+- `app.config["PROPAGATE_EXCEPTIONS"] is True`; or
+- it is `None` (the default) and either `app.testing` or `app.debug` is `True`.
+
+If `PROPAGATE_EXCEPTIONS` is explicitly `False`, it takes precedence and Flask logs the exception and returns a generic `500 InternalServerError` response. If `PROPAGATE_EXCEPTIONS` is unset, its default is `None`, falling back to `testing or debug`.

@@ -1,0 +1,64 @@
+{
+ "tailwindlabs/tailwindcss": {
+  "wall_s": 32.4,
+  "peak_rss_kb": 25720,
+  "index_db_bytes": 1830912,
+  "status": {
+   "root": "/home/khoi/.cache/oxide-contextbench/repos/tailwindcss@daea6623fd69",
+   "index_exists": true,
+   "is_current": true,
+   "embedder_current": true,
+   "base_fresh": true,
+   "pending_embeddings": 0,
+   "files": 133,
+   "symbols": 267,
+   "embeddings": 267,
+   "embedder": "http:@http://127.0.0.1:8191/v1/embeddings",
+   "supported_languages": [
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "rust",
+    "go",
+    "java",
+    "ruby",
+    "php",
+    "c",
+    "cpp"
+   ],
+   "schema_version": 1
+  }
+ },
+ "astral-sh/uv": {
+  "wall_s": 2464.2,
+  "peak_rss_kb": 160992,
+  "index_db_bytes": 178200576,
+  "status": {
+   "root": "/home/khoi/.cache/oxide-contextbench/repos/uv@c0df400a4cf4",
+   "index_exists": true,
+   "is_current": true,
+   "embedder_current": true,
+   "base_fresh": true,
+   "pending_embeddings": 0,
+   "files": 743,
+   "symbols": 16573,
+   "embeddings": 16573,
+   "embedder": "http:jina-embeddings-v5-omni-nano@http://127.0.0.1:8192/v1/embeddings",
+   "supported_languages": [
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "rust",
+    "go",
+    "java",
+    "ruby",
+    "php",
+    "c",
+    "cpp"
+   ],
+   "schema_version": 1
+  }
+ }
+}

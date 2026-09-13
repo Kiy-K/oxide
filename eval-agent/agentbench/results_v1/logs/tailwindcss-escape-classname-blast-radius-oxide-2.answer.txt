@@ -1,0 +1,14 @@
+Blast radius:
+
+- 32 built-in plugin files under [`src/plugins/`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/src/plugins ) call `e(...)`, including `backgroundColor.js`, `borderRadius.js`, `inset.js`, `margin.js`, `padding.js`, `negativeMargin.js`, and the other utility plugins.
+- Direct internal callers:
+  - [`src/lib/substituteClassApplyAtRules.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/src/lib/substituteClassApplyAtRules.js )
+  - [`src/lib/substituteVariantsAtRules.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/src/lib/substituteVariantsAtRules.js )
+- [`src/util/processPlugins.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/src/util/processPlugins.js ) hands `escapeClassName` to plugins as the `e` API property; it is the compatibility boundary that exposes the changed signature.
+- Tests exercising the API:
+  - [`__tests__/escapeClassName.test.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/__tests__/escapeClassName.test.js )
+  - Five plugin tests that provide `e: escapeClassName`
+  - [`__tests__/processPlugins.test.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/__tests__/processPlugins.test.js )
+  - [`__tests__/variantsAtRule.test.js`]( /tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-oxide-2/__tests__/variantsAtRule.test.js )
+
+So the practical estimate is 34 production call-site files, plus the plugin API bridge and 8 test files—roughly 43–44 files depending on whether the function definition itself is counted.

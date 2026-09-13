@@ -1,0 +1,16 @@
+The constraining test is [`test_check_net_resolved_ipv4_mapped_ipv6`](</home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/deno-net-deny-ipv6-mapped-tests-oxide_guided-0/runtime/permissions/lib.rs:6402>).
+
+It iterates over deny rules:
+
+- `127.0.0.1`
+- `127.0.0.0/8`
+- `127.0.0.1:8080`
+
+For each, it asserts that post-resolution checks at port `8080` return `Err` for both:
+
+- `127.0.0.1`
+- `::ffff:127.0.0.1`
+
+Thus an IPv4 deny rule must also block the equivalent IPv4-mapped IPv6 address.
+
+It additionally asserts that unrelated addresses (`192.168.1.1`, `::ffff:192.168.1.1`, and `::1`) remain allowed. For the port-specific rule, it asserts `::ffff:127.0.0.1:9090` is allowed, confirming the port constraint is preserved.

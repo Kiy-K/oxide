@@ -1,0 +1,9 @@
+The `Name` trait is defined at [crates/uv-distribution-types/src/traits.rs:16](/home/khoi/Projects/oxide/eval-agent/agentbench/.run_tmp/oxide-agentbench-study2-mxhtn6qs/uv-name-trait-implementors-oxide_first-0/crates/uv-distribution-types/src/traits.rs:16). Its `name()` method returns `&PackageName`.
+
+It is implemented in 10 distinct files:
+
+- `uv-distribution-types`: `any.rs`, `cached.rs`, `installed.rs`, `lib.rs`, `requested.rs`, `resolved.rs`
+- `uv-resolver`: `candidate_selector.rs`, `resolution/mod.rs`, `resolution/requirements_txt.rs`
+- `uv`: `commands/pip/operations.rs`
+
+`lib.rs` contains multiple implementations for different distribution types, but counts as one file.

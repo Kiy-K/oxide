@@ -1,0 +1,59 @@
+The flow is:
+
+1. `deno.json` is deserialized into `ConfigFileJson.node_modules_dir` as a raw JSON value.  
+   [`libs/config/deno_json/mod.rs:1517`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/config/deno_json/mod.rs:1517>)
+
+2. `Workspace::node_modules_dir()` reads the root `deno.json` value and converts it to `NodeModulesDirMode`:
+
+   - `"auto"` → `Auto`
+   - `"manual"` → `Manual`
+   - `"none"` → `None`
+   - `true` → `Auto`
+   - `false` → `None`
+
+   [`libs/config/workspace/mod.rs:1801`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/config/workspace/mod.rs:1801>)  
+   [`libs/config/deno_json/mod.rs:1341`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/config/deno_json/mod.rs:1341>)
+
+3. `CliFactory` passes command-line overrides into `WorkspaceFactoryOptions`. The workspace factory gives precedence to process state and CLI flags, then reads `workspace.node_modules_dir()` from `deno.json`.  
+   [`cli/factory.rs:1574`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/cli/factory.rs:1574>)  
+   [`libs/resolver/factory.rs:342`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/resolver/factory.rs:342>)
+
+4. `WorkspaceFactory::node_modules_dir_mode()` resolves the effective mode. Normally the config value is preserved. A `Manual` mode may be promoted to `Auto` for package-manager subcommands so those commands can populate `node_modules`.  
+   [`libs/resolver/factory.rs:388`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/resolver/factory.rs:388>)
+
+5. The effective mode determines the local directory path:
+
+   - `Auto` or `Manual` → root config directory plus `node_modules`
+   - `None` → `None`, meaning use the global npm cache
+
+   [`libs/resolver/factory.rs:442`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/resolver/factory.rs:442>)
+
+6. When the npm installer is constructed, that path is passed as `NpmInstallerOptions.maybe_node_modules_path`.  
+   [`libs/npm_installer/factory.rs:503`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/npm_installer/factory.rs:503>)
+
+   The installer then selects:
+
+   - `Some(path)` → local isolated or hoisted `node_modules` installer
+   - `None` → global-cache installer
+
+   [`libs/npm_installer/lib.rs:207`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/npm_installer/lib.rs:207>)
+
+7. The automatic-install decision occurs in `maybe_npm_install()`:
+
+   ```rust
+   if cli_options.specified_node_modules_dir()? == Some(NodeModulesDirMode::Auto)
+     && let Some(npm_installer) = factory.npm_installer_if_managed().await?
+   ```
+
+   Thus, automatic installation requires the explicitly specified value—CLI or `deno.json`—to resolve to `Auto`; merely arriving at an inferred effective mode is not enough.  
+   [`cli/tools/run/mod.rs:450`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/cli/tools/run/mod.rs:450>)
+
+8. That gate calls `ensure_top_level_package_json_install()`. It skips work if dependencies are already resolved; otherwise it adds the `package.json` npm requirements to the npm resolution.  
+   [`libs/npm_installer/lib.rs:483`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/npm_installer/lib.rs:483>)
+
+9. If the caching strategy is eager, `maybe_npm_install()` then calls `cache_packages(PackageCaching::All)`, which invokes the selected local filesystem installer. That is the point where packages are actually synchronized into the configured `node_modules` directory.  
+   [`cli/tools/run/mod.rs:460`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/cli/tools/run/mod.rs:460>)  
+   [`libs/npm_installer/lib.rs:407`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/npm_installer/lib.rs:407>)  
+   [`libs/npm_installer/local.rs:1271`](</tmp/oxide-agentbench-orup7es6/deno-node-modules-dir-config-oxide-0/libs/npm_installer/local.rs:1271>)
+
+In short: `deno.json` → `Workspace::node_modules_dir()` → resolved mode/path in `WorkspaceFactory` → local-vs-global installer selection → `specified_node_modules_dir() == Auto` gate → top-level dependency resolution → filesystem synchronization into `node_modules`.

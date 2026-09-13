@@ -1,0 +1,33 @@
+The call path is:
+
+1. `seaborn.lineplot()` is re-exported by [`seaborn/__init__.py:5`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/__init__.py:5) from `seaborn.relational`.
+
+2. [`seaborn.relational.lineplot()`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/relational.py:597) creates a `_LinePlotter` instance.
+
+3. `_LinePlotter` is defined in [`seaborn/relational.py:346`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/relational.py:346). It inherits from `_RelationalPlotter`, which inherits from `VectorPlotter` in [`seaborn/_oldcore.py:613`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/_oldcore.py:613).
+
+4. `lineplot()` attaches the plotter to the axes via `VectorPlotter._attach()` and then calls:
+
+   ```python
+   p.plot(ax, kwargs)
+   ```
+
+   at [`seaborn/relational.py:632-639`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/relational.py:632).
+
+5. `_LinePlotter.plot()` at [`seaborn/relational.py:378`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/relational.py:378) iterates over semantic subsets using the inherited `VectorPlotter.iter_data()` method, then makes the actual plotting call:
+
+   ```python
+   lines = ax.plot(sub_data["x"], sub_data["y"], **kws)
+   ```
+
+   at [`seaborn/relational.py:453`](/tmp/oxide-agentbench-np2r09z9/seaborn-lineplot-call-flow-oxide-0/seaborn/relational.py:453).
+
+   When `units` is supplied, it calls the same method once per unit at line 451.
+
+The exact Matplotlib method called is:
+
+```python
+matplotlib.axes.Axes.plot(...)
+```
+
+implemented in Matplotlib’s `matplotlib/axes/_axes.py`. Internally, `Axes.plot()` creates `Line2D` objects through `_get_lines()` and adds them to the axes with `Axes.add_line()`.

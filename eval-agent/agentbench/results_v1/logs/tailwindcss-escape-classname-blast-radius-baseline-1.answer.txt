@@ -1,0 +1,49 @@
+Blast radius: 34 production files with actual calls.
+
+Direct calls:
+
+- [src/lib/substituteClassApplyAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-1/src/lib/substituteClassApplyAtRules.js:30)
+- [src/lib/substituteVariantsAtRules.js](/tmp/oxide-agentbench-np2r09z9/tailwindcss-escape-classname-blast-radius-baseline-1/src/lib/substituteVariantsAtRules.js:9)
+
+Calls through the plugin `e` alias:
+
+- `src/plugins/backgroundColor.js`
+- `src/plugins/backgroundPosition.js`
+- `src/plugins/backgroundSize.js`
+- `src/plugins/borderColor.js`
+- `src/plugins/borderRadius.js`
+- `src/plugins/borderWidth.js`
+- `src/plugins/boxShadow.js`
+- `src/plugins/cursor.js`
+- `src/plugins/fill.js`
+- `src/plugins/flex.js`
+- `src/plugins/flexGrow.js`
+- `src/plugins/flexShrink.js`
+- `src/plugins/fontFamily.js`
+- `src/plugins/fontSize.js`
+- `src/plugins/fontWeight.js`
+- `src/plugins/height.js`
+- `src/plugins/inset.js`
+- `src/plugins/letterSpacing.js`
+- `src/plugins/lineHeight.js`
+- `src/plugins/listStyleType.js`
+- `src/plugins/margin.js`
+- `src/plugins/maxHeight.js`
+- `src/plugins/maxWidth.js`
+- `src/plugins/minHeight.js`
+- `src/plugins/minWidth.js`
+- `src/plugins/negativeMargin.js`
+- `src/plugins/objectPosition.js`
+- `src/plugins/opacity.js`
+- `src/plugins/padding.js`
+- `src/plugins/stroke.js`
+- `src/plugins/textColor.js`
+- `src/plugins/width.js`
+
+Tests also containing calls that would need updating:
+
+- `__tests__/escapeClassName.test.js`
+- `__tests__/processPlugins.test.js`
+- `__tests__/variantsAtRule.test.js`
+
+`src/util/processPlugins.js` is the handoff point that exposes `escapeClassName` as `e`; it does not call the function itself, but should be reviewed if the second argument must be injected or bound centrally. Five plugin tests also manually assign `e: escapeClassName`, so they may require fixture updates depending on that API decision.

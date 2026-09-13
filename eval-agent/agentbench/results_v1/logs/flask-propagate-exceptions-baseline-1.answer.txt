@@ -1,0 +1,17 @@
+For an unhandled exception, Flask handles it in `Flask.handle_exception()`.
+
+It re-raises the exception when:
+
+- `app.config["PROPAGATE_EXCEPTIONS"]` is explicitly `True`; or
+- `PROPAGATE_EXCEPTIONS` is `None` (its default) and either `app.testing` or `app.debug` is `True`.
+
+In code, the effective logic is:
+
+```python
+propagate = app.config["PROPAGATE_EXCEPTIONS"]
+
+if propagate is None:
+    propagate = app.testing or app.debug
+```
+
+If the result is false, Flask logs the exception and returns a generic `500 InternalServerError` response.

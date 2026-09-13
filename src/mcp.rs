@@ -54,12 +54,24 @@ const RETRIEVAL_MODE_DESCRIPTION: &str =
 /// predates this sees no change.
 const BLAST_RADIUS_DESCRIPTION: &str = "Also report the bounded impact neighborhood of the top matches: direct callers, implementors and related tests. Off by default; never changes which results are returned or how they rank.";
 
+/// Found empirically (agent-eval pilot, 2026-09): with no description, a
+/// model guesses at `path`'s meaning and gets it wrong in two different
+/// ways -- passing `""` (rejected: empty path) and passing a subdirectory
+/// like `"cli"` expecting it to scope the search within an already-loaded
+/// index (rejected: `index_missing`, since `path` is a repository ROOT to
+/// discover an index *at*, not a filter within one). Both failures were
+/// 100% of that pilot's malformed-argument calls. The fix is this
+/// description, not new validation: `RepositoryService::discover` already
+/// walks upward from cwd for `.git`/`.oxide`, so a normal agent invoked
+/// inside the target repo never needs this argument at all.
+const PATH_DESCRIPTION: &str = "Repository root containing the OXIDE index. Omit this to use the current repository -- that's correct for almost every call. Only pass it to target a different repository than the one you're running in. Never pass a file, an empty string, or a subdirectory that isn't itself an indexed repository root.";
+
 fn query_input_schema() -> JsonObject {
     object(json!({
         "type": "object",
         "properties": {
             "task": {"type": "string"},
-            "path": {"type": "string"},
+            "path": {"type": "string", "description": PATH_DESCRIPTION},
             "budget_tokens": {"type": "integer", "minimum": 0},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
             "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
@@ -74,7 +86,7 @@ fn search_input_schema() -> JsonObject {
         "type": "object",
         "properties": {
             "query": {"type": "string"},
-            "path": {"type": "string"},
+            "path": {"type": "string", "description": PATH_DESCRIPTION},
             "limit": {"type": "integer", "minimum": 0, "maximum": 100},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
             "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
