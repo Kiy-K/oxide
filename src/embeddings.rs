@@ -67,6 +67,17 @@ pub trait EmbeddingProvider: Sync {
         true
     }
 
+    /// Whether this provider sends source-code excerpts off-machine. Local
+    /// providers (`HashedEmbedder`, `NativeEmbedder`, a self-hosted
+    /// `HttpEmbedder`) keep the default `false`; only the opt-in remote
+    /// adapters in `remote_embed.rs` override it. `Service::search`/
+    /// `context`/`review` consult this to decide whether an unavailable
+    /// provider should hard-fail (local — today's behavior, unchanged) or
+    /// degrade to the lexical-still-good result with a warning (remote).
+    fn is_remote(&self) -> bool {
+        false
+    }
+
     /// Embed many texts; providers with batch endpoints should override.
     /// Default preserves order via per-text calls.
     fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
@@ -1097,6 +1108,28 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
             format!("http:{model}@{u}")
         }
         _ => {
+            // Same remote-resolution step `open_embedder` takes below, so
+            // the two can never name a different provider for the same
+            // environment — see that function's comment for what breaks
+            // otherwise. This function never fails a command by itself, but
+            // `Err` (e.g. `$OXIDE_EMBED_PROVIDER` set to an unknown name, or
+            // its matching API-key env var missing) must not fall through to
+            // the local default's name — `open_embedder` will genuinely
+            // fail on the same input, and reporting "local, all good" here
+            // (e.g. in `oxide status`) would hide a real misconfiguration
+            // instead of surfacing it.
+            match crate::remote_embed::resolve_configured_remote() {
+                Ok(Some(remote)) => {
+                    return crate::remote_embed::provider_name(
+                        &remote.provider,
+                        &remote.model,
+                        remote.base_url.as_deref(),
+                        remote.known_dim.or(remote.dimensions),
+                    );
+                }
+                Ok(None) => {}
+                Err(e) => return format!("misconfigured-remote-provider:{e}"),
+            }
             // Must resolve through the same `resolve_native_profile` as
             // `open_embedder`, or this name disagrees with the provider that
             // actually embedded: `oxide status` would report
@@ -1215,6 +1248,22 @@ pub fn open_embedder(
             Ok(Box::new(HttpEmbedder::new(&u, &model)?))
         }
         _ => {
+            // Remote is checked before the local default, but only ever
+            // resolves to something when the caller explicitly opted in
+            // (`$OXIDE_EMBED_PROVIDER` env vars, or `oxide setup`'s saved
+            // `remote_consent_ack`ed config) — see `resolve_configured_
+            // remote`'s doc comment. An unconfigured environment falls
+            // through untouched.
+            if let Some(remote) = crate::remote_embed::resolve_configured_remote()? {
+                return crate::remote_embed::build(
+                    &remote.provider,
+                    &remote.model,
+                    remote.base_url.as_deref(),
+                    remote.dimensions,
+                    remote.known_dim,
+                    &remote.api_key,
+                );
+            }
             #[cfg(feature = "native-embed")]
             {
                 let configured = std::env::var("OXIDE_EMBED_NATIVE").ok();
