@@ -90,6 +90,10 @@ tree-sitter-c = "0.24.2"
 # C++ shares C's declaration shapes but adds overloads, templates, and
 # qualified out-of-class definitions; it needs its own grammar and queries.
 tree-sitter-cpp = "0.23.4"
+# Encrypts `~/.config/oxide/credentials.enc` (remote embedding provider API
+# keys, see `src/credentials.rs`). Pure-Rust RustCrypto, no OpenSSL — same
+# rustls-over-native-tls preference already stated for the `sentry` dependency.
+aes-gcm = "0.10"
 
 [features]
 default = ["native-embed"]
