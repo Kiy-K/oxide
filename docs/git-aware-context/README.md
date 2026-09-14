@@ -158,6 +158,18 @@ very large diff.
 
 ## Limitations (by design, not oversights)
 
+- **Diff-to-symbol mapping uses the last-*indexed* state, not live disk.**
+  `changed_symbols_for` overlaps a *live* `git diff`'s line ranges against
+  symbol positions from whatever was last indexed. If a file has been edited
+  since the last `oxide index` in a way that shifts line numbers, attribution
+  can be imprecise or miss entirely — this degrades gracefully (a hunk that
+  overlaps nothing just maps to nothing, never a crash) rather than erroring,
+  but it is not corrected automatically. This is not unique to git evidence —
+  every OXIDE feature answers against the last-indexed state — but git
+  evidence is the one feature that explicitly correlates against *live* diff
+  line numbers, so staleness here is more visible than elsewhere.
+  `tests/git_context_e2e.rs::git_evidence_reflects_the_currently_indexed_working_tree_state`
+  pins the correct (reindexed) case.
 - **A fully deleted symbol is invisible.** Only the current-state file is
   parsed for symbols; a function deleted in its entirety has nothing left in
   the current tree to attribute the deletion to. Naming it would need
@@ -192,3 +204,38 @@ very large diff.
   interaction.
 - `tests/mcp_e2e.rs`: the `query` MCP tool schema/allowlist assertions
   include `git`.
+
+## Review
+
+A Codex CLI review pass was attempted (per this repo's standing practice)
+and failed to start on this machine — a pre-existing, unrelated environment
+misconfiguration (`mcp_servers.context7` in the local Codex config: "url is
+not supported for stdio"), reproduced identically on two attempts, not a
+transient failure. Fixing that global config is out of scope for this
+feature. In its place, a focused self-audit covered the four areas the
+review would have targeted:
+
+- **False co-change relationships** — mitigated by the noisy-file stoplist,
+  the files-per-commit cap, the minimum-shared-commits floor, and ranking by
+  coupling ratio instead of raw count (see above); pinned by
+  `noisy_cochange_files_are_recognized` and the co-change assertions in
+  `merge_commit_neither_crashes_nor_pollutes_co_change`.
+- **Unbounded traversal** — every `git` call is `-n`/window-bounded; the
+  co-change stage is bounded to 5 target files × 2 calls each regardless of
+  diff size; confirmed by reading every `Command::new("git")` call site in
+  `gitutil.rs`.
+- **Stale symbol mapping** — real, and now written down above under
+  Limitations; not a crash risk (a non-overlapping hunk just maps to
+  nothing), and the correct (reindexed) case is pinned by a test.
+- **Request-path regression** — `review.rs`'s `store.all_symbols()` →
+  `engine.snapshot_with_relations()` change was checked against
+  `SymbolSnapshot::load`'s implementation: it's a strict superset (adds
+  `calls`/`bases` merging review never had before) at one bounded extra
+  query, not an unbounded one, and `review` is never exposed over MCP (only
+  `query`/`search` are), so the process-cache staleness question that would
+  matter for a long-lived server doesn't apply to it.
+
+No findings from the self-audit required code changes beyond the
+documentation addition above. A real second-model pass is still worth
+running once the local Codex config issue is fixed — this is not a
+substitute for one, only what was available given the blocker.
