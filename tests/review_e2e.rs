@@ -75,6 +75,16 @@ fn review_finds_changed_symbols_and_related_test() {
         related.iter().any(|r| r.contains("test_should_retry")),
         "review context must include the related test: {related:?}"
     );
+
+    let messages: Vec<&str> = ctx
+        .recent_commits
+        .iter()
+        .map(|c| c.message.as_str())
+        .collect();
+    assert!(
+        messages.contains(&"bump attempts"),
+        "recent_commits must include the commit that made the change: {messages:?}"
+    );
 }
 
 fn write(path: impl AsRef<std::path::Path>, content: &str) {

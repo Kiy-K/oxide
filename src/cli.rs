@@ -1051,6 +1051,25 @@ fn cmd_review(path: Option<&str>, diff: &str, json: bool, p: Paint) -> Result<()
             "{}",
             p.dim(&format!("changed files: {}", ctx.changed_files.join(", ")))
         );
+        if !ctx.recent_commits.is_empty() {
+            let commits: Vec<String> = ctx
+                .recent_commits
+                .iter()
+                .map(|c| format!("{} {}", c.short_sha, c.message))
+                .collect();
+            println!(
+                "{}",
+                p.dim(&format!("recent commits: {}", commits.join(" · ")))
+            );
+        }
+        if !ctx.co_change.is_empty() {
+            let pairs: Vec<String> = ctx
+                .co_change
+                .iter()
+                .map(|e| format!("{}↔{} ({})", e.file, e.co_changed_with, e.count))
+                .collect();
+            println!("{}", p.dim(&format!("co-change: {}", pairs.join(", "))));
+        }
         for c in &ctx.changed_symbols {
             println!(
                 "\n{} {} {} {}",

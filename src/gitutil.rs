@@ -147,9 +147,16 @@ pub fn recent_commits(repo: &Path, limit: usize) -> Result<Vec<CommitMeta>> {
     recent_commits_in_range(repo, "", limit)
 }
 
-/// [`recent_commits`], scoped to `range` (`git log <range>`) instead of
-/// "most recent at HEAD" — what `oxide review` wants: commits *in this
-/// diff*, not just recently.
+/// [`recent_commits`], scoped to `range` instead of "most recent at HEAD" —
+/// what `oxide review` wants: commits *in this diff*, not just recently.
+///
+/// `range`'s convention matches [`diff_text`]'s (empty = nothing extra,
+/// `A..B` explicit, a single rev `R` means "everything since `R`") but a
+/// bare `R` needs translating to `R..` before it reaches `git log`: `git
+/// diff R` compares R's tree to the current state (so bare-R already means
+/// "since R" there), while `git log R` walks R's *ancestors* — the opposite
+/// direction for the identical spelling. `R..` is git's own shorthand for
+/// `R..HEAD`.
 pub fn recent_commits_in_range(repo: &Path, range: &str, limit: usize) -> Result<Vec<CommitMeta>> {
     let mut args: Vec<String> = vec![
         "log".into(),
@@ -160,7 +167,12 @@ pub fn recent_commits_in_range(repo: &Path, range: &str, limit: usize) -> Result
         "--format=%H%x1f%h%x1f%s%x1f%an%x1f%cd".into(),
     ];
     if !range.is_empty() {
-        args.push(range.to_string());
+        let log_range = if range.contains("..") {
+            range.to_string()
+        } else {
+            format!("{range}..")
+        };
+        args.push(log_range);
     }
     // `--date=iso-strict-local` + `TZ=UTC` makes git itself normalize the
     // date to a `+00:00` offset; `parse_commit_line` turns that into `Z` —

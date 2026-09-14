@@ -2,11 +2,11 @@
 //! a compact, explainable context pack for a downstream model or human.
 
 use crate::embeddings::EmbeddingProvider;
-use crate::gitutil::diff_files;
+use crate::gitctx::{self, ChangedSymbol, CoChangeEntry};
+use crate::gitutil::CommitMeta;
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
-use crate::symbols::Symbol;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
@@ -17,55 +17,36 @@ pub struct ReviewContext {
     pub changed_files: Vec<String>,
     pub changed_symbols: Vec<ChangedSymbol>,
     pub related: Vec<SearchHit>,
+    /// Commits within `range`, newest first — bounded, see `gitctx.rs`.
+    pub recent_commits: Vec<CommitMeta>,
+    /// Bounded historical co-change evidence for the changed files.
+    pub co_change: Vec<CoChangeEntry>,
 }
 
-#[derive(Debug, Serialize)]
-pub struct ChangedSymbol {
-    #[serde(flatten)]
-    pub symbol: Symbol,
-    pub added_lines: u32,
-    pub reason: String,
-}
-
-/// Build review context for `range` (see [`diff_files`]).
+/// Build review context for `range` (see [`crate::gitutil::diff_text`]).
 ///
-/// Seeds = symbols overlapping added lines in each changed file. Related
-/// context = structural neighbors of seeds (definitions used, callers by
-/// reference, tests) plus a semantic top-up from the union of seed signatures.
+/// Seeds = symbols overlapping added lines in each changed file (plus,
+/// unconditionally since review is inherently diff-scoped, recent commits in
+/// `range` and bounded co-change history for the changed files — see
+/// `gitctx::build_git_context`). Related context = structural neighbors of
+/// seeds (definitions used, callers by reference, tests) plus a semantic
+/// top-up from the union of seed signatures.
 pub fn build_review_context(
     repo_root: &Path,
     store: &dyn IndexBackend,
     embedder: &dyn EmbeddingProvider,
     range: &str,
 ) -> anyhow::Result<ReviewContext> {
-    let deltas = diff_files(repo_root, range)?;
-    let symbols = store.all_symbols()?;
-    let graph = RelationGraph::build(&symbols);
+    let engine = RetrievalEngine::new(store, embedder);
+    // Routed through the engine's lazy, cached corpus snapshot rather than a
+    // direct `store.all_symbols()` call — the request-path invariant
+    // `context.rs` already follows (AGENTS.md).
+    let symbols = &engine.snapshot_with_relations()?.symbols;
+    let graph = RelationGraph::build(symbols);
 
-    let mut changed_symbols: Vec<ChangedSymbol> = Vec::new();
-    let mut seen_seeds: Vec<u64> = Vec::new();
-    for d in &deltas {
-        for s in symbols
-            .iter()
-            .filter(|s| s.file == d.file && s.kind != crate::symbols::SymbolKind::Module)
-        {
-            if let Some(overlap) = d
-                .added
-                .iter()
-                .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
-                .max()
-            {
-                if overlap > 0 {
-                    seen_seeds.push(s.id());
-                    changed_symbols.push(ChangedSymbol {
-                        symbol: s.clone(),
-                        added_lines: overlap,
-                        reason: format!("changed in diff (+{} lines)", overlap),
-                    });
-                }
-            }
-        }
-    }
+    let git_ctx = gitctx::build_git_context(repo_root, symbols, range);
+    let changed_symbols = git_ctx.changed_symbols;
+    let seen_seeds: Vec<u64> = changed_symbols.iter().map(|c| c.symbol.id()).collect();
 
     // Structural expansion around the seeds.
     let mut related_ids: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
@@ -85,7 +66,6 @@ pub fn build_review_context(
 
     // Semantic top-up seeded from changed signatures so purely semantic
     // relatives (no name/reference link) can still surface.
-    let engine = RetrievalEngine::new(store, embedder);
     let query = changed_symbols
         .iter()
         .map(|c| format!("{} {}", c.symbol.qualified_name, c.symbol.signature))
@@ -138,24 +118,11 @@ pub fn build_review_context(
     related.truncate(15);
 
     Ok(ReviewContext {
-        range: if range.is_empty() {
-            "HEAD".into()
-        } else {
-            range.into()
-        },
-        changed_files: deltas.iter().map(|d| d.file.clone()).collect(),
+        range: git_ctx.evidence.range,
+        changed_files: git_ctx.evidence.changed_files,
         changed_symbols,
         related,
+        recent_commits: git_ctx.evidence.recent_commits,
+        co_change: git_ctx.evidence.co_change,
     })
-}
-
-/// Overlap length of two inclusive line ranges.
-fn overlap_len(a1: u32, a2: u32, b1: u32, b2: u32) -> u32 {
-    let lo = a1.max(b1);
-    let hi = a2.min(b2);
-    if hi >= lo {
-        hi - lo + 1
-    } else {
-        0
-    }
 }
