@@ -156,6 +156,11 @@ pub enum Cmd {
         /// same token budget.
         #[arg(long)]
         blast_radius: bool,
+        /// Also pull in the current diff's changed symbols, their
+        /// callers/tests, and bounded co-change history as evidence — lower
+        /// priority than direct/structural matches. No-op outside a git repo.
+        #[arg(long)]
+        git: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -489,6 +494,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             budget_tokens,
             profile,
             blast_radius,
+            git,
             json,
         } => {
             let task = question.or(task_flag).ok_or_else(|| {
@@ -502,9 +508,12 @@ pub fn run(args: Args) -> Result<(), CliError> {
             cmd_query(
                 path.as_deref(),
                 &task,
-                budget_tokens,
-                resolve_profile(profile.as_deref(), json)?,
-                blast_radius,
+                QueryFlags {
+                    budget_tokens,
+                    retrieval_mode: resolve_profile(profile.as_deref(), json)?,
+                    blast_radius,
+                    git,
+                },
                 json,
                 paint,
             )
@@ -1113,18 +1122,32 @@ fn short_symbol_id(id: &str) -> String {
     }
 }
 
-fn cmd_query(
-    path: Option<&str>,
-    task: &str,
+/// The subset of `oxide query`'s flags that shape retrieval rather than
+/// output — bundled so `cmd_query` stays under clippy's argument-count
+/// lint without inventing a wider "options" abstraction nothing else needs.
+struct QueryFlags {
     budget_tokens: usize,
     retrieval_mode: RetrievalMode,
     blast_radius: bool,
+    git: bool,
+}
+
+fn cmd_query(
+    path: Option<&str>,
+    task: &str,
+    flags: QueryFlags,
     json: bool,
     p: Paint,
 ) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let pack = service
-        .context(task, budget_tokens, retrieval_mode, blast_radius)
+        .context(
+            task,
+            flags.budget_tokens,
+            flags.retrieval_mode,
+            flags.blast_radius,
+            flags.git,
+        )
         .map_err(|e| CliError::service(e, json))?;
     if json {
         println!(
@@ -1138,6 +1161,35 @@ fn cmd_query(
         p.bold("Relevant code for"),
         p.bold(&format!("\"{}\"", pack.task))
     );
+    if let Some(git) = &pack.git {
+        if !git.changed_files.is_empty() {
+            println!(
+                "{} {}",
+                p.dim("git:"),
+                p.dim(&format!(
+                    "{} changed file{} ({})",
+                    git.changed_files.len(),
+                    if git.changed_files.len() == 1 {
+                        ""
+                    } else {
+                        "s"
+                    },
+                    git.changed_files.join(", ")
+                ))
+            );
+        }
+        if let Some(latest) = git.recent_commits.first() {
+            println!(
+                "{} {}",
+                p.dim("git:"),
+                p.dim(&format!(
+                    "latest commit {} \"{}\"",
+                    latest.short_sha, latest.message
+                ))
+            );
+        }
+        println!();
+    }
     if pack.items.is_empty() {
         println!(
             "Nothing matched. Try different words, or {}.",

@@ -121,21 +121,13 @@ pub(crate) const GIT_COCHANGE_MAX_TARGET_FILES: usize = 5;
 /// load-bearing for determinism, not cosmetic.
 pub(crate) const GIT_COCHANGE_MAX_FANOUT: usize = 5;
 
-// The six constants below are consumed by `context.rs`'s git
-// candidate-injection block, landing in the next commit —
-// `#[allow(dead_code)]` on each is temporary WIP staging, not a permanent
-// suppression.
-
 /// Symbols pulled per co-changed file into the context pack (first
 /// non-module symbols by declaration order).
-#[allow(dead_code)]
 pub(crate) const GIT_COCHANGE_SYMBOLS_PER_FILE: usize = 2;
 /// Changed-symbol candidates admitted to the context pool.
-#[allow(dead_code)]
 pub(crate) const GIT_CHANGED_CONTEXT_ITEMS: usize = 8;
 /// Callers/tests pulled per changed symbol via the same `RelationGraph`
 /// structural expansion already built for the query's seeds.
-#[allow(dead_code)]
 pub(crate) const GIT_NEIGHBOR_HITS_PER_CHANGED: usize = 2;
 
 /// Score fractions (of the top seed's score), all below
@@ -147,9 +139,6 @@ pub(crate) const GIT_NEIGHBOR_HITS_PER_CHANGED: usize = 2;
 /// changed symbol" is one structural hop removed from that fact, and
 /// "historically co-changed" is a heuristic — co-change is deliberately the
 /// lowest of the three.
-#[allow(dead_code)]
 pub(crate) const GIT_CHANGED_SCORE_FRACTION: f32 = 0.28;
-#[allow(dead_code)]
 pub(crate) const GIT_NEIGHBOR_SCORE_FRACTION: f32 = 0.20;
-#[allow(dead_code)]
 pub(crate) const GIT_COCHANGE_SCORE_FRACTION: f32 = 0.16;

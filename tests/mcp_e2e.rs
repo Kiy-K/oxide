@@ -165,7 +165,14 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
     };
     assert_eq!(
         keys(&tools[0]),
-        ["blast_radius", "budget_tokens", "path", "profile", "task"]
+        [
+            "blast_radius",
+            "budget_tokens",
+            "git",
+            "path",
+            "profile",
+            "task"
+        ]
     );
     assert_eq!(
         keys(&tools[1]),

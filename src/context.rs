@@ -12,9 +12,12 @@ use crate::config::{
     CONTEXT_CHARS_PER_TOKEN, CONTEXT_DEFAULT_BUDGET_TOKENS, CONTEXT_EXPANSION_PER_SEED,
     CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS, CONTEXT_MAX_CANDIDATES,
     CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
-    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
+    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION, GIT_CHANGED_CONTEXT_ITEMS,
+    GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION, GIT_COCHANGE_SYMBOLS_PER_FILE,
+    GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
+use crate::gitctx::{self, GitEvidence};
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
@@ -81,6 +84,13 @@ pub struct ContextPack {
     pub used_tokens: usize,
     pub items: Vec<ContextItem>,
     pub omitted: Vec<Omitted>,
+    /// Non-symbol git provenance (current diff, recent commits, bounded
+    /// co-change) — `None` unless [`ContextOptions::git`] is set. Symbol-level
+    /// git evidence (changed symbols, their callers, co-changed symbols)
+    /// flows through `items`/`reasons` like every other evidence source
+    /// instead of being duplicated here.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub git: Option<GitEvidence>,
 }
 
 pub struct ContextOptions {
@@ -92,6 +102,11 @@ pub struct ContextOptions {
     /// (`blast_radius.rs`) as candidates. Opt-in: `false` runs no extra
     /// lookup and produces a byte-identical pack.
     pub blast_radius: bool,
+    /// Also offer the current diff's changed symbols, their callers/tests,
+    /// and bounded co-change evidence as candidates (`gitctx.rs`). Opt-in,
+    /// same contract as `blast_radius`: `false` runs no `git` subprocess
+    /// call and produces a byte-identical pack.
+    pub git: bool,
 }
 
 impl Default for ContextOptions {
@@ -102,6 +117,7 @@ impl Default for ContextOptions {
             max_candidates: CONTEXT_MAX_CANDIDATES,
             retrieval_mode: RetrievalMode::default(),
             blast_radius: false,
+            git: false,
         }
     }
 }
@@ -178,13 +194,18 @@ pub fn build_context_with(
         });
     }
 
+    let mut git_evidence: Option<GitEvidence> = None;
+
     // Structural expansion around strong primaries only (same rule as search:
     // expansion supplements, never displaces direct hits).
     if !seeds.is_empty() {
         // The one whole-corpus load in this pipeline: `RelationGraph`
         // needs every symbol (see `SymbolSnapshot`). Shared with the
-        // engine, so a caller-supplied snapshot serves it too.
-        let graph = RelationGraph::build(&engine.snapshot_with_relations()?.symbols);
+        // engine, so a caller-supplied snapshot serves it too. Also reused
+        // by the git block below (changed-symbol file lookup, co-changed
+        // file symbol picks) so `--git` never triggers a second corpus load.
+        let symbols = &engine.snapshot_with_relations()?.symbols;
+        let graph = RelationGraph::build(symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
         for seed in seeds.iter().take(5) {
@@ -315,6 +336,108 @@ pub fn build_context_with(
                     },
                 });
             }
+        }
+
+        // ---- git-aware evidence (opt-in) ---------------------------------
+        // Current diff + bounded co-change history (`gitctx.rs`), scored
+        // below every other evidence source here — a changed symbol is a
+        // fact, a co-changed file is a heuristic, and per design neither
+        // should ever outrank direct or structural evidence
+        // (`GIT_CHANGED_SCORE_FRACTION`/`GIT_NEIGHBOR_SCORE_FRACTION` <
+        // `BLAST_RADIUS_SCORE_FRACTION`; `GIT_COCHANGE_SCORE_FRACTION` is
+        // the lowest of the three, further scaled by the co-change pair's
+        // own coupling `strength`). Reuses `symbols`/`graph` above — no
+        // second corpus load, no extra `git` subprocess call unless
+        // `opts.git` is set.
+        if opts.git {
+            let top_seed_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
+            let git_ctx = gitctx::build_git_context(root, symbols, "");
+
+            for cs in git_ctx
+                .changed_symbols
+                .iter()
+                .take(GIT_CHANGED_CONTEXT_ITEMS)
+            {
+                order_note(Candidate {
+                    symbol: cs.symbol.clone(),
+                    score: top_seed_score * GIT_CHANGED_SCORE_FRACTION,
+                    reasons: vec![format!(
+                        "git-changed(+{})←{}",
+                        cs.added_lines, cs.symbol.file
+                    )],
+                    role: if is_test_symbol(&cs.symbol) {
+                        Role::Test
+                    } else {
+                        Role::Dependency
+                    },
+                });
+
+                let mut hits = 0usize;
+                for (rel, n) in graph.neighbors(&cs.symbol) {
+                    if hits >= GIT_NEIGHBOR_HITS_PER_CHANGED {
+                        break;
+                    }
+                    if rel != "test" && rel != "uses" {
+                        continue;
+                    }
+                    hits += 1;
+                    order_note(Candidate {
+                        symbol: n.clone(),
+                        score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
+                        reasons: vec![format!(
+                            "git-caller-of-changed←{}",
+                            cs.symbol.qualified_name
+                        )],
+                        role: if is_test_symbol(n) {
+                            Role::Test
+                        } else {
+                            Role::Dependency
+                        },
+                    });
+                }
+                for caller in graph
+                    .callers_of(&cs.symbol.name)
+                    .into_iter()
+                    .filter(|c| c.id() != cs.symbol.id())
+                    .take(GIT_NEIGHBOR_HITS_PER_CHANGED - hits.min(GIT_NEIGHBOR_HITS_PER_CHANGED))
+                {
+                    order_note(Candidate {
+                        symbol: caller.clone(),
+                        score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
+                        reasons: vec![format!(
+                            "git-caller-of-changed←{}",
+                            cs.symbol.qualified_name
+                        )],
+                        role: Role::Dependency,
+                    });
+                }
+            }
+
+            for entry in &git_ctx.evidence.co_change {
+                for s in symbols
+                    .iter()
+                    .filter(|s| s.file == entry.co_changed_with && s.kind != SymbolKind::Module)
+                    .take(GIT_COCHANGE_SYMBOLS_PER_FILE)
+                {
+                    order_note(Candidate {
+                        symbol: s.clone(),
+                        score: top_seed_score
+                            * GIT_COCHANGE_SCORE_FRACTION
+                            * entry.strength.min(1.0),
+                        reasons: vec![format!(
+                            "git-cochange({} commits)←{}",
+                            entry.count, entry.file
+                        )],
+                        role: if is_test_symbol(s) {
+                            Role::Test
+                        } else {
+                            Role::Dependency
+                        },
+                    });
+                }
+            }
+
+            git_evidence = Some(git_ctx.evidence);
         }
     }
 
@@ -520,6 +643,7 @@ pub fn build_context_with(
         used_tokens: used,
         omitted: dropped,
         items,
+        git: git_evidence,
     })
 }
 

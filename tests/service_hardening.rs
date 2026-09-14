@@ -73,7 +73,13 @@ fn dimension_mismatch_under_same_provider_name_is_a_structured_error() {
     assert_eq!(err.code(), "provider_mismatch");
 
     let err = service
-        .context("understand thing", 512, RetrievalMode::default(), false)
+        .context(
+            "understand thing",
+            512,
+            RetrievalMode::default(),
+            false,
+            false,
+        )
         .unwrap_err();
     assert_eq!(err.code(), "provider_mismatch");
 
@@ -125,7 +131,13 @@ fn incompatible_index_version_is_a_structured_error_not_a_guess() {
     assert_eq!(err.code(), "index_incompatible");
 
     let err = service
-        .context("understand thing", 128, RetrievalMode::default(), false)
+        .context(
+            "understand thing",
+            128,
+            RetrievalMode::default(),
+            false,
+            false,
+        )
         .unwrap_err();
     assert_eq!(err.code(), "index_incompatible");
 }

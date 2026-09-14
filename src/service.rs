@@ -297,6 +297,10 @@ pub struct ContextResult {
     pub omitted: Vec<Omitted>,
     #[serde(skip)]
     pub embedder: String,
+    /// Non-symbol git provenance; `None` unless `--git` was requested. See
+    /// `context.rs::ContextPack::git`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub git: Option<crate::gitctx::GitEvidence>,
 }
 
 pub struct RepositoryService {
@@ -776,6 +780,7 @@ impl RepositoryService {
         budget_tokens: usize,
         retrieval_mode: RetrievalMode,
         blast_radius: bool,
+        git: bool,
     ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
         let provider = self.embedder()?;
@@ -795,6 +800,7 @@ impl RepositoryService {
                 budget_tokens,
                 retrieval_mode,
                 blast_radius,
+                git,
                 ..ContextOptions::default()
             },
         )
@@ -829,6 +835,7 @@ impl RepositoryService {
             items,
             omitted: pack.omitted,
             embedder: provider.name().to_string(),
+            git: pack.git,
         })
     }
     pub fn stats(&self) -> Result<IndexStats, ServiceError> {
