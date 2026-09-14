@@ -243,6 +243,41 @@ fn merge_commit_neither_crashes_nor_pollutes_co_change() {
     );
 }
 
+/// Regression for a Codex-review MAJOR: the repo's root (parentless) commit
+/// touching several files together used to manufacture a spurious co-change
+/// pair — "added together once" is not the same signal as "repeatedly
+/// maintained together". `co_change_raw` no longer passes `--root` to
+/// `git diff-tree`, so a parentless commit's file list is silently skipped
+/// rather than counted.
+#[test]
+fn root_commit_does_not_manufacture_a_co_change_pair() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    // Root commit: a.py and b.py added together — no maintenance signal.
+    write(root.join("a.py"), "x = 1\n");
+    write(root.join("b.py"), "y = 1\n");
+    git(root, &["init", "-q"]);
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "root: add a and b together"]);
+
+    // A later commit touches only a.py — never again alongside b.py.
+    write(root.join("a.py"), "x = 2\n");
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "touch a alone"]);
+
+    write(root.join("a.py"), "x = 3\n");
+    let symbols = indexed_symbols(root);
+    let ctx = build_git_context(root, &symbols, "");
+    assert!(
+        ctx.evidence
+            .co_change
+            .iter()
+            .all(|e| e.co_changed_with != "b.py"),
+        "the root commit's joint add must not count as co-change: {:?}",
+        ctx.evidence.co_change
+    );
+}
+
 // -------------------------------------------------------------- shallow clones
 
 #[test]
@@ -427,5 +462,97 @@ fn git_evidence_reflects_the_currently_indexed_working_tree_state() {
     assert!(
         !names.iter().any(|n| n == "old_helper"),
         "the pre-rename name must not appear — it no longer exists in the current index: {names:?}"
+    );
+}
+
+// -------------------------------------------------- callers_of() must be scoped
+
+/// Regression for a Codex-review BLOCKER: `context.rs`'s git block called
+/// `graph.callers_of()` (repo-wide, bare-name matching, no scope resolution
+/// — AGENTS.md) with only an item-count cap, no file-scope filter. A changed
+/// symbol with a common bare name could pull an unrelated caller of a
+/// same-named-but-different symbol from anywhere in the repo. This sets up
+/// exactly that ambiguity — two files each define their own `helper()` and
+/// call it — and asserts the out-of-scope caller is never tagged with the
+/// git-derived reason (it may still legitimately appear via ordinary
+/// retrieval; that isn't what this pins).
+///
+/// A corpus of only a handful of symbols makes every symbol a weak-but-equal
+/// hybrid-search "primary" (nothing to rank below, in a repo this small —
+/// confirmed empirically before writing this padding in), which would put
+/// every file in the seed pool regardless of the fix. Enough padding files
+/// with partial lexical overlap on the query outrank the truly-unrelated
+/// file's exact-zero score, so it falls out of the seed pool for real.
+#[test]
+fn git_caller_expansion_is_scoped_to_the_seed_pool_not_repo_wide() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(root.join("src/target.py"), "def helper():\n    return 1\n");
+    // In scope: the query text below matches this file/function directly,
+    // and it's a genuine caller of the changed `helper`.
+    write(
+        root.join("src/caller_in_scope.py"),
+        "from src.target import helper\n\n\ndef process_widget_request():\n    return helper()\n",
+    );
+    // Out of scope: shares no tokens with the query text at all, so with
+    // enough padding it must not become a seed on its own — its only route
+    // in would be an unscoped `callers_of(\"helper\")` bare-name match,
+    // which is exactly what the fix removes.
+    write(
+        root.join("unrelated/other_module.py"),
+        "def helper():\n    return 99\n\n\ndef totally_unconnected_function():\n    return helper()\n",
+    );
+    // Padding: partial lexical overlap on "process"/"widget"/"request"
+    // outranks other_module.py's exact-zero score, pushing it out of the
+    // default `max_candidates` (16) seed window.
+    for i in 0..20 {
+        write(
+            root.join(format!("padding_{i}.py")),
+            &format!(
+                "def process_something_{i}():\n    return widget_request_helper_{i}()\n\ndef widget_request_helper_{i}():\n    return {i}\n"
+            ),
+        );
+    }
+    git(root, &["init", "-q"]);
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "base"]);
+    assert!(run(root, &["index", ".", "--json"]).status.success());
+
+    // Uncommitted change to the target `helper` — the git-changed seed.
+    write(root.join("src/target.py"), "def helper():\n    return 2\n");
+    assert!(run(root, &["index", ".", "--json"]).status.success());
+
+    // Deliberately no "helper" token here — see the comment above.
+    let query = json_stdout(&run(
+        root,
+        &["query", "process widget request", "--git", "--json"],
+    ));
+    let items = query["items"].as_array().unwrap();
+    let reasons_for = |name: &str| -> Vec<String> {
+        items
+            .iter()
+            .filter(|it| it["qualified_name"] == name)
+            .flat_map(|it| {
+                it["reasons"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|r| r.as_str().unwrap().to_string())
+            })
+            .collect()
+    };
+    assert!(
+        reasons_for("process_widget_request")
+            .iter()
+            .any(|r| r.starts_with("git-caller-of-changed")),
+        "the in-scope caller should surface via git evidence: {:?}",
+        reasons_for("process_widget_request")
+    );
+    let out_of_scope_reasons = reasons_for("totally_unconnected_function");
+    assert!(
+        !out_of_scope_reasons
+            .iter()
+            .any(|r| r.starts_with("git-caller-of-changed")),
+        "an out-of-scope same-named caller must never be tagged git-caller-of-changed: {out_of_scope_reasons:?}"
     );
 }

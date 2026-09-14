@@ -353,6 +353,19 @@ pub fn build_context_with(
             let top_seed_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
             let git_ctx = gitctx::build_git_context(root, symbols, "");
 
+            // `callers_of()` is repo-wide by construction (AGENTS.md) — the
+            // same bound the structural-callers block above applies is
+            // required here too: without it, a changed symbol with a common
+            // bare name (`save`, `run`, `parse`) could pull an unrelated
+            // caller from an arbitrary file anywhere in the repo. Scoped to
+            // the seed pool's own files, the same as the structural block.
+            let mut git_scope_files: Vec<&str> = Vec::new();
+            for h in &seeds {
+                if !git_scope_files.contains(&h.symbol.file.as_str()) {
+                    git_scope_files.push(h.symbol.file.as_str());
+                }
+            }
+
             for cs in git_ctx
                 .changed_symbols
                 .iter()
@@ -398,6 +411,7 @@ pub fn build_context_with(
                 for caller in graph
                     .callers_of(&cs.symbol.name)
                     .into_iter()
+                    .filter(|c| git_scope_files.contains(&c.file.as_str()))
                     .filter(|c| c.id() != cs.symbol.id())
                     .take(GIT_NEIGHBOR_HITS_PER_CHANGED - hits.min(GIT_NEIGHBOR_HITS_PER_CHANGED))
                 {

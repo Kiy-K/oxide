@@ -261,10 +261,17 @@ pub fn co_change_raw(
         return Ok(Vec::new());
     }
 
-    // `--root` makes the very first commit in history (no parent) still
-    // show a diff — otherwise diff-tree silently skips it.
+    // Deliberately no `--root`: the repository's initial commit (or an
+    // import/vendoring commit with no meaningful prior state) touching N
+    // files together is not a real co-change signal — every file was
+    // "added together" once, which is not evidence they are repeatedly
+    // maintained together. Omitting `--root` makes diff-tree silently skip
+    // any such parentless commit's file list entirely, which is exactly the
+    // exclusion wanted here (found via Codex review: a root/import commit
+    // could otherwise manufacture a spurious 1.0 coupling strength between
+    // two files whose only other shared commit was coincidental).
     let mut child = Command::new("git")
-        .args(["diff-tree", "--name-only", "-r", "--root", "--stdin"])
+        .args(["diff-tree", "--name-only", "-r", "--stdin"])
         .current_dir(repo)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())

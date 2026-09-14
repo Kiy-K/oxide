@@ -114,6 +114,13 @@ primary):
 | Caller/test of a changed symbol | `GIT_NEIGHBOR_SCORE_FRACTION` = 0.20 | One structural hop removed from that fact |
 | Co-changed symbol | `GIT_COCHANGE_SCORE_FRACTION` (0.16) × the pair's own `strength` | A heuristic — deliberately the lowest, and further scaled down by confidence |
 
+`callers_of()` (used for the middle row) is repo-wide, bare-name-matching,
+and scope-resolution-free by construction (AGENTS.md) — its results are
+filtered to the query's own seed-pool files before reaching the candidate
+pool, the same bound the pre-existing structural-callers expansion a few
+lines above it in `context.rs` already applies. See Review below for why
+this needed fixing during development.
+
 Every git-derived candidate's reason string is namespaced stable vocabulary
 (matching the existing `blast-radius:`/`ast-grep-caller` convention):
 `git-changed(+N)←file`, `git-caller-of-changed←qualified_name`,
@@ -207,35 +214,62 @@ very large diff.
 
 ## Review
 
-A Codex CLI review pass was attempted (per this repo's standing practice)
-and failed to start on this machine — a pre-existing, unrelated environment
-misconfiguration (`mcp_servers.context7` in the local Codex config: "url is
-not supported for stdio"), reproduced identically on two attempts, not a
-transient failure. Fixing that global config is out of scope for this
-feature. In its place, a focused self-audit covered the four areas the
-review would have targeted:
+A first Codex CLI review attempt failed to start (a pre-existing, unrelated
+local environment misconfiguration); a self-audit was run in its place and
+missed the most important finding below — worth stating plainly, since it's
+exactly the gap a second model is for. Once the environment was fixed, a
+real Codex review ran and found two issues serious enough to act on:
 
-- **False co-change relationships** — mitigated by the noisy-file stoplist,
-  the files-per-commit cap, the minimum-shared-commits floor, and ranking by
-  coupling ratio instead of raw count (see above); pinned by
-  `noisy_cochange_files_are_recognized` and the co-change assertions in
-  `merge_commit_neither_crashes_nor_pollutes_co_change`.
-- **Unbounded traversal** — every `git` call is `-n`/window-bounded; the
-  co-change stage is bounded to 5 target files × 2 calls each regardless of
-  diff size; confirmed by reading every `Command::new("git")` call site in
-  `gitutil.rs`.
-- **Stale symbol mapping** — real, and now written down above under
-  Limitations; not a crash risk (a non-overlapping hunk just maps to
-  nothing), and the correct (reindexed) case is pinned by a test.
-- **Request-path regression** — `review.rs`'s `store.all_symbols()` →
-  `engine.snapshot_with_relations()` change was checked against
-  `SymbolSnapshot::load`'s implementation: it's a strict superset (adds
-  `calls`/`bases` merging review never had before) at one bounded extra
-  query, not an unbounded one, and `review` is never exposed over MCP (only
-  `query`/`search` are), so the process-cache staleness question that would
-  matter for a long-lived server doesn't apply to it.
+- **BLOCKER — unscoped `callers_of()` in the git block.** `context.rs`'s
+  git-changed-symbol caller lookup called `graph.callers_of(&cs.symbol.name)`
+  with only an item-count cap, not the file-scope filter AGENTS.md's
+  invariant requires for every `callers_of`/`implementors_of` consumer
+  (`callers_of` matches by bare name with no scope resolution and is
+  repo-wide by construction — the one sanctioned exception is
+  `blast_radius.rs`, which isn't this). A changed symbol with a common bare
+  name (`save`, `run`, `helper`) could pull an unrelated same-named symbol's
+  caller from anywhere in the repo. Fixed: scoped to the query's own seed
+  pool files, the same bound the pre-existing structural-callers block a few
+  lines above already uses. Pinned by
+  `git_caller_expansion_is_scoped_to_the_seed_pool_not_repo_wide` — which
+  needed a corpus of ~25 symbols to mean anything, since a tiny corpus makes
+  every symbol a weak "primary" seed regardless of the fix (confirmed
+  empirically while writing the test: the first version of it, with only 4
+  symbols, "failed" for that reason, not because the fix was wrong).
+- **MAJOR — root/import commits manufacturing spurious co-change pairs.**
+  `co_change_raw` passed `--root` to `git diff-tree` so the repository's
+  first commit's file list would count toward co-change tallies. Files
+  "added together once" at repo init is not evidence of repeated
+  maintenance coupling, and could produce artificially high `strength`
+  (e.g. `2/2 = 1.0`) between two files whose only *other* shared commit was
+  coincidental. Fixed: dropped `--root`, so a parentless commit's file list
+  is silently skipped by `diff-tree` rather than counted — one flag removed,
+  not added. Pinned by `root_commit_does_not_manufacture_a_co_change_pair`.
 
-No findings from the self-audit required code changes beyond the
-documentation addition above. A real second-model pass is still worth
-running once the local Codex config issue is fixed — this is not a
-substitute for one, only what was available given the blocker.
+Three findings were reviewed and intentionally left as documented tradeoffs
+rather than code changes:
+
+- **`diff_text`/`run_git` has no output-size bound** — inherited from the
+  pre-existing `diff_files` code `oxide review` already used; `--git` on
+  `query` newly reaches the same code path, but the underlying
+  characteristic (a `git diff` call scales with the diff itself) isn't new.
+  Streaming/bounding it properly is a bigger change than this feature's
+  scope; `--unified=0` already strips context lines, which bounds it to
+  changed-line volume rather than full file content.
+- **`co_change_raw`'s `wait_with_output()` buffers a commit's full file list
+  before the per-commit cap discards it** — real, but bounded by the
+  50-commit window; a pathological single commit touching an enormous
+  number of files within that window would cost more memory/time than
+  ideal before being correctly discarded. Streaming would need to parse
+  `diff-tree`'s output incrementally to abort a single commit's tally
+  early — worth doing if this shows up in practice, not preemptively.
+- **`review.rs` loads `symbol_relations` (via `snapshot_with_relations`)
+  though its `neighbors()`-only structural expansion never reads
+  `calls`/`bases`** — a real, avoidable extra query, but review is a
+  one-shot CLI process (never exposed over MCP) so there's no cross-call
+  cost to amortize, and the alternative (`engine.snapshot()`) silently
+  swallows a failed load instead of erroring, which `review.rs` explicitly
+  should not do. Kept as-is; not worth trading away error visibility for.
+
+The stale-symbol-mapping and false-co-change concerns Codex was asked to
+focus on were otherwise already covered — see Limitations above.
