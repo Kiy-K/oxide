@@ -781,6 +781,7 @@ impl RepositoryService {
         retrieval_mode: RetrievalMode,
         blast_radius: bool,
         git: bool,
+        lsp: bool,
     ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
         let provider = self.embedder()?;
@@ -801,6 +802,7 @@ impl RepositoryService {
                 retrieval_mode,
                 blast_radius,
                 git,
+                lsp,
                 ..ContextOptions::default()
             },
         )

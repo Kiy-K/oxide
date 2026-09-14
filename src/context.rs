@@ -14,18 +14,20 @@ use crate::config::{
     CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
     CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION, GIT_CHANGED_CONTEXT_ITEMS,
     GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION, GIT_COCHANGE_SYMBOLS_PER_FILE,
-    GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION,
+    GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION, LSP_INIT_TIMEOUT_MS, LSP_MAX_SEEDS,
+    LSP_PER_SEED_ITEMS, LSP_REQUEST_TIMEOUT_MS, LSP_SCORE_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::gitctx::{self, GitEvidence};
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
-use crate::symbols::{Symbol, SymbolKind};
+use crate::symbols::{Language, Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
+use std::time::Duration;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -107,6 +109,13 @@ pub struct ContextOptions {
     /// same contract as `blast_radius`: `false` runs no `git` subprocess
     /// call and produces a byte-identical pack.
     pub git: bool,
+    /// Also offer LSP-sourced evidence (definitions, references, call/type
+    /// hierarchy, diagnostics — `lsp/`) for the top Python seeds. Opt-in,
+    /// same contract as `blast_radius`/`git`: `false` never spawns a
+    /// language server and produces a byte-identical pack. A server that is
+    /// missing or fails to initialize degrades silently to the same
+    /// byte-identical pack — see `lsp::LspClient::spawn`.
+    pub lsp: bool,
 }
 
 impl Default for ContextOptions {
@@ -118,6 +127,7 @@ impl Default for ContextOptions {
             retrieval_mode: RetrievalMode::default(),
             blast_radius: false,
             git: false,
+            lsp: false,
         }
     }
 }
@@ -452,6 +462,69 @@ pub fn build_context_with(
             }
 
             git_evidence = Some(git_ctx.evidence);
+        }
+
+        // ---- lsp semantic enrichment (opt-in) ----------------------------
+        // Exact evidence (definitions, references, call/type hierarchy,
+        // diagnostics) from a real language server, layered on top of the
+        // always-on heuristic evidence above — never required, never a
+        // replacement. `enrich_seeds` itself enforces scope-then-cap
+        // (`lsp::enrich`'s module doc); the file scope here is the same
+        // seed-pool-derived list the bounded structural-caller block above
+        // already builds and bounds, not a fresh repo-wide reach.
+        if opts.lsp {
+            let py_seeds: Vec<&Symbol> = seeds
+                .iter()
+                .filter(|h| h.symbol.language == Language::Python)
+                .take(LSP_MAX_SEEDS)
+                .map(|h| &h.symbol)
+                .collect();
+            if !py_seeds.is_empty() {
+                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
+                if let Ok(mut client) = crate::lsp::LspClient::spawn(
+                    &server,
+                    root,
+                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
+                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
+                ) {
+                    let mut lsp_scope_files: Vec<String> = Vec::new();
+                    for h in &seeds {
+                        if !lsp_scope_files.contains(&h.symbol.file) {
+                            lsp_scope_files.push(h.symbol.file.clone());
+                        }
+                    }
+                    let by_qname: HashMap<&str, f32> = seeds
+                        .iter()
+                        .map(|h| (h.symbol.qualified_name.as_str(), h.score))
+                        .collect();
+                    let top_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
+                    for ev in crate::lsp::enrich_seeds(
+                        &mut client,
+                        root,
+                        symbols,
+                        &py_seeds,
+                        &lsp_scope_files,
+                        LSP_MAX_SEEDS,
+                        LSP_PER_SEED_ITEMS,
+                    ) {
+                        let seed_score = ev
+                            .via
+                            .and_then(|v| by_qname.get(v).copied())
+                            .unwrap_or(top_score);
+                        order_note(Candidate {
+                            symbol: ev.symbol.clone(),
+                            score: seed_score * LSP_SCORE_FRACTION,
+                            reasons: vec![ev.reason],
+                            role: if is_test_symbol(ev.symbol) {
+                                Role::Test
+                            } else {
+                                Role::Dependency
+                            },
+                        });
+                    }
+                    client.close();
+                }
+            }
         }
     }
 

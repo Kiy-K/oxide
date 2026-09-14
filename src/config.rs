@@ -142,3 +142,33 @@ pub(crate) const GIT_NEIGHBOR_HITS_PER_CHANGED: usize = 2;
 pub(crate) const GIT_CHANGED_SCORE_FRACTION: f32 = 0.28;
 pub(crate) const GIT_NEIGHBOR_SCORE_FRACTION: f32 = 0.20;
 pub(crate) const GIT_COCHANGE_SCORE_FRACTION: f32 = 0.16;
+
+/// Optional LSP semantic enrichment (`--lsp`, `src/lsp/`): definitions,
+/// references, call/type hierarchy, and diagnostics sourced from a real
+/// language server (Astral `ty` for Python first). Off by default and
+/// zero-cost unless a caller opts in — every value here is a hard cap on a
+/// repo-wide-by-construction LSP response (`textDocument/references`,
+/// `callHierarchy/incomingCalls`, `textDocument/implementation`), the exact
+/// same discipline [`BLAST_RADIUS_MAX_SEEDS`]/`RelationGraph::callers_of`
+/// already carry (see AGENTS.md).
+pub(crate) const LSP_MAX_SEEDS: usize = 3;
+/// Cap per evidence kind (callers, references, implementations, diagnostics)
+/// per seed, applied AFTER intersecting with the seed pool's file scope —
+/// see `lsp::enrich`'s module doc for why the order matters.
+pub(crate) const LSP_PER_SEED_ITEMS: usize = 3;
+/// Score a piece of LSP evidence receives in the context pack, as a fraction
+/// of its seed's score. Above [`BLAST_RADIUS_SCORE_FRACTION`] (0.35) and the
+/// bounded-structural-caller fraction (0.4): LSP evidence is exact
+/// (semantic, server-verified), not a bare-name heuristic, so it should win
+/// a shared role/budget slot over an equivalent heuristic candidate for the
+/// same relationship through the existing allocator — no separate
+/// suppression logic needed, `order_note` already merges/ranks by score.
+pub(crate) const LSP_SCORE_FRACTION: f32 = 0.55;
+/// Deadline for a single LSP request. A slow or hung server must never stall
+/// a query indefinitely — see `lsp::transport::Transport::call`.
+pub(crate) const LSP_REQUEST_TIMEOUT_MS: u64 = 3000;
+/// Deadline for the `initialize` handshake specifically — generous relative
+/// to [`LSP_REQUEST_TIMEOUT_MS`] because a server's first response can
+/// include cold-start work (e.g. resolving the Python environment) a later
+/// request never repeats.
+pub(crate) const LSP_INIT_TIMEOUT_MS: u64 = 10_000;

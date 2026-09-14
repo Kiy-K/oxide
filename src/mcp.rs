@@ -56,6 +56,8 @@ const BLAST_RADIUS_DESCRIPTION: &str = "Also report the bounded impact neighborh
 
 const GIT_DESCRIPTION: &str = "Also pull in the current diff's changed symbols, their callers/tests, and bounded co-change history as evidence, plus a `git` field with changed files and recent commits. Off by default; lower priority than direct/structural evidence, and a no-op outside a git repository.";
 
+const LSP_DESCRIPTION: &str = "Also enrich the top Python seeds with exact evidence from a real language server (Astral `ty`): definitions, references, callers, implementations, and diagnostics. Off by default. Needs `ty` installed and on PATH (or $OXIDE_LSP_SERVER); silently produces the same result without it if unavailable.";
+
 /// Found empirically (agent-eval pilot, 2026-09): with no description, a
 /// model guesses at `path`'s meaning and gets it wrong in two different
 /// ways -- passing `""` (rejected: empty path) and passing a subdirectory
@@ -78,6 +80,7 @@ fn query_input_schema() -> JsonObject {
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
             "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
             "git": {"type": "boolean", "description": GIT_DESCRIPTION},
+            "lsp": {"type": "boolean", "description": LSP_DESCRIPTION},
         },
         "required": ["task"],
         "additionalProperties": false,
@@ -141,6 +144,7 @@ impl OxideServer {
                 "profile",
                 "blast_radius",
                 "git",
+                "lsp",
             ],
         )?;
         let task = required_string(&arguments, "task")?.to_string();
@@ -149,12 +153,13 @@ impl OxideServer {
         let mode = optional_retrieval_mode(&arguments)?;
         let blast_radius = optional_bool(&arguments, "blast_radius")?.unwrap_or(false);
         let git = optional_bool(&arguments, "git")?.unwrap_or(false);
+        let lsp = optional_bool(&arguments, "lsp")?.unwrap_or(false);
         run_blocking(move || {
             let service = match RepositoryService::discover(path.as_deref()) {
                 Ok(service) => service.with_process_cache(),
                 Err(error) => return Ok(service_error_result(error)),
             };
-            match service.context(&task, budget, mode, blast_radius, git) {
+            match service.context(&task, budget, mode, blast_radius, git, lsp) {
                 Ok(result) => tool_success(result),
                 Err(error) => Ok(service_error_result(error)),
             }

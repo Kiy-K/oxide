@@ -169,6 +169,7 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
             "blast_radius",
             "budget_tokens",
             "git",
+            "lsp",
             "path",
             "profile",
             "task"

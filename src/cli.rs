@@ -161,6 +161,12 @@ pub enum Cmd {
         /// priority than direct/structural matches. No-op outside a git repo.
         #[arg(long)]
         git: bool,
+        /// Also enrich the top Python seeds with exact evidence from a real
+        /// language server (Astral `ty`): definitions, references, callers,
+        /// implementations, and diagnostics. Needs `ty` on PATH (or
+        /// $OXIDE_LSP_SERVER); silently no-ops without it.
+        #[arg(long)]
+        lsp: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -495,6 +501,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
             profile,
             blast_radius,
             git,
+            lsp,
             json,
         } => {
             let task = question.or(task_flag).ok_or_else(|| {
@@ -513,6 +520,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     retrieval_mode: resolve_profile(profile.as_deref(), json)?,
                     blast_radius,
                     git,
+                    lsp,
                 },
                 json,
                 paint,
@@ -1149,6 +1157,7 @@ struct QueryFlags {
     retrieval_mode: RetrievalMode,
     blast_radius: bool,
     git: bool,
+    lsp: bool,
 }
 
 fn cmd_query(
@@ -1166,6 +1175,7 @@ fn cmd_query(
             flags.retrieval_mode,
             flags.blast_radius,
             flags.git,
+            flags.lsp,
         )
         .map_err(|e| CliError::service(e, json))?;
     if json {

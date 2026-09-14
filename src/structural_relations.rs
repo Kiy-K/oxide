@@ -57,7 +57,7 @@ use std::collections::HashMap;
 /// Every file always has the synthetic Module fallback
 /// (`parse_file_with`'s module symbol), so a top-level call still resolves
 /// to *some* symbol, never `None`.
-fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
+pub(crate) fn enclosing<'a>(file_symbols: &[&'a Symbol], line: u32) -> Option<&'a Symbol> {
     innermost(file_symbols, line, |s| !is_file_fallback(s))
         .or_else(|| file_symbols.iter().find(|s| is_file_fallback(s)).copied())
 }
