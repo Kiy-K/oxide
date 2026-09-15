@@ -248,6 +248,15 @@ impl Transport {
         write_framed_message(&mut self.stdin, &msg).map_err(TransportError::Io)
     }
 
+    /// Non-blocking check for whether the child process has already exited.
+    /// Used by a long-lived caller (`oxide mcp`'s `ProcessCache`) to decide
+    /// whether a cached `Transport` is safe to reuse before spending a
+    /// request on it — cheap (`try_wait`, no round trip), but only catches a
+    /// process that has actually exited, not one that is alive but wedged.
+    pub fn process_alive(&mut self) -> bool {
+        self.child.try_wait().ok().flatten().is_none()
+    }
+
     /// Best-effort shutdown/exit handshake, then kill if the process lingers.
     pub fn close(mut self) {
         let _ = self.call("shutdown", Value::Null, Duration::from_millis(500));

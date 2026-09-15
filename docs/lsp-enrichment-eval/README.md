@@ -183,19 +183,32 @@ pre-existing nondeterminism in the eval harness itself (reproduced between
 two consecutive runs of the *same unchanged* binary), not something this
 change introduced.
 
+## MCP `ProcessCache` reuse (follow-up, now implemented)
+
+The plan's Task 3 called for a `lsp_clients: Mutex<HashMap<PathBuf,
+Arc<LspHandle>>>` on `oxide mcp`'s existing process cache so a warm `ty`
+session survives across calls, originally cut for time (see git history —
+the first commit shipped spawn-per-call for both CLI and MCP). Implemented
+as a follow-up: `ProcessCache.lsp_clients: Mutex<HashMap<PathBuf,
+Arc<Mutex<Option<LspClient>>>>>` — one slot per repository root, lazily
+spawned on the first `lsp: true` MCP call, reused on every later call
+against that root. `LspClient::is_alive()` (backed by `Transport::
+process_alive`, a non-blocking `try_wait`) is checked before each reuse; a
+dead slot respawns transparently, with no persistent circuit-breaker state
+beyond that. The CLI path (`use_process_cache: false`) is untouched — it
+still passes `None` into `build_context_with`'s new `lsp_client` parameter
+and gets the original spawn-close-per-call behavior.
+
+Measured on the tiny 2-file test repo `tests/lsp_mcp_process_cache_reuse.rs`
+builds: first call (cold spawn) **19.8ms**, second call (reused session)
+**4.1ms** — roughly 5x, and the gap should be far larger on a real repo
+where `ty`'s `initialize` does real cross-file resolution instead of
+almost nothing. `service::tests::lsp_client_slot_is_stable_per_root_and_distinct_across_roots`
+additionally proves the cache key itself — same root reuses one `Arc`
+slot, different roots never share one — without needing `ty` installed.
+
 ## Deliberate scope cuts from the approved plan (disclosed, not hidden)
 
-- **No MCP `ProcessCache` reuse.** The plan's Task 3 called for a
-  `lsp_clients: Mutex<HashMap<PathBuf, Arc<LspHandle>>>` on `oxide mcp`'s
-  existing process cache so a warm `ty` session survives across calls.
-  This implementation spawns and closes a fresh `LspClient` per
-  `build_context_with` call, for both the CLI and MCP paths — correct and
-  simple, but every `--lsp` MCP call currently pays full `ty` init latency
-  (see the RSS/latency numbers above for what that costs). This is the
-  single highest-value follow-up if `--lsp` sees real use: the natural
-  shape is a `Mutex<Option<LspClient>>` per repository root, respawned on
-  the next call after any failure, no circuit-breaker state needed beyond
-  that.
 - **No `definition`-at-reference-site resolution** ("where is this value
   actually defined?" for an ambiguous bare-name reference). `enrich_seeds`
   runs `references`/`incoming_calls`/`implementations`/`diagnostics` at a
@@ -216,9 +229,10 @@ change introduced.
 **Useful, worth keeping as an opt-in flag; not yet worth expanding beyond
 Python/`ty`.** The precision delta over the bare-name heuristic is real and
 demonstrated on a case built to expose exactly that gap, diagnostics
-evidence is a genuinely new capability with zero heuristic equivalent, and
-the byte-identical-when-off guarantee holds. The open items before
-recommending this for routine use are the process-reuse gap (real latency
-cost per call today) and a measurement against a repo large enough for
-`ty`'s `initialize` cost to be representative — both are follow-up work,
-not blockers to shipping this as `--lsp`.
+evidence is a genuinely new capability with zero heuristic equivalent, the
+byte-identical-when-off guarantee holds, and `oxide mcp` now amortizes
+server startup across calls instead of paying it every time. The one
+remaining open item before recommending this for routine use on large
+repos is a latency/RSS measurement against a repo big enough for `ty`'s
+`initialize` cost to be representative — every number in this doc so far
+is from an 8-file fixture or smaller.

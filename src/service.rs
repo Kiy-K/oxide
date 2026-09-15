@@ -4,12 +4,14 @@
 //! out of the argument parser. Retrieval and context algorithms stay below it.
 
 use crate::blast_radius::BlastItem;
+use crate::config::{LSP_INIT_TIMEOUT_MS, LSP_REQUEST_TIMEOUT_MS};
 use crate::context::{build_context_with, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
+use crate::lsp::LspClient;
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use crate::review::{build_review_context, ReviewContext};
@@ -24,6 +26,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
+use std::time::Duration;
 
 const MAX_SEARCH_RESULTS: usize = 100;
 
@@ -323,6 +326,21 @@ pub struct RepositoryService {
 struct ProcessCache {
     snapshots: Mutex<HashMap<PathBuf, Arc<CachedSnapshot>>>,
     embedder: Mutex<Option<(String, Arc<dyn EmbeddingProvider + Send + Sync>)>>,
+    /// One LSP session per repository root, lazily spawned on the first
+    /// `--lsp`/`lsp: true` MCP call and reused across every later call
+    /// against that root — the whole point of this cache existing: a
+    /// one-shot CLI query pays full server `initialize` per invocation
+    /// (`context.rs::build_context_with`'s `None` path), but `oxide mcp` is
+    /// long-lived and can amortize it. `Option<LspClient>` (not just
+    /// `LspClient`) so a slot that has never spawned, or whose last spawn
+    /// failed, is distinguishable from a live session — `context()` below
+    /// checks `LspClient::is_alive()` and respawns into the same slot on
+    /// either case. `Mutex<Option<LspClient>>` per root (not one mutex over
+    /// the whole map) so concurrent MCP requests against *different*
+    /// repositories never serialize on each other's LSP calls; requests
+    /// against the *same* root do serialize, which matches `LspClient`'s
+    /// `&mut self` methods already allowing only one in-flight caller.
+    lsp_clients: Mutex<HashMap<PathBuf, Arc<Mutex<Option<LspClient>>>>>,
 }
 
 /// `(cache key, matching entry if any)` — `None` when the cache is off or
@@ -521,6 +539,19 @@ impl RepositoryService {
         *cache.embedder.lock().unwrap_or_else(|e| e.into_inner()) =
             Some((name, Arc::clone(&provider)));
         Ok(provider)
+    }
+
+    /// The per-root LSP session slot from [`ProcessCache::lsp_clients`],
+    /// inserting an empty one on first use. Only ever called when
+    /// `use_process_cache` is set — see `context()`'s guard.
+    fn lsp_client_slot(&self) -> Arc<Mutex<Option<LspClient>>> {
+        process_cache()
+            .lsp_clients
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .entry(self.root.clone())
+            .or_insert_with(|| Arc::new(Mutex::new(None)))
+            .clone()
     }
 
     pub fn index(
@@ -793,6 +824,32 @@ impl RepositoryService {
             Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
             None => RetrievalEngine::new(&store, provider.as_ref()),
         };
+        // Only `oxide mcp` (`use_process_cache`) reuses an LSP session across
+        // calls; a one-shot CLI invocation gets `None` here and
+        // `build_context_with` falls back to its own spawn-per-call default,
+        // unchanged from before this cache existed.
+        let lsp_slot = (lsp && self.use_process_cache).then(|| self.lsp_client_slot());
+        let mut lsp_guard = lsp_slot
+            .as_ref()
+            .map(|slot| slot.lock().unwrap_or_else(|e| e.into_inner()));
+        if let Some(guard) = lsp_guard.as_mut() {
+            let needs_spawn = match guard.as_mut() {
+                Some(client) => !client.is_alive(),
+                None => true,
+            };
+            if needs_spawn {
+                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
+                **guard = LspClient::spawn(
+                    &server,
+                    &self.root,
+                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
+                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
+                )
+                .ok();
+            }
+        }
+        let lsp_client = lsp_guard.as_mut().and_then(|g| g.as_mut());
+
         let pack = build_context_with(
             &self.root,
             &engine,
@@ -805,6 +862,7 @@ impl RepositoryService {
                 lsp,
                 ..ContextOptions::default()
             },
+            lsp_client,
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
         // See the identical guard in `search` above for why remote/local are
@@ -1393,5 +1451,36 @@ mod tests {
             use_process_cache: false,
         };
         assert!(off.cache_lookup(&store).unwrap().is_none());
+    }
+
+    /// `lsp_client_slot`'s caching mechanism, independent of whether an LSP
+    /// server is actually installed: same root ⇒ same `Arc` slot (so two
+    /// MCP calls in a row reuse one session), different roots ⇒ distinct
+    /// slots (so a request against repo A never blocks on or reuses repo
+    /// B's server, matching the per-root `Mutex` design in
+    /// `ProcessCache::lsp_clients`'s doc comment).
+    #[test]
+    fn lsp_client_slot_is_stable_per_root_and_distinct_across_roots() {
+        let tmp_a = tempfile::tempdir().unwrap();
+        let tmp_b = tempfile::tempdir().unwrap();
+        let a = RepositoryService {
+            root: tmp_a.path().canonicalize().unwrap(),
+            use_process_cache: true,
+        };
+        let b = RepositoryService {
+            root: tmp_b.path().canonicalize().unwrap(),
+            use_process_cache: true,
+        };
+        let a_slot_1 = a.lsp_client_slot();
+        let a_slot_2 = a.lsp_client_slot();
+        let b_slot = b.lsp_client_slot();
+        assert!(
+            Arc::ptr_eq(&a_slot_1, &a_slot_2),
+            "same root must return the same slot"
+        );
+        assert!(
+            !Arc::ptr_eq(&a_slot_1, &b_slot),
+            "different roots must never share a slot"
+        );
     }
 }

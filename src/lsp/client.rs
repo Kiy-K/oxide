@@ -162,6 +162,13 @@ impl LspClient {
         &self.capabilities
     }
 
+    /// Cheap crash check for a long-lived, cached session — see
+    /// `Transport::process_alive`'s doc comment for what this does and does
+    /// not catch.
+    pub fn is_alive(&mut self) -> bool {
+        self.transport.process_alive()
+    }
+
     /// Open `rel_path` if not already open this session, sending its current
     /// on-disk text — this client only ever reads, so there is no
     /// `didChange` to keep in sync.

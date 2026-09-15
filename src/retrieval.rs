@@ -1946,6 +1946,7 @@ mod tests {
             &engine,
             "retry policy",
             &crate::context::ContextOptions::default(),
+            None,
         )
         .unwrap_err();
         assert!(err.to_string().contains("symbol_relations"), "{err}");

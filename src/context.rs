@@ -150,18 +150,26 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
-    build_context_with(root, &engine, task, opts)
+    build_context_with(root, &engine, task, opts, None)
 }
 
 /// [`build_context`] over a caller-built engine — the way a long-running
 /// process passes in a cached [`crate::retrieval::SymbolSnapshot`]
 /// (`RetrievalEngine::with_snapshot`) so the structural stage below reads
 /// it instead of reloading every symbol per request.
+///
+/// `lsp_client`: `None` (every CLI call, via [`build_context`]) spawns a
+/// fresh `LspClient` per call when `opts.lsp` is set and closes it before
+/// returning — correct and simple, but pays full server init every time.
+/// `Some(client)` (`oxide mcp`, via `service.rs`'s `ProcessCache`) reuses a
+/// caller-owned, already-initialized session across calls instead; this
+/// function never closes a client it did not spawn itself.
 pub fn build_context_with(
     root: &Path,
     engine: &RetrievalEngine<'_>,
     task: &str,
     opts: &ContextOptions,
+    lsp_client: Option<&mut crate::lsp::LspClient>,
 ) -> Result<ContextPack> {
     // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
@@ -480,26 +488,21 @@ pub fn build_context_with(
                 .map(|h| &h.symbol)
                 .collect();
             if !py_seeds.is_empty() {
-                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                if let Ok(mut client) = crate::lsp::LspClient::spawn(
-                    &server,
-                    root,
-                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
-                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
-                ) {
-                    let mut lsp_scope_files: Vec<String> = Vec::new();
-                    for h in &seeds {
-                        if !lsp_scope_files.contains(&h.symbol.file) {
-                            lsp_scope_files.push(h.symbol.file.clone());
-                        }
+                let mut lsp_scope_files: Vec<String> = Vec::new();
+                for h in &seeds {
+                    if !lsp_scope_files.contains(&h.symbol.file) {
+                        lsp_scope_files.push(h.symbol.file.clone());
                     }
-                    let by_qname: HashMap<&str, f32> = seeds
-                        .iter()
-                        .map(|h| (h.symbol.qualified_name.as_str(), h.score))
-                        .collect();
-                    let top_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
+                }
+                let by_qname: HashMap<&str, f32> = seeds
+                    .iter()
+                    .map(|h| (h.symbol.qualified_name.as_str(), h.score))
+                    .collect();
+                let top_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
+
+                let mut run_enrichment = |client: &mut crate::lsp::LspClient| {
                     for ev in crate::lsp::enrich_seeds(
-                        &mut client,
+                        client,
                         root,
                         symbols,
                         &py_seeds,
@@ -522,7 +525,28 @@ pub fn build_context_with(
                             },
                         });
                     }
-                    client.close();
+                };
+
+                match lsp_client {
+                    // MCP path: caller (service.rs's ProcessCache) owns the
+                    // session's lifecycle — reused across calls, never
+                    // closed here.
+                    Some(client) => run_enrichment(client),
+                    // CLI path (and every other caller that passes `None`):
+                    // spawn-per-call, exactly the original behavior.
+                    None => {
+                        let server =
+                            std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
+                        if let Ok(mut client) = crate::lsp::LspClient::spawn(
+                            &server,
+                            root,
+                            Duration::from_millis(LSP_INIT_TIMEOUT_MS),
+                            Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
+                        ) {
+                            run_enrichment(&mut client);
+                            client.close();
+                        }
+                    }
                 }
             }
         }
