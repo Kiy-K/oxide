@@ -377,20 +377,30 @@ impl ProcessCache {
         }
         let max = resolve_lsp_max_cached_sessions();
         if clients.len() >= max {
-            let victim = last_used
+            // Oldest-first candidates; the actual idle check happens per
+            // candidate below, holding that candidate's lock from the
+            // check through the removal — closing the TOCTOU window where
+            // a different thread (already holding a cloned `Arc` from an
+            // earlier `lsp_client_slot` call, so it doesn't need to touch
+            // `clients`/`last_used` to do so) could acquire the slot
+            // between an idle check and the eviction and have its
+            // in-flight session evicted out from under it.
+            let mut candidates: Vec<PathBuf> = last_used
                 .iter()
                 .filter(|(r, _)| clients.contains_key(*r) && *r != root)
-                .filter(|(r, _)| {
-                    clients
-                        .get(*r)
-                        .map(|slot| slot.try_lock().is_ok())
-                        .unwrap_or(false)
-                })
-                .min_by_key(|(_, t)| **t)
-                .map(|(r, _)| r.clone());
-            if let Some(victim) = victim {
-                clients.remove(&victim);
-                last_used.remove(&victim);
+                .map(|(r, _)| r.clone())
+                .collect();
+            candidates.sort_by_key(|r| last_used[r]);
+
+            for candidate in candidates {
+                if let Some(slot) = clients.get(&candidate).cloned() {
+                    if let Ok(guard) = slot.try_lock() {
+                        clients.remove(&candidate);
+                        last_used.remove(&candidate);
+                        drop(guard);
+                        break;
+                    }
+                }
             }
             // If every existing slot is busy, none are evicted this round —
             // the new root falls back to spawn-per-call for this one
@@ -1534,5 +1544,32 @@ mod tests {
         assert!(!live.contains_key(&roots[0]));
         assert!(!live.contains_key(&roots[1]));
         assert!(live.contains_key(roots.last().unwrap()));
+    }
+
+    #[test]
+    fn lsp_session_cache_never_evicts_a_slot_held_by_an_in_flight_call() {
+        let cache = ProcessCache::default();
+        let roots: Vec<PathBuf> = (0..LSP_MAX_CACHED_SESSIONS)
+            .map(|i| PathBuf::from(format!("/busy-repo-{i}")))
+            .collect();
+        for root in &roots {
+            let _ = cache.lsp_client_slot(root);
+        }
+        // Simulate an in-flight call on the oldest (and therefore normally
+        // first-evicted) root: hold its slot's lock across the next
+        // lsp_client_slot call that pushes the cache past capacity.
+        let oldest_slot = cache.lsp_client_slot(&roots[0]);
+        let _held = oldest_slot.lock().unwrap();
+
+        let new_root = PathBuf::from("/new-repo");
+        let _ = cache.lsp_client_slot(&new_root);
+
+        let live = cache.lsp_clients.lock().unwrap();
+        assert!(
+            live.contains_key(&roots[0]),
+            "a slot held by an in-flight call must never be evicted"
+        );
+        // The next-oldest idle root is evicted instead.
+        assert!(!live.contains_key(&roots[1]));
     }
 }
