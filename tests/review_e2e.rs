@@ -92,3 +92,51 @@ fn write(path: impl AsRef<std::path::Path>, content: &str) {
     std::fs::create_dir_all(path.parent().unwrap()).unwrap();
     std::fs::write(path, content).unwrap();
 }
+
+fn init_repo_with_one_commit() -> tempfile::TempDir {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    git(root, &["init", "-q"]);
+    write(root.join("a.py"), "a\n");
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "init"]);
+
+    // Index the repository so the review command can work
+    let mut store = SqliteStore::open(&root.join(".oxide/index.db")).unwrap();
+    update_index(root, &mut store, &HashedEmbedder::default()).unwrap();
+
+    tmp
+}
+
+fn oxide_cmd(repo: &std::path::Path) -> std::process::Command {
+    let mut cmd = std::process::Command::new(env!("CARGO_BIN_EXE_oxide"));
+    cmd.env("OXIDE_EMBED_NATIVE", "hashed").current_dir(repo);
+    cmd
+}
+
+#[test]
+fn invalid_diff_range_fails_with_review_failed() {
+    let repo = init_repo_with_one_commit();
+    let mut cmd = oxide_cmd(repo.path());
+    cmd.args([
+        "review",
+        "--diff",
+        "nonexistent-garbage-range-zzz",
+        "--json",
+    ]);
+    let out = cmd.output().unwrap();
+    assert!(!out.status.success());
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(stdout.contains("review_failed"), "{stdout}");
+}
+
+#[test]
+fn fresh_single_commit_repo_default_diff_fails_truthfully() {
+    let repo = init_repo_with_one_commit();
+    let mut cmd = oxide_cmd(repo.path());
+    cmd.args(["review", "--json"]); // default --diff is HEAD~1
+    let out = cmd.output().unwrap();
+    assert!(!out.status.success());
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(stdout.contains("no prior commit"), "{stdout}");
+}

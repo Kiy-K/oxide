@@ -92,7 +92,7 @@ fn staged_and_unstaged_changes_both_surface() {
     write(root.join("b.py"), "def two():\n    return 22\n");
 
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     let mut files = ctx.evidence.changed_files.clone();
     files.sort();
     assert_eq!(
@@ -123,7 +123,7 @@ fn rename_attributes_to_the_new_path() {
     );
 
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     assert!(
         ctx.evidence
             .changed_files
@@ -161,7 +161,7 @@ fn partial_deletion_in_a_real_repo_attributes_to_the_enclosing_symbol() {
     );
 
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     let names: Vec<&str> = ctx
         .changed_symbols
         .iter()
@@ -185,7 +185,7 @@ fn whole_file_deletion_is_listed_but_maps_to_no_symbol() {
 
     // Index reflects the post-deletion state, same as the working tree.
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     assert!(
         ctx.evidence.changed_files.iter().any(|f| f == "gone.py"),
         "deleted file must still be surfaced: {:?}",
@@ -230,7 +230,7 @@ fn merge_commit_neither_crashes_nor_pollutes_co_change() {
     write(root.join("a.py"), "x = 11\n");
     let symbols = indexed_symbols(root);
     // Must not panic/error despite a merge commit in history.
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     assert!(ctx.evidence.changed_files.contains(&"a.py".to_string()));
     // --no-merges means the merge commit itself never appears as "recent".
     assert!(
@@ -267,7 +267,7 @@ fn root_commit_does_not_manufacture_a_co_change_pair() {
 
     write(root.join("a.py"), "x = 3\n");
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     assert!(
         ctx.evidence
             .co_change
@@ -318,7 +318,7 @@ fn shallow_clone_does_not_error() {
     write(shallow.path().join("a.py"), "x = 999\n");
     let symbols = indexed_symbols(shallow.path());
     // Must not error even though history only goes back one commit.
-    let ctx = build_git_context(shallow.path(), &symbols, "");
+    let ctx = build_git_context(shallow.path(), &symbols, "").unwrap();
     assert!(ctx.evidence.changed_files.contains(&"a.py".to_string()));
 }
 
@@ -344,7 +344,7 @@ fn detached_head_works() {
 
     write(root.join("a.py"), "x = 3\n");
     let symbols = indexed_symbols(root);
-    let ctx = build_git_context(root, &symbols, "");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
     assert!(ctx.evidence.changed_files.contains(&"a.py".to_string()));
 }
 

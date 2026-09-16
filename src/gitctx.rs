@@ -105,15 +105,27 @@ fn overlap_len(a1: u32, a2: u32, b1: u32, b2: u32) -> u32 {
 
 /// Assemble bounded git evidence for `range` (`gitutil::diff_text`'s
 /// convention: empty = worktree vs HEAD, `A..B` explicit, a single rev `R`
-/// = everything since `R`). Degrades to an empty [`GitContext`] — never
-/// errors — when `repo_root` isn't a git repo, has no commits yet, or any
-/// individual `git` call fails; this is provenance, not something a query
-/// should ever fail over.
-pub fn build_git_context(repo_root: &Path, symbols: &[Symbol], range: &str) -> GitContext {
+/// = everything since `R`). Returns an error if `range` is unresolvable
+/// (e.g., `HEAD~1` in a single-commit repo, or an invalid range syntax).
+/// Degrades to an empty [`GitContext`] — never errors — when `repo_root`
+/// isn't a git repo; this is provenance, not something a query should fail over.
+pub fn build_git_context(
+    repo_root: &Path,
+    symbols: &[Symbol],
+    range: &str,
+) -> anyhow::Result<GitContext> {
     if !gitutil::is_repo(repo_root) {
-        return GitContext::default();
+        return Ok(GitContext::default());
     }
-    let text = gitutil::diff_text(repo_root, range).unwrap_or_default();
+    let text = gitutil::diff_text(repo_root, range).map_err(|e| {
+        if range == "HEAD~1" {
+            anyhow::anyhow!(
+                "no prior commit to diff against (repository has only one commit); pass an explicit --diff range instead"
+            )
+        } else {
+            anyhow::anyhow!("invalid diff range '{range}': {e}")
+        }
+    })?;
     let deltas = gitutil::parse_unified(&text);
 
     let mut changed_files: Vec<String> = deltas.iter().map(|d| d.file.clone()).collect();
@@ -131,7 +143,7 @@ pub fn build_git_context(repo_root: &Path, symbols: &[Symbol], range: &str) -> G
     let co_change = co_change_for(repo_root, &deltas);
     let changed_symbols = changed_symbols_for(&deltas, symbols);
 
-    GitContext {
+    Ok(GitContext {
         evidence: GitEvidence {
             range: if range.is_empty() {
                 "HEAD".into()
@@ -143,7 +155,7 @@ pub fn build_git_context(repo_root: &Path, symbols: &[Symbol], range: &str) -> G
             co_change,
         },
         changed_symbols,
-    }
+    })
 }
 
 /// Bounded co-change tally for `deltas`' changed files: the first
@@ -275,6 +287,23 @@ mod tests {
         }
     }
 
+    fn git(root: &std::path::Path, args: &[&str]) {
+        let st = std::process::Command::new("git")
+            .args(args)
+            .current_dir(root)
+            .env("GIT_AUTHOR_NAME", "t")
+            .env("GIT_AUTHOR_EMAIL", "t@t")
+            .env("GIT_COMMITTER_NAME", "t")
+            .env("GIT_COMMITTER_EMAIL", "t@t")
+            .status()
+            .unwrap();
+        assert!(st.success(), "git {args:?}");
+    }
+
+    fn commit(root: &std::path::Path, msg: &str) {
+        git(root, &["commit", "-qm", msg]);
+    }
+
     #[test]
     fn attributes_modify_and_add_to_the_right_symbol() {
         let symbols = vec![
@@ -313,7 +342,7 @@ mod tests {
     #[test]
     fn non_git_repo_degrades_to_empty_context() {
         let tmp = tempfile::tempdir().unwrap();
-        let ctx = build_git_context(tmp.path(), &[], "");
+        let ctx = build_git_context(tmp.path(), &[], "").unwrap();
         assert!(ctx.changed_symbols.is_empty());
         assert!(ctx.evidence.changed_files.is_empty());
         assert!(ctx.evidence.recent_commits.is_empty());
@@ -328,5 +357,45 @@ mod tests {
         assert!(is_noisy_cochange_file("docs/CHANGES.rst"));
         assert!(!is_noisy_cochange_file("src/retrieval.rs"));
         assert!(!is_noisy_cochange_file("Cargo.toml"));
+    }
+
+    #[test]
+    fn invalid_range_returns_an_error_not_an_empty_context() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        std::fs::write(root.join("a.py"), "a\n").unwrap();
+        git(root, &["add", "."]);
+        commit(root, "init");
+        let err = build_git_context(root, &[], "nonexistent-garbage-range-zzz").unwrap_err();
+        assert!(err.to_string().contains("invalid diff range"), "{err}");
+    }
+
+    #[test]
+    fn fresh_single_commit_repo_head_tilde_1_gets_a_truthful_message() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        std::fs::write(root.join("a.py"), "a\n").unwrap();
+        git(root, &["add", "."]);
+        commit(root, "only commit");
+        let err = build_git_context(root, &[], "HEAD~1").unwrap_err();
+        assert!(
+            err.to_string().contains("no prior commit to diff against"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn valid_range_still_returns_ok() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        std::fs::write(root.join("a.py"), "a\n").unwrap();
+        git(root, &["add", "."]);
+        commit(root, "first");
+        std::fs::write(root.join("a.py"), "a\nb\n").unwrap();
+        let ctx = build_git_context(root, &[], "").unwrap();
+        assert!(!ctx.evidence.changed_files.is_empty());
     }
 }

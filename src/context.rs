@@ -369,7 +369,7 @@ pub fn build_context_with(
         // `opts.git` is set.
         if opts.git {
             let top_seed_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
-            let git_ctx = gitctx::build_git_context(root, symbols, "");
+            let git_ctx = gitctx::build_git_context(root, symbols, "").unwrap_or_default();
 
             // `callers_of()` is repo-wide by construction (AGENTS.md) — the
             // same bound the structural-callers block above applies is

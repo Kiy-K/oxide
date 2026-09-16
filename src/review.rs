@@ -44,7 +44,7 @@ pub fn build_review_context(
     let symbols = &engine.snapshot_with_relations()?.symbols;
     let graph = RelationGraph::build(symbols);
 
-    let git_ctx = gitctx::build_git_context(repo_root, symbols, range);
+    let git_ctx = gitctx::build_git_context(repo_root, symbols, range)?;
     let changed_symbols = git_ctx.changed_symbols;
     let seen_seeds: Vec<u64> = changed_symbols.iter().map(|c| c.symbol.id()).collect();
 
