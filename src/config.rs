@@ -172,3 +172,9 @@ pub(crate) const LSP_REQUEST_TIMEOUT_MS: u64 = 3000;
 /// include cold-start work (e.g. resolving the Python environment) a later
 /// request never repeats.
 pub(crate) const LSP_INIT_TIMEOUT_MS: u64 = 10_000;
+/// Cap on live `ty server` (or other LSP) child processes `oxide mcp`'s
+/// `ProcessCache` keeps warm across repository roots — each one is a real OS
+/// process (~90MB RSS measured for `ty`, docs/lsp-enrichment-eval/README.md),
+/// unlike other MCP caches, so this needs an explicit bound. Overridden via
+/// `$OXIDE_LSP_MAX_CACHED_SESSIONS`; unset is this default.
+pub(crate) const LSP_MAX_CACHED_SESSIONS: usize = 4;

@@ -4,7 +4,7 @@
 //! out of the argument parser. Retrieval and context algorithms stay below it.
 
 use crate::blast_radius::BlastItem;
-use crate::config::{LSP_INIT_TIMEOUT_MS, LSP_REQUEST_TIMEOUT_MS};
+use crate::config::{LSP_INIT_TIMEOUT_MS, LSP_MAX_CACHED_SESSIONS, LSP_REQUEST_TIMEOUT_MS};
 use crate::context::{build_context_with, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
@@ -326,21 +326,12 @@ pub struct RepositoryService {
 struct ProcessCache {
     snapshots: Mutex<HashMap<PathBuf, Arc<CachedSnapshot>>>,
     embedder: Mutex<Option<(String, Arc<dyn EmbeddingProvider + Send + Sync>)>>,
-    /// One LSP session per repository root, lazily spawned on the first
-    /// `--lsp`/`lsp: true` MCP call and reused across every later call
-    /// against that root — the whole point of this cache existing: a
-    /// one-shot CLI query pays full server `initialize` per invocation
-    /// (`context.rs::build_context_with`'s `None` path), but `oxide mcp` is
-    /// long-lived and can amortize it. `Option<LspClient>` (not just
-    /// `LspClient`) so a slot that has never spawned, or whose last spawn
-    /// failed, is distinguishable from a live session — `context()` below
-    /// checks `LspClient::is_alive()` and respawns into the same slot on
-    /// either case. `Mutex<Option<LspClient>>` per root (not one mutex over
-    /// the whole map) so concurrent MCP requests against *different*
-    /// repositories never serialize on each other's LSP calls; requests
-    /// against the *same* root do serialize, which matches `LspClient`'s
-    /// `&mut self` methods already allowing only one in-flight caller.
+    /// One LSP session per repository root, bounded to
+    /// `LSP_MAX_CACHED_SESSIONS` live slots. `last_used` is checked lazily
+    /// on access, not by a background reaper — avoids a supervision thread
+    /// for what a few lines of eviction logic already cover.
     lsp_clients: Mutex<HashMap<PathBuf, Arc<Mutex<Option<LspClient>>>>>,
+    lsp_last_used: Mutex<HashMap<PathBuf, std::time::Instant>>,
 }
 
 /// `(cache key, matching entry if any)` — `None` when the cache is off or
@@ -360,6 +351,57 @@ static PROCESS_CACHE: OnceLock<ProcessCache> = OnceLock::new();
 
 fn process_cache() -> &'static ProcessCache {
     PROCESS_CACHE.get_or_init(ProcessCache::default)
+}
+
+/// `$OXIDE_LSP_MAX_CACHED_SESSIONS` override — same precedence convention as
+/// `context.rs::resolve_context_max_primaries`: any parse failure, including
+/// unset, falls back to the shipped default.
+fn resolve_lsp_max_cached_sessions() -> usize {
+    std::env::var("OXIDE_LSP_MAX_CACHED_SESSIONS")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(LSP_MAX_CACHED_SESSIONS)
+}
+
+impl ProcessCache {
+    /// Return this root's LSP session slot, creating one if absent. If the
+    /// cache is at capacity and `root` is new, evicts the least-recently-used
+    /// root whose slot is currently idle (not locked by another in-flight
+    /// call) before inserting.
+    fn lsp_client_slot(&self, root: &Path) -> Arc<Mutex<Option<LspClient>>> {
+        let mut clients = self.lsp_clients.lock().unwrap_or_else(|e| e.into_inner());
+        let mut last_used = self.lsp_last_used.lock().unwrap_or_else(|e| e.into_inner());
+        last_used.insert(root.to_path_buf(), std::time::Instant::now());
+        if let Some(existing) = clients.get(root) {
+            return existing.clone();
+        }
+        let max = resolve_lsp_max_cached_sessions();
+        if clients.len() >= max {
+            let victim = last_used
+                .iter()
+                .filter(|(r, _)| clients.contains_key(*r) && *r != root)
+                .filter(|(r, _)| {
+                    clients
+                        .get(*r)
+                        .map(|slot| slot.try_lock().is_ok())
+                        .unwrap_or(false)
+                })
+                .min_by_key(|(_, t)| **t)
+                .map(|(r, _)| r.clone());
+            if let Some(victim) = victim {
+                clients.remove(&victim);
+                last_used.remove(&victim);
+            }
+            // If every existing slot is busy, none are evicted this round —
+            // the new root falls back to spawn-per-call for this one
+            // request, the existing "cache miss" behavior, not a new one.
+        }
+        let slot = Arc::new(Mutex::new(None));
+        if clients.len() < max {
+            clients.insert(root.to_path_buf(), slot.clone());
+        }
+        slot
+    }
 }
 
 /// Meta values a cached snapshot must match, in a fixed order. `None`
@@ -541,17 +583,11 @@ impl RepositoryService {
         Ok(provider)
     }
 
-    /// The per-root LSP session slot from [`ProcessCache::lsp_clients`],
-    /// inserting an empty one on first use. Only ever called when
+    /// The per-root LSP session slot from [`ProcessCache`],
+    /// with bounded capacity and LRU eviction. Only ever called when
     /// `use_process_cache` is set — see `context()`'s guard.
     fn lsp_client_slot(&self) -> Arc<Mutex<Option<LspClient>>> {
-        process_cache()
-            .lsp_clients
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .entry(self.root.clone())
-            .or_insert_with(|| Arc::new(Mutex::new(None)))
-            .clone()
+        process_cache().lsp_client_slot(&self.root)
     }
 
     pub fn index(
@@ -1482,5 +1518,21 @@ mod tests {
             !Arc::ptr_eq(&a_slot_1, &b_slot),
             "different roots must never share a slot"
         );
+    }
+
+    #[test]
+    fn lsp_session_cache_evicts_the_least_recently_used_idle_slot_over_the_cap() {
+        let cache = ProcessCache::default();
+        let roots: Vec<PathBuf> = (0..(LSP_MAX_CACHED_SESSIONS + 2))
+            .map(|i| PathBuf::from(format!("/repo-{i}")))
+            .collect();
+        for root in &roots {
+            let _ = cache.lsp_client_slot(root);
+        }
+        let live = cache.lsp_clients.lock().unwrap();
+        assert!(live.len() <= LSP_MAX_CACHED_SESSIONS, "got {}", live.len());
+        assert!(!live.contains_key(&roots[0]));
+        assert!(!live.contains_key(&roots[1]));
+        assert!(live.contains_key(roots.last().unwrap()));
     }
 }
