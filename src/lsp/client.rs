@@ -17,7 +17,7 @@ use lsp_types::{
     DocumentDiagnosticReportResult, GotoDefinitionResponse, Location, Position,
     PositionEncodingKind, ServerCapabilities, Uri,
 };
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::path::Path;
 use std::str::FromStr;
 use std::time::Duration;
@@ -30,7 +30,12 @@ pub struct LspClient {
     transport: Transport,
     capabilities: ServerCapabilities,
     root: std::path::PathBuf,
-    opened: HashSet<String>,
+    /// Per-open-document state: content hash last sent and the
+    /// didOpen/didChange version, so a file edited between two calls
+    /// against a cached session (see `ProcessCache`) gets a
+    /// `textDocument/didChange` with fresh content instead of silently
+    /// serving the server's stale copy — see `ensure_open`.
+    opened: HashMap<String, (u64, i32)>,
     timeout: Duration,
 }
 
@@ -71,6 +76,16 @@ fn percent_decode(s: &str) -> String {
         i += 1;
     }
     String::from_utf8_lossy(&out).into_owned()
+}
+
+/// Cheap, non-cryptographic content fingerprint — a collision would only
+/// skip one `didChange`, caught on the next `ensure_open` once content
+/// actually differs from what's cached, not a new failure mode.
+fn content_hash(text: &str) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let mut h = std::collections::hash_map::DefaultHasher::new();
+    text.hash(&mut h);
+    h.finish()
 }
 
 fn file_uri(root: &Path, rel_path: &str) -> Result<Uri> {
@@ -153,7 +168,7 @@ impl LspClient {
             transport,
             capabilities,
             root: root.to_path_buf(),
-            opened: HashSet::new(),
+            opened: HashMap::new(),
             timeout: request_timeout,
         })
     }
@@ -169,29 +184,45 @@ impl LspClient {
         self.transport.process_alive()
     }
 
-    /// Open `rel_path` if not already open this session, sending its current
-    /// on-disk text — this client only ever reads, so there is no
-    /// `didChange` to keep in sync.
+    /// Open `rel_path` if not already open this session (`didOpen`), or
+    /// resend its current on-disk content via a full-document `didChange` if
+    /// it was opened before but the content has since changed on disk — the
+    /// spec-correct signal (LSP 3.17 `TextDocumentSyncKind::Full`; a second
+    /// `didOpen` without an intervening `didClose` is not permitted).
+    /// Detecting "changed" by content hash rather than mtime means an
+    /// external touch with no byte change never triggers a needless resync.
     pub fn ensure_open(&mut self, rel_path: &str) -> Result<Uri> {
         let uri = file_uri(&self.root, rel_path)?;
         let key = uri.as_str().to_string();
-        if !self.opened.contains(&key) {
-            let text = std::fs::read_to_string(self.root.join(rel_path))
-                .with_context(|| format!("reading {rel_path} to open in lsp"))?;
-            self.transport
-                .notify(
-                    "textDocument/didOpen",
-                    serde_json::json!({
-                        "textDocument": {
-                            "uri": key,
-                            "languageId": "python",
-                            "version": 1,
-                            "text": text,
-                        }
-                    }),
-                )
-                .map_err(transport_err)?;
-            self.opened.insert(key);
+        let text = std::fs::read_to_string(self.root.join(rel_path))
+            .with_context(|| format!("reading {rel_path} to open in lsp"))?;
+        let hash = content_hash(&text);
+        match self.opened.get(&key).copied() {
+            None => {
+                self.transport
+                    .notify(
+                        "textDocument/didOpen",
+                        serde_json::json!({
+                            "textDocument": {"uri": key, "languageId": "python", "version": 1, "text": text}
+                        }),
+                    )
+                    .map_err(transport_err)?;
+                self.opened.insert(key, (hash, 1));
+            }
+            Some((last_hash, version)) if last_hash != hash => {
+                let next_version = version + 1;
+                self.transport
+                    .notify(
+                        "textDocument/didChange",
+                        serde_json::json!({
+                            "textDocument": {"uri": key, "version": next_version},
+                            "contentChanges": [{"text": text}],
+                        }),
+                    )
+                    .map_err(transport_err)?;
+                self.opened.insert(key, (hash, next_version));
+            }
+            Some(_) => {} // already open, content unchanged: no-op
         }
         Ok(uri)
     }
@@ -395,5 +426,26 @@ mod tests {
         let root = Path::new("/home/user/proj");
         let uri = Uri::from_str("file:///usr/lib/python3.13/typing.py").unwrap();
         assert_eq!(uri_to_repo_relative(root, &uri), None);
+    }
+
+    #[test]
+    fn ensure_open_tracks_content_hash_and_bumps_version_on_change() {
+        let hash_v1 = content_hash("v1\n");
+        let hash_v2 = content_hash("v2\n");
+        assert_ne!(hash_v1, hash_v2);
+
+        let mut opened: HashMap<String, (u64, i32)> = HashMap::new();
+        let key = "file:///a.py".to_string();
+        opened.insert(key.clone(), (hash_v1, 1));
+        assert_eq!(opened[&key], (hash_v1, 1));
+
+        let (last_hash, version) = opened[&key];
+        assert_ne!(last_hash, hash_v2, "must detect the change");
+        opened.insert(key.clone(), (hash_v2, version + 1));
+        assert_eq!(
+            opened[&key],
+            (hash_v2, 2),
+            "version must increment on change"
+        );
     }
 }
