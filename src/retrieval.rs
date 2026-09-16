@@ -1948,7 +1948,12 @@ mod tests {
             &crate::context::ContextOptions::default(),
             None,
         )
-        .unwrap_err();
+        // `.err().unwrap()` instead of `.unwrap_err()`: the Ok type is now
+        // `(ContextPack, Option<LspClient>)` and `LspClient` doesn't derive
+        // `Debug` (no test/prod need for it), which `unwrap_err()`'s panic
+        // message requires but `Option::unwrap()` does not.
+        .err()
+        .unwrap();
         assert!(err.to_string().contains("symbol_relations"), "{err}");
         // Search-side expansion keeps its degrade-not-fail contract.
         let hits = engine

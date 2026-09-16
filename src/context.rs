@@ -8,26 +8,21 @@
 //! Every inclusion and omission carries its reason.
 
 use crate::config::{
-    BLAST_RADIUS_CONTEXT_ITEMS, BLAST_RADIUS_MAX_SEEDS, BLAST_RADIUS_SCORE_FRACTION,
     CONTEXT_CHARS_PER_TOKEN, CONTEXT_DEFAULT_BUDGET_TOKENS, CONTEXT_EXPANSION_PER_SEED,
     CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS, CONTEXT_MAX_CANDIDATES,
     CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
-    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION, GIT_CHANGED_CONTEXT_ITEMS,
-    GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION, GIT_COCHANGE_SYMBOLS_PER_FILE,
-    GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION, LSP_INIT_TIMEOUT_MS, LSP_MAX_SEEDS,
-    LSP_PER_SEED_ITEMS, LSP_REQUEST_TIMEOUT_MS, LSP_SCORE_FRACTION,
+    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
-use crate::gitctx::{self, GitEvidence};
+use crate::gitctx::GitEvidence;
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
-use crate::symbols::{Language, Symbol, SymbolKind};
+use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
-use std::time::Duration;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -93,6 +88,11 @@ pub struct ContextPack {
     /// instead of being duplicated here.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub git: Option<GitEvidence>,
+    /// Evidence sources that degraded during this call (timed out,
+    /// unavailable, protocol error) — empty unless something actually
+    /// failed; never causes this call itself to fail.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub diagnostics: Vec<String>,
 }
 
 pub struct ContextOptions {
@@ -150,7 +150,11 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
-    build_context_with(root, &engine, task, opts, None)
+    let (pack, client) = build_context_with(root, &engine, task, opts, None)?;
+    if let Some(client) = client {
+        client.close(); // this call owned it (CLI spawn-per-call path) — matches pre-refactor behavior
+    }
+    Ok(pack)
 }
 
 /// [`build_context`] over a caller-built engine — the way a long-running
@@ -169,8 +173,8 @@ pub fn build_context_with(
     engine: &RetrievalEngine<'_>,
     task: &str,
     opts: &ContextOptions,
-    lsp_client: Option<&mut crate::lsp::LspClient>,
-) -> Result<ContextPack> {
+    lsp_client: Option<crate::lsp::LspClient>,
+) -> Result<(ContextPack, Option<crate::lsp::LspClient>)> {
     // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
     // `task` reaches both the lexical scorer and the embedder unmodified.
@@ -213,6 +217,11 @@ pub fn build_context_with(
     }
 
     let mut git_evidence: Option<GitEvidence> = None;
+    // No initializer: every path through the `if !seeds.is_empty() { .. }
+    // else { .. }` below assigns this exactly once, so definite-assignment
+    // analysis is enough — an initial `None` here would just be dead.
+    let returned_lsp_client: Option<crate::lsp::LspClient>;
+    let mut diagnostics: Vec<String> = Vec::new();
 
     // Structural expansion around strong primaries only (same rule as search:
     // expansion supplements, never displaces direct hits).
@@ -256,300 +265,50 @@ pub fn build_context_with(
             }
         }
 
-        // Bounded structural-relation expansion: AST-precise callers of the
-        // top seeds — a relation `RelationGraph::neighbors` above cannot
-        // answer (it only sees identifier-name intersection, not real call
-        // sites, so a caller with no other traceable relation to the seed
-        // is invisible to it). Served from `RelationGraph::callers_of`, a
-        // precomputed reverse index (`structural_relations.rs`, populated
-        // by `update_index` itself) instead of a live AST scan — same
-        // provenance tier and same bounding contract as the ast-grep-based
-        // version this replaced (docs/precomputed-relations-migration/README.md),
-        // just backed by an index-time lookup instead of a query-time
-        // parse. Anchored on the same high-confidence seeds; scoped to the
-        // files of already-retrieved symbols (the seed pool itself) —
-        // `callers_of` itself is repo-wide (measured 60x more results
-        // unfiltered on a 902-file synthetic repo,
-        // docs/precomputed-structural-relations/README.md "Reach/noise"),
-        // so that file-scope filter is load-bearing, not optional, exactly
-        // as it was for the ast-grep version. Skipped entirely in `Fast`
-        // mode. Its own hit cap, deliberately separate from
-        // `CONTEXT_EXPANSION_TOTAL`/`CONTEXT_EXPANSION_PER_SEED` (those are
-        // pinned by `expansion_is_capped_per_seed_and_total` for the
-        // RelationGraph pass specifically) since this is a distinct,
-        // independently-bounded evidence source, not a bigger RelationGraph.
-        // The reason tag `ast-grep-caller` is kept verbatim even though
-        // ast-grep is gone — it's stable provenance vocabulary in
-        // `ContextItem.reasons` (a JSON-exposed field), not an
-        // implementation reference; renaming it would be an observable
-        // output change for no behavioral gain (see the migration doc).
-        const STRUCTURAL_CALLER_HITS_PER_SEED: usize = 2;
         if let Some((max_seeds, max_files)) = opts.retrieval_mode.structural_budget() {
-            let mut scope_files: Vec<String> = Vec::new();
-            for h in &seeds {
-                if scope_files.len() >= max_files {
-                    break;
-                }
-                if !scope_files.contains(&h.symbol.file) {
-                    scope_files.push(h.symbol.file.clone());
-                }
-            }
-
-            for seed in seeds.iter().take(max_seeds) {
-                let callers = graph.callers_of(&seed.symbol.name);
-                // Not gated on `seen_seeds`: a caller that's *already* a
-                // direct seed or RelationGraph neighbor still benefits from
-                // this extra provenance (`order_note` merges reasons/scores
-                // for the same symbol id rather than duplicating it), and
-                // `STRUCTURAL_CALLER_HITS_PER_SEED` alone keeps this bounded.
-                let scoped = callers
-                    .into_iter()
-                    .filter(|c| scope_files.contains(&c.file))
-                    .filter(|c| c.id() != seed.symbol.id())
-                    .take(STRUCTURAL_CALLER_HITS_PER_SEED);
-                for caller in scoped {
-                    order_note(Candidate {
-                        symbol: caller.clone(),
-                        score: seed.score * 0.4,
-                        reasons: vec![format!("ast-grep-caller←{}", seed.symbol.qualified_name)],
-                        role: Role::Dependency,
-                    });
-                }
-            }
-        }
-
-        // ---- blast radius (opt-in) --------------------------------------
-        // The one evidence source here that deliberately reaches *outside*
-        // the seed pool's files — a caller in an unretrieved file is what
-        // the question is for — so it carries its own hard caps instead
-        // (`blast_radius.rs`). Injected as ordinary candidates rather than
-        // attached as a separate section: that is what keeps it inside the
-        // existing token budget, per-file diversity cap and role ordering
-        // with no second allocator to keep in sync. Dependency role and a
-        // sub-expansion score, so it can never displace a primary or
-        // outrank the structural expansion above.
-        if opts.blast_radius {
-            let anchors: Vec<&Symbol> = seeds
-                .iter()
-                .take(BLAST_RADIUS_MAX_SEEDS)
-                .map(|h| &h.symbol)
-                .collect();
-            let by_qname: HashMap<&str, f32> = seeds
-                .iter()
-                .map(|h| (h.symbol.qualified_name.as_str(), h.score))
-                .collect();
-            for (item, sym) in crate::blast_radius::compute(&graph, &anchors, true)
-                .into_iter()
-                .take(BLAST_RADIUS_CONTEXT_ITEMS)
-            {
-                let seed_score = by_qname.get(item.via.as_str()).copied().unwrap_or(0.0);
-                order_note(Candidate {
-                    symbol: sym.clone(),
-                    score: seed_score * BLAST_RADIUS_SCORE_FRACTION,
-                    reasons: vec![format!("blast-radius:{}←{}", item.relation, item.via)],
-                    role: if is_test_symbol(sym) {
-                        Role::Test
-                    } else {
-                        Role::Dependency
-                    },
-                });
-            }
-        }
-
-        // ---- git-aware evidence (opt-in) ---------------------------------
-        // Current diff + bounded co-change history (`gitctx.rs`), scored
-        // below every other evidence source here — a changed symbol is a
-        // fact, a co-changed file is a heuristic, and per design neither
-        // should ever outrank direct or structural evidence
-        // (`GIT_CHANGED_SCORE_FRACTION`/`GIT_NEIGHBOR_SCORE_FRACTION` <
-        // `BLAST_RADIUS_SCORE_FRACTION`; `GIT_COCHANGE_SCORE_FRACTION` is
-        // the lowest of the three, further scaled by the co-change pair's
-        // own coupling `strength`). Reuses `symbols`/`graph` above — no
-        // second corpus load, no extra `git` subprocess call unless
-        // `opts.git` is set.
-        if opts.git {
-            let top_seed_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
-            let git_ctx = gitctx::build_git_context(root, symbols, "").unwrap_or_default();
-
-            // `callers_of()` is repo-wide by construction (AGENTS.md) — the
-            // same bound the structural-callers block above applies is
-            // required here too: without it, a changed symbol with a common
-            // bare name (`save`, `run`, `parse`) could pull an unrelated
-            // caller from an arbitrary file anywhere in the repo. Scoped to
-            // the seed pool's own files, the same as the structural block.
-            let mut git_scope_files: Vec<&str> = Vec::new();
-            for h in &seeds {
-                if !git_scope_files.contains(&h.symbol.file.as_str()) {
-                    git_scope_files.push(h.symbol.file.as_str());
-                }
-            }
-
-            for cs in git_ctx
-                .changed_symbols
-                .iter()
-                .take(GIT_CHANGED_CONTEXT_ITEMS)
-            {
-                order_note(Candidate {
-                    symbol: cs.symbol.clone(),
-                    score: top_seed_score * GIT_CHANGED_SCORE_FRACTION,
-                    reasons: vec![format!(
-                        "git-changed(+{})←{}",
-                        cs.added_lines, cs.symbol.file
-                    )],
-                    role: if is_test_symbol(&cs.symbol) {
-                        Role::Test
-                    } else {
-                        Role::Dependency
-                    },
-                });
-
-                let mut hits = 0usize;
-                for (rel, n) in graph.neighbors(&cs.symbol) {
-                    if hits >= GIT_NEIGHBOR_HITS_PER_CHANGED {
-                        break;
-                    }
-                    if rel != "test" && rel != "uses" {
-                        continue;
-                    }
-                    hits += 1;
-                    order_note(Candidate {
-                        symbol: n.clone(),
-                        score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
-                        reasons: vec![format!(
-                            "git-caller-of-changed←{}",
-                            cs.symbol.qualified_name
-                        )],
-                        role: if is_test_symbol(n) {
-                            Role::Test
-                        } else {
-                            Role::Dependency
-                        },
-                    });
-                }
-                for caller in graph
-                    .callers_of(&cs.symbol.name)
-                    .into_iter()
-                    .filter(|c| git_scope_files.contains(&c.file.as_str()))
-                    .filter(|c| c.id() != cs.symbol.id())
-                    .take(GIT_NEIGHBOR_HITS_PER_CHANGED - hits.min(GIT_NEIGHBOR_HITS_PER_CHANGED))
-                {
-                    order_note(Candidate {
-                        symbol: caller.clone(),
-                        score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
-                        reasons: vec![format!(
-                            "git-caller-of-changed←{}",
-                            cs.symbol.qualified_name
-                        )],
-                        role: Role::Dependency,
-                    });
-                }
-            }
-
-            for entry in &git_ctx.evidence.co_change {
-                for s in symbols
-                    .iter()
-                    .filter(|s| s.file == entry.co_changed_with && s.kind != SymbolKind::Module)
-                    .take(GIT_COCHANGE_SYMBOLS_PER_FILE)
-                {
-                    order_note(Candidate {
-                        symbol: s.clone(),
-                        score: top_seed_score
-                            * GIT_COCHANGE_SCORE_FRACTION
-                            * entry.strength.min(1.0),
-                        reasons: vec![format!(
-                            "git-cochange({} commits)←{}",
-                            entry.count, entry.file
-                        )],
-                        role: if is_test_symbol(s) {
-                            Role::Test
-                        } else {
-                            Role::Dependency
-                        },
-                    });
-                }
-            }
-
-            git_evidence = Some(git_ctx.evidence);
-        }
-
-        // ---- lsp semantic enrichment (opt-in) ----------------------------
-        // Exact evidence (definitions, references, call/type hierarchy,
-        // diagnostics) from a real language server, layered on top of the
-        // always-on heuristic evidence above — never required, never a
-        // replacement. `enrich_seeds` itself enforces scope-then-cap
-        // (`lsp::enrich`'s module doc); the file scope here is the same
-        // seed-pool-derived list the bounded structural-caller block above
-        // already builds and bounds, not a fresh repo-wide reach.
-        if opts.lsp {
-            let py_seeds: Vec<&Symbol> = seeds
-                .iter()
-                .filter(|h| h.symbol.language == Language::Python)
-                .take(LSP_MAX_SEEDS)
-                .map(|h| &h.symbol)
-                .collect();
-            if !py_seeds.is_empty() {
-                let mut lsp_scope_files: Vec<String> = Vec::new();
-                for h in &seeds {
-                    if !lsp_scope_files.contains(&h.symbol.file) {
-                        lsp_scope_files.push(h.symbol.file.clone());
-                    }
-                }
-                let by_qname: HashMap<&str, f32> = seeds
-                    .iter()
-                    .map(|h| (h.symbol.qualified_name.as_str(), h.score))
-                    .collect();
-                let top_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
-
-                let mut run_enrichment = |client: &mut crate::lsp::LspClient| {
-                    for ev in crate::lsp::enrich_seeds(
-                        client,
-                        root,
-                        symbols,
-                        &py_seeds,
-                        &lsp_scope_files,
-                        LSP_MAX_SEEDS,
-                        LSP_PER_SEED_ITEMS,
-                    ) {
-                        let seed_score = ev
-                            .via
-                            .and_then(|v| by_qname.get(v).copied())
-                            .unwrap_or(top_score);
-                        order_note(Candidate {
-                            symbol: ev.symbol.clone(),
-                            score: seed_score * LSP_SCORE_FRACTION,
-                            reasons: vec![ev.reason],
-                            role: if is_test_symbol(ev.symbol) {
-                                Role::Test
-                            } else {
-                                Role::Dependency
-                            },
-                        });
-                    }
+            let output = crate::evidence::EvidenceCoordinator::collect(
+                crate::evidence::coordinator::CollectInput {
+                    root,
+                    symbols,
+                    graph: &graph,
+                    seeds: &seeds,
+                    structural_max_seeds: max_seeds,
+                    structural_max_files: max_files,
+                    blast_radius: opts.blast_radius,
+                    git: opts.git,
+                    lsp: opts.lsp,
+                    lsp_client,
+                },
+            );
+            for c in output.candidates {
+                let role = if is_test_symbol(&c.symbol) {
+                    Role::Test
+                } else {
+                    Role::Dependency
                 };
-
-                match lsp_client {
-                    // MCP path: caller (service.rs's ProcessCache) owns the
-                    // session's lifecycle — reused across calls, never
-                    // closed here.
-                    Some(client) => run_enrichment(client),
-                    // CLI path (and every other caller that passes `None`):
-                    // spawn-per-call, exactly the original behavior.
-                    None => {
-                        let server =
-                            std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                        if let Ok(mut client) = crate::lsp::LspClient::spawn(
-                            &server,
-                            root,
-                            Duration::from_millis(LSP_INIT_TIMEOUT_MS),
-                            Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
-                        ) {
-                            run_enrichment(&mut client);
-                            client.close();
-                        }
-                    }
-                }
+                order_note(Candidate {
+                    symbol: c.symbol,
+                    score: c.score,
+                    reasons: c.reasons,
+                    role,
+                });
             }
+            git_evidence = output.git_evidence;
+            diagnostics = output
+                .degraded
+                .iter()
+                .map(|d| format!("{}: {:?}", d.source.as_str(), d.reason))
+                .collect();
+            returned_lsp_client = output.lsp_client;
+        } else {
+            returned_lsp_client = lsp_client;
         }
+    } else {
+        // Empty seed pool: the block above (which moves `lsp_client` into
+        // either the coordinator call or its own `else`) never runs at all,
+        // so `lsp_client` is still available here — hand it straight back
+        // rather than silently dropping a caller-owned session.
+        returned_lsp_client = lsp_client;
     }
 
     // ---- dedup / subsumption -------------------------------------------
@@ -744,18 +503,22 @@ pub fn build_context_with(
             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
-    Ok(ContextPack {
-        task: task.to_string(),
-        // Query formatting is now internal to the provider (`embed_query`),
-        // so the text reaching lexical/embedding stages is `task` itself.
-        query_used: query.to_string(),
-        embedder: engine.embedder().name().to_string(),
-        budget_tokens: opts.budget_tokens,
-        used_tokens: used,
-        omitted: dropped,
-        items,
-        git: git_evidence,
-    })
+    Ok((
+        ContextPack {
+            task: task.to_string(),
+            // Query formatting is now internal to the provider (`embed_query`),
+            // so the text reaching lexical/embedding stages is `task` itself.
+            query_used: query.to_string(),
+            embedder: engine.embedder().name().to_string(),
+            budget_tokens: opts.budget_tokens,
+            used_tokens: used,
+            omitted: dropped,
+            items,
+            git: git_evidence,
+            diagnostics,
+        },
+        returned_lsp_client,
+    ))
 }
 
 fn dedup_reasons(rs: &[String]) -> Vec<String> {

@@ -894,9 +894,7 @@ impl RepositoryService {
                 .ok();
             }
         }
-        let lsp_client = lsp_guard.as_mut().and_then(|g| g.as_mut());
-
-        let pack = build_context_with(
+        let (pack, _client) = build_context_with(
             &self.root,
             &engine,
             task,
@@ -908,7 +906,7 @@ impl RepositoryService {
                 lsp,
                 ..ContextOptions::default()
             },
-            lsp_client,
+            lsp_guard.as_mut().and_then(|g| g.take()),
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
         // See the identical guard in `search` above for why remote/local are
