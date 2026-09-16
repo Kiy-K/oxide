@@ -875,26 +875,30 @@ impl RepositoryService {
         // `build_context_with` falls back to its own spawn-per-call default,
         // unchanged from before this cache existed.
         let lsp_slot = (lsp && self.use_process_cache).then(|| self.lsp_client_slot());
-        let mut lsp_guard = lsp_slot
-            .as_ref()
-            .map(|slot| slot.lock().unwrap_or_else(|e| e.into_inner()));
-        if let Some(guard) = lsp_guard.as_mut() {
-            let needs_spawn = match guard.as_mut() {
-                Some(client) => !client.is_alive(),
-                None => true,
-            };
-            if needs_spawn {
-                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                **guard = LspClient::spawn(
-                    &server,
-                    &self.root,
-                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
-                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
-                )
-                .ok();
+        let owned_client: Option<LspClient> = match &lsp_slot {
+            Some(slot) => {
+                let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+                let needs_spawn = match guard.as_mut() {
+                    Some(client) => !client.is_alive(),
+                    None => true,
+                };
+                if needs_spawn {
+                    let server =
+                        std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
+                    *guard = LspClient::spawn(
+                        &server,
+                        &self.root,
+                        Duration::from_millis(LSP_INIT_TIMEOUT_MS),
+                        Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
+                    )
+                    .ok();
+                }
+                guard.take()
             }
-        }
-        let (pack, _client) = build_context_with(
+            None => None,
+        };
+
+        let (pack, returned_client) = build_context_with(
             &self.root,
             &engine,
             task,
@@ -906,9 +910,17 @@ impl RepositoryService {
                 lsp,
                 ..ContextOptions::default()
             },
-            lsp_guard.as_mut().and_then(|g| g.take()),
+            owned_client,
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
+
+        if let Some(slot) = &lsp_slot {
+            let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+            // `None` here (a panicked spawn_blocking inside the coordinator)
+            // means the next call respawns, same as today's is_alive()-false
+            // path — not a new failure mode.
+            *guard = returned_client;
+        }
         // See the identical guard in `search` above for why remote/local are
         // treated differently here.
         if !provider.is_available() && !provider.is_remote() {
