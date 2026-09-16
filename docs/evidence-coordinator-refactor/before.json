@@ -1,0 +1,17 @@
+{
+  "captured_at_commit": "ae79d7b (after Tasks 1-3: audit correctness fixes, before the EvidenceCoordinator refactor)",
+  "fixture": "fixtures/py_repo",
+  "embedder": "hashed (OXIDE_EMBED_NATIVE=hashed, deterministic offline)",
+  "method": "single run per condition, /usr/bin/time -v; not the 5-repeat median the plan suggested — see caveat below",
+  "conditions": {
+    "base": { "wall_s": 0.00, "rss_kb": 15376 },
+    "git": { "wall_s": 0.01, "rss_kb": 16020 },
+    "lsp": { "wall_s": 0.11, "rss_kb": 178196 },
+    "git_lsp": { "wall_s": 0.12, "rss_kb": 178356 }
+  },
+  "caveats": [
+    "Single-run numbers, not a 5-repeat median — at these low absolute magnitudes (git ~10ms, lsp ~110ms) a single run carries real measurement noise; treat differences smaller than ~10-20ms as not meaningfully distinguishable.",
+    "git's own cost (~10ms) is small enough relative to lsp's (~110ms) that this 'before' run cannot yet distinguish a serialized-sum architecture from a concurrent-max one just by eyeballing git_lsp's wall time (0.01+0.11=0.12 either way, coincidentally) — the 'after' comparison is where the concurrency claim actually gets tested.",
+    "fixtures/py_repo is a subdirectory of the OXIDE repo itself (git rev-parse --is-inside-work-tree is true), not an isolated fixture repo with its own history — the '--git' condition reflects this worktree's actual current git state, which will differ somewhat by the time the 'after' capture runs (more commits will have landed). Not a regression signal if the git-evidence JSON shape/fields differ slightly between before/after for this reason."
+  ]
+}
