@@ -24,8 +24,10 @@ use std::time::Duration;
 
 /// One spawned server session: the process, its negotiated capabilities, and
 /// which documents have been `didOpen`'d so far. Read-only from OXIDE's
-/// point of view — there is no `didChange` support because this client never
-/// edits anything.
+/// point of view — it never modifies user files, but `ensure_open` sends
+/// `textDocument/didChange` to resync the server's copy when it detects an
+/// on-disk file has changed, keeping the server's stale view in sync with
+/// the current disk state without requiring a new `didOpen`.
 pub struct LspClient {
     transport: Transport,
     capabilities: ServerCapabilities,
@@ -86,6 +88,28 @@ fn content_hash(text: &str) -> u64 {
     let mut h = std::collections::hash_map::DefaultHasher::new();
     text.hash(&mut h);
     h.finish()
+}
+
+/// Decision logic for whether to send `didOpen`, `didChange`, or nothing.
+/// Pure function, no I/O — decides which LSP notification (if any) to send
+/// and what to store in `opened` state, based on whether this file has ever
+/// been opened and whether its content has changed.
+enum OpenTransition {
+    Open,                    // never opened before — send didOpen with version 1
+    Change { version: i32 }, // opened, content changed — send didChange with this version
+    Unchanged,               // opened, content identical — no-op
+}
+
+/// Compute the state transition for a document: whether to open it for the
+/// first time, resync it because content changed, or leave it alone.
+fn opened_transition(existing: Option<(u64, i32)>, new_hash: u64) -> OpenTransition {
+    match existing {
+        None => OpenTransition::Open,
+        Some((last_hash, version)) if last_hash != new_hash => OpenTransition::Change {
+            version: version + 1,
+        },
+        Some(_) => OpenTransition::Unchanged,
+    }
 }
 
 fn file_uri(root: &Path, rel_path: &str) -> Result<Uri> {
@@ -197,8 +221,8 @@ impl LspClient {
         let text = std::fs::read_to_string(self.root.join(rel_path))
             .with_context(|| format!("reading {rel_path} to open in lsp"))?;
         let hash = content_hash(&text);
-        match self.opened.get(&key).copied() {
-            None => {
+        match opened_transition(self.opened.get(&key).copied(), hash) {
+            OpenTransition::Open => {
                 self.transport
                     .notify(
                         "textDocument/didOpen",
@@ -209,20 +233,19 @@ impl LspClient {
                     .map_err(transport_err)?;
                 self.opened.insert(key, (hash, 1));
             }
-            Some((last_hash, version)) if last_hash != hash => {
-                let next_version = version + 1;
+            OpenTransition::Change { version } => {
                 self.transport
                     .notify(
                         "textDocument/didChange",
                         serde_json::json!({
-                            "textDocument": {"uri": key, "version": next_version},
+                            "textDocument": {"uri": key, "version": version},
                             "contentChanges": [{"text": text}],
                         }),
                     )
                     .map_err(transport_err)?;
-                self.opened.insert(key, (hash, next_version));
+                self.opened.insert(key, (hash, version));
             }
-            Some(_) => {} // already open, content unchanged: no-op
+            OpenTransition::Unchanged => {} // already open, content unchanged: no-op
         }
         Ok(uri)
     }
@@ -429,23 +452,41 @@ mod tests {
     }
 
     #[test]
-    fn ensure_open_tracks_content_hash_and_bumps_version_on_change() {
+    fn opened_transition_decides_whether_to_open_change_or_skip() {
         let hash_v1 = content_hash("v1\n");
         let hash_v2 = content_hash("v2\n");
         assert_ne!(hash_v1, hash_v2);
 
-        let mut opened: HashMap<String, (u64, i32)> = HashMap::new();
-        let key = "file:///a.py".to_string();
-        opened.insert(key.clone(), (hash_v1, 1));
-        assert_eq!(opened[&key], (hash_v1, 1));
+        // Test case 1: never opened before — should send didOpen
+        let trans = opened_transition(None, hash_v1);
+        match trans {
+            OpenTransition::Open => {} // expected
+            _ => panic!("never-opened should emit Open"),
+        }
 
-        let (last_hash, version) = opened[&key];
-        assert_ne!(last_hash, hash_v2, "must detect the change");
-        opened.insert(key.clone(), (hash_v2, version + 1));
-        assert_eq!(
-            opened[&key],
-            (hash_v2, 2),
-            "version must increment on change"
-        );
+        // Test case 2: opened with matching content — should be a no-op
+        let trans = opened_transition(Some((hash_v1, 1)), hash_v1);
+        match trans {
+            OpenTransition::Unchanged => {} // expected
+            _ => panic!("same content should emit Unchanged"),
+        }
+
+        // Test case 3: opened with different content — should send didChange with incremented version
+        let trans = opened_transition(Some((hash_v1, 1)), hash_v2);
+        match trans {
+            OpenTransition::Change { version } => {
+                assert_eq!(version, 2, "version should increment from 1 to 2");
+            }
+            _ => panic!("different content should emit Change"),
+        }
+
+        // Test case 4: opened with version > 1 and new content — version still increments
+        let trans = opened_transition(Some((hash_v1, 5)), hash_v2);
+        match trans {
+            OpenTransition::Change { version } => {
+                assert_eq!(version, 6, "version should increment from 5 to 6");
+            }
+            _ => panic!("different content should emit Change"),
+        }
     }
 }
