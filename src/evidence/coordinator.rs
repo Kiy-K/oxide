@@ -39,7 +39,8 @@ use crate::config::{
     BLAST_RADIUS_CONTEXT_ITEMS, BLAST_RADIUS_MAX_SEEDS, BLAST_RADIUS_SCORE_FRACTION,
     GIT_CHANGED_CONTEXT_ITEMS, GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION,
     GIT_COCHANGE_SYMBOLS_PER_FILE, GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION,
-    LSP_MAX_SEEDS, LSP_PER_SEED_ITEMS, LSP_SCORE_FRACTION,
+    LSP_INIT_TIMEOUT_MS, LSP_MAX_SEEDS, LSP_PER_SEED_ITEMS, LSP_REQUEST_TIMEOUT_MS,
+    LSP_SCORE_FRACTION,
 };
 use crate::evidence::contract::{
     DegradeReason, Degraded, EvidenceCandidate, EvidenceSource, Outcome,
@@ -54,7 +55,7 @@ use crate::symbols::{Language, Symbol, SymbolKind};
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 pub struct CollectInput<'a> {
     pub root: &'a Path,
@@ -131,20 +132,16 @@ impl EvidenceCoordinator {
             // so they satisfy tokio::spawn's Send + 'static bound.
             let git_handle =
                 git.then(|| tokio::spawn(git_io(root.to_path_buf(), symbols_arc.clone())));
-            let lsp_handle = if lsp {
-                lsp_client.map(|client| {
-                    tokio::spawn(lsp_io(
-                        client,
-                        root.to_path_buf(),
-                        symbols_arc.clone(),
-                        py_seeds_owned,
-                        py_seed_scores,
-                        lsp_scope_files,
-                    ))
-                })
-            } else {
-                None
-            };
+            let lsp_handle = lsp.then(|| {
+                tokio::spawn(lsp_io(
+                    lsp_client,
+                    root.to_path_buf(),
+                    symbols_arc.clone(),
+                    py_seeds_owned,
+                    py_seed_scores,
+                    lsp_scope_files,
+                ))
+            });
 
             // Runs synchronously on this thread, concurrently with the two
             // background tasks above — see the module doc for why this
@@ -411,14 +408,16 @@ async fn git_io(root: std::path::PathBuf, symbols: Arc<[Symbol]>) -> Outcome<git
     }
 }
 
-/// Runs on a `spawn_blocking` task. Takes ownership of `client` and hands it
-/// back in the return tuple regardless of outcome, so the caller can close
-/// it (CLI) or restore it to the cache (MCP) either way. `py_seeds_owned`/
-/// `py_seed_scores` are owned copies (same length/order) of the top Python
-/// seeds — `enrich_seeds` needs data borrowed from something this task
-/// itself owns, not the caller's borrowed `symbols`/`seeds`.
+/// Runs on a `spawn_blocking` task. `client: None` (every CLI call) spawns a
+/// fresh `LspClient` here — matching `build_context`'s own doc comment and
+/// `service.rs`'s identical spawn-per-call fallback for its cache-disabled
+/// path — and hands it back in the return tuple so the caller closes it
+/// (CLI) or restores a caller-owned one to the cache (MCP) either way.
+/// `py_seeds_owned`/`py_seed_scores` are owned copies (same length/order) of
+/// the top Python seeds — `enrich_seeds` needs data borrowed from something
+/// this task itself owns, not the caller's borrowed `symbols`/`seeds`.
 async fn lsp_io(
-    mut client: LspClient,
+    client: Option<LspClient>,
     root: std::path::PathBuf,
     symbols: Arc<[Symbol]>,
     py_seeds_owned: Vec<Symbol>,
@@ -428,6 +427,21 @@ async fn lsp_io(
     let start = Instant::now();
     let handle = tokio::task::spawn_blocking(move || {
         std::thread::sleep(std::time::Duration::from_millis(artificial_delay_ms("lsp")));
+        let mut client = match client {
+            Some(client) => client,
+            None => {
+                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
+                match LspClient::spawn(
+                    &server,
+                    &root,
+                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
+                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
+                ) {
+                    Ok(client) => client,
+                    Err(e) => return Err(e.to_string()),
+                }
+            }
+        };
         let py_seeds: Vec<&Symbol> = py_seeds_owned.iter().collect();
         let by_qname: HashMap<&str, f32> = py_seeds_owned
             .iter()
@@ -458,10 +472,18 @@ async fn lsp_io(
                 }
             })
             .collect();
-        (client, candidates)
+        Ok((client, candidates))
     });
     match handle.await {
-        Ok((client, candidates)) => (Some(client), Outcome::Ready(candidates)),
+        Ok(Ok((client, candidates))) => (Some(client), Outcome::Ready(candidates)),
+        Ok(Err(spawn_err)) => (
+            None,
+            Outcome::Degraded(Degraded {
+                source: EvidenceSource::Lsp,
+                reason: DegradeReason::Unavailable { detail: spawn_err },
+                elapsed: start.elapsed(),
+            }),
+        ),
         Err(join_err) => (
             None,
             Outcome::Degraded(Degraded {

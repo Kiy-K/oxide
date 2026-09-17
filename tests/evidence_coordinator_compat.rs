@@ -20,6 +20,21 @@
 //! proof this gate gives — that the evidence-coordinator refactor didn't
 //! change retrieval/scoring/structure — lives entirely in `items`/
 //! `omitted`, which stay fully compared.
+//!
+//! `lsp_enabled` cannot use the same byte-identical comparison, for a
+//! reason discovered empirically while fixing an unrelated regression in
+//! Task 15: a real `ty` session's `textDocument/references`/call-hierarchy
+//! responses are not byte-stable across separate process invocations — five
+//! consecutive `oxide query --lsp` runs against the same unmodified fixture,
+//! same binary, no code changes in between, produced five different
+//! `lsp-reference`/score combinations for two symbols (confirmed with
+//! `diff`). The set of *item ids* surfaced stayed identical across all five
+//! runs; only which of that set's items got tagged `lsp-reference` (and
+//! therefore their exact score) flickered. This is a real, pre-existing
+//! property of the live LSP path, orthogonal to this refactor — not
+//! something the coordinator refactor introduced or could reasonably
+//! control. `lsp_enabled_surfaces_the_same_item_set` therefore compares only
+//! the sorted set of item ids, which is the invariant that actually holds.
 
 use std::process::Command;
 
@@ -122,8 +137,27 @@ fn git_enabled_is_byte_identical() {
     );
 }
 
+/// Item ids present in `value["items"]`, sorted for order-insensitive
+/// comparison — see the module doc for why this, not byte identity, is the
+/// gate for the `lsp_enabled` condition specifically.
+fn item_ids(value: &serde_json::Value) -> Vec<String> {
+    let mut ids: Vec<String> = value["items"]
+        .as_array()
+        .expect("items must be an array")
+        .iter()
+        .map(|item| {
+            item["id"]
+                .as_str()
+                .expect("id must be a string")
+                .to_string()
+        })
+        .collect();
+    ids.sort();
+    ids
+}
+
 #[test]
-fn lsp_enabled_is_byte_identical() {
+fn lsp_enabled_surfaces_the_same_item_set() {
     if !std::process::Command::new("ty")
         .arg("--version")
         .output()
@@ -133,15 +167,21 @@ fn lsp_enabled_is_byte_identical() {
         eprintln!("skipping: `ty` not on PATH");
         return;
     }
-    expect_fixture(
-        "lsp_enabled",
-        &[
-            "query",
-            "where is retry logic",
-            "--lsp",
-            "--json",
-            "--path",
-            "fixtures/py_repo",
-        ],
+    let expected_raw = std::fs::read_to_string("fixtures/evidence_compat/lsp_enabled.json")
+        .expect("missing fixtures/evidence_compat/lsp_enabled.json");
+    let expected: serde_json::Value =
+        serde_json::from_str(&expected_raw).expect("fixture must be valid JSON");
+    let actual = run(&[
+        "query",
+        "where is retry logic",
+        "--lsp",
+        "--json",
+        "--path",
+        "fixtures/py_repo",
+    ]);
+    assert_eq!(
+        item_ids(&actual),
+        item_ids(&expected),
+        "condition `lsp_enabled` must surface the same set of item ids (see module doc on live-ty nondeterminism)"
     );
 }
