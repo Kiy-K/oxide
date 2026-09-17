@@ -201,6 +201,26 @@ very large diff.
   renamed file is invisible to `--git`'s evidence.
 - Git-enabled retrieval quality has not been validated by any agent-outcome
   benchmark — only correctness/plumbing tests exist today.
+- **A partial subprocess failure inside `build_git_context` is
+  indistinguishable from genuinely empty history**, e.g. `recent_commits`
+  succeeds independently of `co_change`/`changed_files`/`changed_symbols`
+  (each is its own `git` invocation), but a failure specifically in
+  `gitutil::recent_commits`/`recent_commits_in_range`
+  (`gitctx.rs`'s `.unwrap_or_default()`) is silently folded into an empty
+  `recent_commits: []`, the same shape genuinely-empty history produces.
+  Reviewed and left as-is (Codex review, hardening pass item #5): the
+  fix that would actually distinguish the two — threading a per-field
+  diagnostic out of `build_git_context` — needs `Outcome`/`Degraded`
+  (`src/evidence/contract.rs`) to support a third "succeeded, but one
+  internal step degraded" state alongside today's binary
+  `Ready`/`Degraded`, which is a real design change, not a proportionate
+  fix for this by itself. Making the *whole* git evidence call fail
+  instead (propagating the inner error) would be a worse regression: it
+  would lose `changed_files`/`co_change`/`changed_symbols` too, all of
+  which succeed independently today even when `recent_commits` alone
+  fails. Not turned into a query failure either way, per the standing
+  "optional Git enrichment failures never become ordinary query
+  failures" rule.
 
 ## Testing
 
