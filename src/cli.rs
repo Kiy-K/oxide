@@ -261,6 +261,11 @@ pub enum Cmd {
     /// Run the stdio MCP server. Coding agents launch this; you normally
     /// do not run it by hand — see `oxide install`.
     Mcp,
+    /// Manage optional LSP servers used by `--lsp` semantic enrichment.
+    Lsp {
+        #[command(subcommand)]
+        action: LspAction,
+    },
     /// Build review context for a git diff.
     Review {
         /// Repository path. Defaults to discovering from the current directory.
@@ -313,6 +318,15 @@ pub enum Cmd {
         /// Print the current configuration (redacted) and exit.
         #[arg(long)]
         show: bool,
+    },
+}
+
+#[derive(clap::Subcommand)]
+pub enum LspAction {
+    /// Install a supported LSP server (currently: `ty`, for Python).
+    Install {
+        /// Server name, e.g. `ty`.
+        name: String,
     },
 }
 
@@ -492,6 +506,9 @@ pub fn run(args: Args) -> Result<(), CliError> {
             )
         }
         Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json, paint),
+        Cmd::Lsp {
+            action: LspAction::Install { name },
+        } => cmd_lsp_install(&name),
         Cmd::Stats { path } => cmd_stats(path.as_deref()),
         Cmd::Query {
             path,
@@ -1036,6 +1053,12 @@ fn render_evidence(hit: &Evidence, p: &Paint) -> String {
         }
     }
     out
+}
+
+fn cmd_lsp_install(name: &str) -> Result<(), CliError> {
+    crate::lsp_install::install(name).map_err(|e| CliError::generic(e, false))?;
+    println!("Installed LSP server '{name}'.");
+    Ok(())
 }
 
 fn cmd_review(path: Option<&str>, diff: &str, json: bool, p: Paint) -> Result<(), CliError> {

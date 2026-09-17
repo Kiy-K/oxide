@@ -835,3 +835,13 @@ fn index_help_promotes_rebuild_and_demotes_the_per_layer_scopes() {
         assert!(long.contains(flag), "--help missing {flag}:\n{long}");
     }
 }
+
+#[test]
+fn lsp_install_unsupported_name_fails_clearly() {
+    let out = std::process::Command::new(env!("CARGO_BIN_EXE_oxide"))
+        .args(["lsp", "install", "pyright"])
+        .output()
+        .unwrap();
+    assert!(!out.status.success());
+    assert!(String::from_utf8_lossy(&out.stderr).contains("not supported yet"));
+}
