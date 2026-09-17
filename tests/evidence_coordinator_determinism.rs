@@ -33,7 +33,26 @@ fn ty_available() -> bool {
         .unwrap_or(false)
 }
 
+/// `fixtures/py_repo/.oxide` is gitignored like every index; nothing
+/// guarantees it's pre-built on a fresh checkout, and `oxide query` reads
+/// an existing on-disk index rather than building one on demand. Same real
+/// gap, same fix, as `evidence_coordinator_compat.rs::ensure_py_repo_indexed`
+/// (see its doc comment) — found the same way, at merge-verification time
+/// against a genuinely fresh clone, not earlier in development.
+fn ensure_py_repo_indexed() {
+    static INIT: std::sync::Once = std::sync::Once::new();
+    INIT.call_once(|| {
+        let status = Command::new(env!("CARGO_BIN_EXE_oxide"))
+            .args(["index", "fixtures/py_repo"])
+            .env("OXIDE_EMBED_NATIVE", "hashed")
+            .status()
+            .expect("oxide index must run");
+        assert!(status.success(), "failed to index fixtures/py_repo");
+    });
+}
+
 fn run_query(repo: &str, extra_args: &[&str], extra_env: &[(&str, &str)]) -> String {
+    ensure_py_repo_indexed();
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_oxide"));
     cmd.args(["query", "where is retry logic", "--json", "--path", repo])
         .args(extra_args)

@@ -56,7 +56,33 @@ use std::io::{BufRead, Write};
 use std::path::Path;
 use std::process::Command;
 
+/// Every test in this file queries `fixtures/py_repo` via `oxide query`/the
+/// MCP `query` tool, both of which read a pre-built `.oxide/index.db` from
+/// disk rather than building one on demand (unlike `oxide eval`, which
+/// indexes in memory) — `fixtures/py_repo/.oxide` is gitignored like every
+/// index, so nothing guarantees it exists on a fresh checkout. Found the
+/// hard way: this passed throughout development because a persisted index
+/// from earlier manual testing happened to already be on disk, and only
+/// failed once verified against a genuinely fresh clone at merge time.
+/// `Once`-guarded so five call sites across five tests in this process
+/// only pay for it once; `oxide index` on an already-current index is a
+/// fast up-to-date check, so re-running this across separate test
+/// *processes* (this file vs. `evidence_coordinator_determinism.rs`) is
+/// cheap too.
+fn ensure_py_repo_indexed() {
+    static INIT: std::sync::Once = std::sync::Once::new();
+    INIT.call_once(|| {
+        let status = Command::new(env!("CARGO_BIN_EXE_oxide"))
+            .args(["index", "fixtures/py_repo"])
+            .env("OXIDE_EMBED_NATIVE", "hashed")
+            .status()
+            .expect("oxide index must run");
+        assert!(status.success(), "failed to index fixtures/py_repo");
+    });
+}
+
 fn run(args: &[&str]) -> serde_json::Value {
+    ensure_py_repo_indexed();
     let out = Command::new(env!("CARGO_BIN_EXE_oxide"))
         .args(args)
         .env("OXIDE_EMBED_NATIVE", "hashed")
@@ -126,6 +152,7 @@ fn git_enabled_is_byte_identical() {
 
 #[test]
 fn lsp_enabled_is_byte_identical() {
+    ensure_py_repo_indexed();
     let script = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/fixtures/fake_lsp_deterministic/server.py"
@@ -172,6 +199,7 @@ struct McpProcess {
 
 impl McpProcess {
     fn start(root: &Path) -> Self {
+        ensure_py_repo_indexed();
         let mut child = Command::new(env!("CARGO_BIN_EXE_oxide"))
             .arg("mcp")
             .current_dir(root)
