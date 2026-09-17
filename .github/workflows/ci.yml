@@ -148,7 +148,9 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           cargo test -j 2 --test lsp_ty_integration --test lsp_scope_regression \
             --test lsp_mcp_process_cache_reuse --test lsp_process_cache_staleness \
-            --test evidence_coordinator_compat --test evidence_coordinator_determinism -- --nocapture
+            --test evidence_coordinator_determinism \
+            --test lsp_cached_session_survives_context_error \
+            --test lsp_process_cache_concurrency --test lsp_crossfile_freshness -- --nocapture
 
   coverage:
     name: Rust / Coverage

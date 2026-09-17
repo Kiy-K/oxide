@@ -12,10 +12,11 @@
       "language": "python",
       "start_line": 31,
       "end_line": 37,
-      "score": 0.015932377,
+      "score": 0.024695184,
       "reasons": [
         "lexical=1.203",
-        "semantic=0.270"
+        "semantic=0.270",
+        "lsp-diagnostic(hint): fixture diagnostic (deterministic)"
       ],
       "snippet": "    def should_retry(self, attempt: int, error: Exception) -> bool:\n        \"\"\"Return True when `error` seen on `attempt` deserves another try.\"\"\"\n        if attempt >= self.max_attempts:\n            return False\n        # Connection errors and 5xx responses are transient; 4xx are not.\n        transient = isinstance(error, (ConnectionError, TimeoutError))\n        return transient or getattr(error, \"status_code\", 500) >= 500",
       "role": "primary",
@@ -132,12 +133,12 @@
   ],
   "omitted": [
     {
-      "id": "oxidepy/retry.py#RetryPolicy",
-      "why": "subsumed by overlapping symbol"
-    },
-    {
       "id": "tests/test_retry.py#tests/test_retry.py:__module__",
       "why": "module subsumed by concrete symbols"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy",
+      "why": "subsumed by overlapping symbol"
     },
     {
       "id": "oxidepy/retry.py#oxidepy/retry.py:__module__",
