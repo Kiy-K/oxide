@@ -375,9 +375,19 @@ pub fn shutdown_process_cache() {
     };
     let mut clients = cache.lsp_clients.lock().unwrap_or_else(|e| e.into_inner());
     for (_, slot) in clients.drain() {
-        let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
-        if let Some(client) = guard.take() {
-            client.close();
+        // `try_lock`, not `lock`: `context()` now holds this same slot's
+        // mutex for the full span of an in-flight call (see its own doc
+        // comment). A blocking `lock()` here could hang shutdown on a call
+        // that hasn't returned yet. A slot that's genuinely busy at this
+        // exact moment is skipped — its session is not gracefully closed
+        // here, but this is a narrow, disclosed race, not a routine leak:
+        // `PROCESS_CACHE` being a `static` is exactly why this function
+        // exists in the first place, and "never hang on shutdown" matters
+        // more than closing every last session gracefully in that window.
+        if let Ok(mut guard) = slot.try_lock() {
+            if let Some(client) = guard.take() {
+                client.close();
+            }
         }
     }
 }
@@ -903,18 +913,45 @@ impl RepositoryService {
         // calls; a one-shot CLI invocation gets `None` here and
         // `build_context_with` falls back to its own spawn-per-call default,
         // unchanged from before this cache existed.
+        //
+        // The whole client lifecycle for this call — spawn-if-needed, use,
+        // restore — runs under ONE guard held on this root's slot for the
+        // full span, not released and reacquired around the middle. A
+        // second concurrent call for the same root now blocks here instead
+        // of racing to see `None` and spawning its own redundant session
+        // (found by Codex review). This does mean a same-root concurrent
+        // call also waits out this call's retrieval-search phase — that
+        // phase runs inside `build_context_with` before it ever touches the
+        // LSP client, and untangling it would mean giving
+        // `build_context_with` a narrower phase boundary to unlock around,
+        // which is the redesign this hardening pass was told not to do.
+        // Disclosed trade-off, not an oversight.
         let lsp_slot = (lsp && self.use_process_cache).then(|| self.lsp_client_slot());
-        let owned_client: Option<LspClient> = match &lsp_slot {
-            Some(slot) => {
-                let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
-                let needs_spawn = match guard.as_mut() {
+        let mut guard = lsp_slot.as_ref().map(|slot| match slot.lock() {
+            Ok(g) => g,
+            // A poisoned slot means an earlier call panicked while holding
+            // this client — its Transport may be mid-request, so this
+            // session is not safe to resume. `into_inner()` recovers the
+            // guard; discard (close, don't reuse) whatever's in it so the
+            // next spawn starts clean instead of risking corruption.
+            Err(poisoned) => {
+                let mut g = poisoned.into_inner();
+                if let Some(stale) = g.take() {
+                    stale.close();
+                }
+                g
+            }
+        });
+        let owned_client: Option<LspClient> = match &mut guard {
+            Some(g) => {
+                let needs_spawn = match g.as_mut() {
                     Some(client) => !client.is_alive(),
                     None => true,
                 };
                 if needs_spawn {
                     let server =
                         std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                    *guard = LspClient::spawn(
+                    **g = LspClient::spawn(
                         &server,
                         &self.root,
                         Duration::from_millis(LSP_INIT_TIMEOUT_MS),
@@ -922,12 +959,12 @@ impl RepositoryService {
                     )
                     .ok();
                 }
-                guard.take()
+                g.take()
             }
             None => None,
         };
 
-        let (pack, returned_client) = build_context_with(
+        let (result, returned_client) = build_context_with(
             &self.root,
             &engine,
             task,
@@ -940,16 +977,19 @@ impl RepositoryService {
                 ..ContextOptions::default()
             },
             owned_client,
-        )
-        .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
+        );
 
-        match &lsp_slot {
-            Some(slot) => {
-                let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+        // Restore/close happens unconditionally, before the `?` below —
+        // build_context_with now always hands the client back, success or
+        // error, specifically so a failed query never strands a healthy
+        // reusable session (Codex review finding; see build_context_with's
+        // doc comment).
+        match &mut guard {
+            Some(g) => {
                 // `None` here (a panicked spawn_blocking inside the
                 // coordinator) means the next call respawns, same as
                 // today's is_alive()-false path — not a new failure mode.
-                *guard = returned_client;
+                **g = returned_client;
             }
             // No cache slot for this call (use_process_cache is off), but
             // the coordinator still self-spawned a fresh client because
@@ -963,6 +1003,12 @@ impl RepositoryService {
                 }
             }
         }
+        // Release the per-root gate before the rest of this call's
+        // (LSP-unrelated) work — packing/token-budget accounting below
+        // never touches the LSP client.
+        drop(guard);
+
+        let pack = result.map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
         // See the identical guard in `search` above for why remote/local are
         // treated differently here.
         if !provider.is_available() && !provider.is_remote() {

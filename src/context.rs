@@ -150,11 +150,11 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
-    let (pack, client) = build_context_with(root, &engine, task, opts, None)?;
+    let (result, client) = build_context_with(root, &engine, task, opts, None);
     if let Some(client) = client {
         client.close(); // this call owned it (CLI spawn-per-call path) — matches pre-refactor behavior
     }
-    Ok(pack)
+    result
 }
 
 /// [`build_context`] over a caller-built engine — the way a long-running
@@ -168,13 +168,23 @@ pub fn build_context(
 /// `Some(client)` (`oxide mcp`, via `service.rs`'s `ProcessCache`) reuses a
 /// caller-owned, already-initialized session across calls instead; this
 /// function never closes a client it did not spawn itself.
+///
+/// Returns the client **unconditionally**, alongside the pack result,
+/// rather than folding it into the `Ok` tuple — a caller that took a
+/// session out of a cache must get it back to restore or close even when
+/// this call fails (found missing by Codex review: the old `Result<(..)>`
+/// shape let an early `?` inside this function drop the caller's client on
+/// a reachable error, losing a healthy reusable session on nothing worse
+/// than a bad query). Every fallible step in this function runs before
+/// `lsp_client` is ever moved into the evidence coordinator, so an error
+/// path always still owns it and can hand it straight back.
 pub fn build_context_with(
     root: &Path,
     engine: &RetrievalEngine<'_>,
     task: &str,
     opts: &ContextOptions,
     lsp_client: Option<crate::lsp::LspClient>,
-) -> Result<(ContextPack, Option<crate::lsp::LspClient>)> {
+) -> (Result<ContextPack>, Option<crate::lsp::LspClient>) {
     // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
     // `task` reaches both the lexical scorer and the embedder unmodified.
@@ -185,7 +195,28 @@ pub fn build_context_with(
         expand: false,
         retrieval_mode: opts.retrieval_mode,
     };
-    let seeds = engine.search(query, &seed_opts)?;
+    let seeds = match engine.search(query, &seed_opts) {
+        Ok(s) => s,
+        Err(e) => return (Err(e), lsp_client),
+    };
+
+    // Test-only failure injection, proving the LSP client hand-back above
+    // is exception-safe without needing a real internal failure mode
+    // triggerable from outside this crate. Not `#[cfg(test)]`: an
+    // integration test calling this in-process links the library the same
+    // way the compiled `oxide` binary does — cfg(test) is false for both,
+    // so a test-only gate here would silently no-op (the same class of bug
+    // `evidence/coordinator.rs::artificial_delay_ms` had before it was
+    // fixed). A no-op in real use since the env var is never set outside
+    // tests.
+    if std::env::var("OXIDE_CONTEXT_FORCE_ERROR").is_ok() {
+        return (
+            Err(anyhow::anyhow!(
+                "forced test error (OXIDE_CONTEXT_FORCE_ERROR)"
+            )),
+            lsp_client,
+        );
+    }
 
     let mut candidates: HashMap<u64, Candidate> = HashMap::new();
     let mut order_note = |c: Candidate| {
@@ -231,7 +262,10 @@ pub fn build_context_with(
         // engine, so a caller-supplied snapshot serves it too. Also reused
         // by the git block below (changed-symbol file lookup, co-changed
         // file symbol picks) so `--git` never triggers a second corpus load.
-        let symbols = &engine.snapshot_with_relations()?.symbols;
+        let symbols = match engine.snapshot_with_relations() {
+            Ok(s) => &s.symbols,
+            Err(e) => return (Err(e), lsp_client),
+        };
         let graph = RelationGraph::build(symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
@@ -503,8 +537,8 @@ pub fn build_context_with(
             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
-    Ok((
-        ContextPack {
+    (
+        Ok(ContextPack {
             task: task.to_string(),
             // Query formatting is now internal to the provider (`embed_query`),
             // so the text reaching lexical/embedding stages is `task` itself.
@@ -516,9 +550,9 @@ pub fn build_context_with(
             items,
             git: git_evidence,
             diagnostics,
-        },
+        }),
         returned_lsp_client,
-    ))
+    )
 }
 
 fn dedup_reasons(rs: &[String]) -> Vec<String> {
