@@ -94,15 +94,6 @@ tree-sitter-cpp = "0.23.4"
 # keys, see `src/credentials.rs`). Pure-Rust RustCrypto, no OpenSSL — same
 # rustls-over-native-tls preference already stated for the `sentry` dependency.
 aes-gcm = "0.10"
-# Wire types for the optional LSP semantic-enrichment layer (`src/lsp/`,
-# docs/lsp-enrichment-eval/README.md). Serde-only structs (`ServerCapabilities`,
-# `Location`, `CallHierarchyItem`, `Diagnostic`, ...) with no I/O of their own —
-# the transport is hand-rolled (`src/lsp/transport.rs`, plain stdio + JSON-RPC
-# framing) because this crate has no async runtime feature to build one on
-# (`tokio` here is `rt`-only). Hand-rolling ~15 wire structs instead risks
-# silently wrong field names against a real spec; this crate is what
-# rust-analyzer and tower-lsp both build on.
-lsp-types = "0.97.0"
 
 [features]
 default = ["native-embed"]

@@ -85,8 +85,6 @@ oxide watch                         # update the index as files change
 oxide review --diff HEAD~1          # collect context for a Git diff
 oxide install                       # connect supported coding agents over MCP
 oxide query "fix token refresh" --git       # also weigh the current diff's changed symbols
-oxide query "fix token refresh" --lsp       # also pull exact references/diagnostics from a running language server (Python/ty today)
-oxide lsp install ty                        # install the optional LSP server --lsp uses
 ```
 
 `query` is for a question or coding task. `search` is for an identifier or
@@ -155,22 +153,8 @@ guarantee of relatedness. Git-enabled retrieval quality has not been
 validated by any agent-outcome benchmark — only correctness/plumbing tests
 exist today.
 
-## LSP semantic enrichment
-
-`--lsp` adds evidence from a real running language server: exact references,
-call hierarchy, and diagnostics, instead of OXIDE's own name-based
-heuristics. It's opt-in and Python/`ty`-only today — install the server
-with `oxide lsp install ty`. With the flag absent, output is byte-identical
-to a build without the feature.
-
-```bash
-oxide lsp install ty
-oxide query "fix token refresh" --lsp
-```
-
-Neither `--git` nor `--lsp` is claimed to improve agent-task outcomes — no
-agent-level benchmark exists for either; both are evaluated only for
-correctness and determinism.
+Git-aware evidence is evaluated for correctness and determinism; no
+agent-level outcome improvement is claimed.
 
 ## Supported languages
 

@@ -5,8 +5,8 @@ use crate::index::IndexOptions;
 use crate::retrieval::read_snippet;
 use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{
-    shutdown_process_cache, ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest,
-    ServiceError, StatusResult,
+    ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest, ServiceError,
+    StatusResult,
 };
 use crate::storage::SqliteStore;
 use crate::term::{duration, thousands, ColorChoice, Paint, StderrProgress};
@@ -161,12 +161,6 @@ pub enum Cmd {
         /// priority than direct/structural matches. No-op outside a git repo.
         #[arg(long)]
         git: bool,
-        /// Also enrich the top Python seeds with exact evidence from a real
-        /// language server (Astral `ty`): definitions, references, callers,
-        /// implementations, and diagnostics. Needs `ty` on PATH (or
-        /// $OXIDE_LSP_SERVER); silently no-ops without it.
-        #[arg(long)]
-        lsp: bool,
         /// Emit JSON.
         #[arg(long)]
         json: bool,
@@ -261,11 +255,6 @@ pub enum Cmd {
     /// Run the stdio MCP server. Coding agents launch this; you normally
     /// do not run it by hand — see `oxide install`.
     Mcp,
-    /// Manage optional LSP servers used by `--lsp` semantic enrichment.
-    Lsp {
-        #[command(subcommand)]
-        action: LspAction,
-    },
     /// Build review context for a git diff.
     Review {
         /// Repository path. Defaults to discovering from the current directory.
@@ -318,15 +307,6 @@ pub enum Cmd {
         /// Print the current configuration (redacted) and exit.
         #[arg(long)]
         show: bool,
-    },
-}
-
-#[derive(clap::Subcommand)]
-pub enum LspAction {
-    /// Install a supported LSP server (currently: `ty`, for Python).
-    Install {
-        /// Server name, e.g. `ty`.
-        name: String,
     },
 }
 
@@ -506,9 +486,6 @@ pub fn run(args: Args) -> Result<(), CliError> {
             )
         }
         Cmd::Review { path, diff, json } => cmd_review(path.as_deref(), &diff, json, paint),
-        Cmd::Lsp {
-            action: LspAction::Install { name },
-        } => cmd_lsp_install(&name),
         Cmd::Stats { path } => cmd_stats(path.as_deref()),
         Cmd::Query {
             path,
@@ -518,7 +495,6 @@ pub fn run(args: Args) -> Result<(), CliError> {
             profile,
             blast_radius,
             git,
-            lsp,
             json,
         } => {
             let task = question.or(task_flag).ok_or_else(|| {
@@ -537,7 +513,6 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     retrieval_mode: resolve_profile(profile.as_deref(), json)?,
                     blast_radius,
                     git,
-                    lsp,
                 },
                 json,
                 paint,
@@ -1055,12 +1030,6 @@ fn render_evidence(hit: &Evidence, p: &Paint) -> String {
     out
 }
 
-fn cmd_lsp_install(name: &str) -> Result<(), CliError> {
-    crate::lsp_install::install(name).map_err(|e| CliError::generic(e, false))?;
-    println!("Installed LSP server '{name}'.");
-    Ok(())
-}
-
 fn cmd_review(path: Option<&str>, diff: &str, json: bool, p: Paint) -> Result<(), CliError> {
     let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
     let ctx = service
@@ -1147,14 +1116,9 @@ fn run_mcp() -> Result<(), CliError> {
         .enable_all()
         .build()
         .map_err(|e| CliError::generic(e, false))?;
-    let result = runtime.block_on(crate::mcp::serve());
-    // Every cached LSP session must be closed here: PROCESS_CACHE is a
-    // static, and Rust never runs Drop for statics at normal process exit
-    // — without this, a session this process ever cached would leak a `ty`
-    // subprocess on ordinary `oxide mcp` shutdown (found by Codex review).
-    // Best-effort on both the success and error path.
-    shutdown_process_cache();
-    result.map_err(|e| CliError::generic(e, false))
+    runtime
+        .block_on(crate::mcp::serve())
+        .map_err(|e| CliError::generic(e, false))
 }
 
 fn cmd_stats(path: Option<&str>) -> Result<(), CliError> {
@@ -1185,7 +1149,6 @@ struct QueryFlags {
     retrieval_mode: RetrievalMode,
     blast_radius: bool,
     git: bool,
-    lsp: bool,
 }
 
 fn cmd_query(
@@ -1203,7 +1166,6 @@ fn cmd_query(
             flags.retrieval_mode,
             flags.blast_radius,
             flags.git,
-            flags.lsp,
         )
         .map_err(|e| CliError::service(e, json))?;
     if json {

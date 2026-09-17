@@ -235,13 +235,15 @@ fn query_keeps_blast_radius_inside_the_existing_token_budget() {
 }
 
 #[test]
-fn query_labels_blast_radius_evidence_in_its_reasons() {
+fn fast_query_labels_blast_radius_evidence_in_its_reasons() {
     let tmp = staged();
     let pack = json_stdout(&run(
         tmp.path(),
         &[
             "query",
             "TokenStore refresh",
+            "--profile",
+            "fast",
             "--budget-tokens",
             "2048",
             "--json",

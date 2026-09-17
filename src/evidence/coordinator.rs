@@ -1,73 +1,22 @@
-//! Orchestrates the four opt-in evidence sources concurrently:
-//! - Git and LSP *I/O* run as real Tokio tasks (`tokio::spawn`, not just
-//!   `spawn_blocking` directly — see below), started before anything else so
-//!   the runtime's worker pool picks them up immediately. Both need only
-//!   owned/`Send` data: Git needs `Arc<[Symbol]>` + the repo root; LSP needs
-//!   the same `Arc<[Symbol]>` plus full ownership of the `LspClient` (moved
-//!   in, moved back out via the task's return value — `LspClient`/
-//!   `Transport` are `Send`, only the *borrow* a caller normally holds
-//!   isn't `'static`). Each of `git_io`/`lsp_io` does its actual blocking
-//!   work via an inner `spawn_blocking`, so this is two hops onto Tokio's
-//!   pools (worker → blocking), not one.
-//! - structural (AST-precise callers) and blast-radius run **synchronously,
-//!   on the very thread that called `block_on`**, immediately after
-//!   spawning the two tasks above — never inside a spawned task or a
-//!   scoped OS thread. `RelationGraph<'a>` uses `std::cell::OnceCell`
-//!   (deliberately, matching this codebase's other thread-confined lazy
-//!   caches) for its `callers_of_index`/`implementors_of_index`, which
-//!   makes `RelationGraph: !Sync` and therefore `&RelationGraph: !Send` —
-//!   it cannot cross into *any* spawned thread, scoped or not, regardless
-//!   of whether a real race would occur. This is why the design differs
-//!   from the original sketch (a `std::thread::scope` for these two): that
-//!   sketch does not compile, since `std::thread::Scope::spawn` requires
-//!   `Send` captures. Running them synchronously on the `block_on` thread
-//!   is still genuinely concurrent with the two spawned I/O tasks, which
-//!   the multi-thread runtime is already executing on other OS threads by
-//!   the time this code runs — it just never needs `graph` to leave its
-//!   thread to get that concurrency.
-//! - Git's `graph.neighbors`/`callers_of` enrichment (raw `GitContext` →
-//!   scored candidates) is not part of the async task either, for the same
-//!   reason — it runs synchronously afterward, once both spawned tasks have
-//!   been awaited.
-//!
-//! All four sources fold into the output in one fixed order
-//! (Structural → Git → LSP → BlastRadius) regardless of completion order —
-//! see `tests/evidence_coordinator_determinism.rs`.
-//!
-//! LSP client lifecycle: `CollectInput.lsp_client: None` means "spawn one
-//! for this call" (`lsp_io` does so itself, inside its `spawn_blocking`,
-//! using `$OXIDE_LSP_SERVER`/`LSP_INIT_TIMEOUT_MS`/`LSP_REQUEST_TIMEOUT_MS`
-//! — same as `service.rs`'s cache-slot spawn), matching the CLI's
-//! spawn-per-call default from before this coordinator existed.
-//! `CollectOutput.lsp_client` always carries back whatever client this call
-//! ended up holding — caller-provided, self-spawned, or none — so the
-//! caller decides `close()` (CLI, `build_context`) vs. restore-to-cache
-//! (MCP, `service.rs`). When `lsp` is `false`, a caller-provided client is
-//! handed straight back rather than being captured and dropped inside the
-//! (never-invoked) spawn closure.
+//! Collects optional structural, Git, and blast-radius evidence in a fixed
+//! order. Git is the only blocking source left, so a runtime and worker task
+//! add overhead without overlapping useful work.
 
 use crate::blast_radius;
 use crate::config::{
     BLAST_RADIUS_CONTEXT_ITEMS, BLAST_RADIUS_MAX_SEEDS, BLAST_RADIUS_SCORE_FRACTION,
     GIT_CHANGED_CONTEXT_ITEMS, GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION,
     GIT_COCHANGE_SYMBOLS_PER_FILE, GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION,
-    LSP_INIT_TIMEOUT_MS, LSP_MAX_SEEDS, LSP_PER_SEED_ITEMS, LSP_REQUEST_TIMEOUT_MS,
-    LSP_SCORE_FRACTION,
 };
-use crate::evidence::contract::{
-    DegradeReason, Degraded, EvidenceCandidate, EvidenceSource, Outcome,
-};
-use crate::evidence::runtime::runtime;
+use crate::evidence::contract::{DegradeReason, Degraded, EvidenceCandidate, EvidenceSource};
 use crate::evidence::scope::scope_files_from_seeds;
 use crate::gitctx;
-use crate::lsp::{enrich_seeds, LspClient};
 use crate::relations::RelationGraph;
 use crate::retrieval::SearchHit;
-use crate::symbols::{Language, Symbol, SymbolKind};
+use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::Arc;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 pub struct CollectInput<'a> {
     pub root: &'a Path,
@@ -78,18 +27,12 @@ pub struct CollectInput<'a> {
     pub structural_max_files: usize,
     pub blast_radius: bool,
     pub git: bool,
-    pub lsp: bool,
-    /// `Some` only on the MCP `ProcessCache` path (Task 9); moved in and
-    /// handed back in the output so the caller restores it into the cache
-    /// slot regardless of whether this call used it.
-    pub lsp_client: Option<LspClient>,
 }
 
 pub struct CollectOutput {
     pub candidates: Vec<EvidenceCandidate>,
     pub degraded: Vec<Degraded>,
     pub git_evidence: Option<crate::gitctx::GitEvidence>,
-    pub lsp_client: Option<LspClient>,
 }
 
 pub struct EvidenceCoordinator;
@@ -105,118 +48,36 @@ impl EvidenceCoordinator {
             structural_max_files,
             blast_radius,
             git,
-            lsp,
-            lsp_client,
         } = input;
 
         let mut degraded = Vec::new();
-        let symbols_arc: Arc<[Symbol]> = Arc::from(symbols);
-
-        let py_seeds_owned: Vec<Symbol> = seeds
-            .iter()
-            .filter(|h| h.symbol.language == Language::Python)
-            .take(LSP_MAX_SEEDS)
-            .map(|h| h.symbol.clone())
-            .collect();
-        let py_seed_scores: Vec<f32> = seeds
-            .iter()
-            .filter(|h| h.symbol.language == Language::Python)
-            .take(LSP_MAX_SEEDS)
-            .map(|h| h.score)
-            .collect();
-        let lsp_scope_files = scope_files_from_seeds(seeds, usize::MAX);
-
-        let mut structural_out = Vec::new();
-        let mut blast_out = Vec::new();
-        let mut git_result: Option<gitctx::GitContext> = None;
-        let mut git_degraded = None;
-        let mut returned_lsp_client: Option<LspClient> = None;
-        let mut lsp_out: Vec<EvidenceCandidate> = Vec::new();
-        let mut lsp_degraded = None;
-
-        let rt = runtime();
-        rt.block_on(async {
-            // Spawn both I/O tasks first so the runtime's worker pool picks
-            // them up immediately — tokio::spawn (not just constructing the
-            // future) is what actually starts them running in the
-            // background; futures are lazy and do nothing until polled.
-            // Their futures only capture owned/Arc'd data (never `graph`),
-            // so they satisfy tokio::spawn's Send + 'static bound.
-            let git_handle =
-                git.then(|| tokio::spawn(git_io(root.to_path_buf(), symbols_arc.clone())));
-            let lsp_handle = if lsp {
-                Some(tokio::spawn(lsp_io(
-                    lsp_client,
-                    root.to_path_buf(),
-                    symbols_arc.clone(),
-                    py_seeds_owned,
-                    py_seed_scores,
-                    lsp_scope_files,
-                )))
-            } else {
-                // lsp disabled for this call: hand a caller-provided client
-                // straight back rather than letting it drop here.
-                // `Transport`'s `Drop` safety net still reaps it either way
-                // (no orphaned process either way), but dropping skips the
-                // graceful shutdown/exit handshake `close()` does, and for
-                // the MCP `ProcessCache` path it would needlessly discard a
-                // warm, reusable session instead of letting the caller
-                // restore it.
-                returned_lsp_client = lsp_client;
-                None
-            };
-
-            // Runs synchronously on this thread, concurrently with the two
-            // background tasks above — see the module doc for why this
-            // can't be a spawned task/thread itself (RelationGraph is
-            // !Sync by design).
-            structural_out =
-                structural_evidence(graph, seeds, structural_max_seeds, structural_max_files);
-            if blast_radius {
-                blast_out = blast_radius_evidence(graph, seeds);
-            }
-
-            if let Some(handle) = git_handle {
-                let start = Instant::now();
-                match handle.await {
-                    Ok(Outcome::Ready(ctx)) => git_result = Some(ctx),
-                    Ok(Outcome::Degraded(d)) => git_degraded = Some(d),
-                    Err(join_err) => {
-                        git_degraded = Some(Degraded {
-                            source: EvidenceSource::Git,
-                            reason: DegradeReason::Unavailable {
-                                detail: join_err.to_string(),
-                            },
-                            elapsed: start.elapsed(),
-                        })
-                    }
+        let structural_out =
+            structural_evidence(graph, seeds, structural_max_seeds, structural_max_files);
+        let blast_out = if blast_radius {
+            blast_radius_evidence(graph, seeds)
+        } else {
+            Vec::new()
+        };
+        let git_result = if git {
+            let start = Instant::now();
+            match gitctx::build_git_context(root, symbols, "") {
+                Ok(context) => Some(context),
+                Err(error) => {
+                    degraded.push(Degraded {
+                        source: EvidenceSource::Git,
+                        reason: DegradeReason::ProtocolError {
+                            detail: error.to_string(),
+                        },
+                        elapsed: start.elapsed(),
+                    });
+                    None
                 }
             }
-            if let Some(handle) = lsp_handle {
-                let start = Instant::now();
-                match handle.await {
-                    Ok((client, Outcome::Ready(c))) => {
-                        returned_lsp_client = client;
-                        lsp_out = c;
-                    }
-                    Ok((client, Outcome::Degraded(d))) => {
-                        returned_lsp_client = client;
-                        lsp_degraded = Some(d);
-                    }
-                    Err(join_err) => {
-                        lsp_degraded = Some(Degraded {
-                            source: EvidenceSource::Lsp,
-                            reason: DegradeReason::Unavailable {
-                                detail: join_err.to_string(),
-                            },
-                            elapsed: start.elapsed(),
-                        })
-                    }
-                }
-            }
-        });
+        } else {
+            None
+        };
 
-        // ---- fixed-order fold: Structural → Git → LSP → BlastRadius ----
+        // ---- fixed-order fold: Structural → Git → BlastRadius ----
         let mut candidates = Vec::new();
         candidates.extend(structural_out);
 
@@ -233,22 +94,12 @@ impl EvidenceCoordinator {
             ));
             git_evidence = Some(ctx.evidence);
         }
-        if let Some(d) = git_degraded {
-            degraded.push(d);
-        }
-
-        candidates.extend(lsp_out);
-        if let Some(d) = lsp_degraded {
-            degraded.push(d);
-        }
-
         candidates.extend(blast_out);
 
         CollectOutput {
             candidates,
             degraded,
             git_evidence,
-            lsp_client: returned_lsp_client,
         }
     }
 }
@@ -373,151 +224,6 @@ fn git_graph_enrichment(
         }
     }
     out
-}
-
-/// Not `#[cfg(test)]`: `tests/evidence_coordinator_determinism.rs` spawns
-/// the compiled `oxide` binary as a subprocess (`CARGO_BIN_EXE_oxide`),
-/// which links the lib built *without* `cfg(test)` — a test-only gate here
-/// would silently no-op for that binary and make the determinism test
-/// prove nothing about real completion-order independence. Always
-/// compiled in; a no-op in every real invocation because
-/// `OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS` is never set outside tests.
-fn artificial_delay_ms(source: &str) -> u64 {
-    std::env::var("OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS")
-        .ok()
-        .and_then(|spec| {
-            // Parse to an owned u64 inside this closure rather than
-            // returning a tuple borrowed from `spec` — `spec` is local to
-            // this closure, so a borrowed return value would dangle.
-            spec.split(',').find_map(|pair| {
-                let (k, v) = pair.split_once('=')?;
-                if k == source {
-                    v.parse::<u64>().ok()
-                } else {
-                    None
-                }
-            })
-        })
-        .unwrap_or(0)
-}
-
-/// Runs entirely on a `spawn_blocking` task — pure subprocess I/O +
-/// `symbols`-slice filtering (`gitctx::build_git_context`), no
-/// `RelationGraph`. `range` is always `""` (worktree vs HEAD) — matches
-/// today's opt-in git-evidence call; `review --diff`'s explicit-range path
-/// (Task 1) is a separate, non-coordinator call.
-async fn git_io(root: std::path::PathBuf, symbols: Arc<[Symbol]>) -> Outcome<gitctx::GitContext> {
-    let start = Instant::now();
-    let handle = tokio::task::spawn_blocking(move || {
-        std::thread::sleep(std::time::Duration::from_millis(artificial_delay_ms("git")));
-        gitctx::build_git_context(&root, &symbols, "")
-    });
-    match handle.await {
-        Ok(Ok(ctx)) => Outcome::Ready(ctx),
-        Ok(Err(e)) => Outcome::Degraded(Degraded {
-            source: EvidenceSource::Git,
-            reason: DegradeReason::ProtocolError {
-                detail: e.to_string(),
-            },
-            elapsed: start.elapsed(),
-        }),
-        Err(join_err) => Outcome::Degraded(Degraded {
-            source: EvidenceSource::Git,
-            reason: DegradeReason::Unavailable {
-                detail: join_err.to_string(),
-            },
-            elapsed: start.elapsed(),
-        }),
-    }
-}
-
-/// Runs on a `spawn_blocking` task. `client: None` (every CLI call) spawns a
-/// fresh `LspClient` here — matching `build_context`'s own doc comment and
-/// `service.rs`'s identical spawn-per-call fallback for its cache-disabled
-/// path — and hands it back in the return tuple so the caller closes it
-/// (CLI) or restores a caller-owned one to the cache (MCP) either way.
-/// `py_seeds_owned`/`py_seed_scores` are owned copies (same length/order) of
-/// the top Python seeds — `enrich_seeds` needs data borrowed from something
-/// this task itself owns, not the caller's borrowed `symbols`/`seeds`.
-async fn lsp_io(
-    client: Option<LspClient>,
-    root: std::path::PathBuf,
-    symbols: Arc<[Symbol]>,
-    py_seeds_owned: Vec<Symbol>,
-    py_seed_scores: Vec<f32>,
-    scope_files: Vec<String>,
-) -> (Option<LspClient>, Outcome<Vec<EvidenceCandidate>>) {
-    let start = Instant::now();
-    let handle = tokio::task::spawn_blocking(move || {
-        std::thread::sleep(std::time::Duration::from_millis(artificial_delay_ms("lsp")));
-        let mut client = match client {
-            Some(client) => client,
-            None => {
-                let server = std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                match LspClient::spawn(
-                    &server,
-                    &root,
-                    Duration::from_millis(LSP_INIT_TIMEOUT_MS),
-                    Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
-                ) {
-                    Ok(client) => client,
-                    Err(e) => return Err(e.to_string()),
-                }
-            }
-        };
-        let py_seeds: Vec<&Symbol> = py_seeds_owned.iter().collect();
-        let by_qname: HashMap<&str, f32> = py_seeds_owned
-            .iter()
-            .zip(py_seed_scores.iter())
-            .map(|(s, score)| (s.qualified_name.as_str(), *score))
-            .collect();
-        let top_score = py_seed_scores.first().copied().unwrap_or(0.0);
-        let evidence = enrich_seeds(
-            &mut client,
-            &root,
-            &symbols,
-            &py_seeds,
-            &scope_files,
-            LSP_MAX_SEEDS,
-            LSP_PER_SEED_ITEMS,
-        );
-        let candidates: Vec<EvidenceCandidate> = evidence
-            .into_iter()
-            .map(|ev| {
-                let seed_score = ev
-                    .via
-                    .and_then(|v| by_qname.get(v).copied())
-                    .unwrap_or(top_score);
-                EvidenceCandidate {
-                    symbol: ev.symbol.clone(),
-                    score: seed_score * LSP_SCORE_FRACTION,
-                    reasons: vec![ev.reason],
-                }
-            })
-            .collect();
-        Ok((client, candidates))
-    });
-    match handle.await {
-        Ok(Ok((client, candidates))) => (Some(client), Outcome::Ready(candidates)),
-        Ok(Err(spawn_err)) => (
-            None,
-            Outcome::Degraded(Degraded {
-                source: EvidenceSource::Lsp,
-                reason: DegradeReason::Unavailable { detail: spawn_err },
-                elapsed: start.elapsed(),
-            }),
-        ),
-        Err(join_err) => (
-            None,
-            Outcome::Degraded(Degraded {
-                source: EvidenceSource::Lsp,
-                reason: DegradeReason::Unavailable {
-                    detail: join_err.to_string(),
-                },
-                elapsed: start.elapsed(),
-            }),
-        ),
-    }
 }
 
 #[cfg(test)]

@@ -109,13 +109,6 @@ pub struct ContextOptions {
     /// same contract as `blast_radius`: `false` runs no `git` subprocess
     /// call and produces a byte-identical pack.
     pub git: bool,
-    /// Also offer LSP-sourced evidence (definitions, references, call/type
-    /// hierarchy, diagnostics — `lsp/`) for the top Python seeds. Opt-in,
-    /// same contract as `blast_radius`/`git`: `false` never spawns a
-    /// language server and produces a byte-identical pack. A server that is
-    /// missing or fails to initialize degrades silently to the same
-    /// byte-identical pack — see `lsp::LspClient::spawn`.
-    pub lsp: bool,
 }
 
 impl Default for ContextOptions {
@@ -127,7 +120,6 @@ impl Default for ContextOptions {
             retrieval_mode: RetrievalMode::default(),
             blast_radius: false,
             git: false,
-            lsp: false,
         }
     }
 }
@@ -150,41 +142,19 @@ pub fn build_context(
     opts: &ContextOptions,
 ) -> Result<ContextPack> {
     let engine = RetrievalEngine::new(store, embedder);
-    let (result, client) = build_context_with(root, &engine, task, opts, None);
-    if let Some(client) = client {
-        client.close(); // this call owned it (CLI spawn-per-call path) — matches pre-refactor behavior
-    }
-    result
+    build_context_with(root, &engine, task, opts)
 }
 
 /// [`build_context`] over a caller-built engine — the way a long-running
 /// process passes in a cached [`crate::retrieval::SymbolSnapshot`]
 /// (`RetrievalEngine::with_snapshot`) so the structural stage below reads
 /// it instead of reloading every symbol per request.
-///
-/// `lsp_client`: `None` (every CLI call, via [`build_context`]) spawns a
-/// fresh `LspClient` per call when `opts.lsp` is set and closes it before
-/// returning — correct and simple, but pays full server init every time.
-/// `Some(client)` (`oxide mcp`, via `service.rs`'s `ProcessCache`) reuses a
-/// caller-owned, already-initialized session across calls instead; this
-/// function never closes a client it did not spawn itself.
-///
-/// Returns the client **unconditionally**, alongside the pack result,
-/// rather than folding it into the `Ok` tuple — a caller that took a
-/// session out of a cache must get it back to restore or close even when
-/// this call fails (found missing by Codex review: the old `Result<(..)>`
-/// shape let an early `?` inside this function drop the caller's client on
-/// a reachable error, losing a healthy reusable session on nothing worse
-/// than a bad query). Every fallible step in this function runs before
-/// `lsp_client` is ever moved into the evidence coordinator, so an error
-/// path always still owns it and can hand it straight back.
 pub fn build_context_with(
     root: &Path,
     engine: &RetrievalEngine<'_>,
     task: &str,
     opts: &ContextOptions,
-    lsp_client: Option<crate::lsp::LspClient>,
-) -> (Result<ContextPack>, Option<crate::lsp::LspClient>) {
+) -> Result<ContextPack> {
     // Query formatting (e.g. Qwen3's instruction prefix) now lives in the
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
     // `task` reaches both the lexical scorer and the embedder unmodified.
@@ -195,33 +165,7 @@ pub fn build_context_with(
         expand: false,
         retrieval_mode: opts.retrieval_mode,
     };
-    let seeds = match engine.search(query, &seed_opts) {
-        Ok(s) => s,
-        Err(e) => return (Err(e), lsp_client),
-    };
-
-    // Test-only failure injection, proving the LSP client hand-back above
-    // is exception-safe without needing a real internal failure mode
-    // triggerable from outside this crate. Not `#[cfg(test)]`: an
-    // integration test calling this in-process links the library the same
-    // way the compiled `oxide` binary does — cfg(test) is false for both,
-    // so a test-only gate here would silently no-op (the same class of bug
-    // `evidence/coordinator.rs::artificial_delay_ms` had before it was
-    // fixed). This is genuinely production-reachable, not a guaranteed
-    // no-op: whoever inherits this exact env var name set to anything
-    // forces every query to fail (confirmed by Codex review, which
-    // reproduced it against the normal binary) — the same trade-off
-    // `OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS` already makes for the same
-    // reason. In practice this is only ever set by
-    // tests/lsp_cached_session_survives_context_error.rs.
-    if std::env::var("OXIDE_CONTEXT_FORCE_ERROR").is_ok() {
-        return (
-            Err(anyhow::anyhow!(
-                "forced test error (OXIDE_CONTEXT_FORCE_ERROR)"
-            )),
-            lsp_client,
-        );
-    }
+    let seeds = engine.search(query, &seed_opts)?;
 
     let mut candidates: HashMap<u64, Candidate> = HashMap::new();
     let mut order_note = |c: Candidate| {
@@ -253,10 +197,6 @@ pub fn build_context_with(
     }
 
     let mut git_evidence: Option<GitEvidence> = None;
-    // No initializer: every path through the `if !seeds.is_empty() { .. }
-    // else { .. }` below assigns this exactly once, so definite-assignment
-    // analysis is enough — an initial `None` here would just be dead.
-    let returned_lsp_client: Option<crate::lsp::LspClient>;
     let mut diagnostics: Vec<String> = Vec::new();
 
     // Structural expansion around strong primaries only (same rule as search:
@@ -267,10 +207,7 @@ pub fn build_context_with(
         // engine, so a caller-supplied snapshot serves it too. Also reused
         // by the git block below (changed-symbol file lookup, co-changed
         // file symbol picks) so `--git` never triggers a second corpus load.
-        let symbols = match engine.snapshot_with_relations() {
-            Ok(s) => &s.symbols,
-            Err(e) => return (Err(e), lsp_client),
-        };
+        let symbols = &engine.snapshot_with_relations()?.symbols;
         let graph = RelationGraph::build(symbols);
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
@@ -304,50 +241,39 @@ pub fn build_context_with(
             }
         }
 
-        if let Some((max_seeds, max_files)) = opts.retrieval_mode.structural_budget() {
-            let output = crate::evidence::EvidenceCoordinator::collect(
-                crate::evidence::coordinator::CollectInput {
-                    root,
-                    symbols,
-                    graph: &graph,
-                    seeds: &seeds,
-                    structural_max_seeds: max_seeds,
-                    structural_max_files: max_files,
-                    blast_radius: opts.blast_radius,
-                    git: opts.git,
-                    lsp: opts.lsp,
-                    lsp_client,
-                },
-            );
-            for c in output.candidates {
-                let role = if is_test_symbol(&c.symbol) {
-                    Role::Test
-                } else {
-                    Role::Dependency
-                };
-                order_note(Candidate {
-                    symbol: c.symbol,
-                    score: c.score,
-                    reasons: c.reasons,
-                    role,
-                });
-            }
-            git_evidence = output.git_evidence;
-            diagnostics = output
-                .degraded
-                .iter()
-                .map(|d| format!("{}: {:?}", d.source.as_str(), d.reason))
-                .collect();
-            returned_lsp_client = output.lsp_client;
-        } else {
-            returned_lsp_client = lsp_client;
+        let (structural_max_seeds, structural_max_files) =
+            opts.retrieval_mode.structural_budget().unwrap_or((0, 0));
+        let output = crate::evidence::EvidenceCoordinator::collect(
+            crate::evidence::coordinator::CollectInput {
+                root,
+                symbols,
+                graph: &graph,
+                seeds: &seeds,
+                structural_max_seeds,
+                structural_max_files,
+                blast_radius: opts.blast_radius,
+                git: opts.git,
+            },
+        );
+        for c in output.candidates {
+            let role = if is_test_symbol(&c.symbol) {
+                Role::Test
+            } else {
+                Role::Dependency
+            };
+            order_note(Candidate {
+                symbol: c.symbol,
+                score: c.score,
+                reasons: c.reasons,
+                role,
+            });
         }
-    } else {
-        // Empty seed pool: the block above (which moves `lsp_client` into
-        // either the coordinator call or its own `else`) never runs at all,
-        // so `lsp_client` is still available here — hand it straight back
-        // rather than silently dropping a caller-owned session.
-        returned_lsp_client = lsp_client;
+        git_evidence = output.git_evidence;
+        diagnostics = output
+            .degraded
+            .iter()
+            .map(|d| format!("{}: {:?}", d.source.as_str(), d.reason))
+            .collect();
     }
 
     // ---- dedup / subsumption -------------------------------------------
@@ -542,22 +468,19 @@ pub fn build_context_with(
             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
     });
 
-    (
-        Ok(ContextPack {
-            task: task.to_string(),
-            // Query formatting is now internal to the provider (`embed_query`),
-            // so the text reaching lexical/embedding stages is `task` itself.
-            query_used: query.to_string(),
-            embedder: engine.embedder().name().to_string(),
-            budget_tokens: opts.budget_tokens,
-            used_tokens: used,
-            omitted: dropped,
-            items,
-            git: git_evidence,
-            diagnostics,
-        }),
-        returned_lsp_client,
-    )
+    Ok(ContextPack {
+        task: task.to_string(),
+        // Query formatting is now internal to the provider (`embed_query`),
+        // so the text reaching lexical/embedding stages is `task` itself.
+        query_used: query.to_string(),
+        embedder: engine.embedder().name().to_string(),
+        budget_tokens: opts.budget_tokens,
+        used_tokens: used,
+        omitted: dropped,
+        items,
+        git: git_evidence,
+        diagnostics,
+    })
 }
 
 fn dedup_reasons(rs: &[String]) -> Vec<String> {

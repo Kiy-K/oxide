@@ -127,8 +127,7 @@ fn main() -> anyhow::Result<()> {
         t.elapsed().as_secs_f64() * 1e3
     );
     let t = Instant::now();
-    let (result, _client) =
-        build_context_with(&root, &engine, &query, &ContextOptions::default(), None);
+    let result = build_context_with(&root, &engine, &query, &ContextOptions::default());
     let pack = result?;
     println!(
         "build_context_with       {:>8.2} ms  ({} items)",
@@ -136,8 +135,7 @@ fn main() -> anyhow::Result<()> {
         pack.items.len()
     );
     let t = Instant::now();
-    let (result, _client) =
-        build_context_with(&root, &engine, &query, &ContextOptions::default(), None);
+    let result = build_context_with(&root, &engine, &query, &ContextOptions::default());
     let pack = result?;
     println!(
         "build_context_with again {:>8.2} ms  ({} items)",

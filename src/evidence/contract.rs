@@ -10,7 +10,6 @@ use std::time::Duration;
 pub enum EvidenceSource {
     Structural,
     Git,
-    Lsp,
     BlastRadius,
 }
 
@@ -19,7 +18,6 @@ impl EvidenceSource {
         match self {
             Self::Structural => "structural",
             Self::Git => "git",
-            Self::Lsp => "lsp",
             Self::BlastRadius => "blast_radius",
         }
     }

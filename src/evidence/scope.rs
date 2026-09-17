@@ -1,6 +1,6 @@
 //! One shared "which files does this seed pool touch" helper, replacing the
 //! three independent implementations that used to live inline in
-//! `context.rs` for structural/Git/LSP evidence (audit MINOR-1: they had
+//! `context.rs` for structural/Git evidence (audit MINOR-1: they had
 //! silently diverging bounds despite a comment claiming parity). A source
 //! that needs a different bound passes a different `max_files` and
 //! documents why at its call site.

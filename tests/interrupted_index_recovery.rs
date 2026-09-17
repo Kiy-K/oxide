@@ -96,7 +96,7 @@ fn schema_only_index_is_rejected_not_treated_as_healthy() {
     );
 
     let ctx_err = service
-        .context("thing", 128, RetrievalMode::default(), false, false, false)
+        .context("thing", 128, RetrievalMode::default(), false, false)
         .expect_err("context must also fail structurally, not return a deceptive empty pack");
     assert!(matches!(
         ctx_err.action(),

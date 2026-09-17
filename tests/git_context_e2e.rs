@@ -447,7 +447,14 @@ fn git_evidence_reflects_the_currently_indexed_working_tree_state() {
 
     let query = json_stdout(&run(
         root,
-        &["query", "handler function", "--git", "--json"],
+        &[
+            "query",
+            "handler function",
+            "--profile",
+            "fast",
+            "--git",
+            "--json",
+        ],
     ));
     let names: Vec<String> = query["items"]
         .as_array()
@@ -462,6 +469,15 @@ fn git_evidence_reflects_the_currently_indexed_working_tree_state() {
     assert!(
         !names.iter().any(|n| n == "old_helper"),
         "the pre-rename name must not appear — it no longer exists in the current index: {names:?}"
+    );
+    assert!(
+        query["items"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|item| item["reasons"].as_array().unwrap())
+            .any(|reason| reason.as_str().unwrap().starts_with("git-")),
+        "Fast mode must preserve explicitly requested Git evidence: {query}"
     );
 }
 

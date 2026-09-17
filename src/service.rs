@@ -4,14 +4,12 @@
 //! out of the argument parser. Retrieval and context algorithms stay below it.
 
 use crate::blast_radius::BlastItem;
-use crate::config::{LSP_INIT_TIMEOUT_MS, LSP_MAX_CACHED_SESSIONS, LSP_REQUEST_TIMEOUT_MS};
 use crate::context::{build_context_with, ContextOptions, Omitted, Role};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
-use crate::lsp::LspClient;
 use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use crate::review::{build_review_context, ReviewContext};
@@ -26,7 +24,6 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
-use std::time::Duration;
 
 const MAX_SEARCH_RESULTS: usize = 100;
 
@@ -334,12 +331,6 @@ pub struct RepositoryService {
 struct ProcessCache {
     snapshots: Mutex<HashMap<PathBuf, Arc<CachedSnapshot>>>,
     embedder: Mutex<Option<(String, Arc<dyn EmbeddingProvider + Send + Sync>)>>,
-    /// One LSP session per repository root, bounded to
-    /// `LSP_MAX_CACHED_SESSIONS` live slots. `last_used` is checked lazily
-    /// on access, not by a background reaper — avoids a supervision thread
-    /// for what a few lines of eviction logic already cover.
-    lsp_clients: Mutex<HashMap<PathBuf, Arc<Mutex<Option<LspClient>>>>>,
-    lsp_last_used: Mutex<HashMap<PathBuf, std::time::Instant>>,
 }
 
 /// `(cache key, matching entry if any)` — `None` when the cache is off or
@@ -359,98 +350,6 @@ static PROCESS_CACHE: OnceLock<ProcessCache> = OnceLock::new();
 
 fn process_cache() -> &'static ProcessCache {
     PROCESS_CACHE.get_or_init(ProcessCache::default)
-}
-
-/// Gracefully closes every LSP session this process has cached (the
-/// shutdown/exit handshake, not `Transport`'s kill-on-drop `Drop` fallback).
-/// `PROCESS_CACHE` is a `static`, and Rust never runs `Drop` for statics at
-/// normal process exit — without this, every session an `oxide mcp` process
-/// ever cached would leak a `ty` subprocess on ordinary shutdown (found by
-/// Codex review). Call once, from `oxide mcp`'s shutdown path, after the MCP
-/// serve loop returns. A no-op if the cache was never initialized (nothing
-/// used `--lsp`+the cache this run) or holds no live sessions.
-pub fn shutdown_process_cache() {
-    let Some(cache) = PROCESS_CACHE.get() else {
-        return;
-    };
-    let mut clients = cache.lsp_clients.lock().unwrap_or_else(|e| e.into_inner());
-    for (_, slot) in clients.drain() {
-        // `try_lock`, not `lock`: `context()` now holds this same slot's
-        // mutex for the full span of an in-flight call (see its own doc
-        // comment). A blocking `lock()` here could hang shutdown on a call
-        // that hasn't returned yet. A slot that's genuinely busy at this
-        // exact moment is skipped — its session is not gracefully closed
-        // here, but this is a narrow, disclosed race, not a routine leak:
-        // `PROCESS_CACHE` being a `static` is exactly why this function
-        // exists in the first place, and "never hang on shutdown" matters
-        // more than closing every last session gracefully in that window.
-        if let Ok(mut guard) = slot.try_lock() {
-            if let Some(client) = guard.take() {
-                client.close();
-            }
-        }
-    }
-}
-
-/// `$OXIDE_LSP_MAX_CACHED_SESSIONS` override — same precedence convention as
-/// `context.rs::resolve_context_max_primaries`: any parse failure, including
-/// unset, falls back to the shipped default.
-fn resolve_lsp_max_cached_sessions() -> usize {
-    std::env::var("OXIDE_LSP_MAX_CACHED_SESSIONS")
-        .ok()
-        .and_then(|v| v.parse::<usize>().ok())
-        .unwrap_or(LSP_MAX_CACHED_SESSIONS)
-}
-
-impl ProcessCache {
-    /// Return this root's LSP session slot, creating one if absent. If the
-    /// cache is at capacity and `root` is new, evicts the least-recently-used
-    /// root whose slot is currently idle (not locked by another in-flight
-    /// call) before inserting.
-    fn lsp_client_slot(&self, root: &Path) -> Arc<Mutex<Option<LspClient>>> {
-        let mut clients = self.lsp_clients.lock().unwrap_or_else(|e| e.into_inner());
-        let mut last_used = self.lsp_last_used.lock().unwrap_or_else(|e| e.into_inner());
-        last_used.insert(root.to_path_buf(), std::time::Instant::now());
-        if let Some(existing) = clients.get(root) {
-            return existing.clone();
-        }
-        let max = resolve_lsp_max_cached_sessions();
-        if clients.len() >= max {
-            // Oldest-first candidates; the actual idle check happens per
-            // candidate below, holding that candidate's lock from the
-            // check through the removal — closing the TOCTOU window where
-            // a different thread (already holding a cloned `Arc` from an
-            // earlier `lsp_client_slot` call, so it doesn't need to touch
-            // `clients`/`last_used` to do so) could acquire the slot
-            // between an idle check and the eviction and have its
-            // in-flight session evicted out from under it.
-            let mut candidates: Vec<PathBuf> = last_used
-                .iter()
-                .filter(|(r, _)| clients.contains_key(*r) && *r != root)
-                .map(|(r, _)| r.clone())
-                .collect();
-            candidates.sort_by_key(|r| last_used[r]);
-
-            for candidate in candidates {
-                if let Some(slot) = clients.get(&candidate).cloned() {
-                    if let Ok(guard) = slot.try_lock() {
-                        clients.remove(&candidate);
-                        last_used.remove(&candidate);
-                        drop(guard);
-                        break;
-                    }
-                }
-            }
-            // If every existing slot is busy, none are evicted this round —
-            // the new root falls back to spawn-per-call for this one
-            // request, the existing "cache miss" behavior, not a new one.
-        }
-        let slot = Arc::new(Mutex::new(None));
-        if clients.len() < max {
-            clients.insert(root.to_path_buf(), slot.clone());
-        }
-        slot
-    }
 }
 
 /// Meta values a cached snapshot must match, in a fixed order. `None`
@@ -630,13 +529,6 @@ impl RepositoryService {
         *cache.embedder.lock().unwrap_or_else(|e| e.into_inner()) =
             Some((name, Arc::clone(&provider)));
         Ok(provider)
-    }
-
-    /// The per-root LSP session slot from [`ProcessCache`],
-    /// with bounded capacity and LRU eviction. Only ever called when
-    /// `use_process_cache` is set — see `context()`'s guard.
-    fn lsp_client_slot(&self) -> Arc<Mutex<Option<LspClient>>> {
-        process_cache().lsp_client_slot(&self.root)
     }
 
     pub fn index(
@@ -897,7 +789,6 @@ impl RepositoryService {
         retrieval_mode: RetrievalMode,
         blast_radius: bool,
         git: bool,
-        lsp: bool,
     ) -> Result<ContextResult, ServiceError> {
         let store = self.open_index_for_read()?;
         let provider = self.embedder()?;
@@ -909,62 +800,7 @@ impl RepositoryService {
             Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
             None => RetrievalEngine::new(&store, provider.as_ref()),
         };
-        // Only `oxide mcp` (`use_process_cache`) reuses an LSP session across
-        // calls; a one-shot CLI invocation gets `None` here and
-        // `build_context_with` falls back to its own spawn-per-call default,
-        // unchanged from before this cache existed.
-        //
-        // The whole client lifecycle for this call — spawn-if-needed, use,
-        // restore — runs under ONE guard held on this root's slot for the
-        // full span, not released and reacquired around the middle. A
-        // second concurrent call for the same root now blocks here instead
-        // of racing to see `None` and spawning its own redundant session
-        // (found by Codex review). This does mean a same-root concurrent
-        // call also waits out this call's retrieval-search phase — that
-        // phase runs inside `build_context_with` before it ever touches the
-        // LSP client, and untangling it would mean giving
-        // `build_context_with` a narrower phase boundary to unlock around,
-        // which is the redesign this hardening pass was told not to do.
-        // Disclosed trade-off, not an oversight.
-        let lsp_slot = (lsp && self.use_process_cache).then(|| self.lsp_client_slot());
-        let mut guard = lsp_slot.as_ref().map(|slot| match slot.lock() {
-            Ok(g) => g,
-            // A poisoned slot means an earlier call panicked while holding
-            // this client — its Transport may be mid-request, so this
-            // session is not safe to resume. `into_inner()` recovers the
-            // guard; discard (close, don't reuse) whatever's in it so the
-            // next spawn starts clean instead of risking corruption.
-            Err(poisoned) => {
-                let mut g = poisoned.into_inner();
-                if let Some(stale) = g.take() {
-                    stale.close();
-                }
-                g
-            }
-        });
-        let owned_client: Option<LspClient> = match &mut guard {
-            Some(g) => {
-                let needs_spawn = match g.as_mut() {
-                    Some(client) => !client.is_alive(),
-                    None => true,
-                };
-                if needs_spawn {
-                    let server =
-                        std::env::var("OXIDE_LSP_SERVER").unwrap_or_else(|_| "ty".to_string());
-                    **g = LspClient::spawn(
-                        &server,
-                        &self.root,
-                        Duration::from_millis(LSP_INIT_TIMEOUT_MS),
-                        Duration::from_millis(LSP_REQUEST_TIMEOUT_MS),
-                    )
-                    .ok();
-                }
-                g.take()
-            }
-            None => None,
-        };
-
-        let (result, returned_client) = build_context_with(
+        let pack = build_context_with(
             &self.root,
             &engine,
             task,
@@ -973,42 +809,10 @@ impl RepositoryService {
                 retrieval_mode,
                 blast_radius,
                 git,
-                lsp,
                 ..ContextOptions::default()
             },
-            owned_client,
-        );
-
-        // Restore/close happens unconditionally, before the `?` below —
-        // build_context_with now always hands the client back, success or
-        // error, specifically so a failed query never strands a healthy
-        // reusable session (Codex review finding; see build_context_with's
-        // doc comment).
-        match &mut guard {
-            Some(g) => {
-                // `None` here (a panicked spawn_blocking inside the
-                // coordinator) means the next call respawns, same as
-                // today's is_alive()-false path — not a new failure mode.
-                **g = returned_client;
-            }
-            // No cache slot for this call (use_process_cache is off), but
-            // the coordinator still self-spawned a fresh client because
-            // `lsp` was requested — close it explicitly rather than
-            // dropping it, so it gets the graceful shutdown/exit handshake
-            // instead of falling through to Transport's kill-on-drop safety
-            // net (still correct, just a blunter shutdown).
-            None => {
-                if let Some(client) = returned_client {
-                    client.close();
-                }
-            }
-        }
-        // Release the per-root gate before the rest of this call's
-        // (LSP-unrelated) work — packing/token-budget accounting below
-        // never touches the LSP client.
-        drop(guard);
-
-        let pack = result.map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
+        )
+        .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
         // See the identical guard in `search` above for why remote/local are
         // treated differently here.
         if !provider.is_available() && !provider.is_remote() {
@@ -1596,79 +1400,5 @@ mod tests {
             use_process_cache: false,
         };
         assert!(off.cache_lookup(&store).unwrap().is_none());
-    }
-
-    /// `lsp_client_slot`'s caching mechanism, independent of whether an LSP
-    /// server is actually installed: same root ⇒ same `Arc` slot (so two
-    /// MCP calls in a row reuse one session), different roots ⇒ distinct
-    /// slots (so a request against repo A never blocks on or reuses repo
-    /// B's server, matching the per-root `Mutex` design in
-    /// `ProcessCache::lsp_clients`'s doc comment).
-    #[test]
-    fn lsp_client_slot_is_stable_per_root_and_distinct_across_roots() {
-        let tmp_a = tempfile::tempdir().unwrap();
-        let tmp_b = tempfile::tempdir().unwrap();
-        let a = RepositoryService {
-            root: tmp_a.path().canonicalize().unwrap(),
-            use_process_cache: true,
-        };
-        let b = RepositoryService {
-            root: tmp_b.path().canonicalize().unwrap(),
-            use_process_cache: true,
-        };
-        let a_slot_1 = a.lsp_client_slot();
-        let a_slot_2 = a.lsp_client_slot();
-        let b_slot = b.lsp_client_slot();
-        assert!(
-            Arc::ptr_eq(&a_slot_1, &a_slot_2),
-            "same root must return the same slot"
-        );
-        assert!(
-            !Arc::ptr_eq(&a_slot_1, &b_slot),
-            "different roots must never share a slot"
-        );
-    }
-
-    #[test]
-    fn lsp_session_cache_evicts_the_least_recently_used_idle_slot_over_the_cap() {
-        let cache = ProcessCache::default();
-        let roots: Vec<PathBuf> = (0..(LSP_MAX_CACHED_SESSIONS + 2))
-            .map(|i| PathBuf::from(format!("/repo-{i}")))
-            .collect();
-        for root in &roots {
-            let _ = cache.lsp_client_slot(root);
-        }
-        let live = cache.lsp_clients.lock().unwrap();
-        assert!(live.len() <= LSP_MAX_CACHED_SESSIONS, "got {}", live.len());
-        assert!(!live.contains_key(&roots[0]));
-        assert!(!live.contains_key(&roots[1]));
-        assert!(live.contains_key(roots.last().unwrap()));
-    }
-
-    #[test]
-    fn lsp_session_cache_never_evicts_a_slot_held_by_an_in_flight_call() {
-        let cache = ProcessCache::default();
-        let roots: Vec<PathBuf> = (0..LSP_MAX_CACHED_SESSIONS)
-            .map(|i| PathBuf::from(format!("/busy-repo-{i}")))
-            .collect();
-        for root in &roots {
-            let _ = cache.lsp_client_slot(root);
-        }
-        // Simulate an in-flight call on the oldest (and therefore normally
-        // first-evicted) root: hold its slot's lock across the next
-        // lsp_client_slot call that pushes the cache past capacity.
-        let oldest_slot = cache.lsp_client_slot(&roots[0]);
-        let _held = oldest_slot.lock().unwrap();
-
-        let new_root = PathBuf::from("/new-repo");
-        let _ = cache.lsp_client_slot(&new_root);
-
-        let live = cache.lsp_clients.lock().unwrap();
-        assert!(
-            live.contains_key(&roots[0]),
-            "a slot held by an in-flight call must never be evicted"
-        );
-        // The next-oldest idle root is evicted instead.
-        assert!(!live.contains_key(&roots[1]));
     }
 }

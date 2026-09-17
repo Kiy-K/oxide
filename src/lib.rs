@@ -13,8 +13,6 @@ pub mod gitutil;
 pub mod index;
 pub mod languages;
 pub mod lexical;
-pub mod lsp;
-pub mod lsp_install;
 pub mod mcp;
 pub mod parser;
 pub mod relations;

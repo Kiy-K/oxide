@@ -1941,15 +1941,11 @@ mod tests {
         let mut failing = CountingStore::new(&store);
         failing.fail_relations = true;
         let engine = RetrievalEngine::new(&failing, &emb);
-        // build_context_with now returns (Result<ContextPack>, Option<LspClient>)
-        // unconditionally — index .0 for the result, no LspClient Debug bound
-        // needed either way.
-        let (result, _client) = crate::context::build_context_with(
+        let result = crate::context::build_context_with(
             std::path::Path::new("/nonexistent"),
             &engine,
             "retry policy",
             &crate::context::ContextOptions::default(),
-            None,
         );
         let err = result.err().unwrap();
         assert!(err.to_string().contains("symbol_relations"), "{err}");
