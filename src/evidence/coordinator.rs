@@ -355,7 +355,13 @@ fn git_graph_enrichment(
     out
 }
 
-#[cfg(test)]
+/// Not `#[cfg(test)]`: `tests/evidence_coordinator_determinism.rs` spawns
+/// the compiled `oxide` binary as a subprocess (`CARGO_BIN_EXE_oxide`),
+/// which links the lib built *without* `cfg(test)` — a test-only gate here
+/// would silently no-op for that binary and make the determinism test
+/// prove nothing about real completion-order independence. Always
+/// compiled in; a no-op in every real invocation because
+/// `OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS` is never set outside tests.
 fn artificial_delay_ms(source: &str) -> u64 {
     std::env::var("OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS")
         .ok()
@@ -373,10 +379,6 @@ fn artificial_delay_ms(source: &str) -> u64 {
             })
         })
         .unwrap_or(0)
-}
-#[cfg(not(test))]
-fn artificial_delay_ms(_source: &str) -> u64 {
-    0
 }
 
 /// Runs entirely on a `spawn_blocking` task — pure subprocess I/O +
