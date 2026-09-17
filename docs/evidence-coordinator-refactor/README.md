@@ -157,11 +157,19 @@ fixture, not because serialization has no cost. Contention cost scales
 with query cost, not with the number of waiting callers; a slower query
 under this same lock would serialize its waiters for that query's full
 duration, including retrieval search — see item #2's commit message for
-why that trade-off wasn't narrowed further in this pass. Separately,
-`max_blocking_threads(4)` was not observed to saturate: the same
-6-concurrent-caller test (which exceeds the pool's size) completed with
-no stalls or timeouts, evidence against saturation at this scale, though
-not a dedicated saturation benchmark.
+why that trade-off wasn't narrowed further in this pass.
+
+Retracted claim (Codex review, final hardening-pass round): an earlier
+version of this paragraph read the same 6-concurrent-caller test as
+evidence that `max_blocking_threads(4)` doesn't saturate. That's wrong —
+the held per-root guard this same paragraph just described *serializes*
+those 6 calls onto one root's session, so only one of them is ever
+actually inside `spawn_blocking` work at a time; the test cannot have
+exercised more than 1 concurrent blocking-pool thread, let alone 4.
+Whether the blocking pool saturates under genuinely concurrent
+*different-root* `--lsp` load (which wouldn't serialize on this guard)
+is untested by anything in this repository and is not claimed here
+either way.
 
 ## Duplicate evidence across sources
 

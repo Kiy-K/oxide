@@ -207,8 +207,13 @@ pub fn build_context_with(
     // way the compiled `oxide` binary does — cfg(test) is false for both,
     // so a test-only gate here would silently no-op (the same class of bug
     // `evidence/coordinator.rs::artificial_delay_ms` had before it was
-    // fixed). A no-op in real use since the env var is never set outside
-    // tests.
+    // fixed). This is genuinely production-reachable, not a guaranteed
+    // no-op: whoever inherits this exact env var name set to anything
+    // forces every query to fail (confirmed by Codex review, which
+    // reproduced it against the normal binary) — the same trade-off
+    // `OXIDE_EVIDENCE_ARTIFICIAL_DELAY_MS` already makes for the same
+    // reason. In practice this is only ever set by
+    // tests/lsp_cached_session_survives_context_error.rs.
     if std::env::var("OXIDE_CONTEXT_FORCE_ERROR").is_ok() {
         return (
             Err(anyhow::anyhow!(

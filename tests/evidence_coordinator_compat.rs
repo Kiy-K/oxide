@@ -200,6 +200,14 @@ impl McpProcess {
         process
     }
 
+    /// `read_line` here is unbounded — a live but nonresponsive `oxide mcp`
+    /// child would hang this call before `Drop` ever gets a chance to
+    /// kill+wait it (a real Codex-review finding). Left as-is, matching
+    /// `tests/mcp_e2e.rs::McpProcess::request`'s identical pattern: it's a
+    /// pre-existing property of this test-only harness shape, not
+    /// something this file introduced, and a real fix (a read timeout on a
+    /// blocking `ChildStdout`) would need to land in both copies
+    /// consistently, which is out of this hardening pass's scope.
     fn request(&mut self, request: serde_json::Value) -> serde_json::Value {
         writeln!(self.input, "{request}").unwrap();
         self.input.flush().unwrap();

@@ -294,7 +294,14 @@ impl LspClient {
     /// `ensure_open` moves every touched document to the end.
     fn evict_if_over_cap(&mut self) {
         let max = resolve_lsp_max_open_documents();
-        while self.opened.len() >= max {
+        // `!self.opened.is_empty()`, not just the length check: with
+        // `max == 0` (a degenerate but real override value, not rejected
+        // by resolve_lsp_max_open_documents' plain parse), `len() >= max`
+        // is true even on an empty Vec, and `remove(0)` on that panics.
+        // Found by Codex review. `max == 0` still ends up tracking exactly
+        // the one document `ensure_open` is about to add — there is no
+        // sane way to "cache zero, including the one in flight".
+        while !self.opened.is_empty() && self.opened.len() >= max {
             let (rel_path, _, _) = self.opened.remove(0);
             if let Ok(uri) = file_uri(&self.root, &rel_path) {
                 let _ = self.transport.notify(
