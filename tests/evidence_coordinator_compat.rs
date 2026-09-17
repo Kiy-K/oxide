@@ -5,13 +5,21 @@
 //!
 //! Comparison is structural (parsed JSON), not a plain string diff, for two
 //! reasons: it's insensitive to incidental formatting, and it lets
-//! `expect_fixture` normalize `git.recent_commits` out before comparing.
-//! `fixtures/py_repo` is a subdirectory of this actively-developed repo, not
-//! an isolated git repo with its own frozen history — `--git`'s
-//! `recent_commits` field reflects *this worktree's* real, ever-growing
-//! commit log, so a byte-pinned copy of it would go stale on this task's own
-//! commit. `git.changed_files`/`git.co_change` stay in the comparison: with
-//! a clean working tree they're empty and stable regardless of commit count.
+//! `expect_fixture` normalize the whole volatile `git` subtree out before
+//! comparing. `fixtures/py_repo` is a subdirectory of this actively-
+//! developed repo, not an isolated git repo with its own frozen history —
+//! `--git`'s `range: ""` (worktree vs HEAD) means `recent_commits` reflects
+//! *this worktree's* real, ever-growing commit log, and `changed_files`/
+//! `co_change` reflect whatever this worktree's working tree happens to
+//! have uncommitted at test-run time (routine during active development —
+//! confirmed empirically: this test failed on `git.changed_files` the first
+//! time it ran against a mid-task uncommitted diff, even though `items`/
+//! `omitted` — the actual coordinator output this gate exists to protect —
+//! were byte-identical). Only `git.range` (a fixed `"HEAD"` string) stays in
+//! the comparison; the rest of `git` is normalized away. The meaningful
+//! proof this gate gives — that the evidence-coordinator refactor didn't
+//! change retrieval/scoring/structure — lives entirely in `items`/
+//! `omitted`, which stay fully compared.
 
 use std::process::Command;
 
@@ -29,13 +37,16 @@ fn run(args: &[&str]) -> serde_json::Value {
     serde_json::from_slice(&out.stdout).expect("oxide --json output must parse as JSON")
 }
 
-/// Strips the one known-volatile field (`git.recent_commits`) so the
-/// comparison isn't sensitive to how many commits this worktree has made by
-/// the time the test runs.
+/// Strips the volatile parts of the `git` subtree (see module doc) so the
+/// comparison isn't sensitive to this worktree's commit count or its
+/// working tree's dirty/clean state at test-run time. `git.range` stays —
+/// it's a fixed string, not diff-dependent.
 fn normalize(mut value: serde_json::Value) -> serde_json::Value {
     if let Some(git) = value.get_mut("git") {
         if let Some(obj) = git.as_object_mut() {
             obj.remove("recent_commits");
+            obj.remove("changed_files");
+            obj.remove("co_change");
         }
     }
     value
