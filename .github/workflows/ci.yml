@@ -119,6 +119,36 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  lsp-integration:
+    name: OXIDE / LSP integration (real ty server)
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
+      - name: Restore Cargo cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
+      - name: Install uv (for oxide lsp install ty)
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Build oxide
+        run: cargo build -j 2
+      - name: Install ty via oxide's own installer
+        run: |
+          export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+          ./target/debug/oxide lsp install ty
+      - name: Run real-server LSP tests
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          cargo test -j 2 --test lsp_ty_integration --test lsp_scope_regression \
+            --test lsp_mcp_process_cache_reuse --test lsp_process_cache_staleness -- --nocapture
+
   coverage:
     name: Rust / Coverage
     needs: quality
