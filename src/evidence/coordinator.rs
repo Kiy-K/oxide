@@ -33,6 +33,18 @@
 //! All four sources fold into the output in one fixed order
 //! (Structural → Git → LSP → BlastRadius) regardless of completion order —
 //! see `tests/evidence_coordinator_determinism.rs`.
+//!
+//! LSP client lifecycle: `CollectInput.lsp_client: None` means "spawn one
+//! for this call" (`lsp_io` does so itself, inside its `spawn_blocking`,
+//! using `$OXIDE_LSP_SERVER`/`LSP_INIT_TIMEOUT_MS`/`LSP_REQUEST_TIMEOUT_MS`
+//! — same as `service.rs`'s cache-slot spawn), matching the CLI's
+//! spawn-per-call default from before this coordinator existed.
+//! `CollectOutput.lsp_client` always carries back whatever client this call
+//! ended up holding — caller-provided, self-spawned, or none — so the
+//! caller decides `close()` (CLI, `build_context`) vs. restore-to-cache
+//! (MCP, `service.rs`). When `lsp` is `false`, a caller-provided client is
+//! handed straight back rather than being captured and dropped inside the
+//! (never-invoked) spawn closure.
 
 use crate::blast_radius;
 use crate::config::{
@@ -132,16 +144,27 @@ impl EvidenceCoordinator {
             // so they satisfy tokio::spawn's Send + 'static bound.
             let git_handle =
                 git.then(|| tokio::spawn(git_io(root.to_path_buf(), symbols_arc.clone())));
-            let lsp_handle = lsp.then(|| {
-                tokio::spawn(lsp_io(
+            let lsp_handle = if lsp {
+                Some(tokio::spawn(lsp_io(
                     lsp_client,
                     root.to_path_buf(),
                     symbols_arc.clone(),
                     py_seeds_owned,
                     py_seed_scores,
                     lsp_scope_files,
-                ))
-            });
+                )))
+            } else {
+                // lsp disabled for this call: hand a caller-provided client
+                // straight back rather than letting it drop here.
+                // `Transport`'s `Drop` safety net still reaps it either way
+                // (no orphaned process either way), but dropping skips the
+                // graceful shutdown/exit handshake `close()` does, and for
+                // the MCP `ProcessCache` path it would needlessly discard a
+                // warm, reusable session instead of letting the caller
+                // restore it.
+                returned_lsp_client = lsp_client;
+                None
+            };
 
             // Runs synchronously on this thread, concurrently with the two
             // background tasks above — see the module doc for why this

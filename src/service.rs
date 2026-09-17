@@ -914,12 +914,25 @@ impl RepositoryService {
         )
         .map_err(|e| ServiceError::from_error(ErrorCode::ContextFailed, e))?;
 
-        if let Some(slot) = &lsp_slot {
-            let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
-            // `None` here (a panicked spawn_blocking inside the coordinator)
-            // means the next call respawns, same as today's is_alive()-false
-            // path — not a new failure mode.
-            *guard = returned_client;
+        match &lsp_slot {
+            Some(slot) => {
+                let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+                // `None` here (a panicked spawn_blocking inside the
+                // coordinator) means the next call respawns, same as
+                // today's is_alive()-false path — not a new failure mode.
+                *guard = returned_client;
+            }
+            // No cache slot for this call (use_process_cache is off), but
+            // the coordinator still self-spawned a fresh client because
+            // `lsp` was requested — close it explicitly rather than
+            // dropping it, so it gets the graceful shutdown/exit handshake
+            // instead of falling through to Transport's kill-on-drop safety
+            // net (still correct, just a blunter shutdown).
+            None => {
+                if let Some(client) = returned_client {
+                    client.close();
+                }
+            }
         }
         // See the identical guard in `search` above for why remote/local are
         // treated differently here.
