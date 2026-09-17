@@ -195,6 +195,12 @@ very large diff.
 - **Cross-repo / semantic commit-history search is out of scope**, per the
   task's own phasing — this is diff + commit metadata + bounded co-change
   only.
+- Untracked files are excluded from all git-aware evidence — `git diff HEAD`
+  never sees a file that was never `git add`ed.
+- A pure rename with no content change produces no diff hunk, so the
+  renamed file is invisible to `--git`'s evidence.
+- Git-enabled retrieval quality has not been validated by any agent-outcome
+  benchmark — only correctness/plumbing tests exist today.
 
 ## Testing
 

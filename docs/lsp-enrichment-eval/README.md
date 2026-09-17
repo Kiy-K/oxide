@@ -156,15 +156,15 @@ regressions). Five findings, three fixed:
   conversion exists here. Fixed: `LspClient::spawn` now fails closed
   (returns `Err`, same "unavailable" fallback as every other init failure)
   unless the server explicitly confirmed `utf-8`.
-- **Accepted as a documented limitation, not fixed** — `didOpen` staleness:
-  if a file is modified on disk between two seeds that both touch it within
-  the same query, the second seed's *position* is computed from the new
-  text while the server still has the version sent at the first `didOpen`.
-  Not fixed: this client's lifetime is one query (seconds), the realistic
-  window for an external edit landing mid-query is narrow, and adding
-  `didChange` tracking is real complexity for an edge case the plan already
-  scoped `didOpen`-only for ("no `didChange` support needed — this client
-  only ever reads").
+- **Fixed, not just accepted** — `didOpen` staleness: a file edited between
+  two calls against the same `LspClient` now triggers a full-document
+  `textDocument/didChange` (content-hash-detected) instead of silently
+  serving the first `didOpen`'s snapshot. Originally accepted on the
+  assumption that a client's lifetime was one query (seconds); that broke
+  the same day `ProcessCache` landed, so the fix closes it properly instead
+  of re-scoping the old acceptance to a longer window. See
+  `src/lsp/client.rs::ensure_open` and
+  `docs/superpowers/specs/2026-09-15-evidence-coordinator-refactor-design.md`.
 
 All fixes verified: `cargo fmt`, `cargo clippy --all-targets` (clean), full
 `cargo test` (all green, including both real-`ty` integration tests

@@ -234,6 +234,12 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 
 - Provider selection: explicit `--embedder URL` > `$OXIDE_EMBED_URL` >
   `$OXIDE_EMBED_NATIVE` > `DEFAULT_NATIVE_PROFILE` (`arctic-embed-xs-q`).
+  A configured remote provider (Voyage/Jina/OpenAI-compatible via
+  `$OXIDE_EMBED_PROVIDER`+API key, or `oxide setup`'s saved config gated on
+  `remote_consent_ack`) resolves between the explicit-URL tier and
+  `$OXIDE_EMBED_NATIVE` — an unconfigured environment falls through
+  untouched to the native/hashed tiers exactly as before remote providers
+  existed.
   **The default is no longer offline** — an unconfigured `oxide index` loads
   real ONNX weights through fastembed and downloads ~23MB on first use.
   `OXIDE_EMBED_NATIVE=hashed` (`OFFLINE_PROFILE`) opts back out to
@@ -321,7 +327,7 @@ identity everywhere is `path#QualifiedName`.
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.
   Language support = add a `LanguageProfile` + `.scm` queries and register
   in `src/parser.rs` (currently python, typescript/tsx, javascript/jsx,
-  rust, go, java — see
+  rust, go, java, ruby, php, c, c++ — see
   `docs/language-support/README.md` for the coverage matrix, per-language
   performance, and what each language still misses). Behavior per language
   is pinned by `tests/language_conformance.rs`'s committed goldens under

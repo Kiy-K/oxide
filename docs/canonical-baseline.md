@@ -1,3 +1,11 @@
+> **Historical snapshot, not current.** Captured 2026-08-27 at `d1076f5`,
+> before git-aware context, LSP enrichment, and remote embedding providers
+> existed. `src/retrieval.rs` has had 15+ commits since; the committed
+> fixture gate (`oxide eval --config fixtures/benchmark.json`, see
+> README.md's Evidence section) has been re-validated multiple times since
+> and stays current — this file's ContextBench Tier-A real-repo numbers
+> have not been rerun against current `main` and should not be read as such.
+
 # Canonical baseline — frozen production code (reverted)
 
 Date: 2026-08-27

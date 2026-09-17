@@ -13,7 +13,7 @@ coding agents a bounded set of relevant symbols for each task.
 - Incremental: unchanged files are not reparsed; unchanged symbols reuse embeddings.
 - Agent-neutral: use the CLI, JSON, or MCP from the agent you already run.
 - Token-budgeted: `query` returns a working set sized for the context window you choose.
-- Multi-language: Python, TypeScript/TSX, JavaScript/JSX, Rust, Go, and Java.
+- Multi-language: Python, TypeScript/TSX, JavaScript/JSX, Rust, Go, Java, Ruby, PHP, C, and C++.
 
 ## Install
 
@@ -84,6 +84,9 @@ oxide status                        # check freshness and provider compatibility
 oxide watch                         # update the index as files change
 oxide review --diff HEAD~1          # collect context for a Git diff
 oxide install                       # connect supported coding agents over MCP
+oxide query "fix token refresh" --git       # also weigh the current diff's changed symbols
+oxide query "fix token refresh" --lsp       # also pull exact references/diagnostics from a running language server (Python/ty today)
+oxide lsp install ty                        # install the optional LSP server --lsp uses
 ```
 
 `query` is for a question or coding task. `search` is for an identifier or
@@ -134,6 +137,41 @@ Blast radius is built on the same precomputed structural relations the rest of
 retrieval uses, which are matched on bare names without type resolution. Treat
 a member as a lead worth reading, not as proof of impact.
 
+## Git-aware context
+
+`--git` adds evidence from the current diff and recent history: symbols
+touched by uncommitted changes, recently-committed symbols, and files that
+tend to change together. It's opt-in — with the flag absent, output is
+byte-identical to a build without the feature.
+
+```bash
+oxide query "fix token refresh" --git
+```
+
+Known limitations: untracked files are excluded (git only sees what's been
+`git add`ed), a pure rename with no content change produces no diff hunk
+and so is invisible to this evidence, and co-change is a heuristic, not a
+guarantee of relatedness. Git-enabled retrieval quality has not been
+validated by any agent-outcome benchmark — only correctness/plumbing tests
+exist today.
+
+## LSP semantic enrichment
+
+`--lsp` adds evidence from a real running language server: exact references,
+call hierarchy, and diagnostics, instead of OXIDE's own name-based
+heuristics. It's opt-in and Python/`ty`-only today — install the server
+with `oxide lsp install ty`. With the flag absent, output is byte-identical
+to a build without the feature.
+
+```bash
+oxide lsp install ty
+oxide query "fix token refresh" --lsp
+```
+
+Neither `--git` nor `--lsp` is claimed to improve agent-task outcomes — no
+agent-level benchmark exists for either; both are evaluated only for
+correctness and determinism.
+
 ## Supported languages
 
 | Language | Indexed definitions |
@@ -144,6 +182,10 @@ a member as a lead worth reading, not as proof of impact.
 | Rust | modules, structs, enums, traits, impls, functions, methods |
 | Go | packages, structs, interfaces, functions, methods, constants |
 | Java | classes, interfaces, enums, records, annotation types, methods, constructors |
+| Ruby | modules, classes, methods, functions, constants |
+| PHP | classes, interfaces, traits, enums, namespaces, methods, functions, constants |
+| C | functions, structs, unions, enums, typedefs, constants |
+| C++ | classes, structs, enums, namespaces, functions |
 
 Java method and constructor names carry a normalized parameter-type list
 (`Store.get(String,String)`), so overloads stay distinct symbols instead of
@@ -348,6 +390,15 @@ telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
 even then it sends a panic's stack trace and platform details with no
 personal identifiers. [`TELEMETRY.md`](TELEMETRY.md) spells out exactly what
 is and is not collected and how to verify it on the wire.
+
+### Remote embedding providers
+
+OXIDE also supports Voyage AI, Jina AI, and any OpenAI-compatible remote
+embedding endpoint as an **explicit, consent-gated opt-in** (`oxide setup`).
+Unlike the local/offline paths above, a configured remote provider sends
+each symbol's text (never a whole file) to that provider's API over the
+network — this is the one way OXIDE's default "your code never leaves the
+machine" guarantee changes, and only if you deliberately configure it.
 
 ## Installation details
 

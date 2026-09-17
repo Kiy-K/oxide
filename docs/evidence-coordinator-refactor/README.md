@@ -31,6 +31,10 @@ complete — see the bottom of this file.
 
 ## Duplicate evidence across sources
 
-(Added once the coordinator lands — see the design spec's evidence-contract
-section for why score-summing across sources is a property of the merge
-step generally, not specific to any one evidence source.)
+When the same symbol is surfaced by more than one evidence source in the
+same call, `context.rs`'s `order_note` sums their scores rather than taking
+the max — a property of the merge step itself, not specific to any one
+source. Applied to git-vs-structural before this refactor and applies
+identically to git/LSP/structural/blast-radius after it; not a regression
+introduced here, documented because no single doc stated it generally
+before.
