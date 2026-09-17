@@ -104,11 +104,10 @@
       "language": "python",
       "start_line": 22,
       "end_line": 34,
-      "score": 0.023898566,
+      "score": 0.015135759,
       "reasons": [
         "ast-grep-caller←RetryPolicy.should_retry",
-        "lsp-caller←RetryPolicy.should_retry",
-        "lsp-reference←RetryPolicy.should_retry"
+        "lsp-caller←RetryPolicy.should_retry"
       ],
       "snippet": "    def fetch(self, path: str) -> bytes:\n        \"\"\"Fetch `path` and return the raw body, retrying failed requests.\"\"\"\n        url = f\"{self.base_url}/{path.lstrip('/')}\"\n        attempt = 0\n        while True:\n            try:\n                with urllib.request.urlopen(url, timeout=5.0) as response:\n                    return response.read()\n            except (urllib.error.HTTPError, urllib.error.URLError) as err:\n                attempt += 1\n                if not self.policy.should_retry(attempt, err):\n                    raise TooManyAttemptsError(attempt) from err\n                self.policy.wait(attempt)",
       "role": "dependency",

@@ -108,6 +108,61 @@ wasn't done. `tests/evidence_coordinator_compat.rs` and
 item-id sets rather than byte-identical JSON for any LSP-touched
 condition, documented in both files' module docs.
 
+## Hardening pass (post-freeze-review) performance recapture
+
+The `after_*` captures above predate hardening-pass items #1-#4 (commits
+`e137846`..`d1bbe00`), which changed real LSP wire behavior — item #1
+specifically adds more `ensure_open` calls per query (resyncing the whole
+open-document set, plus opening every `scope_files` entry, not just the
+current seed's own file). Reusing the old captures would have been
+stale, not evidence; re-ran the same matrix at the post-hardening commit
+instead (`after_*_prehardening.{json,txt}` preserve the pre-hardening
+numbers for comparison; `after_*.{json,txt}` are the current ones).
+
+| Condition | Pre-hardening wall time | Post-hardening wall time | Pre-hardening RSS | Post-hardening RSS |
+|---|---:|---:|---:|---:|
+| `--lsp` | ~0.13s | ~0.08s | 64.6 MB | 50.1 MB |
+| `--git --lsp` | ~0.12s | ~0.09s | 62.5 MB | 52.7 MB |
+
+Both wall time and RSS moved *down* slightly, not up as the extra
+`ensure_open` traffic from item #1 would predict on its own. Reported as
+measured, not adjusted to match the prediction: this fixture's `--lsp`
+numbers have already been shown (see `ty`'s own response nondeterminism,
+below) to vary by a similar magnitude between two runs of the *identical*
+binary with *no* code change in between, so a same-direction, similar-
+magnitude move here is consistent with ordinary single-run noise on a
+shared, non-idle machine, not with a confirmed net effect either way.
+`--lsp`'s wire-traffic increase from item #1 is real (more `didOpen`/
+`didChange` calls per query against this fixture's small file count) but
+too small relative to this fixture's own run-to-run noise floor to show
+up cleanly in a single-run wall-clock/RSS capture.
+
+The controlled delay-hook concurrency probe was re-run against the
+post-hardening binary: injecting 200ms into both `git_io` and `lsp_io`
+for the same `--git --lsp` query produced **~300ms** elapsed, against an
+~88ms undelayed baseline on this run — `max(200, 200) + baseline
+overhead (~88ms) ≈ 288ms`, matching closely; `sum(200, 200) + baseline
+(~88ms) = 488ms` does not. The concurrency finding holds after the
+hardening pass, consistent with the pre-hardening ~230ms measurement
+(commit `73ffae8`) under the same method.
+
+Not a claim this report makes: that "concurrent" is free. Hardening item
+#2 holds a per-root `Mutex` guard across `build_context_with`'s full
+span, including its retrieval-search phase, for the LSP-cache-enabled
+MCP path — the six-way concurrency regression test
+(`lsp_process_cache_concurrency.rs`) measured 6 serialized same-root
+calls completing in ~24ms total (a ~20ms single-call baseline on that
+run), which is fast because each individual call is fast on this
+fixture, not because serialization has no cost. Contention cost scales
+with query cost, not with the number of waiting callers; a slower query
+under this same lock would serialize its waiters for that query's full
+duration, including retrieval search — see item #2's commit message for
+why that trade-off wasn't narrowed further in this pass. Separately,
+`max_blocking_threads(4)` was not observed to saturate: the same
+6-concurrent-caller test (which exceeds the pool's size) completed with
+no stalls or timeouts, evidence against saturation at this scale, though
+not a dedicated saturation benchmark.
+
 ## Duplicate evidence across sources
 
 When the same symbol is surfaced by more than one evidence source in the

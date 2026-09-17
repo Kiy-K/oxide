@@ -182,8 +182,58 @@
   ],
   "git": {
     "range": "HEAD",
-    "changed_files": [],
+    "changed_files": [
+      "docs/evidence-coordinator-refactor/after_base_time.txt",
+      "docs/evidence-coordinator-refactor/after_git.json",
+      "docs/evidence-coordinator-refactor/after_git_lsp.json",
+      "docs/evidence-coordinator-refactor/after_git_lsp_time.txt",
+      "docs/evidence-coordinator-refactor/after_git_time.txt",
+      "docs/evidence-coordinator-refactor/after_lsp.json",
+      "docs/evidence-coordinator-refactor/after_lsp_time.txt"
+    ],
     "recent_commits": [
+      {
+        "sha": "692121513778745bf1138c5d0658130a046c9d9b",
+        "short_sha": "6921215",
+        "message": "docs: document git partial-failure/empty-history ambiguity as a known limitation",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T11:36:51Z"
+      },
+      {
+        "sha": "d1bbe00a961364092ab0e0ed8af81181330d8b25",
+        "short_sha": "d1bbe00",
+        "message": "harden: make the compatibility gate test 5 genuinely distinct conditions, not 3 fixtures pinning 1",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T11:35:29Z"
+      },
+      {
+        "sha": "e13784682f13d601f0c1d67d98dedb0e2665d612",
+        "short_sha": "e137846",
+        "message": "harden: fix cross-file LSP staleness -- resync the open-document set, not just the seed's own file",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T11:27:32Z"
+      },
+      {
+        "sha": "4ef747809e87952a7d301e9a1772a4ba20ba1a6b",
+        "short_sha": "4ef7478",
+        "message": "harden: exception-safe LSP client hand-back + serialize same-root ProcessCache access",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T11:14:48Z"
+      },
+      {
+        "sha": "a5473c2c6209c6700ea8cd15243ff53a3e3fb5b0",
+        "short_sha": "a5473c2",
+        "message": "fix: Codex review findings -- diagnostics field dropped, LSP shutdown leak, vacuous staleness test",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T10:54:55Z"
+      },
+      {
+        "sha": "73ffae8bf08ba67a4c8221b0190fbd5ad0b21a7e",
+        "short_sha": "73ffae8",
+        "message": "bench: post-refactor evidence-collection performance comparison",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T10:36:16Z"
+      },
       {
         "sha": "5e1542cdea1a9a3c24419c459ded399abb3eb4cd",
         "short_sha": "5e1542c",
@@ -211,48 +261,6 @@
         "message": "docs: fix language count, document --git/--lsp/remote providers, close stale LSP lifetime claim",
         "author": "Kiy-K",
         "committed_at": "2026-09-17T09:56:03Z"
-      },
-      {
-        "sha": "85a07830e6dc3d91204e78ffb82deedf20601af9",
-        "short_sha": "85a0783",
-        "message": "ci: add required lsp-integration job — installs ty via oxide lsp install, runs real-server tests",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-17T09:52:28Z"
-      },
-      {
-        "sha": "41051ee234500495a2f8e997509c916f7f98091d",
-        "short_sha": "41051ee",
-        "message": "test: deterministic capability-fallback coverage via a fake LSP server fixture",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-17T09:51:32Z"
-      },
-      {
-        "sha": "5dbb52f7948b64bf2e73bfa8f33ee5087d536a3d",
-        "short_sha": "5dbb52f",
-        "message": "feat: oxide lsp install <name> -- ty-only registry, clear error for unsupported servers",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-17T09:45:39Z"
-      },
-      {
-        "sha": "3d6daf693291f9f3f351da26eac7052d8862286c",
-        "short_sha": "3d6daf6",
-        "message": "fix: broaden compat-gate normalization to the whole volatile git subtree",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-17T09:45:26Z"
-      },
-      {
-        "sha": "f0f8c87a2bee7f1aec74bf46949599a1110ac704",
-        "short_sha": "f0f8c87",
-        "message": "test: structural compatibility gates for default/git/lsp query paths",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-16T14:10:42Z"
-      },
-      {
-        "sha": "2a9bcee757225915bab6f812538831f4664b7b53",
-        "short_sha": "2a9bcee",
-        "message": "refactor: service.rs transfers LSP session ownership into the coordinator and restores it after",
-        "author": "Kiy-K",
-        "committed_at": "2026-09-16T14:06:56Z"
       }
     ],
     "co_change": []

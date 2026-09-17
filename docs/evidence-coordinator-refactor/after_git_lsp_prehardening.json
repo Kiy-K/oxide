@@ -185,5 +185,82 @@
       "id": "tests/test_retry.py#test_backoff_delay_increases_with_attempts",
       "why": "beyond test cap"
     }
-  ]
+  ],
+  "git": {
+    "range": "HEAD",
+    "changed_files": [],
+    "recent_commits": [
+      {
+        "sha": "5e1542cdea1a9a3c24419c459ded399abb3eb4cd",
+        "short_sha": "5e1542c",
+        "message": "harden: close self-spawned/disabled LSP clients explicitly instead of relying on Drop's kill-on-drop safety net",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T10:32:12Z"
+      },
+      {
+        "sha": "9ce7a4038e047a368a5c67f2b9cd48e20970bd3d",
+        "short_sha": "9ce7a40",
+        "message": "fix: CLI --lsp silently produced zero LSP evidence since the coordinator refactor",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T10:26:23Z"
+      },
+      {
+        "sha": "93a49ea16aa747641e855f129b29500e2ca08c7c",
+        "short_sha": "93a49ea",
+        "message": "fix: determinism test was vacuous — no cfg(test) delay hook in the real binary, no --git/--lsp flags",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T10:10:29Z"
+      },
+      {
+        "sha": "fd8fe50828f640eaf58432cb389829acd904ee30",
+        "short_sha": "fd8fe50",
+        "message": "docs: fix language count, document --git/--lsp/remote providers, close stale LSP lifetime claim",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T09:56:03Z"
+      },
+      {
+        "sha": "85a07830e6dc3d91204e78ffb82deedf20601af9",
+        "short_sha": "85a0783",
+        "message": "ci: add required lsp-integration job — installs ty via oxide lsp install, runs real-server tests",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T09:52:28Z"
+      },
+      {
+        "sha": "41051ee234500495a2f8e997509c916f7f98091d",
+        "short_sha": "41051ee",
+        "message": "test: deterministic capability-fallback coverage via a fake LSP server fixture",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T09:51:32Z"
+      },
+      {
+        "sha": "5dbb52f7948b64bf2e73bfa8f33ee5087d536a3d",
+        "short_sha": "5dbb52f",
+        "message": "feat: oxide lsp install <name> -- ty-only registry, clear error for unsupported servers",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T09:45:39Z"
+      },
+      {
+        "sha": "3d6daf693291f9f3f351da26eac7052d8862286c",
+        "short_sha": "3d6daf6",
+        "message": "fix: broaden compat-gate normalization to the whole volatile git subtree",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-17T09:45:26Z"
+      },
+      {
+        "sha": "f0f8c87a2bee7f1aec74bf46949599a1110ac704",
+        "short_sha": "f0f8c87",
+        "message": "test: structural compatibility gates for default/git/lsp query paths",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-16T14:10:42Z"
+      },
+      {
+        "sha": "2a9bcee757225915bab6f812538831f4664b7b53",
+        "short_sha": "2a9bcee",
+        "message": "refactor: service.rs transfers LSP session ownership into the coordinator and restores it after",
+        "author": "Kiy-K",
+        "committed_at": "2026-09-16T14:06:56Z"
+      }
+    ],
+    "co_change": []
+  }
 }
