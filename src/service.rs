@@ -304,6 +304,14 @@ pub struct ContextResult {
     /// `context.rs::ContextPack::git`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub git: Option<crate::gitctx::GitEvidence>,
+    /// Evidence sources that degraded during this call — see
+    /// `context.rs::ContextPack::diagnostics`. Found missing here by
+    /// Codex review: `ContextPack` carried this field all along, but
+    /// `context()` dropped it when building `ContextResult`, silently
+    /// undoing the whole point of surfacing degraded-source visibility in
+    /// CLI/MCP JSON output instead of failing silently.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub diagnostics: Vec<String>,
 }
 
 pub struct RepositoryService {
@@ -351,6 +359,27 @@ static PROCESS_CACHE: OnceLock<ProcessCache> = OnceLock::new();
 
 fn process_cache() -> &'static ProcessCache {
     PROCESS_CACHE.get_or_init(ProcessCache::default)
+}
+
+/// Gracefully closes every LSP session this process has cached (the
+/// shutdown/exit handshake, not `Transport`'s kill-on-drop `Drop` fallback).
+/// `PROCESS_CACHE` is a `static`, and Rust never runs `Drop` for statics at
+/// normal process exit — without this, every session an `oxide mcp` process
+/// ever cached would leak a `ty` subprocess on ordinary shutdown (found by
+/// Codex review). Call once, from `oxide mcp`'s shutdown path, after the MCP
+/// serve loop returns. A no-op if the cache was never initialized (nothing
+/// used `--lsp`+the cache this run) or holds no live sessions.
+pub fn shutdown_process_cache() {
+    let Some(cache) = PROCESS_CACHE.get() else {
+        return;
+    };
+    let mut clients = cache.lsp_clients.lock().unwrap_or_else(|e| e.into_inner());
+    for (_, slot) in clients.drain() {
+        let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(client) = guard.take() {
+            client.close();
+        }
+    }
 }
 
 /// `$OXIDE_LSP_MAX_CACHED_SESSIONS` override — same precedence convention as
@@ -965,6 +994,7 @@ impl RepositoryService {
             omitted: pack.omitted,
             embedder: provider.name().to_string(),
             git: pack.git,
+            diagnostics: pack.diagnostics,
         })
     }
     pub fn stats(&self) -> Result<IndexStats, ServiceError> {

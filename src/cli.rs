@@ -5,8 +5,8 @@ use crate::index::IndexOptions;
 use crate::retrieval::read_snippet;
 use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{
-    ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest, ServiceError,
-    StatusResult,
+    shutdown_process_cache, ErrorAction, Evidence, IndexResult, RepositoryService, SearchRequest,
+    ServiceError, StatusResult,
 };
 use crate::storage::SqliteStore;
 use crate::term::{duration, thousands, ColorChoice, Paint, StderrProgress};
@@ -1147,9 +1147,14 @@ fn run_mcp() -> Result<(), CliError> {
         .enable_all()
         .build()
         .map_err(|e| CliError::generic(e, false))?;
-    runtime
-        .block_on(crate::mcp::serve())
-        .map_err(|e| CliError::generic(e, false))
+    let result = runtime.block_on(crate::mcp::serve());
+    // Every cached LSP session must be closed here: PROCESS_CACHE is a
+    // static, and Rust never runs Drop for statics at normal process exit
+    // — without this, a session this process ever cached would leak a `ty`
+    // subprocess on ordinary `oxide mcp` shutdown (found by Codex review).
+    // Best-effort on both the success and error path.
+    shutdown_process_cache();
+    result.map_err(|e| CliError::generic(e, false))
 }
 
 fn cmd_stats(path: Option<&str>) -> Result<(), CliError> {

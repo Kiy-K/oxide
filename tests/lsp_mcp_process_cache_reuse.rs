@@ -108,6 +108,18 @@ fn second_lsp_call_reuses_the_first_call_s_session_and_is_faster() {
 /// `didChange` (the Task 2 fix) rather than serving its first-call snapshot.
 /// `second_lsp_call_reuses_the_first_call_s_session_and_is_faster` above
 /// proves reuse by speed; this proves it by content.
+///
+/// The renamed symbol and its caller are deliberately in the *same* file.
+/// `enrich_seeds` only `ensure_open`s the query's own seed file — a caller
+/// living in a second, never-`ensure_open`'d file depends on `ty`'s own
+/// workspace-wide view of that second file being fresh, which is a real,
+/// separate, and unaddressed gap found empirically while writing this test
+/// (a two-file version of this same scenario produces zero `lsp-*` evidence
+/// for the renamed symbol on the second call, even though a *fresh* spawn
+/// against the identical renamed content produces `lsp-caller`/
+/// `lsp-reference` correctly — see this commit's message). That gap is
+/// orthogonal to what this test asserts and to the Task 2 fix `ensure_open`
+/// implements; it is documented, not fixed, here.
 #[test]
 fn edit_between_two_service_context_calls_is_visible_through_the_ownership_round_trip() {
     if !ty_available() {
@@ -118,10 +130,9 @@ fn edit_between_two_service_context_calls_is_visible_through_the_ownership_round
     pin_offline_embedder();
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path().canonicalize().unwrap();
-    write(&root.join("target.py"), "def old_name():\n    return 1\n");
     write(
-        &root.join("caller.py"),
-        "import target\n\n\ndef caller():\n    return target.old_name()\n",
+        &root.join("module.py"),
+        "def old_name():\n    return 1\n\n\ndef caller():\n    return old_name()\n",
     );
     {
         let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
@@ -154,10 +165,9 @@ fn edit_between_two_service_context_calls_is_visible_through_the_ownership_round
     // Edit the file the cached session already opened — same session
     // reused across calls (no re-discover/re-spawn), matching the MCP
     // ProcessCache's real usage pattern.
-    write(&root.join("target.py"), "def new_name():\n    return 1\n");
     write(
-        &root.join("caller.py"),
-        "import target\n\n\ndef caller():\n    return target.new_name()\n",
+        &root.join("module.py"),
+        "def new_name():\n    return 1\n\n\ndef caller():\n    return new_name()\n",
     );
     {
         let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
@@ -182,5 +192,27 @@ fn edit_between_two_service_context_calls_is_visible_through_the_ownership_round
         second_has_new,
         "second call must see the post-edit content (new_name) via the reused, \
          ownership-round-tripped session, not stale pre-edit text: {second:?}"
+    );
+
+    // The check above is satisfiable by lexical/semantic/structural
+    // retrieval alone (the index was rebuilt with the new content) and
+    // would pass even if the cached LspClient never resynced via
+    // didChange — found by Codex review. Require an lsp-* reason that
+    // specifically names new_name: ty's own live analysis can only
+    // produce that if ensure_open actually resent the edited content: a
+    // client still holding old_name's stale document has no symbol named
+    // new_name to find references/callers for at all.
+    let second_lsp_reason_names_new = second.items.iter().any(|i| {
+        i.evidence
+            .reasons
+            .iter()
+            .any(|r| r.starts_with("lsp-") && r.contains("new_name"))
+    });
+    assert!(
+        second_lsp_reason_names_new,
+        "second call must carry an lsp-* reason naming new_name specifically -- this is only \
+         possible if ensure_open's didChange resync actually reached ty's live document \
+         (a stale old_name document would surface no lsp-* evidence for new_name at all): \
+         {second:?}"
     );
 }
