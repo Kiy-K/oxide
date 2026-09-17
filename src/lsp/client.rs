@@ -133,8 +133,20 @@ impl LspClient {
         init_timeout: Duration,
         request_timeout: Duration,
     ) -> Result<Self> {
-        let mut transport = Transport::spawn(program, &["server"], root)
-            .with_context(|| format!("spawning `{program} server`"))?;
+        Self::spawn_raw(program, &["server"], root, init_timeout, request_timeout)
+    }
+
+    /// As [`Self::spawn`], with an explicit argument list — used by tests
+    /// pointing at something other than `<program> server`.
+    pub fn spawn_raw(
+        program: &str,
+        args: &[&str],
+        root: &Path,
+        init_timeout: Duration,
+        request_timeout: Duration,
+    ) -> Result<Self> {
+        let mut transport = Transport::spawn(program, args, root)
+            .with_context(|| format!("spawning `{program} {}`", args.join(" ")))?;
         let root_uri = format!("file://{}", root.display());
         let init_params = serde_json::json!({
             "processId": std::process::id(),
