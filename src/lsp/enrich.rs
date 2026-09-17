@@ -105,6 +105,21 @@ pub fn enrich_seeds<'a>(
         by_file.entry(s.file.as_str()).or_default().push(s);
     }
 
+    // Freshen the server's view of every file this session already knows
+    // about (issue found in the hardening pass: didChange only covered the
+    // current seed's own file, so a caller/reference target opened for an
+    // earlier seed could go stale after an on-disk edit with nothing to
+    // ever tell the server). Also open every file in this query's own
+    // bounded scope — the caller/reference files most likely to matter
+    // here — so a first-time cross-file reference isn't served from a
+    // cold, never-opened view either. Both calls are `ensure_open`'s
+    // existing content-hash no-op for anything already fresh; bounded by
+    // `LSP_MAX_OPEN_DOCUMENTS` either way, never a repo-wide scan.
+    client.resync_open_documents();
+    for file in scope_files {
+        let _ = client.ensure_open(file);
+    }
+
     let mut out: Vec<LspEvidence<'a>> = Vec::new();
     let mut diagnosed_files: HashSet<&str> = HashSet::new();
 

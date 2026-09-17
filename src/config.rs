@@ -178,3 +178,12 @@ pub(crate) const LSP_INIT_TIMEOUT_MS: u64 = 10_000;
 /// unlike other MCP caches, so this needs an explicit bound. Overridden via
 /// `$OXIDE_LSP_MAX_CACHED_SESSIONS`; unset is this default.
 pub(crate) const LSP_MAX_CACHED_SESSIONS: usize = 4;
+/// Cap on documents one `LspClient` session keeps `didOpen`'d/tracked for
+/// resync at once. `ensure_open`/`resync_open_documents` are what keep a
+/// cached session's view of a file fresh — without a bound, a long-lived
+/// MCP session querying many different areas of a repo over time would
+/// accumulate an ever-growing open-document set, unbounded filesystem work
+/// per query. Over the cap, the least-recently-touched document is
+/// `didClose`'d before a new one opens. Overridden via
+/// `$OXIDE_LSP_MAX_OPEN_DOCUMENTS`; unset is this default.
+pub(crate) const LSP_MAX_OPEN_DOCUMENTS: usize = 20;

@@ -11,13 +11,13 @@
 //! and case conversion exactly right actually matters.
 
 use super::transport::{Transport, TransportError};
+use crate::config::LSP_MAX_OPEN_DOCUMENTS;
 use anyhow::{Context, Result};
 use lsp_types::{
     CallHierarchyIncomingCall, CallHierarchyItem, Diagnostic, DocumentDiagnosticReport,
     DocumentDiagnosticReportResult, GotoDefinitionResponse, Location, Position,
     PositionEncodingKind, ServerCapabilities, Uri,
 };
-use std::collections::HashMap;
 use std::path::Path;
 use std::str::FromStr;
 use std::time::Duration;
@@ -32,12 +32,13 @@ pub struct LspClient {
     transport: Transport,
     capabilities: ServerCapabilities,
     root: std::path::PathBuf,
-    /// Per-open-document state: content hash last sent and the
-    /// didOpen/didChange version, so a file edited between two calls
-    /// against a cached session (see `ProcessCache`) gets a
-    /// `textDocument/didChange` with fresh content instead of silently
-    /// serving the server's stale copy — see `ensure_open`.
-    opened: HashMap<String, (u64, i32)>,
+    /// Per-open-document state, MRU-ordered (least-recently-touched first,
+    /// most-recently-touched last): `(rel_path, content hash last sent,
+    /// didOpen/didChange version)`. A `Vec`, not a map, because the bounded
+    /// size (`LSP_MAX_OPEN_DOCUMENTS`) makes a linear scan cheaper than
+    /// maintaining a separate LRU order alongside a `HashMap` — see
+    /// `ensure_open`/`evict_if_over_cap`.
+    opened: Vec<(String, u64, i32)>,
     timeout: Duration,
 }
 
@@ -116,6 +117,16 @@ fn file_uri(root: &Path, rel_path: &str) -> Result<Uri> {
     let abs = root.join(rel_path);
     let s = format!("file://{}", percent_encode_path(&abs.to_string_lossy()));
     Uri::from_str(&s).map_err(|e| anyhow::anyhow!("invalid file uri {s}: {e:?}"))
+}
+
+/// `$OXIDE_LSP_MAX_OPEN_DOCUMENTS` override — same precedence convention as
+/// `service.rs::resolve_lsp_max_cached_sessions`: any parse failure,
+/// including unset, falls back to the shipped default.
+fn resolve_lsp_max_open_documents() -> usize {
+    std::env::var("OXIDE_LSP_MAX_OPEN_DOCUMENTS")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .unwrap_or(LSP_MAX_OPEN_DOCUMENTS)
 }
 
 impl LspClient {
@@ -204,7 +215,7 @@ impl LspClient {
             transport,
             capabilities,
             root: root.to_path_buf(),
-            opened: HashMap::new(),
+            opened: Vec::new(),
             timeout: request_timeout,
         })
     }
@@ -227,39 +238,89 @@ impl LspClient {
     /// `didOpen` without an intervening `didClose` is not permitted).
     /// Detecting "changed" by content hash rather than mtime means an
     /// external touch with no byte change never triggers a needless resync.
+    ///
+    /// Every call — `Open`, `Change`, or `Unchanged` alike — counts as a
+    /// "touch": the document moves to the most-recently-used end of
+    /// `opened`, so `evict_if_over_cap`'s `didClose` always drops the
+    /// coldest entry, not an arbitrary one.
     pub fn ensure_open(&mut self, rel_path: &str) -> Result<Uri> {
         let uri = file_uri(&self.root, rel_path)?;
-        let key = uri.as_str().to_string();
         let text = std::fs::read_to_string(self.root.join(rel_path))
             .with_context(|| format!("reading {rel_path} to open in lsp"))?;
         let hash = content_hash(&text);
-        match opened_transition(self.opened.get(&key).copied(), hash) {
+        let existing = self
+            .opened
+            .iter()
+            .find(|(p, _, _)| p == rel_path)
+            .map(|(_, h, v)| (*h, *v));
+        let transition = opened_transition(existing, hash);
+        let version = match transition {
             OpenTransition::Open => {
+                self.evict_if_over_cap();
                 self.transport
                     .notify(
                         "textDocument/didOpen",
                         serde_json::json!({
-                            "textDocument": {"uri": key, "languageId": "python", "version": 1, "text": text}
+                            "textDocument": {"uri": uri.as_str(), "languageId": "python", "version": 1, "text": text}
                         }),
                     )
                     .map_err(transport_err)?;
-                self.opened.insert(key, (hash, 1));
+                1
             }
             OpenTransition::Change { version } => {
                 self.transport
                     .notify(
                         "textDocument/didChange",
                         serde_json::json!({
-                            "textDocument": {"uri": key, "version": version},
+                            "textDocument": {"uri": uri.as_str(), "version": version},
                             "contentChanges": [{"text": text}],
                         }),
                     )
                     .map_err(transport_err)?;
-                self.opened.insert(key, (hash, version));
+                version
             }
-            OpenTransition::Unchanged => {} // already open, content unchanged: no-op
-        }
+            // already open, content unchanged: no wire traffic, but still a
+            // touch (see doc comment).
+            OpenTransition::Unchanged => existing.map(|(_, v)| v).unwrap_or(1),
+        };
+        self.opened.retain(|(p, _, _)| p != rel_path);
+        self.opened.push((rel_path.to_string(), hash, version));
         Ok(uri)
+    }
+
+    /// `didClose`s the least-recently-touched open document if adding one
+    /// more would exceed `$OXIDE_LSP_MAX_OPEN_DOCUMENTS`/
+    /// `LSP_MAX_OPEN_DOCUMENTS`. `opened[0]` is always the coldest entry —
+    /// `ensure_open` moves every touched document to the end.
+    fn evict_if_over_cap(&mut self) {
+        let max = resolve_lsp_max_open_documents();
+        while self.opened.len() >= max {
+            let (rel_path, _, _) = self.opened.remove(0);
+            if let Ok(uri) = file_uri(&self.root, &rel_path) {
+                let _ = self.transport.notify(
+                    "textDocument/didClose",
+                    serde_json::json!({"textDocument": {"uri": uri.as_str()}}),
+                );
+            }
+        }
+    }
+
+    /// Re-synchronizes every document this session has ever opened — sends
+    /// `textDocument/didChange` for any whose on-disk content has changed
+    /// since the server last saw it, a wire no-op for the rest (per
+    /// `opened_transition`). Call before issuing any LSP request for a
+    /// query: `enrich_seeds` only `ensure_open`s the *current* seed's own
+    /// file, so without this, a file this session opened for an *earlier*
+    /// seed — e.g. a caller/reference target from a prior query — can stay
+    /// stale in the server's view even after an on-disk edit, since nothing
+    /// else ever tells the server about it. Bounded by construction: the
+    /// set resynced is exactly this session's own open-document set
+    /// (≤ `LSP_MAX_OPEN_DOCUMENTS`), never a repo-wide scan.
+    pub fn resync_open_documents(&mut self) {
+        let rel_paths: Vec<String> = self.opened.iter().map(|(p, _, _)| p.clone()).collect();
+        for rel_path in rel_paths {
+            let _ = self.ensure_open(&rel_path);
+        }
     }
 
     fn text_document_position(uri: &Uri, pos: Position) -> serde_json::Value {
