@@ -1,0 +1,161 @@
+{
+  "dataset_revision": "Contextbench/ContextBench@c2855792b006af41c67202d33883fb9d46362853",
+  "oxide_commit": "65cf6fb40dcd16ae87e8ebe851889c0c06507849",
+  "tasks": [
+    {
+      "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__2fb50735",
+      "repo": "darkreader/darkreader",
+      "repo_url": "https://github.com/darkreader/darkreader.git",
+      "language": "typescript",
+      "base_commit": "991883df4d5910851130e3dc0e21fcbce604ea7d",
+      "gold_files": [
+        "src/generators/utils/parse.ts"
+      ],
+      "query": "Fix: parser should ignore Base64 padding within CSS\n\nFixes #7238.",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70",
+      "repo": "darkreader/darkreader",
+      "repo_url": "https://github.com/darkreader/darkreader.git",
+      "language": "typescript",
+      "base_commit": "a787eb511f45159c8869d30e5a6ba1f91cb67709",
+      "gold_files": [
+        "package.json",
+        "src/generators/dynamic-theme.ts",
+        "src/generators/utils/parse.ts",
+        "src/utils/url.ts"
+      ],
+      "query": "Fix: ensure that first fix is generic fix\n\nFixes #6739.\r\n\r\nThis fixes regression introduced in commit\r\n2cf54561f7981f243d5d9fafd61e7f3cfd764f80.\r\nThis commit ensures that generic fix appears first in the list\r\nreturned by getSitesFixesFor().",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__2e76c8cd",
+      "repo": "pallets/flask",
+      "repo_url": "https://github.com/pallets/flask.git",
+      "language": "python",
+      "base_commit": "7ee9ceb71e868944a46e1ff00b506772a53a4f1d",
+      "gold_files": [
+        "src/flask/blueprints.py"
+      ],
+      "query": "Require a non-empty name for Blueprints\nThings do not work correctly if a Blueprint is given an empty name (e.g. #4944).\r\nIt would be helpful if a `ValueError` was raised when trying to do that.\n",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3a4062fe",
+      "repo": "tokio-rs/tokio",
+      "repo_url": "https://github.com/tokio-rs/tokio.git",
+      "language": "rust",
+      "base_commit": "43c224ff47e41628ca787d116080d69bd7030c3f",
+      "gold_files": [
+        "tokio/src/macros/select.rs"
+      ],
+      "query": "fix select macro to process 64 branches\n\nCloses #4501\r\n\r\n## Motivation\r\n\r\nFix the bug wherein select macro fails with input of 64 branches.\r\n\r\n## Solution\r\n\r\nFix the count macro to handle 64 branches. Before the fix, count macro will not expand when the input has 64 branches and will fail with compile error.",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__4aa8fc3e",
+      "repo": "tokio-rs/tokio",
+      "repo_url": "https://github.com/tokio-rs/tokio.git",
+      "language": "rust",
+      "base_commit": "a66802015043a2bd94b15d17c4131bc3431c8e14",
+      "gold_files": [
+        "tokio/src/runtime/time/mod.rs",
+        "tokio/src/time/clock.rs",
+        "tokio/src/time/mod.rs"
+      ],
+      "query": "Allow disabling time auto-advance behavior in tests\n\nCloses #4522. See that issue for a more extensive approach.\r\n\r\n## Motivation\r\n\r\nSome programs have background tests that use sleeping for timings while working with IO. Testing such programs with auto-advancing time is currently quite complicated, as it's not possilbe to time the IO correctly..\r\n\r\n## Solution\r\n\r\nThis PR adds a way to disable the auto-advance behavior, so that tests can directly manage time using `time::advance`. It's simply a boolean flag, which is checked when time would be auto-advanced otherwise.",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__7e1b8f0a",
+      "repo": "tokio-rs/tokio",
+      "repo_url": "https://github.com/tokio-rs/tokio.git",
+      "language": "rust",
+      "base_commit": "fb7dec0e952d0d796b98650998c44a21d6775564",
+      "gold_files": [
+        ".github/workflows/ci.yml",
+        "Cargo.toml",
+        "tokio-macros/Cargo.toml",
+        "tokio-macros/src/lib.rs",
+        "tokio-stream/src/lib.rs",
+        "tokio-test/src/lib.rs",
+        "tokio-util/src/lib.rs",
+        "tokio/Cargo.toml",
+        "tokio/src/lib.rs"
+      ],
+      "query": "chore: use [lints] to address unexpected_cfgs lint\n\n<!--\r\nThank you for your Pull Request. Please provide a description above and review\r\nthe requirements below.\r\n\r\nBug fixes and new features should include tests.\r\n\r\nContributors guide: https://github.com/tokio-rs/tokio/blob/master/CONTRIBUTING.md\r\n\r\nThe contributors guide includes instructions for running rustfmt and building the\r\ndocumentation, which requires special commands beyond `cargo fmt` and `cargo doc`.\r\n-->\r\n\r\n## Motivation\r\n\r\nCloses #6583\r\n\r\n\r\n## Solution\r\n\r\nThis uses `[lints.rust.unexpected_cfgs.check-cfg]` as suggested in #6583.\r\n\r\nThis also bumps nightly toolchain to the latest (nightly-2025-01-25) because the above config is not recognized in old nightly.\r\n\r\n```\r\nwarning: /home/runner/work/tokio/tokio/Cargo.toml: unused manifest key: workspace.lints.rust.unexpected_cfgs.check-cfg\r\n```",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__97604906",
+      "repo": "tokio-rs/tokio",
+      "repo_url": "https://github.com/tokio-rs/tokio.git",
+      "language": "rust",
+      "base_commit": "338e13b04baa3cf8db3feb1ba2266c0070a9efdf",
+      "gold_files": [
+        "tokio/src/runtime/builder.rs",
+        "tokio/src/runtime/config.rs",
+        "tokio/src/runtime/handle.rs",
+        "tokio/src/runtime/mod.rs",
+        "tokio/src/runtime/runtime.rs",
+        "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+        "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+        "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+        "tokio/src/runtime/task/list.rs",
+        "tokio/src/runtime/task/mod.rs",
+        "tokio/src/task/spawn.rs"
+      ],
+      "query": "rt: implement initial set of task hooks\n\nThis change implements two hooks for per-task actions, one which is invoked on task spawn, and one which is invoked during task termination.\r\n\r\nThese hooks initially are only supplied with the task ID (on unstable only), but more information can be added in the future, as the struct used to supply parameters is opaque.\r\n\r\nFixes #3181.",
+      "oracle": "human_contextbench"
+    },
+    {
+      "id": "gin_4a3eb31f",
+      "repo": "gin-gonic/gin",
+      "repo_url": "https://github.com/gin-gonic/gin.git",
+      "language": "go",
+      "base_commit": "293ad7edebb3ae30369288bd6416ca0d78474727",
+      "gold_files": [
+        "recovery.go"
+      ],
+      "query": "Record recovered panics in c.Errors. The default recovery handler should attach the recovered panic as a private error.",
+      "oracle": "commit_derived"
+    },
+    {
+      "id": "gin_293ad7ed",
+      "repo": "gin-gonic/gin",
+      "repo_url": "https://github.com/gin-gonic/gin.git",
+      "language": "go",
+      "base_commit": "2e4d4f38962a6f15ae496d59b294f307eef95429",
+      "gold_files": [
+        "context.go"
+      ],
+      "query": "Context.Copy should preserve Errors and Accepted fields so goroutines observe existing errors and content-negotiation state.",
+      "oracle": "commit_derived"
+    },
+    {
+      "id": "gin_d75fcd4c",
+      "repo": "gin-gonic/gin",
+      "repo_url": "https://github.com/gin-gonic/gin.git",
+      "language": "go",
+      "base_commit": "8d0468f72897652485933b845253386f9147a8bf",
+      "gold_files": [
+        "response_writer.go"
+      ],
+      "query": "Hijack and CloseNotify should not panic when the wrapped HTTP response writer does not implement those interfaces.",
+      "oracle": "commit_derived"
+    },
+    {
+      "id": "gin_b917b14f",
+      "repo": "gin-gonic/gin",
+      "repo_url": "https://github.com/gin-gonic/gin.git",
+      "language": "go",
+      "base_commit": "fad706f1216e6d12bdd51d28d5a40ec27e6c6453",
+      "gold_files": [
+        "binding/form_mapping.go"
+      ],
+      "query": "Binding an empty header value for time.Duration or Unix time should not return an error.",
+      "oracle": "commit_derived"
+    }
+  ]
+}

@@ -1,37 +1,63 @@
-<p align="center"><em>Project logo pending for v0.1</em></p>
+<p align="center">
+  <img src="logo.png" alt="OXIDE" width="140">
+</p>
 
-# OXIDE
+<h1 align="center">OXIDE</h1>
+<p align="center"><strong>Local-first Context Engine for Agents</strong></p>
 
-**OXIDE — a local Context Engine for coding agents.**
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#supported-languages">Languages</a> ·
+  <a href="#evidence">Evidence</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="LICENSE">License</a>
+</p>
 
-OXIDE indexes a repository once, updates only the code that changed, and gives
-coding agents a bounded set of relevant symbols for each task.
+---
+
+OXIDE indexes your codebase and gives coding agents a small, task-relevant
+set of definitions, callers, implementations, tests, and related code —
+instead of making them search the repository blindly. It runs entirely on
+your machine, updates incrementally as you edit, and speaks to any agent
+over the CLI, JSON, or MCP.
 
 > Maximize coding-agent utility per context token, not retrieval volume.
 
-- Local by default: source code and the index stay on your machine.
-- Incremental: unchanged files are not reparsed; unchanged symbols reuse embeddings.
-- Agent-neutral: use the CLI, JSON, or MCP from the agent you already run.
-- Token-budgeted: `query` returns a working set sized for the context window you choose.
-- Multi-language: Python, TypeScript/TSX, JavaScript/JSX, Rust, Go, Java, Ruby, PHP, C, and C++.
+- **Local-first** — source code and the index never leave your machine.
+- **Incremental** — unchanged files are not reparsed; unchanged symbols reuse embeddings.
+- **Agent-neutral** — CLI, `--json`, or MCP; use whatever your agent already speaks.
+- **Bounded, token-aware context** — `query` returns a working set sized to the budget you choose.
+- **Lexical + semantic + structural retrieval** — BM25 and embeddings fused, then expanded along real code relationships.
+- **Blast-radius evidence** — an optional, bounded answer to "what else does this touch?"
+- **Broad language support** — ten languages today, more on the way.
 
-## Install
+## Demo
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh
+```text
+$ oxide index
+
+◇ Scanning files... 547 files
+◇ Parsing source... 547/547
+◇ Indexing codebase... 547/547
+◇ Embedding symbols... 7,155/7,155
+◇ Finalizing... done
+
+✓ Indexed 547 files · 7,155 symbols in 5.7s
+  Done!
 ```
 
-## Quick start
-
-Run these commands from a repository:
+*(Real numbers from indexing [Tokio](https://github.com/tokio-rs/tokio) with
+the offline hashed embedder — see [Evidence](#evidence).)*
 
 ```bash
-oxide index
 oxide query "Where is authentication handled?"
-oxide install
+oxide search AuthService
+oxide search AuthService --blast-radius
 ```
 
-`oxide query` returns code for an agent to use. It does not generate an answer.
+`query` and `search` return real source code for an agent to read — they
+never call an LLM or generate an answer themselves:
 
 ```text
 $ oxide query "Where is retry behavior implemented?" --budget-tokens 800
@@ -52,49 +78,39 @@ oxidepy/retry.py
 ```
 
 Output is colored on a terminal and plain everywhere else (`--json`, pipes,
-`NO_COLOR`, `--color never`); every state is readable without color.
+`NO_COLOR`, `--color never`) — every state is readable without color. This
+example is reproducible from OXIDE's committed Python fixture with the
+offline hashed embedder.
 
-This example comes from OXIDE's committed Python fixture using the offline
-hashed embedder.
-
-## Why OXIDE exists
-
-Coding agents do better work when they see the right evidence: the definition
-being changed, its callers, the tests that constrain it, and enough surrounding
-code to understand the contract. More retrieved code is often worse. It spends
-tokens, dilutes the useful evidence, and leaves less room for reasoning and
-generation.
-
-OXIDE grew from that constraint. Most retrieval systems are evaluated on how
-much they can find. OXIDE is designed around how much useful code it can fit
-inside a fixed context budget.
-
-The result is a context-supply layer. OXIDE does not wrap an LLM, edit code, or
-choose an agent. It prepares a small, inspectable working set before the agent
-starts reading and editing.
-
-## What OXIDE does
+## Install
 
 ```bash
-oxide index                         # create or incrementally update the index
-oxide query "fix token refresh"     # build a token-budgeted working set
-oxide search RetryPolicy            # find ranked symbol matches
-oxide search RetryPolicy --blast-radius   # ... plus who would be affected
-oxide status                        # check freshness and provider compatibility
-oxide watch                         # update the index as files change
-oxide review --diff HEAD~1          # collect context for a Git diff
-oxide install                       # connect supported coding agents over MCP
-oxide query "fix token refresh" --git       # also weigh the current diff's changed symbols
+curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | sh
 ```
 
-`query` is for a question or coding task. `search` is for an identifier or
-expression. Both return source evidence; neither calls an LLM.
+The installer downloads a verified release binary for your platform. See
+[Development](#development--contributing) for build-from-source and
+version-pinned installs.
 
-Use `--json` for automation:
+## Quick start
+
+```bash
+oxide index                               # create or incrementally update the index
+oxide query "fix token refresh"           # build a token-budgeted working set
+oxide search RetryPolicy                  # find ranked symbol matches
+oxide search RetryPolicy --blast-radius   # ... plus who would be affected
+oxide status                              # check freshness and provider compatibility
+oxide watch                               # update the index as files change
+oxide review --diff HEAD~1                # collect context for a git diff
+oxide install                             # connect supported coding agents over MCP
+oxide query "fix token refresh" --git     # also weigh the current diff's changed symbols
+```
+
+`query` is for a question or coding task; `search` is for an identifier or
+expression. Add `--json` to any command for automation:
 
 ```bash
 oxide status --json
-oxide index . --json
 oxide query "fix refresh-token validation" --budget-tokens 4096 --json
 oxide search RefreshToken --json
 ```
@@ -103,19 +119,28 @@ Every evidence item includes its repository-relative path, qualified name,
 line range, score, selection reasons, and source snippet. Context packs also
 report their estimated token use and why candidates were omitted.
 
-## Blast radius
+## Why OXIDE
 
-`--blast-radius` adds one question to either command: if I change this, what
-else is involved? It reports a small, bounded neighborhood around the top
-matches — direct callers, implementors and subtypes, related tests, and one
-tightly capped hop past the direct callers.
+Coding agents do better work when they see the right evidence: the
+definition being changed, its callers, the tests that constrain it, and
+enough surrounding code to understand the contract. More retrieved code is
+often worse — it spends tokens, dilutes the useful evidence, and leaves less
+room for reasoning and generation.
 
-```bash
-oxide search TokenStore --blast-radius
-oxide query "change how tokens refresh" --blast-radius
-```
+Most retrieval systems are evaluated on how much they can find. OXIDE is
+designed around how much *useful* code it can fit inside a fixed context
+budget. It does not wrap an LLM, edit code, or choose an agent — it prepares
+a small, inspectable working set before the agent starts reading and
+editing.
 
-```
+### Blast radius: what else does this touch?
+
+`--blast-radius` adds one question to `query` or `search`: if I change this,
+what else is involved? It reports a small, bounded neighborhood around the
+top matches — direct callers, implementors and subtypes, related tests, and
+one tightly capped hop past the direct callers.
+
+```text
 src/store.py:1–3  TokenStore  class
   blast radius
     · src/handler1.py:4  handler1 calls this
@@ -124,18 +149,17 @@ src/store.py:1–3  TokenStore  class
 ```
 
 It is deliberately small rather than complete: at most twelve members across
-at most eight files, drawn from at most three seeds. The flag changes nothing
-else. On `search` it is attached after ranking and never reorders or rescores
-a result; on `query` its members compete for the same token budget as
-everything else in the pack. With the flag absent no lookup runs and the JSON
-is byte-identical to a build without the feature, so existing `--json` and MCP
-consumers are unaffected.
+at most eight files, drawn from at most three seeds. On `search` it is
+attached after ranking and never reorders or rescores a result; on `query`
+its members compete for the same token budget as everything else in the
+pack. With the flag absent, no lookup runs and output is byte-identical to a
+build without the feature.
 
-Blast radius is built on the same precomputed structural relations the rest of
-retrieval uses, which are matched on bare names without type resolution. Treat
-a member as a lead worth reading, not as proof of impact.
+Blast radius is built on precomputed structural relations matched on bare
+names, without type resolution. Treat a member as a lead worth reading, not
+as proof of impact.
 
-## Git-aware context
+### Git-aware context
 
 `--git` adds evidence from the current diff and recent history: symbols
 touched by uncommitted changes, recently-committed symbols, and files that
@@ -158,32 +182,35 @@ agent-level outcome improvement is claimed.
 
 ## Supported languages
 
-| Language | Indexed definitions |
-|---|---|
-| Python | modules, classes, functions, methods, constants |
-| TypeScript / TSX | functions, classes, methods, interfaces, type aliases, enums, exported declarations |
-| JavaScript / JSX | functions, classes, methods, arrow-function assignments, exported declarations, JSX component usage |
-| Rust | modules, structs, enums, traits, impls, functions, methods |
-| Go | packages, structs, interfaces, functions, methods, constants |
-| Java | classes, interfaces, enums, records, annotation types, methods, constructors |
-| Ruby | modules, classes, methods, functions, constants |
-| PHP | classes, interfaces, traits, enums, namespaces, methods, functions, constants |
-| C | functions, structs, unions, enums, typedefs, constants |
-| C++ | classes, structs, enums, namespaces, functions |
+| Language | Extensions | Indexed definitions |
+|---|---|---|
+| Python | `.py` | modules, classes, functions, methods, constants |
+| TypeScript / TSX | `.ts`, `.tsx` | functions, classes, methods, interfaces, type aliases, enums, exported declarations |
+| JavaScript / JSX | `.js`, `.jsx`, `.mjs`, `.cjs` | functions, classes, methods, arrow-function assignments, exported declarations, JSX component usage |
+| Rust | `.rs` | modules, structs, enums, traits, impls, functions, methods |
+| Go | `.go` | packages, structs, interfaces, functions, methods, constants |
+| Java | `.java` | classes, interfaces, enums, records, annotation types, methods, constructors |
+| Ruby | `.rb`, `.rake`, `.gemspec`, `Rakefile`, `Gemfile` | classes, modules, methods, functions, constants |
+| PHP | `.php`, `.phtml` | classes, interfaces, traits, enums, namespaces, methods, functions, constants |
+| C | `.c`, `.h` | functions, structs, unions, enums, typedefs, constants |
+| C++ | `.cc`, `.cpp`, `.cxx`, `.hh`, `.hpp`, `.hxx`, `.h` | classes, structs, enums, namespaces, functions |
 
-Java method and constructor names carry a normalized parameter-type list
-(`Store.get(String,String)`), so overloads stay distinct symbols instead of
-collapsing into one.
+Every language goes through the same pipeline — a Tree-sitter grammar plus a
+`.scm` query file — so adding one is mostly a grammar and a query set, not a
+bespoke extractor. Java and C++ method/constructor names carry a normalized
+parameter-type signature (e.g. `Store.get(String,String)`), so overloads
+stay distinct symbols instead of collapsing into one.
 
 OXIDE also extracts imports, references, calls, inheritance, and containment
 where the language grammar exposes them. See the
-[language coverage matrix](docs/language-support/README.md) for exact behavior
-and known gaps. The committed conformance fixtures are the source of truth.
+[language coverage matrix](docs/language-support/README.md) for exact
+behavior and known gaps per language — the committed conformance fixtures
+are the source of truth.
 
 ## Coding-agent integrations
 
-`oxide install` detects supported agents, shows the exact configuration change,
-and asks before writing it. It currently integrates with:
+`oxide install` detects supported agents, shows the exact configuration
+change, and asks before writing it. It currently integrates with:
 
 - Claude Code
 - Codex
@@ -197,13 +224,16 @@ oxide install --agent claude --agent codex --yes
 oxide uninstall --agent codex
 ```
 
-The integration runs `oxide mcp` over stdio. Other tools can use the same MCP
-server or call the CLI's JSON interface directly.
+The integration runs `oxide mcp` over stdio. Any other tool can speak to the
+same MCP server, or call the CLI's JSON interface directly. See
+[`docs/agent-usage-policy.md`](docs/agent-usage-policy.md) for the canonical
+guidance on how an agent should use OXIDE.
 
 ## Evidence
 
-OXIDE keeps performance and retrieval claims reproducible and scoped. A passing
-fixture is a regression check, not proof that OXIDE beats another tool.
+OXIDE keeps performance and retrieval claims reproducible and scoped. A
+passing fixture is a regression check, not proof that OXIDE beats another
+tool.
 
 ### Committed retrieval fixture
 
@@ -228,9 +258,9 @@ recall on this fixture. It does not establish general retrieval quality.
 
 ### Real-repository indexing
 
-The current language pipeline was measured on one repository per supported
-language at pinned revisions. These are medians of three release-build runs on
-an Intel i7-13620H laptop under `nice -n 10`, using the offline hashed embedder.
+Measured per repository at pinned revisions — medians of three release-build
+runs on an Intel i7-13620H laptop under `nice -n 10`, using the offline
+hashed embedder. These describe indexing behavior, not retrieval quality.
 
 | Repository | Language | Files | Symbols | Cold index | No-change update | One-file edit |
 |---|---|---:|---:|---:|---:|---:|
@@ -241,57 +271,34 @@ an Intel i7-13620H laptop under `nice -n 10`, using the offline hashed embedder.
 | Tailwind CSS | JavaScript | 133 | 268 | 210 ms | 10 ms | 100 ms |
 | Gson | Java | 264 | 4,388 | 2,010 ms | 80 ms | 270 ms |
 
-The Tailwind CSS and Gson rows were measured later than the four above, in
-their own session; compare them against each other, not against the earlier
-rows in absolute terms.
+Ruby, PHP, C, and C++ support is validated by committed conformance
+fixtures but not yet included in this table. The Tailwind CSS and Gson rows
+were measured in a later session; compare them against each other, not
+against the earlier rows in absolute terms.
 
-The measurements describe indexing behavior, not retrieval quality. Exact
-revisions, commands, memory use, index sizes, and unsupported constructs are in
-the [language support report](docs/language-support/README.md#performance).
+Exact revisions, commands, memory use, index sizes, and unsupported
+constructs are in the
+[language support report](docs/language-support/README.md#performance).
 
 ### External-task evidence
 
-The research notes include a pinned 21-task ContextBench retrieval sample and a
-four-task same-agent study. The retrieval sample is directional because it is
-small and provider-specific. In the same-agent study, no OXIDE condition beat
-the stock agent on task outcomes. See
+The research notes include a pinned 21-task ContextBench retrieval sample
+and a four-task same-agent study. The retrieval sample is directional
+because it is small and provider-specific. In the same-agent study, no
+OXIDE condition beat the stock agent on task outcomes. See
 [Context engineering notes](docs/context-engineering-notes.md#evaluation-pivot-contextbench-official)
 for the protocol, results, and caveats.
 
 > [!IMPORTANT]
-> The v0.1 release comparison suite is not finalized. OXIDE does not claim to
-> outperform other developer tools here. When the suite is finalized, this
-> note will be replaced with pinned tool versions, identical corpora, exact
-> commands, hardware, complete results, and the cases where OXIDE loses.
-
-## Limitations
-
-- OXIDE supports six language families today. C/C++, C#, Ruby, and PHP are not
-  indexed.
-- Java extraction is syntactic: fields, annotation-type elements, and method
-  references (`Foo::bar`) are not extracted, and the parameter-type
-  normalization behind overload identity uses erasure-style last-segment names
-  rather than resolved types.
-- Reference and structural relations use syntax and identifier-name matching,
-  not compiler-grade name or type resolution. Ambiguous names can produce
-  false positives or miss a cross-file relationship.
-- TypeScript declaration files (`.d.ts`) are skipped. Go imports are recorded
-  but do not currently produce imported-definition edges.
-- The vector path is a brute-force scan. It is comfortable around 50,000
-  symbols; larger repositories need measurement.
-- Token counts use a `chars / 4` estimate rather than the target model's exact
-  tokenizer.
-- The default embedder downloads model weights on first use. Fully offline mode
-  trades semantic quality for a deterministic hashed embedding.
-- `review` assembles relevant context for a diff. It does not produce a review
-  verdict.
-- v0.1 ships prebuilt artifacts for x86-64 Linux, ARM64 Linux, and Apple
-  Silicon macOS. Windows and Intel macOS binaries are not available.
+> The controlled, agent-level benchmark is not finalized yet. The question
+> it needs to answer: **can the same coding agent solve repository tasks
+> with fewer context tokens, fewer searches, and less waiting when using
+> OXIDE?** OXIDE does not claim to outperform other developer tools here.
+> When the study is finalized, this note will be replaced with pinned tool
+> versions, identical corpora, exact commands, hardware, complete results,
+> and the cases where OXIDE loses.
 
 ## How it works
-
-OXIDE keeps implementation choices below the product interface because agents
-only need the context pack. The current pipeline is:
 
 ```text
 repository
@@ -300,39 +307,43 @@ incremental symbol index
     ↓
 lexical + semantic retrieval
     ↓
-bounded structural expansion
+structural relations + optional blast radius
     ↓
-ranking and deduplication
-    ↓
-token-budgeted context pack
+bounded context allocator
     ↓
 coding agent
 ```
 
-Under the hood:
-
-- Tree-sitter extracts symbols and syntax-level relationships for each language.
-- SQLite stores files, symbols, embeddings, lexical postings, and precomputed
-  structural relations in `<repo>/.oxide/index.db`.
-- BM25 and embedding similarity run together; reciprocal rank fusion combines
-  their ranked results.
-- Parent, child, import, reference, caller, implementor, and test relationships
-  expand strong direct hits without displacing them.
+- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) extracts symbols
+  and syntax-level relationships for each language.
+- SQLite stores files, symbols, embeddings, lexical postings, and
+  precomputed structural relations in `<repo>/.oxide/index.db`.
+- BM25 and embedding similarity run together; reciprocal rank fusion
+  combines their ranked results.
+- Parent, child, import, reference, caller, implementor, and test
+  relationships expand strong direct hits without displacing them.
 - The allocator removes overlaps, applies diversity caps, and stops at the
   requested token budget.
 
-Stable symbol IDs and content hashes let OXIDE skip unchanged files and reuse
-unchanged embeddings. Read commands use a consistent SQLite WAL snapshot while
-another process may be updating the index.
+Stable symbol IDs and content hashes let OXIDE skip unchanged files and
+reuse unchanged embeddings, so a single-file edit re-embeds only what
+changed. Read commands use a consistent SQLite snapshot even while another
+process is updating the index.
 
-## Embeddings and offline use
+## Privacy and offline use
 
-The default provider is `arctic-embed-xs-q`, a 384-dimensional int8 ONNX model
-that runs in the OXIDE process. Its weights are about 23 MB and are downloaded
-from Hugging Face the first time a semantic command loads the model. They are
-cached under `$HF_HOME`, or `~/.cache/huggingface/hub` when `$HF_HOME` is unset.
+OXIDE runs locally and phones home to nothing by default. Your code, paths,
+queries, index, and MCP traffic never leave the machine. The only optional
+telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
+even then it sends a panic's stack trace and platform details with no
+personal identifiers — see [`TELEMETRY.md`](TELEMETRY.md) for exactly what
+is and is not collected.
 
-For a zero-download, air-gapped setup:
+The default embedding provider, **arctic-embed-xs-q** (a 384-dimensional
+int8 ONNX model, ~23 MB), downloads its weights from Hugging Face the first
+time a semantic command runs, then caches them under `$HF_HOME`. For a
+zero-download, fully air-gapped setup, use the deterministic hashed
+embedder instead:
 
 ```bash
 env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed oxide index
@@ -340,17 +351,8 @@ env -u OXIDE_EMBED_URL OXIDE_EMBED_NATIVE=hashed \
   oxide query "Where is authentication handled?"
 ```
 
-The hashed provider is deterministic and fully local, but its semantic matching
-is shallower than the native model.
-
-Provider precedence is:
-
-1. `--embedder URL`
-2. `$OXIDE_EMBED_URL`
-3. `$OXIDE_EMBED_NATIVE`
-4. the default native profile
-
-An OpenAI-compatible HTTP embedding endpoint also works:
+An OpenAI-compatible HTTP embedding endpoint also works, taking precedence
+over the built-in native model:
 
 ```bash
 export OXIDE_EMBED_URL=http://127.0.0.1:8191/v1/embeddings
@@ -358,22 +360,9 @@ export OXIDE_EMBED_MODEL=my-model-label
 oxide index
 ```
 
-Changing providers clears and recomputes stored vectors because embedding spaces
-cannot be mixed. OXIDE records migrations so an interrupted rebuild is detected
-instead of serving incompatible vectors. Lexical search remains available:
-
-```bash
-oxide search AuthService --mode lexical
-```
-
-## Privacy
-
-OXIDE runs locally and phones home to nothing by default. Your code, paths,
-queries, index, and MCP traffic never leave the machine. The only optional
-telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
-even then it sends a panic's stack trace and platform details with no
-personal identifiers. [`TELEMETRY.md`](TELEMETRY.md) spells out exactly what
-is and is not collected and how to verify it on the wire.
+Changing providers clears and recomputes stored vectors, since embedding
+spaces can't be mixed; lexical search stays available throughout
+(`oxide search AuthService --mode lexical`).
 
 ### Remote embedding providers
 
@@ -384,12 +373,43 @@ each symbol's text (never a whole file) to that provider's API over the
 network — this is the one way OXIDE's default "your code never leaves the
 machine" guarantee changes, and only if you deliberately configure it.
 
-## Installation details
+## Limitations
 
-The release installer downloads the archive for your platform, verifies it
-against the release's `SHA256SUMS`, checks that the binary starts, and replaces
-an existing installation atomically. It installs to `$HOME/.local/bin/oxide` by
-default.
+- OXIDE supports ten languages today. C#, Swift, Kotlin, and Assembly are
+  not indexed.
+- Reference and structural relations use syntax and identifier-name
+  matching, not compiler-grade name or type resolution. Ambiguous names can
+  produce false positives or miss a cross-file relationship.
+- The vector path is a brute-force scan. It is comfortable around 50,000
+  symbols; larger repositories need measurement.
+- Token counts use a `chars / 4` estimate rather than the target model's
+  exact tokenizer.
+- `review` assembles relevant context for a diff. It does not produce a
+  review verdict.
+- v0.1 ships prebuilt artifacts for x86-64 Linux, ARM64 Linux, and Apple
+  Silicon macOS. Windows and Intel macOS binaries are not available.
+
+Per-language extraction gaps (unresolved imports, unsupported constructs,
+metaprogramming that has no static declaration to point at) are documented
+exhaustively in the [language coverage matrix](docs/language-support/README.md#remaining-unsupported-constructs).
+
+## Development & contributing
+
+### Build from source
+
+```bash
+git clone https://github.com/Kiy-K/oxide.git
+cd oxide
+cargo build --release -j 2
+./target/release/oxide --version
+```
+
+OXIDE pins Rust 1.98.0 in `rust-toolchain.toml`. A default build includes
+the native ONNX embedder; `cargo build --release --no-default-features -j 2`
+builds without it and uses the hashed provider unless an HTTP endpoint is
+configured.
+
+### Installer options
 
 ```bash
 # Install a specific published version
@@ -401,24 +421,12 @@ curl -fsSL https://raw.githubusercontent.com/Kiy-K/oxide/main/install.sh | \
   sh -s -- --install-dir "$HOME/bin"
 ```
 
-Re-run the installer to upgrade. `oxide install` is separate: it adds the
-already-installed binary to coding-agent MCP configurations.
+The installer verifies the downloaded archive against the release's
+`SHA256SUMS`, checks that the binary starts, and replaces an existing
+installation atomically. Re-run it to upgrade; `oxide install` is separate
+and only wires the already-installed binary into coding-agent MCP configs.
 
-### Build from source
-
-```bash
-git clone https://github.com/Kiy-K/oxide.git
-cd oxide
-cargo build --release -j 2
-./target/release/oxide --version
-```
-
-OXIDE pins Rust 1.98.0 in `rust-toolchain.toml`. A default build includes the
-native ONNX embedder. `cargo build --release --no-default-features -j 2` builds
-without native model support and uses the hashed provider unless an HTTP
-endpoint is configured.
-
-## Development
+### Running the checks
 
 ```bash
 cargo fmt --check
@@ -429,8 +437,9 @@ cargo build --release -j 2
 ```
 
 Language behavior is pinned by golden files under `fixtures/conformance/`.
-Retrieval changes must pass the committed benchmark gate; changing the expected
-baseline requires recording both vector-only and hybrid results honestly.
+Retrieval changes must pass the committed benchmark gate; changing the
+expected baseline requires recording both vector-only and hybrid results
+honestly.
 
 Bug reports and focused pull requests are welcome. Please include a minimal
 reproduction, the command you ran, and the relevant platform or repository

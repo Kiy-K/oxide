@@ -1,0 +1,18 @@
+{
+  "fp32": {
+    "repository": "jamie8johnson/CodeRankEmbed-onnx",
+    "revision": "151669b2e641d296bfc082a6d672528277b582f9",
+    "size_bytes": 547715715,
+    "sha256": "a5454ae55b5ee6888b8f59f30c645c9da1c6ac887627b84dc62b30064bce9546",
+    "result": "Numerically equivalent to the reproducible local FP32 export; repository card incorrectly describes mean pooling."
+  },
+  "int8": {
+    "repository": "mrsladoje/CodeRankEmbed-onnx-int8",
+    "revision": "e74f2c07119179e5d927e9306b364ec028db7d87",
+    "size_bytes": 138619279,
+    "sha256": "4eae31d09b1843103a1ebd5e2b2e24b5a5cad441a33906b35b12b1e2ed91d1db",
+    "max_abs": 0.14045,
+    "min_cosine": 0.86702,
+    "result": "Worse fixture parity than the locally quantized dynamic INT8 artifact; not selected."
+  }
+}

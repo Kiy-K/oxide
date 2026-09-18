@@ -1,0 +1,14 @@
+[
+  {"id":"q_retry","role":"query","text":"Find the retry loop that applies exponential backoff after a transient HTTP failure."},
+  {"id":"q_theme","role":"query","text":"Where is the browser theme filter updated when system dark mode changes?"},
+  {"id":"q_unicode","role":"query","text":"Locate code that normalizes Unicode identifiers such as café, Δ, and 用户名."},
+  {"id":"py_retry","role":"document","text":"def retry_request(send, attempts=3):\n    for attempt in range(attempts):\n        try:\n            return send()\n        except TimeoutError:\n            time.sleep(2 ** attempt)\n    raise RuntimeError(\"request failed\")"},
+  {"id":"py_retry_hard_negative","role":"document","text":"def retry_request(send, attempts=3):\n    for attempt in range(attempts):\n        try:\n            return send()\n        except ValueError:\n            logger.info(\"invalid payload\")\n    return None"},
+  {"id":"tsx_theme","role":"document","text":"export function ThemeWatcher() {\n  const [dark, setDark] = useState(false);\n  useEffect(() => {\n    const media = matchMedia('(prefers-color-scheme: dark)');\n    const update = () => setDark(media.matches);\n    media.addEventListener('change', update);\n    return () => media.removeEventListener('change', update);\n  }, []);\n  return <Filter enabled={dark} />;\n}"},
+  {"id":"rust_backoff","role":"document","text":"pub async fn with_backoff<F, T>(mut send: F) -> Result<T, Error>\nwhere F: FnMut() -> Result<T, Error> {\n    for attempt in 0..3 {\n        match send() {\n            Ok(value) => return Ok(value),\n            Err(Error::Transient(_)) => tokio::time::sleep(Duration::from_millis(1 << attempt)).await,\n            Err(error) => return Err(error),\n        }\n    }\n    Err(Error::Exhausted)\n}"},
+  {"id":"go_retry","role":"document","text":"func Retry(ctx context.Context, send func(context.Context) error) error {\n    for attempt := 0; attempt < 3; attempt++ {\n        if err := send(ctx); err == nil { return nil }\n        select {\n        case <-time.After(time.Second << attempt):\n        case <-ctx.Done(): return ctx.Err()\n        }\n    }\n    return errors.New(\"exhausted\")\n}"},
+  {"id":"unicode_code","role":"document","text":"def normalize_name(用户名: str) -> str:\n    café = unicodedata.normalize('NFKC', 用户名)\n    return café.casefold()"},
+  {"id":"minimal_empty","role":"document","text":""},
+  {"id":"minimal_symbol","role":"document","text":"pass"},
+  {"id":"long_python","role":"document","text":"def reconcile_account(account_id):\n    records = load_records(account_id)\n    changed = []\n","repeat_text":"    for record in records:\n        if record.needs_update():\n            changed.append(update_record(record))\n","repeat_count":96}
+]

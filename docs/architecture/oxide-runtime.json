@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "OXIDE Runtime Architecture",
+    "locale": "en",
+    "output": "oxide-runtime.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Kiy-K/oxide",
+      "provider": "github",
+      "revision": "a0774a36ef74d7f3c1cd930ddeb1a16fb3a866a0"
+    },
+    "viewBox": [1379, 900],
+    "views": [
+      {
+        "id": "primary-context-path",
+        "label": "Primary context path",
+        "focus": ["consumer", "interfaces", "service", "retrieval", "context-pack"],
+        "note": "Trace a context request from an agent or terminal to a bounded code pack."
+      },
+      {
+        "id": "incremental-indexing",
+        "label": "Incremental indexing",
+        "focus": ["service", "indexer", "extractor", "sqlite-index", "repository", "embedding-provider"],
+        "note": "See how changed source becomes persisted lexical, structural, and vector evidence."
+      },
+      {
+        "id": "trust-boundaries",
+        "label": "Trust boundaries",
+        "focus": ["consumer", "interfaces", "repository", "sqlite-index", "embedding-provider", "sentry"],
+        "note": "Separate caller input, repository content, local persistence, and outbound network dependencies."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "consumer",
+      "type": "external",
+      "label": "Developer / Coding Agent",
+      "sublabel": "terminal or MCP client",
+      "pos": [20, 330],
+      "size": [170, 72]
+    },
+    {
+      "id": "interfaces",
+      "type": "frontend",
+      "label": "CLI + MCP Adapters",
+      "sublabel": "clap · JSON-RPC over stdio",
+      "sources": [
+        { "path": "src/cli.rs", "line": 370, "label": "CLI dispatch" },
+        { "path": "src/mcp.rs", "line": 107, "label": "MCP context tool" }
+      ],
+      "pos": [300, 330],
+      "size": [180, 72]
+    },
+    {
+      "id": "service",
+      "type": "backend",
+      "label": "RepositoryService",
+      "sublabel": "discovery · validation · dispatch",
+      "sources": [
+        { "path": "src/service.rs", "line": 266, "label": "service boundary" }
+      ],
+      "pos": [590, 330],
+      "size": [185, 72]
+    },
+    {
+      "id": "retrieval",
+      "type": "backend",
+      "label": "Retrieval Engine",
+      "sublabel": "BM25 + vectors + RRF",
+      "sources": [
+        { "path": "src/retrieval.rs", "line": 212, "label": "hybrid search" }
+      ],
+      "pos": [885, 330],
+      "size": [180, 72]
+    },
+    {
+      "id": "context-pack",
+      "type": "backend",
+      "label": "Context / Review Pack",
+      "sublabel": "relations · ranking · token budget",
+      "sources": [
+        { "path": "src/context.rs", "line": 113, "label": "context assembly" },
+        { "path": "src/review.rs", "line": 35, "label": "review assembly" }
+      ],
+      "pos": [1175, 330],
+      "size": [195, 72]
+    },
+    {
+      "id": "indexer",
+      "type": "backend",
+      "label": "Incremental Indexer",
+      "sublabel": "hash diff · migration guards",
+      "sources": [
+        { "path": "src/index.rs", "line": 125, "label": "base index stage" },
+        { "path": "src/index.rs", "line": 644, "label": "embedding stage" }
+      ],
+      "pos": [590, 570],
+      "size": [185, 72]
+    },
+    {
+      "id": "extractor",
+      "type": "backend",
+      "label": "Scanner + Tree-sitter",
+      "sublabel": "symbols · refs · calls · bases",
+      "sources": [
+        { "path": "src/scanner.rs", "line": 118, "label": "repository scan" },
+        { "path": "src/parser.rs", "line": 44, "label": "symbol extraction" },
+        { "path": "src/structural_relations.rs", "line": 116, "label": "relation extraction" }
+      ],
+      "pos": [885, 570],
+      "size": [180, 72]
+    },
+    {
+      "id": "sqlite-index",
+      "type": "database",
+      "label": "SQLite Index",
+      "sublabel": ".oxide/index.db · WAL",
+      "sources": [
+        { "path": "src/storage.rs", "line": 218, "label": "SQLite store" }
+      ],
+      "pos": [1175, 570],
+      "size": [195, 72]
+    },
+    {
+      "id": "repository",
+      "type": "external",
+      "label": "Repository + Git",
+      "sublabel": "source files · ignores · diffs",
+      "pos": [885, 770],
+      "size": [180, 72]
+    },
+    {
+      "id": "embedding-provider",
+      "type": "external",
+      "label": "Embedding Provider",
+      "sublabel": "native ONNX or HTTP endpoint",
+      "sources": [
+        { "path": "src/embeddings.rs", "line": 60, "label": "provider contract" }
+      ],
+      "pos": [880, 80],
+      "size": [190, 72]
+    },
+    {
+      "id": "sentry",
+      "type": "external",
+      "label": "Sentry",
+      "sublabel": "panic and error telemetry",
+      "sources": [
+        { "path": "src/main.rs", "line": 8, "label": "telemetry initialization" }
+      ],
+      "pos": [300, 80],
+      "size": [180, 72]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "OXIDE process boundary",
+      "wraps": ["interfaces", "service", "retrieval", "context-pack", "indexer", "extractor"],
+      "pad": 8
+    },
+    {
+      "kind": "security-group",
+      "label": "Local index persistence boundary",
+      "wraps": ["sqlite-index"],
+      "pad": 8
+    },
+    {
+      "kind": "security-group",
+      "label": "Repository content trust boundary",
+      "wraps": ["repository"],
+      "pad": 16
+    },
+    {
+      "kind": "security-group",
+      "label": "Outbound network trust boundary",
+      "wraps": ["embedding-provider", "sentry"],
+      "pad": 18
+    }
+  ],
+  "connections": [
+    {
+      "id": "request-entry",
+      "from": "consumer",
+      "to": "interfaces",
+      "label": "command / JSON-RPC",
+      "variant": "emphasis"
+    },
+    {
+      "id": "entry-dispatch",
+      "from": "interfaces",
+      "to": "service",
+      "label": "typed operation",
+      "variant": "emphasis"
+    },
+    {
+      "id": "service-search",
+      "from": "service",
+      "to": "retrieval",
+      "label": "validated query",
+      "variant": "emphasis"
+    },
+    {
+      "id": "retrieve-pack",
+      "from": "retrieval",
+      "to": "context-pack",
+      "label": "ranked candidates",
+      "variant": "emphasis"
+    },
+    {
+      "id": "dispatch-index",
+      "from": "service",
+      "to": "indexer",
+      "label": "index / watch",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [683, 416]
+    },
+    {
+      "id": "index-extract",
+      "from": "indexer",
+      "to": "extractor",
+      "label": "changed files"
+    },
+    {
+      "id": "extract-persist",
+      "from": "extractor",
+      "to": "sqlite-index",
+      "label": "symbols + postings",
+      "fromSide": "right",
+      "toSide": "left",
+      "route": "straight",
+      "labelAt": [1060, 556]
+    },
+    {
+      "id": "repository-read",
+      "from": "repository",
+      "to": "extractor",
+      "label": "UTF-8 source",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "route": "straight",
+      "labelAt": [1040, 706]
+    },
+    {
+      "id": "index-read",
+      "from": "sqlite-index",
+      "to": "retrieval",
+      "label": "snapshot read",
+      "variant": "security"
+    },
+    {
+      "id": "query-embedding",
+      "from": "retrieval",
+      "to": "embedding-provider",
+      "label": "embed_query",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "route": "straight"
+    },
+    {
+      "id": "error-telemetry",
+      "from": "interfaces",
+      "to": "sentry",
+      "label": "panic telemetry",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "route": "straight",
+      "labelAt": [440, 230]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary path",
+      "items": [
+        "Context is the spine: caller → adapter → RepositoryService → hybrid retrieval → bounded pack.",
+        "Results return through the same CLI or MCP adapter; the reverse edge is intentionally omitted."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Indexing details",
+      "items": [
+        "The scanner honors Git ignore rules; changed UTF-8 files alone are reparsed.",
+        "Tree-sitter extracts declarations while index-time passes add references, calls, and bases.",
+        "The indexer also embeds documents; that secondary provider edge stays in this card to keep topology sparse."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Retrieval details",
+      "items": [
+        "BM25 and semantic scoring run concurrently, then reciprocal-rank fusion combines evidence.",
+        "Structural expansion cannot displace direct hits; context packing enforces the caller's token budget.",
+        "Review uses Git diffs as seeds and shares the same retrieval and relation data."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust boundaries",
+      "items": [
+        "Repository text and Git metadata are local inputs; generated .oxide state is separate persisted data.",
+        "HTTP embedding sends model input across the network; native fastembed may download model weights on first use.",
+        "Sentry is separate outbound telemetry and is initialized before command dispatch."
+      ]
+    }
+  ]
+}

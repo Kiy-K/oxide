@@ -1,0 +1,244 @@
+{
+  "model_revision": "3c4b60807d71f79b43f3c4363786d9493691f8b1",
+  "query_prefix": "Represent this query for searching relevant code: ",
+  "pooling": "CLS token",
+  "normalization": "L2",
+  "dimension": 768,
+  "tokenizer": {
+    "model_max_length": 8192,
+    "padding_side": "right",
+    "truncation_side": "right"
+  },
+  "inputs": [
+    {
+      "id": "q_retry",
+      "role": "query",
+      "sha256": "47b7018a34143a57e0518fbe613483f94edb8cf284f57bcfe737ee7beb831e73",
+      "tokens": 26
+    },
+    {
+      "id": "q_theme",
+      "role": "query",
+      "sha256": "f1093c54b5c53cce387346edd90be9c968e553606d23c849aa1a014708e74af2",
+      "tokens": 23
+    },
+    {
+      "id": "q_unicode",
+      "role": "query",
+      "sha256": "6239b0e8090bc4394714249686f99b6c538a3b697c430d9cfa0ec4793413ada8",
+      "tokens": 30
+    },
+    {
+      "id": "py_retry",
+      "role": "document",
+      "sha256": "aaa62fd61130a46d4d06cd9b5a8ba02f80ee8f2837b3f8bc35f66a44aec2ac1d",
+      "tokens": 55
+    },
+    {
+      "id": "py_retry_hard_negative",
+      "role": "document",
+      "sha256": "cf8e7257bbf0da5df6c2f02d4d446aa0b9d6e6cbe83ce08abe62376b7496c8ab",
+      "tokens": 46
+    },
+    {
+      "id": "tsx_theme",
+      "role": "document",
+      "sha256": "d526997611d0259cc563584d003f9b0c37a99f2989d414cbb2de0d02e7c39889",
+      "tokens": 125
+    },
+    {
+      "id": "rust_backoff",
+      "role": "document",
+      "sha256": "4b8a1e0e8a98510b535441c5884501c9b2c757c0e61e8dbfae69e0b216299bb0",
+      "tokens": 139
+    },
+    {
+      "id": "go_retry",
+      "role": "document",
+      "sha256": "6988125732d7c048768034097aa2d014f47897356d2c13e57361f6faf0fb0ec7",
+      "tokens": 108
+    },
+    {
+      "id": "unicode_code",
+      "role": "document",
+      "sha256": "8caec1324913ed07759509f819feb46f131a40fb6ea1c98d2efb1450cedfa62d",
+      "tokens": 46
+    },
+    {
+      "id": "minimal_empty",
+      "role": "document",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tokens": 2
+    },
+    {
+      "id": "minimal_symbol",
+      "role": "document",
+      "sha256": "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
+      "tokens": 3
+    },
+    {
+      "id": "long_python",
+      "role": "document",
+      "sha256": "36de46f505f5722a59572a5b8ed052de9d54da3fd0b8beb7b9727e5378807c45",
+      "tokens": 2522
+    }
+  ],
+  "nearest_neighbors": {
+    "q_retry": [
+      "rust_backoff",
+      "py_retry_hard_negative",
+      "py_retry",
+      "go_retry",
+      "q_unicode",
+      "q_theme",
+      "tsx_theme",
+      "minimal_symbol",
+      "unicode_code",
+      "minimal_empty",
+      "long_python"
+    ],
+    "q_theme": [
+      "tsx_theme",
+      "q_unicode",
+      "q_retry",
+      "minimal_empty",
+      "minimal_symbol",
+      "rust_backoff",
+      "unicode_code",
+      "long_python",
+      "go_retry",
+      "py_retry_hard_negative",
+      "py_retry"
+    ],
+    "q_unicode": [
+      "unicode_code",
+      "q_retry",
+      "q_theme",
+      "tsx_theme",
+      "minimal_symbol",
+      "rust_backoff",
+      "minimal_empty",
+      "long_python",
+      "go_retry",
+      "py_retry_hard_negative",
+      "py_retry"
+    ],
+    "py_retry": [
+      "py_retry_hard_negative",
+      "go_retry",
+      "rust_backoff",
+      "q_retry",
+      "long_python",
+      "unicode_code",
+      "minimal_symbol",
+      "minimal_empty",
+      "tsx_theme",
+      "q_unicode",
+      "q_theme"
+    ],
+    "py_retry_hard_negative": [
+      "py_retry",
+      "go_retry",
+      "rust_backoff",
+      "q_retry",
+      "long_python",
+      "minimal_symbol",
+      "minimal_empty",
+      "tsx_theme",
+      "unicode_code",
+      "q_unicode",
+      "q_theme"
+    ],
+    "tsx_theme": [
+      "q_theme",
+      "rust_backoff",
+      "q_retry",
+      "q_unicode",
+      "minimal_empty",
+      "go_retry",
+      "minimal_symbol",
+      "unicode_code",
+      "py_retry_hard_negative",
+      "long_python",
+      "py_retry"
+    ],
+    "rust_backoff": [
+      "go_retry",
+      "py_retry",
+      "py_retry_hard_negative",
+      "q_retry",
+      "tsx_theme",
+      "minimal_symbol",
+      "q_unicode",
+      "q_theme",
+      "unicode_code",
+      "minimal_empty",
+      "long_python"
+    ],
+    "go_retry": [
+      "py_retry",
+      "py_retry_hard_negative",
+      "rust_backoff",
+      "q_retry",
+      "tsx_theme",
+      "minimal_empty",
+      "minimal_symbol",
+      "unicode_code",
+      "long_python",
+      "q_unicode",
+      "q_theme"
+    ],
+    "unicode_code": [
+      "q_unicode",
+      "minimal_symbol",
+      "rust_backoff",
+      "tsx_theme",
+      "minimal_empty",
+      "long_python",
+      "go_retry",
+      "py_retry",
+      "q_theme",
+      "q_retry",
+      "py_retry_hard_negative"
+    ],
+    "minimal_empty": [
+      "minimal_symbol",
+      "long_python",
+      "tsx_theme",
+      "q_theme",
+      "q_unicode",
+      "rust_backoff",
+      "unicode_code",
+      "go_retry",
+      "py_retry_hard_negative",
+      "py_retry",
+      "q_retry"
+    ],
+    "minimal_symbol": [
+      "minimal_empty",
+      "rust_backoff",
+      "q_unicode",
+      "q_theme",
+      "tsx_theme",
+      "unicode_code",
+      "go_retry",
+      "long_python",
+      "py_retry_hard_negative",
+      "q_retry",
+      "py_retry"
+    ],
+    "long_python": [
+      "minimal_empty",
+      "py_retry",
+      "py_retry_hard_negative",
+      "unicode_code",
+      "minimal_symbol",
+      "tsx_theme",
+      "q_theme",
+      "q_unicode",
+      "go_retry",
+      "q_retry",
+      "rust_backoff"
+    ]
+  }
+}

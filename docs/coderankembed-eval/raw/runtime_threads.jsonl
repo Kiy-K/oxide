@@ -1,0 +1,10 @@
+{"model":"model_fp32.onnx","sequence":256,"batch":1,"threads":1,"warm_median_ms":559.00,"peak_rss_kb":null}
+{"model":"model_fp32.onnx","sequence":256,"batch":1,"threads":2,"warm_median_ms":285.70,"peak_rss_kb":null}
+{"model":"model_fp32.onnx","sequence":256,"batch":1,"threads":4,"warm_median_ms":149.48,"peak_rss_kb":null}
+{"model":"model_fp32.onnx","sequence":256,"batch":1,"threads":8,"warm_median_ms":128.15,"peak_rss_kb":null}
+{"model":"model_fp32.onnx","sequence":256,"batch":1,"threads":16,"warm_median_ms":117.86,"peak_rss_kb":null}
+{"model":"model_int8_dynamic.onnx","sequence":256,"batch":1,"threads":1,"warm_median_ms":198.43,"peak_rss_kb":null}
+{"model":"model_int8_dynamic.onnx","sequence":256,"batch":1,"threads":2,"warm_median_ms":106.01,"peak_rss_kb":null}
+{"model":"model_int8_dynamic.onnx","sequence":256,"batch":1,"threads":4,"warm_median_ms":59.21,"peak_rss_kb":null}
+{"model":"model_int8_dynamic.onnx","sequence":256,"batch":1,"threads":8,"warm_median_ms":52.67,"peak_rss_kb":null}
+{"model":"model_int8_dynamic.onnx","sequence":256,"batch":1,"threads":16,"warm_median_ms":57.63,"peak_rss_kb":null}

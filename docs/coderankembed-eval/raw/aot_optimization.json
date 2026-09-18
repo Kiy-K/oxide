@@ -1,0 +1,9 @@
+{
+  "model": "model_int8_dynamic.onnx",
+  "optimized_model": "model_int8_dynamic_optimized.onnx",
+  "session_create_raw_ms": 439.3,
+  "session_create_optimized_ms": 225.9,
+  "warm_raw_ms": 33.0,
+  "warm_optimized_ms": 32.58,
+  "note": "Single low-contention observation; optimized graph is hardware-specific and improves startup, not warm inference."
+}

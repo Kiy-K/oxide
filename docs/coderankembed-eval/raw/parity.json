@@ -1,0 +1,647 @@
+{
+  "fp32": {
+    "size_bytes": 547637417,
+    "max_abs": 5.960464477539062e-07,
+    "min_cosine": 0.9999998807907104,
+    "top1_agreement": 1.0,
+    "top5_agreement": 1.0,
+    "per_input": {
+      "q_retry": {
+        "max_abs": 1.862645149230957e-07,
+        "cosine": 1.0000001192092896
+      },
+      "q_theme": {
+        "max_abs": 2.421438694000244e-07,
+        "cosine": 1.0
+      },
+      "q_unicode": {
+        "max_abs": 2.1979212760925293e-07,
+        "cosine": 1.0
+      },
+      "py_retry": {
+        "max_abs": 2.849847078323364e-07,
+        "cosine": 1.0
+      },
+      "py_retry_hard_negative": {
+        "max_abs": 2.905726432800293e-07,
+        "cosine": 1.0
+      },
+      "tsx_theme": {
+        "max_abs": 1.5273690223693848e-07,
+        "cosine": 1.0
+      },
+      "rust_backoff": {
+        "max_abs": 2.8870999813079834e-07,
+        "cosine": 1.0
+      },
+      "go_retry": {
+        "max_abs": 2.123415470123291e-07,
+        "cosine": 0.9999998807907104
+      },
+      "unicode_code": {
+        "max_abs": 1.695007085800171e-07,
+        "cosine": 1.0
+      },
+      "minimal_empty": {
+        "max_abs": 5.960464477539062e-07,
+        "cosine": 1.0
+      },
+      "minimal_symbol": {
+        "max_abs": 1.7881393432617188e-07,
+        "cosine": 1.0
+      },
+      "long_python": {
+        "max_abs": 5.662441253662109e-07,
+        "cosine": 1.0
+      }
+    },
+    "nearest_neighbors": {
+      "q_retry": [
+        "rust_backoff",
+        "py_retry_hard_negative",
+        "py_retry",
+        "go_retry",
+        "q_unicode",
+        "q_theme",
+        "tsx_theme",
+        "minimal_symbol",
+        "unicode_code",
+        "minimal_empty",
+        "long_python"
+      ],
+      "q_theme": [
+        "tsx_theme",
+        "q_unicode",
+        "q_retry",
+        "minimal_empty",
+        "minimal_symbol",
+        "rust_backoff",
+        "unicode_code",
+        "long_python",
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry"
+      ],
+      "q_unicode": [
+        "unicode_code",
+        "q_retry",
+        "q_theme",
+        "tsx_theme",
+        "minimal_symbol",
+        "rust_backoff",
+        "minimal_empty",
+        "long_python",
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry"
+      ],
+      "py_retry": [
+        "py_retry_hard_negative",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "unicode_code",
+        "minimal_symbol",
+        "minimal_empty",
+        "tsx_theme",
+        "q_unicode",
+        "q_theme"
+      ],
+      "py_retry_hard_negative": [
+        "py_retry",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "minimal_symbol",
+        "minimal_empty",
+        "tsx_theme",
+        "unicode_code",
+        "q_unicode",
+        "q_theme"
+      ],
+      "tsx_theme": [
+        "q_theme",
+        "rust_backoff",
+        "q_retry",
+        "q_unicode",
+        "minimal_empty",
+        "go_retry",
+        "minimal_symbol",
+        "unicode_code",
+        "py_retry_hard_negative",
+        "long_python",
+        "py_retry"
+      ],
+      "rust_backoff": [
+        "go_retry",
+        "py_retry",
+        "py_retry_hard_negative",
+        "q_retry",
+        "tsx_theme",
+        "minimal_symbol",
+        "q_unicode",
+        "q_theme",
+        "unicode_code",
+        "minimal_empty",
+        "long_python"
+      ],
+      "go_retry": [
+        "py_retry",
+        "py_retry_hard_negative",
+        "rust_backoff",
+        "q_retry",
+        "tsx_theme",
+        "minimal_empty",
+        "minimal_symbol",
+        "unicode_code",
+        "long_python",
+        "q_unicode",
+        "q_theme"
+      ],
+      "unicode_code": [
+        "q_unicode",
+        "minimal_symbol",
+        "rust_backoff",
+        "tsx_theme",
+        "minimal_empty",
+        "long_python",
+        "go_retry",
+        "py_retry",
+        "q_theme",
+        "q_retry",
+        "py_retry_hard_negative"
+      ],
+      "minimal_empty": [
+        "minimal_symbol",
+        "long_python",
+        "tsx_theme",
+        "q_theme",
+        "q_unicode",
+        "rust_backoff",
+        "unicode_code",
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry",
+        "q_retry"
+      ],
+      "minimal_symbol": [
+        "minimal_empty",
+        "rust_backoff",
+        "q_unicode",
+        "q_theme",
+        "tsx_theme",
+        "unicode_code",
+        "go_retry",
+        "long_python",
+        "py_retry_hard_negative",
+        "q_retry",
+        "py_retry"
+      ],
+      "long_python": [
+        "minimal_empty",
+        "py_retry",
+        "py_retry_hard_negative",
+        "unicode_code",
+        "minimal_symbol",
+        "tsx_theme",
+        "q_theme",
+        "q_unicode",
+        "go_retry",
+        "q_retry",
+        "rust_backoff"
+      ]
+    }
+  },
+  "int8_dynamic": {
+    "size_bytes": 138510447,
+    "max_abs": 0.12087589502334595,
+    "min_cosine": 0.8959023952484131,
+    "top1_agreement": 1.0,
+    "top5_agreement": 0.8333333333333334,
+    "per_input": {
+      "q_retry": {
+        "max_abs": 0.030200473964214325,
+        "cosine": 0.9727373123168945
+      },
+      "q_theme": {
+        "max_abs": 0.02866315096616745,
+        "cosine": 0.9738690257072449
+      },
+      "q_unicode": {
+        "max_abs": 0.03168383985757828,
+        "cosine": 0.96590656042099
+      },
+      "py_retry": {
+        "max_abs": 0.03444311395287514,
+        "cosine": 0.9664628505706787
+      },
+      "py_retry_hard_negative": {
+        "max_abs": 0.029364585876464844,
+        "cosine": 0.9639378190040588
+      },
+      "tsx_theme": {
+        "max_abs": 0.03954571858048439,
+        "cosine": 0.9627161026000977
+      },
+      "rust_backoff": {
+        "max_abs": 0.04279708117246628,
+        "cosine": 0.9460039734840393
+      },
+      "go_retry": {
+        "max_abs": 0.03143392503261566,
+        "cosine": 0.9577856063842773
+      },
+      "unicode_code": {
+        "max_abs": 0.03274320065975189,
+        "cosine": 0.9693554639816284
+      },
+      "minimal_empty": {
+        "max_abs": 0.12087589502334595,
+        "cosine": 0.8959023952484131
+      },
+      "minimal_symbol": {
+        "max_abs": 0.028232963755726814,
+        "cosine": 0.9713841080665588
+      },
+      "long_python": {
+        "max_abs": 0.0395570732653141,
+        "cosine": 0.9554210901260376
+      }
+    },
+    "nearest_neighbors": {
+      "q_retry": [
+        "rust_backoff",
+        "py_retry",
+        "py_retry_hard_negative",
+        "go_retry",
+        "q_theme",
+        "q_unicode",
+        "tsx_theme",
+        "unicode_code",
+        "minimal_symbol",
+        "minimal_empty",
+        "long_python"
+      ],
+      "q_theme": [
+        "tsx_theme",
+        "q_retry",
+        "q_unicode",
+        "minimal_empty",
+        "minimal_symbol",
+        "rust_backoff",
+        "unicode_code",
+        "long_python",
+        "go_retry",
+        "py_retry",
+        "py_retry_hard_negative"
+      ],
+      "q_unicode": [
+        "unicode_code",
+        "q_theme",
+        "q_retry",
+        "tsx_theme",
+        "minimal_symbol",
+        "rust_backoff",
+        "minimal_empty",
+        "long_python",
+        "go_retry",
+        "py_retry",
+        "py_retry_hard_negative"
+      ],
+      "py_retry": [
+        "py_retry_hard_negative",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "minimal_symbol",
+        "minimal_empty",
+        "unicode_code",
+        "tsx_theme",
+        "q_unicode",
+        "q_theme"
+      ],
+      "py_retry_hard_negative": [
+        "py_retry",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "minimal_symbol",
+        "minimal_empty",
+        "tsx_theme",
+        "unicode_code",
+        "q_unicode",
+        "q_theme"
+      ],
+      "tsx_theme": [
+        "q_theme",
+        "rust_backoff",
+        "minimal_empty",
+        "q_retry",
+        "q_unicode",
+        "minimal_symbol",
+        "go_retry",
+        "unicode_code",
+        "long_python",
+        "py_retry",
+        "py_retry_hard_negative"
+      ],
+      "rust_backoff": [
+        "go_retry",
+        "py_retry",
+        "py_retry_hard_negative",
+        "q_retry",
+        "tsx_theme",
+        "minimal_symbol",
+        "q_unicode",
+        "minimal_empty",
+        "unicode_code",
+        "q_theme",
+        "long_python"
+      ],
+      "go_retry": [
+        "py_retry",
+        "py_retry_hard_negative",
+        "rust_backoff",
+        "q_retry",
+        "tsx_theme",
+        "minimal_empty",
+        "minimal_symbol",
+        "unicode_code",
+        "long_python",
+        "q_unicode",
+        "q_theme"
+      ],
+      "unicode_code": [
+        "q_unicode",
+        "rust_backoff",
+        "minimal_symbol",
+        "tsx_theme",
+        "minimal_empty",
+        "long_python",
+        "q_theme",
+        "go_retry",
+        "py_retry",
+        "q_retry",
+        "py_retry_hard_negative"
+      ],
+      "minimal_empty": [
+        "minimal_symbol",
+        "long_python",
+        "q_theme",
+        "tsx_theme",
+        "rust_backoff",
+        "q_unicode",
+        "go_retry",
+        "unicode_code",
+        "py_retry",
+        "py_retry_hard_negative",
+        "q_retry"
+      ],
+      "minimal_symbol": [
+        "minimal_empty",
+        "rust_backoff",
+        "q_unicode",
+        "q_theme",
+        "tsx_theme",
+        "unicode_code",
+        "go_retry",
+        "long_python",
+        "py_retry",
+        "py_retry_hard_negative",
+        "q_retry"
+      ],
+      "long_python": [
+        "minimal_empty",
+        "py_retry",
+        "minimal_symbol",
+        "py_retry_hard_negative",
+        "unicode_code",
+        "tsx_theme",
+        "q_unicode",
+        "q_theme",
+        "go_retry",
+        "rust_backoff",
+        "q_retry"
+      ]
+    }
+  },
+  "int8_static": {
+    "size_bytes": 208949181,
+    "max_abs": 0.48389023542404175,
+    "min_cosine": 0.15522541105747223,
+    "top1_agreement": 0.8333333333333334,
+    "top5_agreement": 0.25,
+    "per_input": {
+      "q_retry": {
+        "max_abs": 0.060463957488536835,
+        "cosine": 0.8475002646446228
+      },
+      "q_theme": {
+        "max_abs": 0.06722541898488998,
+        "cosine": 0.8518047332763672
+      },
+      "q_unicode": {
+        "max_abs": 0.06310122460126877,
+        "cosine": 0.8314784169197083
+      },
+      "py_retry": {
+        "max_abs": 0.07164351642131805,
+        "cosine": 0.777651846408844
+      },
+      "py_retry_hard_negative": {
+        "max_abs": 0.1006719246506691,
+        "cosine": 0.7729203104972839
+      },
+      "tsx_theme": {
+        "max_abs": 0.08722006529569626,
+        "cosine": 0.8085681200027466
+      },
+      "rust_backoff": {
+        "max_abs": 0.07824784517288208,
+        "cosine": 0.7989200353622437
+      },
+      "go_retry": {
+        "max_abs": 0.07888121902942657,
+        "cosine": 0.7919878363609314
+      },
+      "unicode_code": {
+        "max_abs": 0.05957072228193283,
+        "cosine": 0.8525404334068298
+      },
+      "minimal_empty": {
+        "max_abs": 0.19188877940177917,
+        "cosine": 0.6408616900444031
+      },
+      "minimal_symbol": {
+        "max_abs": 0.10226817429065704,
+        "cosine": 0.7923880815505981
+      },
+      "long_python": {
+        "max_abs": 0.48389023542404175,
+        "cosine": 0.15522541105747223
+      }
+    },
+    "nearest_neighbors": {
+      "q_retry": [
+        "rust_backoff",
+        "py_retry",
+        "py_retry_hard_negative",
+        "go_retry",
+        "q_unicode",
+        "q_theme",
+        "tsx_theme",
+        "long_python",
+        "unicode_code",
+        "minimal_empty",
+        "minimal_symbol"
+      ],
+      "q_theme": [
+        "tsx_theme",
+        "q_unicode",
+        "q_retry",
+        "long_python",
+        "rust_backoff",
+        "unicode_code",
+        "minimal_symbol",
+        "minimal_empty",
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry"
+      ],
+      "q_unicode": [
+        "unicode_code",
+        "q_retry",
+        "q_theme",
+        "long_python",
+        "rust_backoff",
+        "tsx_theme",
+        "minimal_symbol",
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry",
+        "minimal_empty"
+      ],
+      "py_retry": [
+        "py_retry_hard_negative",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "minimal_empty",
+        "unicode_code",
+        "tsx_theme",
+        "q_unicode",
+        "minimal_symbol",
+        "q_theme"
+      ],
+      "py_retry_hard_negative": [
+        "py_retry",
+        "go_retry",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "minimal_symbol",
+        "minimal_empty",
+        "tsx_theme",
+        "q_unicode",
+        "unicode_code",
+        "q_theme"
+      ],
+      "tsx_theme": [
+        "q_theme",
+        "rust_backoff",
+        "q_retry",
+        "q_unicode",
+        "long_python",
+        "minimal_symbol",
+        "go_retry",
+        "unicode_code",
+        "minimal_empty",
+        "py_retry_hard_negative",
+        "py_retry"
+      ],
+      "rust_backoff": [
+        "go_retry",
+        "py_retry_hard_negative",
+        "py_retry",
+        "q_retry",
+        "long_python",
+        "tsx_theme",
+        "q_unicode",
+        "minimal_symbol",
+        "unicode_code",
+        "q_theme",
+        "minimal_empty"
+      ],
+      "go_retry": [
+        "py_retry",
+        "py_retry_hard_negative",
+        "rust_backoff",
+        "q_retry",
+        "long_python",
+        "tsx_theme",
+        "minimal_empty",
+        "minimal_symbol",
+        "q_unicode",
+        "unicode_code",
+        "q_theme"
+      ],
+      "unicode_code": [
+        "q_unicode",
+        "minimal_symbol",
+        "rust_backoff",
+        "q_theme",
+        "tsx_theme",
+        "long_python",
+        "minimal_empty",
+        "go_retry",
+        "q_retry",
+        "py_retry",
+        "py_retry_hard_negative"
+      ],
+      "minimal_empty": [
+        "minimal_symbol",
+        "go_retry",
+        "tsx_theme",
+        "unicode_code",
+        "py_retry_hard_negative",
+        "long_python",
+        "py_retry",
+        "rust_backoff",
+        "q_theme",
+        "q_unicode",
+        "q_retry"
+      ],
+      "minimal_symbol": [
+        "long_python",
+        "unicode_code",
+        "rust_backoff",
+        "tsx_theme",
+        "minimal_empty",
+        "go_retry",
+        "py_retry_hard_negative",
+        "q_unicode",
+        "q_theme",
+        "py_retry",
+        "q_retry"
+      ],
+      "long_python": [
+        "rust_backoff",
+        "q_unicode",
+        "minimal_symbol",
+        "q_theme",
+        "go_retry",
+        "tsx_theme",
+        "q_retry",
+        "py_retry",
+        "py_retry_hard_negative",
+        "unicode_code",
+        "minimal_empty"
+      ]
+    }
+  }
+}
