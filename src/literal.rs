@@ -35,9 +35,32 @@ use std::path::Path;
 /// symbol search.
 pub const MAX_RESULTS: usize = 200;
 
-/// Matches kept per file before the rest of that file is skipped. Bounds a
-/// single file (e.g. a generated fixture repeating the same token on every
-/// line) from crowding out every other file's matches.
+/// Matches kept per file before the rest of that file is skipped and the
+/// scan moves to the next one. Bounds a single file (e.g. a generated
+/// fixture repeating the same token on every line) from consuming the
+/// whole result budget by itself, at the deliberate cost of an exact
+/// global sorted-prefix guarantee: when any file has more than this many
+/// matches, later (sort-after) files still contribute their own matches
+/// into the returned set, so the output can include a later file's hit
+/// while this file's matches beyond the cap never appear — see `search`'s
+/// doc comment for the precise contract this implies.
+///
+/// This shape was deliberately kept, not a bug left unfixed: a Greptile
+/// review of the first cut of this cap correctly found that exact
+/// "ordered but non-prefix" property (reachable in this very repo —
+/// `src/retrieval.rs` has 80+ occurrences of `"fn "`) and proposed making
+/// the cap abort the *whole scan* instead of moving to the next file. A
+/// follow-up Codex review of that fix caught what it costs: one
+/// match-heavy file would then silently suppress every other file's
+/// results entirely, which is strictly worse for literal search's actual
+/// job (finding a string across a repo) than the ordering imprecision it
+/// fixed. What *was* a genuine bug, fixed here: `truncated` used to be set
+/// the instant a file's count reached this cap, even when that file had
+/// *exactly* this many matches and nothing more — see the check-before-
+/// record structure in `search` below, which only sets it when a match
+/// beyond the cap is actually found. See `docs/literal-search-eval/
+/// README.md`'s "Post-review correctness fix" section for the full
+/// back-and-forth between both reviews and why this is the resolution.
 const MAX_MATCHES_PER_FILE: usize = 50;
 
 /// Global accumulation ceiling applied *during* the walk, independent of
@@ -93,19 +116,27 @@ fn truncate_snippet(line: &[u8]) -> String {
 
 /// Scan every file under `root` that OXIDE's ignore policy would keep
 /// (`scanner::scan_repo_text`) for a literal, case-sensitive occurrence of
-/// `pattern`, byte-exact regardless of the file's own encoding. Results are
-/// sorted `(file, line, column)` and bounded to `limit` (itself capped at
-/// [`MAX_RESULTS`]).
+/// `pattern`, byte-exact regardless of the file's own encoding.
+///
+/// The returned set is sorted `(file, line, column)` and bounded to
+/// `limit` (itself capped at [`MAX_RESULTS`]) — but **this is not
+/// necessarily an exact prefix of the full, unbounded match list**: each
+/// file contributes at most [`MAX_MATCHES_PER_FILE`] matches before the
+/// scan moves to the next file, so when any one file has more matches
+/// than that, a later file's hits can appear in the output while that
+/// file's own matches beyond the cap do not. See [`MAX_MATCHES_PER_FILE`]'s
+/// doc for why this tradeoff (multi-file coverage over strict global
+/// ordering) is deliberate, not an oversight.
 ///
 /// The match loop is `memchr::memmem` (SIMD-accelerated substring search —
-/// the same primitive ripgrep itself uses), not a hand-rolled scan.
-/// `docs/literal-search-eval/README.md`'s profiling pass measured the
-/// prior scalar `windows().position()` loop as ~12-13x slower than
-/// ripgrep's engine over the same bytes, and — since that cost scaled with
-/// bytes scanned, not matches found — as the dominant cost of the whole
-/// call, well above the file walk or the I/O. One `Finder` is built once
-/// per `search()` call and reused across every file and line, rather than
-/// rebuilt on every match attempt the way the old per-call `find` was.
+/// the same primitive ripgrep itself uses), not a hand-rolled scan. One
+/// `Finder` is built once per `search()` call and reused across every file
+/// and line, rather than rebuilt on every match attempt the way the old
+/// per-call `find` was. `docs/literal-search-eval/README.md`'s profiling
+/// pass found this swap worthwhile — but also found that the matcher
+/// alone isn't the whole story: line-splitting (`bytes.split(|&b| b ==
+/// b'\n')`, itself a scalar scan) and per-hit allocation are comparable
+/// remaining costs, not eliminated by this change.
 pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchResult> {
     ensure!(
         !pattern.is_empty(),
@@ -125,10 +156,24 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
         };
         let display = rel.to_string_lossy().replace('\\', "/");
         let mut file_matches = 0usize;
-        for (idx, line) in bytes.split(|&b| b == b'\n').enumerate() {
+        'file: for (idx, line) in bytes.split(|&b| b == b'\n').enumerate() {
             let mut cursor = 0usize;
             while let Some(pos) = finder.find(&line[cursor..]) {
                 let match_start = cursor + pos;
+                // Checked *before* recording, not after: `truncated` must
+                // only fire when a match genuinely exists beyond the cap,
+                // not merely because the cap's count was reached (a file
+                // with *exactly* `MAX_MATCHES_PER_FILE` matches and no
+                // more used to falsely report truncation). Moving to the
+                // next file (`break 'file`, not `break 'files`) — rather
+                // than aborting the whole scan — is deliberate: see
+                // `MAX_MATCHES_PER_FILE`'s doc for why an earlier attempt
+                // to make this a strict global sorted-prefix regressed
+                // multi-file coverage instead.
+                if file_matches >= MAX_MATCHES_PER_FILE {
+                    truncated = true;
+                    break 'file;
+                }
                 hits.push(LiteralHit {
                     file: display.clone(),
                     line: (idx + 1) as u32,
@@ -140,14 +185,7 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
                     truncated = true;
                     break 'files;
                 }
-                if file_matches >= MAX_MATCHES_PER_FILE {
-                    truncated = true;
-                    break;
-                }
                 cursor = match_start + needle.len();
-            }
-            if file_matches >= MAX_MATCHES_PER_FILE {
-                break;
             }
         }
     }
@@ -275,5 +313,72 @@ mod tests {
         assert_eq!(first.hits.len(), 2);
         assert_eq!(first.hits[0].file, "f0.txt");
         assert_eq!(first.hits[1].file, "f1.txt");
+    }
+
+    /// Pins the deliberate (reviewed twice, see `MAX_MATCHES_PER_FILE`'s
+    /// doc) per-file-fairness contract: a file with more matches than the
+    /// cap has its excess dropped, but the scan still moves on to later
+    /// files rather than aborting — so a later-sorting file's matches DO
+    /// appear in the output alongside the capped file's first
+    /// `MAX_MATCHES_PER_FILE`, and `truncated` reflects that something was
+    /// dropped. A first attempt at fixing this area made it a strict
+    /// global sorted-prefix instead (aborting the whole scan on any
+    /// over-cap file); a Codex review of that attempt correctly flagged it
+    /// as a coverage regression — one match-heavy file would then silently
+    /// suppress every other file's results — so it was reverted in favor
+    /// of this documented tradeoff.
+    #[test]
+    fn per_file_cap_skips_to_the_next_file_and_flags_truncated() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        // "a.txt" sorts before "b.txt"; give it more than the cap.
+        let over_cap = "marker\n".repeat(MAX_MATCHES_PER_FILE + 10);
+        write(&root.join("a.txt"), &over_cap);
+        write(&root.join("b.txt"), "marker\n");
+        std::process::Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(root)
+            .status()
+            .unwrap();
+
+        let result = search(root, "marker", MAX_RESULTS).unwrap();
+        assert!(result.truncated, "a.txt has more matches than the cap");
+        assert_eq!(result.hits.len(), MAX_MATCHES_PER_FILE + 1);
+        let files: Vec<&str> = result.hits.iter().map(|h| h.file.as_str()).collect();
+        assert_eq!(
+            files.iter().filter(|&&f| f == "a.txt").count(),
+            MAX_MATCHES_PER_FILE,
+            "a.txt contributes exactly its cap: {files:?}"
+        );
+        assert!(
+            files.contains(&"b.txt"),
+            "a later file must still contribute — that's the whole point \
+             of skipping to the next file instead of aborting: {files:?}"
+        );
+    }
+
+    /// Regression: hitting the cap used to set `truncated = true`
+    /// unconditionally, even when the file had exactly `MAX_MATCHES_PER_FILE`
+    /// matches and nothing more — falsely telling a caller more results
+    /// exist. The fix (check-before-record) only sets `truncated` when a
+    /// real match is found beyond the cap.
+    #[test]
+    fn exactly_at_the_per_file_cap_does_not_falsely_report_truncated() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        let exactly_cap = "marker\n".repeat(MAX_MATCHES_PER_FILE);
+        write(&root.join("a.txt"), &exactly_cap);
+        std::process::Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(root)
+            .status()
+            .unwrap();
+
+        let result = search(root, "marker", MAX_RESULTS).unwrap();
+        assert_eq!(result.hits.len(), MAX_MATCHES_PER_FILE);
+        assert!(
+            !result.truncated,
+            "no match exists beyond the cap; truncated must stay false"
+        );
     }
 }

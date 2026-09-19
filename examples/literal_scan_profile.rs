@@ -5,15 +5,24 @@
 //! optimization.
 //!
 //! Decomposes the control's own work into the same phases it performs
-//! internally but as separate, individually-timed steps (walk, then read,
-//! then match), and separately measures ripgrep's engine in-process (via
-//! the `grep-searcher`/`grep-regex` dev-dependencies -- ripgrep's own
-//! matching code, not a reimplementation, and not a subprocess) over the
-//! *same file set* `scan_repo_text` produced, so the comparison isolates
-//! matcher/walk implementation differences from ignore-policy differences.
-//! A real `rg -F` subprocess run (same file set, same pattern) is included
-//! too, to correlate these in-process numbers with the subprocess-based
-//! benchmark already in the eval doc.
+//! internally but as separate, individually-timed steps (walk, read,
+//! line-split, then match+construct), and separately measures ripgrep's
+//! engine in-process (via the `grep-searcher`/`grep-regex` dev-dependencies
+//! -- ripgrep's own matching code, not a reimplementation, and not a
+//! subprocess) over the *same file set* `scan_repo_text` produced, so the
+//! comparison isolates matcher/walk implementation differences from
+//! ignore-policy differences. A real `rg -F` subprocess run (same file
+//! set, same pattern) is included too, to correlate these in-process
+//! numbers with the subprocess-based benchmark already in the eval doc.
+//!
+//! A Greptile review of this file (see docs/literal-search-eval/README.md)
+//! caught an early version attributing the whole `C - (A+B)` remainder to
+//! "the matcher" — it also includes line-splitting (`bytes.split(|&b| b ==
+//! b'\n')`, a scalar per-byte closure call with no SIMD path in
+//! `std::slice::split`) and per-hit allocation (a path clone and snippet
+//! truncation per `LiteralHit`), neither of which phase A or B measures.
+//! Phase B2 exists specifically to give line-splitting its own number
+//! rather than leaving it folded into an unqualified "matcher" claim.
 //!
 //! Usage: `cargo run --release --example literal_scan_profile -- [REPO] [PATTERN]`
 //! (`REPS` env var controls repetitions, default 10.)
@@ -123,7 +132,10 @@ fn main() {
     }
     report("C: control end-to-end", &control_samples);
     println!(
-        "   {control_hits} hits (capped at {}); C - (A+B) isolates match-only cost, roughly",
+        "   {control_hits} hits (capped at {}); C - (A+B) is NOT match-only cost -- \
+         Greptile review caught this overclaim -- it also includes line-splitting \
+         (see B2) and per-hit allocation (path clone + snippet truncation), neither \
+         of which A or B measure",
         literal::MAX_RESULTS
     );
 
@@ -174,7 +186,8 @@ fn main() {
         }
         report("E: rg -F subprocess", &rg_subprocess_samples);
         println!(
-            "   D vs E isolates process-spawn overhead; C vs D isolates walk+read+matcher implementation"
+            "   D vs E isolates process-spawn overhead; C vs D compares the whole \
+             per-file pipeline (walk excluded from both, everything else included)"
         );
     } else {
         println!("E: rg -F subprocess          skipped (rg not installed)");
@@ -182,7 +195,9 @@ fn main() {
 
     println!();
     println!(
-        "sum(A+B) = {:.3}ms; C (control end-to-end) = {:.3}ms -- the difference is roughly the byte-scan's own cost once walk and I/O are removed",
+        "sum(A+B) = {:.3}ms; C (control end-to-end) = {:.3}ms -- the difference is \
+         line-splitting + matching + per-hit allocation combined (see B2 for the \
+         split-only share), not the matcher alone",
         percentile(&walk_samples, 50.0) + percentile(&read_samples, 50.0),
         percentile(&control_samples, 50.0),
     );

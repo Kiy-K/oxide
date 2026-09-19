@@ -4,12 +4,19 @@ Status: **Control arm shipped** (`oxide search --mode literal`, `src/literal.rs`
 **FTS5 trigram challenger measured and REJECTED** (`spike/`, a standalone
 crate — not part of OXIDE's build, not reachable from any user-facing
 surface) — see the verdict section below. **Profiled** the control against
-`rg -F`, found the gap's real source (byte-scan matcher, not walk/I/O), and
-**optimized it** (`memchr::memmem` — 2.6-3.9x faster end-to-end on a real
-repo, zero behavior/API change, no regression found) — see "Profiling" and
-"Optimization" below. Remaining gap (~4-5x vs. ripgrep, down from ~12-13x)
-is line-splitting and per-hit allocation, not yet addressed. No regex
-support either way.
+`rg -F`, found the gap's real source (line-splitting + matching +
+allocation combined, not walk/I/O), and **optimized the matcher**
+(`memchr::memmem` — ~3.9x faster end-to-end on a clean real-repo
+comparison). **Reviewed by both Greptile and Codex** (commits
+`636b0ae..ec7bfd0`): Greptile found a real pre-existing bug in the
+per-file match cap's `truncated` flag, and its proposed ordering fix was
+itself caught by a Codex review as a coverage regression — the resolution
+keeps per-file multi-file coverage, fixes the flag bug outright, and
+documents the actual (not strict-global-prefix) contract explicitly; see
+"Post-review correctness fix" below for the full back-and-forth. Remaining
+performance gap (~2.6-3.2x vs. ripgrep, down from ~12-13x) is
+line-splitting and per-hit allocation, not yet addressed. No regex support
+either way.
 
 ## What was built
 
@@ -201,7 +208,11 @@ surface changed.
   _over_limit` (asserts a specific deterministic subset survives
   truncation) both pass unchanged. `memchr::memmem::Finder::find` finds
   the same leftmost match in a given slice `windows().position()` did, so
-  the cursor-advance loop's positional semantics are identical.
+  the cursor-advance loop's positional semantics are identical. **This
+  specific claim was incomplete when first written** — see "Post-review
+  correctness fix" below for a real sorted-prefix violation a Greptile
+  review found in the surrounding per-file-cap logic, which neither this
+  memchr swap nor the existing tests at the time exercised.
 - **All caps** (`MAX_MATCHES_PER_FILE`, `SCAN_SAFETY_CAP`, `MAX_RESULTS`):
   untouched — the loop structure around the matcher call didn't change,
   only what's inside the innermost `while let Some(pos) = ...`.
@@ -224,17 +235,21 @@ order-of-magnitude). OXIDE repo: 1,396 files, ~31.5MB, 15 reps.
 |---|---:|---:|---:|
 | A: walk | ~8ms | ~10ms | ~1x (unchanged; noise) |
 | B: read | ~9ms | ~10-16ms | ~1x (unchanged; noise) |
-| **C: control end-to-end, `"fn "` (200 hits)** | **169.9ms** | **~63-66ms** | **~2.6x** |
-| **C: control end-to-end, near-absent pattern (2 hits)** | **150.1ms** | **~38ms** | **~3.9x** |
+| **C: control end-to-end, near-absent pattern (2 hits)** | **150.1ms** | **~38-39ms** | **~3.9x** |
 | D: rg engine, in-process (unchanged, reference) | ~12ms | ~12-15ms | n/a |
 
-The improvement is bigger for the near-absent pattern (3.9x) than for `"fn
-"` (2.6x) — `memmem`'s advantage compounds over a full-corpus scan with
-nothing to match, while `"fn "` also pays per-hit bookkeeping cost (200
-`LiteralHit`s: a `String` clone and a snippet truncation each) that
-`memmem` doesn't touch. Both numbers are real wins; neither is inflated by
-walk or I/O changing (A and B are within measurement noise of the
-pre-optimization numbers, as expected — nothing about them changed).
+The near-absent-pattern row is the clean, isolated matcher comparison:
+that query never triggers `MAX_MATCHES_PER_FILE` (only 2 hits total), so
+its workload — and therefore this comparison — is unaffected by the
+correctness fix below. It is not inflated by walk or I/O changing either
+(A and B are within measurement noise of the pre-optimization numbers, as
+expected — nothing about them changed).
+
+**The `"fn "` (200-hit) row from the original measurement is retracted, not
+just updated** — the correctness fix below makes it measure a different
+*workload*, not just a faster implementation of the same one (see the next
+section for why), so a before/after speedup number for it would compare
+two different queries and is not reported.
 
 On the small fixture repos (`fixtures/py_repo`, `fixtures/ts_repo`, ~5-8KB)
 control end-to-end stayed ~3-4ms, unchanged within noise — walk dominates
@@ -249,18 +264,87 @@ next to reading 31.5MB of file content.
 
 ### Remaining gap (not closed, not in scope here)
 
-The control is now **~4-5x slower than ripgrep's engine** on the OXIDE
-repo (was ~12-13x) — real progress, gap not closed. The profiling pass's
-new **Phase B2** (read + line-split, no matching: `bytes.split(|&b| b ==
-b'\n')`) measured ~25-29ms on this corpus — a plain scalar per-byte
-closure call with no SIMD fast path in `std::slice::split` — which is now
-comparable to or larger than the matcher's own remaining cost. Closing the
-rest of this gap would mean also replacing the newline-finding with a
-`memchr`-based line iterator (or restructuring around `grep-searcher`'s
-buffered line-oriented model directly), plus reducing per-hit allocation
-(the `display.clone()`/snippet-truncation cost on every `LiteralHit`).
-**Neither is done here** — out of scope for "replace the matcher," and
-each would need its own before/after measurement the way this one got.
+The control is now **~2.6-3.2x slower than ripgrep's engine** on the
+near-absent-pattern comparison (was ~12-13x before the memchr swap) — real
+progress, gap not closed. The profiling pass's **Phase B2** (read +
+line-split, no matching: `bytes.split(|&b| b == b'\n')`) measured ~25-31ms
+on this corpus — a plain scalar per-byte closure call with no SIMD fast
+path in `std::slice::split` — which is now comparable to or larger than
+the matcher's own remaining cost. Closing the rest of this gap would mean
+also replacing the newline-finding with a `memchr`-based line iterator (or
+restructuring around `grep-searcher`'s buffered line-oriented model
+directly), plus reducing per-hit allocation (the `display.clone()`/
+snippet-truncation cost on every `LiteralHit`). **Neither is done here** —
+out of scope for "replace the matcher," and each would need its own
+before/after measurement the way this one got.
+
+### Post-review correctness fix: two reviews, two opposite proposed fixes, and the resolution
+
+A Greptile review of this optimization (`greptile review --branch <pre-#6
+commit>`, commits `636b0ae..ec7bfd0`) found a **P1** bug in the per-file
+cap logic (`MAX_MATCHES_PER_FILE = 50`) — pre-existing since the control's
+first commit, not introduced by the memchr swap, but only caught once a
+reviewer checked the interaction directly. Fixing it produced a second,
+conflicting review finding, and the sequence of both is worth recording in
+full because the final answer is a documented tradeoff, not a clean bug
+fix.
+
+**The bug (confirmed real, not theoretical):** hitting a file's 50-match
+cap moved on to the *next* file instead of stopping. Files are visited in
+sorted order, so a file with more than 50 matches had its matches 51+
+silently dropped while *later-sorting* files' matches were still admitted
+— an "ordered but non-prefix" subset, per Greptile: *"Matches 51 onward
+therefore disappear even though they sort before every match from those
+later files, so a request for up to 200 results can return an ordered but
+non-prefix subset."* `truncated` was also set unconditionally at the
+50th match, even when a file had *exactly* 50 and nothing more — a
+separate, unambiguous bug regardless of which design won below.
+`src/retrieval.rs` in this very repo has 80+ occurrences of `"fn "`, the
+exact pattern this doc's earlier benchmark used, so **the original `"fn "`
+(200-hit) measurements above were already affected by this bug** — that
+row is retracted rather than corrected, since any fix changes what that
+specific query actually scans.
+
+**First fix attempt (rejected by a second review):** make the cap abort
+the *entire* scan (`break 'files'`) instead of moving to the next file,
+so the result is always a strict global sorted prefix. A Codex review of
+that attempt (`codex review --uncommitted`) caught a real regression it
+introduced: *"the previous per-file cap explicitly prevented one noisy
+file from crowding out all others... [this fix] causes a common
+match-heavy file to terminate repository-wide search, suppressing valid
+results from all later files."* Both reviews are correct about the
+property each is defending — they simply value different things — but
+strict global ordering and per-file crowding protection cannot both hold
+when one file legitimately has more matches than the cap: something has
+to give.
+
+**Final resolution:** keep the original per-file-skip-to-next-file
+behavior (multi-file coverage wins — literal search's job is finding a
+string across a repo, and ripgrep's own `-m`/`--max-count` is per-file for
+the same reason, with no global-prefix guarantee either), fix *only* the
+unambiguous `truncated`-flag bug (check-before-record, so it's set only
+when a match genuinely exists beyond the cap), and make the actual
+contract explicit in `MAX_MATCHES_PER_FILE`'s and `search`'s own doc
+comments rather than pretending the earlier wording's implied strict
+top-K was ever fully accurate. This resolves Greptile's underlying
+concern (a caller should not be misled about the guarantee) without
+Codex's flagged regression (other files still get a chance).
+
+**Regression tests** (`src/literal.rs`): `per_file_cap_skips_to_the_next
+_file_and_flags_truncated` (an over-cap file's later-sorting sibling MUST
+still appear — pins the final, deliberate design) and `exactly_at_the_per
+_file_cap_does_not_falsely_report_truncated` (a file with exactly the cap
+count and nothing more must not set `truncated` — the one part of the bug
+fixed outright).
+
+A second, lower-severity (**P2**) finding from the same review — that
+`examples/literal_scan_profile.rs`'s original wording attributed the whole
+`C - (A + B)` remainder to "the matcher," when Phase B2 itself shows
+line-splitting is a substantial, separately-measured part of it — is
+addressed by this document's wording above and by the profiler's own
+output strings, both corrected to attribute the remainder to
+"line-splitting + matching + per-hit allocation" rather than "the
+matcher" alone.
 
 ## FTS5 trigram challenger: measured and rejected
 
@@ -448,8 +532,14 @@ benchmarked on real and synthetic corpora, and rejected on cost and
 correctness grounds — not left unevaluated, and relocated out of `src/`
 entirely once rejected so production contains no dormant FTS5 code; and
 the control's own gap to `rg -F` has been profiled, correctly attributed
-(byte-scan matcher, not walk/I/O — correcting an earlier wrong guess), and
-closed substantially (`memchr::memmem`, 2.6-3.9x faster, no regression) —
+(line-splitting + matching + allocation combined — correcting an earlier
+wrong guess that named the matcher alone), and closed substantially
+(`memchr::memmem`, ~3.9x faster on a clean comparison, no regression) —
 with the remainder (line-splitting, per-hit allocation) identified and
-left for a future pass rather than pursued here. Nothing about regex or a
-production trigram index changes; both remain explicitly out of scope.
+left for a future pass rather than pursued here. Greptile and Codex
+reviews of the whole change additionally caught a real, pre-existing
+`truncated`-flag bug and a real regression in the first attempt to fix it,
+resolving to a documented (not silently assumed) per-file fairness
+contract before any of this was considered settled — see "Post-review
+correctness fix." Nothing about regex or a production trigram index
+changes; both remain explicitly out of scope.
