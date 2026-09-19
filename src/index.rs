@@ -479,7 +479,25 @@ pub fn update_base_for_files(
         if !seen.insert(p.as_str()) {
             continue;
         }
-        match std::fs::read_to_string(root.join(p)) {
+        let full_path = root.join(p);
+        // `IgnoreCache`'s fast path trusts its cached indexable set without
+        // rechecking eligibility per event (deliberately — see
+        // `watcher.rs::IgnoreCache::candidate`), so a markdown file that
+        // grew past `MAX_MARKDOWN_BYTES` since the cache was last built can
+        // still arrive here as a "changed path" even though `scan_repo`
+        // would no longer include it. Treat that exactly like the
+        // `NotFound` case below: a stale, previously-indexed symbol must be
+        // removed, never left behind just because nothing re-read it, and
+        // the file's now-oversized content must never actually be parsed
+        // (found by review: an earlier fix stopped the reparse but left
+        // the stale symbol in place, which is worse than either extreme).
+        if !crate::scanner::is_indexable(&full_path) {
+            if stored.contains_key(p) {
+                removed.push(p.clone());
+            }
+            continue;
+        }
+        match std::fs::read_to_string(&full_path) {
             Ok(src) => {
                 current.insert(p.clone(), src);
             }

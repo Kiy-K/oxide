@@ -223,13 +223,18 @@ are the source of truth.
 Markdown (`.md`) is indexed too, but not as an eleventh programming
 language: a doc file becomes one whole-file symbol (no heading/section
 parsing, no calls or inheritance — there's no AST to extract them from), so
-it's reachable by the same lexical, semantic, and incremental-update
-machinery every other file already uses — no new indexing code, though it
-still costs the same one embedding and one set of lexical postings any
-symbol costs. This makes a README's own prose ("where is X handled", "why
-does Y work this way")
-findable through `oxide query`/`search` alongside the code it describes,
-without requiring `--mode literal`. Documentation still respects
+it's stored and updated by the same incremental machinery every other file
+already uses — no new indexing code, though it still costs the same one
+embedding and one set of lexical postings any symbol costs. Its **body
+prose is reachable through lexical search** (BM25 indexes the whole file,
+same as any symbol's body); the **embedding covers only path, heading, and
+cross-references, not body text** — the same asymmetry every language's
+module-fallback symbol already has, so a query matching only a paragraph's
+wording, not its heading or a named symbol, ranks the doc lexically but not
+semantically. This makes a README's own prose ("where is X handled", "why
+does Y work this way") findable through `oxide query`/`search` alongside
+the code it describes, without requiring `--mode literal`. Documentation
+still respects
 `.gitignore` and the same generated/vendor/cache denylist as code, plus one
 extra, selective cap: a `.md` file over 64 KB is skipped (`scanner.rs`'s
 `MAX_MARKDOWN_BYTES`) — sized from a survey of this repo's own docs, so

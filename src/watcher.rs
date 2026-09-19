@@ -129,16 +129,17 @@ impl IgnoreCache {
             return Ok(None);
         }
         let rel_str = rel.display().to_string();
-        // Every other language's fast path trusts the cache unconditionally
-        // (`MAX_SCANNED_FILE_BYTES` sharing that tradeoff is deliberate and
-        // left alone — see `scanner::MAX_MARKDOWN_BYTES`'s doc comment).
-        // Markdown's much tighter cap is realistically crossable by editing
-        // a live document during a watch session, so re-verify it here
-        // instead of trusting a possibly-stale "yes" from a previous scan.
-        let still_within_markdown_cap = scanner::language_for_path(rel)
-            != Some(crate::symbols::Language::Markdown)
-            || scanner::is_indexable(path);
-        if self.indexable.contains(&rel_str) && still_within_markdown_cap {
+        // Trusting the cache here (no per-event size recheck) is safe even
+        // for markdown's tighter cap: a file that grows past it is still a
+        // "candidate" — `update_base_for_files` is what actually enforces
+        // `scanner::is_indexable` on read, treating a no-longer-eligible
+        // path exactly like a deletion (removes the stale symbol instead of
+        // reparsing oversized content). Making *this* cache distrust itself
+        // per-event was tried and reverted: it only stopped the reparse,
+        // leaving the stale entry behind with nothing to ever remove it
+        // (found by review) — the fix belongs where content is read, not
+        // where candidacy is decided.
+        if self.indexable.contains(&rel_str) {
             return Ok(Some(rel_str));
         }
         if !changes_ignore_rules(root, path)
@@ -537,27 +538,27 @@ mod tests {
     }
 
     #[test]
-    fn markdown_growing_past_the_cap_mid_watch_is_not_reindexed_oversized() {
-        // The fast path ("already indexable, no rescan") is what makes the
-        // watcher cheap, but it must not let an already-cached markdown
-        // file's *stale* small content_hash survive being edited past
-        // MAX_MARKDOWN_BYTES — the freshly oversized content must never
-        // reach update_base_for_files (found by review: this is exactly
-        // the class of gap the fast path's "no rescan" tradeoff creates,
-        // closed here for markdown specifically since its cap is realistic
-        // to cross by ordinary editing, unlike the 1.5 MB generic one).
+    fn markdown_growing_past_the_cap_mid_watch_is_removed_not_left_stale() {
+        // `IgnoreCache`'s fast path trusts its cache without a per-event
+        // size recheck (see `candidate`'s own comment on why that's fine),
+        // so the real enforcement is in `update_base_for_files`: an
+        // already-cached markdown file that grows past `MAX_MARKDOWN_BYTES`
+        // must have its *stale* symbol removed, and its new oversized
+        // content must never actually be parsed/embedded. (An earlier
+        // version of this fix lived in the cache layer instead and only
+        // stopped the reparse, leaving the stale entry behind forever —
+        // found by review — which is why the assertion here is "gone", not
+        // "unchanged".)
         let tmp = tempfile::tempdir().unwrap();
         write(&tmp.path().join("README.md"), "# Small doc\n");
         let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
         let emb = HashedEmbedder::default();
         update_index(tmp.path(), &mut store, &emb).unwrap();
-        let small_hash = store
+        assert!(store
             .all_symbols()
             .unwrap()
-            .into_iter()
-            .find(|s| s.file == "README.md")
-            .unwrap()
-            .content_hash;
+            .iter()
+            .any(|s| s.file == "README.md"));
 
         let mut cache = IgnoreCache::build(tmp.path()).unwrap();
         // Prime the cache's fast path: README.md is already known-indexable.
@@ -585,30 +586,28 @@ mod tests {
             report.reparsed_files, 0,
             "an oversized markdown file must not be reparsed via the watcher"
         );
-        let after_hash = store
-            .all_symbols()
-            .unwrap()
-            .into_iter()
-            .find(|s| s.file == "README.md")
-            .unwrap()
-            .content_hash;
         assert_eq!(
-            small_hash, after_hash,
-            "the stale small-file content_hash must survive, not be silently \
-             replaced by a hash of oversized content that was never actually indexed"
+            report.removed_files, 1,
+            "a no-longer-eligible tracked file must be reported as removed"
+        );
+        let symbols = store.all_symbols().unwrap();
+        assert!(
+            !symbols.iter().any(|s| s.file == "README.md"),
+            "the stale symbol must be gone, not left behind with its old \
+             hash: {:?}",
+            symbols.iter().map(|s| &s.file).collect::<Vec<_>>()
         );
     }
 
     #[test]
     fn deleting_or_renaming_a_cached_markdown_file_still_converges() {
-        // The new `still_within_markdown_cap` check calls `scanner::is_indexable`,
-        // which does a `fs::metadata` read — for a path that no longer
-        // exists (deleted, or renamed away) that read fails, so the check
-        // is false and the fast path is skipped even though this isn't the
-        // "grew too large" case at all. This must still converge to the
-        // same deletion/rename outcome the generic (non-markdown) path
-        // already gets, just via one extra refresh scan rather than the
-        // immediate fast-path return — a minor cost, not a correctness gap.
+        // `update_base_for_files`'s `scanner::is_indexable` check (added
+        // for the "grew past the cap" case) also does a `fs::metadata`
+        // read that fails for a path that no longer exists — so a deleted
+        // or renamed-away markdown file takes that same new branch instead
+        // of falling through to the `NotFound` read-error branch below it.
+        // Both branches push the same path onto `removed`, so the outcome
+        // must be identical either way; this pins that it actually is.
         let tmp = tempfile::tempdir().unwrap();
         write(&tmp.path().join("README.md"), "# Small doc\n");
         write(&tmp.path().join("src/a.py"), "def a():\n    return 1\n");
