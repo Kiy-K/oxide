@@ -55,13 +55,16 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
 /// `watcher.rs::IgnoreCache::candidate`'s fast path treats any
 /// already-indexable path as a candidate without rechecking anything, by
 /// design ("no rescan" is the whole point of caching the indexable set) —
-/// true for every language, and for `MAX_SCANNED_FILE_BYTES` too. Left
-/// alone for the other ten languages' 1.5 MB cap (a general watcher/cache
-/// redesign, out of scope here), but markdown's cap is 24x tighter and far
-/// more likely to be crossed by ordinary editing of a live document during
-/// a watch session, so `is_indexable` (below) is re-run on every event
-/// instead of trusting the cache for markdown specifically — see
-/// `IgnoreCache::candidate`.
+/// true for every language, including markdown. That's safe because
+/// `index.rs::update_base_for_files` (not the cache) is what actually
+/// enforces size eligibility: it calls `is_indexable` on every path before
+/// reading it, and treats "exists but no longer eligible" — oversized
+/// markdown, or any language past `MAX_SCANNED_FILE_BYTES` — exactly like
+/// deletion (stale symbol removed, oversized content never parsed). A
+/// version of this fix once lived in the cache layer for markdown only and
+/// left the generic 1.5 MB cap's watcher-freshness gap unaddressed; moving
+/// the check downstream, where it naturally covers every language through
+/// one shared code path, closed both at once (found by review).
 const MAX_MARKDOWN_BYTES: u64 = 64 * 1024;
 
 fn error_nodes(language: tree_sitter::Language, src: &str) -> usize {
@@ -316,13 +319,17 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
 /// a freshly-discovered one (found by review: the fast path's own "already
 /// known indexable, no rescan" optimization would otherwise never notice).
 pub fn is_indexable(path: &Path) -> bool {
-    match language_for_path(path) {
-        Some(crate::symbols::Language::Markdown) => std::fs::metadata(path)
-            .map(|m| m.len() <= MAX_MARKDOWN_BYTES)
-            .unwrap_or(false),
-        Some(_) => true,
-        None => false,
-    }
+    let Some(lang) = language_for_path(path) else {
+        return false;
+    };
+    let cap = if lang == crate::symbols::Language::Markdown {
+        MAX_MARKDOWN_BYTES
+    } else {
+        MAX_SCANNED_FILE_BYTES
+    };
+    std::fs::metadata(path)
+        .map(|m| m.len() <= cap)
+        .unwrap_or(false)
 }
 
 /// Discover every non-denylisted, non-binary, size-capped file under `root`

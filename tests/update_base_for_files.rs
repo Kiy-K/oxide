@@ -266,3 +266,45 @@ fn a_stale_extraction_version_escalates_a_scoped_update_to_a_full_reconcile() {
     );
     assert_eq!(r.scanned_files, 2, "the escalated run walks the whole tree");
 }
+
+/// The generic `MAX_SCANNED_FILE_BYTES` (1.5 MB) cap has the same
+/// watch-mode freshness property markdown's tighter cap does: a tracked
+/// file that grows past it must have its stale symbol removed, not left
+/// behind, and its oversized content must never actually be parsed. This
+/// is the non-markdown counterpart of that fix — same `scanner::is_indexable`
+/// check, exercised here for a Python file to prove it isn't
+/// markdown-specific.
+#[test]
+fn a_tracked_file_growing_past_the_generic_size_cap_is_removed_not_reparsed() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(&tmp.path().join("src/big.py"), "def big():\n    return 1\n");
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    update_base(tmp.path(), &mut store, &IndexOptions::default()).unwrap();
+    assert!(store
+        .all_symbols()
+        .unwrap()
+        .iter()
+        .any(|s| s.file == "src/big.py"));
+
+    // 1.5 MB is MAX_SCANNED_FILE_BYTES; one byte over crosses it.
+    write(&tmp.path().join("src/big.py"), &"x".repeat(1_500_001));
+    let r = update_base_for_files(
+        tmp.path(),
+        &mut store,
+        &IndexOptions::default(),
+        &["src/big.py".to_string()],
+    )
+    .unwrap();
+
+    assert_eq!(
+        r.reparsed_files, 0,
+        "an oversized file must not be reparsed, regardless of language"
+    );
+    assert_eq!(r.removed_files, 1);
+    let symbols = store.all_symbols().unwrap();
+    assert!(
+        !symbols.iter().any(|s| s.file == "src/big.py"),
+        "the stale symbol must be gone: {:?}",
+        symbols.iter().map(|s| &s.file).collect::<Vec<_>>()
+    );
+}

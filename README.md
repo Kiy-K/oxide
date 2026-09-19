@@ -241,6 +241,31 @@ extra, selective cap: a `.md` file over 64 KB is skipped (`scanner.rs`'s
 ordinary READMEs and design notes are indexed while a sprawling changelog
 or an accidentally-vendored doc is not.
 
+### Comment indexing
+
+Developer comments were audited before any new code was written for them,
+and turned out to already be indexed: every file's whole-file module
+symbol (the same fallback markdown uses, present for every language) spans
+line 1 to the file's last line unconditionally, and the lexical index
+slices that span verbatim — so a standalone comment between two functions,
+not just a docstring inside one, is already findable by `oxide search`
+today. Nothing needed building; `tests/comment_indexing.rs` pins the
+property as a regression test instead.
+
+The same reachability split as documentation applies: comments are
+lexically searchable (BM25 covers the whole file); a configured *remote*
+embedding provider never sees them, because `symbol_embed_text` — the
+literal payload sent over the network — is file/kind/qualified_name/
+signature/imports/references only, for every symbol in every language,
+never body or comment text. This is also the actual boundary of
+"pre-embedding secret filtering": a hardcoded secret in a tracked,
+non-excluded file's comment is locally searchable by design (OXIDE
+surfaces real repository content; it is not a secret scanner), but is
+never part of what a remote provider receives. Secrets are kept out
+entirely only by the existing file-level filters — `.gitignore`, the
+generated/vendor/cache denylist, hidden files (`.env*`) — which apply
+before a file is scanned at all, regardless of file type.
+
 ## Coding-agent integrations
 
 `oxide install` detects supported agents, shows the exact configuration
