@@ -254,17 +254,26 @@ property as a regression test instead.
 
 The same reachability split as documentation applies: comments are
 lexically searchable (BM25 covers the whole file); a configured *remote*
-embedding provider never sees them, because `symbol_embed_text` — the
-literal payload sent over the network — is file/kind/qualified_name/
-signature/imports/references only, for every symbol in every language,
-never body or comment text. This is also the actual boundary of
-"pre-embedding secret filtering": a hardcoded secret in a tracked,
-non-excluded file's comment is locally searchable by design (OXIDE
-surfaces real repository content; it is not a secret scanner), but is
-never part of what a remote provider receives. Secrets are kept out
-entirely only by the existing file-level filters — `.gitignore`, the
-generated/vendor/cache denylist, hidden files (`.env*`) — which apply
-before a file is scanned at all, regardless of file type.
+embedding provider only receives `symbol_embed_text` — file/kind/
+qualified_name/signature/imports/references, never full body text — for
+every symbol in every language. That payload includes `signature`, though,
+and for the whole-file module-fallback symbol specifically, `signature` is
+literally the file's first non-empty line, whatever it is — so a comment
+that opens the file (a license header, a leading `# TODO`) is metadata,
+not body text, and is sent like any other symbol's signature. A comment
+anywhere *after* the first non-empty line is not. `tests/comment_indexing.rs`
+pins both directions with real fixtures, not just this description.
+
+This is also the actual boundary of "pre-embedding secret filtering": a
+hardcoded secret in a tracked, non-excluded file's comment is locally
+searchable by design (OXIDE surfaces real repository content; it is not a
+secret scanner) regardless of where it sits in the file, but only ever
+reaches a configured remote provider if it happens to be the file's first
+line. Secrets are kept out of the index entirely — not just out of the
+remote payload — only by the existing file-level filters (`.gitignore`,
+the generated/vendor/cache denylist, hidden files like `.env*`), which
+apply before a file is scanned at all, regardless of file type or where a
+secret sits within it.
 
 ## Coding-agent integrations
 

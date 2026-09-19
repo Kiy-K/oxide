@@ -485,17 +485,33 @@ pub fn update_base_for_files(
         // `watcher.rs::IgnoreCache::candidate`), so a markdown file that
         // grew past `MAX_MARKDOWN_BYTES` since the cache was last built can
         // still arrive here as a "changed path" even though `scan_repo`
-        // would no longer include it. Treat that exactly like the
-        // `NotFound` case below: a stale, previously-indexed symbol must be
-        // removed, never left behind just because nothing re-read it, and
-        // the file's now-oversized content must never actually be parsed
-        // (found by review: an earlier fix stopped the reparse but left
-        // the stale symbol in place, which is worse than either extreme).
-        if !crate::scanner::is_indexable(&full_path) {
-            if stored.contains_key(p) {
-                removed.push(p.clone());
+        // would no longer include it. Treat a *confirmed* oversized file
+        // exactly like the `NotFound` case below: a stale, previously-
+        // indexed symbol must be removed, never left behind just because
+        // nothing re-read it, and the file's now-oversized content must
+        // never actually be parsed (found by review: an earlier fix
+        // stopped the reparse but left the stale symbol in place, which is
+        // worse than either extreme).
+        //
+        // Deliberately not `scanner::is_indexable` (which collapses any
+        // metadata-read failure to "not indexable"): only a *successful*
+        // metadata read that reports an over-cap size is oversized evidence
+        // here. A metadata call that fails for some other reason (a
+        // permission hiccup, a rename racing this exact instant) must fall
+        // through to the read below, whose own NotFound-vs-other-error
+        // distinction is the one this function has always relied on for
+        // "was this actually deleted?" — collapsing that distinction was a
+        // real bug in an earlier version of this fix (found by review): it
+        // turned a transient stat() failure into a silent symbol deletion.
+        if let Ok(meta) = std::fs::metadata(&full_path) {
+            if let Some(lang) = crate::scanner::language_for_path(&full_path) {
+                if meta.len() > crate::scanner::size_cap_for(lang) {
+                    if stored.contains_key(p) {
+                        removed.push(p.clone());
+                    }
+                    continue;
+                }
             }
-            continue;
         }
         match std::fs::read_to_string(&full_path) {
             Ok(src) => {

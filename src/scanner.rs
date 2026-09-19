@@ -311,24 +311,35 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
     walk_repo(root, is_indexable)
 }
 
+/// The size cap `path`'s resolved language is held to — markdown's tighter
+/// selective bound, or the generic `MAX_SCANNED_FILE_BYTES` for every other
+/// recognized language. No I/O; pure name/extension lookup plus a constant.
+pub fn size_cap_for(lang: crate::symbols::Language) -> u64 {
+    if lang == crate::symbols::Language::Markdown {
+        MAX_MARKDOWN_BYTES
+    } else {
+        MAX_SCANNED_FILE_BYTES
+    }
+}
+
 /// Whether `path` belongs in `scan_repo`'s result: a recognized language,
-/// and (markdown only) under `MAX_MARKDOWN_BYTES`. Factored out of
-/// `scan_repo` so `watcher.rs::IgnoreCache::candidate` can re-apply the same
-/// check on its fast path — an already-cached-indexable markdown file that
-/// grows past the cap between watcher events must be re-excluded, not just
-/// a freshly-discovered one (found by review: the fast path's own "already
-/// known indexable, no rescan" optimization would otherwise never notice).
+/// and under that language's `size_cap_for`. A metadata read failure of any
+/// kind (not just "gone") collapses to `false` here, same as `walk_repo`'s
+/// own binary-sniffing check a few lines below — both are one-shot walk
+/// predicates where "couldn't tell, skip it this pass" is already the
+/// accepted behavior. `index.rs::update_base_for_files` does NOT call this
+/// function for exactly that reason: it needs to tell "confirmed oversized"
+/// apart from "couldn't stat it this round" (the latter must never be
+/// treated as deletion evidence — see its own doc comment), so it reads
+/// metadata itself via `size_cap_for` instead (found by review: an earlier
+/// version of that fix called this function directly and silently turned
+/// every transient stat() failure into a symbol deletion).
 pub fn is_indexable(path: &Path) -> bool {
     let Some(lang) = language_for_path(path) else {
         return false;
     };
-    let cap = if lang == crate::symbols::Language::Markdown {
-        MAX_MARKDOWN_BYTES
-    } else {
-        MAX_SCANNED_FILE_BYTES
-    };
     std::fs::metadata(path)
-        .map(|m| m.len() <= cap)
+        .map(|m| m.len() <= size_cap_for(lang))
         .unwrap_or(false)
 }
 
