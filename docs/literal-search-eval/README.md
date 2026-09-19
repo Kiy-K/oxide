@@ -117,8 +117,10 @@ Pattern: `RetryPolicy`, present across the generated corpus.
 first measured we guessed the gap was "dominated by process startup and
 file I/O, not the matcher" — **that guess was wrong, and the profiling
 section below corrects it with a phase-by-phase measurement**: at real-repo
-scale, the byte-scan matcher itself is the dominant cost by roughly an
-order of magnitude, not walk or I/O. `rg`'s hit count is uncapped and
+scale, line-splitting and matching (combined — see the profiling section's
+own Phase B2 for why "the matcher" alone overclaims) are the dominant
+cost by roughly an order of magnitude, not walk or I/O. `rg`'s hit count
+is uncapped and
 includes files OXIDE's denylist excludes (e.g. nothing under `.git`);
 OXIDE's is capped at `--limit` (200 here), which is why the two hit counts
 in the script's raw output aren't directly comparable — the parity test
@@ -145,27 +147,34 @@ differences:
 | D: rg engine, in-process, same files | 12.5ms | 11.7ms |
 | E: `rg -F` subprocess, same files | 13.0ms | 13.1ms |
 
-**The byte-scan matcher, not the walk or the I/O, is the dominant cost —
-by roughly an order of magnitude.** `A + B` (walk + read) is ~16-18ms in
-both rows; `C` (the whole control call) is 150-170ms regardless of hit
-count. The difference, `C - (A + B)` ≈ 132-153ms, is what the byte-scan
-loop itself costs once file discovery and I/O are subtracted out — and
-that number barely moves between a pattern with 200 hits and a
-near-absent one, which rules out "many matches cost more to record" as the
-explanation: **the cost is proportional to bytes scanned, not matches
-found**, exactly what you'd expect from `src/literal.rs::find`'s current
-algorithm (`haystack.windows(needle.len()).position(|w| w == needle)` — a
-byte-by-byte scalar comparison, re-windowed from scratch on every call).
+**Line-splitting plus matching plus per-hit allocation, not the walk or the
+I/O, is the dominant cost — by roughly an order of magnitude.** (Not "the
+matcher" alone: see Phase B2 further down, which isolates line-splitting
+as a substantial, separately-measured share of this remainder — an
+earlier version of this paragraph attributed the whole thing to the
+matcher, and a Greptile review of that overclaim is why this parenthetical
+exists.) `A + B` (walk + read) is ~16-18ms in both rows; `C` (the whole
+control call) is 150-170ms regardless of hit count. The difference,
+`C - (A + B)` ≈ 132-153ms, is what everything *other than* file discovery
+and I/O costs — and that number barely moves between a pattern with 200
+hits and a near-absent one, which rules out "many matches cost more to
+record" as the sole explanation: **the bulk of the cost is proportional to
+bytes scanned, not matches found**, consistent with `src/literal.rs`'s
+per-line split-then-scan structure at the time (`bytes.split(|&b| b ==
+b'\n')` followed by `haystack.windows(needle.len()).position(|w| w ==
+needle)` — a byte-by-byte scalar comparison, re-windowed from scratch on
+every call).
 
 Ripgrep's own engine (D), run in-process over the exact same 1,396 files,
 does the whole scan in ~12ms — about **12-13x faster than the control's
-byte-scan phase alone**, and that gap is essentially the entire story:
+line-splitting+matching+allocation phase combined**, and that gap is
+essentially the entire story:
 `D` and `E` (real `rg -F` subprocess) agree closely (12.5ms vs 13.0ms),
 meaning process-spawn overhead is *not* a meaningful factor at this corpus
 size either — the earlier subprocess-vs-subprocess CLI benchmark's 1.3-1.6x
 number was already comparing two fairly-matched process-startup costs, and
 what's left over (the walk+read+match difference) is now explained: almost
-entirely the matcher.
+entirely line-splitting and matching, not walk or I/O.
 
 This matters for the smaller fixture repos too, in the opposite direction:
 on `fixtures/py_repo` (8KB, 10 files), walk alone (2.7ms) exceeds the
