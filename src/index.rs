@@ -445,6 +445,27 @@ fn update_base_inner(
 /// running) is exactly the gap `update_base`-driven reconciliation on
 /// startup/reconnect exists to close, not something this function can or
 /// should guess at.
+/// Reads at most `cap + 1` bytes of `path`. `Ok(None)` means the file is
+/// longer than `cap` bytes — the caller decides what that means (this
+/// function never buffers more than `cap + 1` bytes to find out, so a
+/// tracked file that has grown arbitrarily large, even adversarially,
+/// cannot exhaust memory here regardless of its real size). `Ok(Some(_))`
+/// carries every byte of a file within the cap. `Err` propagates the
+/// underlying I/O error from `File::open` or the read untouched, for the
+/// caller's own NotFound-vs-other-error handling.
+fn read_capped(path: &Path, cap: u64) -> std::io::Result<Option<Vec<u8>>> {
+    use std::io::Read;
+    let mut file = std::fs::File::open(path)?;
+    let probe_cap = cap.saturating_add(1);
+    let mut buf = Vec::with_capacity(probe_cap.min(1 << 20) as usize);
+    file.by_ref().take(probe_cap).read_to_end(&mut buf)?;
+    if buf.len() as u64 > cap {
+        Ok(None)
+    } else {
+        Ok(Some(buf))
+    }
+}
+
 pub fn update_base_for_files(
     root: &Path,
     store: &mut dyn IndexBackend,
@@ -493,32 +514,39 @@ pub fn update_base_for_files(
         // stopped the reparse but left the stale symbol in place, which is
         // worse than either extreme).
         //
-        // The cap is judged against the bytes actually read below, not a
-        // separate `fs::metadata` call before it — two earlier versions of
-        // this fix each had a real race in one direction (found by review):
-        // metadata-then-read left a growing-past-cap file unchecked in the
-        // gap between the two syscalls, and checking metadata *before* the
-        // read could also reject a file that had already shrunk back under
-        // the cap by the time it would have been read. Judging the actual
-        // content there is no gap for either direction to hide in.
-        match std::fs::read_to_string(&full_path) {
-            Ok(src) => {
-                let lang = crate::scanner::language_for_path(&full_path);
-                let over_cap =
-                    lang.is_some_and(|l| src.len() as u64 > crate::scanner::size_cap_for(l));
-                if over_cap {
-                    if stored.contains_key(p) {
-                        removed.push(p.clone());
-                    }
-                } else {
-                    current.insert(p.clone(), src);
+        // The cap is judged against the bytes actually read, not a separate
+        // `fs::metadata` call before or after — a prior version of this fix
+        // checked metadata first and could reject a file that had already
+        // shrunk back under the cap by read time (found by review); the
+        // version after that checked `read_to_string`'s *full* output,
+        // which is race-free but reads an arbitrarily large tracked file
+        // completely into memory before rejecting it — a real
+        // resource-exhaustion path for `oxide watch` (found by review).
+        // `read_capped` reads at most `cap + 1` bytes via `Read::take`, so
+        // memory use is bounded by the cap regardless of how large the
+        // real file has grown, and oversized-ness is decided before UTF-8
+        // validation ever runs — an oversized file that also happens to be
+        // invalid UTF-8 is correctly evidence of "too big," not silently
+        // reclassified as merely unreadable (also found by review).
+        let lang = crate::scanner::language_for_path(&full_path);
+        let cap = lang.map(crate::scanner::size_cap_for).unwrap_or(u64::MAX);
+        match read_capped(&full_path, cap) {
+            Ok(None) => {
+                if stored.contains_key(p) {
+                    removed.push(p.clone());
                 }
             }
+            Ok(Some(bytes)) => match String::from_utf8(bytes) {
+                Ok(src) => {
+                    current.insert(p.clone(), src);
+                }
+                Err(_) => unreadable_files += 1,
+            },
             // Only a confirmed absence (`NotFound`) is deletion evidence —
             // and only for a path the store already tracks. Any other read
-            // failure (non-UTF8, permissions, a file mid-write) means the
-            // path still exists; it must never be treated as removed, only
-            // as unreadable this round (matches `update_base`'s
+            // failure (permissions, a file mid-write) means the path still
+            // exists; it must never be treated as removed, only as
+            // unreadable this round (matches `update_base`'s
             // `unreadable_files`, accounted in `errored_files` below).
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
                 if stored.contains_key(p) {
@@ -1146,5 +1174,67 @@ mod error_classification_tests {
         // error chain, not just the outermost layer.
         let wrapped = sqlite_error(rusqlite::ffi::SQLITE_BUSY).context("open index at /some/path");
         assert!(is_locked_error(&wrapped));
+    }
+}
+
+#[cfg(test)]
+mod read_capped_tests {
+    use super::read_capped;
+
+    #[test]
+    fn a_file_within_the_cap_returns_every_byte() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("small.txt");
+        std::fs::write(&path, b"hello").unwrap();
+        assert_eq!(read_capped(&path, 10).unwrap(), Some(b"hello".to_vec()));
+    }
+
+    #[test]
+    fn a_file_exactly_at_the_cap_is_not_oversized() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("exact.txt");
+        std::fs::write(&path, b"12345").unwrap();
+        assert_eq!(read_capped(&path, 5).unwrap(), Some(b"12345".to_vec()));
+    }
+
+    /// The property the review finding was about: a file far larger than
+    /// the cap must never be buffered in full. 10 MB against a 16-byte cap
+    /// would allocate ~10 MB if `read_capped` read the whole file before
+    /// checking length; it does not, because the read itself is bounded by
+    /// `Read::take`, so this test also serves as a speed/memory regression
+    /// pin (it must run instantly, not read 10 MB).
+    #[test]
+    fn a_file_much_larger_than_the_cap_is_never_read_past_cap_plus_one() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("huge.bin");
+        std::fs::write(&path, vec![b'x'; 10 * 1024 * 1024]).unwrap();
+        assert_eq!(
+            read_capped(&path, 16).unwrap(),
+            None,
+            "oversized must be reported, not the (never fully read) content"
+        );
+    }
+
+    /// Oversized-ness is decided from the bounded byte count alone, before
+    /// any UTF-8 validation — a file that is simultaneously over the cap
+    /// AND invalid UTF-8 must still come back as `Ok(None)` (oversized),
+    /// not surface as a decode error that would bypass the size-eligibility
+    /// removal path (found by review).
+    #[test]
+    fn oversized_and_invalid_utf8_is_still_reported_as_oversized() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("invalid.bin");
+        let mut bytes = vec![0xFFu8; 20];
+        bytes.extend_from_slice(b"more bytes past the cap");
+        std::fs::write(&path, &bytes).unwrap();
+        assert_eq!(read_capped(&path, 5).unwrap(), None);
+    }
+
+    #[test]
+    fn a_missing_file_propagates_not_found() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("does_not_exist.txt");
+        let err = read_capped(&path, 100).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::NotFound);
     }
 }
