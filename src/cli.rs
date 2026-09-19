@@ -822,6 +822,7 @@ fn language_label(language: crate::symbols::Language) -> &'static str {
         Php => "PHP",
         C => "C",
         Cpp => "C++",
+        Markdown => "Markdown",
     }
 }
 

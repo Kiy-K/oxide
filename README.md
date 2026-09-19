@@ -218,6 +218,24 @@ where the language grammar exposes them. See the
 behavior and known gaps per language — the committed conformance fixtures
 are the source of truth.
 
+### Documentation indexing
+
+Markdown (`.md`) is indexed too, but not as an eleventh programming
+language: a doc file becomes one whole-file symbol (no heading/section
+parsing, no calls or inheritance — there's no AST to extract them from), so
+it's reachable by the same lexical, semantic, and incremental-update
+machinery every other file already uses — no new indexing code, though it
+still costs the same one embedding and one set of lexical postings any
+symbol costs. This makes a README's own prose ("where is X handled", "why
+does Y work this way")
+findable through `oxide query`/`search` alongside the code it describes,
+without requiring `--mode literal`. Documentation still respects
+`.gitignore` and the same generated/vendor/cache denylist as code, plus one
+extra, selective cap: a `.md` file over 64 KB is skipped (`scanner.rs`'s
+`MAX_MARKDOWN_BYTES`) — sized from a survey of this repo's own docs, so
+ordinary READMEs and design notes are indexed while a sprawling changelog
+or an accidentally-vendored doc is not.
+
 ## Coding-agent integrations
 
 `oxide install` detects supported agents, shows the exact configuration

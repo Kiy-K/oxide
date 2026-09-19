@@ -129,7 +129,16 @@ impl IgnoreCache {
             return Ok(None);
         }
         let rel_str = rel.display().to_string();
-        if self.indexable.contains(&rel_str) {
+        // Every other language's fast path trusts the cache unconditionally
+        // (`MAX_SCANNED_FILE_BYTES` sharing that tradeoff is deliberate and
+        // left alone — see `scanner::MAX_MARKDOWN_BYTES`'s doc comment).
+        // Markdown's much tighter cap is realistically crossable by editing
+        // a live document during a watch session, so re-verify it here
+        // instead of trusting a possibly-stale "yes" from a previous scan.
+        let still_within_markdown_cap = scanner::language_for_path(rel)
+            != Some(crate::symbols::Language::Markdown)
+            || scanner::is_indexable(path);
+        if self.indexable.contains(&rel_str) && still_within_markdown_cap {
             return Ok(Some(rel_str));
         }
         if !changes_ignore_rules(root, path)
@@ -525,6 +534,123 @@ mod tests {
         assert!(symbols
             .iter()
             .any(|s| s.file == "src/renamed.py" && s.name == "a"));
+    }
+
+    #[test]
+    fn markdown_growing_past_the_cap_mid_watch_is_not_reindexed_oversized() {
+        // The fast path ("already indexable, no rescan") is what makes the
+        // watcher cheap, but it must not let an already-cached markdown
+        // file's *stale* small content_hash survive being edited past
+        // MAX_MARKDOWN_BYTES — the freshly oversized content must never
+        // reach update_base_for_files (found by review: this is exactly
+        // the class of gap the fast path's "no rescan" tradeoff creates,
+        // closed here for markdown specifically since its cap is realistic
+        // to cross by ordinary editing, unlike the 1.5 MB generic one).
+        let tmp = tempfile::tempdir().unwrap();
+        write(&tmp.path().join("README.md"), "# Small doc\n");
+        let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+        let emb = HashedEmbedder::default();
+        update_index(tmp.path(), &mut store, &emb).unwrap();
+        let small_hash = store
+            .all_symbols()
+            .unwrap()
+            .into_iter()
+            .find(|s| s.file == "README.md")
+            .unwrap()
+            .content_hash;
+
+        let mut cache = IgnoreCache::build(tmp.path()).unwrap();
+        // Prime the cache's fast path: README.md is already known-indexable.
+        assert_eq!(
+            cache
+                .candidate(tmp.path(), &tmp.path().join("README.md"))
+                .unwrap(),
+            Some("README.md".to_string())
+        );
+
+        // Grow it past the cap without ever restarting the watcher or
+        // touching .gitignore (the only two things that would otherwise
+        // force a rescan).
+        write(&tmp.path().join("README.md"), &"x".repeat(65 * 1024));
+        let report = process_batch(
+            tmp.path(),
+            &mut store,
+            &emb,
+            &mut cache,
+            &paths(&tmp, &["README.md"]),
+        )
+        .unwrap();
+
+        assert_eq!(
+            report.reparsed_files, 0,
+            "an oversized markdown file must not be reparsed via the watcher"
+        );
+        let after_hash = store
+            .all_symbols()
+            .unwrap()
+            .into_iter()
+            .find(|s| s.file == "README.md")
+            .unwrap()
+            .content_hash;
+        assert_eq!(
+            small_hash, after_hash,
+            "the stale small-file content_hash must survive, not be silently \
+             replaced by a hash of oversized content that was never actually indexed"
+        );
+    }
+
+    #[test]
+    fn deleting_or_renaming_a_cached_markdown_file_still_converges() {
+        // The new `still_within_markdown_cap` check calls `scanner::is_indexable`,
+        // which does a `fs::metadata` read — for a path that no longer
+        // exists (deleted, or renamed away) that read fails, so the check
+        // is false and the fast path is skipped even though this isn't the
+        // "grew too large" case at all. This must still converge to the
+        // same deletion/rename outcome the generic (non-markdown) path
+        // already gets, just via one extra refresh scan rather than the
+        // immediate fast-path return — a minor cost, not a correctness gap.
+        let tmp = tempfile::tempdir().unwrap();
+        write(&tmp.path().join("README.md"), "# Small doc\n");
+        write(&tmp.path().join("src/a.py"), "def a():\n    return 1\n");
+        let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+        let emb = HashedEmbedder::default();
+        update_index(tmp.path(), &mut store, &emb).unwrap();
+
+        let mut cache = IgnoreCache::build(tmp.path()).unwrap();
+        assert_eq!(
+            cache
+                .candidate(tmp.path(), &tmp.path().join("README.md"))
+                .unwrap(),
+            Some("README.md".to_string()),
+            "precondition: README.md is cached as known-indexable"
+        );
+
+        std::fs::remove_file(tmp.path().join("README.md")).unwrap();
+        write(&tmp.path().join("GUIDE.md"), "# Renamed doc\n");
+        let report = process_batch(
+            tmp.path(),
+            &mut store,
+            &emb,
+            &mut cache,
+            &paths(&tmp, &["README.md", "GUIDE.md"]),
+        )
+        .unwrap();
+
+        assert_eq!(report.removed_files, 1, "README.md was deleted");
+        let symbols = store.all_symbols().unwrap();
+        assert!(
+            !symbols.iter().any(|s| s.file == "README.md"),
+            "a deleted (previously cached, previously within-cap) markdown \
+             file's symbol must be removed, not left stale: {:?}",
+            symbols.iter().map(|s| &s.file).collect::<Vec<_>>()
+        );
+        assert!(
+            symbols.iter().any(|s| s.file == "GUIDE.md"),
+            "the new markdown file must be indexed: {:?}",
+            symbols.iter().map(|s| &s.file).collect::<Vec<_>>()
+        );
+        // The unrelated Python file's own convergence must be unaffected.
+        assert!(symbols.iter().any(|s| s.file == "src/a.py"));
     }
 
     #[test]

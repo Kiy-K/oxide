@@ -31,6 +31,36 @@ static PHP_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::language
 static C_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::C_PROFILE);
 static CPP_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::CPP_PROFILE);
 
+/// Deliberately extracts nothing: markdown has no declarations to find, so
+/// `parse_file_with`'s existing whole-file module fallback (the same path a
+/// comment-only source file already takes) becomes the file's only symbol —
+/// full-file span, full-source `content_hash`, no new machinery needed.
+struct MarkdownExtractor;
+
+static MARKDOWN_EXTRACTOR: MarkdownExtractor = MarkdownExtractor;
+
+impl LanguageExtractor for MarkdownExtractor {
+    fn language(&self) -> Language {
+        Language::Markdown
+    }
+    fn ts_language(&self) -> tree_sitter::Language {
+        // Never called: nothing in this codebase invokes
+        // `LanguageExtractor::ts_language` (verified — grep finds zero call
+        // sites for the trait method, only `tree_sitter_structural.rs`'s own
+        // unrelated free function of the same name, which is never reached
+        // for `Markdown` either; see `Language::has_structural_queries`).
+        // Markdown has no grammar to return, so failing loudly beats
+        // returning a misleading one.
+        unreachable!("MarkdownExtractor::ts_language is never called")
+    }
+    fn extract(&self, _file: &str, _src: &str, _file_imports: &[String]) -> Vec<Symbol> {
+        Vec::new()
+    }
+    fn collect_imports(&self, _src: &str) -> Vec<String> {
+        Vec::new()
+    }
+}
+
 /// The only extraction path: grammar + declarative tags.scm +
 /// normalization, not a bespoke per-language walker. The handwritten
 /// procedural extractors this replaced were deleted once
@@ -49,6 +79,7 @@ pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
         Language::Php => &PHP_TAGS,
         Language::C => &C_TAGS,
         Language::Cpp => &CPP_TAGS,
+        Language::Markdown => &MARKDOWN_EXTRACTOR,
     }
 }
 
@@ -168,6 +199,29 @@ mod tests {
         assert_ne!(
             syms[0].content_hash, syms2[0].content_hash,
             "empty files must hash distinctly"
+        );
+    }
+
+    #[test]
+    fn markdown_yields_one_whole_file_module_symbol() {
+        let src = "# Title\n\nSome body text.\n\n## Section\n\nMore text.\n";
+        let syms = parse_file("docs/guide.md", src, Language::Markdown);
+        assert_eq!(syms.len(), 1, "{syms:?}");
+        let doc = &syms[0];
+        assert!(doc.qualified_name.ends_with(":__module__"));
+        assert_eq!(doc.kind, crate::symbols::SymbolKind::Module);
+        assert_eq!(doc.start_line, 1);
+        assert_eq!(doc.end_line, src.lines().count() as u32);
+        assert_eq!(doc.signature, "# Title");
+        assert!(doc.imports.is_empty());
+        // Full-source hash (the same fallback comment-only files use), not
+        // the coarse imports+first-line formula — a body-only edit anywhere
+        // in the file, not just the first line, must change it.
+        let edited = "# Title\n\nSome body text.\n\n## Section\n\nDifferent text.\n";
+        let syms2 = parse_file("docs/guide.md", edited, Language::Markdown);
+        assert_ne!(
+            doc.content_hash, syms2[0].content_hash,
+            "a mid-file edit must change the module symbol's content_hash"
         );
     }
 

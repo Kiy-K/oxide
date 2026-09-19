@@ -19,6 +19,14 @@ pub enum Language {
     Php,
     C,
     Cpp,
+    /// Whole-file documentation (`.md`), not a programming language: no
+    /// grammar, no declarations, no structural relations. A markdown file
+    /// always produces exactly one symbol — the same whole-file module
+    /// fallback every other language already produces for a comment-only
+    /// file (`parser.rs::parse_file_with`) — so it rides the existing
+    /// lexical/semantic/incremental machinery unmodified. See
+    /// [`Language::has_structural_queries`].
+    Markdown,
 }
 
 impl Language {
@@ -26,7 +34,9 @@ impl Language {
     /// reports it and `tree_sitter_structural`'s query-compile test iterates
     /// it — because a hand-maintained second copy is exactly how `oxide
     /// status` came to keep claiming "python, typescript, tsx" after Rust
-    /// and Go shipped.
+    /// and Go shipped. `Markdown` belongs here too: `from_str`/`as_str`
+    /// round-tripping (SQLite's persisted `language` column) needs every
+    /// persistable value in this one list, same as every other entry.
     pub const ALL: &'static [Language] = &[
         Language::Python,
         Language::TypeScript,
@@ -39,7 +49,19 @@ impl Language {
         Language::Php,
         Language::C,
         Language::Cpp,
+        Language::Markdown,
     ];
+
+    /// Whether this language has a real tree-sitter grammar and
+    /// callers/implementors queries (`tree_sitter_structural.rs`). Only
+    /// `Markdown` is excluded — it has no AST to query, by design, not by
+    /// omission. `structural_relations::compute_file_relations` checks this
+    /// before calling into `tree_sitter_structural`, and the query-compile
+    /// conformance test filters on it too, so neither one ever needs a
+    /// grammar that doesn't exist.
+    pub fn has_structural_queries(&self) -> bool {
+        !matches!(self, Language::Markdown)
+    }
 
     pub fn as_str(&self) -> &'static str {
         match self {
@@ -54,6 +76,7 @@ impl Language {
             Language::Php => "php",
             Language::C => "c",
             Language::Cpp => "cpp",
+            Language::Markdown => "markdown",
         }
     }
 }

@@ -120,6 +120,9 @@ fn ts_language(lang: Language) -> tree_sitter::Language {
         Language::Php => (PHP_PROFILE.ts_language)(),
         Language::C => (C_PROFILE.ts_language)(),
         Language::Cpp => (CPP_PROFILE.ts_language)(),
+        Language::Markdown => unreachable!(
+            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
+        ),
     }
 }
 
@@ -136,6 +139,9 @@ fn queries_for(lang: Language) -> &'static LangQueries {
         Language::Php => &PHP_QUERIES,
         Language::C => &C_QUERIES,
         Language::Cpp => &CPP_QUERIES,
+        Language::Markdown => unreachable!(
+            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
+        ),
     }
 }
 
@@ -154,6 +160,9 @@ fn callers_src(lang: Language) -> &'static str {
         Language::Php => PHP_CALLERS_SRC,
         Language::C => C_CALLERS_SRC,
         Language::Cpp => CPP_CALLERS_SRC,
+        Language::Markdown => unreachable!(
+            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
+        ),
     }
 }
 
@@ -168,6 +177,9 @@ fn implementors_src(lang: Language) -> &'static str {
         Language::Php => PHP_IMPLEMENTORS_SRC,
         Language::C => C_IMPLEMENTORS_SRC,
         Language::Cpp => CPP_IMPLEMENTORS_SRC,
+        Language::Markdown => unreachable!(
+            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
+        ),
     }
 }
 
@@ -336,7 +348,10 @@ mod tests {
 
     #[test]
     fn all_language_queries_compile() {
-        for &lang in Language::ALL {
+        // Markdown is deliberately excluded: it has no grammar, and
+        // `structural_relations::compute_file_relations` never reaches this
+        // module for it (`Language::has_structural_queries`).
+        for &lang in Language::ALL.iter().filter(|l| l.has_structural_queries()) {
             compiled_callers(lang);
             compiled_implementors(lang);
         }

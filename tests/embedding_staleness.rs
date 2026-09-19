@@ -307,3 +307,69 @@ fn comment_only_file_fallback_hash_still_covers_the_full_source() {
     let after_vec = module_embedding(&store, "notes.py");
     assert_eq!(after_vec, rebuilt_vec);
 }
+
+#[test]
+fn markdown_mid_file_edit_reembeds_the_whole_file_module_symbol() {
+    // Markdown takes the same empty-extraction fallback path as a
+    // comment-only source file (`MarkdownExtractor::extract` always
+    // returns nothing), so it must have the same property the test above
+    // pins for comment-only files: editing a line that isn't the first
+    // line still changes the module symbol's content_hash and triggers
+    // re-embedding, because `used_coarse_module_hash` (index.rs) only
+    // overrides the hash for files that *do* have concrete symbols.
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(
+        &root.join("docs/guide.md"),
+        "# Guide\n\nFirst paragraph.\n\nSecond paragraph.\n",
+    );
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+    let before_hash = module_content_hash(&store, "docs/guide.md");
+
+    write(
+        &root.join("docs/guide.md"),
+        "# Guide\n\nFirst paragraph.\n\nSecond paragraph, edited.\n",
+    );
+    let report = update_index(root, &mut store, &emb).unwrap();
+
+    assert_eq!(report.reparsed_files, 1);
+    assert_eq!(
+        report.changed_symbols, 1,
+        "a markdown file's only symbol must report as changed on a mid-file edit"
+    );
+    // `symbol_embed_text` doesn't change for this edit (see below), so a
+    // buggy `update_index` that silently *reused* the stale embedding
+    // instead of recomputing it would produce the exact same vector value
+    // as a correct recompute — the vector alone can't distinguish "reused"
+    // from "recomputed" here. `embedded_symbols`/`reused_embeddings` can:
+    // they report which code path actually ran, independent of the
+    // resulting value (found by review).
+    assert_eq!(
+        report.embedded_symbols, 1,
+        "the changed module symbol must actually go through the embed path"
+    );
+    assert_eq!(
+        report.reused_embeddings, 0,
+        "a changed symbol must not be reported as a reused embedding"
+    );
+    let after_hash = module_content_hash(&store, "docs/guide.md");
+    assert_ne!(
+        before_hash, after_hash,
+        "a mid-file markdown edit must change the module symbol's content_hash"
+    );
+    // NOT assert_ne! on the embedding vector: `symbol_embed_text` is
+    // file/kind/qualified_name/signature/imports/references only, never
+    // full body text (true for every language's module fallback, not
+    // unique to markdown) — an edit that doesn't touch the first line, add
+    // an import, or add/remove a resolvable reference legitimately
+    // re-embeds to the *same* vector. `content_hash` changing (asserted
+    // above) is what proves the edit was actually detected and
+    // reprocessed, not that the vector moved. Parity with a clean rebuild
+    // is the property that actually matters here.
+    let after_vec = module_embedding(&store, "docs/guide.md");
+    let rebuilt_vec = clean_rebuild_module_embedding(root, "docs/guide.md");
+    assert_eq!(after_vec, rebuilt_vec);
+}

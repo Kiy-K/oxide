@@ -37,9 +37,32 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
         // C++ grammar is the better default; that decision is not inferable
         // from a file name or its siblings.
         (_, "cc") | (_, "cpp") | (_, "cxx") | (_, "hh") | (_, "hpp") | (_, "hxx") => Some(Cpp),
+        (_, "md") => Some(Markdown),
         _ => None,
     }
 }
+
+/// Selective cap on indexed documentation, independent of (and much tighter
+/// than) `MAX_SCANNED_FILE_BYTES`: a survey of this repo's own hand-written
+/// docs (the largest, `docs/literal-search-eval/README.md`, is ~36 KB) and
+/// its README (~20 KB) shows legitimate developer documentation comfortably
+/// fits well under 64 KB, while a sprawling changelog or an accidentally
+/// vendored doc that slipped past the denylist would not. Markdown gets its
+/// own, tighter cap here rather than a change to `MAX_SCANNED_FILE_BYTES`
+/// because that constant is shared with `scan_repo_text`'s literal search,
+/// which has no reason to hide a large file from a grep-style match.
+///
+/// `watcher.rs::IgnoreCache::candidate`'s fast path treats any
+/// already-indexable path as a candidate without rechecking anything, by
+/// design ("no rescan" is the whole point of caching the indexable set) —
+/// true for every language, and for `MAX_SCANNED_FILE_BYTES` too. Left
+/// alone for the other ten languages' 1.5 MB cap (a general watcher/cache
+/// redesign, out of scope here), but markdown's cap is 24x tighter and far
+/// more likely to be crossed by ordinary editing of a live document during
+/// a watch session, so `is_indexable` (below) is re-run on every event
+/// instead of trusting the cache for markdown specifically — see
+/// `IgnoreCache::candidate`.
+const MAX_MARKDOWN_BYTES: u64 = 64 * 1024;
 
 fn error_nodes(language: tree_sitter::Language, src: &str) -> usize {
     fn count(node: tree_sitter::Node<'_>) -> usize {
@@ -276,8 +299,30 @@ fn walk_repo(
 /// Discover indexable source files under `root` as repo-relative slash paths.
 /// Respects `.gitignore`/`.ignore` via the `ignore` crate; applies the built-in
 /// denylist on top. Returns sorted, deduplicated paths.
+///
+/// Markdown gets one extra, selective check here (`MAX_MARKDOWN_BYTES`) on
+/// top of every other file's shared `MAX_SCANNED_FILE_BYTES` cap in
+/// `walk_repo` — see that constant's doc comment for why documentation
+/// needs its own, tighter bound.
 pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
-    walk_repo(root, |path| language_for_path(path).is_some())
+    walk_repo(root, is_indexable)
+}
+
+/// Whether `path` belongs in `scan_repo`'s result: a recognized language,
+/// and (markdown only) under `MAX_MARKDOWN_BYTES`. Factored out of
+/// `scan_repo` so `watcher.rs::IgnoreCache::candidate` can re-apply the same
+/// check on its fast path — an already-cached-indexable markdown file that
+/// grows past the cap between watcher events must be re-excluded, not just
+/// a freshly-discovered one (found by review: the fast path's own "already
+/// known indexable, no rescan" optimization would otherwise never notice).
+pub fn is_indexable(path: &Path) -> bool {
+    match language_for_path(path) {
+        Some(crate::symbols::Language::Markdown) => std::fs::metadata(path)
+            .map(|m| m.len() <= MAX_MARKDOWN_BYTES)
+            .unwrap_or(false),
+        Some(_) => true,
+        None => false,
+    }
 }
 
 /// Discover every non-denylisted, non-binary, size-capped file under `root`
@@ -300,6 +345,30 @@ mod tests {
     fn write(path: &Path, content: &str) {
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();
         std::fs::write(path, content).unwrap();
+    }
+
+    #[test]
+    fn markdown_over_the_selective_size_cap_is_excluded_a_small_one_is_kept() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        write(&root.join("README.md"), "# small doc\n");
+        write(
+            &root.join("HUGE.md"),
+            &"x".repeat(MAX_MARKDOWN_BYTES as usize + 1),
+        );
+        std::process::Command::new("git")
+            .args(["init", "-q"])
+            .current_dir(root)
+            .status()
+            .unwrap();
+
+        let files = scan_repo(root).unwrap();
+        let names: Vec<String> = files.iter().map(|p| p.display().to_string()).collect();
+        assert!(names.contains(&"README.md".to_string()), "{names:?}");
+        assert!(
+            !names.iter().any(|n| n == "HUGE.md"),
+            "a markdown file over MAX_MARKDOWN_BYTES must be excluded: {names:?}"
+        );
     }
 
     #[test]
@@ -330,6 +399,14 @@ mod tests {
         write(&root.join("package-lock.json"), "{}");
         write(&root.join(".gitignore"), "/ignored/\n*.log\n");
         write(&root.join("debug.log"), "noise");
+        // Documentation inherits the same denylist/gitignore/vendor exclusion
+        // every other indexable file already gets — proven here, not assumed.
+        write(&root.join("ignored/SECRET_NOTES.md"), "api_key=deadbeef\n");
+        write(&root.join("vendor/thirdparty/README.md"), "vendored docs\n");
+        write(
+            &root.join("node_modules/pkg/README.md"),
+            "vendored js docs\n",
+        );
 
         std::process::Command::new("git")
             .args(["init", "-q"])
@@ -342,15 +419,19 @@ mod tests {
         assert!(names.contains(&"src/app.py".to_string()), "{names:?}");
         assert!(names.contains(&"lib/main.ts".to_string()));
         assert!(names.contains(&"lib/comp.tsx".to_string()));
+        assert!(names.contains(&"README.md".to_string()), "{names:?}");
         assert!(!names.iter().any(|n| n.contains("node_modules")));
         assert!(!names.iter().any(|n| n.contains("__pycache__")));
         assert!(!names.iter().any(|n| n.contains("venv")));
         assert!(!names.iter().any(|n| n.contains("vendor")));
         assert!(!names.iter().any(|n| n.ends_with(".min.js")));
         assert!(!names.iter().any(|n| n.contains("ignored")));
-        assert!(!names.iter().any(|n| n.ends_with(".md")));
+        assert!(
+            !names.iter().any(|n| n.contains("SECRET_NOTES")),
+            "a gitignored .md file must never reach the index: {names:?}"
+        );
         assert!(!names.iter().any(|n| n.ends_with(".log")));
-        assert_eq!(files.len(), 4);
+        assert_eq!(files.len(), 5, "{names:?}");
     }
 
     #[test]

@@ -118,6 +118,16 @@ pub fn compute_file_relations(
     src: &str,
     lang: Language,
 ) -> Vec<(u64, Vec<String>, Vec<String>)> {
+    // Markdown (and any future language with no AST to query) has no calls
+    // or bases by definition — skip before ever reaching
+    // `tree_sitter_structural`, which has no grammar to give it.
+    if !lang.has_structural_queries() {
+        return file_symbols
+            .iter()
+            .map(|s| (s.id(), Vec::new(), Vec::new()))
+            .collect();
+    }
+
     let refs: Vec<&Symbol> = file_symbols.iter().collect();
 
     let mut calls_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
@@ -531,6 +541,40 @@ class Outer {
         assert_eq!(report.reparsed_files, 0, "x.py must not have been reparsed");
 
         let after = load_symbols_with_relations(&store).unwrap();
+        let f = after.iter().find(|s| s.qualified_name == "f").unwrap();
+        assert_eq!(f.calls, vec!["helper".to_string()], "{:?}", f.calls);
+    }
+
+    /// A markdown file mixed into a real repo must not crash
+    /// `update_index`'s structural-relations pass (`compute_file_relations`
+    /// never reaches `tree_sitter_structural`'s `unreachable!()` arms for
+    /// it) and must end up with empty `calls`/`bases`, same as any other
+    /// symbol `symbol_relations` covers.
+    #[test]
+    fn markdown_files_get_empty_relations_and_never_crash_indexing() {
+        let tmp = tempfile::tempdir().unwrap();
+        write(
+            tmp.path(),
+            "src/helper.py",
+            "def helper():\n    pass\n\ndef f():\n    helper()\n",
+        );
+        write(
+            tmp.path(),
+            "README.md",
+            "# Project\n\nCalls `helper()` from `src/helper.py`.\n",
+        );
+
+        let store = indexed(tmp.path());
+        let after = load_symbols_with_relations(&store).unwrap();
+        let doc = after
+            .iter()
+            .find(|s| s.file == "README.md")
+            .expect("README.md must be indexed");
+        assert!(doc.calls.is_empty(), "{:?}", doc.calls);
+        assert!(doc.bases.is_empty(), "{:?}", doc.bases);
+
+        // The real Python file's own relations must be unaffected by the
+        // markdown file sharing the same index run.
         let f = after.iter().find(|s| s.qualified_name == "f").unwrap();
         assert_eq!(f.calls, vec!["helper".to_string()], "{:?}", f.calls);
     }

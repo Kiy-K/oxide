@@ -11,6 +11,12 @@ Every language goes through the same path: a `LanguageProfile` (grammar +
 normalizes the flat tag list into OXIDE's `Symbol` IR. There is no
 per-language extractor and no language-specific retrieval behavior.
 
+`Language::Markdown` (`.md` documentation) is deliberately **not** part of
+this matrix: it has no grammar, no conformance golden, and none of the
+dimensions below apply (no definitions, no calls, no inheritance) — a
+markdown file is always exactly one whole-file symbol. See README.md's
+"Documentation indexing" section for what it actually does.
+
 ## Coverage matrix
 
 | Dimension | Python | TypeScript | TSX | JavaScript / JSX | Rust | Go | Java |
