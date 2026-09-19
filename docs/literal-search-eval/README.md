@@ -3,7 +3,9 @@
 Status: **Control arm shipped** (`oxide search --mode literal`, `src/literal.rs`).
 **FTS5 trigram challenger measured and REJECTED** (`spike/`, a standalone
 crate — not part of OXIDE's build, not reachable from any user-facing
-surface) — see the verdict section below. No regex support either way.
+surface) — see the verdict section below. **Profiled** the control against
+`rg -F` and found the gap's real source (byte-scan matcher, not walk/I/O) —
+see "Profiling" below; not yet optimized. No regex support either way.
 
 ## What was built
 
@@ -100,15 +102,75 @@ Pattern: `RetryPolicy`, present across the generated corpus.
 | 200 modules/lang (1,205 files) | 28ms / 37ms | 23ms / 32ms |
 | 800 modules/lang (4,805 files) | 46ms / 57ms | 29ms / 36ms |
 
-Both numbers are dominated by process startup and file I/O at this corpus
-size, not by the matcher itself — `rg -F` stays roughly 1.3-1.6x faster,
-consistent with it being a highly-tuned SIMD substring search (`memchr`)
-against OXIDE's straightforward byte-window scan, not evidence of an
-algorithmic gap. `rg`'s hit count is uncapped and includes files OXIDE's
-denylist excludes (e.g. nothing under `.git`); OXIDE's is capped at
-`--limit` (200 here), which is why the two hit counts in the script's raw
-output aren't directly comparable — the parity test above, not this script,
-is what establishes they agree on file/line/column identity.
+`rg -F` stays roughly 1.3-1.6x faster here. At the time this table was
+first measured we guessed the gap was "dominated by process startup and
+file I/O, not the matcher" — **that guess was wrong, and the profiling
+section below corrects it with a phase-by-phase measurement**: at real-repo
+scale, the byte-scan matcher itself is the dominant cost by roughly an
+order of magnitude, not walk or I/O. `rg`'s hit count is uncapped and
+includes files OXIDE's denylist excludes (e.g. nothing under `.git`);
+OXIDE's is capped at `--limit` (200 here), which is why the two hit counts
+in the script's raw output aren't directly comparable — the parity test
+above, not this script, is what establishes they agree on file/line/column
+identity.
+
+## Profiling: where the gap to `rg -F` actually comes from
+
+Measured with `examples/literal_scan_profile.rs` (new; diagnostic only, no
+`src/literal.rs` changes — this does not optimize anything) on the OXIDE
+repository itself (1,396 kept files, 31.5 MB), 15 reps, decomposing
+`literal::search`'s own work into the same phases it performs internally
+but timed separately, plus ripgrep's real matching engine run in-process
+(via the `grep-searcher`/`grep-regex` dev-dependencies — not a
+reimplementation, not a subprocess) over the *identical* file list, so the
+comparison isolates matcher/algorithm differences from ignore-policy
+differences:
+
+| Phase | pattern with 200 hits (`"fn "`) | pattern with 2 hits (absent-ish) |
+|---|---:|---:|
+| A: walk (`scan_repo_text`) | 7.6ms | 8.9ms |
+| B: read all kept files | 8.9ms | 8.8ms |
+| **C: control end-to-end** | **169.9ms** | **150.1ms** |
+| D: rg engine, in-process, same files | 12.5ms | 11.7ms |
+| E: `rg -F` subprocess, same files | 13.0ms | 13.1ms |
+
+**The byte-scan matcher, not the walk or the I/O, is the dominant cost —
+by roughly an order of magnitude.** `A + B` (walk + read) is ~16-18ms in
+both rows; `C` (the whole control call) is 150-170ms regardless of hit
+count. The difference, `C - (A + B)` ≈ 132-153ms, is what the byte-scan
+loop itself costs once file discovery and I/O are subtracted out — and
+that number barely moves between a pattern with 200 hits and a
+near-absent one, which rules out "many matches cost more to record" as the
+explanation: **the cost is proportional to bytes scanned, not matches
+found**, exactly what you'd expect from `src/literal.rs::find`'s current
+algorithm (`haystack.windows(needle.len()).position(|w| w == needle)` — a
+byte-by-byte scalar comparison, re-windowed from scratch on every call).
+
+Ripgrep's own engine (D), run in-process over the exact same 1,396 files,
+does the whole scan in ~12ms — about **12-13x faster than the control's
+byte-scan phase alone**, and that gap is essentially the entire story:
+`D` and `E` (real `rg -F` subprocess) agree closely (12.5ms vs 13.0ms),
+meaning process-spawn overhead is *not* a meaningful factor at this corpus
+size either — the earlier subprocess-vs-subprocess CLI benchmark's 1.3-1.6x
+number was already comparing two fairly-matched process-startup costs, and
+what's left over (the walk+read+match difference) is now explained: almost
+entirely the matcher.
+
+This matters for the smaller fixture repos too, in the opposite direction:
+on `fixtures/py_repo` (8KB, 10 files), walk alone (2.7ms) exceeds the
+control's whole end-to-end time (2.0ms, well within measurement noise at
+this scale) — confirming the walk-dominates-at-small-scale intuition was
+directionally right for tiny corpora, just not for anything resembling a
+real repository, which is the case that actually matters for this
+decision.
+
+**Not optimizing yet, per the task that produced this section** — but for
+the record, the mechanism `memchr`-style substring search would fix is
+SIMD/vectorized scanning for the needle's first byte (or a full multi-byte
+`memmem`) instead of a scalar windowed-equality loop; that's the shape a
+future optimization pass should take, and this profiling run is the
+evidence for why it would actually move the needle (the byte-scan, not the
+walk).
 
 For reference, `oxide index` on the 800-module repo (26,415 symbols) took
 ~5.5s and produced a 70MB `.oxide/index.db` — literal search needs none of
@@ -239,11 +301,15 @@ disproportionate storage cost for one feature.
 Latency: trigram is consistently 4-7x faster than the control on
 real/synthetic corpora at this scale (the OXIDE repo: ~107-187ms vs
 ~27-45ms). The mechanism is exactly what a trigram index is for: the
-control re-walks and re-reads the whole kept file set on every call (it has
-no persistent state to avoid that), while the trigram query narrows
-straight to matching lines. Absolute control latency stays well under 200ms
-even on this repo, though — nowhere near a threshold where an agent or a
-human would perceive it as slow.
+control re-walks, re-reads, and re-scans the whole kept file set on every
+call (it has no persistent state to avoid any of that), while the trigram
+query narrows straight to matching lines. The "Profiling" section below
+(added in a later pass) breaks the control's own cost down further and
+finds the re-*scan* — not the walk or the read — is what actually
+dominates; trigram sidesteps all three, but it's the scan it mainly saves.
+Absolute control latency stays well under 200ms even on this repo, though —
+nowhere near a threshold where an agent or a human would perceive it as
+slow.
 
 RSS: a combined session (build + correctness + both latencies + update) on
 the OXIDE repo peaked at **78.5 MB** (`VmHWM`); a control-only session
@@ -294,5 +360,10 @@ workflow value" framing: a deterministic, tested, documented literal-search
 control ships (needs no index, ~0 cost), and the FTS5 trigram challenger it
 was supposed to be measured against has been built, benchmarked on real and
 synthetic corpora, and rejected on cost and correctness grounds — not left
-unevaluated. Nothing about regex or a production trigram index changes
-here; both remain explicitly out of scope.
+unevaluated (and relocated out of `src/` entirely once rejected, so
+production contains no dormant FTS5 code). The profiling pass additionally
+found and corrected an earlier wrong guess about *why* the control trails
+`rg -F`: it's the byte-scan matcher, not the walk or file I/O, by roughly
+an order of magnitude at real-repo scale. Nothing about regex, a production
+trigram index, or an actual matcher optimization changes here; all three
+remain explicitly out of scope — the profiling section is diagnosis only.
