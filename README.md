@@ -256,20 +256,36 @@ The same reachability split as documentation applies: comments are
 lexically searchable (BM25 covers the whole file); a configured *remote*
 embedding provider only receives `symbol_embed_text` — file/kind/
 qualified_name/signature/imports/references, never full body text — for
-every symbol in every language. That payload includes `signature`, though,
-and for the whole-file module-fallback symbol specifically, `signature` is
-literally the file's first non-empty line, whatever it is — so a comment
-that opens the file (a license header, a leading `# TODO`) is metadata,
-not body text, and is sent like any other symbol's signature. A comment
-anywhere *after* the first non-empty line is not. `tests/comment_indexing.rs`
-pins both directions with real fixtures, not just this description.
+every symbol in every language. Two narrower exceptions to "comments never
+reach a remote provider" follow directly from what's in that payload, not
+from anything comment-specific:
+
+- `signature` is unconditionally the file's first non-empty line for the
+  whole-file module-fallback symbol, so a comment that opens the file (a
+  license header, a leading `# TODO`) is metadata like any declaration's
+  signature would be, and is sent.
+- `references` is the project's existing, pre-existing (not new)
+  identifier-name-intersection heuristic (`AGENTS.md`): if a comment
+  *mentions* the bare name of an already-declared project symbol —
+  anywhere in the file, not just the first line — that name is extracted
+  as a reference the same way it would be from real code, and `references`
+  is sent. It is the symbol *name* that travels this way, never the
+  comment's surrounding prose, and only for names that already exist as
+  real declarations elsewhere in the project.
+
+Free-form comment prose that isn't the file's first line and doesn't name
+an existing symbol is the only text genuinely confined to the local
+lexical index. `tests/comment_indexing.rs` pins all three cases with real
+fixtures, not just this description.
 
 This is also the actual boundary of "pre-embedding secret filtering": a
 hardcoded secret in a tracked, non-excluded file's comment is locally
 searchable by design (OXIDE surfaces real repository content; it is not a
-secret scanner) regardless of where it sits in the file, but only ever
-reaches a configured remote provider if it happens to be the file's first
-line. Secrets are kept out of the index entirely — not just out of the
+secret scanner) regardless of where it sits in the file. It reaches a
+configured remote provider only if it happens to be the file's first line,
+or if it is itself the exact name of another already-declared symbol in
+the project — a narrow, unlikely intersection, but a real one, not
+"never." Secrets are kept out of the index entirely — not just out of the
 remote payload — only by the existing file-level filters (`.gitignore`,
 the generated/vendor/cache denylist, hidden files like `.env*`), which
 apply before a file is scanned at all, regardless of file type or where a

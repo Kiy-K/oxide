@@ -191,3 +191,55 @@ fn a_leading_comment_is_the_one_real_exception_and_does_reach_the_payload() {
         symbol_embed_text(module)
     );
 }
+
+/// The second real exception: a non-leading comment that *mentions the bare
+/// name of an already-declared project symbol* has that name (not the
+/// comment's surrounding prose) extracted into `references`
+/// (`index.rs::extract_references`, the same pre-existing, no-scope-analysis
+/// identifier-intersection heuristic `AGENTS.md` already documents for real
+/// code) — and `references` is part of `symbol_embed_text`. Contrasted
+/// directly with arbitrary comment prose that names nothing real, which
+/// stays confined to the local lexical index exactly as
+/// `code_comment_text_never_reaches_the_remote_embedding_payload` already
+/// proves (found by review: an earlier version of this file's README
+/// claimed comments after the first line are never sent, full stop, which
+/// this exception makes false).
+#[test]
+fn a_comment_naming_a_real_known_symbol_leaks_that_name_via_references() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(
+        root,
+        "src/auth.py",
+        "def rotate_secret_key():\n    return None\n",
+    );
+    write(
+        root,
+        "src/service.py",
+        "class PaymentService:\n    \
+         # See rotate_secret_key for how this value gets refreshed.\n    \
+         def charge(self):\n        return True\n",
+    );
+
+    let mut store = SqliteStore::open(&root.join(".oxide/index.db")).unwrap();
+    let embedder = HashedEmbedder::default();
+    update_index(root, &mut store, &embedder).unwrap();
+
+    let symbols = store.all_symbols().unwrap();
+    let module = symbols
+        .iter()
+        .find(|s| s.file == "src/service.py" && s.kind == SymbolKind::Module)
+        .expect("module fallback symbol must exist");
+    assert!(
+        module.references.contains(&"rotate_secret_key".to_string()),
+        "a comment naming a real project symbol must be extracted as a \
+         reference, same as real code would: {:?}",
+        module.references
+    );
+    assert!(
+        symbol_embed_text(module).contains("rotate_secret_key"),
+        "and that reference — the symbol NAME, not the comment's prose — \
+         IS part of the remote-provider payload: {:?}",
+        symbol_embed_text(module)
+    );
+}
