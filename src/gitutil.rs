@@ -43,11 +43,40 @@ fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
 /// convention). Exposed separately so a caller needing more than just
 /// [`parse_unified`]'s added-range view (e.g. [`deleted_files`]) doesn't pay
 /// for a second `git diff` subprocess call.
+///
+/// `--src-prefix=a/ --dst-prefix=b/` is not cosmetic: [`parse_unified`] and
+/// [`deleted_files`] both match header lines against a literal `a/`/`b/`
+/// prefix. Without forcing it, a user's own `diff.mnemonicprefix` (prefixes
+/// become `c/`/`w/`/`i/`/`o/`) or `diff.noprefix` (no prefix at all) —
+/// either a real, commonly recommended git setting — silently breaks that
+/// match, and every changed file in the diff evidence goes missing with no
+/// error. This flag overrides both config settings unconditionally.
 pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
+    const PREFIX_ARGS: [&str; 2] = ["--src-prefix=a/", "--dst-prefix=b/"];
     if range.is_empty() {
-        run_git(repo, &["diff", "--unified=0", "--no-color", "HEAD"])
+        run_git(
+            repo,
+            &[
+                "diff",
+                "--unified=0",
+                "--no-color",
+                PREFIX_ARGS[0],
+                PREFIX_ARGS[1],
+                "HEAD",
+            ],
+        )
     } else {
-        run_git(repo, &["diff", "--unified=0", "--no-color", range])
+        run_git(
+            repo,
+            &[
+                "diff",
+                "--unified=0",
+                "--no-color",
+                PREFIX_ARGS[0],
+                PREFIX_ARGS[1],
+                range,
+            ],
+        )
     }
 }
 
@@ -407,6 +436,49 @@ new file mode 100644
         let deltas = diff_files(root, "").unwrap();
         let d = deltas.iter().find(|d| d.file == "a.py").expect("delta");
         assert!(d.added.windows(2).any(|w| w[0].1 + 1 == w[1].0) || !d.added.is_empty());
+    }
+
+    /// `diff.mnemonicprefix` is a real, commonly recommended git setting
+    /// (renders headers as `c/`/`w/` instead of `a/`/`b/`) that a repo or a
+    /// user's global config can set. Before `diff_text` forced
+    /// `--src-prefix=a/ --dst-prefix=b/`, this silently zeroed out every
+    /// changed file `parse_unified`/`deleted_files` could see — no error,
+    /// just empty diff evidence. CI's own runners never set this, so
+    /// without a test setting it explicitly (rather than relying on the
+    /// ambient environment), a regression here would pass CI while still
+    /// breaking `oxide review --diff`/`oxide query --git` for real users.
+    #[test]
+    fn real_git_diff_roundtrip_survives_mnemonicprefix_config() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        std::fs::write(root.join("a.py"), "def one():\n    pass\n").unwrap();
+        git(root, &["init", "-q"]);
+        git(root, &["config", "diff.mnemonicprefix", "true"]);
+        git(root, &["add", "."]);
+        git(
+            root,
+            &[
+                "-c",
+                "user.email=t@t",
+                "-c",
+                "user.name=t",
+                "commit",
+                "-qm",
+                "init",
+            ],
+        );
+        std::fs::write(
+            root.join("a.py"),
+            "def one():\n    pass\n\ndef two():\n    return 2\n",
+        )
+        .unwrap();
+        let deltas = diff_files(root, "").unwrap();
+        let d = deltas.iter().find(|d| d.file == "a.py").expect("delta");
+        assert!(!d.added.is_empty());
+        assert_eq!(
+            deleted_files(&diff_text(root, "").unwrap()),
+            Vec::<String>::new()
+        );
     }
 
     #[test]
