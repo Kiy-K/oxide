@@ -1,0 +1,33 @@
+# Standalone: deliberately NOT a member of any workspace, and OXIDE's root
+# Cargo.toml has no [workspace] section, so `cargo build`/`cargo test` at the
+# repo root never sees this crate — the shipped `oxide` binary and library
+# contain zero FTS5/trigram code (see ../README.md's "Where this lives").
+#
+# Unlike docs/storage-backend-eval/spike (which deliberately does NOT depend
+# on the real `oxide` crate, to keep that evaluation's own corpus/harness
+# fully self-contained), this spike takes a path dependency on it. The whole
+# point of this evaluation is "measured against the real, shipped control"
+# (`oxide::literal`) — reimplementing that control a second time here would
+# risk exactly the drift a parity comparison exists to catch. The tradeoff
+# is a slower first build (the full `oxide` lib, tree-sitter grammars and
+# all, compiles as a dependency); that's a one-time cost for a reproducible
+# spike, not a shipped concern.
+[workspace]
+
+[package]
+name = "literal_trigram_spike"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "bench"
+path = "src/bin/bench.rs"
+
+[dependencies]
+# Path dependency on the real, shipped control — see the top-of-file note.
+oxide = { path = "../../.." }
+anyhow = "1"
+# Same pin OXIDE itself uses, so the challenger measures the SQLite that
+# ships with OXIDE today, not a newer one.
+rusqlite = { version = "0.32", features = ["bundled"] }
+tempfile = "3"

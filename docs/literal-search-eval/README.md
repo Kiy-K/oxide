@@ -1,9 +1,9 @@
 # Literal search: control-arm baseline
 
 Status: **Control arm shipped** (`oxide search --mode literal`, `src/literal.rs`).
-This is the baseline issue #6's Pareto gate measures a future FTS5/trigram
-proposal against — it is not itself a verdict on trigram indexing, which
-stays out of scope here by design (no regex, no trigram, no FTS5 code).
+**FTS5 trigram challenger measured and REJECTED** (`spike/`, a standalone
+crate — not part of OXIDE's build, not reachable from any user-facing
+surface) — see the verdict section below. No regex support either way.
 
 ## What was built
 
@@ -115,12 +115,184 @@ For reference, `oxide index` on the 800-module repo (26,415 symbols) took
 that, which is the whole point of a path that works before a repository has
 ever been indexed.
 
+## FTS5 trigram challenger: measured and rejected
+
+### Where this lives
+
+`spike/` (this directory) is a **standalone Rust crate** — its own
+`Cargo.toml`, its own empty `[workspace]`, never a member of any ancestor
+workspace, and OXIDE's root `Cargo.toml` has no `[workspace]` section
+either, so `cargo build`/`cargo test` at the repo root never sees it. It
+takes a path dependency on the real `oxide` crate so its tests can compare
+byte-for-byte against the actual shipped control (`oxide::literal::search`)
+rather than a second reimplementation of it — see `spike/Cargo.toml`'s top
+comment for why that's a deliberate departure from `docs/
+storage-backend-eval/spike`'s fully-standalone design. **There is no
+FTS5/trigram code anywhere in `src/`** — `src/literal.rs`'s own module doc
+says so and points back here.
+
+- `spike/src/lib.rs` — the challenger implementation and its unit/parity
+  tests (`cargo test --manifest-path spike/Cargo.toml`).
+- `spike/src/bin/bench.rs` — the benchmark harness this report's numbers
+  came from (`cargo run --release --manifest-path spike/Cargo.toml --bin
+  bench -- REPO...`, or `spike/bench.sh` for the full battery used below).
+
+### Design
+
+The challenger implements the exact same contract the control established:
+same `LiteralHit`/`LiteralSearchResult` types (imported from `oxide::
+literal`, not re-declared), same bounds (`MAX_MATCHES_PER_FILE`/
+`SCAN_SAFETY_CAP`/`MAX_RESULTS` — duplicated as private constants inside
+`spike/src/lib.rs`, since they're private to `oxide::literal` and this
+experimental crate has no business asking the shipped crate to widen its
+API for a rejected experiment; the parity tests are what catch drift), same
+file set (`oxide::scanner::scan_repo_text`), same `(file, line, column)`
+ordering. **It is not reachable from any CLI flag, MCP argument, or
+service method** — no `--mode trigram`, nothing in `RepositoryService`, and
+now not even in the same crate.
+
+Schema: one FTS5 virtual table, one row per line —
+`CREATE VIRTUAL TABLE lines USING fts5(file UNINDEXED, line_no UNINDEXED,
+content, tokenize = 'trigram case_sensitive 1')`. `case_sensitive 1` is
+deliberate: the tokenizer defaults to case-*insensitive*, which would make
+the challenger answer a different question than the control (and than
+`rg -F`'s own case-sensitive default) — caught by
+`case_sensitive_by_construction_unlike_the_tokenizer_default` in the
+module's tests before it reached the benchmark. A MATCH query only narrows
+candidate lines; each candidate's stored content is re-scanned with the
+control's own byte-exact `find` to compute the exact column and to not
+trust FTS5's candidate set blindly, which is standard practice for
+trigram-accelerated substring search.
+
+### Correctness
+
+Exact, byte-identical results to the control on every pattern tried, **with
+two structural exceptions found and reproduced, not just theorized:**
+
+1. **Patterns shorter than 3 bytes cannot be trigram-queried at all**
+   (`MIN_PATTERN_LEN`). FTS5's trigram tokenizer has no complete trigram to
+   query on below that length; `spike`'s `search` returns an explicit error
+   rather than silently returning nothing or falling back.
+   The control has no such floor — a 1-2 character literal search (a
+   single-letter flag, an operator) is exactly the kind of "partial
+   identifier" query issue #6's own scope calls out, and the challenger
+   cannot serve it.
+2. **Non-UTF-8 files are invisible to the trigram index.** FTS5 columns are
+   text; `build`/`update_file` skip a file outright rather than index a
+   lossily-decoded (and therefore byte-inexact) stand-in for it. The
+   control matches raw bytes and has no such gap — this is one of the
+   issue's own explicit UX-matrix requirements ("non-UTF-8 files"), and the
+   challenger fails it structurally, not by omission. Closing this would
+   need a custom FTS5 tokenizer over raw bytes, out of scope for an
+   experimental challenger.
+
+Both are pinned by tests (`rejects_patterns_shorter_than_the_trigram_floor`,
+`skips_non_utf8_files_and_reports_the_gap`) and reproduced live on every
+corpus below (`ab`, 2 bytes, always shows as `TRIGRAM_ERROR` against the
+control's real hits).
+
+### Latency, DB growth, and update cost
+
+Measured with `spike/src/bin/bench.rs` (`REPS=15`, via `spike/bench.sh`) on:
+the two committed fixtures, the OXIDE repository itself, and two synthetic
+corpora
+(`scripts/gen_bench_repo.py`) for a controlled growth curve. No network
+access was available in this environment to clone external real-world
+repos (Django/pylint/matplotlib-scale, as `examples/
+lexical_parity_real_repos.rs` uses when `~/.cache/oxide-contextbench/repos`
+is populated); the OXIDE repository itself — a genuine, non-trivial,
+prose-and-code real codebase — stands in as this evaluation's
+"representative real repo," and turned out to be the single most
+informative data point (see the DB-growth finding below). This machine,
+best-effort, not a controlled benchmark environment — treat as
+order-of-magnitude.
+
+| Corpus | files | lines | control p50 | trigram p50 | trigram DB size | bytes/line | update (1 file) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| fixtures/py_repo | 10 | 272 | 2.3-3.6ms | 0.35ms | 94 KB | 345 | 0.4-0.8ms |
+| fixtures/ts_repo | 10 | 202 | 2.4ms | 0.26ms | 74 KB | 372 | 0.5ms |
+| synthetic, 200 modules/lang | 1,205 | 29,238 | 16.9ms | 2.2ms | 4.7 MB | 169 | 7.9ms |
+| synthetic, 800 modules/lang | 4,805 | 116,838 | 48.4ms | 6.5ms | 18.9 MB | 168 | 23.3ms |
+| **OXIDE repo itself (real)** | **1,393** | **119,753** | **107-187ms** | **27-45ms** | **140 MB** | **1,170** | **26-43ms** |
+
+Control's own DB size and update cost are 0 in every row — it has no index
+to grow or keep current.
+
+**The DB-growth number is the load-bearing finding here, and it is much
+worse than the ~34MB the prior experiment (`docs/storage-backend-eval/
+enhanced-sqlite.md`) measured.** That number was for a trigram index over
+*symbol bodies only* — a small, code-only subset of a repository. This
+challenger indexes everything `scan_repo_text` keeps (READMEs, configs,
+committed benchmark data, all prose), which is what literal search's own
+value proposition ("search text beyond supported source-language files")
+requires. The two synthetic corpora look cheap (**~170 bytes/line**) because
+generator-templated code is extremely repetitive and trigram-compresses
+well; **the real OXIDE repository costs ~1,170 bytes/line — roughly 7x
+worse** — because prose (docs, comments, raw eval data) has far higher
+trigram cardinality than repetitive generated code. A synthetic-only
+benchmark would have badly underestimated this cost. On this repo, the
+trigram database (140 MB) would be **more than 3x the size of the entire
+`.oxide/index.db`** the symbol index itself produces (per the control-arm
+report above, ~70 MB for a much larger 800-module synthetic corpus) — a
+disproportionate storage cost for one feature.
+
+Latency: trigram is consistently 4-7x faster than the control on
+real/synthetic corpora at this scale (the OXIDE repo: ~107-187ms vs
+~27-45ms). The mechanism is exactly what a trigram index is for: the
+control re-walks and re-reads the whole kept file set on every call (it has
+no persistent state to avoid that), while the trigram query narrows
+straight to matching lines. Absolute control latency stays well under 200ms
+even on this repo, though — nowhere near a threshold where an agent or a
+human would perceive it as slow.
+
+RSS: a combined session (build + correctness + both latencies + update) on
+the OXIDE repo peaked at **78.5 MB** (`VmHWM`); a control-only session
+(repeated scans, no trigram build at all) peaked at **56 MB**. The
+difference (~22 MB) is roughly the trigram build's own working set, well
+below the on-disk DB size since SQLite doesn't hold the whole index
+resident.
+
+### Verdict: REJECT (keep experimental)
+
+Per the issue's own Pareto gate — "accept only if measured discovery
+utility or workflow cost improves enough to justify the added index size
+and maintenance path" — **reject promoting the trigram challenger to a
+shipped mode.** Reasoning:
+
+- The control's absolute latency is already fast enough for interactive
+  and agent use (well under 200ms on a genuine, non-trivial real repo) —
+  the 4-7x speedup is real but does not cross a threshold where the
+  control becomes a problem.
+- The storage cost is large and *scales unfavorably with realism*: 140 MB
+  on this one real repo, 7x worse per-line than synthetic corpora
+  suggested, and more than 3x the size of OXIDE's own primary symbol
+  index. A feature whose accelerator costs more than the thing it
+  accelerates is a hard sell.
+- Two real correctness gaps (sub-3-byte patterns, non-UTF-8 files) mean the
+  challenger cannot be a drop-in replacement for the control even ignoring
+  cost — it would need to coexist with a fallback path, adding complexity
+  the control alone doesn't have.
+- The control has zero maintenance path (nothing to keep fresh, ever); the
+  trigram index needs its own live-update wiring into `oxide index`/
+  `oxide watch` to not go stale, which is undesigned and unbuilt work this
+  evaluation deliberately did not do (out of scope: "do not expand scope").
+
+**Keep the native scan as the sole shipped literal-search implementation.**
+Keep `spike/` in the repo, standalone and out of OXIDE's build entirely, as
+the reproducible evidence and the pickup point the day this calculus
+changes — most plausibly if a target corpus's control latency crosses into
+the seconds range (large monorepos well beyond what was tested here) or
+literal search becomes a sufficiently hot path that even tens of
+milliseconds compound across a session. Re-run `spike/bench.sh` against
+that corpus before reopening this decision; don't re-decide from these
+numbers alone.
+
 ## What this does and doesn't settle
 
-This closes the "control" half of issue #6: a deterministic, tested,
-documented literal-search surface exists, needs no index, and has a
-measured latency floor to compare against. It does **not** evaluate FTS5 or
-trigram indexing — that remains a separate follow-up, gated by the same
-Pareto criterion the issue states: adopt only if it beats these numbers (and
-this scan's ~0 storage cost) by enough to justify the ~34MB the prior
-experiment measured for a trigram index.
+This closes both halves of issue #6's "earn the surface through measured
+workflow value" framing: a deterministic, tested, documented literal-search
+control ships (needs no index, ~0 cost), and the FTS5 trigram challenger it
+was supposed to be measured against has been built, benchmarked on real and
+synthetic corpora, and rejected on cost and correctness grounds — not left
+unevaluated. Nothing about regex or a production trigram index changes
+here; both remain explicitly out of scope.

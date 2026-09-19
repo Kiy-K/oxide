@@ -100,6 +100,18 @@ default = ["native-embed"]
 native-embed = ["dep:fastembed"]
 
 [dev-dependencies]
+# ripgrep's own matching engine (BurntSushi's `grep-*` crates), for the
+# literal-search profiling tooling (examples/literal_scan_profile.rs) to
+# run an in-process, cross-platform comparison against a real `rg`-grade
+# matcher without depending on a system `rg` binary being installed. Dev-
+# only: the shipped `oxide` binary/library never link these, and `oxide
+# search --mode literal` (src/literal.rs) stays a from-scratch scan, never
+# an rg subprocess or an embedded rg engine — see that module's own doc
+# comment. `grep-searcher` walks/reads and drives the match loop;
+# `grep-regex` builds the matcher itself, including `-F`/fixed-strings.
+grep-searcher = "0.1"
+grep-regex = "0.1"
+grep-matcher = "0.1"
 
 [[example]]
 name = "embedding_profile_probe"

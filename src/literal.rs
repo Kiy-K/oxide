@@ -5,8 +5,16 @@
 //! This is the *control* arm for github.com/Kiy-K/oxide/issues/6: a trigram
 //! or FTS5 index is only worth adding to OXIDE if it beats this scan by
 //! enough (on correctness, latency, and storage) to earn its ~34MB cost.
-//! Nothing here is a step toward that index; there is no regex support and
-//! no trigram/FTS5 code, by design, until that evaluation says otherwise.
+//! Nothing here is a step toward that index; there is no regex support, and
+//! **no FTS5/trigram code exists anywhere in this crate.** The experimental
+//! FTS5 trigram challenger was built, measured, and rejected on cost and
+//! correctness grounds — see `docs/literal-search-eval/README.md`'s verdict
+//! — and its implementation lives entirely outside this crate's build, in
+//! the standalone `docs/literal-search-eval/spike/` crate (its own
+//! `Cargo.toml`, never a workspace member, never compiled by `cargo build`/
+//! `cargo test` here). If that verdict is ever reconsidered per the report's
+//! own triggers, the challenger's code is there to pick back up — not
+//! dormant in production.
 //!
 //! Distinct from [`crate::retrieval::SearchMode`] and [`crate::service::
 //! Evidence`] on purpose: a literal hit is a line in a file, not a symbol —
