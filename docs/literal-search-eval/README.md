@@ -4,8 +4,12 @@ Status: **Control arm shipped** (`oxide search --mode literal`, `src/literal.rs`
 **FTS5 trigram challenger measured and REJECTED** (`spike/`, a standalone
 crate — not part of OXIDE's build, not reachable from any user-facing
 surface) — see the verdict section below. **Profiled** the control against
-`rg -F` and found the gap's real source (byte-scan matcher, not walk/I/O) —
-see "Profiling" below; not yet optimized. No regex support either way.
+`rg -F`, found the gap's real source (byte-scan matcher, not walk/I/O), and
+**optimized it** (`memchr::memmem` — 2.6-3.9x faster end-to-end on a real
+repo, zero behavior/API change, no regression found) — see "Profiling" and
+"Optimization" below. Remaining gap (~4-5x vs. ripgrep, down from ~12-13x)
+is line-splitting and per-hit allocation, not yet addressed. No regex
+support either way.
 
 ## What was built
 
@@ -164,18 +168,99 @@ directionally right for tiny corpora, just not for anything resembling a
 real repository, which is the case that actually matters for this
 decision.
 
-**Not optimizing yet, per the task that produced this section** — but for
-the record, the mechanism `memchr`-style substring search would fix is
-SIMD/vectorized scanning for the needle's first byte (or a full multi-byte
-`memmem`) instead of a scalar windowed-equality loop; that's the shape a
-future optimization pass should take, and this profiling run is the
-evidence for why it would actually move the needle (the byte-scan, not the
-walk).
+This profiling pass didn't optimize anything itself, but identified exactly
+the shape a fix should take (SIMD/vectorized substring search instead of a
+scalar windowed-equality loop) — see the next section for the follow-up
+that acted on it.
 
 For reference, `oxide index` on the 800-module repo (26,415 symbols) took
 ~5.5s and produced a 70MB `.oxide/index.db` — literal search needs none of
 that, which is the whole point of a path that works before a repository has
 ever been indexed.
+
+## Optimization: `memchr::memmem` replaces the scalar matcher
+
+**Kept — measured improvement is substantial and unambiguous, no
+regressions found.** `src/literal.rs::search` now builds one
+`memchr::memmem::Finder` per call (reused across every file and line,
+rather than the old per-call `windows().position()` scan reconstructed
+from scratch on each match attempt) and calls `finder.find(...)` where the
+old code called the hand-rolled `find`. `memchr` was already present
+transitively (pinned at 2.8.3 via `ignore`/`regex`/`bstr`); this adds a
+direct dependency, no new version, no new compile cost. Nothing about the
+function's signature, the walk, the file set, the caps, or the CLI/MCP
+surface changed.
+
+### What's preserved (verified, not assumed)
+
+- **Byte-exact matching, including non-UTF-8 files**: `src/literal.rs`'s
+  own `matches_non_utf8_files_byte_exactly` test passes unchanged — the
+  matcher still runs on raw bytes, never decoded text.
+- **Exact `(file, line, column)` ordering**: `finds_matches_with_line_and_column`
+  (asserts specific column numbers) and `truncates_deterministically_when
+  _over_limit` (asserts a specific deterministic subset survives
+  truncation) both pass unchanged. `memchr::memmem::Finder::find` finds
+  the same leftmost match in a given slice `windows().position()` did, so
+  the cursor-advance loop's positional semantics are identical.
+- **All caps** (`MAX_MATCHES_PER_FILE`, `SCAN_SAFETY_CAP`, `MAX_RESULTS`):
+  untouched — the loop structure around the matcher call didn't change,
+  only what's inside the innermost `while let Some(pos) = ...`.
+- **CLI/MCP parity**: `tests/mcp_e2e.rs::search_literal_mode_needs_no_index
+  _and_matches_cli_output` (asserts the CLI and MCP tool return
+  byte-identical JSON) and `tests/literal_search.rs::matches_ripgrep_over
+  _the_same_file_set` (real `rg -F` parity) both pass unchanged.
+- **Zero database/index access**: no change to what `search` touches on
+  disk — still `scanner::scan_repo_text` + `std::fs::read`, nothing else.
+- **Retrieval untouched**: `src/retrieval.rs` has zero diff; `oxide eval
+  --config fixtures/benchmark.json` is byte-identical before and after.
+
+### Measured: end-to-end and per-stage, same corpora as the profiling pass
+
+`examples/literal_scan_profile.rs`, same machine, same methodology
+(best-effort, not a controlled benchmark environment — treat as
+order-of-magnitude). OXIDE repo: 1,396 files, ~31.5MB, 15 reps.
+
+| Stage | before (windows) | after (memmem) | speedup |
+|---|---:|---:|---:|
+| A: walk | ~8ms | ~10ms | ~1x (unchanged; noise) |
+| B: read | ~9ms | ~10-16ms | ~1x (unchanged; noise) |
+| **C: control end-to-end, `"fn "` (200 hits)** | **169.9ms** | **~63-66ms** | **~2.6x** |
+| **C: control end-to-end, near-absent pattern (2 hits)** | **150.1ms** | **~38ms** | **~3.9x** |
+| D: rg engine, in-process (unchanged, reference) | ~12ms | ~12-15ms | n/a |
+
+The improvement is bigger for the near-absent pattern (3.9x) than for `"fn
+"` (2.6x) — `memmem`'s advantage compounds over a full-corpus scan with
+nothing to match, while `"fn "` also pays per-hit bookkeeping cost (200
+`LiteralHit`s: a `String` clone and a snippet truncation each) that
+`memmem` doesn't touch. Both numbers are real wins; neither is inflated by
+walk or I/O changing (A and B are within measurement noise of the
+pre-optimization numbers, as expected — nothing about them changed).
+
+On the small fixture repos (`fixtures/py_repo`, `fixtures/ts_repo`, ~5-8KB)
+control end-to-end stayed ~3-4ms, unchanged within noise — walk dominates
+at that scale regardless of matcher, exactly as the profiling section
+found.
+
+RSS: a control-only session (`docs/literal-search-eval/spike/bench.sh
+SKIP_TRIGRAM=1`, the same tool and methodology that produced the
+previously-recorded 56MB baseline) now peaks at **57.3MB** — no measurable
+regression; a `Finder` built once per call is not a meaningful allocation
+next to reading 31.5MB of file content.
+
+### Remaining gap (not closed, not in scope here)
+
+The control is now **~4-5x slower than ripgrep's engine** on the OXIDE
+repo (was ~12-13x) — real progress, gap not closed. The profiling pass's
+new **Phase B2** (read + line-split, no matching: `bytes.split(|&b| b ==
+b'\n')`) measured ~25-29ms on this corpus — a plain scalar per-byte
+closure call with no SIMD fast path in `std::slice::split` — which is now
+comparable to or larger than the matcher's own remaining cost. Closing the
+rest of this gap would mean also replacing the newline-finding with a
+`memchr`-based line iterator (or restructuring around `grep-searcher`'s
+buffered line-oriented model directly), plus reducing per-hit allocation
+(the `display.clone()`/snippet-truncation cost on every `LiteralHit`).
+**Neither is done here** — out of scope for "replace the matcher," and
+each would need its own before/after measurement the way this one got.
 
 ## FTS5 trigram challenger: measured and rejected
 
@@ -355,15 +440,16 @@ numbers alone.
 
 ## What this does and doesn't settle
 
-This closes both halves of issue #6's "earn the surface through measured
-workflow value" framing: a deterministic, tested, documented literal-search
-control ships (needs no index, ~0 cost), and the FTS5 trigram challenger it
-was supposed to be measured against has been built, benchmarked on real and
-synthetic corpora, and rejected on cost and correctness grounds — not left
-unevaluated (and relocated out of `src/` entirely once rejected, so
-production contains no dormant FTS5 code). The profiling pass additionally
-found and corrected an earlier wrong guess about *why* the control trails
-`rg -F`: it's the byte-scan matcher, not the walk or file I/O, by roughly
-an order of magnitude at real-repo scale. Nothing about regex, a production
-trigram index, or an actual matcher optimization changes here; all three
-remain explicitly out of scope — the profiling section is diagnosis only.
+This closes all three halves of issue #6's "earn the surface through
+measured workflow value" framing: a deterministic, tested, documented
+literal-search control ships (needs no index, ~0 cost); the FTS5 trigram
+challenger it was supposed to be measured against has been built,
+benchmarked on real and synthetic corpora, and rejected on cost and
+correctness grounds — not left unevaluated, and relocated out of `src/`
+entirely once rejected so production contains no dormant FTS5 code; and
+the control's own gap to `rg -F` has been profiled, correctly attributed
+(byte-scan matcher, not walk/I/O — correcting an earlier wrong guess), and
+closed substantially (`memchr::memmem`, 2.6-3.9x faster, no regression) —
+with the remainder (line-splitting, per-hit allocation) identified and
+left for a future pass rather than pursued here. Nothing about regex or a
+production trigram index changes; both remain explicitly out of scope.

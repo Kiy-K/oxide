@@ -2196,6 +2196,7 @@ dependencies = [
  "grep-searcher",
  "ignore",
  "libc",
+ "memchr",
  "notify",
  "rmcp",
  "rusqlite",

@@ -78,15 +78,6 @@ pub struct LiteralSearchResult {
 /// pattern happens to appear in it.
 const MAX_SNIPPET_BYTES: usize = 300;
 
-fn find(haystack: &[u8], needle: &[u8]) -> Option<usize> {
-    if needle.is_empty() || needle.len() > haystack.len() {
-        return None;
-    }
-    haystack
-        .windows(needle.len())
-        .position(|window| window == needle)
-}
-
 fn truncate_snippet(line: &[u8]) -> String {
     let mut text = String::from_utf8_lossy(line).into_owned();
     if text.len() > MAX_SNIPPET_BYTES {
@@ -105,6 +96,16 @@ fn truncate_snippet(line: &[u8]) -> String {
 /// `pattern`, byte-exact regardless of the file's own encoding. Results are
 /// sorted `(file, line, column)` and bounded to `limit` (itself capped at
 /// [`MAX_RESULTS`]).
+///
+/// The match loop is `memchr::memmem` (SIMD-accelerated substring search —
+/// the same primitive ripgrep itself uses), not a hand-rolled scan.
+/// `docs/literal-search-eval/README.md`'s profiling pass measured the
+/// prior scalar `windows().position()` loop as ~12-13x slower than
+/// ripgrep's engine over the same bytes, and — since that cost scaled with
+/// bytes scanned, not matches found — as the dominant cost of the whole
+/// call, well above the file walk or the I/O. One `Finder` is built once
+/// per `search()` call and reused across every file and line, rather than
+/// rebuilt on every match attempt the way the old per-call `find` was.
 pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchResult> {
     ensure!(
         !pattern.is_empty(),
@@ -112,6 +113,7 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
     );
     let limit = limit.min(MAX_RESULTS);
     let needle = pattern.as_bytes();
+    let finder = memchr::memmem::Finder::new(needle);
     let files = scanner::scan_repo_text(root)?;
 
     let mut hits = Vec::new();
@@ -125,7 +127,7 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
         let mut file_matches = 0usize;
         for (idx, line) in bytes.split(|&b| b == b'\n').enumerate() {
             let mut cursor = 0usize;
-            while let Some(pos) = find(&line[cursor..], needle) {
+            while let Some(pos) = finder.find(&line[cursor..]) {
                 let match_start = cursor + pos;
                 hits.push(LiteralHit {
                     file: display.clone(),

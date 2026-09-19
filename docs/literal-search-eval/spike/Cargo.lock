@@ -2115,6 +2115,7 @@ dependencies = [
  "fastembed",
  "ignore",
  "libc",
+ "memchr",
  "notify",
  "rmcp",
  "rusqlite",

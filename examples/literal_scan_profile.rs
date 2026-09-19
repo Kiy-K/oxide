@@ -85,6 +85,33 @@ fn main() {
     report("B: read all kept files", &read_samples);
     println!("   {total_bytes} bytes across {} files", files.len());
 
+    // ---- Phase B2: read + line-split, no matching at all ----
+    // Isolates `bytes.split(|&b| b == b'\n')` (a scalar, per-byte closure
+    // call -- std's slice::split has no SIMD fast path) from the matcher.
+    // If B2 - B is a large fraction of C - B, the line splitter, not the
+    // substring search, is the real remaining cost.
+    let mut split_samples = Vec::new();
+    let mut total_lines = 0u64;
+    for _ in 0..reps {
+        let t = Instant::now();
+        let mut lines = 0u64;
+        for rel in &files {
+            if let Ok(b) = std::fs::read(root.join(rel)) {
+                lines += b.split(|&c| c == b'\n').count() as u64;
+            }
+        }
+        // Codex review flagged that a discarded `lines` gives the optimizer
+        // license to eliminate the split+count work entirely, silently
+        // collapsing this phase into phase B and invalidating the
+        // conclusion it exists to support. `black_box` forces it to stay
+        // real work; `total_lines` (printed below) gives it an observable
+        // use too, belt and suspenders.
+        split_samples.push(ms(t));
+        total_lines = std::hint::black_box(lines);
+    }
+    report("B2: read + line-split only", &split_samples);
+    println!("   {total_lines} lines");
+
     // ---- Phase C: the control end-to-end (walk + read + match, as shipped) ----
     let mut control_samples = Vec::new();
     let mut control_hits = 0usize;
@@ -159,4 +186,20 @@ fn main() {
         percentile(&walk_samples, 50.0) + percentile(&read_samples, 50.0),
         percentile(&control_samples, 50.0),
     );
+    if let Some(kb) = peak_rss_kb() {
+        println!("process peak RSS (VmHWM, whole run so far): {kb} KB");
+    }
+}
+
+/// Peak resident set size in KB for this process so far, from
+/// `/proc/self/status`'s `VmHWM` (high-water mark) — Linux-specific, and
+/// the same idiom `docs/literal-search-eval/spike/src/bin/bench.rs` uses,
+/// so RSS numbers from the two tools are comparable.
+fn peak_rss_kb() -> Option<u64> {
+    let status = std::fs::read_to_string("/proc/self/status").ok()?;
+    status.lines().find_map(|line| {
+        line.strip_prefix("VmHWM:")
+            .and_then(|rest| rest.split_whitespace().next())
+            .and_then(|kb| kb.parse().ok())
+    })
 }

@@ -14,6 +14,11 @@ categories = ["command-line-utilities", "development-tools"]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 ignore = "0.4"
+# SIMD-accelerated substring search for src/literal.rs's byte-scan control
+# (`memchr::memmem`) -- already in the dependency graph transitively (via
+# `ignore`/`regex`/`bstr`, pinned at the same 2.8.3 in Cargo.lock), so this
+# adds no new crate version, only a direct `use`.
+memchr = "2"
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
