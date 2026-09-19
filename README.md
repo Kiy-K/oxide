@@ -107,7 +107,18 @@ oxide query "fix token refresh" --git     # also weigh the current diff's change
 ```
 
 `query` is for a question or coding task; `search` is for an identifier or
-expression. Add `--json` to any command for automation:
+expression. Reach for `--mode literal` instead of the default hybrid ranking
+when you know the *exact* string you're after — a path, an error message, a
+config value, a partial identifier — rather than a name or phrase you want
+ranked by relevance: it's a deterministic substring scan over all repository
+text (not just indexed source files), needs no index, and can't miss a match
+the way a ranked top-K can.
+
+```bash
+oxide search "TODO: fix flaky_widget" --mode literal   # exact substring, any text file
+```
+
+Add `--json` to any command for automation:
 
 ```bash
 oxide status --json

@@ -26,7 +26,7 @@ use rmcp::model::{
 use rmcp::{tool, tool_handler, tool_router, ErrorData as McpError, ServerHandler};
 use serde_json::{json, Value};
 
-const SERVER_INSTRUCTIONS: &str = "Use query for unfamiliar multi-file work; use search for focused follow-up discovery. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file or literal edits.";
+const SERVER_INSTRUCTIONS: &str = "Use query for unfamiliar multi-file work; use search for focused follow-up discovery; use search with mode: \"literal\" for an exact known string (a path, error message, or identifier) rather than a name or phrase to rank. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file edits.";
 const DEFAULT_CONTEXT_BUDGET: usize = 4096;
 const DEFAULT_SEARCH_LIMIT: usize = 10;
 
@@ -84,6 +84,8 @@ fn query_input_schema() -> JsonObject {
     }))
 }
 
+const SEARCH_MODE_DESCRIPTION: &str = "Omit for the default ranked hybrid search (returns scored symbol evidence). Set to \"literal\" for a deterministic exact-substring scan across all repository text, not just indexed source files -- needs no index, and returns {hits, truncated} instead of ranked evidence. Use \"literal\" for a known-exact string (a path, error message, config value, identifier); omit it for a name or phrase you want ranked by relevance. Lexical/semantic/hybrid aren't separately selectable here (unlike the CLI's --mode) because they only change internal scoring weights and all return the same evidence shape -- \"literal\" is the one mode that changes capability (no index needed) and output shape, which is what earns it a place in this schema.";
+
 fn search_input_schema() -> JsonObject {
     object(json!({
         "type": "object",
@@ -93,6 +95,7 @@ fn search_input_schema() -> JsonObject {
             "limit": {"type": "integer", "minimum": 0, "maximum": 100},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
             "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
+            "mode": {"type": "string", "enum": ["literal"], "description": SEARCH_MODE_DESCRIPTION},
         },
         "required": ["query"],
         "additionalProperties": false,
@@ -100,11 +103,18 @@ fn search_input_schema() -> JsonObject {
 }
 
 /// Parses the optional `profile` argument (fast|balanced|quality) — the
-/// CLI's `--profile`, deliberately not called `mode` here because the CLI's
-/// `--mode` is `search`'s lexical|semantic|hybrid switch. Absent means
-/// `RetrievalMode::resolve(None)` — the process's `$OXIDE_RETRIEVAL_MODE`, or
-/// `Balanced` for a fully unconfigured agent. An explicit but unparseable
-/// value fails loudly rather than silently falling back.
+/// CLI's `--profile`. Absent means `RetrievalMode::resolve(None)` — the
+/// process's `$OXIDE_RETRIEVAL_MODE`, or `Balanced` for a fully
+/// unconfigured agent. An explicit but unparseable value fails loudly
+/// rather than silently falling back.
+///
+/// Not called `mode`: the CLI's `--mode` is `search`'s lexical|semantic|
+/// hybrid|literal switch, and only one of those four values (`literal`) is
+/// exposed as `search`'s own `mode` argument here — see
+/// `SEARCH_MODE_DESCRIPTION` for why lexical/semantic/hybrid stay
+/// unexposed while literal earned a place. `profile` and `mode` are
+/// independent arguments on the same tool for that reason: one tunes
+/// ranking, the other switches the operation entirely.
 fn optional_retrieval_mode(arguments: &JsonObject) -> Result<RetrievalMode, McpError> {
     match optional_string(arguments, "profile")? {
         Some(s) => RetrievalMode::parse(s).ok_or_else(|| {
@@ -170,11 +180,40 @@ impl OxideServer {
     async fn search(&self, arguments: JsonObject) -> Result<CallToolResult, McpError> {
         reject_unknown(
             &arguments,
-            &["query", "path", "limit", "profile", "blast_radius"],
+            &["query", "path", "limit", "profile", "blast_radius", "mode"],
         )?;
+        // `mode` gates capability, not just ranking: absent (the default)
+        // runs the ranked hybrid path exactly as before this argument
+        // existed; `"literal"` is the only other value this schema allows
+        // (enforced by the enum, but checked again here since a client
+        // that bypasses schema validation must still get a clean error,
+        // not a silent fall-through to hybrid). See `SEARCH_MODE_DESCRIPTION`.
+        let literal_mode = match optional_string(&arguments, "mode")? {
+            None => false,
+            Some("literal") => true,
+            Some(other) => {
+                return Err(McpError::invalid_params(
+                    format!("mode must be \"literal\" if present, got {other:?}"),
+                    None,
+                ))
+            }
+        };
         let query = required_string(&arguments, "query")?.to_string();
         let path = optional_string(&arguments, "path")?.map(str::to_string);
         let limit = optional_usize(&arguments, "limit")?.unwrap_or(DEFAULT_SEARCH_LIMIT);
+        if literal_mode {
+            return run_blocking(move || {
+                let service = match RepositoryService::discover(path.as_deref()) {
+                    Ok(service) => service.with_process_cache(),
+                    Err(error) => return Ok(service_error_result(error)),
+                };
+                match service.search_literal(&query, limit) {
+                    Ok(result) => tool_success(result),
+                    Err(error) => Ok(service_error_result(error)),
+                }
+            })
+            .await;
+        }
         let retrieval_mode = optional_retrieval_mode(&arguments)?;
         let blast_radius = optional_bool(&arguments, "blast_radius")?.unwrap_or(false);
         run_blocking(move || {

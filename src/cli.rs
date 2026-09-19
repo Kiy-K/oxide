@@ -179,7 +179,10 @@ pub enum Cmd {
         /// Max results.
         #[arg(short, long, default_value_t = 10)]
         limit: usize,
-        /// How to match: lexical|semantic|hybrid.
+        /// How to match: lexical|semantic|hybrid|literal. `literal` is a
+        /// deterministic byte-substring scan over repository text (not just
+        /// indexed source files) and needs no index; every other flag below
+        /// except --limit and --json is ignored in that mode.
         #[arg(short, long, default_value = "hybrid")]
         mode: String,
         /// Relevance/latency tradeoff: fast|balanced|quality. Falls back to
@@ -453,6 +456,14 @@ pub fn run(args: Args) -> Result<(), CliError> {
             path,
             limit,
             mode,
+            json,
+            ..
+        } if mode == "literal" => cmd_search_literal(path.as_deref(), &query, limit, json),
+        Cmd::Search {
+            query,
+            path,
+            limit,
+            mode,
             no_expand,
             profile,
             blast_radius,
@@ -466,7 +477,7 @@ pub fn run(args: Args) -> Result<(), CliError> {
                     return Err(CliError::new(
                         "invalid_configuration",
                         ErrorAction::Stop,
-                        format!("unknown mode {other}; use lexical|semantic|hybrid"),
+                        format!("unknown mode {other}; use lexical|semantic|hybrid|literal"),
                         json,
                     ))
                 }
@@ -943,6 +954,42 @@ fn cmd_search(
         }
         if hits.is_empty() {
             eprintln!("no results");
+        }
+    }
+    Ok(())
+}
+
+fn cmd_search_literal(
+    path: Option<&str>,
+    query: &str,
+    limit: usize,
+    json: bool,
+) -> Result<(), CliError> {
+    if query.trim().is_empty() {
+        return Err(CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            "literal search pattern must not be empty",
+            json,
+        ));
+    }
+    let service = RepositoryService::discover(path).map_err(|e| CliError::service(e, json))?;
+    let result = service
+        .search_literal(query, limit)
+        .map_err(|e| CliError::service(e, json))?;
+    if json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&result).map_err(|e| CliError::generic(e, true))?
+        );
+    } else {
+        for hit in &result.hits {
+            println!("{}:{}:{}  {}", hit.file, hit.line, hit.column, hit.snippet);
+        }
+        if result.hits.is_empty() {
+            eprintln!("no results");
+        } else if result.truncated {
+            eprintln!("(more matches exist; results truncated)");
         }
     }
     Ok(())

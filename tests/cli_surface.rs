@@ -139,6 +139,10 @@ fn query_and_search_help_distinguish_question_from_expression() {
         search.contains("lexical|semantic|hybrid"),
         "the advanced --mode is still documented:\n{search}"
     );
+    assert!(
+        search.contains("literal"),
+        "the literal substring-scan mode is documented:\n{search}"
+    );
 }
 
 #[test]

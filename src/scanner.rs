@@ -184,14 +184,27 @@ fn looks_binary(bytes: &[u8]) -> bool {
     bytes.contains(&0)
 }
 
-/// Discover indexable source files under `root` as repo-relative slash paths.
-/// Respects `.gitignore`/`.ignore` via the `ignore` crate; applies the built-in
-/// denylist on top. Returns sorted, deduplicated paths.
-pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
+/// Files larger than this are skipped by both walks below: too big to be a
+/// hand-written source or text file worth indexing/searching, and reading
+/// one in full for a literal scan would be an unbounded-latency footgun.
+const MAX_SCANNED_FILE_BYTES: u64 = 1_500_000;
+
+/// Shared walk behind [`scan_repo`] and [`scan_repo_text`]: ignore policy,
+/// denylist, size cap, and binary sniffing are identical between "index
+/// this" and "literal-search this"; the only difference is whether a
+/// recognized language is required. Returns sorted, deduplicated
+/// repo-relative slash paths regardless of the parallel walk's arrival
+/// order, which callers that need deterministic output (e.g. literal
+/// search's line/column results) depend on.
+fn walk_repo(
+    root: &Path,
+    keep: impl Fn(&Path) -> bool + Send + Sync + 'static,
+) -> Result<Vec<PathBuf>> {
     let root = root.canonicalize()?;
     let (tx, rx) = mpsc::channel();
     let walker_root = root.clone();
     let tx_builder = tx.clone();
+    let keep = std::sync::Arc::new(keep);
     WalkBuilder::new(&root)
         .hidden(true)
         .git_ignore(true)
@@ -202,6 +215,7 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
         .run(move || {
             let tx = tx_builder.clone();
             let root = walker_root.clone();
+            let keep = keep.clone();
             Box::new(move |entry| {
                 let Ok(entry) = entry else {
                     return WalkState::Continue;
@@ -225,13 +239,13 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
                 if is_denied(path, false) {
                     return WalkState::Continue;
                 }
-                if language_for_path(path).is_none() {
+                if !keep(path) {
                     return WalkState::Continue;
                 }
                 let Ok(meta) = std::fs::metadata(path) else {
                     return WalkState::Continue;
                 };
-                if meta.len() > 1_500_000 {
+                if meta.len() > MAX_SCANNED_FILE_BYTES {
                     return WalkState::Continue;
                 }
                 let mut buf = [0u8; 1024];
@@ -257,6 +271,26 @@ pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
     files.sort();
     files.dedup();
     Ok(files)
+}
+
+/// Discover indexable source files under `root` as repo-relative slash paths.
+/// Respects `.gitignore`/`.ignore` via the `ignore` crate; applies the built-in
+/// denylist on top. Returns sorted, deduplicated paths.
+pub fn scan_repo(root: &Path) -> Result<Vec<PathBuf>> {
+    walk_repo(root, |path| language_for_path(path).is_some())
+}
+
+/// Discover every non-denylisted, non-binary, size-capped file under `root`
+/// as repo-relative slash paths — the same ignore policy as [`scan_repo`],
+/// minus the "has a recognized language" gate, so literal search can find
+/// matches in READMEs, configs, and any other repository text a symbol
+/// index has no reason to parse. Hidden files (including `.env*`) are
+/// excluded the same way `scan_repo` excludes them: by the walker's own
+/// `hidden(true)`, before either function's `keep` predicate ever runs —
+/// a deliberate choice for a scan whose snippets get piped straight into an
+/// agent's context.
+pub fn scan_repo_text(root: &Path) -> Result<Vec<PathBuf>> {
+    walk_repo(root, |_| true)
 }
 
 #[cfg(test)]

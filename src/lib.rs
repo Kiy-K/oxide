@@ -13,6 +13,7 @@ pub mod gitutil;
 pub mod index;
 pub mod languages;
 pub mod lexical;
+pub mod literal;
 pub mod mcp;
 pub mod parser;
 pub mod relations;

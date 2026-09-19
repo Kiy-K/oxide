@@ -150,9 +150,12 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
     assert_eq!(tools[0]["inputSchema"]["required"], json!(["task"]));
     assert_eq!(tools[1]["inputSchema"]["required"], json!(["query"]));
     // Argument names mirror the CLI flags (`oxide query TASK --budget-tokens
-    // --profile`, `oxide search QUERY --limit --profile`); in particular the
-    // relevance profile is `profile`, never `mode`, because the CLI's
-    // `--mode` is search's lexical|semantic|hybrid switch.
+    // --profile`, `oxide search QUERY --limit --profile --mode`); in
+    // particular the relevance profile is `profile`, never `mode`, because
+    // the CLI's `--mode` also covers lexical|semantic|hybrid, none of which
+    // are separately selectable here (see `search`'s `mode` schema
+    // description in src/mcp.rs) — `mode` on this tool accepts only
+    // "literal".
     let keys = |tool: &Value| -> Vec<String> {
         let mut k: Vec<String> = tool["inputSchema"]["properties"]
             .as_object()
@@ -176,8 +179,95 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
     );
     assert_eq!(
         keys(&tools[1]),
-        ["blast_radius", "limit", "path", "profile", "query"]
+        ["blast_radius", "limit", "mode", "path", "profile", "query"]
     );
+    assert_eq!(
+        tools[1]["inputSchema"]["properties"]["mode"]["enum"],
+        json!(["literal"])
+    );
+}
+
+#[test]
+fn search_literal_mode_needs_no_index_and_matches_cli_output() {
+    let root = tempfile::tempdir().unwrap();
+    std::fs::create_dir(root.path().join(".git")).unwrap();
+    write(
+        root.path(),
+        "README.md",
+        "See flaky_widget_marker for details.\n",
+    );
+    write(
+        root.path(),
+        "src/thing.py",
+        "def thing():\n    return flaky_widget_marker\n",
+    );
+    // Deliberately no `index(root.path())` call: literal search must work
+    // on a repository that has never been indexed at all.
+    let mut server = McpProcess::start(root.path());
+
+    let response = server.request(call(
+        "search",
+        json!({"query": "flaky_widget_marker", "path": ".", "mode": "literal"}),
+    ));
+    assert_eq!(response["result"]["isError"], false);
+    let payload: Value =
+        serde_json::from_str(response["result"]["content"][0]["text"].as_str().unwrap()).unwrap();
+    let hits = payload["hits"].as_array().unwrap();
+    assert_eq!(hits.len(), 2, "{payload:?}");
+    let files: Vec<&str> = hits.iter().map(|h| h["file"].as_str().unwrap()).collect();
+    assert!(files.contains(&"README.md"), "{files:?}");
+    assert!(files.contains(&"src/thing.py"), "{files:?}");
+    assert!(hits[0]["line"].is_u64());
+    assert!(hits[0]["column"].is_u64());
+
+    let cli = Command::new(env!("CARGO_BIN_EXE_oxide"))
+        .args([
+            "search",
+            "flaky_widget_marker",
+            "--mode",
+            "literal",
+            "--json",
+        ])
+        .current_dir(root.path())
+        .output()
+        .unwrap();
+    assert!(cli.status.success(), "{:?}", cli.stderr);
+    let cli_payload: Value = serde_json::from_slice(&cli.stdout).unwrap();
+    assert_eq!(
+        cli_payload, payload,
+        "CLI and MCP must return identical hits"
+    );
+}
+
+#[test]
+fn search_literal_mode_rejects_missing_query_as_malformed_params() {
+    let root = tempfile::tempdir().unwrap();
+    let mut server = McpProcess::start(root.path());
+    let response = server.request(call("search", json!({"path": ".", "mode": "literal"})));
+    assert_eq!(response["error"]["code"], -32602);
+}
+
+#[test]
+fn search_rejects_a_lexical_semantic_or_hybrid_mode_value() {
+    let root = tempfile::tempdir().unwrap();
+    write(root.path(), "src/a.py", "def thing():\n    return 1\n");
+    index(root.path());
+    let mut server = McpProcess::start(root.path());
+
+    // The CLI's `--mode` accepts lexical|semantic|hybrid|literal, but this
+    // tool's `mode` argument only ever accepts "literal" (see
+    // `SEARCH_MODE_DESCRIPTION`). A value from the CLI's larger set must
+    // fail loudly, not silently fall through to the default hybrid search.
+    for bogus in ["lexical", "semantic", "hybrid"] {
+        let response = server.request(call(
+            "search",
+            json!({"query": "thing", "path": ".", "mode": bogus}),
+        ));
+        assert_eq!(
+            response["error"]["code"], -32602,
+            "mode: {bogus:?} should be rejected, got {response:?}"
+        );
+    }
 }
 
 #[test]

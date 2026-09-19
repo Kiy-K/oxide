@@ -47,9 +47,11 @@ Skip OXIDE and just read/search/edit directly when:
   number, a prior search result already pointed you there).
 - The task is a tiny, isolated edit (rename, typo, one-line fix) with a
   known target.
-- An exact literal string search (`grep`/`ripgrep`) already answers the
-  question — OXIDE's retrieval is for concept/behavior queries, not exact
-  string lookup.
+- An exact literal string search (a path, error message, config value, or
+  known substring) already answers the question — `oxide search --mode
+  literal` (MCP: `search` with `mode: "literal"`) or `grep`/`ripgrep` both
+  work here; OXIDE's default hybrid `search`/`query` retrieval is for
+  concept/behavior queries ranked by relevance, not exact string lookup.
 - You are about to edit code and need to verify current source — always
   read the file directly before editing; never edit from an OXIDE snippet
   alone.

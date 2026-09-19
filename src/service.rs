@@ -782,6 +782,20 @@ impl RepositoryService {
         Ok(evidence)
     }
 
+    /// Deterministic literal substring search over repository text (see
+    /// `crate::literal`) — the control arm for issue #6. Unlike [`Self::
+    /// search`], this needs no index, no embedder, and no validation: it
+    /// reads files straight off disk, which is exactly the point for a
+    /// repository that has never been indexed.
+    pub fn search_literal(
+        &self,
+        pattern: &str,
+        limit: usize,
+    ) -> Result<crate::literal::LiteralSearchResult, ServiceError> {
+        crate::literal::search(&self.root, pattern, limit)
+            .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))
+    }
+
     pub fn context(
         &self,
         task: &str,
