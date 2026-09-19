@@ -493,33 +493,16 @@ pub fn update_base_for_files(
         // stopped the reparse but left the stale symbol in place, which is
         // worse than either extreme).
         //
-        // Deliberately not `scanner::is_indexable` (which collapses any
-        // metadata-read failure to "not indexable"): only a *successful*
-        // metadata read that reports an over-cap size is oversized evidence
-        // here. A metadata call that fails for some other reason (a
-        // permission hiccup, a rename racing this exact instant) must fall
-        // through to the read below, whose own NotFound-vs-other-error
-        // distinction is the one this function has always relied on for
-        // "was this actually deleted?" — collapsing that distinction was a
-        // real bug in an earlier version of this fix (found by review): it
-        // turned a transient stat() failure into a silent symbol deletion.
-        if let Ok(meta) = std::fs::metadata(&full_path) {
-            if let Some(lang) = crate::scanner::language_for_path(&full_path) {
-                if meta.len() > crate::scanner::size_cap_for(lang) {
-                    if stored.contains_key(p) {
-                        removed.push(p.clone());
-                    }
-                    continue;
-                }
-            }
-        }
+        // The cap is judged against the bytes actually read below, not a
+        // separate `fs::metadata` call before it — two earlier versions of
+        // this fix each had a real race in one direction (found by review):
+        // metadata-then-read left a growing-past-cap file unchecked in the
+        // gap between the two syscalls, and checking metadata *before* the
+        // read could also reject a file that had already shrunk back under
+        // the cap by the time it would have been read. Judging the actual
+        // content there is no gap for either direction to hide in.
         match std::fs::read_to_string(&full_path) {
             Ok(src) => {
-                // The metadata check above and this read are two separate
-                // syscalls; a concurrent write can grow the file past its
-                // cap in between (found by review). Re-check the bytes
-                // actually read, not just the earlier stat — closing this
-                // gap costs nothing since `src` is already in hand.
                 let lang = crate::scanner::language_for_path(&full_path);
                 let over_cap =
                     lang.is_some_and(|l| src.len() as u64 > crate::scanner::size_cap_for(l));
