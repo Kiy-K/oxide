@@ -185,6 +185,17 @@ fn initialize_and_list_expose_only_compact_agent_tools() {
         tools[1]["inputSchema"]["properties"]["mode"]["enum"],
         json!(["literal"])
     );
+    // Greptile review: `limit`'s ceiling is shared by both modes, so it
+    // must be the higher of the two service-side caps
+    // (`literal::MAX_RESULTS` = 200), not hybrid's own narrower 100 --
+    // otherwise the advertised schema would tell a client/agent that a
+    // literal-mode request for 101-200 results isn't a valid shape, even
+    // though `oxide search --mode literal --limit 150` (and the service
+    // layer underneath both) supports it.
+    assert_eq!(
+        tools[1]["inputSchema"]["properties"]["limit"]["maximum"],
+        200
+    );
 }
 
 #[test]

@@ -18,6 +18,7 @@
 //! keeps that distinction exact instead of depending on rmcp's internal
 //! error-message prefix to *not* match.
 
+use crate::literal;
 use crate::retrieval::{RetrievalMode, SearchMode};
 use crate::service::{RepositoryService, SearchRequest, ServiceError};
 use rmcp::model::{
@@ -92,7 +93,17 @@ fn search_input_schema() -> JsonObject {
         "properties": {
             "query": {"type": "string"},
             "path": {"type": "string", "description": PATH_DESCRIPTION},
-            "limit": {"type": "integer", "minimum": 0, "maximum": 100},
+            // Greptile review: this ceiling is shared by both modes, so it
+            // must be the higher of the two service-side caps
+            // (`literal::MAX_RESULTS` = 200) rather than hybrid's own
+            // `service::MAX_SEARCH_RESULTS` (100) alone -- otherwise a
+            // `mode: "literal"` request for 101-200 results would be
+            // rejected here even though the CLI's equivalent
+            // `--mode literal --limit` has no such ceiling and the
+            // service layer supports it. Hybrid mode silently clamps a
+            // higher request down to its own 100 internally, exactly as
+            // the CLI already does -- unchanged from before this fix.
+            "limit": {"type": "integer", "minimum": 0, "maximum": literal::MAX_RESULTS},
             "profile": {"type": "string", "enum": ["fast", "balanced", "quality"], "description": RETRIEVAL_MODE_DESCRIPTION},
             "blast_radius": {"type": "boolean", "description": BLAST_RADIUS_DESCRIPTION},
             "mode": {"type": "string", "enum": ["literal"], "description": SEARCH_MODE_DESCRIPTION},

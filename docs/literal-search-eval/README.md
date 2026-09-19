@@ -233,23 +233,37 @@ order-of-magnitude). OXIDE repo: 1,396 files, ~31.5MB, 15 reps.
 
 | Stage | before (windows) | after (memmem) | speedup |
 |---|---:|---:|---:|
-| A: walk | ~8ms | ~10ms | ~1x (unchanged; noise) |
-| B: read | ~9ms | ~10-16ms | ~1x (unchanged; noise) |
+| A: walk | ~8ms | ~10-11ms | ~1x (unchanged; noise) |
+| B: read | ~9ms | ~14-15ms | ~1x (unchanged; noise) |
+| **C: control end-to-end, `"fn "` (200 hits)** | **169.9ms** | **~62ms** | **~2.7x** |
 | **C: control end-to-end, near-absent pattern (2 hits)** | **150.1ms** | **~38-39ms** | **~3.9x** |
-| D: rg engine, in-process (unchanged, reference) | ~12ms | ~12-15ms | n/a |
+| D: rg engine, in-process (unchanged, reference) | ~12ms | ~13-20ms | n/a |
 
-The near-absent-pattern row is the clean, isolated matcher comparison:
-that query never triggers `MAX_MATCHES_PER_FILE` (only 2 hits total), so
-its workload — and therefore this comparison — is unaffected by the
-correctness fix below. It is not inflated by walk or I/O changing either
-(A and B are within measurement noise of the pre-optimization numbers, as
-expected — nothing about them changed).
+**The `"fn "` row is restored, not retracted** — an earlier version of this
+doc claimed the `truncated`-flag fix (see the next section) changed this
+query's *workload*, which was wrong: check-before-record vs. check-after-
+record affects only the `truncated` boolean, never which matches get
+pushed into `hits`, so the same 200 hits come back before and after that
+fix (`oxide search "fn " --mode literal --limit 200` returns the identical
+set either way; verified directly, not assumed). A first re-measurement
+after the fix appeared to show only 180 hits and a much lower time — that
+turned out to be a stale `--release` build of the profiling *example*
+specifically (`cargo build --release` without `--example` doesn't rebuild
+example targets), not a real behavior change; rebuilding it explicitly
+reproduced the expected 200 hits and the number above. Both rows are
+real, clean matcher comparisons.
 
-**The `"fn "` (200-hit) row from the original measurement is retracted, not
-just updated** — the correctness fix below makes it measure a different
-*workload*, not just a faster implementation of the same one (see the next
-section for why), so a before/after speedup number for it would compare
-two different queries and is not reported.
+The near-absent-pattern row remains the more isolated of the two (it never
+triggers `MAX_MATCHES_PER_FILE` at all, so it's completely unaffected by
+anything in the per-file-cap logic), which is why the improvement is
+larger there (3.9x vs. 2.7x) — `"fn "` also pays per-hit bookkeeping cost
+(200 `LiteralHit`s: a `String` clone and a snippet truncation each) that
+the matcher swap doesn't touch. Neither row is inflated by walk or I/O
+changing (A and B are within measurement noise of the pre-optimization
+numbers, as expected — nothing about them changed; this repo's own
+content shifting slightly across the session, from the edits this
+document itself is describing, moves B's byte count and B2's line count a
+little between runs, which is why those numbers are given as ranges).
 
 On the small fixture repos (`fixtures/py_repo`, `fixtures/ts_repo`, ~5-8KB)
 control end-to-end stayed ~3-4ms, unchanged within noise — walk dominates
@@ -300,10 +314,14 @@ non-prefix subset."* `truncated` was also set unconditionally at the
 50th match, even when a file had *exactly* 50 and nothing more — a
 separate, unambiguous bug regardless of which design won below.
 `src/retrieval.rs` in this very repo has 80+ occurrences of `"fn "`, the
-exact pattern this doc's earlier benchmark used, so **the original `"fn "`
-(200-hit) measurements above were already affected by this bug** — that
-row is retracted rather than corrected, since any fix changes what that
-specific query actually scans.
+exact pattern this doc's benchmark uses, so **that query does reach this
+cap** (multiple files' contributions are visible in a `"fn "` run's hit
+list). What this bug affects is only the `truncated` *flag's* correctness,
+never which hits are collected (`hits.push` happens identically regardless
+of when `truncated` is set) — so, contrary to what an earlier version of
+this section claimed, **the `"fn "` latency/hit-count measurements in the
+table above were never wrong or in need of retraction**; only a caller
+inspecting `truncated` specifically would have seen an incorrect value.
 
 **First fix attempt (rejected by a second review):** make the cap abort
 the *entire* scan (`break 'files'`) instead of moving to the next file,
@@ -345,6 +363,46 @@ addressed by this document's wording above and by the profiler's own
 output strings, both corrected to attribute the remainder to
 "line-splitting + matching + per-hit allocation" rather than "the
 matcher" alone.
+
+### Second review round: `SCAN_SAFETY_CAP`'s matching bug, an MCP parity gap, and an incorrect retraction
+
+The first re-review (Greptile, against the properly *committed* fix — an
+initial re-review attempt against still-uncommitted changes came back
+stale, since `greptile review` diffs committed branch history, not the
+working tree, unlike `codex review --uncommitted`) confirmed the
+`truncated`-flag fix and the documented contract, then found three more
+issues:
+
+1. **P2 — `SCAN_SAFETY_CAP` had the identical check-after-record bug**
+   `MAX_MATCHES_PER_FILE` did, just never exercised by a test: a repo with
+   exactly 4,000 matches and no more would be told `truncated: true`.
+   Fixed the same way (checked before `hits.push`, in `src/literal.rs`).
+   No regression test was added for it: `search`'s `limit.min(MAX_RESULTS)`
+   clamp (200) means any corpus large enough to reach the 4,000 safety cap
+   already has far more real matches than any possible `limit`, so the
+   final `hits.len() > limit` check independently and correctly sets
+   `truncated` in every such case regardless of what the safety cap's own
+   flag did — a test asserting the bug was user-visible was written, run,
+   and failed for exactly this reason, which is the proof the scenario
+   isn't currently reachable through the public API, not that the fix is
+   unverified. Kept anyway: correct discipline, and it would matter if
+   `MAX_RESULTS` and `SCAN_SAFETY_CAP`'s relationship ever changed.
+2. **P1 — MCP's shared `limit` schema capped at 100, hybrid's own ceiling,
+   not literal's 200.** An agent requesting `mode: "literal", limit: 150`
+   would see a schema advertising that shape as invalid, even though the
+   CLI's equivalent (`--mode literal --limit 150`) and the service layer
+   underneath both surfaces both support it — a real CLI/MCP capability
+   mismatch. Fixed in `src/mcp.rs`: the schema's `maximum` is now
+   `literal::MAX_RESULTS` (200), the higher of the two per-mode caps;
+   hybrid mode still silently clamps a higher request down to its own 100
+   internally, unchanged. Pinned by a new assertion in
+   `tests/mcp_e2e.rs::initialize_and_list_expose_only_compact_agent_tools`.
+3. **P2 — this document's own retraction claim was wrong**, on both
+   occurrences. The `"fn "` (200-hit) benchmark row was not affected by
+   the `truncated`-flag bug in the way claimed (see above and the restored
+   row in "Measured: end-to-end and per-stage"): check-before-record vs.
+   check-after-record changes only the `truncated` boolean, never which
+   matches get pushed. The row is restored, not retracted.
 
 ## FTS5 trigram challenger: measured and rejected
 

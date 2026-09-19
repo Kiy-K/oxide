@@ -70,6 +70,16 @@ const MAX_MATCHES_PER_FILE: usize = 50;
 /// order, so stopping once this many candidates have been accumulated always
 /// keeps the same deterministic prefix — never a different subset depending
 /// on scan timing.
+///
+/// Checked in `search` before pushing a match, not after — this cap being
+/// well above [`MAX_RESULTS`] means a corpus large enough to reach it
+/// always has real-match-count > any possible `limit`, so the final
+/// `hits.len() > limit` check independently sets `truncated` regardless;
+/// check-before-record here has no currently-observable behavior
+/// difference from check-after-record, but matches the discipline
+/// [`MAX_MATCHES_PER_FILE`] now follows (a Greptile review flagged the
+/// inconsistency) and stays correct if that constant relationship ever
+/// changes.
 const SCAN_SAFETY_CAP: usize = 4_000;
 
 /// One line/column match. `column` is the 1-based byte offset of the match
@@ -160,19 +170,30 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
             let mut cursor = 0usize;
             while let Some(pos) = finder.find(&line[cursor..]) {
                 let match_start = cursor + pos;
-                // Checked *before* recording, not after: `truncated` must
-                // only fire when a match genuinely exists beyond the cap,
-                // not merely because the cap's count was reached (a file
-                // with *exactly* `MAX_MATCHES_PER_FILE` matches and no
-                // more used to falsely report truncation). Moving to the
-                // next file (`break 'file`, not `break 'files`) — rather
-                // than aborting the whole scan — is deliberate: see
+                // Both caps are checked *before* recording, not after:
+                // `truncated` must only fire when a match genuinely exists
+                // beyond a cap, not merely because the cap's count was
+                // reached. A second Greptile review caught that this
+                // check-before-record discipline had only been applied to
+                // `MAX_MATCHES_PER_FILE` — `SCAN_SAFETY_CAP` had the exact
+                // same bug (a repository with *exactly* 4,000 matches and
+                // no more would have been falsely reported as truncated).
+                // Moving to the next file on the per-file cap
+                // (`break 'file`, not `break 'files`) — rather than
+                // aborting the whole scan — is deliberate: see
                 // `MAX_MATCHES_PER_FILE`'s doc for why an earlier attempt
                 // to make this a strict global sorted-prefix regressed
-                // multi-file coverage instead.
+                // multi-file coverage instead. `SCAN_SAFETY_CAP` has no
+                // such per-file/multi-file tradeoff to preserve — it is
+                // purely a global output-size bound — so it can `break
+                // 'files` immediately once a genuine excess match is found.
                 if file_matches >= MAX_MATCHES_PER_FILE {
                     truncated = true;
                     break 'file;
+                }
+                if hits.len() >= SCAN_SAFETY_CAP {
+                    truncated = true;
+                    break 'files;
                 }
                 hits.push(LiteralHit {
                     file: display.clone(),
@@ -181,10 +202,6 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
                     snippet: truncate_snippet(line),
                 });
                 file_matches += 1;
-                if hits.len() >= SCAN_SAFETY_CAP {
-                    truncated = true;
-                    break 'files;
-                }
                 cursor = match_start + needle.len();
             }
         }
@@ -381,4 +398,22 @@ mod tests {
             "no match exists beyond the cap; truncated must stay false"
         );
     }
+
+    // A second Greptile finding: `SCAN_SAFETY_CAP` had the exact same
+    // check-after-record `truncated` bug `MAX_MATCHES_PER_FILE` did, fixed
+    // above in `search` alongside it (both caps now check before pushing).
+    // No regression test is added for it here: `search`'s very first line
+    // clamps `limit` to `MAX_RESULTS` (200), which is always far below
+    // `SCAN_SAFETY_CAP` (4,000), so any corpus large enough to reach the
+    // safety cap always has real-match-count > limit already — the final
+    // `if hits.len() > limit { truncated = true }` check independently and
+    // correctly sets `truncated` in every such case regardless of what the
+    // safety cap's own flag did. A tempdir-based test asserting otherwise
+    // was written, run, and found to fail for exactly this reason (`hits`
+    // comes back clamped to 200, never the constructed 4,000-match total)
+    // — proving the bug is not externally observable via the public API
+    // today, not that the fix is unverifiable. The fix is still correct
+    // and worth keeping: it is the same discipline `MAX_MATCHES_PER_FILE`
+    // now follows, and it would matter the moment either constant's
+    // relationship to the other changed.
 }
