@@ -1,0 +1,97 @@
+# Reproducible dev bootstrapping for OXIDE.
+#
+# Rust itself is NOT pinned here: `rust-toolchain.toml` already pins
+# 1.98.0 plus the rustfmt/clippy/llvm-tools-preview components, and rustup
+# honors that file automatically for every `cargo`/`rustc` invocation in
+# this directory. Pinning it a second time here would be a drift source —
+# the exact failure mode this file exists to eliminate. `rustup` itself
+# (not managed by mise) is assumed present, same as it always has been for
+# this repo and its CI.
+min_version = "2024.1.0"
+
+[tools]
+# eval-agent/.venv must be 3.11 (AGENTS.md: tree-sitter-languages has no
+# wheels for >=3.12) — previously an undeclared local dependency.
+python = "3.11"
+uv = "0.12.16"
+# CI apt-get-installs this unpinned for install.sh's shellcheck step; a
+# local run had no declared version at all until now.
+shellcheck = "0.11.0"
+# Used by the coverage job's summary step (`coverage.rs` job in CI).
+jq = "1.8.2"
+# Matches the exact version CI's coverage job installs inline.
+"cargo:cargo-llvm-cov" = "0.6.19"
+
+[tasks.bootstrap]
+description = "Install the pinned Rust toolchain/components and every mise-managed tool"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+# `rust-toolchain.toml`'s [toolchain] table (channel + components) is
+# honored by any rustup-wrapped cargo/rustc invocation; this just forces
+# that install to happen now instead of lazily on the first real command.
+rustup show active-toolchain || rustup show
+echo "Rust toolchain ready."
+'''
+
+[tasks.lint]
+description = "cargo fmt --check + clippy -D warnings (matches CI's Quality job, default features)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+cargo fmt --check
+cargo clippy -j 2 --all-targets -- -D warnings
+'''
+
+[tasks."lint:no-default-features"]
+description = "clippy -D warnings with --no-default-features (matches CI's No-default-features job)"
+run = "cargo clippy -j 2 --no-default-features --all-targets -- -D warnings"
+
+[tasks.test]
+description = "Full unit + integration suite, deterministic env (matches CI's Tests job)"
+run = "env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2"
+
+[tasks."test:no-default-features"]
+description = "Full suite with --no-default-features (matches CI's No-default-features job)"
+run = "env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features"
+
+[tasks.bench]
+description = "Release build + the canonical fixture benchmark (matches CI's Retrieval Gate job)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+cargo build --release -j 2
+# Not a hardcoded `./target/release/oxide`: cargo honors $CARGO_TARGET_DIR
+# when set (a common override for a shared build cache across projects),
+# and a hardcoded default-location path silently breaks for anyone using
+# it — caught by running this task with CARGO_TARGET_DIR set during a
+# clean-environment verification.
+bin="${CARGO_TARGET_DIR:-target}/release/oxide"
+env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" eval --config fixtures/benchmark.json
+'''
+
+[tasks.installer-check]
+description = "Shellcheck + install.sh lifecycle tests (matches CI's Retrieval Gate job; no network needed, file:// release)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+shellcheck -s sh install.sh tests/install_sh_test.sh
+./tests/install_sh_test.sh
+'''
+
+[tasks.verify]
+description = "Everything CI's quality/test/no-default-features/retrieval-gate jobs check, in commit order (excludes the separate, optional coverage job)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+# A `depends` list would let mise run these in parallel, which is wrong
+# here: AGENTS.md's fmt -> clippy -> test -> benchmark-gate order is a real
+# sequential contract (a later step's failure should stop before wasting
+# time on the next), so this is an explicit script instead.
+mise run lint
+mise run lint:no-default-features
+mise run test
+mise run test:no-default-features
+mise run bench
+mise run installer-check
+'''
