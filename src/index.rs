@@ -515,7 +515,21 @@ pub fn update_base_for_files(
         }
         match std::fs::read_to_string(&full_path) {
             Ok(src) => {
-                current.insert(p.clone(), src);
+                // The metadata check above and this read are two separate
+                // syscalls; a concurrent write can grow the file past its
+                // cap in between (found by review). Re-check the bytes
+                // actually read, not just the earlier stat — closing this
+                // gap costs nothing since `src` is already in hand.
+                let lang = crate::scanner::language_for_path(&full_path);
+                let over_cap =
+                    lang.is_some_and(|l| src.len() as u64 > crate::scanner::size_cap_for(l));
+                if over_cap {
+                    if stored.contains_key(p) {
+                        removed.push(p.clone());
+                    }
+                } else {
+                    current.insert(p.clone(), src);
+                }
             }
             // Only a confirmed absence (`NotFound`) is deletion evidence —
             // and only for a path the store already tracks. Any other read
