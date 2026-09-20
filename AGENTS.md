@@ -124,6 +124,14 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   A new write path that forgets the bump lets a cached snapshot outlive
   the content it was built from; the generation alone is not unique
   across a deleted-and-rebuilt `.oxide`, which is what `index_id` is for.
+  The cache entry also holds a `RelationIndex` (`relations.rs`) built
+  over that snapshot — a lifetime-free, hash-keyed, verify-on-read index
+  the `RelationGraph` is a view over — so the two are invalidated
+  together by the same key. `RetrievalEngine::relation_graph()` uses the
+  cached index only when the engine's snapshot *is* the cached one
+  (pointer check) and builds a fresh index otherwise; never pair an
+  index with a snapshot it was not built from
+  (docs/retrieval-profile/README.md §6.1).
   `PRAGMA data_version` was deliberately not used: it is only comparable
   between reads on the same connection, and every request opens its own.
 - `update_base` runs inside `IndexBackend::begin/end_bulk_writes`, which

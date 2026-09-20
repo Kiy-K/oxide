@@ -359,6 +359,115 @@ comments**. `mise run verify` (fmt, clippy `-D warnings`, the
 `--no-default-features` lint and test, the full suite, the fixture
 benchmark, installer checks): all green on the final diff.
 
+## 6. Second pass: the three follow-up candidates (roadmap #9, item 2)
+
+Same machine, quieter than during §1–4 (absolute numbers are lower across
+the board; every table below is an interleaved A/B against `HEAD` =
+the three integrated commits). Same gates: 440 hashed outputs, 55 literal
+outputs, the fixture eval — plus **192 MCP responses** (3 repos × 8
+queries × {search, search+blast, context, context+blast} × cache-miss and
+cache-hit calls, `mcp_parity.py`) — all byte-identical for every accepted
+change.
+
+### 6.1 Generation-scoped `RelationGraph` reuse in MCP — **accepted**
+
+`RelationGraph<'a>` borrowed `&'a [Symbol]` and `&'a str` keys, so it could
+not live in the process cache next to the snapshot. It is now a thin view
+over a lifetime-free **`RelationIndex`**: maps keyed by the `FxHasher`
+hash of the string they are looked up by, holding `u32` corpus positions
+in corpus order, with every read **verified** against the actual field
+(a collision costs a comparison, never a wrong neighbor; `by_qualified`
+keeps only the last position, as the old `HashMap::insert` did, with a
+collision side-map). No owned `String` keys, no borrows; the lazy
+`callers_of`/`implementors_of` reverse indexes moved to `OnceLock` so the
+cached index is `Sync`. `oxide mcp`'s `CachedSnapshot` builds one per
+`(index_id, index_generation, …)` key next to the snapshot — invalidated
+together, by construction — and `RetrievalEngine::relation_graph()` uses
+it only when the engine's snapshot **is** that cached snapshot (pointer
+check), building fresh otherwise. Every public method keeps its
+signature; `resolve_module` is unchanged and delegates to a predicate
+form. `cached_index_answers_exactly_like_a_freshly_built_graph` pins
+built ≡ cached over neighbors, tests, callers, implementors, imports.
+
+| | before | after |
+| --- | ---: | ---: |
+| one-shot `RelationGraph::build`, pylint (owned index) | 3.4–3.8 ms, 10,705 allocs, 2.6 MB | 2.6–3.2 ms, 10,705 allocs, 1.9 MB |
+| one-shot build, pytest | 1.7–1.9 ms | 1.4–1.9 ms |
+| warm MCP `search`, pytest (16 calls, median after first) | 12.1–13.0 ms | 9.3–10.1 ms (**−22%**) |
+| warm MCP `context`, pytest | 12.7–13.9 ms | 10.7–10.8 ms (**−18%**) |
+| warm MCP `search`, pylint | 17.4–18.5 ms | 13.4–13.7 ms (**−25%**) |
+| warm MCP `context`, pylint | 18.2–19.1 ms | 13.5–13.7 ms (**−26%**) |
+| MCP server RSS | 45.0 / 46.2 MB | 44.3 / 44.3 MB |
+| first (cache-miss) call | unchanged: the index is built once per generation | |
+
+A first cut used FNV-1a for the key and a `Vec<u32>` per qualified name:
++20% one-shot build time and 2× its allocations. Word-at-a-time
+`FxHasher` and a single last-position slot fixed both (recorded so the
+next person does not retry FNV here).
+
+### 6.2 Parallel literal file reads — **accepted**
+
+`literal::search` now scans files on up to 8 scoped threads (`min(cores,
+8, files/32)`, inline below 32 files) that claim files by ascending index
+and stop claiming once the hits produced so far exceed `SCAN_SAFETY_CAP`
+— so every index below the last claimed one is scanned — then folds the
+per-file results **in sorted file order**, applying the global cap
+exactly where the sequential loop did. Per-file caps are file-local
+(`scan_file`), memory is bounded to 8 in-flight buffers, and the scan
+still needs no index. `parallel_scan_folds_to_exactly_the_sequential_
+result_around_the_global_cap` pins 1 reader ≡ 8 readers at 4,050, 4,000
+and 4,001 total matches (the flag itself is set by `limit` there —
+`SCAN_SAFETY_CAP` sits above `MAX_RESULTS`, as its doc says — so whole-
+result equality is the observable contract).
+
+| `literal::search`, in-process, 4 alternations | sequential | parallel |
+| --- | ---: | ---: |
+| pylint (4,365 files) | 21.2–28.9 ms | 14.2–17.8 ms (**−35%**) |
+| pytest (672 files) | 8.2–11.0 ms | 8.5–9.3 ms (−5…−15%) |
+| allocations | 68.0k / 23.2k | 70.0k / 25.3k (+3%) |
+| one-shot CLI, pytest "self" / absent | 20.0–20.7 / 18.6–19.2 ms | 16.1–17.8 / 14.4–16.0 ms |
+| one-shot CLI, pylint | within noise (walk-dominated) | |
+| peak RSS (hashed path) | 16.4–16.9 MB | 16.5–16.9 MB |
+
+### 6.3 Overlapping one-shot embedder setup — **rejected**
+
+Two shapes were built and measured on native indexes (`arctic-embed-xs-q`)
+of `pytest` (7.8k symbols) and `requests` (933):
+
+1. Model load on a helper thread, index open/meta validation (and, when
+   the request would load the corpus, the snapshot + index) on the
+   calling thread. Large corpus: `context` 137 → 103–107 ms (−24%),
+   expanding `search` 132–136 → 106–110 ms (−20%). But every path with
+   nothing to overlap got **slower**: `search --no-expand` 92 → 102 ms
+   (+11%), `requests` `search` +3–8%, and +10–14 MB RSS on all of them —
+   an ONNX session constructed on a secondary thread costs more than it
+   saves (separate allocator arena; the model's memory ends up in it).
+2. Model load inline as before; the **corpus** loaded on a helper thread
+   through its own read-only connection, used only if both connections
+   report the same `snapshot_key` (index id + generation + identity
+   keys), so a concurrent `oxide index` can only cause a fallback to the
+   lazy load. `pytest` `context` 140–143 → 102–104 ms (**−27%**),
+   expanding `search` 136–138 → 104 ms (−24%), `--no-expand` neutral;
+   `requests` neutral everywhere. Peak RSS on the accelerated paths
+   83 → 97–98 MB (**+15 MB**): snapshot and index become resident while
+   the model is still loading, on a second arena.
+
+Verdict: not Pareto. The saving exists only on the secondary path
+(one-shot CLI with a real model; `oxide mcp` already amortizes both
+loads), only for corpora large enough for the load to matter, and buys
+it with a memory regression above the measurement's noise band and a
+new cross-connection consistency rule. Kept as a patch on record
+(`candC` in the session's commit bundle) should the memory side ever
+become neutral (an mmap-shared snapshot, or arena tuning) — the
+end-to-end saving is real.
+
+A measurement note that applies to all native-path RSS numbers in this
+document: two byte-identical binaries sampled 64–69 MB in one batch and
+73.6–74.7 MB in another on the same command, so native-path RSS drifts
+by ±5 MB between batches (ORT/allocator state). Deltas inside that band
+are noise; the hashed path is stable to ±0.3 MB and is the reliable
+memory gauge for retrieval-side changes.
+
 ## 5. Remaining work, in priority order
 
 1. **The corpus load is the one-shot ceiling** — 55–65% of `context` and
@@ -371,13 +480,13 @@ benchmark, installer checks): all green on the final diff.
    the ~1 KB row fits its page). Both are schema/type changes with a
    re-index, not a patch — they need the "architecture discussion first"
    note in AGENTS.md.
-2. **`RelationGraph` per warm MCP request** (3.5 ms after this round,
-   ~15% of a warm `context`): caching it alongside the snapshot needs an
-   index-based graph (it currently borrows `&[Symbol]`), a moderate
-   refactor of `relations.rs`.
-3. **Literal search on many small files** is walk + `fs::read` bound
-   (pylint: 30 of 45 ms); reading files on the walk's own threads, or in
-   parallel over the sorted list with an in-order fold, would keep the
-   deterministic order.
-4. `scripts/perf.sh` requires `/usr/bin/time -v`; a `getrusage` fallback
+2. ~~`RelationGraph` per warm MCP request~~ — done (§6.1).
+3. ~~Literal search on many small files~~ — done (§6.2); what remains
+   there is the parallel `ignore` walk itself (16–18 ms on pylint,
+   including a per-file open + 1 KB binary sniff).
+4. One-shot native calls: the model load (~70–130 ms depending on
+   machine state) dominates; overlapping the corpus load under it works
+   (§6.3, −27% on large corpora) but costs +15 MB peak — revisit only
+   with a memory-neutral shape.
+5. `scripts/perf.sh` requires `/usr/bin/time -v`; a `getrusage` fallback
    would let it run where GNU time is absent.
