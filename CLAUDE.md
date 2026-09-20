@@ -17,3 +17,17 @@ Full build/test/lint commands and load-bearing invariants (symbol id composition
 ## Before touching retrieval scoring
 
 `src/retrieval.rs` (BM25 + cosine + RRF fusion + structural expansion) is benchmark-gated. Before changing ranking/scoring logic, capture or compare against `docs/canonical-baseline.md` (the committed `oxide eval --config fixtures/benchmark.json` run) and treat any diff in the results as a regression to explain, not an expected side effect — including changes that only affect tie-breaking or ordering.
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues via `gh`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The canonical five labels are used unchanged. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context layout. See `docs/agents/domain.md`.
