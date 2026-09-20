@@ -68,11 +68,14 @@ pub struct GitContext {
 /// `--git` stage so the diff→symbol mapping has exactly one implementation.
 pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<ChangedSymbol> {
     let mut out: Vec<ChangedSymbol> = Vec::new();
-    // Index into `out` for a qualified_name already emitted, so a symbol
-    // touched by more than one hunk (or more than one delta) is reported
-    // once, keeping the largest overlap seen for it -- the same "one entry
-    // per symbol" contract the original single-pass version had.
-    let mut index_of: HashMap<&str, usize> = HashMap::new();
+    // Index into `out` for a symbol id already emitted, so a symbol touched
+    // by more than one hunk (or more than one delta) is reported once,
+    // keeping the largest overlap seen for it -- the same "one entry per
+    // symbol" contract the original single-pass version had. Keyed by
+    // `Symbol::id()` (file + qualified_name), not qualified_name alone --
+    // qualified_name is only unique within one file (Greptile review finding
+    // on this fix; see AGENTS.md's symbol-id invariant).
+    let mut index_of: HashMap<u64, usize> = HashMap::new();
 
     for d in deltas {
         let candidates: Vec<&Symbol> = symbols
@@ -106,13 +109,13 @@ pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<Chan
                 if has_nested_hit {
                     continue;
                 }
-                if let Some(&idx) = index_of.get(s.qualified_name.as_str()) {
+                if let Some(&idx) = index_of.get(&s.id()) {
                     if *overlap > out[idx].added_lines {
                         out[idx].added_lines = *overlap;
                         out[idx].reason = format!("changed in diff (+{overlap} lines)");
                     }
                 } else {
-                    index_of.insert(s.qualified_name.as_str(), out.len());
+                    index_of.insert(s.id(), out.len());
                     out.push(ChangedSymbol {
                         symbol: (*s).clone(),
                         added_lines: *overlap,
@@ -335,6 +338,27 @@ mod tests {
 
     fn commit(root: &std::path::Path, msg: &str) {
         git(root, &["commit", "-qm", msg]);
+    }
+
+    #[test]
+    fn same_qualified_name_in_different_files_are_not_conflated() {
+        // Greptile review finding on this fix (src/gitctx.rs): qualified_name
+        // is only unique *within* a file (AGENTS.md's symbol-id invariant is
+        // FNV1a(file + qualified_name), not qualified_name alone). Two
+        // changed files that both define a "Foo" must both survive as
+        // independent seeds, not collapse into one.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 5),
+            sym("b.py", "Foo", SymbolKind::Class, 1, 5),
+        ];
+        let deltas = vec![delta("a.py", vec![(2, 2)]), delta("b.py", vec![(2, 2)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        assert_eq!(changed.len(), 2, "{changed:?}");
+        let files: Vec<&str> = changed.iter().map(|c| c.symbol.file.as_str()).collect();
+        assert!(
+            files.contains(&"a.py") && files.contains(&"b.py"),
+            "{files:?}"
+        );
     }
 
     #[test]
