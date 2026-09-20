@@ -10,7 +10,7 @@ use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
-use crate::relations::RelationGraph;
+use crate::relations::RelationIndex;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
@@ -340,6 +340,11 @@ type CacheLookup = Option<(Vec<String>, Option<Arc<CachedSnapshot>>)>;
 struct CachedSnapshot {
     key: Vec<String>,
     snapshot: SymbolSnapshot,
+    /// The structural index over `snapshot.symbols`, built once here so
+    /// every request at this generation reuses it (`RetrievalEngine::
+    /// with_snapshot_and_index`); it can never outlive the snapshot it
+    /// describes because the two share this entry and its key.
+    index: RelationIndex,
     /// Row counts at this generation — `validate_index`'s completeness
     /// check needs them, and `COUNT(*)` over the embeddings table walks
     /// every row's page, so it is an O(N) read worth keying too.
@@ -488,9 +493,11 @@ impl RepositoryService {
         // the snapshot cannot describe a different generation than its key.
         let snapshot = SymbolSnapshot::load(store)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+        let index = RelationIndex::build(&snapshot.symbols);
         let entry = Arc::new(CachedSnapshot {
             key,
             snapshot,
+            index,
             stats: stats.clone(),
         });
         process_cache()
@@ -702,7 +709,12 @@ impl RepositoryService {
         )?;
         let cached = self.cached_snapshot(&store, lookup, &stats)?;
         let engine = match &cached {
-            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+            Some(c) => RetrievalEngine::with_snapshot_and_index(
+                &store,
+                provider.as_ref(),
+                &c.snapshot,
+                &c.index,
+            ),
             None => RetrievalEngine::new(&store, provider.as_ref()),
         };
         let hits = engine
@@ -740,10 +752,9 @@ impl RepositoryService {
                 .take(crate::config::BLAST_RADIUS_MAX_SEEDS)
                 .map(|h| h.symbol.clone())
                 .collect();
-            let snapshot = engine
-                .snapshot_with_relations()
+            let graph = engine
+                .relation_graph()
                 .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))?;
-            let graph = RelationGraph::build(&snapshot.symbols);
             let anchors: Vec<&Symbol> = seeds.iter().collect();
             crate::blast_radius::compute(&graph, &anchors, true)
                 .into_iter()
@@ -811,7 +822,12 @@ impl RepositoryService {
         self.validate_index(&store, Some(provider.as_ref()), &stats)?;
         let cached = self.cached_snapshot(&store, lookup, &stats)?;
         let engine = match &cached {
-            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+            Some(c) => RetrievalEngine::with_snapshot_and_index(
+                &store,
+                provider.as_ref(),
+                &c.snapshot,
+                &c.index,
+            ),
             None => RetrievalEngine::new(&store, provider.as_ref()),
         };
         let pack = build_context_with(

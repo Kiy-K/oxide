@@ -8,7 +8,7 @@ use crate::config::{
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::lexical::LexicalIndex;
-use crate::relations::RelationGraph;
+use crate::relations::{RelationGraph, RelationIndex};
 use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
@@ -187,6 +187,12 @@ pub struct RetrievalEngine<'a> {
     lexical: LexicalSource,
     /// Loaded on first need, or supplied by a caller that already holds one.
     snapshot: std::cell::OnceCell<std::borrow::Cow<'a, SymbolSnapshot>>,
+    /// A [`RelationIndex`] built over the caller-supplied snapshot — the
+    /// `oxide mcp` process cache keeps one per index generation next to
+    /// the snapshot (`service.rs::CachedSnapshot`). Only ever paired with
+    /// that exact snapshot: `relation_graph` checks the pointer before
+    /// using it and builds a fresh index otherwise.
+    index: Option<(&'a SymbolSnapshot, &'a RelationIndex)>,
     /// Only populated when `snapshot` was already loaded *without*
     /// relations by search-side expansion and a later call on the same
     /// engine needs them — no production caller does both, so this is
@@ -284,7 +290,7 @@ fn top_k_by_score(mut items: Vec<(u64, f32)>, k: usize) -> Vec<(u64, f32)> {
 
 impl<'a> RetrievalEngine<'a> {
     pub fn new(store: &'a dyn IndexBackend, embedder: &'a dyn EmbeddingProvider) -> Self {
-        Self::build(store, embedder, None)
+        Self::build(store, embedder, None, None)
     }
 
     /// Like [`Self::new`], but reuse an already-loaded snapshot instead of
@@ -294,13 +300,27 @@ impl<'a> RetrievalEngine<'a> {
         embedder: &'a dyn EmbeddingProvider,
         snapshot: &'a SymbolSnapshot,
     ) -> Self {
-        Self::build(store, embedder, Some(snapshot))
+        Self::build(store, embedder, Some(snapshot), None)
+    }
+
+    /// [`Self::with_snapshot`] plus a [`RelationIndex`] already built over
+    /// `snapshot.symbols`, so structural expansion (`context`, `review`,
+    /// search's own expansion, blast radius) reuses it instead of
+    /// rebuilding the graph's maps on every request.
+    pub fn with_snapshot_and_index(
+        store: &'a dyn IndexBackend,
+        embedder: &'a dyn EmbeddingProvider,
+        snapshot: &'a SymbolSnapshot,
+        index: &'a RelationIndex,
+    ) -> Self {
+        Self::build(store, embedder, Some(snapshot), Some(index))
     }
 
     fn build(
         store: &'a dyn IndexBackend,
         embedder: &'a dyn EmbeddingProvider,
         snapshot: Option<&'a SymbolSnapshot>,
+        index: Option<&'a RelationIndex>,
     ) -> Self {
         let cell = std::cell::OnceCell::new();
         if let Some(s) = snapshot {
@@ -313,6 +333,7 @@ impl<'a> RetrievalEngine<'a> {
             lexical: LexicalSource::Persisted,
             snapshot: cell,
             snapshot_with_relations: std::cell::OnceCell::new(),
+            index: snapshot.zip(index),
         };
         // Trust the persisted postings only on an exact generation match.
         // Anything else — no key, an older format, a run interrupted before
@@ -388,6 +409,23 @@ impl<'a> RetrievalEngine<'a> {
                 .set(SymbolSnapshot::load(self.store)?);
         }
         Ok(self.snapshot_with_relations.get().expect("set above"))
+    }
+
+    /// The structural graph over the full corpus with relations — built
+    /// from the cached [`RelationIndex`] when this engine was given one
+    /// for the very snapshot it is about to use, otherwise built now.
+    pub fn relation_graph(&self) -> anyhow::Result<RelationGraph<'_>> {
+        let snapshot = self.snapshot_with_relations()?;
+        Ok(self.graph_over(snapshot))
+    }
+
+    fn graph_over<'s>(&'s self, snapshot: &'s SymbolSnapshot) -> RelationGraph<'s> {
+        match self.index {
+            Some((cached, index)) if std::ptr::eq(cached, snapshot) => {
+                RelationGraph::with_index(&snapshot.symbols, index)
+            }
+            _ => RelationGraph::build(&snapshot.symbols),
+        }
     }
 
     /// Candidate ids → symbols. From the snapshot when one is already
@@ -643,7 +681,7 @@ impl<'a> RetrievalEngine<'a> {
                 .collect();
             if !strong.is_empty() {
                 let snapshot = self.snapshot();
-                let graph = RelationGraph::build(&snapshot.symbols);
+                let graph = self.graph_over(snapshot);
                 let mut expansions: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
                 for seed in &strong {
                     let boost_base = rrf.get(&seed.id()).copied().unwrap_or(0.001);

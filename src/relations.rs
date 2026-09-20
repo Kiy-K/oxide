@@ -2,32 +2,72 @@
 
 use crate::symbols::{Symbol, SymbolKind};
 use rustc_hash::FxHashMap;
-use std::cell::OnceCell;
+use std::borrow::Cow;
 use std::collections::HashSet;
+use std::sync::OnceLock;
 
-/// High-confidence structural relations used for expansion.
-pub struct RelationGraph<'a> {
-    symbols: &'a [Symbol],
-    by_qualified: FxHashMap<&'a str, &'a Symbol>,
-    children_of: FxHashMap<&'a str, Vec<&'a Symbol>>,
-    defs_by_name: FxHashMap<&'a str, Vec<&'a Symbol>>,
-    files: HashSet<&'a str>,
+/// Lifetime-free index over a symbol corpus: everything [`RelationGraph`]
+/// needs to answer a query, keyed by the FNV-1a hash of the string it is
+/// looked up by and holding `u32` positions into the corpus in corpus
+/// order. Owning no borrows is what lets `oxide mcp` keep one per
+/// `(index_id, index_generation)` next to the [`crate::retrieval::
+/// SymbolSnapshot`] it was built from (`service.rs::CachedSnapshot`) instead
+/// of rebuilding it on every request, and it costs the one-shot path
+/// nothing: building it is the same hashing work the borrowed maps did,
+/// with no per-key `&str` and no owned `String` keys.
+///
+/// Hash keys are exact, not probabilistic: every read verifies the
+/// candidate's actual field against the query string (`verified`), so a
+/// collision can only cost a comparison, never a wrong neighbor. Positions
+/// are pushed in corpus order and read back in that order, which is the
+/// order `neighbors()` truncates on (`tests/determinism_stress.rs`).
+#[derive(Clone)]
+pub struct RelationIndex {
+    /// The *last* symbol with that qualified name in corpus order — the
+    /// value the old `HashMap::insert` kept — plus, on a hash collision
+    /// only, the earlier positions the read must fall back to (a collision
+    /// is a 64-bit event; the `Vec` is there so it costs a comparison, not
+    /// a wrong answer).
+    by_qualified: FxHashMap<u64, u32>,
+    by_qualified_collisions: FxHashMap<u64, Vec<u32>>,
+    children_of: FxHashMap<u64, Vec<u32>>,
+    defs_by_name: FxHashMap<u64, Vec<u32>>,
+    /// One symbol per indexed file (any kind), for `resolve_module`'s
+    /// existence check — one position per *distinct path* under a key, so
+    /// two paths colliding on the hash are both still found (Greptile
+    /// review: keeping only the first would have denied the second).
+    files: FxHashMap<u64, Vec<u32>>,
     /// Non-module symbols per file, in corpus order — `resolve_import`
     /// used to rescan every symbol per import, and a seed can have dozens.
-    by_file: FxHashMap<&'a str, Vec<&'a Symbol>>,
+    by_file: FxHashMap<u64, Vec<u32>>,
     /// `is_test_symbol` filtered once, in corpus order — `related_tests`
     /// used to lowercase every symbol's file and name per seed.
-    test_symbols: Vec<&'a Symbol>,
-    /// Reverse indexes over `Symbol::calls`/`bases` (experimental,
-    /// `structural_relations` — empty on every symbol unless that module's
-    /// opt-in second pass ran). Built lazily via `OnceCell`, not in
-    /// `build()`, so the frozen path (`neighbors()`, called on every
-    /// `RelationGraph::build()` in `context.rs`/`retrieval.rs`/`review.rs`)
-    /// pays nothing for these — they're only populated the first time
-    /// `callers_of`/`implementors_of` is actually called, which no
-    /// production code path does.
-    callers_of_index: OnceCell<FxHashMap<&'a str, Vec<&'a Symbol>>>,
-    implementors_of_index: OnceCell<FxHashMap<&'a str, Vec<&'a Symbol>>>,
+    test_symbols: Vec<u32>,
+    /// Reverse indexes over `Symbol::calls`/`bases` (`structural_relations`
+    /// — empty on every symbol unless that pass ran). Built lazily, not in
+    /// `build()`, so the frozen path (`neighbors()`) pays nothing for
+    /// these; `OnceLock` rather than `OnceCell` so a cached index can be
+    /// shared across `oxide mcp`'s request threads.
+    callers_of_index: OnceLock<FxHashMap<u64, Vec<u32>>>,
+    implementors_of_index: OnceLock<FxHashMap<u64, Vec<u32>>>,
+}
+
+/// Hash key for a string: `FxHasher` over the bytes (word-at-a-time, the
+/// same hasher the maps use; deterministic, unseeded). Every lookup
+/// verifies the string, so the key only has to be fast, not collision-free.
+fn key(s: &str) -> u64 {
+    use std::hash::Hasher;
+    let mut h = rustc_hash::FxHasher::default();
+    h.write(s.as_bytes());
+    h.finish()
+}
+
+/// High-confidence structural relations used for expansion: a corpus plus
+/// the [`RelationIndex`] over it, either built here ([`Self::build`]) or
+/// borrowed from a cache ([`Self::with_index`]).
+pub struct RelationGraph<'a> {
+    symbols: &'a [Symbol],
+    index: Cow<'a, RelationIndex>,
 }
 
 /// `buf` is scratch the caller reuses across symbols: `build` runs this
@@ -60,41 +100,113 @@ fn is_test_symbol(s: &Symbol, buf: &mut (String, String)) -> bool {
         || n.ends_with("test") && (matches!(s.kind, SymbolKind::Function | SymbolKind::Method))
 }
 
-impl<'a> RelationGraph<'a> {
-    pub fn build(symbols: &'a [Symbol]) -> Self {
-        let mut by_qualified = FxHashMap::default();
-        let mut children_of: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
-        let mut defs_by_name: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
-        let mut files = HashSet::new();
-        let mut by_file: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
+impl RelationIndex {
+    pub fn build(symbols: &[Symbol]) -> Self {
+        let mut by_qualified: FxHashMap<u64, u32> = FxHashMap::default();
+        let mut by_qualified_collisions: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+        let mut children_of: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+        let mut defs_by_name: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+        let mut files: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+        let mut by_file: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
         let mut test_symbols = Vec::new();
         let mut lower = (String::new(), String::new());
-        for s in symbols {
-            by_qualified.insert(s.qualified_name.as_str(), s);
-            if let Some(p) = &s.parent {
-                children_of.entry(p.as_str()).or_default().push(s);
-            } else if s.kind != SymbolKind::Module {
-                defs_by_name.entry(s.name.as_str()).or_default().push(s);
+        for (i, s) in symbols.iter().enumerate() {
+            let i = i as u32;
+            let k = key(&s.qualified_name);
+            if let Some(prev) = by_qualified.insert(k, i) {
+                if symbols[prev as usize].qualified_name != s.qualified_name {
+                    by_qualified_collisions.entry(k).or_default().push(prev);
+                }
             }
-            files.insert(s.file.as_str());
+            if let Some(p) = &s.parent {
+                children_of.entry(key(p)).or_default().push(i);
+            } else if s.kind != SymbolKind::Module {
+                defs_by_name.entry(key(&s.name)).or_default().push(i);
+            }
+            let seen = files.entry(key(&s.file)).or_default();
+            if !seen.iter().any(|&j| symbols[j as usize].file == s.file) {
+                seen.push(i);
+            }
             if s.kind != SymbolKind::Module {
-                by_file.entry(s.file.as_str()).or_default().push(s);
+                by_file.entry(key(&s.file)).or_default().push(i);
             }
             if is_test_symbol(s, &mut lower) {
-                test_symbols.push(s);
+                test_symbols.push(i);
             }
         }
         Self {
-            symbols,
             by_qualified,
+            by_qualified_collisions,
             children_of,
             defs_by_name,
             files,
             by_file,
             test_symbols,
-            callers_of_index: OnceCell::new(),
-            implementors_of_index: OnceCell::new(),
+            callers_of_index: OnceLock::new(),
+            implementors_of_index: OnceLock::new(),
         }
+    }
+}
+
+impl<'a> RelationGraph<'a> {
+    pub fn build(symbols: &'a [Symbol]) -> Self {
+        Self {
+            symbols,
+            index: Cow::Owned(RelationIndex::build(symbols)),
+        }
+    }
+
+    /// A graph over `symbols` using an index built earlier from **that same
+    /// corpus** — the cached path. The caller owns the pairing: `service.rs`
+    /// builds the index inside the cache entry that holds the snapshot, so
+    /// the two can only ever be read together at one generation.
+    pub fn with_index(symbols: &'a [Symbol], index: &'a RelationIndex) -> Self {
+        Self {
+            symbols,
+            index: Cow::Borrowed(index),
+        }
+    }
+
+    /// The symbols behind `positions` whose `field` equals `want` — the
+    /// verify-on-read step that makes a hash-keyed lookup exact.
+    fn verified(
+        &self,
+        positions: Option<&Vec<u32>>,
+        want: &str,
+        field: impl Fn(&Symbol) -> &str,
+    ) -> Vec<&'a Symbol> {
+        positions
+            .into_iter()
+            .flatten()
+            .map(|&i| &self.symbols[i as usize])
+            .filter(|s| field(s) == want)
+            .collect()
+    }
+
+    /// The last symbol in corpus order with this qualified name, exactly
+    /// (verified), falling back to earlier positions only on a hash
+    /// collision.
+    fn by_qualified(&self, qualified_name: &str) -> Option<&'a Symbol> {
+        let k = key(qualified_name);
+        let last = self.index.by_qualified.get(&k)?;
+        let s = &self.symbols[*last as usize];
+        if s.qualified_name == qualified_name {
+            return Some(s);
+        }
+        self.index
+            .by_qualified_collisions
+            .get(&k)
+            .into_iter()
+            .flatten()
+            .rev()
+            .map(|&i| &self.symbols[i as usize])
+            .find(|s| s.qualified_name == qualified_name)
+    }
+
+    fn file_exists(&self, path: &str) -> bool {
+        !self
+            .verified(self.index.files.get(&key(path)), path, |s| &s.file)
+            .is_empty()
     }
 
     /// AST-precise callers of `name` (experimental, see `structural_relations`):
@@ -107,16 +219,22 @@ impl<'a> RelationGraph<'a> {
     /// contract — see docs/precomputed-structural-relations/README.md for
     /// why that's the actual axis this experiment had to measure.
     pub fn callers_of(&self, name: &str) -> Vec<&'a Symbol> {
-        let index = self.callers_of_index.get_or_init(|| {
-            let mut idx: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
-            for s in self.symbols {
+        let index = self.index.callers_of_index.get_or_init(|| {
+            let mut idx: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+            for (i, s) in self.symbols.iter().enumerate() {
                 for callee in &s.calls {
-                    idx.entry(callee.as_str()).or_default().push(s);
+                    idx.entry(key(callee)).or_default().push(i as u32);
                 }
             }
             idx
         });
-        let mut out: Vec<&Symbol> = index.get(name).cloned().unwrap_or_default();
+        let mut out: Vec<&Symbol> = index
+            .get(&key(name))
+            .into_iter()
+            .flatten()
+            .map(|&i| &self.symbols[i as usize])
+            .filter(|s| s.calls.iter().any(|c| c == name))
+            .collect();
         out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
         out
     }
@@ -125,16 +243,22 @@ impl<'a> RelationGraph<'a> {
     /// whose precomputed `bases` contains `base_name`. Same sort/repo-wide
     /// contract as `callers_of`.
     pub fn implementors_of(&self, base_name: &str) -> Vec<&'a Symbol> {
-        let index = self.implementors_of_index.get_or_init(|| {
-            let mut idx: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
-            for s in self.symbols {
+        let index = self.index.implementors_of_index.get_or_init(|| {
+            let mut idx: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
+            for (i, s) in self.symbols.iter().enumerate() {
                 for base in &s.bases {
-                    idx.entry(base.as_str()).or_default().push(s);
+                    idx.entry(key(base)).or_default().push(i as u32);
                 }
             }
             idx
         });
-        let mut out: Vec<&Symbol> = index.get(base_name).cloned().unwrap_or_default();
+        let mut out: Vec<&Symbol> = index
+            .get(&key(base_name))
+            .into_iter()
+            .flatten()
+            .map(|&i| &self.symbols[i as usize])
+            .filter(|s| s.bases.iter().any(|b| b == base_name))
+            .collect();
         out.sort_by(|a, b| (a.file.as_str(), a.start_line).cmp(&(b.file.as_str(), b.start_line)));
         out
     }
@@ -142,20 +266,18 @@ impl<'a> RelationGraph<'a> {
     /// Resolve an import string from a file to concrete symbols, when the
     /// target file exists in the indexed set.
     pub fn resolve_import<'b>(&'b self, from_file: &str, module: &str) -> Vec<&'a Symbol> {
-        let Some(target) = resolve_module(module, from_file, &self.files) else {
+        let Some(target) = resolve_module_with(module, from_file, &|p| self.file_exists(p)) else {
             return Vec::new();
         };
-        self.by_file
-            .get(target.as_str())
-            .cloned()
-            .unwrap_or_default()
+        self.verified(self.index.by_file.get(&key(&target)), &target, |s| &s.file)
     }
 
     /// Related tests: test-file symbols referencing the seed's bare name.
     pub fn related_tests(&self, seed: &Symbol) -> Vec<&'a Symbol> {
-        self.test_symbols
+        self.index
+            .test_symbols
             .iter()
-            .copied()
+            .map(|&i| &self.symbols[i as usize])
             .filter(|t| t.references.iter().any(|r| r == &seed.name) || t.name.contains(&seed.name))
             .collect()
     }
@@ -186,20 +308,21 @@ impl<'a> RelationGraph<'a> {
     pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
         let mut out: Vec<(String, &'a Symbol)> = Vec::new();
         if let Some(p) = &seed.parent {
-            if let Some(parent_sym) = self.by_qualified.get(p.as_str()) {
-                out.push(("parent".into(), *parent_sym));
+            if let Some(parent_sym) = self.by_qualified(p) {
+                out.push(("parent".into(), parent_sym));
             }
-            for c in self.children_of.get(p.as_str()).into_iter().flatten() {
-                out.push(("sibling".into(), *c));
+            for c in self.verified(self.index.children_of.get(&key(p)), p, |s| {
+                s.parent.as_deref().unwrap_or("")
+            }) {
+                out.push(("sibling".into(), c));
             }
         }
-        for c in self
-            .children_of
-            .get(seed.qualified_name.as_str())
-            .into_iter()
-            .flatten()
-        {
-            out.push(("child".into(), *c));
+        for c in self.verified(
+            self.index.children_of.get(&key(&seed.qualified_name)),
+            &seed.qualified_name,
+            |s| s.parent.as_deref().unwrap_or(""),
+        ) {
+            out.push(("child".into(), c));
         }
         // Files this symbol's own file actually imports, resolved to indexed
         // paths — membership tests only, never iterated, so a HashSet here
@@ -208,7 +331,7 @@ impl<'a> RelationGraph<'a> {
         let imported_files: HashSet<String> = seed
             .imports
             .iter()
-            .filter_map(|m| resolve_module(m, &seed.file, &self.files))
+            .filter_map(|m| resolve_module_with(m, &seed.file, &|p| self.file_exists(p)))
             .collect();
         // References from this symbol to known definitions. When any
         // candidate lives in a file this one imports, the ones that don't
@@ -219,9 +342,10 @@ impl<'a> RelationGraph<'a> {
         // without an import statement, or an unresolvable module string —
         // the old fan-out is kept rather than dropping the relation.
         for r in &seed.references {
-            let Some(defs) = self.defs_by_name.get(r.as_str()) else {
+            let defs = self.verified(self.index.defs_by_name.get(&key(r)), r, |s| &s.name);
+            if defs.is_empty() {
                 continue;
-            };
+            }
             let cross_file = || defs.iter().filter(|d| d.file != seed.file);
             let any_backed = cross_file().any(|d| imported_files.contains(&d.file));
             for d in cross_file() {
@@ -281,6 +405,17 @@ fn dir_of(file: &str, ups: usize) -> Option<String> {
 /// the symbol but never produce an `imported-definition` edge — a known gap
 /// listed in `docs/language-support/README.md`, not an accident.
 pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> Option<String> {
+    resolve_module_with(module, from_file, &|p| files.contains(p))
+}
+
+/// [`resolve_module`] over any existence predicate — what [`RelationGraph`]
+/// uses so the indexed file set never has to be materialized as a set of
+/// borrowed strings.
+pub fn resolve_module_with(
+    module: &str,
+    from_file: &str,
+    exists: &dyn Fn(&str) -> bool,
+) -> Option<String> {
     let norm = module.trim_start_matches("@/");
     // `.name`/`..pkg.name` (dots followed by a module path, no slash) is
     // Python's syntax and nobody else's, so its candidates are Python's
@@ -404,10 +539,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
             }
         }
     }
-    let matches: Vec<String> = candidates
-        .into_iter()
-        .filter(|c| files.contains(c.as_str()))
-        .collect();
+    let matches: Vec<String> = candidates.into_iter().filter(|c| exists(c)).collect();
     if matches.len() == 1 {
         Some(matches.into_iter().next().unwrap())
     } else {
@@ -438,6 +570,78 @@ mod uses_narrowing_tests {
             calls: Vec::new(),
             bases: Vec::new(),
         }
+    }
+
+    #[test]
+    fn cached_index_answers_exactly_like_a_freshly_built_graph() {
+        // `oxide mcp` reuses one `RelationIndex` per index generation; every
+        // relation method must answer identically through it, in the same
+        // order, including the collision-verified hash lookups, duplicate
+        // qualified names (last one wins for `parent`), children/siblings,
+        // import-backed `uses` narrowing, and the lazy reverse indexes.
+        let mut symbols = vec![
+            sym("pkg/store.py", "TokenStore", &[], &[]),
+            sym("pkg/other.py", "TokenStore", &[], &[]),
+            sym(
+                "pkg/handler.py",
+                "handle",
+                &[".store"],
+                &["TokenStore", "refresh"],
+            ),
+            sym("tests/test_handler.py", "test_handle", &[], &["handle"]),
+            sym("pkg/store.py", "TokenStore.refresh", &[], &[]),
+            sym("pkg/store.py", "TokenStore.expire", &[], &[]),
+        ];
+        symbols[4].name = "refresh".into();
+        symbols[4].parent = Some("TokenStore".into());
+        symbols[4].kind = SymbolKind::Method;
+        symbols[5].name = "expire".into();
+        symbols[5].parent = Some("TokenStore".into());
+        symbols[5].kind = SymbolKind::Method;
+        symbols[5].calls = vec!["refresh".into()];
+        symbols[2].calls = vec!["refresh".into()];
+        symbols[1].bases = vec!["TokenStore".into()];
+        let built = RelationGraph::build(&symbols);
+        let index = RelationIndex::build(&symbols);
+        let cached = RelationGraph::with_index(&symbols, &index);
+        let ids = |v: Vec<&Symbol>| v.iter().map(|s| s.id()).collect::<Vec<_>>();
+        for seed in &symbols {
+            let a: Vec<(String, u64)> = built
+                .neighbors(seed)
+                .into_iter()
+                .map(|(r, s)| (r, s.id()))
+                .collect();
+            let b: Vec<(String, u64)> = cached
+                .neighbors(seed)
+                .into_iter()
+                .map(|(r, s)| (r, s.id()))
+                .collect();
+            assert_eq!(a, b, "neighbors of {}", seed.qualified_name);
+            assert_eq!(
+                ids(built.related_tests(seed)),
+                ids(cached.related_tests(seed))
+            );
+            assert_eq!(
+                ids(built.callers_of(&seed.name)),
+                ids(cached.callers_of(&seed.name))
+            );
+            assert_eq!(
+                ids(built.implementors_of(&seed.name)),
+                ids(cached.implementors_of(&seed.name))
+            );
+            for m in &seed.imports {
+                assert_eq!(
+                    ids(built.resolve_import(&seed.file, m)),
+                    ids(cached.resolve_import(&seed.file, m))
+                );
+            }
+        }
+        // The graph is not trivially empty: the handler sees its import-
+        // backed definition and its test, and the reverse call index works.
+        let n = cached.neighbors(&symbols[2]);
+        assert!(n.iter().any(|(r, _)| r == "imported-definition"), "{n:?}");
+        assert!(n.iter().any(|(r, _)| r == "test"), "{n:?}");
+        assert_eq!(cached.callers_of("refresh").len(), 2);
     }
 
     #[test]

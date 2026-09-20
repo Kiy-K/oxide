@@ -15,7 +15,6 @@ use crate::config::{
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::gitctx::GitEvidence;
-use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
@@ -208,7 +207,7 @@ pub fn build_context_with(
         // by the git block below (changed-symbol file lookup, co-changed
         // file symbol picks) so `--git` never triggers a second corpus load.
         let symbols = &engine.snapshot_with_relations()?.symbols;
-        let graph = RelationGraph::build(symbols);
+        let graph = engine.relation_graph()?;
         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
         let mut expansion_total = 0usize;
         for seed in seeds.iter().take(5) {

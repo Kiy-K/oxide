@@ -4,7 +4,6 @@
 use crate::embeddings::EmbeddingProvider;
 use crate::gitctx::{self, ChangedSymbol, CoChangeEntry};
 use crate::gitutil::CommitMeta;
-use crate::relations::RelationGraph;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
 use crate::storage::IndexBackend;
 use serde::Serialize;
@@ -43,7 +42,7 @@ pub fn build_review_context(
     // `context.rs` already follows (AGENTS.md).
     let snapshot = engine.snapshot_with_relations()?;
     let symbols = &snapshot.symbols;
-    let graph = RelationGraph::build(symbols);
+    let graph = engine.relation_graph()?;
 
     let git_ctx = gitctx::build_git_context(repo_root, symbols, range)?;
     let changed_symbols = git_ctx.changed_symbols;
