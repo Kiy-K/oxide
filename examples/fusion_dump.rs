@@ -30,6 +30,17 @@ fn main() -> anyhow::Result<()> {
     let tasks = std::io::BufReader::new(std::fs::File::open(&args[2])?);
     let embedder = open_embedder(None)?;
     let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
+    // The dump reads the persisted postings directly; the engine does the
+    // same only when `lexical_index_version` is exactly current and falls
+    // back to an in-memory index otherwise. Refuse anything else so the
+    // dumped lexical channel is provably the engine's (Greptile review).
+    let persisted = store.get_meta(oxide::storage::LEXICAL_INDEX_KEY)?;
+    anyhow::ensure!(
+        persisted.as_deref() == Some(oxide::storage::LEXICAL_INDEX_VERSION.to_string().as_str()),
+        "index at {} has no current persisted lexical index (meta {:?}); run `oxide index` first",
+        root.display(),
+        persisted
+    );
     let n = store.symbol_count()?;
     let snapshot = SymbolSnapshot::load(&store)?;
     let engine = RetrievalEngine::with_snapshot(&store, embedder.as_ref(), &snapshot);
@@ -132,8 +143,31 @@ fn main() -> anyhow::Result<()> {
             }
         }
 
+        // Line spans for every candidate, so a downstream scorer that works
+        // on file/line granularity (ContextBench's metric code) can score a
+        // re-fused list without another index read.
+        let mut spans = serde_json::Map::new();
+        for id in lex.iter().chain(sem.iter()).map(|(id, _)| *id) {
+            if let Some(s) = snapshot.get(id) {
+                spans
+                    .entry(format!("{}#{}", s.file, s.qualified_name))
+                    .or_insert_with(|| json!([s.start_line, s.end_line]));
+            }
+        }
+        // Numeric symbol ids (the production tie-break key) for every
+        // candidate, so offline re-fusions can order ties exactly as
+        // `cmp_score_id` does.
+        let mut ids = serde_json::Map::new();
+        for id in lex.iter().chain(sem.iter()).map(|(id, _)| *id) {
+            if let Some(s) = snapshot.get(id) {
+                ids.entry(format!("{}#{}", s.file, s.qualified_name))
+                    .or_insert_with(|| json!(id.to_string()));
+            }
+        }
         let rec = json!({
             "id": task["id"],
+            "ids": ids,
+            "spans": spans,
             "lexical": lex.iter().map(|(id, s)| json!([sym_id(*id), s])).collect::<Vec<_>>(),
             "semantic": sem.iter().map(|(id, s)| json!([sym_id(*id), s])).collect::<Vec<_>>(),
             "fused": fused.iter().map(|h| json!([format!("{}#{}", h.symbol.file, h.symbol.qualified_name), h.score, h.reasons])).collect::<Vec<_>>(),

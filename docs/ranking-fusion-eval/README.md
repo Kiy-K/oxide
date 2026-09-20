@@ -1,6 +1,6 @@
 # Ranking & fusion research track (roadmap #9, item 3) — first pass
 
-Status: **research, nothing shipped.** Production ranking is unchanged
+Status: **research, nothing shipped; §7 closes the K=10 question negatively.** Production ranking is unchanged
 (`src/config.rs`: RRF K=60, lexical 0.6 / semantic 0.4, 200 candidates
 per channel). Every challenger below was evaluated **offline** from the
 exact fusion inputs production computes, never through a production code
@@ -26,8 +26,10 @@ Commit-derived, on public repositories, labeled by the repositories' own
 authors rather than by anyone looking at OXIDE's output
 (`scripts/make_tasks.py`):
 
-- **Repos** (native `arctic-embed-xs-q` index at HEAD): pylint 40 tasks,
-  pytest 22, zod 9 (TypeScript), requests 1, flask 1 = **73 tasks**.
+- **Repos** (native `arctic-embed-xs-q` index at HEAD): pylint 37 tasks,
+  pytest 22, zod 9 (TypeScript), requests 1, flask 1 = **70 tasks** after
+  removing three cherry-pick/backport near-duplicates (same repo, same
+  gold, query Jaccard ≥ 0.6 — a Greptile finding; §7.7).
 - **Task** = a recent non-merge commit whose changed source files are
   byte-identical between the commit and HEAD (so one HEAD index describes
   exactly the post-commit code), ≤4 source files, ≥6-word message,
@@ -59,8 +61,8 @@ the pack = *allocation*):
 
 | regime | route | ordering | allocation | hit in pack |
 | --- | ---: | ---: | ---: | ---: |
-| plain (73) | 6 (8%) | **18 (25%)** | 6 (8%) | 43 (59%) |
-| masked (73) | 13 (18%) | **33 (45%)** | 5 (7%) | 22 (30%) |
+| plain (70) | 6 (9%) | **18 (26%)** | 6 (9%) | 40 (57%) |
+| masked (70) | 13 (19%) | **32 (46%)** | 4 (6%) | 21 (30%) |
 | fixtures (11) | 0 | 0 | 1 | 10 |
 
 Unlike the ContextBench pin, **ordering** is the dominant loss on this set.
@@ -85,34 +87,34 @@ every task), then evaluates:
   structural neighbor (uses/imported-definition 1.0, parent/child 0.5,
   sibling/test 0.25; capped at 2); direct hits below N never move
 
-### 3.1 Plain regime (73 tasks)
+### 3.1 Plain regime (70 tasks)
 
 | variant | R@5 | R@10 | R@20 | nDCG@10 | MRR |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| **production RRF (K=60, 0.6/0.4)** | 0.442 | 0.601 | 0.731 | 0.420 | 0.392 |
-| lexical only | 0.555 | 0.703 | 0.744 | 0.483 | 0.457 |
-| semantic only | 0.303 | 0.376 | 0.438 | 0.226 | 0.201 |
-| RRF K=10 | 0.541 | 0.676 | 0.757 | 0.473 | 0.430 |
-| RRF K=20 | 0.527 | 0.647 | 0.757 | 0.463 | 0.429 |
-| RRF w_lex=0.8 | 0.529 | 0.664 | 0.767 | 0.479 | 0.449 |
-| minmax CombSUM 0.6/0.4 | 0.537 | 0.647 | 0.739 | 0.465 | 0.434 |
-| zscore CombSUM 0.6/0.4 | 0.541 | 0.674 | 0.754 | 0.481 | 0.446 |
-| RRF + evidence rerank top20 β=0.25 | 0.478 | 0.632 | 0.731 | 0.435 | 0.403 |
-| RRF + evidence rerank top20 β=1.0 | 0.473 | 0.636 | 0.731 | 0.394 | 0.345 |
+| **production RRF (K=60, 0.6/0.4)** | 0.418 | 0.584 | 0.719 | 0.405 | 0.380 |
+| lexical only | 0.535 | 0.690 | 0.733 | 0.466 | 0.441 |
+| semantic only | 0.288 | 0.350 | 0.414 | 0.213 | 0.193 |
+| RRF K=10 | 0.522 | 0.663 | 0.747 | 0.461 | 0.420 |
+| RRF K=20 | 0.507 | 0.632 | 0.747 | 0.450 | 0.418 |
+| RRF w_lex=0.8 | 0.509 | 0.650 | 0.757 | 0.462 | 0.432 |
+| minmax CombSUM 0.6/0.4 | 0.517 | 0.632 | 0.728 | 0.453 | 0.424 |
+| zscore CombSUM 0.6/0.4 | 0.522 | 0.660 | 0.744 | 0.469 | 0.437 |
+| RRF + evidence rerank top20 β=0.25 | 0.456 | 0.616 | 0.719 | 0.426 | 0.397 |
+| RRF + evidence rerank top20 β=1.0 | 0.464 | 0.620 | 0.719 | 0.386 | 0.341 |
 
 Full tables (every K, weight and β): `results/plain.md`.
 
-### 3.2 Masked regime (73 tasks, identifiers removed from queries)
+### 3.2 Masked regime (70 tasks, identifiers removed from queries)
 
 | variant | R@5 | R@10 | R@20 | nDCG@10 | MRR |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| **production RRF (K=60, 0.6/0.4)** | 0.222 | 0.301 | 0.426 | 0.178 | 0.177 |
-| lexical only | 0.363 | 0.410 | 0.493 | 0.298 | 0.314 |
-| semantic only | 0.064 | 0.071 | 0.107 | 0.037 | 0.036 |
-| RRF K=10 | 0.294 | 0.386 | 0.493 | 0.236 | 0.229 |
-| RRF w_lex=0.8 | 0.322 | 0.366 | 0.500 | 0.221 | 0.210 |
-| zscore CombSUM 0.6/0.4 | 0.326 | 0.379 | 0.483 | 0.259 | 0.269 |
-| RRF + evidence rerank top20 β=0.25 | 0.222 | 0.316 | 0.426 | 0.179 | 0.170 |
+| **production RRF (K=60, 0.6/0.4)** | 0.218 | 0.285 | 0.415 | 0.167 | 0.167 |
+| lexical only | 0.335 | 0.384 | 0.472 | 0.275 | 0.295 |
+| semantic only | 0.067 | 0.074 | 0.111 | 0.038 | 0.038 |
+| RRF K=10 | 0.278 | 0.359 | 0.472 | 0.218 | 0.215 |
+| RRF w_lex=0.8 | 0.307 | 0.353 | 0.479 | 0.210 | 0.200 |
+| zscore CombSUM 0.6/0.4 | 0.297 | 0.352 | 0.461 | 0.235 | 0.249 |
+| RRF + evidence rerank top20 β=0.25 | 0.218 | 0.301 | 0.415 | 0.168 | 0.160 |
 
 ### 3.3 Fixture gate (11 queries, hashed embedder)
 
@@ -215,6 +217,175 @@ already loaded).
   the embedder/query prompt for `arctic-embed-xs-q` (or the provider
   choice), not the fusion rule — a separate track.
 
+
+## 7. Validation pass: K=10 vs K=60, and a confidence-aware reranker
+
+Second pass, run **after** §1–6 had picked K=10 on the dev set, on
+data that set never touched. Nothing here changes production; everything
+is offline over identical candidate pools (the dumped top-200 lists),
+shipped Arctic embedder throughout.
+
+### 7.1 Why the flat structural bonus failed (audit, `results/audit-*.md`)
+
+Per-candidate signals over the union pool (24,693 rows, 106 gold, plain):
+
+| signal | AUC for gold (plain / masked) | note |
+| --- | ---: | --- |
+| lexical rank | 0.932 / 0.823 | the strongest single signal |
+| RRF K=10 / K=60 | 0.925 / 0.920 (plain) | fusion already captures most of it |
+| in both channels | 0.770 / 0.620 | corr 0.70 with the RRF score — it *is* what RRF rewards |
+| semantic rank | 0.700 / 0.507 | at chance on description-only queries |
+| any structural support | 0.662 / 0.576 | but see precision below |
+| name-in-query | 0.680 / **0.412** | the token overlap the masked regime removes: **label leakage**, not signal |
+| is_module, is_test | 0.64 / 0.67 | artifacts of label construction (gold excludes modules and test files) — unusable |
+
+Structural neighbors of the top-3 fused seeds, by relation (plain):
+`uses` 3,298 neighbors at **0.4% precision** (16 per seed), `test` 292 at
+0%, `sibling` 547 at 3.8%, `child` 204 at 3.4%, `parent` 52 at 7.7%.
+The top-3 seeds themselves are gold only **17%** of the time, and a
+seed being in both channels does not separate right from wrong seeds
+(both: 17%). Conditional on the seed being right, `sibling` precision is
+10.3% vs 0.8% otherwise — structural evidence is informative *only* when
+the seed is, which the reranker cannot observe. The flat bonus (β=0.5,
+top-20) promoted 53 candidates into the top-10 across 70 tasks, 5 of
+them gold, and displaced 2 gold: it reorders noise above gold because it
+propagates from mostly-wrong seeds through the highest-fan-out, lowest-
+precision relation. No double counting was found among usable signals
+(name features aside): lexical rank / semantic rank / agreement are
+weakly correlated (|r| ≤ 0.41) except through the RRF score itself.
+Git evidence is inapplicable to these tasks (clean checkout → no diff).
+
+### 7.2 Confidence-aware reranker (`scripts/rerank_eval.py`)
+
+Bounded to the fused top-20, deterministic, five non-leaky features:
+−log(1+lexical rank), −log(1+semantic rank), in-both-channels, structural
+support from sibling/child/parent edges of a *confident* seed (fused rank
+< 3 and in both channels), and `uses` support as a control. Logistic
+regression on the dev set (both regimes, 8k sampled negatives), weights
+frozen to two decimals: lex 0.83, sem **−0.30**, in_both 1.32, struct
+0.49, uses 0.51 — i.e. "lexical rank + channel agreement", with semantic
+rank *penalized* under this embedder. In-sample it gains +0.014 nDCG
+over K=10 on plain (0.475 vs 0.461) and the no-struct ablation is
+indistinguishable (0.453 vs 0.475 plain, 0.267 vs 0.267 masked): the structural features
+carry nothing even after gating on seed confidence.
+
+Hard negatives on the dev set: (a) 41 lexical top-5 items judged not
+relevant by the independent judge — K=60 keeps 24% of them in the top-5,
+K=10 and the reranker 66%: the flat K=60 is what demotes lexical-only
+noise using semantic disagreement; (b) same-parent non-gold siblings of a
+gold symbol ranked above it — K=60 11%, K=10 7%, reranker 2–3%.
+
+### 7.3 Held-out, repository-balanced (65 tasks, 7 repos; `results/rerank-heldout.md`)
+
+Fresh commits excluding every dev-set commit (16 overlaps dropped),
+10–12 per repo for httpx, requests, flask, ripgrep (Rust), zod; pytest 6,
+pylint 2 (their qualifying commits were consumed by the dev set); per-
+commit worktrees for the high-churn repos.
+
+| variant | R@5 | R@10 | R@20 | nDCG@10 | MRR | ΔnDCG vs K=60 [95% CI] | macro R@10 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| **RRF K=60 (production)** | **0.404** | 0.508 | **0.666** | 0.397 | 0.433 | — | 0.502 |
+| RRF K=10 | 0.382 | 0.544 | 0.631 | 0.421 | 0.455 | +0.023 [−0.005, +0.056] | 0.523 |
+| K=60 + rerank | 0.377 | 0.494 | 0.666 | 0.343 | 0.362 | −0.054 [−0.113, +0.005] | 0.481 |
+| K=10 + rerank | 0.363 | 0.488 | 0.631 | 0.322 | 0.336 | **−0.076 [−0.137, −0.013]** | 0.477 |
+| K=10 + rerank (no struct) | 0.314 | 0.457 | 0.631 | 0.287 | 0.297 | −0.110 [−0.182, −0.040] | 0.444 |
+| lexical only | 0.348 | 0.485 | 0.603 | 0.343 | 0.368 | −0.054 [−0.110, −0.001] | 0.475 |
+
+Per repo (R@10, K=60 → K=10): httpx 0.44 → 0.60, ripgrep 0.41 → 0.52,
+requests 0.66 → 0.72, but pytest 0.47 → 0.38, zod 0.46 → 0.42, flask
+0.58 → 0.53. Loss partition: route 2, ordering 19, allocation 10, hit
+34; production pack gold-in-pack 0.538, 109 relevant tokens per 1k pack
+tokens. Lexical-only, which beat production on the pylint-heavy dev set,
+is significantly *worse* than production here.
+
+### 7.4 ContextBench pinned instances (21 human-labeled issues; `results/cb-results.md`)
+
+Same 21 instances as `docs/retrieval-ceiling.md`, repositories checked
+out at their base commits and indexed with the shipped Arctic embedder,
+issue text as the query, scored with ContextBench's own metric code on
+the top-10 of each variant from identical candidates:
+
+| variant | file coverage | file cov@5 | symbol coverage | symbol cov@5 | file precision |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **RRF K=60 (production)** | **0.685** | **0.591** | **0.771** | **0.670** | **0.237** |
+| RRF K=10 | 0.647 | 0.516 | 0.689 | 0.563 | 0.219 |
+| K=60 + rerank | 0.655 | 0.468 | 0.718 | 0.520 | 0.201 |
+| K=10 + rerank | 0.631 | 0.468 | 0.699 | 0.520 | 0.195 |
+| lexical only | 0.560 | 0.504 | 0.622 | 0.579 | 0.182 |
+| semantic only | 0.619 | 0.548 | 0.495 | 0.397 | 0.217 |
+
+Paired deltas vs K=60 (n=21): K=10 file −0.039 [−0.118, +0.036], symbol
+−0.081 [−0.202, +0.013], 1 win / 4 losses; both rerank variants 1–2 wins
+/ 4–7 losses. On issue-style queries the semantic channel is strong
+(file coverage 0.619 alone, above lexical's 0.560) and the flat K=60 is
+the right weighting.
+
+### 7.5 Cost, memory, agent outcomes
+
+K is a constant in a rank-based formula: no latency, allocation or RSS
+change (the fusion stage is 1–2 ms of a 12 ms search; nothing else in
+the request path is touched). The reranker would cost ~0.5 ms of feature
+work over 20 hydrated candidates plus `neighbors` for 3 seeds (0.6 ms
+warm) and requires the corpus graph — free in MCP after the
+RelationIndex cache, a 45–80 ms corpus load on the one-shot `--no-expand`
+/`Fast` paths, so it would have had to be gated to expansion mode.
+Downstream agent outcomes (Tier B) were not run: the retrieval-level
+result is already negative on two independent sets, so an agent run
+could only measure a regression.
+
+### 7.6 Pareto verdict (supersedes §5's "promoted to validated experiment")
+
+- **RRF K=10 — rejected as a production change.** Its dev-set win
+  (+0.055 nDCG) does not transfer: mixed on the balanced held-out set
+  (+0.023, CI spans zero; better R@10, worse R@5/R@20; wins 3 repos,
+  loses 3) and negative on the human-labeled ContextBench set (−0.04
+  file / −0.08 symbol coverage, 1 win / 4 losses). The dev gain was a
+  property of short, identifier-bearing commit messages on a pylint-heavy
+  set; issue-style queries reward the flatter fusion. Frozen K=60 stays.
+- **Bounded confidence-aware reranker — rejected.** Overfits the dev set
+  (+0.015 in-sample over K=10) and is significantly worse out of sample
+  (−0.074 nDCG on held-out, worse on ContextBench). Structural features
+  contribute nothing after seed-confidence gating because seed precision
+  (18%) bounds them; the flat bonus failed for the same reason, amplified
+  by `uses` fan-out. No feature available at request time predicts
+  relevance beyond what fusion already encodes, except name overlap —
+  which is real signal for users who name identifiers but is label
+  leakage on commit-derived gold and cannot be validated here.
+- **Lexical-only — rejected** (worse than production on held-out and
+  ContextBench).
+- Standing negative results: lexical weight ≥ 0.7, min-max / z-score
+  CombSUM, CombMNZ (§3.3), flat structural bonus (§3, §7.1).
+
+What the two independent sets agree on: the remaining losses are
+**route loss on description-style queries** (the semantic channel's
+weakness under the 22M-parameter default — a separate embedder-quality
+track, not a fusion question) and **allocation** (15% on held-out: gold
+at fused rank 3–10 dropped by the per-file, primary, and subsumption
+caps — an allocator question, `docs/primary-cap-sensitivity`).
+
+Uncertainty: dev n=70 (pylint 53%), held-out n=65 (balanced), ContextBench
+n=21; paired bootstrap CIs are reported for every delta and most span
+zero — the conclusions rest on *direction consistency across sets*, not
+on any single significant delta. Gold incompleteness (27% of non-gold
+top-5 items judged relevant) understates absolute precision on the
+commit-derived sets but not the comparisons, which the judge confirmed.
+
+### 7.7 Method fixes from the independent review of this bundle
+
+A Greptile pass over the research bundle raised four evaluation-validity
+points, all fixed before the numbers above were finalized: (1) three
+cherry-pick/backport near-duplicate dev tasks removed (identical gold,
+query Jaccard ≥ 0.6; the held-out set had none); (2) the offline
+tie-break now uses the numeric FNV symbol id production uses
+(`cmp_score_id`) — the dump emits it — and the reproduction check
+asserts the full fused **order**, not only the score multiset, which
+required emulating production's `f32` accumulation (f64 merges ties
+that f32 keeps distinct); (3) `fusion_dump` refuses an index whose
+persisted lexical index is not exactly current, since the engine would
+silently use its in-memory fallback there; (4) the ContextBench scripts
+resolve the repository root from their own location. None of the four
+moved any conclusion; every table was regenerated after them.
+
 ## 6. Reproduce
 
 ```
@@ -224,6 +395,13 @@ cargo build --release --example fusion_dump
 # eval:  scripts/fusion_eval.py tasks.jsonl dump.jsonl --md
 # judge: scripts/judge.py tasks.jsonl dump.jsonl 30 judgments.jsonl   (TYPESAFE_API_KEY in .env)
 ```
+
+Validation pass: `scripts/signal_audit.py`, `scripts/rerank_eval.py`
+(`fit-dump` / `eval`), `scripts/cb_prepare.py` + `scripts/cb_score.py`
+(ContextBench, needs `eval-agent/.venv`); results in `results/audit-*.md`,
+`rerank-*.md`, `heldout-by-repo.txt`, `cb-results.md`, `weights.json`,
+`heldout-clean.jsonl`, `cb-tasks.jsonl`, `dump-heldout.jsonl.gz`,
+`dump-contextbench.jsonl.gz`.
 
 `results/`: `tasks.jsonl`, `tasks-masked.jsonl` (the labeled sets),
 `dump-*.jsonl.gz` (exact fusion inputs per task), `judgments.jsonl`

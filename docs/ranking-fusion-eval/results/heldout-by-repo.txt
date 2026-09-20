@@ -1,0 +1,7 @@
+pylint     RRF K=60 (production)  R@10= 0.500  nDCG= 0.145  ;  RRF K=10  R@10= 0.500  nDCG= 0.167  ;  K=10 + rerank  R@10= 0.500  nDCG= 0.178  ; 
+pytest     RRF K=60 (production)  R@10= 0.468  nDCG= 0.399  ;  RRF K=10  R@10= 0.379  nDCG= 0.371  ;  K=10 + rerank  R@10= 0.375  nDCG= 0.284  ;  R@10= nDCG= ; 
+zod        RRF K=60 (production)  R@10= 0.457  nDCG= 0.395  ;  RRF K=10  R@10= 0.415  nDCG= 0.387  ;  K=10 + rerank  R@10= 0.435  nDCG= 0.308  ;  R@10= nDCG= ; 
+httpx      RRF K=60 (production)  R@10= 0.438  nDCG= 0.306  ;  RRF K=10  R@10= 0.604  nDCG= 0.346  ;  K=10 + rerank  R@10= 0.549  nDCG= 0.326  ;  R@10= nDCG= ; 
+ripgrep    RRF K=60 (production)  R@10= 0.410  nDCG= 0.294  ;  RRF K=10  R@10= 0.516  nDCG= 0.367  ;  K=10 + rerank  R@10= 0.266  nDCG= 0.224  ;  R@10= nDCG= ; 
+requests   RRF K=60 (production)  R@10= 0.658  nDCG= 0.588  ;  RRF K=10  R@10= 0.717  nDCG= 0.617  ;  K=10 + rerank  R@10= 0.696  nDCG= 0.411  ;  R@10= nDCG= ; 
+flask      RRF K=60 (production)  R@10= 0.583  nDCG= 0.437  ;  RRF K=10  R@10= 0.531  nDCG= 0.443  ;  K=10 + rerank  R@10= 0.521  nDCG= 0.373  ;  R@10= nDCG= ; 

@@ -9,7 +9,7 @@ usage: judge.py tasks.jsonl dump.jsonl <n_tasks> judgments.jsonl
 """
 import importlib.util, json, os, random, sys, time
 spec = importlib.util.spec_from_file_location(
-    "ts", str(__import__("pathlib").Path(__file__).resolve().parents[3] / "docs/evals/phase-4.2-typesafe/raw/typesafe_client.py"))
+    "ts", "/home/khoi/Work/oxide/docs/evals/phase-4.2-typesafe/raw/typesafe_client.py")
 ts = importlib.util.module_from_spec(spec); spec.loader.exec_module(ts)
 
 tasks = {t["id"]: t for t in map(json.loads, open(sys.argv[1]))}

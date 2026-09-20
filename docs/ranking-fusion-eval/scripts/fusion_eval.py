@@ -21,12 +21,19 @@ tasks = {t["id"]: t for t in map(json.loads, open(sys.argv[1]))}
 dump = [json.loads(l) for l in open(sys.argv[2])]
 K_RRF, W_LEX, W_SEM = 60.0, 0.6, 0.4
 
+import struct
+def _f32(x):
+    return struct.unpack("f", struct.pack("f", x))[0]
+
 def rrf(lex, sem, k=K_RRF, wl=W_LEX, ws=W_SEM):
+    # f32 arithmetic, term by term, exactly as `RetrievalEngine::search`
+    # accumulates `weight / (K + rank + 1)` — f64 would merge ties that f32
+    # keeps distinct, and production breaks the resulting near-ties by id.
     s = defaultdict(float)
     for rank, (sid, _) in enumerate(lex):
-        s[sid] += wl / (k + rank + 1)
+        s[sid] = _f32(s[sid] + _f32(_f32(wl) / _f32(k + rank + 1)))
     for rank, (sid, _) in enumerate(sem):
-        s[sid] += ws / (k + rank + 1)
+        s[sid] = _f32(s[sid] + _f32(_f32(ws) / _f32(k + rank + 1)))
     return s
 
 def normalized(lex, sem, how, wl=W_LEX, ws=W_SEM, mnz=False):
@@ -49,11 +56,11 @@ def normalized(lex, sem, how, wl=W_LEX, ws=W_SEM, mnz=False):
         for sid in s: s[sid] *= hits[sid]
     return s
 
+IDS = {}  # symbol path -> numeric FNV id, filled per task from the dump
+
 def order(scores):
-    # score desc, then symbol path asc — deterministic. Production breaks
-    # ties on the numeric FNV id, invisible here; ties are rare enough
-    # (the reproduction check compares score multisets, not order).
-    return [sid for sid, _ in sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))]
+    # Production's `cmp_score_id`: score desc, then numeric symbol id asc.
+    return [sid for sid, _ in sorted(scores.items(), key=lambda kv: (-kv[1], IDS.get(kv[0], 0), kv[0]))]
 
 def evidence_rerank(fused_order, base_scores, neighbors, top_n=20, beta=0.5, seeds=3, rel_weights=None):
     """Bounded, deterministic: within the fused top-N, multiply a candidate's
@@ -74,7 +81,7 @@ def evidence_rerank(fused_order, base_scores, neighbors, top_n=20, beta=0.5, see
         if i < top_n and sid not in seed_ids:
             sc = sc * (1.0 + beta * min(support.get(sid, 0.0), 2.0))
         out.append((sid, sc))
-    head = sorted(out[:top_n], key=lambda x: (-x[1], x[0]))
+    head = sorted(out[:top_n], key=lambda x: (-x[1], IDS.get(x[0], 0), x[0]))
     return [sid for sid, _ in head] + [sid for sid, _ in out[top_n:]]
 
 def metrics(ranked, gold):
@@ -100,10 +107,12 @@ for rec in dump:
     sem = [(sid, sc) for sid, sc in rec["semantic"] if sid]
     prod = [sid for sid, _, _ in rec["fused"]]
     prod_scores = {sid: sc for sid, sc, _ in rec["fused"]}
-    # --- reproduce production RRF from the dumped channels ---
+    # --- reproduce production RRF from the dumped channels: scores AND order ---
+    IDS.clear(); IDS.update({k: int(v) for k, v in rec.get("ids", {}).items()})
     mine = rrf(lex, sem)
     assert set(prod_scores) == set(mine) and all(abs(prod_scores[k] - mine[k]) < 1e-6 for k in mine), \
         f"offline RRF != production for {rec['id']}"
+    assert order(mine) == prod, f"offline RRF order != production order for {rec['id']}"
     # --- loss partition (K=10) ---
     partition["n"] += 1
     in_channels = gold & ({sid for sid, _ in lex} | {sid for sid, _ in sem})
