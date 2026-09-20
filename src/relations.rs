@@ -277,7 +277,26 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         }
         format!("{p}{rest}")
     } else if norm.starts_with('.') {
-        return None;
+        // Python relative import with no path separator: `.store`,
+        // `..pkg.util`, or a bare `.`/`..` (`from . import x`). A single
+        // leading dot names the current package (0 levels up); each
+        // additional dot climbs one level — the same contract `dir_of`
+        // already gives Rust's `self::`/`super::` below, reused here rather
+        // than duplicated. `from . import submodule` records only `.` as
+        // the import string (the name after `import` is never captured by
+        // `collect_meta`'s `import_from_statement` arm — see tags.rs), so
+        // an empty `rest` resolves to the package's own `__init__.py`
+        // rather than to the submodule. That's a pre-existing limitation of
+        // what gets recorded, not something this fix introduces or is
+        // responsible for closing.
+        let dots = norm.chars().take_while(|&c| c == '.').count();
+        let rest = &norm[dots..];
+        let dir = dir_of(from_file, dots - 1)?;
+        if rest.is_empty() {
+            dir.trim_end_matches('/').to_string()
+        } else {
+            format!("{dir}{}", rest.replace('.', "/"))
+        }
     } else {
         // Absolute python-style import: try as path anywhere.
         norm.replace('.', "/")
@@ -431,6 +450,97 @@ mod uses_narrowing_tests {
             resolve_module("super::super::super::baz", "src/foo/bar.rs", &files),
             None
         );
+    }
+
+    #[test]
+    fn python_dotted_relative_imports_resolve_without_a_path_separator() {
+        // Found in review: `resolve_module` only recognized TypeScript/Ruby-
+        // style `./`/`../` relative paths. Python's own relative-import
+        // syntax has no slash at all (`.store`, `..pkg.util`), so it fell
+        // into the catch-all `starts_with('.') => None` arm and never
+        // resolved — every `imported-definition` edge for a Python relative
+        // import silently degraded to the weaker `uses` name-heuristic.
+        let files: HashSet<&str> = [
+            "pkg/sub/mod.py",
+            "pkg/sub/sibling.py",
+            "pkg/util.py",
+            "pkg/__init__.py",
+            "pkg/sub/__init__.py",
+        ]
+        .into_iter()
+        .collect();
+        // `from .sibling import X` — one dot is the current package.
+        assert_eq!(
+            resolve_module(".sibling", "pkg/sub/mod.py", &files),
+            Some("pkg/sub/sibling.py".to_string())
+        );
+        // `from ..util import X` — each extra dot climbs one directory.
+        assert_eq!(
+            resolve_module("..util", "pkg/sub/mod.py", &files),
+            Some("pkg/util.py".to_string())
+        );
+        // `from . import sibling` — bare dot names the package itself.
+        assert_eq!(
+            resolve_module(".", "pkg/sub/mod.py", &files),
+            Some("pkg/sub/__init__.py".to_string())
+        );
+        // `from .. import x` — bare double dot names the parent package.
+        assert_eq!(
+            resolve_module("..", "pkg/sub/mod.py", &files),
+            Some("pkg/__init__.py".to_string())
+        );
+        // A module that doesn't exist in the indexed set resolves to nothing.
+        assert_eq!(resolve_module(".missing", "pkg/sub/mod.py", &files), None);
+        // Climbing past the repo root resolves to nothing, matching Rust's
+        // `super::super::super::` contract above.
+        assert_eq!(resolve_module("....deep", "pkg/sub/mod.py", &files), None);
+    }
+
+    #[test]
+    fn python_dotted_relative_import_is_ambiguous_when_both_forms_exist() {
+        // A module file and a same-named package directory both matching is
+        // the pre-existing "more than one candidate => None" contract every
+        // other language already relies on (see `matches.len() == 1` at the
+        // bottom of `resolve_module`) — this just proves the new Python arm
+        // doesn't bypass it.
+        let files: HashSet<&str> = ["pkg/sub/mod.py", "pkg/store.py", "pkg/store/__init__.py"]
+            .into_iter()
+            .collect();
+        assert_eq!(resolve_module("..store", "pkg/sub/mod.py", &files), None);
+    }
+
+    #[test]
+    fn python_relative_import_now_produces_imported_definition_and_narrows_uses() {
+        // The fix has a two-sided consequence: `.store` didn't just start
+        // resolving to a file, it also started feeding `neighbors()`'s
+        // `imported_files` set for Python — so the `uses` narrowing that
+        // `an_imported_definition_wins_over_a_same_named_one_elsewhere`
+        // already pins for TypeScript's `./a` now applies to Python's `.store`
+        // too, where before this fix it always fell into the "no import
+        // backing" branch below and kept every same-named candidate.
+        let symbols = vec![
+            sym("pkg/store.py", "TokenStore", &[], &[]),
+            sym("pkg/other.py", "TokenStore", &[], &[]),
+            sym("pkg/handler.py", "handle", &[".store"], &["TokenStore"]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let neighbors = graph.neighbors(&symbols[2]);
+        let uses: Vec<&str> = neighbors
+            .iter()
+            .filter(|(tag, _)| tag == "uses")
+            .map(|(_, s)| s.file.as_str())
+            .collect();
+        assert_eq!(
+            uses,
+            vec!["pkg/store.py"],
+            "pkg/other.py must be dropped now the relative import is import-backed"
+        );
+        let imported: Vec<&str> = neighbors
+            .iter()
+            .filter(|(tag, _)| tag == "imported-definition")
+            .map(|(_, s)| s.file.as_str())
+            .collect();
+        assert_eq!(imported, vec!["pkg/store.py"]);
     }
 
     #[test]
