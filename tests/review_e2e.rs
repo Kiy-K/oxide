@@ -87,6 +87,61 @@ fn review_finds_changed_symbols_and_related_test() {
     );
 }
 
+/// `related` is ordered `(score desc, symbol id asc)` — the tie-break every
+/// other ranked surface already uses. Structural scores are exact integers
+/// (1.0 per relation), so ties dominate, and the candidate map is a
+/// `HashMap`: before the tie-break was added, the same diff came out in a
+/// different `related` order (and, at the 15-item cut, a different set)
+/// from one process to the next.
+#[test]
+fn review_related_order_is_deterministic_under_tied_scores() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    // One changed method with many same-scored neighbors: its siblings
+    // (each `sibling←` = 1.0) and the parent class.
+    let mut body = String::from("class Wide:\n");
+    for i in 0..12 {
+        body.push_str(&format!("    def m{i}(self):\n        return {i}\n"));
+    }
+    write(root.join("src/wide.py"), &body);
+    git(root, &["init", "-q"]);
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "base"]);
+    write(
+        root.join("src/wide.py"),
+        &body.replace("return 5\n", "return 50\n"),
+    );
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "edit m5"]);
+
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    update_index(root, &mut store, &HashedEmbedder::default()).unwrap();
+    let ctx =
+        oxide::review::build_review_context(root, &store, &HashedEmbedder::default(), "HEAD~1")
+            .unwrap();
+    assert!(
+        ctx.related.len() > 5,
+        "fixture must produce several tied neighbors: {}",
+        ctx.related.len()
+    );
+    let keys: Vec<(f32, u64)> = ctx
+        .related
+        .iter()
+        .map(|h| (h.score, h.symbol.id()))
+        .collect();
+    for w in keys.windows(2) {
+        let ordered = w[0].0 > w[1].0 || (w[0].0 == w[1].0 && w[0].1 < w[1].1);
+        assert!(
+            ordered,
+            "related not in (score desc, id asc) order: {keys:?}"
+        );
+    }
+    assert!(
+        keys.windows(2).any(|w| w[0].0 == w[1].0),
+        "fixture must actually contain tied scores: {keys:?}"
+    );
+}
+
 fn write(path: impl AsRef<std::path::Path>, content: &str) {
     let path = path.as_ref();
     std::fs::create_dir_all(path.parent().unwrap()).unwrap();

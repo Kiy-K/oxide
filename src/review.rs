@@ -41,7 +41,8 @@ pub fn build_review_context(
     // Routed through the engine's lazy, cached corpus snapshot rather than a
     // direct `store.all_symbols()` call — the request-path invariant
     // `context.rs` already follows (AGENTS.md).
-    let symbols = &engine.snapshot_with_relations()?.symbols;
+    let snapshot = engine.snapshot_with_relations()?;
+    let symbols = &snapshot.symbols;
     let graph = RelationGraph::build(symbols);
 
     let git_ctx = gitctx::build_git_context(repo_root, symbols, range)?;
@@ -98,24 +99,36 @@ pub fn build_review_context(
         }
     }
 
-    let mut related: Vec<SearchHit> = related_ids
+    // Score-descending with the same id tie-break every other ranked
+    // surface uses (`retrieval::cmp_score_id`): structural scores are
+    // exact small integers (1.0 per relation), so ties are the norm, and
+    // `related_ids` is a `HashMap` whose iteration order changes per
+    // process — without the tie-break the same diff produced a different
+    // `related` order (and, at the `truncate(15)` boundary, a different
+    // set) on every run. `snapshot.get` is the by-id index; the linear
+    // `symbols.iter().find(..)` it replaces hashed every symbol's id once
+    // per related item.
+    let mut related: Vec<(u64, f32, Vec<String>)> = related_ids
         .into_iter()
-        .filter_map(|(id, (score, reasons))| {
-            let s = symbols.iter().find(|s| s.id() == id)?;
+        .map(|(id, (score, reasons))| (id, score, reasons))
+        .collect();
+    related.sort_by(|a, b| {
+        b.1.partial_cmp(&a.1)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.0.cmp(&b.0))
+    });
+    let related: Vec<SearchHit> = related
+        .into_iter()
+        .filter_map(|(id, score, reasons)| {
             Some(SearchHit {
-                symbol: s.clone(),
+                symbol: snapshot.get(id)?.clone(),
                 score,
                 reasons,
                 snippet: String::new(),
             })
         })
+        .take(15)
         .collect();
-    related.sort_by(|a, b| {
-        b.score
-            .partial_cmp(&a.score)
-            .unwrap_or(std::cmp::Ordering::Equal)
-    });
-    related.truncate(15);
 
     Ok(ReviewContext {
         range: git_ctx.evidence.range,

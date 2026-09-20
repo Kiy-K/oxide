@@ -264,6 +264,13 @@ fn dir_of(file: &str, ups: usize) -> Option<String> {
 /// listed in `docs/language-support/README.md`, not an accident.
 pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> Option<String> {
     let norm = module.trim_start_matches("@/");
+    // `.name`/`..pkg.name` (dots followed by a module path, no slash) is
+    // Python's syntax and nobody else's, so its candidates are Python's
+    // alone: a `store.ts`/`store.rb` next to a Python package must neither
+    // satisfy `.store` when `store.py` is absent nor make it ambiguous when
+    // present (Greptile review). A bare `.`/`..` stays language-agnostic —
+    // TypeScript's `import x from '.'` names `index.ts` the same way.
+    let mut python_only = false;
     let joined = if let Some(rest) = norm.strip_prefix("./").or_else(|| norm.strip_prefix("../")) {
         let ups = norm.matches("../").count();
         let mut parts: std::collections::VecDeque<&str> = from_file.split('/').collect();
@@ -295,6 +302,7 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         if rest.is_empty() {
             dir.trim_end_matches('/').to_string()
         } else {
+            python_only = true;
             format!("{dir}{}", rest.replace('.', "/"))
         }
     } else {
@@ -302,22 +310,35 @@ pub fn resolve_module(module: &str, from_file: &str, files: &HashSet<&str>) -> O
         norm.replace('.', "/")
     };
 
+    // Package/directory forms. A bare `.`/`..` that lands on the repo root
+    // itself leaves `joined` empty, and `"/__init__.py"` would never match
+    // an indexed path (none carries a leading slash) — so the separator is
+    // only added when there is a directory to separate from.
+    let dir_prefix = if joined.is_empty() {
+        String::new()
+    } else {
+        format!("{joined}/")
+    };
     let mut candidates = vec![
         format!("{joined}.py"),
         format!("{joined}.pyi"),
-        format!("{joined}.ts"),
-        format!("{joined}.tsx"),
-        // Ruby `require_relative './base'` is a real path, minus the
-        // extension — the same shape TypeScript's `./base` already has.
-        format!("{joined}.rb"),
-        // The path as written, extension included — C's `#include
-        // "util.h"` (recorded as `./util.h`) already names a file, so
-        // appending a language extension to it could only miss.
-        joined.clone(),
-        format!("{joined}/__init__.py"),
-        format!("{joined}/index.ts"),
-        format!("{joined}/index.tsx"),
+        format!("{dir_prefix}__init__.py"),
     ];
+    if !python_only {
+        candidates.extend([
+            format!("{joined}.ts"),
+            format!("{joined}.tsx"),
+            // Ruby `require_relative './base'` is a real path, minus the
+            // extension — the same shape TypeScript's `./base` already has.
+            format!("{joined}.rb"),
+            // The path as written, extension included — C's `#include
+            // "util.h"` (recorded as `./util.h`) already names a file, so
+            // appending a language extension to it could only miss.
+            joined.clone(),
+            format!("{dir_prefix}index.ts"),
+            format!("{dir_prefix}index.tsx"),
+        ]);
+    }
     // Rust `use` trees are `::`-separated and normally end in the *item*
     // name, not the module: `crate::backend::Backend` names `backend`. Try
     // the path with and without its last segment, at the repo root and under
@@ -507,6 +528,64 @@ mod uses_narrowing_tests {
             .into_iter()
             .collect();
         assert_eq!(resolve_module("..store", "pkg/sub/mod.py", &files), None);
+    }
+
+    #[test]
+    fn bare_dot_import_resolves_at_the_repo_root() {
+        // A bare `.`/`..` whose target directory is the repo root itself
+        // (`from . import x` in a top-level `mod.py`, `from .. import x` one
+        // level down, or TypeScript's `import x from '.'`) has an empty
+        // directory prefix. Building the package candidate as
+        // `format!("{joined}/__init__.py")` from that empty prefix produced
+        // `/__init__.py` — a leading slash no indexed path ever carries — so
+        // a root-level package could never be resolved. Non-root packages
+        // were unaffected.
+        let py: HashSet<&str> = ["mod.py", "__init__.py", "pkg/sub.py"]
+            .into_iter()
+            .collect();
+        assert_eq!(
+            resolve_module(".", "mod.py", &py),
+            Some("__init__.py".to_string())
+        );
+        assert_eq!(
+            resolve_module("..", "pkg/sub.py", &py),
+            Some("__init__.py".to_string())
+        );
+        // Separate file set: a root holding both `__init__.py` and `index.ts`
+        // is the pre-existing "more than one candidate => None" case, which
+        // the language-agnostic candidate list has always had for `./x`
+        // when both `x.py` and `x.ts` exist.
+        let ts: HashSet<&str> = ["index.ts", "app.ts"].into_iter().collect();
+        assert_eq!(
+            resolve_module(".", "app.ts", &ts),
+            Some("index.ts".to_string())
+        );
+    }
+
+    #[test]
+    fn python_dotted_relative_import_only_considers_python_candidates() {
+        // Greptile review of the dot-relative branch: `.store` is Python
+        // syntax, so a same-stem TypeScript/Ruby file next to the package
+        // must neither satisfy it when `store.py` is absent (a false
+        // `imported-definition` edge into the wrong language) nor make it
+        // ambiguous when `store.py` is present (a false negative).
+        let no_py: HashSet<&str> = ["pkg/mod.py", "pkg/store.ts", "pkg/store.rb"]
+            .into_iter()
+            .collect();
+        assert_eq!(resolve_module(".store", "pkg/mod.py", &no_py), None);
+        let both: HashSet<&str> = ["pkg/mod.py", "pkg/store.py", "pkg/store.ts"]
+            .into_iter()
+            .collect();
+        assert_eq!(
+            resolve_module(".store", "pkg/mod.py", &both),
+            Some("pkg/store.py".to_string())
+        );
+        // A bare dot is shared with TypeScript and keeps both forms.
+        let ts: HashSet<&str> = ["pkg/app.ts", "pkg/index.ts"].into_iter().collect();
+        assert_eq!(
+            resolve_module(".", "pkg/app.ts", &ts),
+            Some("pkg/index.ts".to_string())
+        );
     }
 
     #[test]
