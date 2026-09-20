@@ -100,13 +100,28 @@ pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<Chan
                 })
                 .collect();
             for (s, overlap) in &hunk_hits {
-                let has_nested_hit = hunk_hits.iter().any(|(t, _)| {
-                    t.qualified_name != s.qualified_name
-                        && t.start_line >= s.start_line
-                        && t.end_line <= s.end_line
-                        && (t.start_line, t.end_line) != (s.start_line, s.end_line)
-                });
-                if has_nested_hit {
+                // Discard a container only when nested hits from this same
+                // hunk fully cover its own overlapping lines -- a hunk can
+                // span both a container's own body and a nested symbol at
+                // once, and the container's genuinely-its-own lines must
+                // survive even though a nested symbol also overlaps.
+                let Some((s_lo, s_hi)) = overlap_range(*a, *b, s.start_line, s.end_line) else {
+                    continue;
+                };
+                let mut covered: HashSet<u32> = HashSet::new();
+                for (t, _) in &hunk_hits {
+                    if t.qualified_name == s.qualified_name
+                        || !(t.start_line >= s.start_line
+                            && t.end_line <= s.end_line
+                            && (t.start_line, t.end_line) != (s.start_line, s.end_line))
+                    {
+                        continue;
+                    }
+                    if let Some((t_lo, t_hi)) = overlap_range(*a, *b, t.start_line, t.end_line) {
+                        covered.extend(t_lo..=t_hi);
+                    }
+                }
+                if (s_lo..=s_hi).all(|line| covered.contains(&line)) {
                     continue;
                 }
                 if let Some(&idx) = index_of.get(&s.id()) {
@@ -137,6 +152,14 @@ fn overlap_len(a1: u32, a2: u32, b1: u32, b2: u32) -> u32 {
     } else {
         0
     }
+}
+
+/// Overlap of two inclusive line ranges as an `(inclusive_lo, inclusive_hi)`
+/// pair, or `None` when they don't overlap.
+fn overlap_range(a1: u32, a2: u32, b1: u32, b2: u32) -> Option<(u32, u32)> {
+    let lo = a1.max(b1);
+    let hi = a2.min(b2);
+    (hi >= lo).then_some((lo, hi))
 }
 
 /// Assemble bounded git evidence for `range` (`gitutil::diff_text`'s
@@ -338,6 +361,32 @@ mod tests {
 
     fn commit(root: &std::path::Path, msg: &str) {
         git(root, &["commit", "-qm", msg]);
+    }
+
+    #[test]
+    fn one_hunk_spanning_both_class_body_and_a_nested_method_keeps_both() {
+        // Greptile review finding on this fix (src/gitctx.rs): a single
+        // added range can itself span lines outside any method (the class's
+        // own body) *and* lines inside a nested method. "Innermost wins"
+        // must only discard a container when a nested hit fully covers the
+        // container's own overlap with this hunk -- not merely because some
+        // nested symbol also overlaps it.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 10),
+            sym("a.py", "Foo.bar", SymbolKind::Method, 5, 8),
+        ];
+        // Lines 3-4 are Foo's own body, outside bar's [5,8] span; lines 5-6
+        // are inside bar. One hunk covers both.
+        let deltas = vec![delta("a.py", vec![(3, 6)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        let mut names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
+        names.sort();
+        assert_eq!(
+            names,
+            vec!["Foo", "Foo.bar"],
+            "the hunk's class-only lines (3-4) must keep Foo even though \
+             the same hunk also overlaps Foo.bar"
+        );
     }
 
     #[test]
