@@ -29,6 +29,8 @@
 use crate::scanner;
 use anyhow::{ensure, Result};
 use std::path::Path;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::OnceLock;
 
 /// Hard ceiling on results returned to a caller, regardless of the
 /// requested limit — mirrors `service::MAX_SEARCH_RESULTS`'s role for
@@ -138,6 +140,62 @@ fn truncate_snippet(line: &[u8]) -> String {
 /// doc for why this tradeoff (multi-file coverage over strict global
 /// ordering) is deliberate, not an oversight.
 ///
+/// Upper bound on files read and scanned concurrently by [`search`]; also
+/// bounds memory to this many file buffers at once.
+const PARALLEL_READERS: usize = 8;
+/// Below this many files per reader the scan runs inline on the calling
+/// thread: thread spawn costs more than it saves on a small repository.
+const PARALLEL_MIN_FILES_PER_READER: usize = 32;
+
+/// One file's matches, capped at [`MAX_MATCHES_PER_FILE`]; `truncated` is
+/// set only when a match beyond that cap genuinely exists (see the
+/// check-before-record discipline documented on the constant).
+struct FileHits {
+    hits: Vec<LiteralHit>,
+    truncated: bool,
+}
+
+/// Scan one file. `None` when it cannot be read (it is skipped, as the
+/// sequential loop always skipped it). Matching runs over the whole
+/// buffer; line and column are derived only at match sites.
+fn scan_file(finder: &memchr::memmem::Finder<'_>, root: &Path, rel: &Path) -> Option<FileHits> {
+    let bytes = std::fs::read(root.join(rel)).ok()?;
+    let display = rel.to_string_lossy().replace('\\', "/");
+    let mut hits = Vec::new();
+    let mut truncated = false;
+    // 1-based line of `line_start`, and the byte offset up to which
+    // newlines have already been counted into it.
+    let mut line_no = 1u32;
+    let mut line_start = 0usize;
+    let mut counted_to = 0usize;
+    for (file_matches, match_start) in finder.find_iter(&bytes).enumerate() {
+        // Moving to the next file on the per-file cap — rather than
+        // aborting the whole scan — is deliberate: see
+        // `MAX_MATCHES_PER_FILE`'s doc for why an earlier attempt to make
+        // this a strict global sorted-prefix regressed multi-file coverage
+        // instead.
+        if file_matches >= MAX_MATCHES_PER_FILE {
+            truncated = true;
+            break;
+        }
+        let newlines = memchr::memchr_iter(b'\n', &bytes[counted_to..match_start]).count();
+        if newlines > 0 {
+            line_no += newlines as u32;
+            line_start = memchr::memrchr(b'\n', &bytes[..match_start]).map_or(0, |nl| nl + 1);
+        }
+        counted_to = match_start;
+        let line_end =
+            memchr::memchr(b'\n', &bytes[match_start..]).map_or(bytes.len(), |nl| match_start + nl);
+        hits.push(LiteralHit {
+            file: display.clone(),
+            line: line_no,
+            column: (match_start - line_start + 1) as u32,
+            snippet: truncate_snippet(&bytes[line_start..line_end]),
+        });
+    }
+    Some(FileHits { hits, truncated })
+}
+
 /// The match loop is `memchr::memmem` (SIMD-accelerated substring search —
 /// the same primitive ripgrep itself uses), not a hand-rolled scan. One
 /// `Finder` is built once per `search()` call and reused across every file,
@@ -154,6 +212,18 @@ fn truncate_snippet(line: &[u8]) -> String {
 /// pattern containing a newline matches nothing, exactly as it never
 /// could when lines were matched one at a time.
 pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchResult> {
+    search_with_readers(root, pattern, limit, None)
+}
+
+/// [`search`] with the reader count forced (tests pin that the parallel
+/// scan folds to exactly what a single reader produces); `None` picks it
+/// from the machine and the file count.
+fn search_with_readers(
+    root: &Path,
+    pattern: &str,
+    limit: usize,
+    readers: Option<usize>,
+) -> Result<LiteralSearchResult> {
     ensure!(
         !pattern.is_empty(),
         "literal search pattern must not be empty"
@@ -166,59 +236,79 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
     let finder = memchr::memmem::Finder::new(needle);
     let files = scanner::scan_repo_text(root)?;
 
+    // Files are read and scanned in parallel, then folded **in the sorted
+    // file order** the walk returned: every per-file result is independent
+    // (`scan_file` applies the per-file cap on its own), so the only
+    // order-sensitive step — the global `SCAN_SAFETY_CAP` — runs in the
+    // sequential fold below and sees exactly the prefix the old single
+    // loop saw. Workers claim files by ascending index and stop claiming
+    // once the hits produced so far reach the global cap: every index
+    // below the last claimed one is then guaranteed scanned, which is all
+    // the fold needs to reach the cap at the same file and match. Reads
+    // are bounded by `PARALLEL_READERS` buffers in flight (each at most
+    // `scanner::MAX_SCANNED_FILE_BYTES`), and a small repository is scanned
+    // inline — spawning threads for a handful of files costs more than it
+    // saves. None of this touches the index: literal search still works on
+    // a repository that has never been indexed.
+    let results: Vec<OnceLock<Option<FileHits>>> =
+        (0..files.len()).map(|_| OnceLock::new()).collect();
+    let readers = readers.unwrap_or_else(|| {
+        std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(1)
+            .min(PARALLEL_READERS)
+            .min(files.len().div_ceil(PARALLEL_MIN_FILES_PER_READER))
+            .max(1)
+    });
+    let next = AtomicUsize::new(0);
+    let produced = AtomicUsize::new(0);
+    let scan_next = || {
+        // Strictly *past* the cap: with exactly `SCAN_SAFETY_CAP` matches
+        // so far, whether `truncated` fires depends on the next file, so
+        // it must still be scanned (the sequential loop always did).
+        while produced.load(Ordering::Relaxed) <= SCAN_SAFETY_CAP {
+            let i = next.fetch_add(1, Ordering::Relaxed);
+            let Some(rel) = files.get(i) else {
+                break;
+            };
+            let r = scan_file(&finder, root, rel);
+            if let Some(f) = &r {
+                produced.fetch_add(f.hits.len(), Ordering::Relaxed);
+            }
+            let _ = results[i].set(r);
+        }
+    };
+    if readers <= 1 {
+        scan_next();
+    } else {
+        std::thread::scope(|scope| {
+            for _ in 0..readers {
+                scope.spawn(scan_next);
+            }
+        });
+    }
+
     let mut hits = Vec::new();
     let mut truncated = false;
-    'files: for rel in &files {
-        let full = root.join(rel);
-        let Ok(bytes) = std::fs::read(&full) else {
+    'files: for slot in &results {
+        // Unscanned (never claimed because the cap was already reached by
+        // earlier files) or unreadable: nothing to fold.
+        let Some(Some(file)) = slot.get() else {
             continue;
         };
-        let display = rel.to_string_lossy().replace('\\', "/");
-        // 1-based line of `line_start`, and the byte offset up to which
-        // newlines have already been counted into it.
-        let mut line_no = 1u32;
-        let mut line_start = 0usize;
-        let mut counted_to = 0usize;
-        for (file_matches, match_start) in finder.find_iter(&bytes).enumerate() {
-            // Both caps are checked *before* recording, not after:
-            // `truncated` must only fire when a match genuinely exists
-            // beyond a cap, not merely because the cap's count was
-            // reached. A second Greptile review caught that this
-            // check-before-record discipline had only been applied to
-            // `MAX_MATCHES_PER_FILE` — `SCAN_SAFETY_CAP` had the exact
-            // same bug (a repository with *exactly* 4,000 matches and
-            // no more would have been falsely reported as truncated).
-            // Moving to the next file on the per-file cap (`break`, not
-            // `break 'files`) — rather than aborting the whole scan — is
-            // deliberate: see `MAX_MATCHES_PER_FILE`'s doc for why an
-            // earlier attempt to make this a strict global sorted-prefix
-            // regressed multi-file coverage instead. `SCAN_SAFETY_CAP` has
-            // no such per-file/multi-file tradeoff to preserve — it is
-            // purely a global output-size bound — so it can `break 'files`
+        for hit in &file.hits {
+            // Checked *before* recording, not after: `truncated` must only
+            // fire when a match genuinely exists beyond the cap, not merely
+            // because the cap's count was reached. `SCAN_SAFETY_CAP` is
+            // purely a global output-size bound, so it can end the fold
             // immediately once a genuine excess match is found.
-            if file_matches >= MAX_MATCHES_PER_FILE {
-                truncated = true;
-                break;
-            }
             if hits.len() >= SCAN_SAFETY_CAP {
                 truncated = true;
                 break 'files;
             }
-            let newlines = memchr::memchr_iter(b'\n', &bytes[counted_to..match_start]).count();
-            if newlines > 0 {
-                line_no += newlines as u32;
-                line_start = memchr::memrchr(b'\n', &bytes[..match_start]).map_or(0, |nl| nl + 1);
-            }
-            counted_to = match_start;
-            let line_end = memchr::memchr(b'\n', &bytes[match_start..])
-                .map_or(bytes.len(), |nl| match_start + nl);
-            hits.push(LiteralHit {
-                file: display.clone(),
-                line: line_no,
-                column: (match_start - line_start + 1) as u32,
-                snippet: truncate_snippet(&bytes[line_start..line_end]),
-            });
+            hits.push(hit.clone());
         }
+        truncated |= file.truncated;
     }
 
     if hits.len() > limit {
@@ -358,6 +448,48 @@ mod tests {
     /// as a coverage regression — one match-heavy file would then silently
     /// suppress every other file's results — so it was reverted in favor
     /// of this documented tradeoff.
+    #[test]
+    fn parallel_scan_folds_to_exactly_the_sequential_result_around_the_global_cap() {
+        // 81 files × 50 matches = 4,050 > SCAN_SAFETY_CAP: the fold must
+        // stop at the same file/match a single reader stops at, in sorted
+        // file order, and flag truncation. Then with exactly 4,000
+        // matches (80 files) nothing may be flagged, and one more match in
+        // a file sorting last must flag it again — the "exactly at the
+        // cap" case the workers' stop condition exists for.
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        let body = "needle\n".repeat(MAX_MATCHES_PER_FILE);
+        for i in 0..81 {
+            write(&root.join(format!("f{i:03}.txt")), &body);
+        }
+        let seq = search_with_readers(root, "needle", MAX_RESULTS, Some(1)).unwrap();
+        let par = search_with_readers(root, "needle", MAX_RESULTS, Some(8)).unwrap();
+        assert_eq!(seq, par);
+        assert!(par.truncated);
+        // The full 4,000-prefix, before `limit`, is also identical.
+        let seq_all = search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(1)).unwrap();
+        let par_all = search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(8)).unwrap();
+        assert_eq!(seq_all.hits.len(), MAX_RESULTS);
+        assert_eq!(seq_all, par_all);
+
+        // Exactly at the cap, and one past it (in a file sorting last, so
+        // it is the one the workers' stop condition decides to scan or
+        // not): the parallel fold must still equal the single reader. The
+        // flag itself is set by `limit` here either way — `SCAN_SAFETY_CAP`
+        // sits well above `MAX_RESULTS`, as its doc says — so equality of
+        // the whole result is the observable contract.
+        std::fs::remove_file(root.join("f080.txt")).unwrap();
+        assert_eq!(
+            search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(1)).unwrap(),
+            search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(8)).unwrap()
+        );
+        write(&root.join("zzz_last.txt"), "needle\n");
+        assert_eq!(
+            search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(1)).unwrap(),
+            search_with_readers(root, "needle", SCAN_SAFETY_CAP, Some(8)).unwrap()
+        );
+    }
+
     #[test]
     fn per_file_cap_skips_to_the_next_file_and_flags_truncated() {
         let tmp = tempfile::tempdir().unwrap();
