@@ -1,0 +1,293 @@
+# Rejected experiment (docs/retrieval-profile/README.md §6.3): overlap the
+# one-shot embedder setup with the corpus load. Recorded as evidence, not
+# for application: it was cut against a tree that did not yet contain the
+# RelationIndex cache's service.rs hunks (commit 8b15e27), so it includes
+# those hunks too. Measured: pytest-native context 140 -> 102 ms (-27%),
+# expanding search -24%, but +15 MB peak RSS and a new cross-connection
+# consistency rule; not Pareto under the roadmap gate.
+diff --git i/src/embeddings.rs w/src/embeddings.rs
+index 6c2a9f1..f684d97 100644
+--- i/src/embeddings.rs
++++ w/src/embeddings.rs
+@@ -234,9 +234,15 @@ impl Default for HashedEmbedder {
+     }
+ }
+ 
++/// [`HashedEmbedder`]'s provider name — also what
++/// [`configured_provider_name`] reports for the offline profile, which is
++/// how `service.rs` tells a free-to-construct provider from a model load
++/// worth overlapping.
++pub const OFFLINE_PROVIDER_NAME: &str = "hashed-bow-256";
++
+ impl EmbeddingProvider for HashedEmbedder {
+     fn name(&self) -> &str {
+-        "hashed-bow-256"
++        OFFLINE_PROVIDER_NAME
+     }
+ 
+     fn dim(&self) -> usize {
+@@ -1144,7 +1150,7 @@ pub fn configured_provider_name(explicit: Option<&str>) -> String {
+                     return native_provider_name(&profile, query_prompt);
+                 }
+             }
+-            "hashed-bow-256".into()
++            OFFLINE_PROVIDER_NAME.into()
+         }
+     }
+ }
+diff --git i/src/service.rs w/src/service.rs
+index 2a4d290..01a793c 100644
+--- i/src/service.rs
++++ w/src/service.rs
+@@ -10,7 +10,7 @@ use crate::index::{
+     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
+     ProgressSink, Stage,
+ };
+-use crate::relations::RelationGraph;
++use crate::relations::RelationIndex;
+ use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
+ use crate::review::{build_review_context, ReviewContext};
+ use crate::scanner;
+@@ -337,9 +337,45 @@ struct ProcessCache {
+ /// the index cannot be keyed.
+ type CacheLookup = Option<(Vec<String>, Option<Arc<CachedSnapshot>>)>;
+ 
++/// Output of [`Service::prepare`]: the open store, the provider, and the
++/// corpus either from the process cache or preloaded locally (never
++/// both). `local` is boxed so the engine can borrow it at a stable
++/// address for the rest of the request.
++struct Prepared {
++    store: SqliteStore,
++    provider: Arc<dyn EmbeddingProvider + Send + Sync>,
++    cached: Option<Arc<CachedSnapshot>>,
++    local: Option<Box<(SymbolSnapshot, RelationIndex)>>,
++}
++
++impl Prepared {
++    fn engine(&self) -> RetrievalEngine<'_> {
++        match (&self.cached, &self.local) {
++            (Some(c), _) => RetrievalEngine::with_snapshot_and_index(
++                &self.store,
++                self.provider.as_ref(),
++                &c.snapshot,
++                &c.index,
++            ),
++            (None, Some(l)) => RetrievalEngine::with_snapshot_and_index(
++                &self.store,
++                self.provider.as_ref(),
++                &l.0,
++                &l.1,
++            ),
++            (None, None) => RetrievalEngine::new(&self.store, self.provider.as_ref()),
++        }
++    }
++}
++
+ struct CachedSnapshot {
+     key: Vec<String>,
+     snapshot: SymbolSnapshot,
++    /// The structural index over `snapshot.symbols`, built once here so
++    /// every request at this generation reuses it (`RetrievalEngine::
++    /// with_snapshot_and_index`); it can never outlive the snapshot it
++    /// describes because the two share this entry and its key.
++    index: RelationIndex,
+     /// Row counts at this generation — `validate_index`'s completeness
+     /// check needs them, and `COUNT(*)` over the embeddings table walks
+     /// every row's page, so it is an O(N) read worth keying too.
+@@ -488,9 +524,11 @@ impl RepositoryService {
+         // the snapshot cannot describe a different generation than its key.
+         let snapshot = SymbolSnapshot::load(store)
+             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
++        let index = RelationIndex::build(&snapshot.symbols);
+         let entry = Arc::new(CachedSnapshot {
+             key,
+             snapshot,
++            index,
+             stats: stats.clone(),
+         });
+         process_cache()
+@@ -681,30 +719,93 @@ impl RepositoryService {
+         })
+     }
+ 
++    /// Everything a read request needs before its engine can be built.
++    ///
++    /// One-shot path only (`oxide search`/`oxide context` from the CLI):
++    /// when the request is going to load the whole corpus anyway
++    /// (`context`; expanding or blast-radius `search`) and the provider is
++    /// a real model rather than the hashed fallback, the corpus — snapshot
++    /// plus relation index, ~50–80 ms at 8–15k symbols — is loaded on a
++    /// worker thread through its **own** read-only connection while the
++    /// main thread pays the model load, so the two overlap instead of
++    /// running back to back. The worker's result is used only if its
++    /// connection saw the same `snapshot_key` (index id, generation, and
++    /// every identity/meta key) the request's own connection sees; a
++    /// concurrent `oxide index` finishing in between makes the keys
++    /// differ, and the preloaded corpus is dropped in favor of the
++    /// request-scoped lazy load, exactly as before. An unkeyable
++    /// (pre-counter) index is never preloaded.
++    ///
++    /// The model itself deliberately stays on the calling thread: loading
++    /// it on a helper thread measured 8–11% slower end to end and +10 MB
++    /// RSS on paths with nothing to overlap (docs/retrieval-profile/
++    /// README.md §6), so the *corpus* is what moves, not the model. The
++    /// process-cached path (`oxide mcp`) is untouched: with the cache on,
++    /// the corpus comes from the cache and nothing is spawned.
++    fn prepare(
++        &self,
++        needs_embedder: bool,
++        preload_corpus: bool,
++    ) -> Result<Prepared, ServiceError> {
++        let overlap = needs_embedder
++            && preload_corpus
++            && !self.use_process_cache
++            && crate::embeddings::configured_provider_name(None)
++                != crate::embeddings::OFFLINE_PROVIDER_NAME;
++        let index_path = self.index_path();
++        std::thread::scope(|scope| {
++            let loading = overlap.then(|| {
++                scope.spawn(
++                    move || -> Option<(Vec<String>, SymbolSnapshot, RelationIndex)> {
++                        let store = SqliteStore::open_read_only(&index_path).ok()?;
++                        let key = snapshot_key(&store).ok()??;
++                        let snapshot = SymbolSnapshot::load(&store).ok()?;
++                        let index = RelationIndex::build(&snapshot.symbols);
++                        Some((key, snapshot, index))
++                    },
++                )
++            });
++            let provider: Arc<dyn EmbeddingProvider + Send + Sync> = if needs_embedder {
++                self.embedder()?
++            } else {
++                Arc::new(HashedEmbedder::default())
++            };
++            let store = self.open_index_for_read()?;
++            let lookup = self.cache_lookup(&store)?;
++            let stats = self.stats_for(&store, &lookup)?;
++            self.validate_index(&store, needs_embedder.then_some(provider.as_ref()), &stats)?;
++            let cached = self.cached_snapshot(&store, lookup, &stats)?;
++            let local = match loading.map(|h| h.join()) {
++                Some(Ok(Some((key, snapshot, index)))) if cached.is_none() => {
++                    let own = snapshot_key(&store)?;
++                    (own.as_ref() == Some(&key)).then(|| Box::new((snapshot, index)))
++                }
++                _ => None,
++            };
++            Ok(Prepared {
++                store,
++                provider,
++                cached,
++                local,
++            })
++        })
++    }
++
+     pub fn search(
+         &self,
+         query: &str,
+         request: SearchRequest,
+     ) -> Result<Vec<Evidence>, ServiceError> {
+-        let store = self.open_index_for_read()?;
+-        let provider: Arc<dyn EmbeddingProvider + Send + Sync> =
+-            if request.mode == SearchMode::LexicalOnly {
+-                Arc::new(HashedEmbedder::default())
+-            } else {
+-                self.embedder()?
+-            };
+-        let lookup = self.cache_lookup(&store)?;
+-        let stats = self.stats_for(&store, &lookup)?;
+-        self.validate_index(
+-            &store,
+-            (request.mode != SearchMode::LexicalOnly).then_some(provider.as_ref()),
+-            &stats,
+-        )?;
+-        let cached = self.cached_snapshot(&store, lookup, &stats)?;
+-        let engine = match &cached {
+-            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+-            None => RetrievalEngine::new(&store, provider.as_ref()),
+-        };
++        // The corpus is loaded for expansion (which needs strong lexical
++        // seeds, so never in vector-only mode, and never in `Fast`) and for
++        // the blast-radius neighborhood.
++        let will_load_corpus = request.blast_radius
++            || (request.expand
++                && request.mode != SearchMode::VectorOnly
++                && request.retrieval_mode != RetrievalMode::Fast);
++        let prepared = self.prepare(request.mode != SearchMode::LexicalOnly, will_load_corpus)?;
++        let provider = &prepared.provider;
++        let engine = prepared.engine();
+         let hits = engine
+             .search(
+                 query,
+@@ -740,10 +841,9 @@ impl RepositoryService {
+                 .take(crate::config::BLAST_RADIUS_MAX_SEEDS)
+                 .map(|h| h.symbol.clone())
+                 .collect();
+-            let snapshot = engine
+-                .snapshot_with_relations()
++            let graph = engine
++                .relation_graph()
+                 .map_err(|e| ServiceError::from_error(ErrorCode::SearchFailed, e))?;
+-            let graph = RelationGraph::build(&snapshot.symbols);
+             let anchors: Vec<&Symbol> = seeds.iter().collect();
+             crate::blast_radius::compute(&graph, &anchors, true)
+                 .into_iter()
+@@ -804,16 +904,9 @@ impl RepositoryService {
+         blast_radius: bool,
+         git: bool,
+     ) -> Result<ContextResult, ServiceError> {
+-        let store = self.open_index_for_read()?;
+-        let provider = self.embedder()?;
+-        let lookup = self.cache_lookup(&store)?;
+-        let stats = self.stats_for(&store, &lookup)?;
+-        self.validate_index(&store, Some(provider.as_ref()), &stats)?;
+-        let cached = self.cached_snapshot(&store, lookup, &stats)?;
+-        let engine = match &cached {
+-            Some(c) => RetrievalEngine::with_snapshot(&store, provider.as_ref(), &c.snapshot),
+-            None => RetrievalEngine::new(&store, provider.as_ref()),
+-        };
++        let prepared = self.prepare(true, true)?;
++        let provider = &prepared.provider;
++        let engine = prepared.engine();
+         let pack = build_context_with(
+             &self.root,
+             &engine,
+@@ -899,6 +992,19 @@ impl RepositoryService {
+         store: &SqliteStore,
+         expected_embedder: Option<&dyn EmbeddingProvider>,
+         stats: &IndexStats,
++    ) -> Result<(), ServiceError> {
++        self.validate_index_meta(store, stats)?;
++        self.validate_index_provider(store, expected_embedder, stats)
++    }
++
++    /// The provider-independent half of [`Self::validate_index`]: root,
++    /// schema/extraction versions, and non-empty row counts. Split out so
++    /// the one-shot prologue (`prepare`) can run it while the embedding
++    /// model is still loading on another thread.
++    fn validate_index_meta(
++        &self,
++        store: &SqliteStore,
++        stats: &IndexStats,
+     ) -> Result<(), ServiceError> {
+         let indexed_root = store
+             .get_meta("root")
+@@ -958,6 +1064,18 @@ impl RepositoryService {
+                 "index contains no searchable symbols; run `oxide index PATH`",
+             ));
+         }
++        Ok(())
++    }
++
++    /// The provider-dependent half of [`Self::validate_index`]: the stored
++    /// embedding space must be the one `expected_embedder` produces, and
++    /// every symbol must have a vector in it.
++    fn validate_index_provider(
++        &self,
++        store: &SqliteStore,
++        expected_embedder: Option<&dyn EmbeddingProvider>,
++        stats: &IndexStats,
++    ) -> Result<(), ServiceError> {
+         if let Some(expected) = expected_embedder {
+             // Fingerprint (Phase 3.3 item 3) is the real contract when the
+             // index has one; name+dim is the fallback for indices that
