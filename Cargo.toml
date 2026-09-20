@@ -19,6 +19,12 @@ ignore = "0.4"
 # `ignore`/`regex`/`bstr`, pinned at the same 2.8.3 in Cargo.lock), so this
 # adds no new crate version, only a direct `use`.
 memchr = "2"
+# FxHash for the request path's probe-only maps (`RelationGraph`,
+# `SymbolSnapshot::by_id`): tens of thousands of short `&str`/`u64` keys are
+# inserted per corpus load, and SipHash was most of `RelationGraph::build`.
+# Already in the dependency graph transitively; nothing iterates these maps,
+# so the hasher cannot influence output order.
+rustc-hash = "2"
 rusqlite = { version = "0.32", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }

@@ -1,19 +1,20 @@
 //! OXIDE structural-relation traversal over indexed symbols.
 
 use crate::symbols::{Symbol, SymbolKind};
+use rustc_hash::FxHashMap;
 use std::cell::OnceCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 /// High-confidence structural relations used for expansion.
 pub struct RelationGraph<'a> {
     symbols: &'a [Symbol],
-    by_qualified: HashMap<&'a str, &'a Symbol>,
-    children_of: HashMap<&'a str, Vec<&'a Symbol>>,
-    defs_by_name: HashMap<&'a str, Vec<&'a Symbol>>,
+    by_qualified: FxHashMap<&'a str, &'a Symbol>,
+    children_of: FxHashMap<&'a str, Vec<&'a Symbol>>,
+    defs_by_name: FxHashMap<&'a str, Vec<&'a Symbol>>,
     files: HashSet<&'a str>,
     /// Non-module symbols per file, in corpus order — `resolve_import`
     /// used to rescan every symbol per import, and a seed can have dozens.
-    by_file: HashMap<&'a str, Vec<&'a Symbol>>,
+    by_file: FxHashMap<&'a str, Vec<&'a Symbol>>,
     /// `is_test_symbol` filtered once, in corpus order — `related_tests`
     /// used to lowercase every symbol's file and name per seed.
     test_symbols: Vec<&'a Symbol>,
@@ -25,13 +26,29 @@ pub struct RelationGraph<'a> {
     /// pays nothing for these — they're only populated the first time
     /// `callers_of`/`implementors_of` is actually called, which no
     /// production code path does.
-    callers_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
-    implementors_of_index: OnceCell<HashMap<&'a str, Vec<&'a Symbol>>>,
+    callers_of_index: OnceCell<FxHashMap<&'a str, Vec<&'a Symbol>>>,
+    implementors_of_index: OnceCell<FxHashMap<&'a str, Vec<&'a Symbol>>>,
 }
 
-fn is_test_symbol(s: &Symbol) -> bool {
-    let f = s.file.to_lowercase();
-    let n = s.name.to_lowercase();
+/// `buf` is scratch the caller reuses across symbols: `build` runs this
+/// over every symbol on every request, and lowercasing into two fresh
+/// `String`s per symbol was the bulk of its allocations. ASCII input (the
+/// overwhelming case for paths and identifiers) takes the same bulk
+/// byte-wise path `str::to_lowercase` uses internally; anything else
+/// falls back to `to_lowercase` itself, so the mapping is identical.
+fn is_test_symbol(s: &Symbol, buf: &mut (String, String)) -> bool {
+    fn lower_into(src: &str, dst: &mut String) {
+        if src.is_ascii() {
+            dst.clear();
+            dst.push_str(src);
+            dst.make_ascii_lowercase();
+        } else {
+            *dst = src.to_lowercase();
+        }
+    }
+    let (f, n) = buf;
+    lower_into(&s.file, f);
+    lower_into(&s.name, n);
     f.starts_with("test_")
         || f.contains("_test.")
         || f.contains(".test.")
@@ -45,12 +62,13 @@ fn is_test_symbol(s: &Symbol) -> bool {
 
 impl<'a> RelationGraph<'a> {
     pub fn build(symbols: &'a [Symbol]) -> Self {
-        let mut by_qualified = HashMap::new();
-        let mut children_of: HashMap<&str, Vec<&Symbol>> = HashMap::new();
-        let mut defs_by_name: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+        let mut by_qualified = FxHashMap::default();
+        let mut children_of: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
+        let mut defs_by_name: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
         let mut files = HashSet::new();
-        let mut by_file: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+        let mut by_file: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
         let mut test_symbols = Vec::new();
+        let mut lower = (String::new(), String::new());
         for s in symbols {
             by_qualified.insert(s.qualified_name.as_str(), s);
             if let Some(p) = &s.parent {
@@ -62,7 +80,7 @@ impl<'a> RelationGraph<'a> {
             if s.kind != SymbolKind::Module {
                 by_file.entry(s.file.as_str()).or_default().push(s);
             }
-            if is_test_symbol(s) {
+            if is_test_symbol(s, &mut lower) {
                 test_symbols.push(s);
             }
         }
@@ -90,7 +108,7 @@ impl<'a> RelationGraph<'a> {
     /// why that's the actual axis this experiment had to measure.
     pub fn callers_of(&self, name: &str) -> Vec<&'a Symbol> {
         let index = self.callers_of_index.get_or_init(|| {
-            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+            let mut idx: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
             for s in self.symbols {
                 for callee in &s.calls {
                     idx.entry(callee.as_str()).or_default().push(s);
@@ -108,7 +126,7 @@ impl<'a> RelationGraph<'a> {
     /// contract as `callers_of`.
     pub fn implementors_of(&self, base_name: &str) -> Vec<&'a Symbol> {
         let index = self.implementors_of_index.get_or_init(|| {
-            let mut idx: HashMap<&str, Vec<&Symbol>> = HashMap::new();
+            let mut idx: FxHashMap<&str, Vec<&Symbol>> = FxHashMap::default();
             for s in self.symbols {
                 for base in &s.bases {
                     idx.entry(base.as_str()).or_default().push(s);

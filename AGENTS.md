@@ -136,6 +136,16 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 - `tests/query_plans.rs` pins `EXPLAIN QUERY PLAN` for every request-path
   statement with and without `ANALYZE` statistics. A statement that starts
   scanning `symbols` or `lexical_postings` fails that test on purpose.
+  `idx_embeddings_symbol` exists for exactly one statement — `COUNT(*)
+  FROM embeddings`, which `validate_index` runs on every request and which
+  otherwise walks the blob-bearing table b-tree (7.5 ms at 15k symbols,
+  14–20% of a `--no-expand` search) — and the vector scan must keep
+  planning as a plain `SCAN embeddings` next to it. `all_symbols` keeps
+  its SQL `ORDER BY file, start_line`: measured, the ordered step is no
+  slower than a rowid scan plus a Rust sort (the sorter's cost is the
+  overflow-page reads a plain scan only defers), and its tie order is
+  `(file, rowid)`, which downstream corpus-order consumers depend on
+  (docs/retrieval-profile/README.md §2.1).
 - `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval.rs`) only gates
   the *bounded structural-relation expansion* stage in `context.rs`'s own
   expansion loop — never the always-on lexical+semantic stage, and never

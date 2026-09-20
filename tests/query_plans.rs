@@ -74,9 +74,16 @@ fn assert_plans(store: &SqliteStore, label: &str) {
         "{label}: {meta}"
     );
 
-    // Symbol count uses the smallest covering index, never the row data.
+    // Row counts use the smallest covering index, never the row data —
+    // `embeddings` included, whose blob-bearing table b-tree is the one a
+    // count must not walk (`idx_embeddings_symbol` exists for this alone).
     let count = plan(store, "SELECT COUNT(*) FROM symbols");
     assert!(count.contains("USING COVERING INDEX"), "{label}: {count}");
+    let count = plan(store, "SELECT COUNT(*) FROM embeddings");
+    assert!(
+        count.contains("USING COVERING INDEX idx_embeddings_symbol"),
+        "{label}: {count}"
+    );
 
     // The embedding scan is exhaustive by design (streaming top-K in
     // `RetrievalEngine::semantic_top_k`); pin that it is a plain table

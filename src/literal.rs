@@ -140,13 +140,19 @@ fn truncate_snippet(line: &[u8]) -> String {
 ///
 /// The match loop is `memchr::memmem` (SIMD-accelerated substring search —
 /// the same primitive ripgrep itself uses), not a hand-rolled scan. One
-/// `Finder` is built once per `search()` call and reused across every file
-/// and line, rather than rebuilt on every match attempt the way the old
-/// per-call `find` was. `docs/literal-search-eval/README.md`'s profiling
-/// pass found this swap worthwhile — but also found that the matcher
-/// alone isn't the whole story: line-splitting (`bytes.split(|&b| b ==
-/// b'\n')`, itself a scalar scan) and per-hit allocation are comparable
-/// remaining costs, not eliminated by this change.
+/// `Finder` is built once per `search()` call and reused across every file,
+/// rather than rebuilt on every match attempt the way the old per-call
+/// `find` was. It runs over each file's **whole buffer**, and line numbers
+/// are derived only at match sites (counting newlines between consecutive
+/// matches, itself a SIMD `memchr`), so a file with no match costs one
+/// vectorized pass and nothing else. The earlier shape — split every file
+/// into lines first, then match each line — spent ~10 ms per 180k lines on
+/// the scalar split alone, 12–15× the whole-buffer scan, and paid it in
+/// full for a pattern that appears nowhere (docs/retrieval-profile/
+/// README.md). Match semantics are unchanged: non-overlapping, left to
+/// right, `column` is the byte offset within the match's line, and a
+/// pattern containing a newline matches nothing, exactly as it never
+/// could when lines were matched one at a time.
 pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchResult> {
     ensure!(
         !pattern.is_empty(),
@@ -154,6 +160,9 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
     );
     let limit = limit.min(MAX_RESULTS);
     let needle = pattern.as_bytes();
+    if needle.contains(&b'\n') {
+        return Ok(LiteralSearchResult::default());
+    }
     let finder = memchr::memmem::Finder::new(needle);
     let files = scanner::scan_repo_text(root)?;
 
@@ -165,45 +174,50 @@ pub fn search(root: &Path, pattern: &str, limit: usize) -> Result<LiteralSearchR
             continue;
         };
         let display = rel.to_string_lossy().replace('\\', "/");
-        let mut file_matches = 0usize;
-        'file: for (idx, line) in bytes.split(|&b| b == b'\n').enumerate() {
-            let mut cursor = 0usize;
-            while let Some(pos) = finder.find(&line[cursor..]) {
-                let match_start = cursor + pos;
-                // Both caps are checked *before* recording, not after:
-                // `truncated` must only fire when a match genuinely exists
-                // beyond a cap, not merely because the cap's count was
-                // reached. A second Greptile review caught that this
-                // check-before-record discipline had only been applied to
-                // `MAX_MATCHES_PER_FILE` — `SCAN_SAFETY_CAP` had the exact
-                // same bug (a repository with *exactly* 4,000 matches and
-                // no more would have been falsely reported as truncated).
-                // Moving to the next file on the per-file cap
-                // (`break 'file`, not `break 'files`) — rather than
-                // aborting the whole scan — is deliberate: see
-                // `MAX_MATCHES_PER_FILE`'s doc for why an earlier attempt
-                // to make this a strict global sorted-prefix regressed
-                // multi-file coverage instead. `SCAN_SAFETY_CAP` has no
-                // such per-file/multi-file tradeoff to preserve — it is
-                // purely a global output-size bound — so it can `break
-                // 'files` immediately once a genuine excess match is found.
-                if file_matches >= MAX_MATCHES_PER_FILE {
-                    truncated = true;
-                    break 'file;
-                }
-                if hits.len() >= SCAN_SAFETY_CAP {
-                    truncated = true;
-                    break 'files;
-                }
-                hits.push(LiteralHit {
-                    file: display.clone(),
-                    line: (idx + 1) as u32,
-                    column: (match_start + 1) as u32,
-                    snippet: truncate_snippet(line),
-                });
-                file_matches += 1;
-                cursor = match_start + needle.len();
+        // 1-based line of `line_start`, and the byte offset up to which
+        // newlines have already been counted into it.
+        let mut line_no = 1u32;
+        let mut line_start = 0usize;
+        let mut counted_to = 0usize;
+        for (file_matches, match_start) in finder.find_iter(&bytes).enumerate() {
+            // Both caps are checked *before* recording, not after:
+            // `truncated` must only fire when a match genuinely exists
+            // beyond a cap, not merely because the cap's count was
+            // reached. A second Greptile review caught that this
+            // check-before-record discipline had only been applied to
+            // `MAX_MATCHES_PER_FILE` — `SCAN_SAFETY_CAP` had the exact
+            // same bug (a repository with *exactly* 4,000 matches and
+            // no more would have been falsely reported as truncated).
+            // Moving to the next file on the per-file cap (`break`, not
+            // `break 'files`) — rather than aborting the whole scan — is
+            // deliberate: see `MAX_MATCHES_PER_FILE`'s doc for why an
+            // earlier attempt to make this a strict global sorted-prefix
+            // regressed multi-file coverage instead. `SCAN_SAFETY_CAP` has
+            // no such per-file/multi-file tradeoff to preserve — it is
+            // purely a global output-size bound — so it can `break 'files`
+            // immediately once a genuine excess match is found.
+            if file_matches >= MAX_MATCHES_PER_FILE {
+                truncated = true;
+                break;
             }
+            if hits.len() >= SCAN_SAFETY_CAP {
+                truncated = true;
+                break 'files;
+            }
+            let newlines = memchr::memchr_iter(b'\n', &bytes[counted_to..match_start]).count();
+            if newlines > 0 {
+                line_no += newlines as u32;
+                line_start = memchr::memrchr(b'\n', &bytes[..match_start]).map_or(0, |nl| nl + 1);
+            }
+            counted_to = match_start;
+            let line_end = memchr::memchr(b'\n', &bytes[match_start..])
+                .map_or(bytes.len(), |nl| match_start + nl);
+            hits.push(LiteralHit {
+                file: display.clone(),
+                line: line_no,
+                column: (match_start - line_start + 1) as u32,
+                snippet: truncate_snippet(&bytes[line_start..line_end]),
+            });
         }
     }
 

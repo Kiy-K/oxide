@@ -115,14 +115,6 @@ fn cmp_score_id(a: &(u64, f32), b: &(u64, f32)) -> std::cmp::Ordering {
         .then_with(|| a.0.cmp(&b.0))
 }
 
-/// Same tie-break as [`cmp_score_id`], applied to assembled hits.
-fn cmp_hit(a: &SearchHit, b: &SearchHit) -> std::cmp::Ordering {
-    b.score
-        .partial_cmp(&a.score)
-        .unwrap_or(std::cmp::Ordering::Equal)
-        .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
-}
-
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SearchHit {
     #[serde(flatten)]
@@ -143,7 +135,7 @@ pub struct SearchHit {
 #[derive(Clone)]
 pub struct SymbolSnapshot {
     pub symbols: Vec<Symbol>,
-    by_id: HashMap<u64, usize>,
+    by_id: rustc_hash::FxHashMap<u64, usize>,
     /// Whether `calls`/`bases` were merged in. Search's own expansion
     /// (`RelationGraph::neighbors`) never reads them, so it loads without;
     /// `context.rs` (`callers_of`) needs them.
@@ -541,9 +533,6 @@ impl<'a> RetrievalEngine<'a> {
 
         // Only the fused candidates become `Symbol`s.
         let mut symbols: HashMap<u64, Symbol> = self.hydrate(rrf.keys().copied());
-        let lookup = |symbols: &HashMap<u64, Symbol>, id: &u64| -> Option<Symbol> {
-            symbols.get(id).cloned()
-        };
 
         // ---- optional term-coverage corroboration (experiment) ----
         // See docs/term-coverage-eval/README.md. `alpha` is 0.0 (a no-op,
@@ -605,38 +594,51 @@ impl<'a> RetrievalEngine<'a> {
             }
         }
 
-        let mut hits: Vec<SearchHit> = rrf
+        // Ranking happens on `(id, score)` pairs; a `SearchHit` (which owns
+        // a `Symbol` clone) is only assembled for the `limit` entries that
+        // are actually returned. Building hits for every fused candidate
+        // first — up to 400 symbol clones, twice — was the largest
+        // allocation in a search after hydration itself
+        // (docs/retrieval-profile/README.md). The tie-break is the key id,
+        // which equals `Symbol::id()` for every hydrated candidate: rows
+        // are stored under that same FNV1a id and `hydrate` keys by it.
+        let mut direct: Vec<(u64, f32)> = rrf
             .iter()
-            .filter_map(|(id, score)| {
-                let s = lookup(&symbols, id)?;
-                Some(SearchHit {
-                    symbol: s,
-                    score: *score,
-                    reasons: reasons.get(id).cloned().unwrap_or_default(),
-                    snippet: String::new(),
-                })
-            })
+            .filter(|(id, _)| symbols.contains_key(id))
+            .map(|(id, score)| (*id, *score))
             .collect();
-        hits.sort_by(cmp_hit);
+        direct.sort_by(cmp_score_id);
 
         // ---- structural expansion ----
         // The only stage that needs the whole corpus (see `SymbolSnapshot`),
         // and it is reached only when the caller asked for expansion, the
         // mode allows it, and there is a strong lexical seed to expand from.
-        let base_scores = rrf.clone();
-        if opts.expand && opts.retrieval_mode != RetrievalMode::Fast && !hits.is_empty() {
+        //
+        // Direct hits (lexical/semantic evidence) always outrank
+        // expansion-only context and keep their PRE-expansion score, so
+        // expansion supplements without reordering real matches: it only
+        // appends reasons to direct hits, and contributes new candidates
+        // (borrowed from the snapshot, cloned only if returned) ranked by
+        // their own expansion score.
+        let mut expanded: Vec<(u64, f32)> = Vec::new();
+        let mut expansion_symbols: HashMap<u64, &Symbol> = HashMap::new();
+        if opts.expand && opts.retrieval_mode != RetrievalMode::Fast && !direct.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
-            let strong: Vec<Symbol> = hits
+            let strong: Vec<&Symbol> = direct
                 .iter()
-                .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
-                .filter(|h| {
+                .filter(|(id, _)| {
+                    reasons
+                        .get(id)
+                        .is_some_and(|rs| rs.iter().any(|r| r.starts_with("lexical")))
+                })
+                .filter(|(id, _)| {
                     lex_scores
-                        .get(&h.symbol.id())
+                        .get(id)
                         .map(|(sc, _, _)| *sc >= max_lex * EXPANSION_STRONG_SEED_FRACTION)
                         .unwrap_or(false)
                         && max_lex > 0.0
                 })
-                .map(|h| h.symbol.clone())
+                .filter_map(|(id, _)| symbols.get(id))
                 .take(3)
                 .collect();
             if !strong.is_empty() {
@@ -646,65 +648,46 @@ impl<'a> RetrievalEngine<'a> {
                 for seed in &strong {
                     let boost_base = rrf.get(&seed.id()).copied().unwrap_or(0.001);
                     for (rel, cand) in graph.neighbors(seed) {
-                        if cand.id() == seed.id() {
+                        let cand_id = cand.id();
+                        if cand_id == seed.id() {
                             continue;
                         }
-                        let e = expansions.entry(cand.id()).or_insert((0.0, Vec::new()));
+                        let e = expansions.entry(cand_id).or_insert((0.0, Vec::new()));
                         e.0 += boost_base * 0.5;
                         let why = format!("{}←{}", rel, seed.qualified_name);
                         if !e.1.contains(&why) {
                             e.1.push(why);
                         }
-                        symbols.entry(cand.id()).or_insert_with(|| cand.clone());
+                        expansion_symbols.entry(cand_id).or_insert(cand);
                     }
                 }
                 for (id, (boost, whys)) in expansions {
-                    *rrf.entry(id).or_insert(0.0) += boost;
                     reasons.entry(id).or_default().extend(whys);
+                    if !symbols.contains_key(&id) {
+                        expanded.push((id, boost));
+                    }
                 }
+                expanded.sort_by(cmp_score_id);
             }
         }
 
-        // Direct hits (lexical/semantic evidence) always outrank expansion-only
-        // context, and both lists are ordered by their PRE-expansion score so
-        // expansion supplements without reordering real matches.
-        let has_direct = |id: u64| -> bool {
-            reasons
-                .get(&id)
-                .map(|rs| {
-                    rs.iter()
-                        .any(|r| r.starts_with("lexical") || r.starts_with("semantic"))
+        let hits = direct
+            .into_iter()
+            .chain(expanded)
+            .take(opts.limit)
+            .filter_map(|(id, score)| {
+                let symbol = match symbols.remove(&id) {
+                    Some(s) => s,
+                    None => (*expansion_symbols.get(&id)?).clone(),
+                };
+                Some(SearchHit {
+                    symbol,
+                    score,
+                    reasons: reasons.remove(&id).unwrap_or_default(),
+                    snippet: String::new(),
                 })
-                .unwrap_or(false)
-        };
-        let mut direct_hits: Vec<SearchHit> = Vec::new();
-        let mut expanded_hits: Vec<SearchHit> = Vec::new();
-        for (id, score) in &rrf {
-            let Some(s) = lookup(&symbols, id) else {
-                continue;
-            };
-            let base = base_scores.get(id).copied().unwrap_or(0.0);
-            let hit = SearchHit {
-                symbol: s,
-                // Expansion-only context ranks by its expansion score; real
-                // matches keep their stable pre-expansion score.
-                score: if base > 0.0 { base } else { *score },
-                reasons: reasons.get(id).cloned().unwrap_or_default(),
-                snippet: String::new(),
-            };
-            if base > 0.0 || has_direct(*id) {
-                direct_hits.push(hit);
-            } else {
-                expanded_hits.push(hit);
-            }
-        }
-        direct_hits.sort_by(cmp_hit);
-        expanded_hits.sort_by(cmp_hit);
-        hits.clear();
-        hits.extend(direct_hits);
-        hits.extend(expanded_hits);
-
-        hits.truncate(opts.limit);
+            })
+            .collect();
         Ok(hits)
     }
 }

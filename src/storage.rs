@@ -141,6 +141,12 @@ pub trait IndexBackend {
     /// Postings for one query term: `(symbol_id, weighted tf, document
     /// length)`, one row per matching document.
     fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>>;
+    /// Every symbol, ordered by `(file, start_line)`; rows tied on both
+    /// come out in `id` (rowid) order, so two loads of the same index
+    /// always agree and everything downstream that iterates the corpus
+    /// (`RelationGraph::build`'s per-file and per-name lists,
+    /// `update_embeddings`' batch composition) is deterministic.
+    /// `calls`/`bases` are left empty.
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
     /// `COUNT(*)` over `symbols` — BM25's document count, without loading a
     /// single row. Must be read in the same snapshot as the postings it
@@ -342,6 +348,16 @@ const SCHEMA_SQL: &str = r#"
         dim INTEGER NOT NULL,
         vec BLOB NOT NULL
     );
+    -- Only for `COUNT(*)`: every request validates the index by comparing
+    -- the embedding and symbol row counts (`service.rs::validate_index`),
+    -- and without a secondary index that count has to walk the table
+    -- b-tree, whose ~1 KB `vec` blobs spread the rows over every page —
+    -- 7.5 ms at 15k symbols, 20% of a `--no-expand` search. SQLite counts
+    -- through the smallest covering b-tree it has (`symbols` already gets
+    -- this from `idx_symbols_name`), and an index on the rowid alias is a
+    -- few bytes per row. The exhaustive vector scan itself still reads the
+    -- table (`tests/query_plans.rs` pins both plans).
+    CREATE INDEX IF NOT EXISTS idx_embeddings_symbol ON embeddings(symbol_id);
     -- Precomputed AST-precise call/base relations (structural_relations.rs),
     -- one row per (symbol, target). Populated by update_index itself, one
     -- reparsed file at a time. A side table, not new columns on `symbols`
@@ -885,13 +901,40 @@ impl IndexBackend for SqliteStore {
     }
 
     fn all_symbols(&self) -> Result<Vec<Symbol>> {
+        // The `ORDER BY` stays in SQL. Measured on a 7.8k-symbol index
+        // (docs/retrieval-profile/README.md): the ordered scan is no slower
+        // than a rowid scan plus a Rust sort — the time that *looks* like
+        // sorting in a step-only probe is SQLite reading each ~1 KB row's
+        // overflow pages, which a plain scan merely defers to column
+        // access — and the ties in `(file, start_line)` come out in index
+        // order `(file, rowid)`, which the sort would have had to
+        // reproduce.
+        //
+        // `imports_json` is file-level and identical for every symbol in a
+        // file, and the rows of one file are adjacent in this order, so the
+        // parsed list is reused while the raw text repeats instead of being
+        // parsed once per symbol.
         let mut stmt = self.conn.prepare(
             "SELECT file, qualified_name, name, kind, language, start_line, end_line,
                     content_hash, signature, imports_json, exported, parent, references_json
              FROM symbols ORDER BY file, start_line",
         )?;
-        let rows = stmt.query_map([], row_to_symbol)?;
-        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
+        let mut rows = stmt.query([])?;
+        let mut out: Vec<Symbol> = Vec::new();
+        let mut last_imports: (String, Vec<String>) = (String::new(), Vec::new());
+        while let Some(r) = rows.next()? {
+            let imports_json = r.get_ref(9)?.as_str()?;
+            if imports_json != last_imports.0 {
+                last_imports = (
+                    imports_json.to_string(),
+                    serde_json::from_str(imports_json).unwrap_or_default(),
+                );
+            }
+            let mut s = row_to_symbol_without_imports(r)?;
+            s.imports = last_imports.1.clone();
+            out.push(s);
+        }
+        Ok(out)
     }
 
     fn symbol_count(&self) -> Result<usize> {
@@ -1104,20 +1147,15 @@ impl IndexBackend for SqliteStore {
         let mut stmt = self
             .conn
             .prepare("SELECT symbol_id, kind, target FROM symbol_relations")?;
-        let rows = stmt.query_map([], |r| {
-            Ok((
-                r.get::<_, i64>(0)? as u64,
-                r.get::<_, String>(1)?,
-                r.get::<_, String>(2)?,
-            ))
-        })?;
+        let mut rows = stmt.query([])?;
         let mut out: HashMap<u64, (Vec<String>, Vec<String>)> = HashMap::new();
-        for row in rows {
-            let (id, kind, target) = row?;
+        while let Some(r) = rows.next()? {
+            let id = r.get::<_, i64>(0)? as u64;
+            // `kind` is only matched on, never kept: borrow it off the row.
             let entry = out.entry(id).or_default();
-            match kind.as_str() {
-                "calls" => entry.0.push(target),
-                "bases" => entry.1.push(target),
+            match r.get_ref(1)?.as_str()? {
+                "calls" => entry.0.push(r.get(2)?),
+                "bases" => entry.1.push(r.get(2)?),
                 _ => {}
             }
         }
@@ -1126,29 +1164,42 @@ impl IndexBackend for SqliteStore {
 }
 
 fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
+    let mut s = row_to_symbol_without_imports(r)?;
+    s.imports = serde_json::from_str(r.get_ref(9)?.as_str()?).unwrap_or_default();
+    Ok(s)
+}
+
+/// [`row_to_symbol`] with `imports` left empty, for a caller that fills it
+/// from its own per-file cache (`all_symbols`). Text columns that are only
+/// parsed, never kept (`kind`, `language`, `references_json`), are read by
+/// reference straight off the row buffer instead of through an owned
+/// `String` first.
+fn row_to_symbol_without_imports(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
     Ok(Symbol {
         file: r.get(0)?,
         qualified_name: r.get(1)?,
         name: r.get(2)?,
         kind: r
-            .get::<_, String>(3)?
+            .get_ref(3)?
+            .as_str()?
             .parse()
             .unwrap_or(crate::symbols::SymbolKind::Function),
         // Parsed via `Language::ALL`, not a second hand-written match —
         // see `Language::from_str`. The fallback only covers a value this
         // build has no variant for at all.
         language: r
-            .get::<_, String>(4)?
+            .get_ref(4)?
+            .as_str()?
             .parse()
             .unwrap_or(Language::TypeScript),
         start_line: r.get(5)?,
         end_line: r.get(6)?,
         content_hash: r.get::<_, i64>(7)? as u64,
         signature: r.get(8)?,
-        imports: serde_json::from_str(&r.get::<_, String>(9)?).unwrap_or_default(),
+        imports: Vec::new(),
         exported: r.get::<_, i64>(10)? != 0,
         parent: r.get(11)?,
-        references: serde_json::from_str(&r.get::<_, String>(12)?).unwrap_or_default(),
+        references: serde_json::from_str(r.get_ref(12)?.as_str()?).unwrap_or_default(),
         // Not columns on `symbols` — populated separately by
         // `structural_relations::load_symbols_with_relations` from the
         // side table `symbol_relations`, never by this loader.

@@ -2200,6 +2200,7 @@ dependencies = [
  "notify",
  "rmcp",
  "rusqlite",
+ "rustc-hash",
  "sentry",
  "serde",
  "serde_json",
