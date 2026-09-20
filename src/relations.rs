@@ -213,10 +213,15 @@ impl<'a> RelationGraph<'a> {
                 out.push(("uses".into(), *d));
             }
         }
-        // Definitions imported by this file.
+        // Definitions imported by this file, narrowed to ones the seed
+        // actually references by name -- otherwise importing a single name
+        // from a file pulled in that file's entire unrelated symbol list
+        // (EXPERIMENT: docs/evals/phase-4.2-typesafe).
         for m in &seed.imports {
             for d in self.resolve_import(&seed.file, m) {
-                out.push(("imported-definition".into(), d));
+                if seed.references.contains(&d.name) {
+                    out.push(("imported-definition".into(), d));
+                }
             }
         }
         // Related tests.
@@ -461,5 +466,45 @@ mod uses_narrowing_tests {
             .filter(|(tag, _)| tag == "uses")
             .count();
         assert_eq!(uses, 2);
+    }
+
+    #[test]
+    fn imported_definition_is_narrowed_to_symbols_the_seed_actually_references() {
+        // Importing one name from a file must not pull in that file's whole
+        // unrelated symbol list -- only definitions the seed actually names
+        // in its own `references` count as `imported-definition`.
+        let symbols = vec![
+            sym("src/a.ts", "Foo", &[], &[]),
+            sym("src/a.ts", "Bar", &[], &[]),
+            sym("src/c.ts", "useIt", &["./a"], &["Foo"]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let imported: Vec<&str> = graph
+            .neighbors(&symbols[2])
+            .into_iter()
+            .filter(|(tag, _)| tag == "imported-definition")
+            .map(|(_, s)| s.name.as_str())
+            .collect();
+        assert_eq!(
+            imported,
+            vec!["Foo"],
+            "Bar lives in the same imported file but is never referenced by \
+             useIt, and must not be pulled in"
+        );
+    }
+
+    #[test]
+    fn imported_definition_is_empty_when_the_seed_references_nothing_from_it() {
+        let symbols = vec![
+            sym("src/a.ts", "Foo", &[], &[]),
+            sym("src/c.ts", "useIt", &["./a"], &[]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let imported = graph
+            .neighbors(&symbols[1])
+            .into_iter()
+            .filter(|(tag, _)| tag == "imported-definition")
+            .count();
+        assert_eq!(imported, 0);
     }
 }

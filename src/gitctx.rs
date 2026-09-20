@@ -69,24 +69,41 @@ pub struct GitContext {
 pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<ChangedSymbol> {
     let mut out = Vec::new();
     for d in deltas {
-        for s in symbols
+        // Overlap for every candidate first: a class's span necessarily
+        // contains its own methods' spans, so an edit inside one method
+        // overlaps both -- attributing the change to every containing
+        // symbol independently double-counts one edit as two unrelated
+        // "changed" seeds (EXPERIMENT: docs/evals/phase-4.2-typesafe).
+        let hits: Vec<(&Symbol, u32)> = symbols
             .iter()
             .filter(|s| s.file == d.file && s.kind != SymbolKind::Module)
-        {
-            if let Some(overlap) = d
-                .added
-                .iter()
-                .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
-                .max()
-            {
-                if overlap > 0 {
-                    out.push(ChangedSymbol {
-                        symbol: s.clone(),
-                        added_lines: overlap,
-                        reason: format!("changed in diff (+{overlap} lines)"),
-                    });
-                }
+            .filter_map(|s| {
+                let overlap = d
+                    .added
+                    .iter()
+                    .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
+                    .max()?;
+                (overlap > 0).then_some((s, overlap))
+            })
+            .collect();
+        for (s, overlap) in &hits {
+            // Drop a container when a more specific symbol nested strictly
+            // inside its span also overlaps this same delta -- attribute the
+            // change to the innermost overlapping symbol only.
+            let has_nested_hit = hits.iter().any(|(t, _)| {
+                t.qualified_name != s.qualified_name
+                    && t.start_line >= s.start_line
+                    && t.end_line <= s.end_line
+                    && (t.start_line, t.end_line) != (s.start_line, s.end_line)
+            });
+            if has_nested_hit {
+                continue;
             }
+            out.push(ChangedSymbol {
+                symbol: (*s).clone(),
+                added_lines: *overlap,
+                reason: format!("changed in diff (+{overlap} lines)"),
+            });
         }
     }
     out
@@ -316,6 +333,63 @@ mod tests {
         let names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
         assert!(names.contains(&"Foo.bar"), "{names:?}");
         assert!(!names.contains(&"Foo.baz"), "{names:?}");
+    }
+
+    #[test]
+    fn nested_containers_are_not_double_counted_as_independent_seeds() {
+        // A class's span necessarily contains its own method's span. Before
+        // this fix, both the class and the method were reported as
+        // independently "changed" for one edit inside the method, which let
+        // review.rs's scoring loop count every other class member twice
+        // (once as a `child` of the class seed, once as a `sibling` of the
+        // method seed) for what was really one edit.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 10),
+            sym("a.py", "Foo.bar", SymbolKind::Method, 2, 4),
+        ];
+        let deltas = vec![delta("a.py", vec![(3, 3)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        let names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
+        assert_eq!(
+            names,
+            vec!["Foo.bar"],
+            "the enclosing class must not be seeded independently when a \
+             nested symbol already covers the same edit"
+        );
+    }
+
+    #[test]
+    fn a_class_level_edit_outside_any_method_still_seeds_the_class() {
+        // An edit that falls outside every method's span (e.g. a new field,
+        // or the class signature line) must still attribute to the class --
+        // innermost-only attribution must not suppress a genuinely
+        // class-level change just because the class also has methods.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 10),
+            sym("a.py", "Foo.bar", SymbolKind::Method, 5, 8),
+        ];
+        let deltas = vec![delta("a.py", vec![(2, 2)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        let names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
+        assert_eq!(names, vec!["Foo"]);
+    }
+
+    #[test]
+    fn two_independently_edited_methods_both_remain_seeds() {
+        // Two separate hunks touching two different methods of the same
+        // class must both surface -- innermost attribution is decided per
+        // overlapping hit, not by dropping every method once any one
+        // container is involved.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 20),
+            sym("a.py", "Foo.bar", SymbolKind::Method, 2, 5),
+            sym("a.py", "Foo.baz", SymbolKind::Method, 10, 13),
+        ];
+        let deltas = vec![delta("a.py", vec![(3, 3), (11, 11)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        let mut names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
+        names.sort();
+        assert_eq!(names, vec!["Foo.bar", "Foo.baz"]);
     }
 
     #[test]
