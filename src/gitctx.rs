@@ -67,43 +67,59 @@ pub struct GitContext {
 /// (post-diff) state of `symbols`. Shared by `review.rs` and `context.rs`'s
 /// `--git` stage so the diff→symbol mapping has exactly one implementation.
 pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<ChangedSymbol> {
-    let mut out = Vec::new();
+    let mut out: Vec<ChangedSymbol> = Vec::new();
+    // Index into `out` for a qualified_name already emitted, so a symbol
+    // touched by more than one hunk (or more than one delta) is reported
+    // once, keeping the largest overlap seen for it -- the same "one entry
+    // per symbol" contract the original single-pass version had.
+    let mut index_of: HashMap<&str, usize> = HashMap::new();
+
     for d in deltas {
-        // Overlap for every candidate first: a class's span necessarily
-        // contains its own methods' spans, so an edit inside one method
-        // overlaps both -- attributing the change to every containing
-        // symbol independently double-counts one edit as two unrelated
-        // "changed" seeds (EXPERIMENT: docs/evals/phase-4.2-typesafe).
-        let hits: Vec<(&Symbol, u32)> = symbols
+        let candidates: Vec<&Symbol> = symbols
             .iter()
             .filter(|s| s.file == d.file && s.kind != SymbolKind::Module)
-            .filter_map(|s| {
-                let overlap = d
-                    .added
-                    .iter()
-                    .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
-                    .max()?;
-                (overlap > 0).then_some((s, overlap))
-            })
             .collect();
-        for (s, overlap) in &hits {
-            // Drop a container when a more specific symbol nested strictly
-            // inside its span also overlaps this same delta -- attribute the
-            // change to the innermost overlapping symbol only.
-            let has_nested_hit = hits.iter().any(|(t, _)| {
-                t.qualified_name != s.qualified_name
-                    && t.start_line >= s.start_line
-                    && t.end_line <= s.end_line
-                    && (t.start_line, t.end_line) != (s.start_line, s.end_line)
-            });
-            if has_nested_hit {
-                continue;
+        // Innermost attribution must be decided per hunk, not per file: a
+        // class's span necessarily contains its own methods' spans, so a
+        // hunk inside one method overlaps both -- attributing that one hunk
+        // to every containing symbol independently double-counts it as two
+        // unrelated "changed" seeds (EXPERIMENT: docs/evals/phase-4.2-typesafe).
+        // But a *different* hunk in the same file can legitimately touch the
+        // class's own body outside any method, and that hunk's class-level
+        // hit must not be discarded just because some other hunk also hit a
+        // nested method (Greptile review finding on this fix).
+        for (a, b) in &d.added {
+            let hunk_hits: Vec<(&Symbol, u32)> = candidates
+                .iter()
+                .filter_map(|s| {
+                    let overlap = overlap_len(*a, *b, s.start_line, s.end_line);
+                    (overlap > 0).then_some((*s, overlap))
+                })
+                .collect();
+            for (s, overlap) in &hunk_hits {
+                let has_nested_hit = hunk_hits.iter().any(|(t, _)| {
+                    t.qualified_name != s.qualified_name
+                        && t.start_line >= s.start_line
+                        && t.end_line <= s.end_line
+                        && (t.start_line, t.end_line) != (s.start_line, s.end_line)
+                });
+                if has_nested_hit {
+                    continue;
+                }
+                if let Some(&idx) = index_of.get(s.qualified_name.as_str()) {
+                    if *overlap > out[idx].added_lines {
+                        out[idx].added_lines = *overlap;
+                        out[idx].reason = format!("changed in diff (+{overlap} lines)");
+                    }
+                } else {
+                    index_of.insert(s.qualified_name.as_str(), out.len());
+                    out.push(ChangedSymbol {
+                        symbol: (*s).clone(),
+                        added_lines: *overlap,
+                        reason: format!("changed in diff (+{overlap} lines)"),
+                    });
+                }
             }
-            out.push(ChangedSymbol {
-                symbol: (*s).clone(),
-                added_lines: *overlap,
-                reason: format!("changed in diff (+{overlap} lines)"),
-            });
         }
     }
     out
@@ -372,6 +388,33 @@ mod tests {
         let changed = changed_symbols_for(&deltas, &symbols);
         let names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
         assert_eq!(names, vec!["Foo"]);
+    }
+
+    #[test]
+    fn a_class_hunk_and_a_separate_method_hunk_in_one_file_both_survive() {
+        // Greptile review finding on this fix (src/gitctx.rs): the innermost
+        // check must be scoped per hunk, not per file. A hunk that touches
+        // the class's own body (outside any method) and a *different* hunk
+        // in the same FileDelta that touches a nested method are two
+        // independent edits -- the class-level hunk's own containment
+        // decision must not be influenced by a method hit that came from an
+        // unrelated hunk.
+        let symbols = vec![
+            sym("a.py", "Foo", SymbolKind::Class, 1, 10),
+            sym("a.py", "Foo.bar", SymbolKind::Method, 5, 8),
+        ];
+        // hunk 1 at line 2: inside Foo's own body, outside bar's [5,8] span.
+        // hunk 2 at line 6: inside bar.
+        let deltas = vec![delta("a.py", vec![(2, 2), (6, 6)])];
+        let changed = changed_symbols_for(&deltas, &symbols);
+        let mut names: Vec<&str> = changed.iter().map(|c| c.symbol.name.as_str()).collect();
+        names.sort();
+        assert_eq!(
+            names,
+            vec!["Foo", "Foo.bar"],
+            "a class-level hunk must not be discarded just because a \
+             different hunk in the same file also touched a nested method"
+        );
     }
 
     #[test]

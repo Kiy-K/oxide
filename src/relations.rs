@@ -507,4 +507,28 @@ mod uses_narrowing_tests {
             .count();
         assert_eq!(imported, 0);
     }
+
+    #[test]
+    fn an_aliased_import_is_a_known_gap_shared_with_uses_not_new_here() {
+        // Greptile review finding on this fix: `import { Foo as Bar } from
+        // './a'` -- the importing file's body only ever mentions "Bar", but
+        // `d.name` is the symbol's own declared name "Foo", so the reference
+        // check can't match. Confirmed here as a *pre-existing* limitation
+        // of bare-name matching (no `Symbol` field records an alias
+        // mapping), not a regression this fix introduces: `uses<-`, built on
+        // the exact same `defs_by_name`-keyed-by-declared-name lookup, has
+        // never resolved this either. Neither relation fires for "Bar".
+        let symbols = vec![
+            sym("src/a.ts", "Foo", &[], &[]),
+            sym("src/c.ts", "useIt", &["./a"], &["Bar"]),
+        ];
+        let graph = RelationGraph::build(&symbols);
+        let neighbors = graph.neighbors(&symbols[1]);
+        assert!(
+            neighbors
+                .iter()
+                .all(|(tag, _)| tag != "imported-definition" && tag != "uses"),
+            "{neighbors:?}"
+        );
+    }
 }
