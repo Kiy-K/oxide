@@ -29,6 +29,13 @@ def items_for(rec, ranked, k=10):
         out.append({"file": sid.split("#")[0], "start_line": span[0], "end_line": span[1]})
     return out
 
+# Fail closed on a partial or duplicated dump: every pinned instance
+# exactly once, so the reported sample size is the validated one.
+dump_ids = [d["id"] for d in dump]
+assert len(dump_ids) == len(set(dump_ids)), "duplicate instance in dump"
+missing = pinned - set(dump_ids); extra = set(dump_ids) - pinned
+assert not missing and not extra, f"dump/pinned mismatch: missing {sorted(missing)}, extra {sorted(extra)}"
+N = len(dump)
 acc = defaultdict(lambda: defaultdict(list))
 for rec in dump:
     t = tasks[rec["id"]]; row = rows[rec["id"]]; repo_dir = Path(t["path"])
@@ -49,12 +56,12 @@ for rec in dump:
         acc[name]["file.coverage@5"].append(float(m5["file"]["coverage"]))
         acc[name]["symbol.coverage@5"].append(float(m5["symbol"]["coverage"]))
 keys = sorted({k for v in acc.values() for k in v})
-print(f"ContextBench pinned instances scored: {len(dump)}")
+print(f"ContextBench pinned instances scored: {N} of {len(pinned)} pinned")
 print("| variant | " + " | ".join(keys) + " |"); print("| --- |" + " ---: |" * len(keys))
 for name, m in acc.items():
     print(f"| {name} | " + " | ".join(f"{statistics.fmean(m[k]):.3f}" if m.get(k) else "-" for k in keys) + " |")
 base = acc["RRF K=60 (production)"]
-print("\npaired deltas vs K=60 with 95% bootstrap CI (n=21):")
+print(f"\npaired deltas vs K=60 with 95% bootstrap CI (n={N}):")
 for name, m in acc.items():
     if name == "RRF K=60 (production)": continue
     for k in ("file.coverage", "symbol.coverage", "file.coverage@5"):

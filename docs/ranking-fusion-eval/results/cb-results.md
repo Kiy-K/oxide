@@ -1,4 +1,4 @@
-ContextBench pinned instances scored: 21
+ContextBench pinned instances scored: 21 of 21 pinned
 | variant | file.coverage | file.coverage@5 | file.precision | line.coverage | line.precision | span.coverage | span.precision | symbol.coverage | symbol.coverage@5 | symbol.precision |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | RRF K=60 (production) | 0.685 | 0.591 | 0.237 | 0.713 | 0.044 | 0.784 | 0.048 | 0.771 | 0.670 | 0.051 |

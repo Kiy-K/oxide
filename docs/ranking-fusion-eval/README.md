@@ -308,7 +308,7 @@ the top-10 of each variant from identical candidates:
 | variant | file coverage | file cov@5 | symbol coverage | symbol cov@5 | file precision |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | **RRF K=60 (production)** | **0.685** | **0.591** | **0.771** | **0.670** | **0.237** |
-| RRF K=10 | 0.647 | 0.516 | 0.689 | 0.563 | 0.219 |
+| RRF K=10 | 0.647 | 0.516 | 0.689 | 0.563 | 0.220 |
 | K=60 + rerank | 0.655 | 0.468 | 0.718 | 0.520 | 0.201 |
 | K=10 + rerank | 0.631 | 0.468 | 0.699 | 0.520 | 0.195 |
 | lexical only | 0.560 | 0.504 | 0.622 | 0.579 | 0.182 |
@@ -344,9 +344,9 @@ could only measure a regression.
   set; issue-style queries reward the flatter fusion. Frozen K=60 stays.
 - **Bounded confidence-aware reranker — rejected.** Overfits the dev set
   (+0.015 in-sample over K=10) and is significantly worse out of sample
-  (−0.074 nDCG on held-out, worse on ContextBench). Structural features
+  (−0.076 nDCG on held-out, worse on ContextBench). Structural features
   contribute nothing after seed-confidence gating because seed precision
-  (18%) bounds them; the flat bonus failed for the same reason, amplified
+  (17%) bounds them; the flat bonus failed for the same reason, amplified
   by `uses` fan-out. No feature available at request time predicts
   relevance beyond what fusion already encodes, except name overlap —
   which is real signal for users who name identifiers but is label
