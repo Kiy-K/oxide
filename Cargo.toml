@@ -136,6 +136,13 @@ required-features = ["native-embed"]
 name = "index_size_probe"
 required-features = ["native-embed"]
 
+# Semantic-retrieval research harness (docs/semantic-quality-eval): re-embeds
+# a copied index under a document-text variant / native profile, then dumps
+# fusion inputs like fusion_dump.
+[[example]]
+name = "semantic_variant"
+required-features = ["native-embed"]
+
 # Provider-agnostic (reads an existing index, never embeds), so unlike the
 # probes above it needs no native-embed feature.
 [[example]]
