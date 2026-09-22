@@ -2,9 +2,9 @@
 
 The one challenger the [baseline](../README.md) §9 named, evaluated in
 isolation against that baseline with the issue #10 protocol. Verdict at
-the end (§6). The change is committed on a review branch only;
-AGENTS.md's SQL `ORDER BY` note is treated as requiring an explicit
-maintainer decision (§7), and nothing is pushed or tagged.
+the end (§6): **the change is correct and faster but does not clear its
+own absolute gate**, so it stays on `challenger/rowid-scan`, AGENTS.md
+is unmodified (§7), and nothing is merged, pushed or tagged.
 
 ## 1. The change
 
@@ -202,39 +202,120 @@ amplification change; the indexing side is neutral-to-slightly-better.
 | (c) peak RSS on `query` rises beyond ±0.3 MB → reject | +0.27 MB (`pytest`), −0.03 MB (`pylint`); the +0.09 MB floor appears on `--no-expand` too, so it is not the load. Allocation count −80 / −1,233; allocated bytes +0.20 / +0.42 MB (the `Vec<i64>` keys, `u32` permutation and `Vec<bool>` — 13 B per symbol, transient). |
 | (d) a `tests/query_plans.rs` pin changes → reject | Passes. The corpus-load statement plans as `SCAN symbols` (was `SCAN symbols USING INDEX idx_symbols_file` + `USE TEMP B-TREE`); every candidate-only statement keeps its plan, with and without `ANALYZE`. |
 
+## 5b. Final gate run (fresh, interleaved, unmodified gates)
+
+A third complete comparison, run specifically to settle §5(a) rather than
+to re-measure: both binaries rebuilt from their exact commits
+(`cce3907` baseline `2c98ec72…`, `65dbbc5` challenger `7c267078…`),
+`cargo clean --release -p oxide` between the two builds, then the same
+four protocol steps interleaved challenger-first in one window, on the
+same indexed corpora with the same warm page cache. Raw samples:
+[`raw-final-baseline/`](raw-final-baseline/),
+[`raw-final-challenger/`](raw-final-challenger/) (run id
+`20260922T190907`).
+
+**The original §9 thresholds are applied exactly as written; none was
+adjusted.**
+
+| gate | requirement | measured | verdict |
+| --- | --- | --- | --- |
+| (a) | warm `all_symbols` improves ≥ 5 ms on `pytest` **and** ≥ 10 ms on `pylint`, in **both** batches | `pytest` −3.70 / −4.32 ms (short by 1.30 / 0.68); `pylint` −8.80 / −8.68 ms (short by 1.20 / 1.32) | **FAIL** — all four batches short |
+| (b) | 495 parity outputs, fixture eval, order digests, corpus-order tests all identical | 0 / 0 parity diffs; eval byte-identical (hybrid recall@5 0.909); digests identical on all five corpora (571 tied pairs) **and** on the `VACUUM`ed + `ANALYZE`d copy; `cargo test` 40/40 suites green | **PASS** |
+| (c) | peak RSS on `query` within ±0.3 MB | `pytest` +0.12 MB, `pylint` +0.18 MB, `requests` −0.06 MB | **PASS** |
+| (d) | no `tests/query_plans.rs` pin changes | passes with and without `ANALYZE`; the corpus-load statement (never pinned) moves `SCAN symbols USING INDEX idx_symbols_file` + `USE TEMP B-TREE` → `SCAN symbols` | **PASS** |
+
+Relative gate (§7's noise rule: a warm large-corpus median must move by
+more than 12 %): `pytest` −17.8 % / −20.4 %, `pylint` −25.7 % / −25.4 %
+— **PASS**, in every batch.
+
+### What did not reproduce, and why that is the honest answer
+
+The absolute thresholds were derived on a machine state this run could
+not recreate. The committed baseline's session had run two from-scratch
+release rebuilds plus the full test suite immediately before measuring;
+this run's preamble (the same two rebuilds and the same `mise run test`)
+completed in 33 s because every dependency and test binary was already
+compiled. Both binaries therefore measured ~1.6× faster than the
+baseline report throughout — the *baseline* binary's own warm
+`all_symbols` is 21.0 ms (`pytest`) / 34.2 ms (`pylint`) here versus
+36.3 / 59.3 ms in the committed report, and the raw-SQL rows-floor
+control (which touches no changed code) moved the same way, 10.1 vs
+18.2 ms. A −19 % improvement of a 21 ms stage is −4.0 ms; the gate asks
+for −5 ms. **The shortfall is the denominator, not the change.**
+
+Three independent runs of the same comparison agree on the relative
+effect and disagree on the millisecond:
+
+| run | `pytest` warm `all_symbols` | `pylint` warm `all_symbols` |
+| --- | --- | --- |
+| run 1 (earlier patch shape) | 21.5 → 17.0 ms (−20.6 %, −4.5) | 35.1 → 24.6 (−29.8 %, −10.5) |
+| run 2 (final patch) | 21.3 → 17.2 (−19.4 %, −4.1) | 34.0 → 26.5 (−22.2 %, −7.5) |
+| run 3 (this one) | 21.0 → 17.0 (−19.2 %, −4.0) | 34.2 → 25.5 (−25.4 %, −8.7) |
+
+Only run 1's `pylint` cleared −10 ms. **Under the gate as written, the
+challenger has not passed**, and this document does not claim it has.
+Two ways to close it, both the maintainer's call, neither taken here:
+re-run the whole protocol on a machine deliberately loaded to the
+baseline's state (thermal throttling is the variable, so this is
+reproducible only approximately), or re-state gate (a) in the relative
+terms §7's noise rule already uses — which would be changing the gate
+after seeing the result, and is exactly what was avoided here.
+
+### Everything else in run 3
+
+Warm medians, baseline → challenger: `snapshot_load` 28.1 → 23.1 ms
+(`pytest`, −17.6 %) and 42.2 → 33.1 (`pylint`, −21.6 %); `search_expand`
+34.1 → 29.9 (−12.5 %) and 56.4 → 46.0 (−18.4 %); in-process `context`
+41.4 → 36.6 (−11.7 %) and 64.0 → 53.2 (−16.9 %). One-shot CLI: `search`
+56.1 → 54.9 ms (`pytest`, −2.1 %) and 72.8 → 64.2 (`pylint`, −11.8 %);
+`query` 62.6 → 62.2 (−0.7 %) and 89.1 → 75.3 (−15.4 %). MCP first call
+−2…−15 %. Indexing: cold −3 %, no-change reindex −11…−13 %, single-file
+edit −0…−8 %; `index.db` and WAL peaks unchanged. Allocation counts
+−80 (`pytest`) / −1,233 (`pylint`). Stages that never load the corpus
+drift ±6 % (`search_noexpand` +2…+6 %, `context_cached` +4 %) with
+byte-identical allocation counts — the same sub-10 ms noise §4.1
+describes, and it reverses sign between runs.
+
 ## 6. Pareto verdict
 
-**Accept on the evidence, subject to §7.** Correctness first: the order
-is reproduced by construction (a total-order sort key, independent of
-the scan's access path) and pinned empirically on five corpora including every tied pair; 495 + eval
-outputs byte-identical; no schema/type/contract change. Then the
-trade-offs:
+**Not accepted under the gates as written.** Gate (a) is unmet in all
+four batches of the deciding run (§5b), by 0.7–1.3 ms. Every other gate
+passes, and every other axis is neutral or better:
 
 | axis | direction |
 | --- | --- |
 | correctness / provenance | order identical by construction *and* empirically (five corpora, 571 tied pairs, plus `VACUUM` + `ANALYZE`); 495 outputs and the fixture eval byte-identical; no schema/type/contract change |
 | agent utility per context token | unchanged (identical outputs) |
-| latency | corpus load −19 % / −22 % warm (`pytest` / `pylint`), −23 % / −15 % cold; `snapshot_load` −14 % / −22 %; in-process `context` −10 % / −14 %; one-shot `search` −10 % / −12 %; MCP first call −2…−13 %; indexing −1…−11 % |
-| memory | peak RSS neutral (≤ +0.27 MB, offset also present on non-loading surfaces); 80–1,233 fewer allocations; +13 B per symbol transient |
+| latency (run 3, the deciding run) | corpus load −19.2 % / −25.4 % warm (`pytest` / `pylint`), −3.6 % / −22.2 % cold; `snapshot_load` −17.6 % / −21.6 %; in-process `context` −11.7 % / −16.9 %; one-shot `search` −2.1 % / −11.8 %, `query` −0.7 % / −15.4 %; MCP first call −2…−15 %; indexing −3…−13 %. **In absolute ms the corpus-load gain is 4.0 / 8.7 ms, below gate (a)'s 5 / 10 ms.** |
+| memory | peak RSS on `query` +0.12 / +0.18 MB, inside gate (c)'s ±0.3 MB; 80–1,233 fewer allocations; +13 B per symbol transient |
 | storage / write amplification | unchanged (db bytes, WAL peaks within band) |
 | maintenance | ~45 lines replacing a one-line `ORDER BY`, plus one helper (`apply_permutation`); the order now rests on an explicit sort key a comment justifies instead of on SQLite's sorter; `order_digest` is the regression check |
 
-The benefit is repeatable — both batches, both large corpora, cold and
-warm, and across two independent runs of the whole comparison (the
-earlier run against an equivalent patch measured −20.6 % / −29.8 % on
-the same stage) — and larger than the noise band on every corpus-loading
-surface. The regressions that appear are all on surfaces that share no
-code with the change (`context_cached`, `search --no-expand`,
-steady-state MCP), carry no allocation delta, and reverse sign between
-runs. There is no material regression on any axis.
+The benefit is repeatable in *relative* terms — both batches, both large
+corpora, cold and warm, three independent runs of the whole comparison
+(§5b), and larger than §7's noise rule on every corpus-loading surface.
+The regressions that appear sit on surfaces that share no code with the
+change (`context_cached`, `search --no-expand`, steady-state MCP), carry
+byte-identical allocation counts, and reverse sign between runs.
 
-**The caveat to carry into the decision**: the two §9 absolute-
-millisecond thresholds are not met at this machine state, only their
-percentage intent. If the absolute numbers are what the gate means, this
-needs one rerun with the machine in the baseline's state (after a full
-rebuild + test suite) before it can be called a pass.
+**What blocks acceptance is one number, stated plainly**: gate (a) asks
+for −5 ms (`pytest`) and −10 ms (`pylint`) of warm `all_symbols` in both
+batches, and the deciding run delivers −3.7 / −4.3 and −8.8 / −8.7 ms.
+The gate was written against a machine state ~1.6× slower than any state
+reachable in this session (§5b), in which the same −19 % / −25 % would
+have been −6.9 / −15.1 ms and would have passed — but that is an
+inference about a state that was not measured, not a measurement, and
+the gate is not being re-stated after the fact to accommodate it.
 
-## 7. Decision required before it ships: the AGENTS.md invariant
+So the change is **correct, neutral-or-better on every other axis, and
+short of its own acceptance bar.** The maintainer's options are to
+re-run the protocol with the machine deliberately loaded to the
+baseline's state, to re-state gate (a) relatively (and say so), or to
+leave the challenger on its branch as a recorded, reproducible negative
+on the absolute gate. Nothing further is decided here: AGENTS.md is
+unmodified, and §7's replacement wording stays a proposal.
+
+## 7. Not done: the AGENTS.md invariant
 
 AGENTS.md states, under load-bearing invariants: *"`all_symbols` keeps
 its SQL `ORDER BY file, start_line`: measured, the ordered step is no
@@ -250,7 +331,9 @@ temp b-tree per file — not overflow-page reads. The second clause (tie
 order `(file, rowid)`) is exactly what the challenger preserves, by
 construction.
 
-If accepted, the invariant should be re-baselined to something like:
+**It has not been edited**, because gate (a) is unmet (§5b). If the
+maintainer accepts on the relative evidence, the invariant would be
+re-baselined to something like:
 *"`all_symbols` returns `(file, start_line)` order with ties in rowid
 order; it now does so with a plain `SCAN symbols` and a Rust sort on
 the total key `(file, start_line, id as i64)` — the cast is the
@@ -263,7 +346,7 @@ order, so the tie-break is spelled `id as i64`. The sort is
 `sort_unstable_by` over a `u32` permutation applied in place; it does
 not rely on the scan yielding rowid order, which is a planner choice
 (`SELECT id FROM symbols` already comes back from a covering index).
-`retrieval_profile --stage order_digest` pins the sequence."* That edit, the commit, and any tag are the
+`retrieval_profile --stage order_digest` pins the sequence."* That edit, a merge, a push and any tag are the
 maintainer's call; none of them has been made.
 
 ## 8. Reproduction
