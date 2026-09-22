@@ -3,7 +3,11 @@
 The one challenger the [baseline](../README.md) §9 named, evaluated in
 isolation against that baseline with the issue #10 protocol. Verdict at
 the end (§6): **the change is correct and faster but does not clear its
-own absolute gate**, so it stays on `challenger/rowid-scan`, AGENTS.md
+own absolute gate**. It was later re-judged under a second,
+independently written gate ([PG-1](../prospective-gate.md)) and
+[failed that too](../pg1-validation/README.md), on end-to-end cost and
+maintenance complexity rather than on magnitude — nothing in *this*
+document was altered to fit that outcome, so it stays on `challenger/rowid-scan`, AGENTS.md
 is unmodified (§7), and nothing is merged, pushed or tagged.
 
 ## 1. The change

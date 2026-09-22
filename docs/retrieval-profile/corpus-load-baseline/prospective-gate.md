@@ -149,6 +149,12 @@ done
 The null table is published before the verdict in any document written
 under PG-1, so a reader can check the yardstick before the claim.
 
+## Runs taken under PG-1
+
+| subject | verdict | evidence |
+| --- | --- | --- |
+| rowid-scan challenger (`challenger/rowid-scan`, `65dbbc5`) | **FAIL** — G3 (an end-to-end surface regresses 3.4× its null) and G6 (judgment); G1, G2, G4, G5 pass | [`pg1-validation/`](pg1-validation/README.md) |
+
 ## Acceptance is still a human step
 
 PG-1 passing is a *precondition* for a production change, not a
