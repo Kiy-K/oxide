@@ -205,8 +205,8 @@ amplification change; the indexing side is neutral-to-slightly-better.
 ## 6. Pareto verdict
 
 **Accept on the evidence, subject to §7.** Correctness first: the order
-is reproduced by construction (stable sort over rowid order) and pinned
-empirically on five corpora including every tied pair; 495 + eval
+is reproduced by construction (a total-order sort key, independent of
+the scan's access path) and pinned empirically on five corpora including every tied pair; 495 + eval
 outputs byte-identical; no schema/type/contract change. Then the
 trade-offs:
 
@@ -252,14 +252,18 @@ construction.
 
 If accepted, the invariant should be re-baselined to something like:
 *"`all_symbols` returns `(file, start_line)` order with ties in rowid
-order; it now does so with a sequential `SCAN symbols` and a stable
-Rust sort (docs/retrieval-profile/corpus-load-baseline/challenger-rowid-scan),
+order; it now does so with a plain `SCAN symbols` and a Rust sort on
+the total key `(file, start_line, id as i64)` — the cast is the
+tie-break, since rowid order is signed order
+(docs/retrieval-profile/corpus-load-baseline/challenger-rowid-scan),
 because the SQL `ORDER BY` planned as an index walk + per-row rowid seek
 + per-file temp b-tree, 2.3× the sequential scan's cost with every
 column materialized. Rowid order is signed `i64` order, not `u64` id
-order — a total-order key must spell its tie-break as `id as i64`;
-stability avoids the question. `retrieval_profile --stage order_digest`
-pins the sequence."* That edit, the commit, and any tag are the
+order, so the tie-break is spelled `id as i64`. The sort is
+`sort_unstable_by` over a `u32` permutation applied in place; it does
+not rely on the scan yielding rowid order, which is a planner choice
+(`SELECT id FROM symbols` already comes back from a covering index).
+`retrieval_profile --stage order_digest` pins the sequence."* That edit, the commit, and any tag are the
 maintainer's call; none of them has been made.
 
 ## 8. Reproduction
@@ -277,9 +281,16 @@ scripts/corpus_load_baseline.py parity --work $W --out $W/raw-chal --baseline-bi
 for v in chal base; do $W/$v/retrieval_profile $W/idx/pylint x --stage order_digest --json; done
 ```
 
+**If you are reading this on a branch based on `origin/main`**, the
+`--stage order_digest` mode, the `--json` stage output and the two raw
+directories below live in the baseline commits (`b26d2b1`, `cce3907`)
+that are themselves unpushed; a Greptile review of this change against
+`origin/main` therefore sees neither, and reported exactly that. On
+`main` both are present.
+
 Raw samples: [`raw-baseline/`](raw-baseline/) and
 [`raw-challenger/`](raw-challenger/) (same layout as the baseline's
 `raw/`; run id `20260922T1753…1758`). The two intermediate versions
-(stable sort on `Vec<(Symbol, String)>` with a post-sort imports pass:
-+2–3.6 MB VmHWM; unstable sort keyed on `u64` id: wrong tie order and
-30 % slower) are recorded in §1 and not kept as patches.
+(a stable sort on `Vec<(Symbol, String)>` with a post-sort imports
+pass: +2–3.6 MB VmHWM; an unstable sort keyed on the `u64` id: wrong
+tie order and 30 % slower) are recorded in §1 and not kept as patches.
