@@ -147,6 +147,46 @@ fn status_describes_missing_index_and_search_fails_structurally() {
     assert_eq!(error["error"]["code"], "index_missing");
 }
 
+/// Regression for oxide#11: a checkout containing one non-UTF-8 source file
+/// (pylint's `tests/functional/i/implicit/implicit_str_concat_latin1.py` is
+/// the real-world trigger) indexed fine already, but every form of `status`
+/// failed with `status_failed` — `current_file_hashes` propagated the first
+/// `read_to_string` decode error instead of skipping the file the way
+/// indexing itself does. Both the JSON and human CLI surfaces must now
+/// complete and report the file set as current.
+#[test]
+fn status_succeeds_on_a_repo_with_one_non_utf8_file() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(tmp.path(), "src/good.py", "def good():\n    return 1\n");
+    // 0xFF is never a valid UTF-8 lead byte; no NUL byte, so the scanner's
+    // binary sniff still accepts it into the corpus.
+    std::fs::write(
+        tmp.path().join("src/latin1.py"),
+        b"# -*- coding: latin-1 -*-\nx = \"caf\xe9\"\n",
+    )
+    .unwrap();
+
+    let indexed = json_stdout(&run(tmp.path(), &["index", ".", "--json"]));
+    assert_eq!(indexed["changed_files"], 1, "only good.py could be parsed");
+
+    let status = json_stdout(&run(tmp.path(), &["status", ".", "--json"]));
+    assert_eq!(status["index_exists"], true);
+    assert_eq!(status["files"], 1);
+    assert_eq!(
+        status["is_current"], true,
+        "a non-UTF-8 file must not make status report stale or fail: {status:?}"
+    );
+
+    let human = run(tmp.path(), &["status", "."]);
+    assert!(
+        human.status.success(),
+        "{}",
+        String::from_utf8_lossy(&human.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&human.stdout);
+    assert!(stdout.contains("Index up to date"), "{stdout}");
+}
+
 #[test]
 fn empty_search_and_invalid_invocation_keep_distinct_contracts() {
     let tmp = tempfile::tempdir().unwrap();
