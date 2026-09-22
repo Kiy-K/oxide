@@ -1,0 +1,82 @@
+### NULL CONTROL (same binary, two arms) — |delta| % per row
+-- stages, warm, large corpora
+   pytest   all_symbols                null   0.7%   (a  20.84 b  20.98)
+   pytest   snapshot_load              null   0.2%   (a  27.34 b  27.40)
+   pytest   search_expand              null   0.9%   (a  33.51 b  33.81)
+   pytest   context                    null   1.2%   (a  40.29 b  40.78)
+   pytest   context_cached             null   1.1%   (a   7.11 b   7.19)
+   pytest   search_noexpand            null   4.1%   (a   7.62 b   7.30)
+   pytest   hydrate                    null   0.7%   (a   1.19 b   1.19)
+   pytest   relation_index             null   2.9%   (a   1.16 b   1.20)
+   pytest   all_symbol_relations       null   2.7%   (a   4.59 b   4.72)
+   pylint   all_symbols                null   0.4%   (a  33.89 b  34.02)
+   pylint   snapshot_load              null   0.3%   (a  41.33 b  41.44)
+   pylint   search_expand              null   0.6%   (a  55.32 b  55.67)
+   pylint   context                    null   1.0%   (a  61.85 b  62.49)
+   pylint   context_cached             null   1.5%   (a  12.46 b  12.65)
+   pylint   search_noexpand            null   0.9%   (a  12.89 b  13.00)
+   pylint   hydrate                    null   2.4%   (a   0.85 b   0.87)
+   pylint   relation_index             null   5.0%   (a   2.55 b   2.68)
+   pylint   all_symbol_relations       null   6.7%   (a   4.36 b   4.65)
+-- one-shot CLI
+   pytest   search             null   5.2%   (a   54.9 b   52.1)  rss null 0.02 MB
+   pytest   search-no-expand   null   9.4%   (a   13.8 b   15.1)  rss null 0.16 MB
+   pytest   context            null   7.0%   (a   60.6 b   64.9)  rss null 0.03 MB
+   pylint   search             null   2.2%   (a   75.0 b   73.4)  rss null 0.01 MB
+   pylint   search-no-expand   null   1.9%   (a   20.0 b   19.6)  rss null 0.16 MB
+   pylint   context            null   4.4%   (a   85.5 b   81.8)  rss null 0.03 MB
+   requests search             null   1.6%   (a   15.5 b   15.8)  rss null 0.16 MB
+   requests search-no-expand   null  16.2%   (a    9.9 b   11.5)  rss null 0.16 MB
+   requests context            null   5.0%   (a   18.9 b   19.9)  rss null 0.16 MB
+-- MCP first call
+   pytest   search  null   5.4%   (a   58.2 b   61.4)
+   pytest   query   null   0.8%   (a   58.2 b   57.8)
+   pylint   search  null   6.3%   (a   79.9 b   74.9)
+   pylint   query   null   2.0%   (a   76.7 b   78.2)
+-- index ops
+   pytest   cold_index        null   0.2%   (a    3327 b    3335)
+   pytest   nochange_reindex  null   0.9%   (a     104 b     103)
+   pytest   single_file_edit  null   0.5%   (a     352 b     350)
+   pylint   cold_index        null   1.1%   (a    3963 b    3918)
+   pylint   nochange_reindex  null   0.6%   (a     149 b     148)
+   pylint   single_file_edit  null   1.8%   (a     343 b     337)
+
+max null over gate-relevant rows: 16.2%  -> run valid
+
+### G2 — targeted stage, per batch: improvement >= max(3*null, 10%)
+   pytest   batch 0:  21.23 ->  17.18  improvement  19.1%  need  10.0% (3x null 0.7%)  PASS
+   pytest   batch 1:  21.62 ->  17.12  improvement  20.8%  need  10.0% (3x null 0.7%)  PASS
+   pylint   batch 0:  34.49 ->  25.35  improvement  26.5%  need  10.0% (3x null 0.4%)  PASS
+   pylint   batch 1:  34.88 ->  24.79  improvement  28.9%  need  10.0% (3x null 0.4%)  PASS
+   G2: PASS
+
+### G3 — end-to-end: >=1 surface improves > 2*null on BOTH large corpora; none regresses > 1*null
+   pytest   cli search               55.3 ->   47.3  +14.4%  2xnull  10.4%  1xnull   5.2%  improves
+   pytest   cli search-no-expand     14.2 ->   13.8   +2.7%  2xnull  18.8%  1xnull   9.4%  flat
+   pytest   cli context              60.5 ->   59.3   +2.0%  2xnull  13.9%  1xnull   7.0%  flat
+   pytest   mcp-first search         56.0 ->   53.1   +5.2%  2xnull  10.9%  flat
+   pytest   mcp-first query          56.7 ->   50.3  +11.4%  2xnull   1.5%  improves
+   pylint   cli search               77.4 ->   65.1  +15.9%  2xnull   4.4%  1xnull   2.2%  improves
+   pylint   cli search-no-expand     19.4 ->   20.6   -6.5%  2xnull   3.7%  1xnull   1.9%  REGRESSES
+   pylint   cli context              87.5 ->   76.2  +12.9%  2xnull   8.8%  1xnull   4.4%  improves
+   pylint   mcp-first search         75.5 ->   67.0  +11.2%  2xnull  12.6%  flat
+   pylint   mcp-first query          77.8 ->   68.2  +12.3%  2xnull   4.0%  improves
+   surfaces improving > 2*null on BOTH: ['search', 'mcp_first_query']
+   regressions beyond 1*null: [('pylint', 'cli search-no-expand', -6.501884087151326, 1.8581811343956607)]
+   G3: FAIL
+
+### G4 — RSS on the heaviest surface (context)
+   pytest   rss +0.04 MB  limit 0.30 MB (null 0.03)  allocs 283140->283060 (-80)  bytes 16.52->16.72 MB  PASS
+   pylint   rss +0.10 MB  limit 0.30 MB (null 0.03)  allocs 267999->266766 (-1233)  bytes 19.03->19.44 MB  PASS
+   G4: PASS
+
+### G5 — indexing/storage: no regression beyond 1*null
+   pytest   cold_index           3364 ->    3361   -0.1%  null   0.2%  PASS
+   pytest   nochange_reindex      102 ->      97   -4.7%  null   0.9%  PASS
+   pytest   single_file_edit      346 ->     343   -1.0%  null   0.5%  PASS
+   pytest   db bytes -40960   wal peak +3.0%
+   pylint   cold_index           3929 ->    3954   +0.6%  null   1.1%  PASS
+   pylint   nochange_reindex      145 ->     131   -9.3%  null   0.6%  PASS
+   pylint   single_file_edit      343 ->     332   -3.4%  null   1.8%  PASS
+   pylint   db bytes +22528   wal peak -7.6%
+   G5: PASS
