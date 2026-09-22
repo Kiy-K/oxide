@@ -1,0 +1,11 @@
+{
+  "outputs": 495,
+  "retrieval_outputs": 440,
+  "literal_outputs": 55,
+  "baseline_binary": "/tmp/claude-1000/-home-khoi-Work-oxide/fea6667a-aecc-483e-b6ca-7b91a35f94ad/scratchpad/clb/bin/oxide-baseline",
+  "baseline_sha256": "caa07f54565154d34708b6a761c84d0d27b72457fd491d625b5c596ad7f300b4",
+  "harness_binary": "/tmp/claude-1000/-home-khoi-Work-oxide/fea6667a-aecc-483e-b6ca-7b91a35f94ad/scratchpad/clb/bin/oxide-harness",
+  "harness_sha256": "1f16ba1c3803cd75c23c12f31052e721f2f6f28fe3942bceed8fd651f9dc29c5",
+  "baseline_vs_itself_diffs": [],
+  "baseline_vs_harness_diffs": []
+}

@@ -472,6 +472,12 @@ memory gauge for retrieval-side changes.
 
 1. **The corpus load is the one-shot ceiling** — 55–65% of `context` and
    of `search` with expansion, ~10 µs and ~40 allocations per symbol.
+   **Re-baselined, pinned and decomposed in
+   [`corpus-load-baseline/`](corpus-load-baseline/README.md)** (issue
+   #10): 5.0 µs / 39 allocs per symbol warm on `pytest`, of which SQLite's
+   row materialization is 2.5 µs and the `ORDER BY`'s index walk +
+   rowid seeks + temp b-tree alone 1.4 µs — which revises the §2.1
+   `ORDER BY` verdict below and names the one next challenger.
    Closing it means either not loading the corpus (SQL-probe structural
    expansion: `symbol_relations(kind, target)` and `symbols(name)` are
    indexable, but `related_tests` scans every test symbol's `references`
