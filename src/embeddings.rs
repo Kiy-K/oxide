@@ -823,6 +823,12 @@ pub struct NativeEmbedder {
     model_id: String,
     quantization: String,
     pooling: String,
+    /// False for dynamically quantized ONNX models, whose int8 activation
+    /// range is computed over the whole batch tensor: the same text embeds
+    /// differently alone and inside a batch. `embed_batch` then embeds one
+    /// text per ONNX call, so every call shape yields the single-text vector
+    /// the index and the query path already use.
+    batch_invariant: bool,
 }
 
 #[cfg(feature = "native-embed")]
@@ -845,6 +851,8 @@ impl NativeEmbedder {
             .map(std::path::PathBuf::from)
             .unwrap_or_else(|| std::path::PathBuf::from("."))
             .join(".cache/huggingface/hub");
+        let batch_invariant = fastembed::TextEmbedding::get_quantization_mode(&spec.model)
+            != fastembed::QuantizationMode::Dynamic;
         let model = fastembed::TextEmbedding::try_new(
             fastembed::TextInitOptions::new(spec.model.clone()).with_cache_dir(cache_dir),
         )?;
@@ -877,6 +885,7 @@ impl NativeEmbedder {
             model_id: spec.model_id.to_string(),
             quantization: spec.quantization.to_string(),
             pooling: spec.pooling.to_string(),
+            batch_invariant,
         })
     }
 
@@ -963,6 +972,10 @@ impl NativeEmbedder {
             model_id: "embeddinggemma-300m".to_string(),
             quantization: "fp32".to_string(),
             pooling: "graph-baked".to_string(),
+            // fp32 EmbeddingGemma is the only model this constructor loads;
+            // a quantized local profile must derive this from its
+            // quantization mode the way `new` does.
+            batch_invariant: true,
         })
     }
 }
@@ -988,10 +1001,20 @@ impl EmbeddingProvider for NativeEmbedder {
         let Ok(mut model) = self.model.lock() else {
             return vec![Vec::new(); texts.len()];
         };
-        model.embed(texts, None).unwrap_or_else(|e| {
-            eprintln!("oxide: native embedder failed ({e}); vectors will be empty");
-            vec![Vec::new(); texts.len()]
-        })
+        let mut run = |batch: &[String]| {
+            model.embed(batch, None).unwrap_or_else(|e| {
+                eprintln!("oxide: native embedder failed ({e}); vectors will be empty");
+                vec![Vec::new(); batch.len()]
+            })
+        };
+        if self.batch_invariant {
+            run(texts)
+        } else {
+            texts
+                .iter()
+                .flat_map(|t| run(std::slice::from_ref(t)))
+                .collect()
+        }
     }
 
     fn embed_query(&self, text: &str) -> Vec<f32> {
@@ -1479,6 +1502,41 @@ mod tests {
         assert_eq!(code, "task: code retrieval | query: fix backoff");
         assert_ne!(bare, search);
         assert_ne!(search, code);
+    }
+
+    /// A dynamically quantized ONNX model (fastembed's `*Q` Arctic/MiniLM
+    /// profiles, including the shipped default) derives its int8 activation
+    /// range from the whole batch tensor, so the same text embedded inside a
+    /// batch and alone came out different (min cosine 0.9975 for
+    /// `arctic-embed-xs-q`). `update_embeddings` embeds one text per call
+    /// for large updates but batches small ones through `embed_documents`,
+    /// so a <8-symbol incremental edit wrote vectors a clean rebuild never
+    /// would. Batch output must equal per-text output, bit for bit.
+    ///
+    /// Ignored by default: needs the Arctic XS Q model cached locally
+    /// (network on first run). Run explicitly with `cargo test --features
+    /// native-embed -- --ignored dynamic_quant_batch_matches_single_text`.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    #[ignore]
+    fn dynamic_quant_batch_matches_single_text() {
+        let e = NativeEmbedder::new("arctic-embed-xs-q", GemmaQueryPrompt::Bare).unwrap();
+        let texts: Vec<String> = [
+            "src/a.py function retry_request def retry_request(conn): httpx",
+            "tests/test_client.py function test_get def test_get(server): pytest Client",
+            "crates/core/flags/defs.rs method Hidden.update fn update(&self, v: FlagValue)",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect();
+        let batched = e.embed_documents(&texts);
+        for (t, b) in texts.iter().zip(&batched) {
+            assert_eq!(
+                &e.embed_document(t),
+                b,
+                "batch changed the vector for {t:?}"
+            );
+        }
     }
 
     /// Ignored by default: needs the EmbeddingGemma model cached locally

@@ -302,6 +302,18 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   `$OXIDE_EMBED_MODEL`. Switching the served GGUF quant WITHOUT changing that
   label silently keeps stale, incomparable vectors. Index meta detects the
   change and wipes embeddings — but only if the label differs.
+- Dynamically quantized native profiles (fastembed `*Q` Arctic/MiniLM,
+  including the default `arctic-embed-xs-q`) compute their int8 activation
+  range per batch tensor, so a text's vector depends on its batch-mates
+  (min cosine 0.9975 alone vs in a 7-text batch). `NativeEmbedder` therefore
+  embeds one text per ONNX call for those profiles (`batch_invariant`), so
+  `update_embeddings`' <8-symbol `embed_documents` path and its per-text
+  worker path write the same vectors as a clean rebuild
+  (`dynamic_quant_batch_matches_single_text`, `#[ignore]`: needs the model).
+  Never batch a Dynamic-quantization model for throughput. Existing indexes
+  are not force-migrated: vectors an earlier small update wrote in a batch
+  stay until their file changes or `oxide index -e`/`-a` runs (the
+  canonical single-text space never moved, so no fingerprint bump).
 - HTTP failures return empty vectors by design; the indexer skips and counts
   them (`embed_failures`), retrieval ignores length-mismatched ones.
 - Start/stop the local llama.cpp server with `scripts/embedder.sh start|stop`
