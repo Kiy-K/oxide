@@ -177,16 +177,21 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 - `LexicalIndex::build` reads bodies from the repo root recorded in index meta
   (`get_meta("root")`) — engine construction needs an indexed store, not just
   symbols.
-- An embedding's cache-invalidation key must always equal (a hash of)
-  `embeddings::symbol_embed_text(symbol)` exactly — never a proxy for it. The module
-  symbol's `content_hash` is intentionally coarse at parse time (imports +
-  first line, `parser.rs`), but `update_index` overwrites it once `references`
-  are resolved (`content_hash(&symbol_embed_text(s))`) — references are part of
-  `symbol_embed_text` but aren't known until after parsing. This override is scoped
-  to files that used the coarse formula (`used_coarse_module_hash` in
-  `update_index`); the empty-file fallback module symbol already hashes full
-  source and must keep doing so, or comment-only files silently stop
-  reporting edits (`tests/embedding_staleness.rs` pins both).
+- An embedding's cache-invalidation key must always cover
+  `embeddings::symbol_embed_text(symbol)` exactly — never a proxy for it. The
+  key is the persisted `symbols.content_hash`, which `update_index` rewrites
+  for **every** symbol once `references` are resolved:
+  `embedding_input_hash(parser_hash, &symbol_embed_text(s))`. The parser hash
+  alone is a proxy — a concrete symbol's covers only its span, the module
+  symbol's only imports + first line — while `symbol_embed_text` also carries
+  file-level `imports` and post-parse `references`, so an import-only edit or
+  a new same-file definition an untouched body names used to leave a stale
+  vector that a clean rebuild would not. Keeping the parser hash in the key
+  preserves "span edit ⇒ reprocess" and the empty-file module's full-source
+  hash, without which comment-only files silently stop reporting edits
+  (`tests/embedding_staleness.rs` pins all of these). Existing indexes are
+  not force-migrated: rows for files not reparsed since keep their old keys
+  and vectors until those files change or `oxide index -a` runs.
 - Cross-file, same-run reference staleness is a known, accepted gap: if file A
   adds a name that a symbol in unrelated, already-reparsed file B's body
   happens to textually match, B's `references` can lag until B itself is next

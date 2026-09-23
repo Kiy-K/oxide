@@ -176,9 +176,9 @@ fn import_only_change_invalidates_module_embedding() {
     let before_vec = module_embedding(&store, "thing.py");
 
     // Add an import; first declared line ("def foo():") is unchanged, only
-    // the import moves in above it — imports participate in content_hash
-    // and `symbol_embed_text` directly (a pre-existing, already-correct path), this
-    // asserts it still holds after the module hash formula changed.
+    // the import moves in above it. Imports are part of both the module's
+    // parser hash and `symbol_embed_text`; concrete symbols are covered by
+    // `import_only_change_reembeds_untouched_concrete_symbols` below.
     write(
         &root.join("thing.py"),
         "import os\n\ndef foo():\n    return 1\n\ndef bar():\n    return foo() + 1\n",
@@ -372,4 +372,74 @@ fn markdown_mid_file_edit_reembeds_the_whole_file_module_symbol() {
     let after_vec = module_embedding(&store, "docs/guide.md");
     let rebuilt_vec = clean_rebuild_module_embedding(root, "docs/guide.md");
     assert_eq!(after_vec, rebuilt_vec);
+}
+
+/// Stored embedding of the concrete (non-module) symbol `qualified_name`.
+fn symbol_embedding(store: &SqliteStore, file: &str, qualified_name: &str) -> Vec<f32> {
+    let syms = store.all_symbols().unwrap();
+    let s = syms
+        .iter()
+        .find(|s| s.file == file && s.qualified_name == qualified_name)
+        .unwrap_or_else(|| panic!("no symbol {qualified_name} in {file}"));
+    store.all_embeddings().unwrap()[&s.id()].1.clone()
+}
+
+fn clean_rebuild_symbol_embedding(root: &Path, file: &str, qualified_name: &str) -> Vec<f32> {
+    let mut fresh = SqliteStore::open(Path::new(":memory:")).unwrap();
+    update_index(root, &mut fresh, &HashedEmbedder::default()).unwrap();
+    symbol_embedding(&fresh, file, qualified_name)
+}
+
+#[test]
+fn import_only_change_reembeds_untouched_concrete_symbols() {
+    // A concrete symbol's `symbol_embed_text` carries the file's `imports`,
+    // but its parser `content_hash` covers only its own span. An import-only
+    // edit therefore changes the embedding input of every symbol in the file
+    // without changing any of their spans.
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(&root.join("thing.py"), "def foo():\n    return 1\n");
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+    let before = symbol_embedding(&store, "thing.py", "foo");
+
+    write(
+        &root.join("thing.py"),
+        "import retrying\n\ndef foo():\n    return 1\n",
+    );
+    update_index(root, &mut store, &emb).unwrap();
+    let after = symbol_embedding(&store, "thing.py", "foo");
+
+    let rebuilt = clean_rebuild_symbol_embedding(root, "thing.py", "foo");
+    assert_ne!(before, rebuilt, "foo's embedding input gained `retrying`");
+    assert_eq!(after, rebuilt, "incremental must equal a clean rebuild");
+}
+
+#[test]
+fn new_same_file_definition_reembeds_an_untouched_symbol_that_now_references_it() {
+    // `references` are resolved against project-wide known names after
+    // parsing. Defining `helper` in the same file makes it a reference of
+    // `bar`, whose span did not change. The file *is* reparsed, so the
+    // stored `references` are current — the embedding must be too. (The
+    // accepted cross-file gap in AGENTS.md is about files that are *not*
+    // reparsed; this is not that.)
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(&root.join("thing.py"), "def bar():\n    return helper()\n");
+    let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
+    let emb = HashedEmbedder::default();
+    update_index(root, &mut store, &emb).unwrap();
+    let before = symbol_embedding(&store, "thing.py", "bar");
+
+    write(
+        &root.join("thing.py"),
+        "def bar():\n    return helper()\n\ndef helper():\n    return 1\n",
+    );
+    update_index(root, &mut store, &emb).unwrap();
+    let after = symbol_embedding(&store, "thing.py", "bar");
+
+    let rebuilt = clean_rebuild_symbol_embedding(root, "thing.py", "bar");
+    assert_ne!(before, rebuilt, "bar's references gained `helper`");
+    assert_eq!(after, rebuilt, "incremental must equal a clean rebuild");
 }

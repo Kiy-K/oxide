@@ -707,34 +707,21 @@ fn parse_and_persist_changed_files(
     // # ponytail: identifier-name intersection only; no scope analysis. Upgrade
     // path: per-language scoped resolution if false positives hurt retrieval.
     for pf in &mut parsed {
-        // Whether this file's module symbol used the coarse "imports +
-        // first line" hash (parser.rs) rather than the full-source hash:
-        // parser.rs only takes the full-source path when there are no
-        // concrete (non-Module) symbols at all — see `empty_before_module`
-        // there. That full-source hash already changes on ANY body edit
-        // (including comment-only edits with no declarations to anchor to,
-        // where the module symbol is the file's only index representation)
-        // and must be left alone; only the coarse formula needs the fix
-        // below.
-        let used_coarse_module_hash = pf
-            .symbols
-            .iter()
-            .any(|s| s.kind != crate::symbols::SymbolKind::Module);
         for s in &mut pf.symbols {
             s.references = extract_references(s, &pf.src, &known_names);
-            // The coarse module hash covers only imports + first line, but
-            // its embedding input (`symbol_embed_text`) also includes `references`,
-            // which are resolved here — one stage later, once whole-project
-            // known names exist. A body-only edit that adds/removes an
-            // in-file reference therefore changes `symbol_embed_text` without the
-            // parser hash noticing. Recompute the module's content_hash as
-            // the literal hash of its own `symbol_embed_text` now that references
-            // are final, so the cache-invalidation key can never drift from
-            // the actual embedding input (see AGENTS.md invariant) — but
-            // only where the coarse formula was actually used.
-            if s.kind == crate::symbols::SymbolKind::Module && used_coarse_module_hash {
-                s.content_hash = crate::symbols::content_hash(&symbol_embed_text(s));
-            }
+            // `content_hash` is the embedding reuse key, so it must cover the
+            // exact embedding input. The parser hash covers only the span
+            // (or, for the module symbol, imports + first line), but
+            // `symbol_embed_text` also carries the file-level `imports` and
+            // the `references` resolved just above against project-wide
+            // names: an import-only edit, or a new same-file definition an
+            // untouched body already names, changes the input without
+            // moving the span. Fold the literal input into the key now that
+            // references are final (see AGENTS.md invariant). The parser
+            // hash stays in it so a span edit still reprocesses the symbol,
+            // and the empty-file module's full-source hash still sees
+            // comment-only edits.
+            s.content_hash = embedding_input_hash(s.content_hash, &symbol_embed_text(s));
         }
     }
 
@@ -1116,6 +1103,13 @@ pub fn content_stale_embedding_count(store: &dyn IndexBackend) -> Result<usize> 
             None => true,
         })
         .count())
+}
+
+/// A symbol's persisted `content_hash`: its parser hash combined with the
+/// exact text the embedder is given, so reuse can never outlive a change to
+/// that text.
+fn embedding_input_hash(parser_hash: u64, embed_text: &str) -> u64 {
+    crate::symbols::fnv1a64_iter([&parser_hash.to_le_bytes()[..], embed_text.as_bytes()])
 }
 
 /// References = identifiers appearing in the symbol body that match a known
