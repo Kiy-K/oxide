@@ -314,6 +314,24 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   are not force-migrated: vectors an earlier small update wrote in a batch
   stay until their file changes or `oxide index -e`/`-a` runs (the
   canonical single-text space never moved, so no fingerprint bump).
+- `NativeEmbedder` runs an ONNX session pool sized by `$OXIDE_EMBED_SESSIONS`
+  (`auto` default: `auto_embed_sessions` = one per 4 cores, ≤4, extras ≤¼ of
+  available memory incl. cgroup v2 limit, 1 for models > `AUTO_MAX_SESSION_MB`;
+  `1` = the pre-pool single session on every core). Extra sessions are
+  created lazily and only after `POOL_GROWTH_AFTER_DOCUMENTS` (256) document
+  embeds (per process, cumulative — a long `oxide watch` does grow), so
+  queries/MCP and a small `oxide index` update never load them (measured: a
+  30-symbol update got *slower* when every concurrency spike grew the pool).
+  With N>1, slot 0 also runs on cores/N threads — only `1` (or `auto` on
+  <8 cores) is the pre-pool thread layout. `available_memory_mb` reads
+  cgroup v2 `memory.max` of the process's own cgroup only.
+  Sessions split cores (`intra_threads = cores / N`) to avoid
+  oversubscription. The pool must stay a pure throughput change: vectors,
+  `name()` and `fingerprint()` are identical to one session
+  (`session_pool_matches_single_session_bit_for_bit`, `#[ignore]`, int8 +
+  fp32), and dynamic-int8 still embeds one text per call. Invalid values
+  and model-load failures surface as `embedder_unavailable` with the cause
+  in both `--json` and the human CLI.
 - HTTP failures return empty vectors by design; the indexer skips and counts
   them (`embed_failures`), retrieval ignores length-mismatched ones.
 - Start/stop the local llama.cpp server with `scripts/embedder.sh start|stop`

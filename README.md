@@ -457,6 +457,33 @@ each symbol's text (never a whole file) to that provider's API over the
 network — this is the one way OXIDE's default "your code never leaves the
 machine" guarantee changes, and only if you deliberately configure it.
 
+### Embedding speed and memory
+
+The built-in native embedder runs a small pool of ONNX sessions when there
+is enough bulk work to justify it. `OXIDE_EMBED_SESSIONS` controls it:
+
+| Value | Behavior |
+| --- | --- |
+| unset / `auto` (default) | Up to 4 sessions: one per 4 CPU cores, extra sessions using at most a quarter of available memory, and only one session for models over ~400 MB per session. On Linux, available memory is `MemAvailable`, capped by the process's own cgroup v2 `memory.max`; cgroup v1 limits, limits set only on a parent cgroup, and non-Linux systems are not read, so there only the core count applies |
+| `1` | One session on every core — the lowest-memory setting, and OXIDE's behavior before pooling |
+| `2`–`16` | Exactly that many sessions (never more than CPU cores) |
+
+Extra sessions load only after a process has embedded 256 documents, so
+searches, `oxide mcp` queries, and an `oxide index` update of a few hundred
+symbols keep a single session. The count is per process and cumulative: a
+long-running `oxide watch` grows its pool once its batches add up to 256
+documents, and keeps it for the rest of the session. With more than one
+session, even the first runs on its share of the cores (cores ÷ sessions),
+which made single queries slightly faster with the default model. Vectors
+are bit-identical in every setting, so changing it never re-embeds an
+index. Measured on a 16-core machine with
+the default model (httpx, 1,409 symbols): a full index went from 15.1 s to
+6.5 s, peak memory from ~145 MB to ~370 MB; under full CPU load, 57 s to
+16 s. On a 4-core machine `auto` picks one session.
+
+To roll back to single-session embedding, set `OXIDE_EMBED_SESSIONS=1`. An
+invalid value is an error that names the variable and the accepted values.
+
 ## Limitations
 
 - OXIDE supports ten languages today. C#, Swift, Kotlin, and Assembly are

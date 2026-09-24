@@ -363,6 +363,7 @@ impl std::error::Error for CliError {}
 /// rewrites the terminal rendering, where a sentence plus a command beats a
 /// diagnostic string with a path and a backticked hint embedded in it.
 pub fn render_human_error(error: &CliError, paint: &Paint) -> String {
+    let with_cause: String;
     let (headline, next) = match error.code.as_str() {
         "index_missing" => (
             "No OXIDE index was found for this repository.",
@@ -397,11 +398,20 @@ pub fn render_human_error(error: &CliError, paint: &Paint) -> String {
              TypeScript/TSX, Rust, and Go.",
             None,
         ),
-        "embedder_unavailable" => (
-            "The embedding provider could not be reached, so semantic search \
-             is unavailable.",
-            Some("oxide search <query> --mode lexical"),
-        ),
+        // The cause is the actionable part here — an invalid setting, a
+        // model that failed to download, an unreachable endpoint — so it is
+        // shown, not replaced.
+        "embedder_unavailable" => {
+            with_cause = format!(
+                "The embedding provider is unavailable, so semantic search cannot run.\n\n\
+                 Cause: {}",
+                error.message
+            );
+            (
+                with_cause.as_str(),
+                Some("oxide search <query> --mode lexical"),
+            )
+        }
         // Everything else already says the useful thing (which path, which
         // flag) in its own message; inventing a headline would lose that.
         _ => (error.message.as_str(), error.action.next_command()),
@@ -1971,6 +1981,20 @@ mod tests {
         let rendered = render_human_error(&err, &Paint::plain());
         assert!(rendered.starts_with("No OXIDE index was found"));
         assert!(rendered.ends_with("Run:\n  oxide index"));
+    }
+
+    #[test]
+    fn embedder_unavailable_shows_its_cause() {
+        let err = CliError::new(
+            "embedder_unavailable",
+            ErrorAction::FallBack,
+            "OXIDE_EMBED_SESSIONS=\"0\" is not valid: use `auto`",
+            false,
+        );
+        let rendered = render_human_error(&err, &Paint::plain());
+        assert!(rendered.starts_with("The embedding provider is unavailable"));
+        assert!(rendered.contains("Cause: OXIDE_EMBED_SESSIONS=\"0\" is not valid"));
+        assert!(rendered.ends_with("Run:\n  oxide search <query> --mode lexical"));
     }
 
     #[test]

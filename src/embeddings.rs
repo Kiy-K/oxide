@@ -829,6 +829,139 @@ pub struct NativeEmbedder {
     /// text per ONNX call, so every call shape yields the single-text vector
     /// the index and the query path already use.
     batch_invariant: bool,
+    /// Session pool (`$OXIDE_EMBED_SESSIONS`, see [`EmbedSessions`]): extra
+    /// ONNX sessions beyond `model`, created lazily and only when every
+    /// existing one is busy, so a one-shot search or a small update never
+    /// loads more than one. Empty for a single-session embedder, whose path
+    /// is exactly the pre-pool one.
+    extra_sessions: Vec<std::sync::OnceLock<Option<std::sync::Mutex<fastembed::TextEmbedding>>>>,
+    /// How to build an extra session: same model and cache as `model`, the
+    /// pool's per-session intra-op thread count.
+    session_opts: Option<fastembed::TextInitOptions>,
+    /// Documents embedded by this instance so far. The pool only grows once
+    /// this reaches [`POOL_GROWTH_AFTER_DOCUMENTS`], so an incremental update
+    /// of a few dozen symbols, or a burst of concurrent queries, never pays
+    /// for loading sessions it would not amortize.
+    documents_embedded: std::sync::atomic::AtomicUsize,
+}
+
+/// Environment variable selecting how many ONNX sessions a native embedder
+/// may use. Documented in README "Embedding speed and memory".
+pub const EMBED_SESSIONS_ENV: &str = "OXIDE_EMBED_SESSIONS";
+/// Upper bound for an explicit session count.
+pub const MAX_EMBED_SESSIONS: usize = 16;
+/// Most sessions `auto` ever picks: `update_embeddings` runs at most four
+/// workers, so a fifth session could never be busy.
+pub const AUTO_MAX_EMBED_SESSIONS: usize = 4;
+/// `auto` keeps a model whose per-session footprint exceeds this at one
+/// session: pooling a large model multiplies its resident weights.
+pub const AUTO_MAX_SESSION_MB: u64 = 400;
+/// Documents a native embedder must have embedded before its session pool
+/// may grow. Loading three extra Arctic XS Q sessions costs ~0.3 s and
+/// ~120 MB; measured on a 30-symbol update, growing made indexing slower
+/// (0.54 → 0.78 s), while full indexing is 2.9× faster. Queries never count.
+pub const POOL_GROWTH_AFTER_DOCUMENTS: usize = 256;
+
+/// How many ONNX sessions a native embedder may use.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EmbedSessions {
+    /// Adaptive (the default): see [`auto_embed_sessions`].
+    Auto,
+    /// Exactly this many (1 = one session on every core, the lowest-memory
+    /// setting and OXIDE's behavior before pooling).
+    Fixed(usize),
+}
+
+/// Parses an `$OXIDE_EMBED_SESSIONS` value: empty or `auto` → adaptive,
+/// `1`..=[`MAX_EMBED_SESSIONS`] → that many. Anything else is an error that
+/// says how to fix it — never a silent default.
+pub fn parse_embed_sessions(value: &str) -> anyhow::Result<EmbedSessions> {
+    let v = value.trim();
+    if v.is_empty() || v.eq_ignore_ascii_case("auto") {
+        return Ok(EmbedSessions::Auto);
+    }
+    match v.parse::<usize>() {
+        Ok(n @ 1..=MAX_EMBED_SESSIONS) => Ok(EmbedSessions::Fixed(n)),
+        _ => anyhow::bail!(
+            "{EMBED_SESSIONS_ENV}={value:?} is not valid: use `auto` (the default) or a \
+             session count from 1 to {MAX_EMBED_SESSIONS}; `1` restores single-session, \
+             lowest-memory embedding"
+        ),
+    }
+}
+
+/// `$OXIDE_EMBED_SESSIONS`, unset meaning [`EmbedSessions::Auto`].
+pub fn embed_sessions_from_env() -> anyhow::Result<EmbedSessions> {
+    match std::env::var(EMBED_SESSIONS_ENV) {
+        Err(std::env::VarError::NotPresent) => Ok(EmbedSessions::Auto),
+        Err(e) => anyhow::bail!(
+            "{EMBED_SESSIONS_ENV} is not valid ({e}): use `auto` or 1-{MAX_EMBED_SESSIONS}"
+        ),
+        Ok(v) => parse_embed_sessions(&v),
+    }
+}
+
+/// The adaptive session count, as a pure function of the machine and the
+/// model so it can be tested: one session per four cores (so every session
+/// keeps at least four intra-op threads), at most
+/// [`AUTO_MAX_EMBED_SESSIONS`]; one session for a model above
+/// [`AUTO_MAX_SESSION_MB`]; and the extra sessions together may use at most
+/// a quarter of the memory available now (`available_mb`, `None` when the
+/// platform does not report it).
+pub fn auto_embed_sessions(cores: usize, session_mb: u64, available_mb: Option<u64>) -> usize {
+    if session_mb > AUTO_MAX_SESSION_MB {
+        return 1;
+    }
+    let by_cpu = (cores / 4).clamp(1, AUTO_MAX_EMBED_SESSIONS);
+    let by_memory = available_mb.map_or(by_cpu, |mb| 1 + (mb / 4 / session_mb.max(1)) as usize);
+    by_cpu.min(by_memory).max(1)
+}
+
+#[cfg(feature = "native-embed")]
+/// Memory available to this process in MB: Linux `MemAvailable`, capped by
+/// the cgroup v2 limit when one is set (containers). `None` elsewhere.
+fn available_memory_mb() -> Option<u64> {
+    let meminfo = std::fs::read_to_string("/proc/meminfo").ok()?;
+    let mut mb = meminfo
+        .lines()
+        .find_map(|l| l.strip_prefix("MemAvailable:"))?
+        .trim()
+        .trim_end_matches("kB")
+        .trim()
+        .parse::<u64>()
+        .ok()?
+        / 1024;
+    let cgroup = std::fs::read_to_string("/proc/self/cgroup").ok();
+    if let Some(path) = cgroup
+        .as_deref()
+        .and_then(|c| c.lines().find_map(|l| l.strip_prefix("0::")))
+    {
+        let dir = std::path::Path::new("/sys/fs/cgroup").join(path.trim_start_matches('/'));
+        let read = |f: &str| {
+            std::fs::read_to_string(dir.join(f))
+                .ok()
+                .and_then(|v| v.trim().parse::<u64>().ok())
+        };
+        if let (Some(max), Some(cur)) = (read("memory.max"), read("memory.current")) {
+            mb = mb.min(max.saturating_sub(cur) / (1024 * 1024));
+        }
+    }
+    Some(mb)
+}
+
+#[cfg(feature = "native-embed")]
+/// Approximate resident memory of one extra ONNX session per profile, for
+/// `auto`. `arctic-embed-xs-q` is measured (≈80 MB); the rest are estimated
+/// from model size (weights ×1.5 + 40 MB) and only need to be the right
+/// side of [`AUTO_MAX_SESSION_MB`].
+fn session_mb(profile: &str) -> u64 {
+    match profile {
+        "arctic-embed-xs-q" | "minilm-l6-v2-q" => 80,
+        "bge-small-en-v1.5-q" => 100,
+        "arctic-embed-xs" | "minilm-l6-v2" => 180,
+        "arctic-embed-s" | "bge-small-en-v1.5" => 250,
+        _ => u64::MAX,
+    }
 }
 
 #[cfg(feature = "native-embed")]
@@ -839,6 +972,25 @@ impl NativeEmbedder {
     /// Phase 3.3 follow-up); every other profile uses its own single
     /// upstream-documented query prefix and ignores this parameter.
     pub fn new(profile: &str, query_prompt: GemmaQueryPrompt) -> anyhow::Result<Self> {
+        Self::with_sessions(profile, query_prompt, embed_sessions_from_env()?)
+    }
+
+    /// [`Self::new`] with an explicit session setting instead of
+    /// `$OXIDE_EMBED_SESSIONS`, so tests and benchmarks do not race on the
+    /// environment.
+    pub fn with_sessions(
+        profile: &str,
+        query_prompt: GemmaQueryPrompt,
+        setting: EmbedSessions,
+    ) -> anyhow::Result<Self> {
+        let cores = std::thread::available_parallelism().map_or(1, |n| n.get());
+        let sessions = match setting {
+            EmbedSessions::Auto => {
+                auto_embed_sessions(cores, session_mb(profile), available_memory_mb())
+            }
+            // Never more sessions than cores: each needs a thread of its own.
+            EmbedSessions::Fixed(n) => n.clamp(1, MAX_EMBED_SESSIONS).min(cores.max(1)),
+        };
         let spec = native_model_spec(profile)?;
         let is_gemma = profile.starts_with("embeddinggemma");
         let dim = fastembed::TextEmbedding::get_model_info(&spec.model)?.dim;
@@ -853,9 +1005,29 @@ impl NativeEmbedder {
             .join(".cache/huggingface/hub");
         let batch_invariant = fastembed::TextEmbedding::get_quantization_mode(&spec.model)
             != fastembed::QuantizationMode::Dynamic;
-        let model = fastembed::TextEmbedding::try_new(
-            fastembed::TextInitOptions::new(spec.model.clone()).with_cache_dir(cache_dir),
-        )?;
+        // A pool of N sessions splits the cores between them (intra-op
+        // threads = cores / N), so pooled workers never oversubscribe the
+        // CPU; one session keeps fastembed's default of every core, exactly
+        // as before pooling. Vectors are bit-identical to one session
+        // (`session_pool_matches_single_session_bit_for_bit`: int8 and fp32
+        // Arctic XS), so identity and fingerprint do not change. Slot 0 also
+        // runs on cores / N threads, which made a lone warm query faster for
+        // the default model (3.4 → 2.2 ms). Lazily created sessions stay
+        // resident for the life of a long-lived process such as `oxide mcp`.
+        // `from_local_files` always uses one session.
+        let mut opts =
+            fastembed::TextInitOptions::new(spec.model.clone()).with_cache_dir(cache_dir.clone());
+        if sessions > 1 {
+            opts = opts.with_intra_threads((cores / sessions).max(1));
+        }
+        let model = fastembed::TextEmbedding::try_new(opts.clone()).map_err(|e| {
+            anyhow::anyhow!(
+                "could not load the native embedding model `{profile}` (cache: {}): {e}. \
+                 The first run downloads it (~23 MB for the default) from Hugging Face: \
+                 check network access, or run with OXIDE_EMBED_NATIVE=hashed to index offline",
+                cache_dir.display()
+            )
+        })?;
         // Name encodes the query-prompt variant so index-compatibility
         // staleness detection (name-based, see `update_index`) invalidates
         // across variants too — otherwise switching variants without
@@ -886,6 +1058,9 @@ impl NativeEmbedder {
             quantization: spec.quantization.to_string(),
             pooling: spec.pooling.to_string(),
             batch_invariant,
+            extra_sessions: (1..sessions).map(|_| std::sync::OnceLock::new()).collect(),
+            session_opts: (sessions > 1).then_some(opts),
+            documents_embedded: std::sync::atomic::AtomicUsize::new(0),
         })
     }
 
@@ -976,7 +1151,61 @@ impl NativeEmbedder {
             // a quantized local profile must derive this from its
             // quantization mode the way `new` does.
             batch_invariant: true,
+            extra_sessions: Vec::new(),
+            session_opts: None,
+            documents_embedded: std::sync::atomic::AtomicUsize::new(0),
         })
+    }
+}
+
+#[cfg(feature = "native-embed")]
+impl NativeEmbedder {
+    /// A free ONNX session. Without a pool this is a plain blocking lock on
+    /// the one session, as before pooling. With one: the first idle session,
+    /// else — once this instance has done bulk document work — a lazily
+    /// created extra session, else wait on the first.
+    fn session(&self) -> Option<std::sync::MutexGuard<'_, fastembed::TextEmbedding>> {
+        if self.extra_sessions.is_empty() {
+            return self.model.lock().ok();
+        }
+        if let Ok(g) = self.model.try_lock() {
+            return Some(g);
+        }
+        for slot in &self.extra_sessions {
+            if let Some(Some(m)) = slot.get() {
+                if let Ok(g) = m.try_lock() {
+                    return Some(g);
+                }
+            }
+        }
+        let bulk = self
+            .documents_embedded
+            .load(std::sync::atomic::Ordering::Relaxed)
+            >= POOL_GROWTH_AFTER_DOCUMENTS;
+        for slot in self.extra_sessions.iter().filter(|_| bulk) {
+            if slot.get().is_none() {
+                let m = slot.get_or_init(|| {
+                    let opts = self.session_opts.clone()?;
+                    fastembed::TextEmbedding::try_new(opts)
+                        .map_err(|e| eprintln!("oxide: extra embedding session failed ({e})"))
+                        .ok()
+                        .map(std::sync::Mutex::new)
+                });
+                if let Some(Ok(g)) = m.as_ref().map(|m| m.try_lock()) {
+                    return Some(g);
+                }
+            }
+        }
+        self.model.lock().ok()
+    }
+
+    /// Sessions currently loaded (1 + extra sessions created so far).
+    pub fn live_sessions(&self) -> usize {
+        1 + self
+            .extra_sessions
+            .iter()
+            .filter(|s| matches!(s.get(), Some(Some(_))))
+            .count()
     }
 }
 
@@ -998,7 +1227,7 @@ impl EmbeddingProvider for NativeEmbedder {
     }
 
     fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
-        let Ok(mut model) = self.model.lock() else {
+        let Some(mut model) = self.session() else {
             return vec![Vec::new(); texts.len()];
         };
         let mut run = |batch: &[String]| {
@@ -1026,6 +1255,8 @@ impl EmbeddingProvider for NativeEmbedder {
     }
 
     fn embed_document(&self, text: &str) -> Vec<f32> {
+        self.documents_embedded
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         if self.document_prefix.is_empty() {
             self.embed(text)
         } else {
@@ -1034,6 +1265,8 @@ impl EmbeddingProvider for NativeEmbedder {
     }
 
     fn embed_documents(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        self.documents_embedded
+            .fetch_add(texts.len(), std::sync::atomic::Ordering::Relaxed);
         if self.document_prefix.is_empty() {
             return self.embed_batch(texts);
         }
@@ -1502,6 +1735,107 @@ mod tests {
         assert_eq!(code, "task: code retrieval | query: fix backoff");
         assert_ne!(bare, search);
         assert_ne!(search, code);
+    }
+
+    #[test]
+    fn embed_sessions_setting_parses_auto_counts_and_rejects_the_rest() {
+        assert_eq!(parse_embed_sessions("").unwrap(), EmbedSessions::Auto);
+        assert_eq!(parse_embed_sessions(" AUTO ").unwrap(), EmbedSessions::Auto);
+        assert_eq!(parse_embed_sessions("1").unwrap(), EmbedSessions::Fixed(1));
+        assert_eq!(
+            parse_embed_sessions("16").unwrap(),
+            EmbedSessions::Fixed(16)
+        );
+        for bad in ["0", "17", "-1", "four", "2.5"] {
+            let err = parse_embed_sessions(bad).unwrap_err().to_string();
+            assert!(
+                err.contains("OXIDE_EMBED_SESSIONS") && err.contains("`1` restores"),
+                "{bad}: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn auto_embed_sessions_scales_with_cores_memory_and_model_size() {
+        // One session per four cores, capped at four.
+        assert_eq!(auto_embed_sessions(16, 80, Some(8_000)), 4);
+        assert_eq!(auto_embed_sessions(32, 80, Some(8_000)), 4);
+        assert_eq!(auto_embed_sessions(8, 80, Some(8_000)), 2);
+        assert_eq!(auto_embed_sessions(4, 80, Some(8_000)), 1);
+        assert_eq!(auto_embed_sessions(1, 80, None), 1);
+        // Extra sessions may use at most a quarter of available memory.
+        assert_eq!(auto_embed_sessions(16, 80, Some(400)), 2);
+        assert_eq!(auto_embed_sessions(16, 80, Some(300)), 1);
+        // Large models never pool automatically.
+        assert_eq!(
+            auto_embed_sessions(16, AUTO_MAX_SESSION_MB + 1, Some(64_000)),
+            1
+        );
+        // Unknown memory: cores decide.
+        assert_eq!(auto_embed_sessions(16, 80, None), 4);
+    }
+
+    /// The session pool must be a pure throughput change: four
+    /// threads embedding concurrently through a 4-session pool produce the
+    /// exact vectors the single shipped session produces, for a dynamic-int8
+    /// profile (one text per call) and through `embed_documents`.
+    ///
+    /// Ignored by default: needs the Arctic XS Q model cached locally. Run
+    /// with `cargo test --features native-embed -- --ignored
+    /// session_pool_matches_single_session_bit_for_bit`.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    #[ignore]
+    fn session_pool_matches_single_session_bit_for_bit() {
+        // int8 (the shipped default) and an fp32 profile, whose float
+        // accumulation could in principle depend on the intra-op split.
+        for profile in ["arctic-embed-xs-q", "arctic-embed-xs"] {
+            pool_matches_single(profile);
+        }
+    }
+
+    #[cfg(feature = "native-embed")]
+    fn pool_matches_single(profile: &str) {
+        let single =
+            NativeEmbedder::with_sessions(profile, GemmaQueryPrompt::Bare, EmbedSessions::Fixed(1))
+                .unwrap();
+        let pooled =
+            NativeEmbedder::with_sessions(profile, GemmaQueryPrompt::Bare, EmbedSessions::Fixed(4))
+                .unwrap();
+        // Queries alone never grow the pool.
+        for i in 0..8 {
+            pooled.embed_query(&format!("retry {i}"));
+        }
+        assert_eq!(
+            pooled.live_sessions(),
+            1,
+            "{profile}: queries grew the pool"
+        );
+        // Enough document work to cross POOL_GROWTH_AFTER_DOCUMENTS, spread
+        // over four threads so extra sessions are actually created and used.
+        let texts: Vec<String> = (0..POOL_GROWTH_AFTER_DOCUMENTS + 64)
+            .map(|i| format!("src/m{i}.py function f{i} def f{i}(x): retry_{i} Client get"))
+            .collect();
+        let expected: Vec<Vec<f32>> = texts.iter().map(|t| single.embed_document(t)).collect();
+        let got: Vec<Vec<f32>> = std::thread::scope(|sc| {
+            let hs: Vec<_> = texts
+                .chunks(texts.len().div_ceil(4))
+                .map(|c| {
+                    sc.spawn(|| {
+                        c.iter()
+                            .map(|t| pooled.embed_document(t))
+                            .collect::<Vec<_>>()
+                    })
+                })
+                .collect();
+            hs.into_iter().flat_map(|h| h.join().unwrap()).collect()
+        });
+        assert_eq!(got, expected, "{profile}: pooled vectors differ");
+        assert!(pooled.live_sessions() > 1, "{profile}: pool never grew");
+        assert_eq!(pooled.embed_documents(&texts[..5]), expected[..5].to_vec());
+        assert_eq!(pooled.embed_query("retry"), single.embed_query("retry"));
+        assert_eq!(pooled.fingerprint(), single.fingerprint());
+        assert_eq!(pooled.name(), single.name());
     }
 
     /// A dynamically quantized ONNX model (fastembed's `*Q` Arctic/MiniLM
