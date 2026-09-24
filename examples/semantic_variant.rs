@@ -23,6 +23,7 @@
 //! production pipeline and must reproduce `fusion_dump`'s `semantic` lists
 //! bit-for-bit — that is the harness's self-check.
 use oxide::context::{build_context_with, ContextOptions};
+use oxide::embedding_cache::SharedEmbeddingCache;
 use oxide::embeddings::{
     symbol_embed_text, EmbeddingProvider, EmbeddingSpaceFingerprint, GemmaQueryPrompt,
     NativeEmbedder,
@@ -100,9 +101,27 @@ fn strip_comment_marker(line: &str) -> &str {
     t
 }
 
-fn is_comment_line(line: &str) -> bool {
+/// `#` starts a comment only in `#`-comment languages: in Rust it is an
+/// attribute (`#[derive]`), in C/C++ a preprocessor line.
+fn is_comment_line(lang: Language, line: &str) -> bool {
     let t = line.trim();
-    t.starts_with("//") || t.starts_with('#') || t.starts_with("/*") || t.starts_with('*')
+    t.starts_with("//")
+        || t.starts_with("/*")
+        || t.starts_with('*')
+        || (t.starts_with('#') && matches!(lang, Language::Python | Language::Ruby | Language::Php))
+}
+
+/// Rust attributes sit between a doc comment and its item; walk past them
+/// without keeping them.
+fn is_attribute_line(lang: Language, line: &str) -> bool {
+    let t = line.trim();
+    lang == Language::Rust && (t.starts_with("#[") || t.starts_with("#!["))
+}
+
+/// Python header line minus a trailing `# comment` (naive: a `#` inside a
+/// string default is rare enough for a research extractor).
+fn python_code_part(line: &str) -> &str {
+    line.split('#').next().unwrap_or("").trim_end()
 }
 
 /// The symbol's own documentation: a Python docstring (first string literal
@@ -120,7 +139,7 @@ fn doc_text(s: &Symbol, lines: &[String]) -> String {
         // Skip the header (decorators + def line(s) up to the one ending in ':').
         let mut i = start;
         if s.kind != SymbolKind::Module {
-            while i < end && !lines[i].trim_end().ends_with(':') {
+            while i < end && !python_code_part(&lines[i]).ends_with(':') {
                 i += 1;
             }
             i += 1;
@@ -153,11 +172,17 @@ fn doc_text(s: &Symbol, lines: &[String]) -> String {
     if doc.is_empty() && s.kind != SymbolKind::Module {
         // Leading comment block directly above the span.
         let mut j = start;
-        while j > 0 && j + 12 > start && is_comment_line(&lines[j - 1]) {
+        while j > 0
+            && j + 12 > start
+            && (is_comment_line(s.language, &lines[j - 1])
+                || is_attribute_line(s.language, &lines[j - 1]))
+        {
             j -= 1;
         }
         for line in &lines[j..start] {
-            doc.push(strip_comment_marker(line).to_string());
+            if is_comment_line(s.language, line) {
+                doc.push(strip_comment_marker(line).to_string());
+            }
         }
     }
     squash(&doc.join(" "), DOC_CHARS)
@@ -254,11 +279,152 @@ fn variant_text(variant: &str, s: &Symbol, src: &mut Sources) -> String {
 }
 
 // ---------------------------------------------------------------------------
+// Local ONNX provider for models fastembed has no enum for (Granite R2).
+// ---------------------------------------------------------------------------
+
+/// A sentence-embedding ONNX export loaded from local files: CLS or mean
+/// pooling over `last_hidden_state`, L2-normalized by fastembed, no query or
+/// document prompt (Granite R2's `config_sentence_transformers.json` prompts
+/// are both empty). Research-only; never reachable from `open_embedder`.
+struct LocalOnnxEmbedder {
+    /// Research-only pool: fp32 is batch- and thread-count-invariant, so
+    /// 4 sessions × cores/4 threads only change speed.
+    models: Vec<std::sync::Mutex<fastembed::TextEmbedding>>,
+    dim: usize,
+    name: String,
+    label: String,
+    onnx: String,
+    pooling: String,
+}
+
+impl LocalOnnxEmbedder {
+    fn load(dir: &std::path::Path, onnx: &str, pooling: &str, label: &str) -> anyhow::Result<Self> {
+        let read = |name: &str| std::fs::read(dir.join(name));
+        let tokenizer_files = fastembed::TokenizerFiles {
+            tokenizer_file: read("tokenizer.json")?,
+            config_file: read("config.json")?,
+            special_tokens_map_file: read("special_tokens_map.json")?,
+            tokenizer_config_file: read("tokenizer_config.json")?,
+        };
+        let pool = match pooling {
+            "cls" => fastembed::Pooling::Cls,
+            "mean" => fastembed::Pooling::Mean,
+            other => anyhow::bail!("unknown pooling {other}"),
+        };
+        let onnx_bytes = read(onnx)?;
+        let sessions = 4;
+        let intra = (std::thread::available_parallelism().map_or(1, |n| n.get()) / sessions).max(1);
+        let mut models = Vec::with_capacity(sessions);
+        for _ in 0..sessions {
+            let user = fastembed::UserDefinedEmbeddingModel::new(
+                onnx_bytes.clone(),
+                tokenizer_files.clone(),
+            )
+            .with_pooling(pool.clone());
+            let mut opts = fastembed::InitOptionsUserDefined::new().with_max_length(512);
+            opts.intra_threads = Some(intra);
+            models.push(std::sync::Mutex::new(
+                fastembed::TextEmbedding::try_new_from_user_defined(user, opts)?,
+            ));
+        }
+        let dim = models[0]
+            .lock()
+            .unwrap()
+            .embed(vec!["probe"], None)?
+            .first()
+            .map(Vec::len)
+            .unwrap_or(0);
+        Ok(Self {
+            models,
+            dim,
+            name: format!("local:{label}"),
+            label: label.to_string(),
+            // The HF snapshot directory carries the revision hash: two
+            // revisions of the same file must never share a cache namespace.
+            onnx: dir.join(onnx).display().to_string(),
+            pooling: pooling.to_string(),
+        })
+    }
+}
+
+impl EmbeddingProvider for LocalOnnxEmbedder {
+    fn name(&self) -> &str {
+        &self.name
+    }
+    fn dim(&self) -> usize {
+        self.dim
+    }
+    fn embed(&self, text: &str) -> Vec<f32> {
+        self.embed_batch(std::slice::from_ref(&text.to_string()))
+            .into_iter()
+            .next()
+            .unwrap_or_default()
+    }
+    fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        let guard = match self.models.iter().find_map(|m| m.try_lock().ok()) {
+            Some(g) => Some(g),
+            None => self.models[0].lock().ok(),
+        };
+        let Some(mut model) = guard else {
+            return vec![Vec::new(); texts.len()];
+        };
+        model
+            .embed(texts, None)
+            .unwrap_or_else(|_| vec![Vec::new(); texts.len()])
+    }
+    fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
+        EmbeddingSpaceFingerprint {
+            schema_version: 1,
+            model: self.label.clone(),
+            artifact_revision: self.onnx.clone(),
+            quantization: String::new(),
+            representation: "dense".to_string(),
+            dimension: self.dim,
+            query_profile: "bare".to_string(),
+            document_profile: "bare".to_string(),
+            pooling: self.pooling.clone(),
+            normalization: "l2".to_string(),
+            similarity: "cosine".to_string(),
+        }
+    }
+}
+
+/// Delegates to a shared cache so its hit/miss counters stay readable.
+struct Shared(&'static SharedEmbeddingCache);
+
+impl EmbeddingProvider for Shared {
+    fn name(&self) -> &str {
+        self.0.name()
+    }
+    fn dim(&self) -> usize {
+        self.0.dim()
+    }
+    fn embed(&self, text: &str) -> Vec<f32> {
+        self.0.embed(text)
+    }
+    fn embed_batch(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        self.0.embed_batch(texts)
+    }
+    fn embed_query(&self, text: &str) -> Vec<f32> {
+        self.0.embed_query(text)
+    }
+    fn embed_document(&self, text: &str) -> Vec<f32> {
+        self.0.embed_document(text)
+    }
+    fn embed_documents(&self, texts: &[String]) -> Vec<Vec<f32>> {
+        self.0.embed_documents(texts)
+    }
+    fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
+        self.0.fingerprint()
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Variant provider: rewrites document text on the way into the real model.
 // ---------------------------------------------------------------------------
 
 struct VariantEmbedder {
-    inner: NativeEmbedder,
+    inner: Box<dyn EmbeddingProvider>,
     name: String,
     variant: String,
     bare_query: bool,
@@ -326,10 +492,96 @@ fn main() -> anyhow::Result<()> {
         .unwrap_or_else(|| oxide::embeddings::DEFAULT_NATIVE_PROFILE.to_string());
     let bare_query = arg(&args, "--query").as_deref() == Some("bare");
     let no_embed = args.iter().any(|a| a == "--no-embed");
+    // `--dump-texts N`: print N evenly sampled symbols' variant text and
+    // exit, for eyeballing the extractor per language before a run.
+    let dump_texts: Option<usize> = arg(&args, "--dump-texts").and_then(|n| n.parse().ok());
+
+    if let Some(n) = dump_texts {
+        let store = SqliteStore::open(&db)?;
+        let symbols = store.all_symbols()?;
+        let mut src = Sources {
+            root: root.clone(),
+            files: HashMap::new(),
+        };
+        let step = (symbols.len() / n.max(1)).max(1);
+        for s in symbols.iter().step_by(step).take(n) {
+            let text = variant_text(&variant, s, &mut src);
+            println!(
+                "{}",
+                json!({"id": format!("{}#{}", s.file, s.qualified_name), "text": text})
+            );
+        }
+        return Ok(());
+    }
 
     let t0 = Instant::now();
-    let inner = NativeEmbedder::new(&profile, GemmaQueryPrompt::Bare)?;
+    // `--local-model <dir> --onnx <file> [--pooling cls|mean]` swaps in a
+    // local ONNX export; `--profile` then only labels it.
+    let inner: Box<dyn EmbeddingProvider> = match arg(&args, "--local-model") {
+        Some(dir) => Box::new(LocalOnnxEmbedder::load(
+            std::path::Path::new(&dir),
+            &arg(&args, "--onnx").unwrap_or_else(|| "onnx/model.onnx".to_string()),
+            &arg(&args, "--pooling").unwrap_or_else(|| "cls".to_string()),
+            &profile,
+        )?),
+        None => Box::new(NativeEmbedder::new(&profile, GemmaQueryPrompt::Bare)?),
+    };
     let model_load_ms = t0.elapsed().as_secs_f64() * 1e3;
+    // `--cache <db>`: content-addressed vector reuse across corpora and runs
+    // (`oxide::embedding_cache`). Namespace = the provider's full
+    // fingerprint (model, artifact, quantization, query/document profile,
+    // pooling, normalization, dim); key = hash of the exact text handed to
+    // `embed_document` — the variant text. Corpus identity is deliberately
+    // not part of the key: a vector is a pure function of (provider, text),
+    // verified bit-reproducible, so the same text in another commit is the
+    // same vector. Queries are never cached.
+    let (inner, cache): (
+        Box<dyn EmbeddingProvider>,
+        Option<&'static SharedEmbeddingCache>,
+    ) = match arg(&args, "--cache") {
+        Some(p) => {
+            // Leaked for the life of this one-shot process so the boxed
+            // provider and the hit/miss report can share it.
+            let c: &'static SharedEmbeddingCache = Box::leak(Box::new(SharedEmbeddingCache::open(
+                inner,
+                std::path::Path::new(&p),
+            )?));
+            (Box::new(Shared(c)), Some(c))
+        }
+        None => (inner, None),
+    };
+    // `--emit-vectors <texts.jsonl>`: embed {"text", "role": query|document}
+    // lines through the provider exactly as retrieval would and print the
+    // vectors, for checking against an independent reference implementation.
+    // `--emit-batch <texts.jsonl>`: embed all document lines in ONE
+    // `embed_documents` call (the indexer's small-update path) and print.
+    if let Some(path) = arg(&args, "--emit-batch") {
+        let texts: Vec<String> = std::io::BufReader::new(std::fs::File::open(path)?)
+            .lines()
+            .map(|l| {
+                let v: Value = serde_json::from_str(&l.unwrap()).unwrap();
+                v["text"].as_str().unwrap_or_default().to_string()
+            })
+            .collect();
+        for (t, vec) in texts.iter().zip(inner.embed_documents(&texts)) {
+            println!("{}", json!({"text": t, "role": "document", "vec": vec}));
+        }
+        return Ok(());
+    }
+    if let Some(path) = arg(&args, "--emit-vectors") {
+        for line in std::io::BufReader::new(std::fs::File::open(path)?).lines() {
+            let v: Value = serde_json::from_str(&line?)?;
+            let text = v["text"].as_str().unwrap_or_default();
+            let vec = if v["role"] == "query" {
+                inner.embed_query(text)
+            } else {
+                inner.embed_document(text)
+            };
+            println!("{}", json!({"text": text, "role": v["role"], "vec": vec}));
+        }
+        eprintln!("model_load_ms={model_load_ms:.0}");
+        return Ok(());
+    }
 
     let mut store = SqliteStore::open(&db)?;
     let symbols = store.all_symbols()?;
@@ -351,6 +603,98 @@ fn main() -> anyhow::Result<()> {
     }
     let text_build_ms = t1.elapsed().as_secs_f64() * 1e3;
     drop(src);
+
+    // `--bench-pool S --intra K`: throughput of S independent Arctic XS Q
+    // sessions (K intra-op threads each), one text per call as the shipped
+    // dynamic-quant model requires; also checks vectors are bit-identical to
+    // the default single session. Research-only.
+    if let Some(sessions) = arg(&args, "--bench-pool").and_then(|n| n.parse::<usize>().ok()) {
+        let intra: usize = arg(&args, "--intra")
+            .and_then(|n| n.parse().ok())
+            .unwrap_or(1);
+        let cache = std::path::PathBuf::from(std::env::var("HOME")?).join(".cache/huggingface/hub");
+        let docs: Vec<String> = symbols
+            .iter()
+            .map(|s| texts[&symbol_embed_text(s)].clone())
+            .collect();
+        let mut pool: Vec<fastembed::TextEmbedding> = (0..sessions)
+            .map(|_| {
+                fastembed::TextEmbedding::try_new(
+                    fastembed::TextInitOptions::new(
+                        fastembed::EmbeddingModel::SnowflakeArcticEmbedXSQ,
+                    )
+                    .with_cache_dir(cache.clone())
+                    .with_intra_threads(intra),
+                )
+            })
+            .collect::<Result<_, _>>()?;
+        let chunk = docs.len().div_ceil(sessions);
+        let t = Instant::now();
+        let out: Vec<Vec<Vec<f32>>> = std::thread::scope(|sc| {
+            let hs: Vec<_> = pool
+                .iter_mut()
+                .zip(docs.chunks(chunk))
+                .map(|(m, part)| {
+                    sc.spawn(move || {
+                        part.iter()
+                            .map(|d| m.embed(std::slice::from_ref(d), None).unwrap().remove(0))
+                            .collect::<Vec<_>>()
+                    })
+                })
+                .collect();
+            hs.into_iter().map(|h| h.join().unwrap()).collect()
+        });
+        let secs = t.elapsed().as_secs_f64();
+        let flat: Vec<Vec<f32>> = out.into_iter().flatten().collect();
+        let same = flat
+            .iter()
+            .zip(&docs)
+            .take(200)
+            .filter(|(v, d)| **v == inner.embed_document(d))
+            .count();
+        println!(
+            "{}",
+            json!({"sessions": sessions, "intra": intra, "docs": flat.len(),
+                   "docs_per_s": flat.len() as f64 / secs, "identical_first_200": same})
+        );
+        return Ok(());
+    }
+    // `--bench-batch B`: cost screen. Embed every symbol's variant text
+    // straight through the provider in batches of B (B=1 is the per-text
+    // call the production worker path makes), then time 50 single queries;
+    // print throughput/latency and exit without touching the index.
+    if let Some(b) = arg(&args, "--bench-batch").and_then(|n| n.parse::<usize>().ok()) {
+        let docs: Vec<String> = symbols
+            .iter()
+            .map(|s| texts[&symbol_embed_text(s)].clone())
+            .collect();
+        let t = Instant::now();
+        let mut n = 0usize;
+        for chunk in docs.chunks(b.max(1)) {
+            n += inner
+                .embed_batch(chunk)
+                .iter()
+                .filter(|v| !v.is_empty())
+                .count();
+        }
+        let secs = t.elapsed().as_secs_f64();
+        let mut q: Vec<f64> = (0..50)
+            .map(|i| {
+                let t = Instant::now();
+                inner.embed_query(&format!("retry the request when connection {i} is reset"));
+                t.elapsed().as_secs_f64() * 1e3
+            })
+            .collect();
+        q.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        println!(
+            "{}",
+            json!({"profile": profile, "variant": variant, "batch": b, "docs": n,
+                   "docs_per_s": n as f64 / secs, "embed_s": secs,
+                   "query_p50_ms": q[25], "query_p90_ms": q[45],
+                   "model_load_ms": model_load_ms})
+        );
+        return Ok(());
+    }
 
     let embedder = VariantEmbedder {
         name: format!(
@@ -382,12 +726,14 @@ fn main() -> anyhow::Result<()> {
     eprintln!(
         "semantic_variant: profile={profile} variant={variant} query={} symbols={} with_doc={} \
          avg_chars={:.0} model_load_ms={model_load_ms:.0} text_build_ms={text_build_ms:.0} \
-         embed_ms={embed_ms:.0} db_bytes={db_bytes} dim={}",
+         embed_ms={embed_ms:.0} db_bytes={db_bytes} dim={} cache_hits={} cache_misses={}",
         if bare_query { "bare" } else { "prefix" },
         symbols.len(),
         with_doc,
         text_chars as f64 / symbols.len().max(1) as f64,
-        embedder.dim()
+        embedder.dim(),
+        cache.as_ref().map_or(0, |c| c.hits()),
+        cache.as_ref().map_or(0, |c| c.misses()),
     );
 
     // ---- dump loop: mirrors examples/fusion_dump.rs with timings added ----
