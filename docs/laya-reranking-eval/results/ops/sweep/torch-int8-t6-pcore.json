@@ -1,0 +1,74 @@
+{
+ "config": "torch-int8",
+ "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e",
+ "threads": 6,
+ "affinity": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10
+ ],
+ "load_s": 5.86,
+ "room_tokens": 416,
+ "sizes": [
+  13,
+  13,
+  12
+ ],
+ "warm_shortlist_ms_p50": 11709.7,
+ "warm_shortlist_ms_mean": 11728.0,
+ "peak_rss_mb": 3875.3,
+ "probs": {
+  "Multi-SWE-Bench__typescript__maintenance__bugfix__2fb50735": [
+   0.4936,
+   0.51,
+   0.4488,
+   0.5586,
+   0.4267,
+   0.5431,
+   0.5242,
+   0.4803,
+   0.5223,
+   0.5753,
+   0.5539,
+   0.4949,
+   0.5825
+  ],
+  "Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70": [
+   0.4626,
+   0.53,
+   0.4779,
+   0.4366,
+   0.5466,
+   0.6148,
+   0.5262,
+   0.4721,
+   0.5018,
+   0.5435,
+   0.4796,
+   0.4595,
+   0.4536
+  ],
+  "SWE-Bench-Verified__python__maintenance__bugfix__049a7048": [
+   0.5383,
+   0.4569,
+   0.5007,
+   0.5792,
+   0.5011,
+   0.4858,
+   0.4163,
+   0.5026,
+   0.4212,
+   0.4771,
+   0.4842,
+   0.4523
+  ]
+ },
+ "parity_vs_ref": {
+  "max_abs_dp": 0.3614,
+  "decision_flips": 18,
+  "shortlists_with_changed_order": 3
+ }
+}

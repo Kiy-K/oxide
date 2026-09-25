@@ -1,0 +1,119 @@
+{
+ "tasks": 21,
+ "exact_matches": 21,
+ "tasks_exercising_branch": {
+  "below_floor": 0,
+  "over_budget": 0,
+  "per_file_cap": 9,
+  "primary_cap": 19,
+  "test_cap": 7
+ },
+ "max_used_tokens": 2555,
+ "rows": [
+  {
+   "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__2fb50735",
+   "match": true,
+   "used_tokens": 1145
+  },
+  {
+   "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70",
+   "match": true,
+   "used_tokens": 1098
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__049a7048",
+   "match": true,
+   "used_tokens": 1948
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__07f7e78f",
+   "match": true,
+   "used_tokens": 2457
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__0eecae1e",
+   "match": true,
+   "used_tokens": 2148
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__10750f29",
+   "match": true,
+   "used_tokens": 2555
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__1397ea97",
+   "match": true,
+   "used_tokens": 1652
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__1409977d",
+   "match": true,
+   "used_tokens": 1433
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275",
+   "match": true,
+   "used_tokens": 1944
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__237decf1",
+   "match": true,
+   "used_tokens": 2319
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__23963510",
+   "match": true,
+   "used_tokens": 1714
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__2e76c8cd",
+   "match": true,
+   "used_tokens": 2036
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__36989b6d",
+   "match": true,
+   "used_tokens": 2243
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__4b7ae9d9",
+   "match": true,
+   "used_tokens": 1549
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__51b4c299",
+   "match": true,
+   "used_tokens": 1683
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__60068eb0",
+   "match": true,
+   "used_tokens": 2168
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__88e1ffd3",
+   "match": true,
+   "used_tokens": 1553
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__9cca0774",
+   "match": true,
+   "used_tokens": 1779
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__da598baa",
+   "match": true,
+   "used_tokens": 2137
+  },
+  {
+   "id": "SWE-PolyBench__typescript__evolution__feature__41cd3842",
+   "match": true,
+   "used_tokens": 2508
+  },
+  {
+   "id": "SWE-PolyBench__typescript__maintenance__bugfix__42165c4e",
+   "match": true,
+   "used_tokens": 2209
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "torch", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 6, "affinity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "load_s": 4.67, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 24486.4, "warm_shortlist_ms_mean": 23753.9, "peak_rss_mb": 2798.3}
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "torch", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 6, "affinity": [0, 2, 4, 6, 8, 10], "load_s": 3.77, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 19619.8, "warm_shortlist_ms_mean": 19446.3, "peak_rss_mb": 2794.6, "parity_vs_ref": {"max_abs_dp": 0.0, "decision_flips": 0, "shortlists_with_changed_order": 0}}
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "torch", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 12, "affinity": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "load_s": 3.7, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 20699.9, "warm_shortlist_ms_mean": 20701.9, "peak_rss_mb": 2798.5, "parity_vs_ref": {"max_abs_dp": 0.0001, "decision_flips": 0, "shortlists_with_changed_order": 0}}
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "torch-nocompile", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 6, "affinity": [0, 2, 4, 6, 8, 10], "load_s": 4.11, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 18057.1, "warm_shortlist_ms_mean": 19219.3, "peak_rss_mb": 2794.6, "parity_vs_ref": {"max_abs_dp": 0.0, "decision_flips": 0, "shortlists_with_changed_order": 0}}
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "torch-sorted", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 6, "affinity": [0, 2, 4, 6, 8, 10], "load_s": 3.41, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 18652.2, "warm_shortlist_ms_mean": 16079.6, "peak_rss_mb": 2794.6, "parity_vs_ref": {"max_abs_dp": 0.0, "decision_flips": 0, "shortlists_with_changed_order": 0}}
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Terminated                 SWEEP_THREADS=6 taskset -c $P1 $PY -I scripts/cpu_sweep.py torch-bf16 $CK $IN $O/torch-bf16-t6-pcore.json $REF
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+/home/khoi/Work/oxide/docs/laya-reranking-eval/scripts/cpu_sweep.py:55: DeprecationWarning: torch.ao.quantization is deprecated and will be removed in 2.10. 
+For migrations of users: 
+1. Eager mode quantization (torch.ao.quantization.quantize, torch.ao.quantization.quantize_dynamic), please migrate to use torchao eager mode quantize_ API instead 
+2. FX graph mode quantization (torch.ao.quantization.quantize_fx.prepare_fx,torch.ao.quantization.quantize_fx.convert_fx, please migrate to use torchao pt2e quantization API instead (prepare_pt2e, convert_pt2e) 
+3. pt2e quantization has been migrated to torchao (https://github.com/pytorch/ao/tree/main/torchao/quantization/pt2e) 
+see https://github.com/pytorch/ao/issues/2259 for more details
+  agent.model = torch.ao.quantization.quantize_dynamic(agent.model, {torch.nn.Linear}, dtype=torch.qint8)
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/ao/nn/quantized/modules/utils.py:72: UserWarning: torch.quantize_per_tensor, torch.quantize_per_channel and other quantized tensor creation functions that produce tensors with dtype torch.quint8, torch.qint8, and torch.qint32 are deprecated and will be removed in a future PyTorch release. Please see https://github.com/pytorch/pytorch/issues/184982 for more information. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/quantized/Quantizer.cpp:111.)
+  qweight = torch.quantize_per_tensor(
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+Traceback (most recent call last):
+  File "/home/khoi/Work/oxide/docs/laya-reranking-eval/scripts/cpu_sweep.py", line 104, in <module>
+    main(*sys.argv[2:6])
+  File "/home/khoi/Work/oxide/docs/laya-reranking-eval/scripts/cpu_sweep.py", line 78, in main
+    score(agent, states)  # warm-up for this shortlist's shapes
+    ^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/Work/oxide/docs/laya-reranking-eval/scripts/cpu_sweep.py", line 65, in score
+    res = agent.predict_batch(states, Q, batch_size=len(states))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py", line 805, in predict_batch
+    logits, act = self._forward(b)
+                  ^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py", line 650, in _forward
+    logits, act = self._infer(b)
+                  ^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py", line 624, in _infer
+    return run()
+           ^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/agent.py", line 615, in run
+    return self.model(
+           ^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/laya/common.py", line 152, in forward
+    h = layer(h, src_key_padding_mask=pad)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/transformer.py", line 904, in forward
+    elif not all(
+             ^^^^
+  File "/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/nn/modules/transformer.py", line 905, in <genexpr>
+    (x.device.type in _supported_device_type) for x in tensor_args
+     ^^^^^^^^
+AttributeError: 'function' object has no attribute 'device'
+/home/khoi/Work/oxide/docs/laya-reranking-eval/scripts/cpu_sweep.py:48: RuntimeWarning: laya ONNX: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected buckets as uncalibrated.
+  return ONNXAgent(ckpt, onnx_path=os.environ["SWEEP_ONNX"])
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"config": "onnx", "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e", "threads": 6, "affinity": [0, 2, 4, 6, 8, 10], "load_s": 4.49, "room_tokens": 416, "sizes": [13, 13, 12], "warm_shortlist_ms_p50": 19370.5, "warm_shortlist_ms_mean": 17286.0, "peak_rss_mb": 2120.8, "parity_vs_ref": {"max_abs_dp": 0.0001, "decision_flips": 0, "shortlists_with_changed_order": 0}}
+SWEEP DONE

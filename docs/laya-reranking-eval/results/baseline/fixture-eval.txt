@@ -1,0 +1,26 @@
+query                              task               mode  recall@k   prec@k  ctx bytes
+ts-exact-versionedstore            exact-symbol   vector-only     1.000     0.200       1500
+ts-exact-versionedstore            exact-symbol     hybrid     1.000     0.200        990
+ts-semantic-backoff                semantic       vector-only     0.500     0.200        668
+ts-semantic-backoff                semantic         hybrid     0.500     0.200       1384
+ts-crossfile-decode-jwt            cross-file     vector-only     1.000     0.200       1860
+ts-crossfile-decode-jwt            cross-file       hybrid     1.000     0.200       1860
+tsx-button-component               tsx            vector-only     1.000     0.200       1225
+tsx-button-component               tsx              hybrid     1.000     0.200       1284
+ts-related-test-button-click       related-test   vector-only     0.000     0.000       1340
+ts-related-test-button-click       related-test     hybrid     1.000     0.200       1880
+ts-default-policy-const            exported-declaration vector-only     1.000     0.200        983
+ts-default-policy-const            exported-declaration   hybrid     1.000     0.200       1865
+py-exact-retrypolicy               exact-symbol   vector-only     1.000     0.200       1905
+py-exact-retrypolicy               exact-symbol     hybrid     1.000     0.200       1905
+py-semantic-http-retries           semantic       vector-only     0.500     0.200       4160
+py-semantic-http-retries           semantic         hybrid     0.500     0.200       4160
+py-crossfile-token-refresh         cross-file     vector-only     1.000     0.200       2442
+py-crossfile-token-refresh         cross-file       hybrid     1.000     0.200       3976
+py-related-test-gives-up           related-test   vector-only     1.000     0.200       2801
+py-related-test-gives-up           related-test     hybrid     1.000     0.200       3965
+py-ttl-cache-expiry                exact-symbol   vector-only     1.000     0.200       1416
+py-ttl-cache-expiry                exact-symbol     hybrid     1.000     0.200       1416
+
+vector-only  recall@5 0.818  precision@5 0.182  avg returned 5.0  avg ctx 1845B
+hybrid       recall@5 0.909  precision@5 0.200  avg returned 5.0  avg ctx 2244B

@@ -1,0 +1,1 @@
+{"config": "torch-bf16", "threads": 6, "affinity": [0, 2, 4, 6, 8, 10], "status": "aborted", "reason": "LAYA_CPU_AMP=bf16 on a CPU without native BF16 (no AVX512_BF16/AMX): still running after 11 min 05 s for 1 warm-up + 2 timed calls on each of 3 shortlists (fp32 configs finished in ~3-4 min), i.e. > ~60 s per shortlist. Cut to leave time for int8 and ONNX; not a candidate."}

@@ -1,0 +1,3 @@
+     16 avx2
+     16 avx_vnni
+     16 fma

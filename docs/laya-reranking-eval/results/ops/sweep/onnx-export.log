@@ -1,0 +1,26 @@
+/home/khoi/.cache/oxide-laya-eval/upstream/export_onnx.py:9: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  agent = Agent(model_id_or_path, compile=False, device="cpu")
+/home/khoi/.cache/oxide-laya-eval/upstream/export_onnx.py:63: UserWarning: # 'dynamic_axes' is not recommended when dynamo=True, and may lead to 'torch._dynamo.exc.UserError: Constraints violated.' Supply the 'dynamic_shapes' argument instead if export is unsuccessful.
+  torch.onnx.export(
+W0925 20:30:41.329000 675855 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::nms
+W0925 20:30:41.330000 675855 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::roi_align
+W0925 20:30:41.330000 675855 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::roi_pool
+W0925 20:30:41.330000 675855 torch/onnx/_internal/exporter/_registration.py:107] torchvision is not installed. Skipping torchvision::deform_conv2d
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:486: UserWarning: # The axis name: batch_size will not be used, since it shares the same shape constraints with another axis: batch_size.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:486: UserWarning: # The axis name: seq_len will not be used, since it shares the same shape constraints with another axis: seq_len.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+/home/khoi/.cache/oxide-laya-eval/venv/lib/python3.11/site-packages/torch/onnx/_internal/exporter/_onnx_program.py:486: UserWarning: # The axis name: num_markers will not be used, since it shares the same shape constraints with another axis: num_markers.
+  rename_mapping = _dynamic_shapes.create_rename_mapping(
+Loading PyTorch Agent from: /home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e
+Creating dummy input tensors...
+Exporting to /home/khoi/.cache/oxide-laya-eval/onnx/laya-english.onnx (this may take a minute)...
+[torch.onnx] Obtain model graph for `DecisionModel([...]` with `torch.export.export(..., strict=False)`...
+[torch.onnx] Obtain model graph for `DecisionModel([...]` with `torch.export.export(..., strict=False)`... ✅
+[torch.onnx] Run decompositions...
+[torch.onnx] Run decompositions... ✅
+[torch.onnx] Translate the graph into ONNX...
+[torch.onnx] Translate the graph into ONNX... ✅
+[torch.onnx] Optimize the ONNX graph...
+[torch.onnx] Optimize the ONNX graph... ✅
+Successfully exported ONNX model to: /home/khoi/.cache/oxide-laya-eval/onnx/laya-english.onnx

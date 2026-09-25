@@ -1,0 +1,28 @@
+{
+ "ckpt": "/home/khoi/.cache/oxide-laya-eval/ckpt-55cf4c4e",
+ "threads": 10,
+ "cold_process_to_loaded_s": 3.574,
+ "load_s": 2.653,
+ "rss_after_load_mb": 2798.1,
+ "room_tokens": 416,
+ "first_call_ms": 23588.5,
+ "tasks": 5,
+ "shortlist_sizes": [
+  13,
+  13,
+  12,
+  10,
+  12
+ ],
+ "warm_shortlist_ms_p50": 25873.9,
+ "warm_shortlist_ms_p90": 26278.8,
+ "warm_shortlist_ms_max": 27876.5,
+ "warm_per_pair_ms_p50": 2066.3,
+ "deterministic_repeat": true,
+ "truncation": {
+  "query_cut": 34,
+  "source_cut": 37,
+  "n": 60
+ },
+ "peak_rss_mb": 2798.1
+}
