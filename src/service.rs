@@ -1110,13 +1110,29 @@ fn supported_languages() -> Vec<Language> {
     Language::ALL.to_vec()
 }
 
+// Mirrors `index.rs::update_base_inner`'s read: a file that can't be decoded
+// as UTF-8 never enters the index (`update_base_inner` skips it, counting it
+// in `unreadable_files`/`errored_files`), so it must not enter `current`
+// here either, and must not abort the whole status computation — that was
+// the bug (a single non-UTF-8 file made every form of `status` fail with
+// `status_failed`, action `retry`, even though retrying can never help).
+// A genuine I/O failure (permission denied, vanished mid-scan) is different:
+// unlike an encoding failure, retrying it can actually succeed, so it still
+// propagates as an error instead of being silently folded into "unreadable,
+// skip" — masking it would risk `files_current` matching on a file set that
+// was never actually read.
 fn current_file_hashes(root: &Path) -> Result<HashMap<String, u64>, std::io::Error> {
     let files = scanner::scan_repo(root).map_err(|e| std::io::Error::other(e.to_string()))?;
     let mut hashes = HashMap::with_capacity(files.len());
     for file in files {
         let relative = file.display().to_string();
-        let source = std::fs::read_to_string(root.join(&file))?;
-        hashes.insert(relative, crate::symbols::content_hash(&source));
+        match std::fs::read_to_string(root.join(&file)) {
+            Ok(source) => {
+                hashes.insert(relative, crate::symbols::content_hash(&source));
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::InvalidData => {}
+            Err(e) => return Err(e),
+        }
     }
     Ok(hashes)
 }
@@ -1431,5 +1447,103 @@ mod tests {
             use_process_cache: false,
         };
         assert!(off.cache_lookup(&store).unwrap().is_none());
+    }
+
+    /// Regression for the bug reported as oxide#11: a repo containing one
+    /// non-UTF-8 source file must still let `status()` complete and report
+    /// the file set as current right after indexing, exactly like every
+    /// other corpus. Before the fix, `current_file_hashes` propagated the
+    /// first `read_to_string` error (`InvalidData`, "stream did not contain
+    /// valid UTF-8") and `status()` failed outright — even though
+    /// `index.rs::update_base_inner` had already, silently and correctly,
+    /// excluded that same file from the index (`unreadable_files`).
+    ///
+    /// Asserts on `base_fresh` (== `files_current` internally), not the
+    /// composite `is_current`: `is_current` also folds in `embedder_current`,
+    /// which resolves from `$OXIDE_EMBED_NATIVE`/process env rather than the
+    /// `HashedEmbedder` this test indexes with, and is an orthogonal concern
+    /// already covered by the fingerprint tests above.
+    #[test]
+    fn status_is_current_when_a_non_utf8_file_is_present() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+        // 0xFF is never a valid UTF-8 lead byte; no NUL byte, so the
+        // scanner's binary sniff still accepts it into the walk (mirrors
+        // `tests/incremental.rs::unreadable_file_is_counted_as_errored_not_silently_dropped`).
+        std::fs::write(
+            root.join("src/bad.py"),
+            b"def bad():\n    x = \xff\n".as_slice(),
+        )
+        .unwrap();
+
+        let emb = HashedEmbedder::default();
+        let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+        let report = update_index(&root, &mut store, &emb).unwrap();
+        assert_eq!(report.errored_files, 1, "bad.py must be indexed as errored");
+        drop(store);
+
+        let service = RepositoryService {
+            root: root.clone(),
+            use_process_cache: false,
+        };
+        let status = service.status().unwrap();
+        assert!(status.index_exists);
+        assert_eq!(status.files, 1, "only the readable file was ever indexed");
+        assert!(
+            status.base_fresh,
+            "a non-UTF-8 file must not make status() fail or report the tracked files stale: {status:?}"
+        );
+    }
+
+    /// The fix above must not blanket-catch every read failure: a genuine
+    /// I/O error (unlike an encoding failure, retryable) still has to
+    /// surface as `status_failed` instead of being silently folded into
+    /// "unreadable, skip" — which would let `files_current` match on a file
+    /// set `status()` never actually finished reading.
+    #[cfg(unix)]
+    #[test]
+    fn status_still_fails_on_a_genuine_io_error() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        seed_repo(&root);
+
+        let unreadable = root.join("src/locked.py");
+        std::fs::write(&unreadable, "def locked():\n    return 1\n").unwrap();
+
+        let emb = HashedEmbedder::default();
+        let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+        update_index(&root, &mut store, &emb).unwrap();
+        drop(store);
+
+        let restore = std::fs::metadata(&unreadable).unwrap().permissions();
+        std::fs::set_permissions(&unreadable, std::fs::Permissions::from_mode(0o000)).unwrap();
+
+        let service = RepositoryService {
+            root: root.clone(),
+            use_process_cache: false,
+        };
+        let result = service.status();
+
+        std::fs::set_permissions(&unreadable, restore).unwrap();
+
+        if nix_root::running_as_root() {
+            // Root bypasses permission checks; the scenario can't be
+            // exercised under this user and the fix is proven by the test
+            // above plus manual verification instead.
+            return;
+        }
+        let err = result.expect_err("permission-denied must not be swallowed as unreadable");
+        assert_eq!(err.code(), "status_failed");
+    }
+
+    #[cfg(unix)]
+    mod nix_root {
+        pub(super) fn running_as_root() -> bool {
+            // SAFETY: getuid takes no arguments and has no preconditions.
+            unsafe { libc::getuid() == 0 }
+        }
     }
 }
