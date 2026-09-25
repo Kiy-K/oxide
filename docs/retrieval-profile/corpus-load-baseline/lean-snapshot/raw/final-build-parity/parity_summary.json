@@ -1,0 +1,11 @@
+{
+  "outputs": 1056,
+  "retrieval_outputs": 968,
+  "literal_outputs": 88,
+  "baseline_binary": "/tmp/oxide-lean-bench/bin/oxide-base",
+  "baseline_sha256": "e69d27d93008a5407b738387beea13b3ee8e4c419a77af166bb3f5b012cf6641",
+  "harness_binary": "/tmp/oxide-lean-bench/bin/oxide-final",
+  "harness_sha256": "6a267e01b1c1e7f3c6edd3178dd7f8da524115eaa2372b134df14e4cfd0bedf0",
+  "baseline_vs_itself_diffs": [],
+  "baseline_vs_harness_diffs": []
+}

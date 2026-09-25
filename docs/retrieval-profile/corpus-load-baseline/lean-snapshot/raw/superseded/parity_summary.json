@@ -1,0 +1,11 @@
+{
+  "outputs": 1056,
+  "retrieval_outputs": 968,
+  "literal_outputs": 88,
+  "baseline_binary": "/tmp/oxide-issue14-work/bin/oxide-6413856",
+  "baseline_sha256": "0ffc1dd3bd6175675af6f8f380d9e05a86f90c6413c8a6b31beb484d3171f5da",
+  "harness_binary": "/tmp/oxide-issue14-work/bin/oxide-lean",
+  "harness_sha256": "105702c51cdb2de0692896f8f73e00c990ad63be990630a818eb362e34d1a93d",
+  "baseline_vs_itself_diffs": [],
+  "baseline_vs_harness_diffs": []
+}

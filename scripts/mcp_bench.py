@@ -12,11 +12,15 @@ tool plus the server's VmRSS and VmHWM, for `scripts/corpus_load_baseline.py`,
 which runs this once per *first-call* sample (a fresh server per sample —
 call 0 here is the cache miss that loads the corpus) and once for a
 steady-state series. `--tools` restricts which tools are called; the
-`query` tool is `oxide query` (`context`)."""
-import json, os, subprocess, sys, time
+`query` tool is `oxide query` (`context`). `--bodies` adds, per tool, the
+SHA-256 of every call's `result` (key-sorted JSON), in call order, for the
+output-parity matrix (call 0 is the cold-cache response, later calls the
+cached-snapshot one)."""
+import hashlib, json, os, subprocess, sys, time
 argv, flags, it = [], {}, iter(sys.argv[1:])
 for a in it:
     if a == "--json": flags["json"] = True
+    elif a == "--bodies": flags["bodies"] = True
     elif a in ("--tools", "--limit"): flags[a[2:]] = next(it)   # value-taking flags consume their value
     elif a.startswith("--"): raise SystemExit(f"unknown flag {a}")
     else: argv.append(a)
@@ -39,7 +43,7 @@ def call(msg):
 call({"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"bench","version":"0"}}})
 p.stdin.write((json.dumps({"jsonrpc":"2.0","method":"notifications/initialized"})+"\n").encode()); p.stdin.flush()
 args_for = {"search": {"query": query, "limit": limit}, "query": {"task": query, "budget_tokens": 4096}}
-res, raw = {}, {}
+res, raw, bodies = {}, {}, {}
 for tool in tools:
     lat = []
     for i in range(n):
@@ -53,6 +57,8 @@ for tool in tools:
         if "error" in r or r.get("result", {}).get("isError"):
             raise SystemExit(f"mcp {tool} call {i} failed: {json.dumps(r)[:500]}")
         lat.append(elapsed)
+        bodies.setdefault(tool, []).append(
+            hashlib.sha256(json.dumps(r["result"], sort_keys=True).encode()).hexdigest())
     lat_rest = sorted(lat[1:]) if len(lat) > 1 else lat
     res[tool] = (lat[0], lat_rest[len(lat_rest)//2], min(lat))
     raw[tool] = lat
@@ -61,7 +67,10 @@ def kb(key): return int(status.split(key + ":")[1].split()[0])
 rss, hwm = kb("VmRSS"), kb("VmHWM")
 p.stdin.close(); p.wait()
 if as_json:
-    print(json.dumps({"query": query, "n": n, "samples_ms": raw, "rss_kb": rss, "vm_hwm_kb": hwm}))
+    out = {"query": query, "n": n, "samples_ms": raw, "rss_kb": rss, "vm_hwm_kb": hwm}
+    if flags.get("bodies"):
+        out["bodies"] = bodies
+    print(json.dumps(out))
 else:
     for tool,(first,med,mn) in res.items():
         print(f"mcp {tool} first={first:.1f}ms median_rest={med:.1f}ms min={mn:.1f}ms")

@@ -1,0 +1,11 @@
+{
+  "outputs": 495,
+  "retrieval_outputs": 440,
+  "literal_outputs": 55,
+  "baseline_binary": "/home/khoi/Work/oxide-issue14-archive-20260924/scratch-this-session-oxide-issue14-work/bin/oxide-6413856",
+  "baseline_sha256": "0ffc1dd3bd6175675af6f8f380d9e05a86f90c6413c8a6b31beb484d3171f5da",
+  "harness_binary": "/home/khoi/Work/oxide/target/release/oxide",
+  "harness_sha256": "ddb140eeaf09ed3b23fc07e29e40507a80b9d491d5014a52346a786d642e368f",
+  "baseline_vs_itself_diffs": [],
+  "baseline_vs_harness_diffs": []
+}

@@ -1,0 +1,90 @@
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "prepare request headers cookies"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "requests", "query": "prepare request headers cookies"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "requests", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "http client fetch"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "requests", "query": "http client fetch"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "parse config file"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "requests", "query": "parse config file"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "test fixture setup"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "requests", "query": "test fixture setup"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "cache invalidate"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "requests", "query": "cache invalidate"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "error handling exception"}
+{"stage": "context_probe_check", "equal": true, "items": 4, "corpus": "requests", "query": "error handling exception"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "session cookies headers"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "requests", "query": "session cookies headers"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "requests", "query": "walk directory files"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "requests", "query": "walk directory files"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "fixture finalizer teardown"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pytest", "query": "fixture finalizer teardown"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "pytest", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "http client fetch"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pytest", "query": "http client fetch"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "parse config file"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pytest", "query": "parse config file"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "test fixture setup"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "pytest", "query": "test fixture setup"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "cache invalidate"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pytest", "query": "cache invalidate"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "error handling exception"}
+{"stage": "context_probe_check", "equal": true, "items": 9, "corpus": "pytest", "query": "error handling exception"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "session cookies headers"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "pytest", "query": "session cookies headers"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pytest", "query": "walk directory files"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "pytest", "query": "walk directory files"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "checker visit node message"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "pylint", "query": "checker visit node message"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "pylint", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "http client fetch"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pylint", "query": "http client fetch"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "parse config file"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "pylint", "query": "parse config file"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "test fixture setup"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "pylint", "query": "test fixture setup"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "cache invalidate"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pylint", "query": "cache invalidate"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "error handling exception"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pylint", "query": "error handling exception"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "session cookies headers"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "pylint", "query": "session cookies headers"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "pylint", "query": "walk directory files"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "pylint", "query": "walk directory files"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "py_repo", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "py_repo", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "http client fetch"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "py_repo", "query": "http client fetch"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "parse config file"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "py_repo", "query": "parse config file"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "test fixture setup"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "py_repo", "query": "test fixture setup"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "cache invalidate"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "py_repo", "query": "cache invalidate"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "error handling exception"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "py_repo", "query": "error handling exception"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "session cookies headers"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "py_repo", "query": "session cookies headers"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "py_repo", "query": "walk directory files"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "py_repo", "query": "walk directory files"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "ts_repo", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "retry policy"}
+{"stage": "context_probe_check", "equal": true, "items": 5, "corpus": "ts_repo", "query": "retry policy"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "http client fetch"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "ts_repo", "query": "http client fetch"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "parse config file"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "ts_repo", "query": "parse config file"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "test fixture setup"}
+{"stage": "context_probe_check", "equal": true, "items": 7, "corpus": "ts_repo", "query": "test fixture setup"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "cache invalidate"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "ts_repo", "query": "cache invalidate"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "error handling exception"}
+{"stage": "context_probe_check", "equal": true, "items": 8, "corpus": "ts_repo", "query": "error handling exception"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "session cookies headers"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "ts_repo", "query": "session cookies headers"}
+{"stage": "search_expand_probe_check", "equal": true, "hits": 10, "corpus": "ts_repo", "query": "walk directory files"}
+{"stage": "context_probe_check", "equal": true, "items": 6, "corpus": "ts_repo", "query": "walk directory files"}

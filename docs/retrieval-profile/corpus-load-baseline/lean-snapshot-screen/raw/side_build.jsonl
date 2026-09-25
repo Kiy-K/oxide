@@ -1,0 +1,3 @@
+{"corpus":"requests","side_rows":1669,"build_ms":5.149712,"db_bytes_before":4870144,"db_bytes_after":4915200}
+{"corpus":"pytest","side_rows":45920,"build_ms":65.021299,"db_bytes_before":36552704,"db_bytes_after":37658624}
+{"corpus":"pylint","side_rows":11600,"build_ms":33.109406,"db_bytes_before":50257920,"db_bytes_after":50532352}

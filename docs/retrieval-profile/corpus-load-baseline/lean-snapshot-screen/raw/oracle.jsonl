@@ -1,0 +1,3 @@
+{"corpus":"requests","seeds":928,"nonempty":864,"mismatches":0}
+{"corpus":"pytest","seeds":7281,"nonempty":7140,"mismatches":0}
+{"corpus":"pylint","seeds":14241,"nonempty":13667,"mismatches":0}

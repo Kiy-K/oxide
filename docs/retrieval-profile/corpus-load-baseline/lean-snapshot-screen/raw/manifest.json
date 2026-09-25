@@ -1,0 +1,27 @@
+{
+  "oxide_commit": "641385666cd5ce65c8d2e627d47fbdc58ec855d2",
+  "src_dirty": [],
+  "screen_source_sha256": "df037cf2236d0a96d52f709a39b0ccadbfd9a44bee9e0abe8bd76457546d928f",
+  "screen_binary_sha256": "aac6041b8b255ab90a91ae329ea2562b82e7d6f432c8ddcbd53c8892a85e8518",
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+  "rusqlite": "0.32.1",
+  "bundled_sqlite": "3.46.0 (libsqlite3-sys 0.30.1)",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "cpu_count": 16,
+  "kernel": "7.2.5-3-omarchy",
+  "corpora_source": "~/Work/oxide-issue14-archive-20260924/scratch-this-session-oxide-issue14-work/idx/<corpus>/.oxide/index.db (the #14 indexed copies; copied to a tmpfs scratch dir, never written in place)",
+  "source_db_sha256": {
+    "requests": "d2b973412b93217cda5235a00b93395808a4be80787f7f91d89dc9b3aee03c80",
+    "pytest": "2246977e9c8ec9101c6f56b2b7e3b3d1f43f2d8f0367fed592764b565512ac87",
+    "pylint": "aabec27245b423181e459f376af58eb6817a9fc3a0df4be5fa803327497f03d3"
+  },
+  "embedder": "hashed-bow-256 (as indexed for #14)",
+  "method": "one process per sample pinned with `taskset -c 6` (a 4.9 GHz P-core; the i7-13620H's CPUs 12-15 are 3.6 GHz E-cores and unpinned samples were bimodal), 3 in-process repetitions (rep 0 process-cold, warm = median of reps 1-2), batches A/B interleaved x5 per corpus x variant; page cache warm; raw connections set `PRAGMA query_only = ON; BEGIN DEFERRED;` as SqliteStore::open_read_only does; side table built before any timing",
+  "timestamp": "2026-09-25T17:04:01+07:00",
+  "discarded_sweeps": {
+    "discarded/1-unmatched-connection.jsonl": "lean variants used an autocommit connection without open_read_only's setup; no full_raw control",
+    "discarded/2-unpinned-void.jsonl": "unpinned; pylint full A/B null 25.4% (> 25% void threshold); background browser load ~4",
+    "discarded/3-unpinned-pylint-void.jsonl": "unpinned pylint repeat; full null 20.8%, bimodal samples (P- vs E-core)"
+  },
+  "screen_source_note": "source hash is after a rustfmt-only reformat of one assert; screen_binary_sha256 is the binary that produced raw/stages.jsonl, built from the token-identical pre-format source"
+}

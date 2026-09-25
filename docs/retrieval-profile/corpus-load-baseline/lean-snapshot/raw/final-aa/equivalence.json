@@ -1,0 +1,80 @@
+[
+ {
+  "corpus": "pylint",
+  "row": "cli",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 1.0018235301078073,
+  "ci90": [
+   0.9865470288905612,
+   1.0067094286886378
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ },
+ {
+  "corpus": "pylint",
+  "row": "stage cold",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 0.9977467791398242,
+  "ci90": [
+   0.995178487698677,
+   1.00605173487657
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ },
+ {
+  "corpus": "pylint",
+  "row": "stage warm",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 1.0006331038017455,
+  "ci90": [
+   0.9976681278036953,
+   1.0036882374869807
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ },
+ {
+  "corpus": "pytest",
+  "row": "cli",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 0.9966327809998303,
+  "ci90": [
+   0.9834605727321167,
+   1.006505371295082
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ },
+ {
+  "corpus": "pytest",
+  "row": "stage cold",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 1.0006318567943095,
+  "ci90": [
+   0.9665109088677155,
+   1.0259269388361738
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ },
+ {
+  "corpus": "pytest",
+  "row": "stage warm",
+  "n_base": 60,
+  "n_challenger": 60,
+  "ratio": 0.9960687593221921,
+  "ci90": [
+   0.9913329739801686,
+   1.0014895511573558
+  ],
+  "margin": 0.03,
+  "verdict": "equivalent"
+ }
+]

@@ -1,0 +1,190 @@
+{
+  "corpora": {
+    "pytest": {
+      "url": "https://github.com/pytest-dev/pytest.git",
+      "tag": "9.1.1",
+      "commit": "cf470ec0bf7eb89cd97dd56df4859eae5db46447",
+      "status": {
+        "root": "/tmp/oxide-lean-parity/idx/pytest",
+        "index_exists": true,
+        "is_current": true,
+        "embedder_current": true,
+        "base_fresh": true,
+        "pending_embeddings": 0,
+        "files": 280,
+        "symbols": 7281,
+        "embeddings": 7281,
+        "embedder": "hashed-bow-256",
+        "supported_languages": [
+          "python",
+          "typescript",
+          "tsx",
+          "javascript",
+          "rust",
+          "go",
+          "java",
+          "ruby",
+          "php",
+          "c",
+          "cpp",
+          "markdown"
+        ],
+        "schema_version": 1
+      },
+      "payload": {
+        "stage": "payload",
+        "symbols": 7281,
+        "files": 280,
+        "embeddings": 7281,
+        "meta": {
+          "dim": "256",
+          "embedder": "hashed-bow-256",
+          "embedding_fingerprint": "{\"schema_version\":1,\"model\":\"hashed-bow-256\",\"artifact_revision\":\"\",\"quantization\":\"\",\"representation\":\"dense\",\"dimension\":256,\"query_profile\":\"unspecified\",\"document_profile\":\"unspecified\",\"pooling\":\"unspecified\",\"normalization\":\"unspecified\",\"similarity\":\"cosine\"}",
+          "embedding_migration": "",
+          "extraction_version": "3",
+          "index_generation": "286",
+          "index_id": "127815cd9d315faf",
+          "lexical_index_version": "1",
+          "schema_version": "1"
+        },
+        "references_json_bytes": 1208703,
+        "references_items": 109289,
+        "references_json_bytes_p50": 96,
+        "references_json_bytes_p90": 254,
+        "references_json_bytes_p99": 1822,
+        "references_json_bytes_max": 10891,
+        "imports_json_bytes": 1520754,
+        "imports_items": 111423,
+        "imports_json_distinct": 182,
+        "signature_bytes": 305339,
+        "identity_text_bytes": 652941,
+        "symbol_relations_rows": 19816,
+        "symbol_relations_target_bytes": 184284,
+        "symbol_relations_symbols": 5721,
+        "page_size": 4096,
+        "page_count": 8924,
+        "freelist_count": 0,
+        "sqlite_version": "3.46.0",
+        "all_symbols_plan": [
+          "SCAN symbols USING INDEX idx_symbols_file",
+          "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        ],
+        "symbols_table_pages": 1240
+      },
+      "order_digest": {
+        "stage": "order_digest",
+        "n": 7281,
+        "id_sequence_fnv1a": "56646a8764864b12",
+        "adjacent_ties": 0,
+        "sorted_by_file_start_line": true
+      },
+      "index_db_bytes": 36552704
+    },
+    "pylint": {
+      "url": "https://github.com/pylint-dev/pylint.git",
+      "tag": "v4.0.8",
+      "commit": "ecb84baf74ae152a511e5fdada5000c85250a48f",
+      "status": {
+        "error": {
+          "code": "status_failed",
+          "action": "retry",
+          "message": "stream did not contain valid UTF-8"
+        }
+      },
+      "payload": {
+        "stage": "payload",
+        "symbols": 14241,
+        "files": 2361,
+        "embeddings": 14241,
+        "meta": {
+          "dim": "256",
+          "embedder": "hashed-bow-256",
+          "embedding_fingerprint": "{\"schema_version\":1,\"model\":\"hashed-bow-256\",\"artifact_revision\":\"\",\"quantization\":\"\",\"representation\":\"dense\",\"dimension\":256,\"query_profile\":\"unspecified\",\"document_profile\":\"unspecified\",\"pooling\":\"unspecified\",\"normalization\":\"unspecified\",\"similarity\":\"cosine\"}",
+          "embedding_migration": "",
+          "extraction_version": "3",
+          "index_generation": "2367",
+          "index_id": "d7bac2685ab0d8bb",
+          "lexical_index_version": "1",
+          "schema_version": "1"
+        },
+        "references_json_bytes": 1124511,
+        "references_items": 109487,
+        "references_json_bytes_p50": 33,
+        "references_json_bytes_p90": 165,
+        "references_json_bytes_p99": 833,
+        "references_json_bytes_max": 5659,
+        "imports_json_bytes": 833945,
+        "imports_items": 58237,
+        "imports_json_distinct": 525,
+        "signature_bytes": 509936,
+        "identity_text_bytes": 1250928,
+        "symbol_relations_rows": 16766,
+        "symbol_relations_target_bytes": 160487,
+        "symbol_relations_symbols": 6922,
+        "page_size": 4096,
+        "page_count": 12270,
+        "freelist_count": 0,
+        "sqlite_version": "3.46.0",
+        "all_symbols_plan": [
+          "SCAN symbols USING INDEX idx_symbols_file",
+          "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+        ],
+        "symbols_table_pages": 1331
+      },
+      "order_digest": {
+        "stage": "order_digest",
+        "n": 14241,
+        "id_sequence_fnv1a": "ab31aa980a10c7b4",
+        "adjacent_ties": 568,
+        "sorted_by_file_start_line": true
+      },
+      "index_db_bytes": 50257920
+    }
+  },
+  "oxide_commit": "641385666cd5ce65c8d2e627d47fbdc58ec855d2",
+  "oxide_src_dirty": [
+    "M src/blast_radius.rs",
+    " M src/context.rs",
+    " M src/evidence/coordinator.rs",
+    " M src/evidence/scope.rs",
+    " M src/gitctx.rs",
+    " M src/languages/tags.rs",
+    " M src/lexical.rs",
+    " M src/parser.rs",
+    " M src/relations.rs",
+    " M src/retrieval.rs",
+    " M src/review.rs",
+    " M src/service.rs",
+    " M src/storage.rs",
+    " M src/structural_relations.rs",
+    " M src/symbols.rs"
+  ],
+  "oxide_version": "oxide 0.1.1",
+  "oxide_binary_sha256": "e69d27d93008a5407b738387beea13b3ee8e4c419a77af166bb3f5b012cf6641",
+  "profile_binary_sha256": "a7f042dec1174f136a987c62eea50932ae826f0232ef34329684936add6bc461",
+  "challenger_binaries_sha256": {
+    "oxide": "2fa676832126a72db22b9c1aa3f29e6d342c46036d7614335f1aaf8bc5f952cf",
+    "profile": "9a154b34150e58b84ea6866d3c60fab8c1fdd2af3c3d50af07bf0f7da6ea9aeb"
+  },
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+  "cargo": "cargo 1.98.0 (797e8a9bc 2026-08-05)",
+  "rusqlite": "0.32.1",
+  "libsqlite3_sys": "0.30.1",
+  "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+  "kernel": "7.2.5-3-omarchy",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "cpu_count": 16,
+  "mem_total_kb": 16003024,
+  "python": "3.11.16",
+  "embedder": "hashed-bow-256 (OXIDE_EMBED_NATIVE=hashed, remote tiers removed, XDG_CONFIG_HOME empty) unless a row says native; asserted against every index's meta.embedder",
+  "embed_sessions": "OXIDE_EMBED_SESSIONS=1 in hashed_env for every child",
+  "retrieval_options": {
+    "mode": "balanced (default; OXIDE_RETRIEVAL_MODE unset)",
+    "search_limit": 10,
+    "context_budget_tokens": 4096,
+    "hydrate_candidates": 400,
+    "note": "frozen: RRF K=60, lexical/vector 0.6/0.4, 200 candidates per channel \u2014 read from src/retrieval.rs, not tuned here"
+  },
+  "timestamp": "2026-09-25T18:14:06+0700",
+  "run_id": "20260925T181406"
+}

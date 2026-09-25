@@ -1,0 +1,26 @@
+{
+  "post_hoc": "Reconstructed after the run (Codex review finding: mcp-servers recorded no executable hashes). The command below is the one run; the binaries are still at these paths, hashed now, and their mtimes predate the run. Later runs write mcp_servers_manifest.json themselves.",
+  "oxide_commit": "641385666cd5ce65c8d2e627d47fbdc58ec855d2 + uncommitted lean-snapshot working tree",
+  "config": "taskset -c 6; OXIDE_EMBED_SESSIONS=1 and hashed embedder via hashed_env(); corpora pytest,pylint parity copies under /tmp/oxide-lean-parity/idx",
+  "run": "mcp-pilot-aa",
+  "started": "2026-09-25T18:41:29",
+  "finished": "2026-09-25T18:42:14",
+  "argv": "taskset -c 6 python3 scripts/corpus_load_baseline.py mcp-servers --work /tmp/oxide-lean-parity --corpora pytest,pylint --oxide /tmp/oxide-lean-bench/bin/oxide-base --profile /tmp/oxide-lean-bench/bin/profile-base --challenger-oxide /tmp/oxide-lean-bench/bin/oxide-base --challenger-profile /tmp/oxide-lean-bench/bin/profile-base --out raw/mcp-pilot-aa --servers 10 --warmup 3 --steady 16 --seed 1",
+  "variants": {
+    "base": {
+      "oxide": "/tmp/oxide-lean-bench/bin/oxide-base",
+      "oxide_sha256": "e69d27d93008a5407b738387beea13b3ee8e4c419a77af166bb3f5b012cf6641",
+      "mtime": "2026-09-25T17:53:59"
+    },
+    "challenger": {
+      "oxide": "/tmp/oxide-lean-bench/bin/oxide-base",
+      "oxide_sha256": "e69d27d93008a5407b738387beea13b3ee8e4c419a77af166bb3f5b012cf6641",
+      "mtime": "2026-09-25T17:53:59"
+    }
+  },
+  "servers_per_batch": 10,
+  "warmup_calls": 3,
+  "measured_calls": 16,
+  "batches": 2,
+  "seed": 1
+}

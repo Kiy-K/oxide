@@ -1,0 +1,13 @@
+{
+  "corpus": "py_repo",
+  "nochange_index_ms_single": 10.343828000259236,
+  "single_file_edit_index_ms_single": 39.31491500043194,
+  "new_symbol_id": -5947616219637338767,
+  "new_symbol_references": [
+    "RetryPolicy"
+  ],
+  "test_ref_present_before_diag_refresh": false,
+  "test_ref_present_after_diag_refresh": true,
+  "diag_refresh_ms_single": 0.7183120000000001,
+  "note": "single exploratory copy run, not paired benchmark"
+}

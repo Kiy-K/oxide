@@ -1,0 +1,398 @@
+{
+  "pytest:base": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": false,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX idx_symbols_name (name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ]
+    }
+  },
+  "pytest:diag": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": true,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SEARCH symbols USING INDEX diag_symbols_qualified (qualified_name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ],
+      "test_refs": [
+        "SEARCH diag_test_refs USING PRIMARY KEY (ref=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ]
+    }
+  },
+  "pytest:base_analyzed": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": false,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX idx_symbols_name (name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ]
+    }
+  },
+  "pytest:diag_analyzed": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": true,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SEARCH symbols USING INDEX diag_symbols_qualified (qualified_name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ],
+      "test_refs": [
+        "SEARCH diag_test_refs USING PRIMARY KEY (ref=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ]
+    }
+  },
+  "pylint:base": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": false,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX idx_symbols_name (name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ]
+    }
+  },
+  "pylint:diag": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": true,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SEARCH symbols USING INDEX diag_symbols_qualified (qualified_name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ],
+      "test_refs": [
+        "SEARCH diag_test_refs USING PRIMARY KEY (ref=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ]
+    }
+  },
+  "pylint:base_analyzed": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": false,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SCAN symbols",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX idx_symbols_name (name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ]
+    }
+  },
+  "pylint:diag_analyzed": {
+    "stage": "probe_plans",
+    "sqlite_version": "3.46.0",
+    "has_diag": true,
+    "plans": {
+      "global_scan": [
+        "SCAN symbols"
+      ],
+      "qualified": [
+        "SEARCH symbols USING INDEX diag_symbols_qualified (qualified_name=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "children": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "defs": [
+        "SEARCH symbols USING INDEX diag_symbols_parent (parent=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "by_file": [
+        "SEARCH symbols USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "test_name_scan": [
+        "SCAN symbols USING COVERING INDEX idx_symbols_name"
+      ],
+      "callers": [
+        "SEARCH s USING INDEX idx_symbols_file (file=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:",
+        "SEARCH r USING INDEX idx_symbol_relations_symbol_id (symbol_id=?)"
+      ],
+      "hydrate": [
+        "SEARCH symbols USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ],
+      "vector": [
+        "SCAN embeddings"
+      ],
+      "test_refs": [
+        "SEARCH diag_test_refs USING PRIMARY KEY (ref=?)",
+        "LIST SUBQUERY 1",
+        "SCAN json_each VIRTUAL TABLE INDEX 1:"
+      ]
+    }
+  }
+}

@@ -40,6 +40,9 @@
 //! exact `all_symbols` order as data: an FNV-1a digest over the id
 //! sequence plus the count of `(file, start_line)` ties, so two builds'
 //! corpus orders can be compared byte for byte).
+#[path = "support/probe_graph.rs"]
+mod probe_graph;
+
 use oxide::context::{build_context_with, ContextOptions};
 use oxide::embeddings::open_embedder;
 use oxide::relations::{RelationGraph, RelationIndex};
@@ -47,25 +50,30 @@ use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions
 use oxide::storage::{IndexBackend, SqliteStore};
 use oxide::symbols::Symbol;
 use std::alloc::{GlobalAlloc, Layout, System};
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::time::Instant;
 
 struct Counting;
 static ALLOCS: AtomicUsize = AtomicUsize::new(0);
 static BYTES: AtomicUsize = AtomicUsize::new(0);
+static COUNTING: AtomicBool = AtomicBool::new(true);
 
 unsafe impl GlobalAlloc for Counting {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        ALLOCS.fetch_add(1, Ordering::Relaxed);
-        BYTES.fetch_add(layout.size(), Ordering::Relaxed);
+        if COUNTING.load(Ordering::Relaxed) {
+            ALLOCS.fetch_add(1, Ordering::Relaxed);
+            BYTES.fetch_add(layout.size(), Ordering::Relaxed);
+        }
         System.alloc(layout)
     }
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
         System.dealloc(ptr, layout)
     }
     unsafe fn realloc(&self, ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
-        ALLOCS.fetch_add(1, Ordering::Relaxed);
-        BYTES.fetch_add(new_size, Ordering::Relaxed);
+        if COUNTING.load(Ordering::Relaxed) {
+            ALLOCS.fetch_add(1, Ordering::Relaxed);
+            BYTES.fetch_add(new_size, Ordering::Relaxed);
+        }
         System.realloc(ptr, layout, new_size)
     }
 }
@@ -95,6 +103,9 @@ fn end(s: Stage, name: &str, note: impl std::fmt::Display) {
 }
 
 fn main() -> anyhow::Result<()> {
+    if std::env::var("PROFILE_COUNT_ALLOCS").as_deref() == Ok("0") {
+        COUNTING.store(false, Ordering::Relaxed);
+    }
     let args: Vec<String> = std::env::args().collect();
     let root = std::path::PathBuf::from(&args[1]).canonicalize()?;
     let query = args[2].clone();
@@ -414,6 +425,17 @@ fn run_stage(
     }
     if stage == "order_digest" {
         return order_digest(&db, json);
+    }
+    if stage == "probe_plans" {
+        return probe_plans(&db, json);
+    }
+    if stage.starts_with("probe_oracle")
+        || stage == "probe_diag_build"
+        || stage.starts_with("struct_")
+        || stage.starts_with("search_expand_probe")
+        || stage.starts_with("context_probe")
+    {
+        return structural_probe_stage(root, query, stage, repeat, json);
     }
     let store = SqliteStore::open_read_only(&db)?;
     // The rows-floor stages read through a plain rusqlite connection
@@ -772,4 +794,519 @@ fn order_digest(db: &std::path::Path, json: bool) -> anyhow::Result<()> {
         }
     );
     Ok(())
+}
+
+/// Issue #14 diagnostic only. All seed selection happens before the timer.
+fn structural_probe_stage(
+    root: &std::path::Path,
+    query: &str,
+    stage: &str,
+    repeat: usize,
+    json: bool,
+) -> anyhow::Result<()> {
+    use probe_graph::{Access, ProbeGraph};
+    let db = root.join(".oxide/index.db");
+    if stage == "probe_diag_build" {
+        let before = std::fs::metadata(&db)?.len();
+        let conn = rusqlite::Connection::open(&db)?;
+        let s = begin();
+        let ddl = probe_graph::build_diag(&conn)?;
+        let r = sample(s, ddl.len(), "diagnostic indexes and test references");
+        drop(conn);
+        let v = serde_json::json!({"stage":stage,"ms":r.ms,"allocs":r.allocs,"bytes":r.bytes,"db_bytes_before":before,"db_bytes_after":std::fs::metadata(&db)?.len(),"wal_bytes_final":std::fs::metadata(db.with_extension("db-wal")).map(|m|m.len()).unwrap_or(0)});
+        println!(
+            "{}",
+            if json {
+                v.to_string()
+            } else {
+                serde_json::to_string_pretty(&v)?
+            }
+        );
+        return Ok(());
+    }
+    let store = SqliteStore::open_read_only(&db)?;
+    let conn =
+        rusqlite::Connection::open_with_flags(&db, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)?;
+    let access = if stage.ends_with("_diag") {
+        Access::Diag
+    } else {
+        Access::Scan
+    };
+    let probe = ProbeGraph::new(&conn, access);
+    if stage.starts_with("probe_oracle") {
+        let snap = SymbolSnapshot::load(&store)?;
+        let graph = RelationGraph::build(&snap.symbols);
+        let mut mismatches = Vec::new();
+        let mut checked = 0usize;
+        for chunk in snap.symbols.chunks(32) {
+            let refs: Vec<&Symbol> = chunk.iter().collect();
+            let (neighbors, tests) = probe.neighbors_and_tests(&refs, true)?;
+            for ((seed, got), got_tests) in chunk.iter().zip(neighbors).zip(tests) {
+                checked += 1;
+                let want: Vec<_> = graph
+                    .neighbors(seed)
+                    .into_iter()
+                    .map(|(r, s)| (r, s.id()))
+                    .collect();
+                let actual: Vec<_> = got.into_iter().map(|(r, id)| (r.to_string(), id)).collect();
+                if actual != want {
+                    mismatches.push(format!("neighbors:{}#{}", seed.file, seed.qualified_name));
+                }
+                let want_tests: Vec<_> = graph
+                    .related_tests(seed)
+                    .into_iter()
+                    .map(Symbol::id)
+                    .collect();
+                if got_tests != want_tests {
+                    mismatches.push(format!("tests:{}#{}", seed.file, seed.qualified_name));
+                }
+                let want_imports: Vec<Vec<u64>> = seed
+                    .imports
+                    .iter()
+                    .map(|m| {
+                        graph
+                            .resolve_import(&seed.file, m)
+                            .into_iter()
+                            .map(Symbol::id)
+                            .collect()
+                    })
+                    .collect();
+                if probe.resolve_import_ids(seed)? != want_imports {
+                    mismatches.push(format!("imports:{}#{}", seed.file, seed.qualified_name));
+                }
+                let scope = vec![seed.file.clone()];
+                let want_callers: Vec<u64> = graph
+                    .callers_of(&seed.name)
+                    .into_iter()
+                    .filter(|s| s.file == seed.file)
+                    .map(Symbol::id)
+                    .collect();
+                if probe.scoped_callers(&seed.name, &scope)? != want_callers {
+                    mismatches.push(format!("callers:{}#{}", seed.file, seed.qualified_name));
+                }
+            }
+        }
+        for chunk in snap.symbols.chunks(400) {
+            let ids: Vec<u64> = chunk.iter().map(Symbol::id).collect();
+            let hydrated = probe.hydrate(&store, &ids, true)?;
+            for seed in chunk {
+                if hydrated
+                    .get(&seed.id())
+                    .map(serde_json::to_value)
+                    .transpose()?
+                    != Some(serde_json::to_value(seed)?)
+                {
+                    mismatches.push(format!("hydrate:{}#{}", seed.file, seed.qualified_name));
+                }
+            }
+        }
+        let v = serde_json::json!({"stage":stage,"checked":checked,"mismatch_count":mismatches.len(),"mismatches":mismatches.iter().take(20).collect::<Vec<_>>(),"statements":probe.stats().statements,"rows":probe.stats().rows,"read_bytes":probe.stats().bytes});
+        println!(
+            "{}",
+            if json {
+                v.to_string()
+            } else {
+                serde_json::to_string_pretty(&v)?
+            }
+        );
+        return Ok(());
+    }
+    let embedder = open_embedder(None)?;
+    if stage == "context_probe_check" {
+        let got = context_probe(root, &store, embedder.as_ref(), &probe, &conn, query)?;
+        let want = build_context_with(
+            root,
+            &RetrievalEngine::new(&store, embedder.as_ref()),
+            query,
+            &ContextOptions::default(),
+        )?;
+        if serde_json::to_vec(&got)? != serde_json::to_vec(&want)? {
+            std::fs::write(
+                "/tmp/oxide-issue14-context-probe.json",
+                serde_json::to_vec_pretty(&got)?,
+            )?;
+            std::fs::write(
+                "/tmp/oxide-issue14-context-oracle.json",
+                serde_json::to_vec_pretty(&want)?,
+            )?;
+            anyhow::bail!("context probe differs from production for query {query:?}");
+        }
+        println!(
+            "{}",
+            serde_json::json!({"stage":stage,"equal":true,"items":got.items.len()})
+        );
+        return Ok(());
+    }
+    if stage == "context_probe" {
+        for rep in 0..repeat {
+            let s = begin();
+            let pack = context_probe(root, &store, embedder.as_ref(), &probe, &conn, query)?;
+            let r = sample(
+                s,
+                pack.items.len(),
+                format!(
+                    "probe_statements={} probe_rows={}",
+                    probe.stats().statements,
+                    probe.stats().rows
+                ),
+            );
+            emit(stage, rep, &r, json);
+        }
+        return Ok(());
+    }
+    if stage == "search_expand_probe_check" {
+        let got = search_expand_probe(&store, embedder.as_ref(), &probe, query)?;
+        let want = RetrievalEngine::new(&store, embedder.as_ref()).search(
+            query,
+            &SearchOptions {
+                limit: 10,
+                mode: SearchMode::Hybrid,
+                expand: true,
+                retrieval_mode: RetrievalMode::Balanced,
+            },
+        )?;
+        anyhow::ensure!(
+            serde_json::to_vec(&got)? == serde_json::to_vec(&want)?,
+            "search probe differs from production for query {query:?}"
+        );
+        println!(
+            "{}",
+            serde_json::json!({"stage":stage,"equal":true,"hits":got.len()})
+        );
+        return Ok(());
+    }
+    if stage == "search_expand_probe" {
+        for rep in 0..repeat {
+            let s = begin();
+            let hits = search_expand_probe(&store, embedder.as_ref(), &probe, query)?;
+            let r = sample(
+                s,
+                hits.len(),
+                format!(
+                    "probe_statements={} probe_rows={}",
+                    probe.stats().statements,
+                    probe.stats().rows
+                ),
+            );
+            emit(stage, rep, &r, json);
+        }
+        return Ok(());
+    }
+    let engine = RetrievalEngine::new(&store, embedder.as_ref());
+    let seeds: Vec<Symbol> = if stage.contains("search") {
+        let direct = engine.search(
+            query,
+            &SearchOptions {
+                limit: 400,
+                mode: SearchMode::Hybrid,
+                expand: false,
+                retrieval_mode: RetrievalMode::Balanced,
+            },
+        )?;
+        let lex = oxide::lexical::prepare_from_store(&store, store.symbol_count()?, query)?;
+        let (scores, _) = oxide::lexical::score(&lex, 1.5, 0.75);
+        let max_lex = scores.values().map(|s| s.0).fold(0.0f32, f32::max);
+        direct
+            .into_iter()
+            .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
+            .filter(|h| {
+                scores
+                    .get(&h.symbol.id())
+                    .is_some_and(|(score, _, _)| *score >= max_lex * 0.55)
+                    && max_lex > 0.0
+            })
+            .take(3)
+            .map(|h| h.symbol)
+            .collect()
+    } else {
+        engine
+            .search(
+                query,
+                &SearchOptions {
+                    limit: 16,
+                    mode: SearchMode::Hybrid,
+                    expand: false,
+                    retrieval_mode: RetrievalMode::Balanced,
+                },
+            )?
+            .into_iter()
+            .take(5)
+            .map(|h| h.symbol)
+            .collect()
+    };
+    let seed_refs: Vec<&Symbol> = seeds.iter().collect();
+    for rep in 0..repeat {
+        let s = begin();
+        let n = if stage.starts_with("struct_base") {
+            let snap = if stage.contains("search") {
+                SymbolSnapshot::from_symbols(store.all_symbols()?)
+            } else {
+                SymbolSnapshot::load(&store)?
+            };
+            let index = RelationIndex::build(&snap.symbols);
+            let graph = RelationGraph::with_index(&snap.symbols, &index);
+            seed_refs
+                .iter()
+                .map(|seed| graph.neighbors(seed).len())
+                .sum::<usize>()
+        } else {
+            probe
+                .neighbors_ids(&seed_refs)?
+                .iter()
+                .map(Vec::len)
+                .sum::<usize>()
+        };
+        let stats = probe.stats();
+        let r = sample(
+            s,
+            n,
+            format!(
+                "seeds={} statements={} rows={} read_bytes={}",
+                seeds.len(),
+                stats.statements,
+                stats.rows,
+                stats.bytes
+            ),
+        );
+        emit(stage, rep, &r, json);
+    }
+    Ok(())
+}
+
+fn search_expand_probe(
+    store: &SqliteStore,
+    embedder: &dyn oxide::embeddings::EmbeddingProvider,
+    probe: &probe_graph::ProbeGraph<'_>,
+    query: &str,
+) -> anyhow::Result<Vec<oxide::retrieval::SearchHit>> {
+    use oxide::retrieval::SearchHit;
+    use std::collections::{HashMap, HashSet};
+    let engine = RetrievalEngine::new(store, embedder);
+    let mut direct = engine.search(
+        query,
+        &SearchOptions {
+            limit: 400,
+            mode: SearchMode::Hybrid,
+            expand: false,
+            retrieval_mode: RetrievalMode::Balanced,
+        },
+    )?;
+    let lex = oxide::lexical::prepare_from_store(store, store.symbol_count()?, query)?;
+    let (scores, _) = oxide::lexical::score(&lex, 1.5, 0.75);
+    let max_lex = scores.values().map(|s| s.0).fold(0.0f32, f32::max);
+    let strong: Vec<&Symbol> = direct
+        .iter()
+        .filter(|h| h.reasons.iter().any(|r| r.starts_with("lexical")))
+        .filter(|h| {
+            scores
+                .get(&h.symbol.id())
+                .is_some_and(|(score, _, _)| *score >= max_lex * 0.55)
+                && max_lex > 0.0
+        })
+        .map(|h| &h.symbol)
+        .take(3)
+        .collect();
+    let neighbors = probe.neighbors_ids(&strong)?;
+    let direct_ids: HashSet<u64> = direct.iter().map(|h| h.symbol.id()).collect();
+    let mut expansions: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
+    for (seed, edges) in strong.iter().zip(neighbors) {
+        for (rel, id) in edges {
+            if id == seed.id() {
+                continue;
+            }
+            let e = expansions.entry(id).or_insert((0.0, Vec::new()));
+            e.0 += seed_score(seed.id(), &direct) * 0.5;
+            let reason = format!("{}←{}", rel, seed.qualified_name);
+            if !e.1.contains(&reason) {
+                e.1.push(reason);
+            }
+        }
+    }
+    let mut extra = Vec::new();
+    for (id, (score, reasons)) in expansions {
+        if direct_ids.contains(&id) {
+            if let Some(h) = direct.iter_mut().find(|h| h.symbol.id() == id) {
+                h.reasons.extend(reasons);
+            }
+        } else {
+            extra.push((id, score, reasons));
+        }
+    }
+    extra.sort_by(|a, b| {
+        b.1.partial_cmp(&a.1)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then(a.0.cmp(&b.0))
+    });
+    let remaining = 10usize.saturating_sub(direct.len());
+    let ids: Vec<u64> = extra.iter().take(remaining).map(|x| x.0).collect();
+    let mut hydrated = probe.hydrate(store, &ids, false)?;
+    for (id, score, reasons) in extra.into_iter().take(remaining) {
+        if let Some(symbol) = hydrated.remove(&id) {
+            direct.push(SearchHit {
+                symbol,
+                score,
+                reasons,
+                snippet: String::new(),
+            });
+        }
+    }
+    direct.truncate(10);
+    Ok(direct)
+}
+
+fn seed_score(id: u64, direct: &[oxide::retrieval::SearchHit]) -> f32 {
+    direct
+        .iter()
+        .find(|h| h.symbol.id() == id)
+        .map_or(0.001, |h| h.score)
+}
+
+fn probe_plans(db: &std::path::Path, json: bool) -> anyhow::Result<()> {
+    let conn =
+        rusqlite::Connection::open_with_flags(db, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)?;
+    let version: String = conn.query_row("SELECT sqlite_version()", [], |r| r.get(0))?;
+    let mut plans = serde_json::Map::new();
+    let statements = [
+        ("global_scan", "SELECT id, file, start_line, qualified_name, name, kind, parent, references_json FROM symbols"),
+        ("qualified", "SELECT id, file, start_line, name, kind, qualified_name FROM symbols WHERE qualified_name IN (SELECT value FROM json_each('[\"foo\"]'))"),
+        ("children", "SELECT id, file, start_line, name, kind, parent FROM symbols WHERE parent IN (SELECT value FROM json_each('[\"foo\"]'))"),
+        ("defs", "SELECT id, file, start_line, name, kind FROM symbols WHERE name IN (SELECT value FROM json_each('[\"foo\"]')) AND parent IS NULL"),
+        ("by_file", "SELECT id, file, start_line, name, kind, file FROM symbols WHERE file IN (SELECT value FROM json_each('[\"foo.py\"]'))"),
+        ("test_name_scan", "SELECT id, name FROM symbols"),
+        ("callers", "SELECT s.id, s.file, s.start_line, r.rowid FROM symbols s JOIN symbol_relations r ON r.symbol_id = s.id WHERE s.file IN (SELECT value FROM json_each('[\"foo.py\"]')) AND r.kind = 'calls' AND r.target = 'foo'"),
+        ("hydrate", "SELECT file FROM symbols WHERE id IN (SELECT value FROM json_each('[1,2]'))"),
+        ("vector", "SELECT symbol_id, dim, vec FROM embeddings"),
+    ];
+    for (name, sql) in statements {
+        let mut stmt = conn.prepare(&format!("EXPLAIN QUERY PLAN {sql}"))?;
+        let rows: Vec<String> = stmt
+            .query_map([], |r| r.get(3))?
+            .collect::<Result<_, _>>()?;
+        plans.insert(name.into(), serde_json::json!(rows));
+    }
+    let has_diag: bool = conn.query_row(
+        "SELECT COUNT(*) > 0 FROM sqlite_master WHERE name = 'diag_test_refs'",
+        [],
+        |r| r.get(0),
+    )?;
+    if has_diag {
+        let mut stmt = conn.prepare("EXPLAIN QUERY PLAN SELECT ref, symbol_id FROM diag_test_refs WHERE ref IN (SELECT value FROM json_each('[\"foo\"]'))")?;
+        let rows: Vec<String> = stmt
+            .query_map([], |r| r.get(3))?
+            .collect::<Result<_, _>>()?;
+        plans.insert("test_refs".into(), serde_json::json!(rows));
+    }
+    let v = serde_json::json!({"stage":"probe_plans","sqlite_version":version,"has_diag":has_diag,"plans":plans});
+    println!(
+        "{}",
+        if json {
+            v.to_string()
+        } else {
+            serde_json::to_string_pretty(&v)?
+        }
+    );
+    Ok(())
+}
+
+fn context_probe(
+    root: &std::path::Path,
+    store: &SqliteStore,
+    embedder: &dyn oxide::embeddings::EmbeddingProvider,
+    probe: &probe_graph::ProbeGraph<'_>,
+    conn: &rusqlite::Connection,
+    query: &str,
+) -> anyhow::Result<oxide::context::ContextPack> {
+    use std::collections::HashSet;
+    let seeds = RetrievalEngine::new(store, embedder).search(
+        query,
+        &SearchOptions {
+            limit: 16,
+            mode: SearchMode::Hybrid,
+            expand: false,
+            retrieval_mode: RetrievalMode::Balanced,
+        },
+    )?;
+    let focus: Vec<&Symbol> = seeds.iter().take(5).map(|h| &h.symbol).collect();
+    let (neighbors, tests) = probe.neighbors_and_tests(&focus, true)?;
+    let mut ids: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
+    ids.extend(neighbors.into_iter().flatten().map(|(_, id)| id));
+    ids.extend(tests.into_iter().flatten());
+    for s in &focus {
+        ids.extend(probe.resolve_import_ids(s)?.into_iter().flatten());
+    }
+    // Keep every candidate of the graph classes that precede test edges,
+    // including members beyond the 24-edge truncation boundary.
+    let refs: Vec<&str> = focus
+        .iter()
+        .flat_map(|s| s.references.iter().map(String::as_str))
+        .collect();
+    let parents: Vec<&str> = focus.iter().filter_map(|s| s.parent.as_deref()).collect();
+    let child_keys: Vec<&str> = parents
+        .iter()
+        .copied()
+        .chain(focus.iter().map(|s| s.qualified_name.as_str()))
+        .collect();
+    for (col, values) in [
+        ("name", refs),
+        ("qualified_name", parents),
+        ("parent", child_keys),
+    ] {
+        if values.is_empty() {
+            continue;
+        }
+        let sql =
+            format!("SELECT id FROM symbols WHERE {col} IN (SELECT value FROM json_each(?1))");
+        let json = serde_json::to_string(&values)?;
+        let mut stmt = conn.prepare(&sql)?;
+        let rows = stmt.query_map([json], |r| r.get::<_, i64>(0))?;
+        for row in rows {
+            ids.insert(row? as u64);
+        }
+    }
+    // RelationGraph's file-existence check must see every indexed file,
+    // including files outside the bounded result set.
+    let mut stmt = conn.prepare("SELECT id FROM symbols GROUP BY file")?;
+    for row in stmt.query_map([], |r| r.get::<_, i64>(0))? {
+        ids.insert(row? as u64);
+    }
+    let mut scope = Vec::new();
+    for h in &seeds {
+        if scope.len() >= 3 {
+            break;
+        }
+        if !scope.contains(&h.symbol.file) {
+            scope.push(h.symbol.file.clone());
+        }
+    }
+    for h in seeds.iter().take(2) {
+        ids.extend(probe.scoped_callers(&h.symbol.name, &scope)?);
+    }
+    let ids: Vec<u64> = ids.into_iter().collect();
+    let mut symbols = Vec::with_capacity(ids.len());
+    for chunk in ids.chunks(400) {
+        symbols.extend(probe.hydrate(store, chunk, true)?.into_values());
+    }
+    symbols.sort_by(|a, b| {
+        a.file
+            .cmp(&b.file)
+            .then(a.start_line.cmp(&b.start_line))
+            .then((a.id() as i64).cmp(&(b.id() as i64)))
+    });
+    let mut snapshot = SymbolSnapshot::from_symbols(symbols);
+    snapshot.with_relations = true;
+    let index = RelationIndex::build(&snapshot.symbols);
+    let engine = RetrievalEngine::with_snapshot_and_index(store, embedder, &snapshot, &index);
+    let mut pack = build_context_with(root, &engine, query, &ContextOptions::default())?;
+    // A one-shot CLI engine hydrates its direct seeds before loading the
+    // relations snapshot, so those seed rows have empty calls/bases. The
+    // supplied-snapshot path (MCP) hydrates them from that snapshot instead.
+    // Preserve the one-shot output shape in this diagnostic comparison.
+    let seed_ids: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
+    for item in &mut pack.items {
+        if seed_ids.contains(&item.symbol.id()) {
+            item.symbol.calls.clear();
+            item.symbol.bases.clear();
+        }
+    }
+    Ok(pack)
 }

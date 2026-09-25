@@ -120,6 +120,12 @@ CLI_SURFACES = {
     "search-no-expand": ["search", "--no-expand"],
     "context": ["query"],
 }
+# Opt-in extra CLI surfaces (`--cli-surfaces`): git-aware requests need a
+# working-tree diff, which the pinned clean clones do not have.
+GIT_CLI_SURFACES = {
+    "context-git": ["query", "--git"],
+    "review": ["review", "--diff", ""],
+}
 
 
 def hashed_env(native=False):
@@ -136,6 +142,7 @@ def hashed_env(native=False):
     for k in ("OXIDE_EMBED_URL", "OXIDE_EMBED_MODEL", "OXIDE_EMBED_PROVIDER", "OXIDE_RETRIEVAL_MODE"):
         env.pop(k, None)
     env["XDG_CONFIG_HOME"] = str(EMPTY_CONFIG_HOME)
+    env["OXIDE_EMBED_SESSIONS"] = "1"
     if native:
         env.pop("OXIDE_EMBED_NATIVE", None)
     else:
@@ -237,9 +244,32 @@ class Paths:
         self.tmp = self.work / "tmp"
         self.oxide = Path(args.oxide).resolve()
         self.profile = Path(args.profile).resolve()
+        # (tag, oxide, profile) per binary under test. With a challenger,
+        # stages/cli/mcp interleave baseline and challenger inside every
+        # batch, so both share one same-window null.
+        # A challenger needs both builds: a tag must never label samples
+        # that actually ran the baseline binary.
+        self.variants = [("base", self.oxide, self.profile)]
+        if bool(args.challenger_oxide) != bool(args.challenger_profile):
+            raise SystemExit("--challenger-oxide and --challenger-profile go together")
+        if args.challenger_oxide:
+            self.variants.append((
+                "challenger",
+                Path(args.challenger_oxide).resolve(),
+                Path(args.challenger_profile).resolve(),
+            ))
+        # An A/A validity control: the baseline again, as its own variant,
+        # inside the same (shuffled) schedule as the challenger.
+        if getattr(args, "aa_control", False):
+            self.variants.append(("base_aa", self.oxide, self.profile))
         self.corpora = [c for c, _, _ in CORPORA] + FIXTURES
         if args.corpora:
             self.corpora = args.corpora.split(",")
+
+    def ordered(self, i):
+        """`variants`, reversed on odd repetitions, so neither binary always
+        runs first (and on a machine the other one just warmed)."""
+        return self.variants if i % 2 == 0 else self.variants[::-1]
 
 
 # ---------------------------------------------------------------- setup ----
@@ -363,6 +393,11 @@ def environment(p):
         "oxide_src_dirty": dirty.strip().splitlines(),
         "oxide_version": sh([p.oxide, "--version"]).stdout.strip(),
         "oxide_binary_sha256": sha256(p.oxide),
+        "profile_binary_sha256": sha256(p.profile),
+        "challenger_binaries_sha256": {
+            "oxide": sha256(p.variants[1][1]),
+            "profile": sha256(p.variants[1][2]),
+        } if len(p.variants) > 1 else None,
         "rustc": sh(["rustc", "-V"], cwd=ROOT).stdout.strip(),
         "cargo": sh(["cargo", "-V"], cwd=ROOT).stdout.strip(),
         "rusqlite": cargo_lock_version("rusqlite"),
@@ -374,6 +409,7 @@ def environment(p):
         "mem_total_kb": mem_kb,
         "python": platform.python_version(),
         "embedder": f"{HASHED} (OXIDE_EMBED_NATIVE=hashed, remote tiers removed, XDG_CONFIG_HOME empty) unless a row says native; asserted against every index's meta.embedder",
+        "embed_sessions": "OXIDE_EMBED_SESSIONS=1 in hashed_env for every child",
         "retrieval_options": {
             "mode": "balanced (default; OXIDE_RETRIEVAL_MODE unset)",
             "search_limit": 10,
@@ -494,11 +530,12 @@ def cmd_stages(p, args):
             for name in p.corpora:
                 repo = p.idx / name
                 for stage in stages:
+                  for tag, _, profile in p.ordered(rep):
                     env = dict(hashed_env(), PROFILE_REPEAT=str(args.in_process))
-                    r = sh([p.profile, str(repo), QUERIES[name], "--stage", stage, "--json"], env=env)
+                    r = sh([profile, str(repo), QUERIES[name], "--stage", stage, "--json"], env=env)
                     for line in r.stdout.splitlines():
                         d = json.loads(line)
-                        d.update({"kind": "stage", "corpus": name, "batch": batch, "process": rep})
+                        d.update({"kind": "stage", "corpus": name, "batch": batch, "process": rep, "binary": tag})
                         d["cold"] = d["rep"] == 0
                         rows.append(d)
                         if stage == "search_expand" and d["rep"] == 0 and "expanded_hits=0" in d["note"]:
@@ -510,13 +547,14 @@ def cmd_stages(p, args):
 # ------------------------------------------------------------------ cli ----
 
 
-def cli_sample(p, repo, name, surface, argv, batch, rep, native=False):
+def cli_sample(p, repo, name, surface, argv, batch, rep, native=False, binary=None):
     env = hashed_env(native=native)
     out = p.tmp / "cli.json"
     p.tmp.mkdir(parents=True, exist_ok=True)
+    query = [] if argv[0] == "review" else [QUERIES[name]]
     with open(out, "w") as f:
         ms, rss = timed_child(
-            [p.oxide, *argv, "--json", "--path", str(repo), QUERIES[name]], env, stdout=f
+            [binary or p.oxide, *argv, "--json", "--path", str(repo), *query], env, stdout=f
         )
     doc = json.loads(out.read_text())
     expanded = None
@@ -538,11 +576,22 @@ def cli_sample(p, repo, name, surface, argv, batch, rep, native=False):
 
 def cmd_cli(p, args):
     rows = []
+    surfaces = dict(CLI_SURFACES)
+    if args.git_surfaces:
+        surfaces.update(GIT_CLI_SURFACES)
+        # Timing git-aware requests on a clean tree measures empty work.
+        for name in p.corpora:
+            diff = sh(["git", "diff", "HEAD", "--quiet"], cwd=p.idx / name, check=False)
+            if diff.returncode != 1:
+                raise SystemExit(f"--git-surfaces: {name} has no worktree-vs-HEAD diff")
     for rep in range(args.reps):
         for batch in range(2):
             for name in p.corpora:
-                for surface, argv in CLI_SURFACES.items():
-                    rows.append(cli_sample(p, p.idx / name, name, surface, argv, batch, rep))
+                for surface, argv in surfaces.items():
+                    for tag, oxide, _ in p.ordered(rep):
+                        row = cli_sample(p, p.idx / name, name, surface, argv, batch, rep, binary=oxide)
+                        row["binary"] = tag
+                        rows.append(row)
             print(f"cli rep {rep} batch {batch} done")
     write_jsonl(p.out / "cli.jsonl", rows)
     # Native-default check: `requests` alone, its own natively indexed copy.
@@ -582,14 +631,16 @@ def cmd_mcp(p, args):
                 # First call: one fresh server per (tool, sample), so every
                 # sample is a genuine cache miss that loads the corpus.
                 for tool in ("search", "query"):
+                  for tag, oxide, _ in p.ordered(rep):
                     r = sh(
-                        [sys.executable, bench, p.oxide, str(repo), QUERIES[name], "1", "--json", "--tools", tool],
+                        [sys.executable, bench, oxide, str(repo), QUERIES[name], "1", "--json", "--tools", tool],
                         env=hashed_env(),
                     )
                     d = json.loads(r.stdout)
                     rows.append(
                         {
                             "kind": "mcp_first",
+                            "binary": tag,
                             "corpus": name,
                             "tool": tool,
                             "batch": batch,
@@ -603,9 +654,10 @@ def cmd_mcp(p, args):
     # Steady state: one server, 1 + N calls per tool; call 0 is the miss.
     for batch in range(2):
         for name in p.corpora:
+          for tag, oxide, _ in p.ordered(batch):
             repo = p.idx / name
             r = sh(
-                [sys.executable, bench, p.oxide, str(repo), QUERIES[name], str(args.steady + 1), "--json"],
+                [sys.executable, bench, oxide, str(repo), QUERIES[name], str(args.steady + 1), "--json"],
                 env=hashed_env(),
             )
             d = json.loads(r.stdout)
@@ -614,6 +666,7 @@ def cmd_mcp(p, args):
                     rows.append(
                         {
                             "kind": "mcp_steady",
+                            "binary": tag,
                             "corpus": name,
                             "tool": tool,
                             "batch": batch,
@@ -627,12 +680,60 @@ def cmd_mcp(p, args):
     write_jsonl(p.out / "mcp.jsonl", rows)
 
 
+def cmd_mcp_servers(p, args):
+    """Warm-MCP latency over *independent* servers: the unit is one fresh
+    `oxide mcp` process, not one call. Per batch, every (corpus, binary,
+    server slot) is run in a seeded random order after one discarded
+    page-cache warmup server per (corpus, binary). Each server makes the
+    cache-miss call 0, then `--warmup` more calls, then `--steady` measured
+    calls per tool; all calls are written, warmup ones flagged."""
+    import random
+
+    rows = []
+    bench = ROOT / "scripts/mcp_bench.py"
+    calls = 1 + args.warmup + args.steady
+
+    def serve(oxide, name):
+        r = sh([sys.executable, bench, oxide, str(p.idx / name), QUERIES[name], str(calls), "--json"],
+               env=hashed_env())
+        return json.loads(r.stdout)
+
+    for batch in range(2):
+        for name in p.corpora:
+            for _, oxide, _ in p.variants:
+                serve(oxide, name)  # page-cache warmup, not recorded
+        schedule = [(name, tag, oxide, k) for name in p.corpora for tag, oxide, _ in p.variants
+                    for k in range(args.servers)]
+        random.Random(args.seed * 10 + batch).shuffle(schedule)
+        for order, (name, tag, oxide, k) in enumerate(schedule):
+            d = serve(oxide, name)
+            for tool, samples in d["samples_ms"].items():
+                for i, ms in enumerate(samples):
+                    rows.append({
+                        "kind": "mcp_server", "binary": tag, "corpus": name, "tool": tool,
+                        "batch": batch, "server": k, "order": order, "call": i,
+                        "warmup": i <= args.warmup, "ms": ms,
+                        "rss_kb": d["rss_kb"], "vm_hwm_kb": d["vm_hwm_kb"],
+                    })
+        print(f"mcp-servers batch {batch} done")
+    write_jsonl(p.out / "mcp_servers.jsonl", rows)
+    # Provenance: which executable each tag is, and the exact design.
+    (p.out / "mcp_servers_manifest.json").write_text(json.dumps({
+        "variants": {tag: {"oxide": str(oxide), "oxide_sha256": sha256(oxide)} for tag, oxide, _ in p.variants},
+        "corpora": p.corpora, "servers_per_batch": args.servers, "warmup_calls": args.warmup,
+        "measured_calls": args.steady, "seed": args.seed, "batches": 2,
+        "argv": sys.argv, "oxide_commit": oxide_commit(),
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+    }, indent=2) + "\n")
+
+
 # --------------------------------------------------------------- parity ----
 
 
 def parity_matrix(p, binary, tag):
     """Every deterministic retrieval output for one binary, hashed:
-    5 corpora × 8 queries × 11 surfaces + 11 literal patterns × 5 corpora."""
+    per corpus 8 queries × 11 surfaces, 11 literal patterns, one `review`,
+    and 8 queries × 2 MCP tools × (cold, cached) response bodies."""
     env = hashed_env()
     digests = {}
     for name in p.corpora:
@@ -644,6 +745,18 @@ def parity_matrix(p, binary, tag):
         for pat in LITERAL_PATTERNS:
             r = sh([binary, "search", "-m", "literal", "--json", "--path", str(repo), pat], env=env)
             digests[f"{name}|literal|{pat}"] = hashlib.sha256(r.stdout.encode()).hexdigest()
+        # `review` of the worktree-vs-HEAD diff (empty on a clean clone; the
+        # lean-snapshot parity copies carry a synthetic one), and the MCP
+        # response bodies of a cold then a cached-snapshot call per tool.
+        # Must succeed: two binaries failing alike would otherwise "match".
+        r = sh([binary, "review", "--diff", "", "--json", "--path", str(repo)], env=env)
+        digests[f"{name}|review|"] = hashlib.sha256(r.stdout.encode()).hexdigest()
+        for q in PARITY_QUERIES:
+            r = sh([sys.executable, str(ROOT / "scripts" / "mcp_bench.py"), binary, str(repo), q, "2",
+                    "--json", "--bodies"], env=env)
+            for tool, hashes in json.loads(r.stdout)["bodies"].items():
+                for i, h in enumerate(hashes):
+                    digests[f"{name}|mcp-{tool}-call{i}|{q}"] = h
     (p.out / f"parity_{tag}.json").write_text(json.dumps(digests, indent=1, sort_keys=True) + "\n")
     return digests
 
@@ -700,10 +813,16 @@ def fmt_int(xs):
 
 def cmd_report(p, args):
     manifest = json.loads((p.out / "manifest.json").read_text())
-    stages = read_jsonl(p.out / "stages.jsonl")
-    cli = read_jsonl(p.out / "cli.jsonl")
+    # The report describes one binary: challenger rows (`binary`, from an
+    # interleaved base/challenger sweep) are compared elsewhere, never
+    # pooled into these medians or their batch A/B noise.
+    def base_only(rows):
+        return [r for r in rows if r.get("binary", "base") == "base"]
+
+    stages = base_only(read_jsonl(p.out / "stages.jsonl"))
+    cli = base_only(read_jsonl(p.out / "cli.jsonl"))
     cli_native = read_jsonl(p.out / "cli_native.jsonl")
-    mcp = read_jsonl(p.out / "mcp.jsonl")
+    mcp = base_only(read_jsonl(p.out / "mcp.jsonl"))
     idx = read_jsonl(p.out / "index_costs.jsonl")
     parity = p.out / "parity_summary.json"
     parity = json.loads(parity.read_text()) if parity.exists() else None
@@ -869,7 +988,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument(
         "command",
-        choices=["all", "setup", "manifest", "index-costs", "stages", "cli", "mcp", "parity", "report"],
+        choices=["all", "setup", "manifest", "index-costs", "stages", "cli", "mcp", "mcp-servers", "parity",
+                 "report"],
     )
     ap.add_argument("--work", required=True, help="scratch directory for clones, indexed copies and binaries")
     ap.add_argument("--out", default=str(OUT_DEFAULT), help="raw sample directory (default: the committed one)")
@@ -877,6 +997,19 @@ def main():
     ap.add_argument("--profile", default=str(ROOT / "target/release/examples/retrieval_profile"))
     ap.add_argument("--baseline-bin", default=None, help="parity: release oxide built from the base commit")
     ap.add_argument("--corpora", default=None, help="comma-separated subset of corpora")
+    ap.add_argument("--challenger-oxide", default=None,
+                    help="stages/cli/mcp: a second oxide build, interleaved with --oxide in every batch")
+    ap.add_argument("--challenger-profile", default=None,
+                    help="stages: a second retrieval_profile build, interleaved with --profile")
+    ap.add_argument("--servers", type=int, default=10,
+                    help="mcp-servers: independent servers per binary per corpus per batch")
+    ap.add_argument("--warmup", type=int, default=3,
+                    help="mcp-servers: calls after the cache-miss call 0 discarded as warmup")
+    ap.add_argument("--seed", type=int, default=0, help="mcp-servers: schedule shuffle seed")
+    ap.add_argument("--aa-control", action="store_true",
+                    help="mcp-servers: add the baseline again as variant `base_aa` (same-schedule A/A)")
+    ap.add_argument("--git-surfaces", action="store_true",
+                    help="cli: also time `query --git` and `review` (needs a working-tree diff)")
     ap.add_argument("--reps", type=int, default=5, help="samples per batch (two interleaved batches)")
     ap.add_argument("--in-process", type=int, default=3, help="stage repetitions inside one process (rep 0 is cold)")
     ap.add_argument("--steady", type=int, default=16, help="MCP steady-state calls per tool after the first")
@@ -892,6 +1025,7 @@ def main():
         "stages": cmd_stages,
         "cli": cmd_cli,
         "mcp": cmd_mcp,
+        "mcp-servers": cmd_mcp_servers,
         "parity": cmd_parity,
         "report": cmd_report,
     }
