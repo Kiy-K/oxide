@@ -901,88 +901,39 @@ impl IndexBackend for SqliteStore {
     }
 
     fn all_symbols(&self) -> Result<Vec<Symbol>> {
-        // CHALLENGER (docs/retrieval-profile/corpus-load-baseline/
-        // challenger-rowid-scan): a plain table scan plus a sort in Rust,
-        // instead of `ORDER BY file, start_line` in SQL. The baseline
-        // measured the SQL form's plan — `SCAN symbols USING INDEX
-        // idx_symbols_file` + `USE TEMP B-TREE FOR LAST TERM OF ORDER BY`
-        // — as one rowid seek per row plus a per-file temp sort, 1.4–1.6 µs
-        // per symbol that a plain table scan does not pay.
+        // The `ORDER BY` stays in SQL. Measured on a 7.8k-symbol index
+        // (docs/retrieval-profile/README.md): the ordered scan is no slower
+        // than a rowid scan plus a Rust sort — the time that *looks* like
+        // sorting in a step-only probe is SQLite reading each ~1 KB row's
+        // overflow pages, which a plain scan merely defers to column
+        // access — and the ties in `(file, start_line)` come out in index
+        // order `(file, rowid)`, which the sort would have had to
+        // reproduce.
         //
-        // Order contract (trait doc): `(file, start_line)`, ties in rowid
-        // order. `id INTEGER PRIMARY KEY` *is* the rowid, so the tie-break
-        // is `id as i64` — *signed* order, not `u64` order, because that
-        // is the bit-cast every statement crosses SQLite with (an earlier
-        // draft sorted by `u64` id and produced a different sequence on
-        // the two corpora that have ties; `order_digest` caught it).
-        //
-        // The tie-break is sorted on explicitly rather than left to a
-        // stable sort over the scan's own order, because "the scan yields
-        // rowid order" is a planner choice, not a guarantee: SQLite is
-        // free to answer a query from a covering index instead (it already
-        // does for `SELECT id FROM symbols`, which comes back in
-        // `idx_symbols_name` order), and a future index could make this
-        // statement coverable too. Sorting the key outright makes the
-        // result independent of which access path the planner picks.
-        //
-        // The sort runs over a `u32` permutation (the merge sort's scratch
-        // buffer is then n/2 × 4 B, not n/2 × `size_of::<Symbol>()`),
-        // applied in place by cycle following, so the load's peak memory
-        // stays the `Vec<Symbol>` itself. The `i64` ids are computed once
-        // per row, not once per comparison — `Symbol::id()` is an FNV hash
-        // of file + qualified name.
-        //
-        // `imports_json` is file-level and identical for every symbol in
-        // a file. The SQL form relied on file-adjacent rows to parse it
-        // once per file; a rowid scan interleaves files, so the parsed
-        // list is memoized by the text's hash instead (verified against
-        // the text on a hit — a collision costs one parse, never a wrong
-        // list): one `String` + one parse per *distinct* list, and the
-        // same per-row `clone()` the SQL form always did.
+        // `imports_json` is file-level and identical for every symbol in a
+        // file, and the rows of one file are adjacent in this order, so the
+        // parsed list is reused while the raw text repeats instead of being
+        // parsed once per symbol.
         let mut stmt = self.conn.prepare(
             "SELECT file, qualified_name, name, kind, language, start_line, end_line,
                     content_hash, signature, imports_json, exported, parent, references_json
-             FROM symbols",
+             FROM symbols ORDER BY file, start_line",
         )?;
         let mut rows = stmt.query([])?;
         let mut out: Vec<Symbol> = Vec::new();
-        let mut ids: Vec<i64> = Vec::new();
-        let mut imports_by_text: rustc_hash::FxHashMap<u64, (String, Vec<String>)> =
-            rustc_hash::FxHashMap::default();
+        let mut last_imports: (String, Vec<String>) = (String::new(), Vec::new());
         while let Some(r) = rows.next()? {
-            let mut s = row_to_symbol_without_imports(r)?;
             let imports_json = r.get_ref(9)?.as_str()?;
-            let k = {
-                use std::hash::{Hash, Hasher};
-                let mut h = rustc_hash::FxHasher::default();
-                imports_json.hash(&mut h);
-                h.finish()
-            };
-            let hit = imports_by_text
-                .get(&k)
-                .filter(|(text, _)| text == imports_json);
-            s.imports = match hit {
-                Some((_, parsed)) => parsed.clone(),
-                None => {
-                    let parsed: Vec<String> =
-                        serde_json::from_str(imports_json).unwrap_or_default();
-                    let cloned = parsed.clone();
-                    imports_by_text.insert(k, (imports_json.to_string(), parsed));
-                    cloned
-                }
-            };
-            ids.push(s.id() as i64);
+            if imports_json != last_imports.0 {
+                last_imports = (
+                    imports_json.to_string(),
+                    serde_json::from_str(imports_json).unwrap_or_default(),
+                );
+            }
+            let mut s = row_to_symbol_without_imports(r)?;
+            s.imports = last_imports.1.clone();
             out.push(s);
         }
-        let mut perm: Vec<u32> = (0..out.len() as u32).collect();
-        perm.sort_unstable_by(|&a, &b| {
-            let (x, y) = (&out[a as usize], &out[b as usize]);
-            x.file
-                .cmp(&y.file)
-                .then(x.start_line.cmp(&y.start_line))
-                .then(ids[a as usize].cmp(&ids[b as usize]))
-        });
-        apply_permutation(&mut out, &perm);
         Ok(out)
     }
 
@@ -1209,29 +1160,6 @@ impl IndexBackend for SqliteStore {
             }
         }
         Ok(out)
-    }
-}
-
-/// Reorders `items` in place so that `items[i]` becomes the element that
-/// was at `perm[i]`, following each permutation cycle with swaps; no
-/// second buffer, O(n) swaps.
-fn apply_permutation<T>(items: &mut [T], perm: &[u32]) {
-    debug_assert_eq!(items.len(), perm.len());
-    let mut visited = vec![false; items.len()];
-    for start in 0..items.len() {
-        if visited[start] {
-            continue;
-        }
-        let mut cur = start;
-        loop {
-            visited[cur] = true;
-            let src = perm[cur] as usize;
-            if src == start {
-                break;
-            }
-            items.swap(cur, src);
-            cur = src;
-        }
     }
 }
 

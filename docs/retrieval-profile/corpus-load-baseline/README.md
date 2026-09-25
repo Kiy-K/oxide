@@ -338,15 +338,6 @@ schema-version change.
   same change. That is a maintainer decision, not something this baseline
   makes.
 
-**Gate provenance**: the four criteria above are issue #10's, written
-before that challenger existed, and they are left exactly as written —
-the rowid-scan challenger failed (a) under them
-([`challenger-rowid-scan/`](challenger-rowid-scan/README.md) §5b). A
-successor gate that states performance thresholds against a same-window
-null instead of absolute milliseconds is proposed separately in
-[`prospective-gate.md`](prospective-gate.md) (PG-1), also written before
-the run it judges.
-
 **Alternatives that stay alternatives** (evidence recorded, nothing
 committed): (i) sharing the file-level `imports` list instead of cloning
 it per symbol — ~16 of `pytest`'s 39 allocations per symbol, but a
