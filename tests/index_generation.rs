@@ -26,6 +26,7 @@ fn sym(file: &str, name: &str) -> Symbol {
         references: vec![],
         calls: vec![],
         bases: vec![],
+        completeness: Default::default(),
     }
 }
 

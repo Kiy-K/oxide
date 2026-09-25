@@ -245,6 +245,7 @@ pub fn build_context_with(
         let output = crate::evidence::EvidenceCoordinator::collect(
             crate::evidence::coordinator::CollectInput {
                 root,
+                store: engine.store(),
                 symbols,
                 graph: &graph,
                 seeds: &seeds,
@@ -274,6 +275,11 @@ pub fn build_context_with(
             .map(|d| format!("{}: {:?}", d.source.as_str(), d.reason))
             .collect();
     }
+
+    // Expansion and evidence candidates are lean-snapshot symbols: complete
+    // every one (one bounded read) before anything can serialize or rank
+    // them — including `OXIDE_DEBUG_DUMP_KEPT` below.
+    engine.complete(candidates.values_mut().map(|c| &mut c.symbol))?;
 
     // ---- dedup / subsumption -------------------------------------------
     // Highest score wins first so "kept" items always dominate dropped ones.
@@ -662,6 +668,7 @@ mod tests {
             references: vec![],
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         }
     }
 

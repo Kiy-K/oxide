@@ -1122,6 +1122,7 @@ impl LanguageExtractor for TagsExtractor {
                 references: Vec::new(),
                 calls: Vec::new(),
                 bases: Vec::new(),
+                completeness: Default::default(),
             });
             stand_in.push(
                 meta.rust_impls.contains(&d.tag_start)

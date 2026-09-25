@@ -26,6 +26,7 @@ fn sym(file: &str, name: &str) -> Symbol {
         references: vec![],
         calls: vec![],
         bases: vec![],
+        completeness: Default::default(),
     }
 }
 
@@ -66,6 +67,13 @@ fn assert_plans(store: &SqliteStore, label: &str) {
         !hydrate.contains("SCAN symbols"),
         "{label}: hydration scans symbols: {hydrate}"
     );
+
+    // The corpus load: the lean projection (`all_symbols_lean`, the
+    // snapshot's) must plan exactly like the full one it narrows — same
+    // access path, same `(file, rowid)` tie order.
+    let full = plan(store, oxide::storage::CORPUS_SQL);
+    let lean = plan(store, oxide::storage::LEAN_CORPUS_SQL);
+    assert_eq!(full, lean, "{label}: lean corpus load plans differently");
 
     // Meta reads: primary-key probe.
     let meta = plan(store, "SELECT value FROM meta WHERE key = 'root'");

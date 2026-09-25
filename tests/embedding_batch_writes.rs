@@ -26,6 +26,7 @@ fn make_symbols(n: usize) -> Vec<Symbol> {
             references: vec![],
             calls: vec![],
             bases: vec![],
+            completeness: Default::default(),
         })
         .collect()
 }

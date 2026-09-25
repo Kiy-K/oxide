@@ -255,6 +255,7 @@ mod tests {
             references: Vec::new(),
             calls: calls.iter().map(|s| s.to_string()).collect(),
             bases: bases.iter().map(|s| s.to_string()).collect(),
+            completeness: Default::default(),
         }
     }
 
@@ -505,6 +506,7 @@ mod tests {
             references: Vec::new(),
             calls: calls.iter().map(|s| s.to_string()).collect(),
             bases: Vec::new(),
+            completeness: Default::default(),
         };
         let symbols = vec![
             java("Target.java", "Target.run()", "run", &[]),

@@ -184,9 +184,94 @@ pub struct Symbol {
     /// extends or implements — same provenance and caveats as `calls`.
     #[serde(default)]
     pub bases: Vec<String>,
+    /// Whether `imports`/`references` are loaded. Only the corpus snapshot
+    /// loader ([`crate::storage::IndexBackend::all_symbols_lean`]) produces
+    /// [`Completeness::Partial`] symbols; every symbol that leaves the
+    /// snapshot as a `neighbors()` seed or as output goes through
+    /// `retrieval::complete_symbols` first. Never serialized for a complete
+    /// symbol (output stays byte-identical); serializing a partial one is an
+    /// error, and `RelationGraph::neighbors` / `LexicalIndex::build` assert
+    /// against one — a partial symbol cannot pass for a complete one.
+    #[serde(
+        default,
+        skip_deserializing,
+        skip_serializing_if = "Completeness::is_complete"
+    )]
+    pub completeness: Completeness,
+}
+
+/// See [`Symbol::completeness`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Completeness {
+    #[default]
+    Complete,
+    /// `imports` is empty and `references` is loaded only for test symbols
+    /// ([`is_test_symbol`]) — exactly what `RelationGraph` reads of a
+    /// non-seed symbol (docs/retrieval-profile/corpus-load-baseline/
+    /// lean-snapshot-screen/).
+    Partial,
+}
+
+impl Completeness {
+    pub fn is_complete(&self) -> bool {
+        *self == Completeness::Complete
+    }
+}
+
+/// Only reached for a [`Completeness::Partial`] symbol (a complete one skips
+/// the field), and always fails: emitting a lean symbol's empty `imports`/
+/// `references` as if they were real would be silently wrong output.
+impl Serialize for Completeness {
+    fn serialize<S: serde::Serializer>(&self, _: S) -> Result<S::Ok, S::Error> {
+        Err(serde::ser::Error::custom(
+            "a partial (lean-snapshot) Symbol was serialized without \
+             retrieval::complete_symbols",
+        ))
+    }
+}
+
+/// Test-symbol classification shared by `RelationGraph::related_tests` and
+/// the lean corpus loader, which must agree exactly: the loader keeps
+/// `references` for precisely the symbols this accepts. `buf` is scratch
+/// reused across calls — lowercasing into two fresh `String`s per symbol
+/// was the bulk of `RelationIndex::build`'s allocations. ASCII input takes
+/// the same bulk byte-wise path `str::to_lowercase` uses internally;
+/// anything else falls back to `to_lowercase` itself, so the mapping is
+/// identical.
+pub fn is_test_symbol(
+    file: &str,
+    name: &str,
+    kind: SymbolKind,
+    buf: &mut (String, String),
+) -> bool {
+    fn lower_into(src: &str, dst: &mut String) {
+        if src.is_ascii() {
+            dst.clear();
+            dst.push_str(src);
+            dst.make_ascii_lowercase();
+        } else {
+            *dst = src.to_lowercase();
+        }
+    }
+    let (f, n) = buf;
+    lower_into(file, f);
+    lower_into(name, n);
+    f.starts_with("test_")
+        || f.contains("_test.")
+        || f.contains(".test.")
+        || f.contains(".spec.")
+        || f.contains("/tests/")
+        || f.contains("\\tests\\")
+        || n.starts_with("test_")
+        || n.ends_with("_test")
+        || n.ends_with("test") && (matches!(kind, SymbolKind::Function | SymbolKind::Method))
 }
 
 impl Symbol {
+    pub fn is_complete(&self) -> bool {
+        self.completeness.is_complete()
+    }
+
     /// Stable identity for persistence: path + qualified name.
     pub fn id(&self) -> u64 {
         fnv1a64_iter([
@@ -271,6 +356,7 @@ mod tests {
             references: Vec::new(),
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         };
         assert_eq!(mk("a.py", "f").id(), mk("a.py", "f").id());
         assert_ne!(mk("a.py", "f").id(), mk("b.py", "f").id());
@@ -296,6 +382,7 @@ mod tests {
             references: Vec::new(),
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         };
         assert_eq!(sym.span_text(src), "def bar():\n    pass");
     }

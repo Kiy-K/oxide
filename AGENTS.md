@@ -92,7 +92,8 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   request path may call `all_symbols`/`all_embeddings` — the one exception
   is `SymbolSnapshot`, loaded lazily and only when structural expansion
   needs the whole corpus (`RelationGraph::related_tests` scans every
-  symbol by contract), or injected by `oxide mcp`'s process cache.
+  symbol by contract), or injected by `oxide mcp`'s process cache — and
+  loaded *lean* (next bullet).
   `search_hydrates_only_candidates_unless_expansion_needs_the_corpus`
   pins this with a counting store. The heap's comparator is
   `cmp_score_id`, the same total order the old full sort used, so the
@@ -101,6 +102,27 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   (`streaming_semantic_scan_matches_materialized_scan_exactly`).
   `FUSION_CANDIDATE_LIMIT` is a ranking input, not a tuning knob: a
   different depth changes RRF's inputs.
+- `SymbolSnapshot` is **lean** (`IndexBackend::all_symbols_lean`,
+  docs/retrieval-profile/corpus-load-baseline/lean-snapshot/): every
+  symbol is `Completeness::Partial` — `imports` empty, `references` only
+  on test symbols (`symbols::is_test_symbol`, the one predicate
+  `related_tests` also uses) — because that is all `RelationGraph` reads
+  of a non-seed symbol. It cut one-shot expanded requests 16–27 % and
+  peak RSS 23–32 %. A partial symbol must never pass for a complete
+  one: every symbol that becomes a `neighbors()` seed or leaves as output
+  goes through `retrieval::complete_symbols` (one bounded
+  `symbols_by_ids` read, keeping `calls`/`bases`) — search's strong seeds
+  and returned hits, `context.rs`'s candidates, the coordinator's
+  git-changed seeds, `review`'s seeds and `related`. Backstops, all loud:
+  `Completeness` is skipped when complete (JSON byte-identical) and its
+  `Serialize` always errors; `RelationGraph::neighbors` and
+  `LexicalIndex::build` assert completeness; the counting store bounds
+  completion reads. A new consumer of snapshot symbols completes them
+  first. When BM25 falls back to memory (`retrieval::lexical_persisted`
+  false) every snapshot loader returns complete symbols instead, so the
+  fallback's single load is unchanged. `lean_snapshot_output_matches_the_
+  complete_corpus_oracle` pins search/context/`--git`/`--blast-radius`/
+  review/MCP-cache/fallback output against a complete-corpus store.
 - `RetrievalEngine::search` runs `embed_query` on its own OS thread via
   plain `std::thread::scope` — not a tokio task — while BM25 runs on the
   calling thread, then the vector scan follows on the calling thread once

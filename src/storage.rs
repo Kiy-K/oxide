@@ -1,6 +1,6 @@
 //! SQLite-backed persistent storage for OXIDE symbols, metadata, vectors, and relations.
 
-use crate::symbols::{Language, Symbol};
+use crate::symbols::{is_test_symbol, Completeness, Language, Symbol};
 use anyhow::{Context, Result};
 use rusqlite::{Connection, OptionalExtension};
 use serde::Serialize;
@@ -148,6 +148,17 @@ pub trait IndexBackend {
     /// `update_embeddings`' batch composition) is deterministic.
     /// `calls`/`bases` are left empty.
     fn all_symbols(&self) -> Result<Vec<Symbol>>;
+    /// [`Self::all_symbols`]' rows in the same order, as
+    /// [`Completeness::Partial`](crate::symbols::Completeness) symbols:
+    /// `imports` empty and `references` decoded only where
+    /// [`crate::symbols::is_test_symbol`] holds — everything
+    /// `RelationGraph` reads of a non-seed symbol, at a fraction of the
+    /// decode (docs/retrieval-profile/corpus-load-baseline/
+    /// lean-snapshot-screen/). The corpus-snapshot loader; the default is
+    /// the full load, which is always correct, just not lean.
+    fn all_symbols_lean(&self) -> Result<Vec<Symbol>> {
+        self.all_symbols()
+    }
     /// `COUNT(*)` over `symbols` — BM25's document count, without loading a
     /// single row. Must be read in the same snapshot as the postings it
     /// normalizes (`open_read_only` holds one for the connection's life).
@@ -901,40 +912,11 @@ impl IndexBackend for SqliteStore {
     }
 
     fn all_symbols(&self) -> Result<Vec<Symbol>> {
-        // The `ORDER BY` stays in SQL. Measured on a 7.8k-symbol index
-        // (docs/retrieval-profile/README.md): the ordered scan is no slower
-        // than a rowid scan plus a Rust sort — the time that *looks* like
-        // sorting in a step-only probe is SQLite reading each ~1 KB row's
-        // overflow pages, which a plain scan merely defers to column
-        // access — and the ties in `(file, start_line)` come out in index
-        // order `(file, rowid)`, which the sort would have had to
-        // reproduce.
-        //
-        // `imports_json` is file-level and identical for every symbol in a
-        // file, and the rows of one file are adjacent in this order, so the
-        // parsed list is reused while the raw text repeats instead of being
-        // parsed once per symbol.
-        let mut stmt = self.conn.prepare(
-            "SELECT file, qualified_name, name, kind, language, start_line, end_line,
-                    content_hash, signature, imports_json, exported, parent, references_json
-             FROM symbols ORDER BY file, start_line",
-        )?;
-        let mut rows = stmt.query([])?;
-        let mut out: Vec<Symbol> = Vec::new();
-        let mut last_imports: (String, Vec<String>) = (String::new(), Vec::new());
-        while let Some(r) = rows.next()? {
-            let imports_json = r.get_ref(9)?.as_str()?;
-            if imports_json != last_imports.0 {
-                last_imports = (
-                    imports_json.to_string(),
-                    serde_json::from_str(imports_json).unwrap_or_default(),
-                );
-            }
-            let mut s = row_to_symbol_without_imports(r)?;
-            s.imports = last_imports.1.clone();
-            out.push(s);
-        }
-        Ok(out)
+        self.load_corpus(false)
+    }
+
+    fn all_symbols_lean(&self) -> Result<Vec<Symbol>> {
+        self.load_corpus(true)
     }
 
     fn symbol_count(&self) -> Result<usize> {
@@ -1164,7 +1146,7 @@ impl IndexBackend for SqliteStore {
 }
 
 fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
-    let mut s = row_to_symbol_without_imports(r)?;
+    let mut s = row_to_symbol_without_imports(r, None)?;
     s.imports = serde_json::from_str(r.get_ref(9)?.as_str()?).unwrap_or_default();
     Ok(s)
 }
@@ -1174,8 +1156,11 @@ fn row_to_symbol(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
 /// parsed, never kept (`kind`, `language`, `references_json`), are read by
 /// reference straight off the row buffer instead of through an owned
 /// `String` first.
-fn row_to_symbol_without_imports(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symbol> {
-    Ok(Symbol {
+fn row_to_symbol_without_imports(
+    r: &rusqlite::Row<'_>,
+    lean: Option<&mut (String, String)>,
+) -> rusqlite::Result<Symbol> {
+    let mut s = Symbol {
         file: r.get(0)?,
         qualified_name: r.get(1)?,
         name: r.get(2)?,
@@ -1199,14 +1184,39 @@ fn row_to_symbol_without_imports(r: &rusqlite::Row<'_>) -> rusqlite::Result<Symb
         imports: Vec::new(),
         exported: r.get::<_, i64>(10)? != 0,
         parent: r.get(11)?,
-        references: serde_json::from_str(r.get_ref(12)?.as_str()?).unwrap_or_default(),
+        references: Vec::new(),
         // Not columns on `symbols` — populated separately by
         // `structural_relations::load_symbols_with_relations` from the
         // side table `symbol_relations`, never by this loader.
         calls: Vec::new(),
         bases: Vec::new(),
-    })
+        completeness: Completeness::Complete,
+    };
+    // Lean (`all_symbols_lean`): `references` only for test symbols, the
+    // one non-seed read `RelationGraph` makes (`related_tests`).
+    let keep_refs = match lean {
+        None => true,
+        Some(buf) => {
+            s.completeness = Completeness::Partial;
+            is_test_symbol(&s.file, &s.name, s.kind, buf)
+        }
+    };
+    if keep_refs {
+        s.references = serde_json::from_str(r.get_ref(12)?.as_str()?).unwrap_or_default();
+    }
+    Ok(s)
 }
+
+/// The corpus load's statement ([`IndexBackend::all_symbols`]).
+pub const CORPUS_SQL: &str =
+    "SELECT file, qualified_name, name, kind, language, start_line, end_line,
+            content_hash, signature, imports_json, exported, parent, references_json
+     FROM symbols ORDER BY file, start_line";
+/// [`CORPUS_SQL`] without `imports_json` ([`IndexBackend::all_symbols_lean`]).
+pub const LEAN_CORPUS_SQL: &str =
+    "SELECT file, qualified_name, name, kind, language, start_line, end_line,
+            content_hash, signature, NULL, exported, parent, references_json
+     FROM symbols ORDER BY file, start_line";
 
 /// Index statistics for `oxide stats`.
 #[derive(Debug, Clone, Serialize)]
@@ -1217,6 +1227,52 @@ pub struct IndexStats {
 }
 
 impl SqliteStore {
+    /// [`IndexBackend::all_symbols`] (`lean = false`) and
+    /// [`IndexBackend::all_symbols_lean`]: one statement shape, one decoder.
+    fn load_corpus(&self, lean: bool) -> Result<Vec<Symbol>> {
+        // The `ORDER BY` stays in SQL. Measured on a 7.8k-symbol index
+        // (docs/retrieval-profile/README.md): the ordered scan is no slower
+        // than a rowid scan plus a Rust sort — the time that *looks* like
+        // sorting in a step-only probe is SQLite reading each ~1 KB row's
+        // overflow pages, which a plain scan merely defers to column
+        // access — and the ties in `(file, start_line)` come out in index
+        // order `(file, rowid)`, which the sort would have had to
+        // reproduce.
+        //
+        // `imports_json` is file-level and identical for every symbol in a
+        // file, and the rows of one file are adjacent in this order, so the
+        // parsed list is reused while the raw text repeats instead of being
+        // parsed once per symbol.
+        //
+        // The lean statement reads `NULL` in `imports_json`'s place (same
+        // column positions, same decoder) and never parses it; its plan is
+        // pinned next to the full one in `tests/query_plans.rs`.
+        let mut stmt = self
+            .conn
+            .prepare(if lean { LEAN_CORPUS_SQL } else { CORPUS_SQL })?;
+        let mut rows = stmt.query([])?;
+        let mut out: Vec<Symbol> = Vec::new();
+        let mut last_imports: (String, Vec<String>) = (String::new(), Vec::new());
+        let mut buf = (String::new(), String::new());
+        while let Some(r) = rows.next()? {
+            if lean {
+                out.push(row_to_symbol_without_imports(r, Some(&mut buf))?);
+                continue;
+            }
+            let imports_json = r.get_ref(9)?.as_str()?;
+            if imports_json != last_imports.0 {
+                last_imports = (
+                    imports_json.to_string(),
+                    serde_json::from_str(imports_json).unwrap_or_default(),
+                );
+            }
+            let mut s = row_to_symbol_without_imports(r, None)?;
+            s.imports = last_imports.1.clone();
+            out.push(s);
+        }
+        Ok(out)
+    }
+
     pub fn stats(&self) -> Result<IndexStats> {
         let q = |sql: &str| -> Result<usize> {
             Ok(self.conn.query_row(sql, [], |r| r.get::<_, i64>(0))? as usize)
@@ -1285,6 +1341,7 @@ mod tests {
             references: vec![],
             calls: vec![],
             bases: vec![],
+            completeness: Default::default(),
         };
         let id = sym.id();
         store

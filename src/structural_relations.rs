@@ -196,10 +196,19 @@ pub fn compute_file_relations(
 
 /// Loads symbols with `calls`/`bases` merged in from `symbol_relations` —
 /// the read-side counterpart of [`compute_file_relations`]/`update_index`.
-/// `context.rs`'s `build_context` is the production caller; nothing calls
-/// `store.all_symbols()` directly anymore when relations are needed.
+/// Complete symbols; the request path's corpus snapshot uses
+/// [`load_lean_symbols_with_relations`] instead.
 pub fn load_symbols_with_relations(store: &dyn IndexBackend) -> Result<Vec<Symbol>> {
-    let mut symbols = store.all_symbols()?;
+    merge_relations(store, store.all_symbols()?)
+}
+
+/// [`load_symbols_with_relations`] over [`IndexBackend::all_symbols_lean`]:
+/// what `retrieval::SymbolSnapshot::load` holds.
+pub fn load_lean_symbols_with_relations(store: &dyn IndexBackend) -> Result<Vec<Symbol>> {
+    merge_relations(store, store.all_symbols_lean()?)
+}
+
+fn merge_relations(store: &dyn IndexBackend, mut symbols: Vec<Symbol>) -> Result<Vec<Symbol>> {
     let mut relations = store.all_symbol_relations()?;
     for s in &mut symbols {
         if let Some((calls, bases)) = relations.remove(&s.id()) {

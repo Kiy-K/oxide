@@ -34,6 +34,7 @@ fn make_symbols() -> Vec<Symbol> {
             references: vec![],
             calls: vec![],
             bases: vec![],
+            completeness: Default::default(),
         })
         .collect()
 }

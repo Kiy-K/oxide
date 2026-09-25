@@ -70,34 +70,10 @@ pub struct RelationGraph<'a> {
     index: Cow<'a, RelationIndex>,
 }
 
-/// `buf` is scratch the caller reuses across symbols: `build` runs this
-/// over every symbol on every request, and lowercasing into two fresh
-/// `String`s per symbol was the bulk of its allocations. ASCII input (the
-/// overwhelming case for paths and identifiers) takes the same bulk
-/// byte-wise path `str::to_lowercase` uses internally; anything else
-/// falls back to `to_lowercase` itself, so the mapping is identical.
+/// `symbols::is_test_symbol` over a symbol — the one classification the
+/// lean corpus loader also uses to decide whose `references` it keeps.
 fn is_test_symbol(s: &Symbol, buf: &mut (String, String)) -> bool {
-    fn lower_into(src: &str, dst: &mut String) {
-        if src.is_ascii() {
-            dst.clear();
-            dst.push_str(src);
-            dst.make_ascii_lowercase();
-        } else {
-            *dst = src.to_lowercase();
-        }
-    }
-    let (f, n) = buf;
-    lower_into(&s.file, f);
-    lower_into(&s.name, n);
-    f.starts_with("test_")
-        || f.contains("_test.")
-        || f.contains(".test.")
-        || f.contains(".spec.")
-        || f.contains("/tests/")
-        || f.contains("\\tests\\")
-        || n.starts_with("test_")
-        || n.ends_with("_test")
-        || n.ends_with("test") && (matches!(s.kind, SymbolKind::Function | SymbolKind::Method))
+    crate::symbols::is_test_symbol(&s.file, &s.name, s.kind, buf)
 }
 
 impl RelationIndex {
@@ -306,6 +282,16 @@ impl<'a> RelationGraph<'a> {
     ///   dropped. That is still name matching — it just stops offering
     ///   candidates the file demonstrably never pulled in.
     pub fn neighbors(&self, seed: &Symbol) -> Vec<(String, &'a Symbol)> {
+        // A lean-snapshot seed has no `imports` and (unless it is a test) no
+        // `references`: it would silently lose its `uses` and
+        // `imported-definition` neighbors. Callers complete seeds first
+        // (`retrieval::complete_symbols`); this is the backstop.
+        assert!(
+            seed.is_complete(),
+            "neighbors() called with a partial seed: {}#{}",
+            seed.file,
+            seed.qualified_name
+        );
         let mut out: Vec<(String, &'a Symbol)> = Vec::new();
         if let Some(p) = &seed.parent {
             if let Some(parent_sym) = self.by_qualified(p) {
@@ -569,6 +555,7 @@ mod uses_narrowing_tests {
             references: references.iter().map(|s| s.to_string()).collect(),
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         }
     }
 

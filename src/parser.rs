@@ -153,6 +153,7 @@ pub fn parse_file_with(
         references: Vec::new(),
         calls: Vec::new(),
         bases: Vec::new(),
+        completeness: Default::default(),
     });
     syms
 }

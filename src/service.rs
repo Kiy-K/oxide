@@ -1356,6 +1356,7 @@ mod tests {
             references: Vec::new(),
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         };
         let evidence = Evidence::from_symbol(&symbol, 1.0, Vec::new(), "return token".into());
         assert_eq!(evidence.id, "src/auth.py#Auth.refresh");

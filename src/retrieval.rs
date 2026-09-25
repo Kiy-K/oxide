@@ -10,7 +10,7 @@ use crate::embeddings::EmbeddingProvider;
 use crate::lexical::LexicalIndex;
 use crate::relations::{RelationGraph, RelationIndex};
 use crate::storage::IndexBackend;
-use crate::symbols::{Symbol, SymbolKind};
+use crate::symbols::{Completeness, Symbol, SymbolKind};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -125,7 +125,13 @@ pub struct SearchHit {
 }
 
 /// Every indexed symbol, with `calls`/`bases` merged in from the relations
-/// side table, plus an id index. The one O(N) load retrieval still has,
+/// side table, plus an id index. Lean
+/// ([`IndexBackend::all_symbols_lean`]): every symbol is
+/// [`Completeness::Partial`] — `imports` empty, `references` only on test
+/// symbols — which is all `RelationGraph` reads of a non-seed symbol. A
+/// symbol that becomes a seed or leaves as output goes through
+/// [`complete_symbols`] first; `neighbors()` and serialization refuse a
+/// partial one. The one O(N) load retrieval still has,
 /// and it is only paid when something genuinely needs the whole corpus:
 /// structural expansion (`RelationGraph` answers `related_tests` by
 /// scanning every symbol, so it cannot be built from a candidate subset)
@@ -145,16 +151,29 @@ pub struct SymbolSnapshot {
 impl SymbolSnapshot {
     /// Every symbol with relations merged in — what a long-lived cache
     /// should hold, since it serves both search and context.
+    ///
+    /// Lean whenever BM25 is served from the persisted postings; complete
+    /// when it must fall back to [`LexicalIndex::build`], which indexes
+    /// `references`/`imports` — so one load serves both, as before, and the
+    /// `oxide mcp` cache (keyed on the lexical version too) holds whichever
+    /// its requests need.
     pub fn load(store: &dyn IndexBackend) -> anyhow::Result<Self> {
-        let mut snapshot = Self::from_symbols(
-            crate::structural_relations::load_symbols_with_relations(store)?,
-        );
+        let symbols = if lexical_persisted(store) {
+            crate::structural_relations::load_lean_symbols_with_relations(store)?
+        } else {
+            crate::structural_relations::load_symbols_with_relations(store)?
+        };
+        let mut snapshot = Self::from_symbols(symbols);
         snapshot.with_relations = true;
         Ok(snapshot)
     }
 
     fn load_without_relations(store: &dyn IndexBackend) -> anyhow::Result<Self> {
-        Ok(Self::from_symbols(store.all_symbols()?))
+        Ok(Self::from_symbols(if lexical_persisted(store) {
+            store.all_symbols_lean()?
+        } else {
+            store.all_symbols()?
+        }))
     }
 
     pub fn from_symbols(symbols: Vec<Symbol>) -> Self {
@@ -173,6 +192,17 @@ impl SymbolSnapshot {
     pub fn get(&self, id: u64) -> Option<&Symbol> {
         self.by_id.get(&id).map(|&i| &self.symbols[i])
     }
+}
+
+/// Whether BM25 can be served from the persisted postings: only on an exact
+/// `meta.lexical_index_version` match (see [`RetrievalEngine`]'s
+/// construction). Otherwise retrieval rebuilds BM25 in memory from complete
+/// symbols, which also decides [`SymbolSnapshot::load`]'s shape.
+pub fn lexical_persisted(store: &dyn IndexBackend) -> bool {
+    matches!(
+        store.get_meta(crate::storage::LEXICAL_INDEX_KEY),
+        Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string()
+    )
 }
 
 /// Hybrid retrieval engine over a store snapshot. Candidate-first: a query
@@ -342,11 +372,7 @@ impl<'a> RetrievalEngine<'a> {
         // failing. Falling back rebuilds in memory (which needs every
         // symbol, so it forces the snapshot load), and the next `oxide
         // index` repairs the persisted copy.
-        let persisted = matches!(
-            store.get_meta(crate::storage::LEXICAL_INDEX_KEY),
-            Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string()
-        );
-        let (lexical, symbol_count) = if persisted {
+        let (lexical, symbol_count) = if lexical_persisted(store) {
             (
                 LexicalSource::Persisted,
                 store.symbol_count().unwrap_or_default(),
@@ -357,6 +383,9 @@ impl<'a> RetrievalEngine<'a> {
                 .ok()
                 .flatten()
                 .map(std::path::PathBuf::from);
+            // BM25 indexes `references`/`imports`: on this path every
+            // snapshot loader returns complete symbols (`lexical_persisted`),
+            // so the one load still serves both the fallback and expansion.
             let symbols = &engine.snapshot().symbols;
             (
                 LexicalSource::Memory(LexicalIndex::build(symbols, root.as_deref())),
@@ -368,6 +397,10 @@ impl<'a> RetrievalEngine<'a> {
             lexical,
             ..engine
         }
+    }
+
+    pub fn store(&self) -> &'a dyn IndexBackend {
+        self.store
     }
 
     pub fn embedder(&self) -> &'a dyn EmbeddingProvider {
@@ -428,10 +461,20 @@ impl<'a> RetrievalEngine<'a> {
         }
     }
 
+    /// [`complete_symbols`] against this engine's store.
+    pub fn complete<'s>(
+        &self,
+        symbols: impl IntoIterator<Item = &'s mut Symbol>,
+    ) -> anyhow::Result<()> {
+        complete_symbols(self.store, symbols)
+    }
+
     /// Candidate ids → symbols. From the snapshot when one is already
     /// loaded, otherwise a bounded `WHERE id IN (...)` read — never a full
     /// table load. Ids with no row (a symbol removed between two reads on
-    /// a non-snapshotting connection) are simply absent.
+    /// a non-snapshotting connection) are simply absent. Snapshot clones are
+    /// partial when the snapshot is lean; `search` completes the few that
+    /// become seeds or hits, not all of them.
     fn hydrate(&self, ids: impl IntoIterator<Item = u64>) -> HashMap<u64, Symbol> {
         if let Some(snapshot) = self.snapshot.get() {
             return ids
@@ -662,7 +705,7 @@ impl<'a> RetrievalEngine<'a> {
         let mut expansion_symbols: HashMap<u64, &Symbol> = HashMap::new();
         if opts.expand && opts.retrieval_mode != RetrievalMode::Fast && !direct.is_empty() {
             let max_lex = lex_scores.values().map(|s| s.0).fold(0.0f32, f32::max);
-            let strong: Vec<&Symbol> = direct
+            let strong_ids: Vec<u64> = direct
                 .iter()
                 .filter(|(id, _)| {
                     reasons
@@ -676,9 +719,19 @@ impl<'a> RetrievalEngine<'a> {
                         .unwrap_or(false)
                         && max_lex > 0.0
                 })
-                .filter_map(|(id, _)| symbols.get(id))
+                .filter(|(id, _)| symbols.contains_key(id))
+                .map(|(id, _)| *id)
                 .take(3)
                 .collect();
+            // Seeds from a (lean) snapshot-backed hydrate must be complete
+            // before `neighbors()` reads their imports/references.
+            self.complete(
+                symbols
+                    .iter_mut()
+                    .filter(|(id, _)| strong_ids.contains(id))
+                    .map(|(_, s)| s),
+            )?;
+            let strong: Vec<&Symbol> = strong_ids.iter().filter_map(|id| symbols.get(id)).collect();
             if !strong.is_empty() {
                 let snapshot = self.snapshot();
                 let graph = self.graph_over(snapshot);
@@ -709,7 +762,7 @@ impl<'a> RetrievalEngine<'a> {
             }
         }
 
-        let hits = direct
+        let mut hits: Vec<SearchHit> = direct
             .into_iter()
             .chain(expanded)
             .take(opts.limit)
@@ -726,8 +779,47 @@ impl<'a> RetrievalEngine<'a> {
                 })
             })
             .collect();
+        // Expansion-only hits are snapshot symbols, and so are direct ones
+        // when a supplied snapshot served `hydrate`.
+        self.complete(hits.iter_mut().map(|h| &mut h.symbol))?;
         Ok(hits)
     }
+}
+
+/// Fill in what a lean snapshot left out ([`Completeness::Partial`]) for
+/// every partial symbol in `symbols`, from one bounded `symbols_by_ids`
+/// read (the candidate hydration statement). Complete symbols are left
+/// alone and, when there is no partial one, nothing is read. `calls`/
+/// `bases` — merged from the relations side table, which `symbols_by_ids`
+/// leaves empty — are kept. A row missing from the store is an error: a
+/// partial symbol is never passed off as complete.
+pub fn complete_symbols<'s>(
+    store: &dyn IndexBackend,
+    symbols: impl IntoIterator<Item = &'s mut Symbol>,
+) -> anyhow::Result<()> {
+    let partial: Vec<&mut Symbol> = symbols.into_iter().filter(|s| !s.is_complete()).collect();
+    if partial.is_empty() {
+        return Ok(());
+    }
+    let ids: Vec<u64> = partial.iter().map(|s| s.id()).collect();
+    let full: HashMap<u64, Symbol> = store
+        .symbols_by_ids(&ids)?
+        .into_iter()
+        .map(|s| (s.id(), s))
+        .collect();
+    for s in partial {
+        let f = full.get(&s.id()).ok_or_else(|| {
+            anyhow::anyhow!(
+                "cannot complete {}#{}: no such row in the index",
+                s.file,
+                s.qualified_name
+            )
+        })?;
+        s.imports.clone_from(&f.imports);
+        s.references.clone_from(&f.references);
+        s.completeness = Completeness::Complete;
+    }
+    Ok(())
 }
 
 /// Slice `start..end` (1-based inclusive) from a file, capped at `cap` lines.
@@ -774,6 +866,7 @@ mod tests {
             references: refs.iter().map(|s| s.to_string()).collect(),
             calls: Vec::new(),
             bases: Vec::new(),
+            completeness: Default::default(),
         }
     }
 
@@ -1769,6 +1862,12 @@ mod tests {
     struct CountingStore<'a> {
         inner: &'a SqliteStore,
         full_loads: std::cell::Cell<usize>,
+        /// Ids requested by each `symbols_by_ids` call, in call order.
+        by_ids: std::cell::RefCell<Vec<usize>>,
+        /// The frozen pre-lean oracle: `all_symbols_lean` serves complete
+        /// symbols, exactly what every corpus load returned before lean
+        /// snapshots existed.
+        complete_corpus: bool,
         /// Fail the embedding scan after this many rows (simulates an
         /// unreadable row mid-table).
         fail_scan_after: Option<usize>,
@@ -1780,6 +1879,8 @@ mod tests {
             Self {
                 inner,
                 full_loads: std::cell::Cell::new(0),
+                by_ids: Default::default(),
+                complete_corpus: false,
                 fail_scan_after: None,
                 fail_relations: false,
             }
@@ -1830,10 +1931,19 @@ mod tests {
             self.full_loads.set(self.full_loads.get() + 1);
             self.inner.all_symbols()
         }
+        fn all_symbols_lean(&self) -> anyhow::Result<Vec<Symbol>> {
+            self.full_loads.set(self.full_loads.get() + 1);
+            if self.complete_corpus {
+                self.inner.all_symbols()
+            } else {
+                self.inner.all_symbols_lean()
+            }
+        }
         fn symbol_count(&self) -> anyhow::Result<usize> {
             self.inner.symbol_count()
         }
         fn symbols_by_ids(&self, ids: &[u64]) -> anyhow::Result<Vec<Symbol>> {
+            self.by_ids.borrow_mut().push(ids.len());
             self.inner.symbols_by_ids(ids)
         }
         fn symbol_hash(&self, id: u64) -> anyhow::Result<Option<u64>> {
@@ -2058,16 +2168,274 @@ mod tests {
             expand: true,
             retrieval_mode: RetrievalMode::default(),
         };
-        same(
-            &eager.search("retry policy 7", &expand).unwrap(),
-            &lazy.search("retry policy 7", &expand).unwrap(),
-        );
+        counting.by_ids.borrow_mut().clear();
+        let expanded = lazy.search("retry policy 7", &expand).unwrap();
+        same(&eager.search("retry policy 7", &expand).unwrap(), &expanded);
         assert_eq!(
             counting.full_loads.get(),
             1,
             "expansion loads the corpus exactly once"
         );
+        // The lean corpus costs at most one bounded completion read on top
+        // of candidate hydration, never a re-hydration of every candidate:
+        // hydrate (before the corpus exists) + completing the returned
+        // expansion-only hits.
+        let reads = counting.by_ids.borrow().clone();
+        assert!(reads.len() <= 2, "{reads:?}");
+        assert!(reads[1..].iter().all(|&n| n <= expand.limit), "{reads:?}");
         lazy.search("helper 3", &expand).unwrap();
         assert_eq!(counting.full_loads.get(), 1, "…and the engine keeps it");
+    }
+
+    // ---- lean snapshot: mechanism and frozen-oracle parity ----------------
+
+    fn git(dir: &std::path::Path, args: &[&str]) {
+        let st = std::process::Command::new("git")
+            .args(args)
+            .current_dir(dir)
+            .env("GIT_AUTHOR_NAME", "t")
+            .env("GIT_AUTHOR_EMAIL", "t@t")
+            .env("GIT_COMMITTER_NAME", "t")
+            .env("GIT_COMMITTER_EMAIL", "t@t")
+            .status()
+            .unwrap();
+        assert!(st.success(), "git {args:?}");
+    }
+
+    fn copy_dir(from: &std::path::Path, to: &std::path::Path) {
+        std::fs::create_dir_all(to).unwrap();
+        for e in std::fs::read_dir(from).unwrap() {
+            let e = e.unwrap();
+            let dst = to.join(e.file_name());
+            if e.file_type().unwrap().is_dir() {
+                copy_dir(&e.path(), &dst);
+            } else {
+                std::fs::copy(e.path(), dst).unwrap();
+            }
+        }
+    }
+
+    /// A committed fixture repo in a temp git repo with a non-empty diff
+    /// against `HEAD` (`changed`'s second half was committed, then undone
+    /// with `reset --soft`), while the working tree — and so the index —
+    /// is exactly the fixture: `--git` and `review` get real changed seeds.
+    fn fixture_repo(name: &str, changed: &str) -> tempfile::TempDir {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        copy_dir(
+            &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("fixtures")
+                .join(name),
+            root,
+        );
+        let full = std::fs::read_to_string(root.join(changed)).unwrap();
+        let lines: Vec<&str> = full.lines().collect();
+        std::fs::write(root.join(changed), lines[..lines.len() / 2].join("\n")).unwrap();
+        git(root, &["init", "-q"]);
+        git(root, &["add", "-A"]);
+        git(root, &["commit", "-qm", "base"]);
+        std::fs::write(root.join(changed), &full).unwrap();
+        git(root, &["commit", "-qam", "change"]);
+        git(root, &["reset", "-q", "--soft", "HEAD~1"]);
+        tmp
+    }
+
+    fn json(v: &impl serde::Serialize) -> String {
+        serde_json::to_string(v).unwrap()
+    }
+
+    /// Every request surface that reads the corpus snapshot serializes
+    /// byte-identically over the lean snapshot and over the frozen
+    /// pre-lean oracle (a store whose corpus loads are complete, i.e.
+    /// `main` before lean snapshots): expanded search in both expanding
+    /// modes, `context` default / `--git` / `--blast-radius`, `review`,
+    /// the `oxide mcp` cached-snapshot shape, and the in-memory BM25
+    /// fallback.
+    #[test]
+    fn lean_snapshot_output_matches_the_complete_corpus_oracle() {
+        let emb = HashedEmbedder::default();
+        let cases: [(&str, &str, &[&str]); 2] = [
+            (
+                "py_repo",
+                "oxidepy/retry.py",
+                &[
+                    "retry with exponential backoff",
+                    "refresh auth token",
+                    "http client request",
+                    "cache",
+                ],
+            ),
+            (
+                "ts_repo",
+                "src/net/retry.ts",
+                &[
+                    "retry policy backoff",
+                    "versioned store get",
+                    "auth service login",
+                    "button click",
+                ],
+            ),
+        ];
+        for (fixture, changed, queries) in cases {
+            let repo = fixture_repo(fixture, changed);
+            let root = repo.path();
+            let mut store = SqliteStore::open(&root.join(".oxide/index.db")).unwrap();
+            crate::index::update_index(root, &mut store, &emb).unwrap();
+            let mut seen_expansion = false;
+            let mut seen_test = false;
+            for fallback in [false, true] {
+                if fallback {
+                    store
+                        .set_meta(crate::storage::LEXICAL_INDEX_KEY, "stale")
+                        .unwrap();
+                }
+                let lean = CountingStore::new(&store);
+                let mut oracle = CountingStore::new(&store);
+                oracle.complete_corpus = true;
+                let lean: &dyn IndexBackend = &lean;
+                let oracle: &dyn IndexBackend = &oracle;
+                assert_eq!(lexical_persisted(lean), !fallback);
+
+                // The shape each path runs on: lean unless BM25 falls back.
+                let lean_snap = SymbolSnapshot::load(lean).unwrap();
+                let full_snap = SymbolSnapshot::load(oracle).unwrap();
+                assert_eq!(
+                    lean_snap.symbols.iter().all(Symbol::is_complete),
+                    fallback,
+                    "{fixture}: lean iff lexical is persisted"
+                );
+                assert!(full_snap.symbols.iter().all(Symbol::is_complete));
+                let (lean_idx, full_idx) = (
+                    RelationIndex::build(&lean_snap.symbols),
+                    RelationIndex::build(&full_snap.symbols),
+                );
+
+                for q in queries {
+                    for retrieval_mode in [RetrievalMode::Balanced, RetrievalMode::Quality] {
+                        let opts = SearchOptions {
+                            limit: 10,
+                            mode: SearchMode::Hybrid,
+                            expand: true,
+                            retrieval_mode,
+                        };
+                        let a = RetrievalEngine::new(lean, &emb).search(q, &opts).unwrap();
+                        let b = RetrievalEngine::new(oracle, &emb).search(q, &opts).unwrap();
+                        assert_eq!(json(&a), json(&b), "{fixture} search {q:?}");
+                        seen_expansion |=
+                            a.iter().any(|h| h.reasons.iter().any(|r| r.contains('←')));
+                        seen_test |= a
+                            .iter()
+                            .any(|h| h.reasons.iter().any(|r| r.starts_with("test←")));
+                        // `oxide mcp`: a cached snapshot + index per generation.
+                        let a = RetrievalEngine::with_snapshot_and_index(
+                            lean, &emb, &lean_snap, &lean_idx,
+                        )
+                        .search(q, &opts)
+                        .unwrap();
+                        let b = RetrievalEngine::with_snapshot_and_index(
+                            oracle, &emb, &full_snap, &full_idx,
+                        )
+                        .search(q, &opts)
+                        .unwrap();
+                        assert_eq!(json(&a), json(&b), "{fixture} mcp search {q:?}");
+                    }
+                    for (git_on, blast) in
+                        [(false, false), (true, false), (false, true), (true, true)]
+                    {
+                        let opts = crate::context::ContextOptions {
+                            git: git_on,
+                            blast_radius: blast,
+                            ..Default::default()
+                        };
+                        let ctx = |e: &RetrievalEngine<'_>| {
+                            json(&crate::context::build_context_with(root, e, q, &opts).unwrap())
+                        };
+                        let a = ctx(&RetrievalEngine::new(lean, &emb));
+                        assert_eq!(
+                            a,
+                            ctx(&RetrievalEngine::new(oracle, &emb)),
+                            "{fixture} context {q:?} git={git_on} blast={blast}"
+                        );
+                        seen_test |= a.contains("\"test←");
+                        assert_eq!(
+                            ctx(&RetrievalEngine::with_snapshot_and_index(
+                                lean, &emb, &lean_snap, &lean_idx
+                            )),
+                            ctx(&RetrievalEngine::with_snapshot_and_index(
+                                oracle, &emb, &full_snap, &full_idx
+                            )),
+                            "{fixture} mcp context {q:?} git={git_on} blast={blast}"
+                        );
+                    }
+                }
+                let a = crate::review::build_review_context(root, lean, &emb, "").unwrap();
+                let b = crate::review::build_review_context(root, oracle, &emb, "").unwrap();
+                assert!(
+                    !a.changed_symbols.is_empty() && !a.related.is_empty(),
+                    "{fixture}: review must have seeds"
+                );
+                assert_eq!(json(&a), json(&b), "{fixture} review");
+            }
+            assert!(seen_expansion, "{fixture}: queries must expand");
+            assert!(seen_test, "{fixture}: queries must reach related_tests");
+        }
+    }
+
+    /// The lean load is `all_symbols`' rows in the same order, partial
+    /// everywhere, with `references` exactly on test symbols; completing it
+    /// reproduces `all_symbols` byte for byte.
+    #[test]
+    fn completed_lean_corpus_equals_the_full_load() {
+        let emb = HashedEmbedder::default();
+        let repo = fixture_repo("py_repo", "oxidepy/retry.py");
+        let mut store = SqliteStore::open(&repo.path().join(".oxide/index.db")).unwrap();
+        crate::index::update_index(repo.path(), &mut store, &emb).unwrap();
+        let full = store.all_symbols().unwrap();
+        let mut lean = store.all_symbols_lean().unwrap();
+        let mut buf = Default::default();
+        assert_eq!(full.len(), lean.len());
+        let mut tests = 0;
+        for (f, l) in full.iter().zip(&lean) {
+            assert_eq!(f.id(), l.id());
+            assert!(!l.is_complete() && l.imports.is_empty());
+            if crate::symbols::is_test_symbol(&f.file, &f.name, f.kind, &mut buf) {
+                tests += 1;
+                assert_eq!(f.references, l.references);
+            } else {
+                assert!(l.references.is_empty());
+            }
+        }
+        assert!(tests > 0, "fixture has test symbols");
+        complete_symbols(&store, lean.iter_mut()).unwrap();
+        assert_eq!(json(&full), json(&lean));
+    }
+
+    #[test]
+    #[should_panic(expected = "partial seed")]
+    fn neighbors_refuses_a_partial_seed() {
+        let mut s = sym("src/a.py", "f", SymbolKind::Function, "def f():", &[]);
+        s.completeness = Completeness::Partial;
+        let corpus = vec![s.clone()];
+        RelationGraph::build(&corpus).neighbors(&s);
+    }
+
+    /// `skip_serializing_if` under `#[serde(flatten)]`: a complete symbol
+    /// emits no `completeness` key at all, a partial one fails to
+    /// serialize instead of emitting empty `imports`/`references`.
+    #[test]
+    fn a_partial_symbol_never_serializes() {
+        let s = sym("src/a.py", "f", SymbolKind::Function, "def f():", &["g"]);
+        let hit = |symbol: Symbol| SearchHit {
+            symbol,
+            score: 1.0,
+            reasons: vec![],
+            snippet: String::new(),
+        };
+        let out = serde_json::to_string(&hit(s.clone())).unwrap();
+        assert!(!out.contains("completeness"), "{out}");
+        let mut p = s;
+        p.completeness = Completeness::Partial;
+        assert!(serde_json::to_string(&hit(p.clone())).is_err());
+        assert!(serde_json::to_string(&p).is_err());
     }
 }

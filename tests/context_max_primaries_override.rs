@@ -42,6 +42,7 @@ fn sym(file: &str, qname: &str, sig: &str) -> Symbol {
         references: vec![],
         calls: Vec::new(),
         bases: Vec::new(),
+        completeness: Default::default(),
     }
 }
 

@@ -44,13 +44,23 @@ pub fn build_review_context(
     let symbols = &snapshot.symbols;
     let graph = engine.relation_graph()?;
 
-    let git_ctx = gitctx::build_git_context(repo_root, symbols, range)?;
+    let mut git_ctx = gitctx::build_git_context(repo_root, symbols, range)?;
+    // Lean-snapshot symbols: complete them before they seed `neighbors()`
+    // or reach the output.
+    engine.complete(git_ctx.changed_symbols.iter_mut().map(|c| &mut c.symbol))?;
     let changed_symbols = git_ctx.changed_symbols;
     let seen_seeds: Vec<u64> = changed_symbols.iter().map(|c| c.symbol.id()).collect();
+    let completed: HashMap<u64, &crate::symbols::Symbol> = changed_symbols
+        .iter()
+        .map(|c| (c.symbol.id(), &c.symbol))
+        .collect();
 
-    // Structural expansion around the seeds.
+    // Structural expansion around the seeds, in corpus order.
     let mut related_ids: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
-    for s in symbols.iter().filter(|s| seen_seeds.contains(&s.id())) {
+    for s in symbols
+        .iter()
+        .filter_map(|s| completed.get(&s.id()).copied())
+    {
         for (rel, n) in graph.neighbors(s) {
             if seen_seeds.contains(&n.id()) {
                 continue;
@@ -116,7 +126,7 @@ pub fn build_review_context(
             .unwrap_or(std::cmp::Ordering::Equal)
             .then_with(|| a.0.cmp(&b.0))
     });
-    let related: Vec<SearchHit> = related
+    let mut related: Vec<SearchHit> = related
         .into_iter()
         .filter_map(|(id, score, reasons)| {
             Some(SearchHit {
@@ -128,6 +138,7 @@ pub fn build_review_context(
         })
         .take(15)
         .collect();
+    engine.complete(related.iter_mut().map(|h| &mut h.symbol))?;
 
     Ok(ReviewContext {
         range: git_ctx.evidence.range,

@@ -231,6 +231,12 @@ impl LexicalIndex {
     /// bugfix targets hide behind local identifiers that only exist in symbol
     /// bodies (weight 1 vs 4 for names keeps precision).
     pub fn build(symbols: &[Symbol], root: Option<&std::path::Path>) -> Self {
+        // Documents index `references`/`imports`; a lean-snapshot symbol
+        // would silently shrink them (`Symbol::completeness`).
+        assert!(
+            symbols.iter().all(Symbol::is_complete),
+            "LexicalIndex::build needs complete symbols (IndexBackend::all_symbols)"
+        );
         // Capacity heuristic: ~20 weighted postings per symbol keeps the
         // posting maps from rehashing during the build.
         let mut postings: HashMap<String, HashMap<u64, u32>> =

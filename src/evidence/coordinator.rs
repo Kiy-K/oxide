@@ -12,7 +12,8 @@ use crate::evidence::contract::{DegradeReason, Degraded, EvidenceCandidate, Evid
 use crate::evidence::scope::scope_files_from_seeds;
 use crate::gitctx;
 use crate::relations::RelationGraph;
-use crate::retrieval::SearchHit;
+use crate::retrieval::{complete_symbols, SearchHit};
+use crate::storage::IndexBackend;
 use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
 use std::path::Path;
@@ -20,6 +21,9 @@ use std::time::Instant;
 
 pub struct CollectInput<'a> {
     pub root: &'a Path,
+    /// The request's store, for completing snapshot symbols that become
+    /// seeds here (git-changed symbols, `retrieval::complete_symbols`).
+    pub store: &'a dyn IndexBackend,
     pub symbols: &'a [Symbol],
     pub graph: &'a RelationGraph<'a>,
     pub seeds: &'a [SearchHit],
@@ -41,6 +45,7 @@ impl EvidenceCoordinator {
     pub fn collect(input: CollectInput<'_>) -> CollectOutput {
         let CollectInput {
             root,
+            store,
             symbols,
             graph,
             seeds,
@@ -60,7 +65,16 @@ impl EvidenceCoordinator {
         };
         let git_result = if git {
             let start = Instant::now();
-            match gitctx::build_git_context(root, symbols, "") {
+            // Changed symbols come from the lean snapshot and seed
+            // `neighbors()` below: complete them, or degrade like any other
+            // git failure rather than expand from a partial seed.
+            match gitctx::build_git_context(root, symbols, "").and_then(|mut context| {
+                complete_symbols(
+                    store,
+                    context.changed_symbols.iter_mut().map(|c| &mut c.symbol),
+                )?;
+                Ok(context)
+            }) {
                 Ok(context) => Some(context),
                 Err(error) => {
                     degraded.push(Degraded {
@@ -250,6 +264,7 @@ mod tests {
             references: vec![],
             calls: calls.into_iter().map(String::from).collect(),
             bases: Vec::new(),
+            completeness: Default::default(),
         }
     }
 

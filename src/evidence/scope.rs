@@ -43,6 +43,7 @@ mod tests {
                 references: vec![],
                 calls: vec![],
                 bases: vec![],
+                completeness: Default::default(),
             },
             score,
             reasons: vec![],
