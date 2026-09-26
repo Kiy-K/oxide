@@ -1,0 +1,13 @@
+# GitHub language statistics (linguist) only — no effect on git behavior,
+# diffs or builds. Keeps bundled tooling and rendered artifacts from
+# outweighing OXIDE's own Rust in the repository language bar.
+
+# Third-party archify skill bundled for agents: ~4.8 MB of rendered HTML
+# examples/templates and ~2.8 MB of .mjs renderers.
+.agents/skills/archify/** linguist-vendored
+
+# Rendered architecture diagrams under docs/ (archify output).
+docs/**/*.html linguist-documentation
+
+# Eval task fixture repositories (third-party JS/TS/Python projects).
+eval-agent/tasks/** linguist-vendored
