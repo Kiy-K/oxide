@@ -639,7 +639,7 @@ fn supported_languages() -> Vec<Language> {
     Language::ALL.to_vec()
 }
 
-// Mirrors `index.rs::update_base_inner`'s read: a file that can't be decoded
+// Mirrors `index/base.rs::update_base_inner`'s read: a file that can't be decoded
 // as UTF-8 never enters the index (`update_base_inner` skips it, counting it
 // in `unreadable_files`/`errored_files`), so it must not enter `current`
 // here either, and must not abort the whole status computation — that was
@@ -863,7 +863,7 @@ mod tests {
     /// other corpus. Before the fix, `current_file_hashes` propagated the
     /// first `read_to_string` error (`InvalidData`, "stream did not contain
     /// valid UTF-8") and `status()` failed outright — even though
-    /// `index.rs::update_base_inner` had already, silently and correctly,
+    /// `index/base.rs::update_base_inner` had already, silently and correctly,
     /// excluded that same file from the index (`unreadable_files`).
     ///
     /// Asserts on `base_fresh` (== `files_current` internally), not the

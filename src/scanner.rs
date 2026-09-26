@@ -56,7 +56,7 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
 /// already-indexable path as a candidate without rechecking anything, by
 /// design ("no rescan" is the whole point of caching the indexable set) —
 /// true for every language, including markdown. That's safe because
-/// `index.rs::update_base_for_files` (not the cache) is what actually
+/// `index/base.rs::update_base_for_files` (not the cache) is what actually
 /// enforces size eligibility: it calls `is_indexable` on every path before
 /// reading it, and treats "exists but no longer eligible" — oversized
 /// markdown, or any language past `MAX_SCANNED_FILE_BYTES` — exactly like
@@ -330,7 +330,7 @@ pub fn size_cap_for(lang: crate::symbols::Language) -> u64 {
 /// kind (not just "gone") collapses to `false` here, same as `walk_repo`'s
 /// own binary-sniffing check a few lines below — both are one-shot walk
 /// predicates where "couldn't tell, skip it this pass" is already the
-/// accepted behavior. `index.rs::update_base_for_files` does NOT call this
+/// accepted behavior. `index/base.rs::update_base_for_files` does NOT call this
 /// function for exactly that reason: it needs to tell "confirmed oversized"
 /// apart from "couldn't stat it this round" (the latter must never be
 /// treated as deletion evidence — see its own doc comment), so it reads

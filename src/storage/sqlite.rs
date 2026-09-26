@@ -863,3 +863,36 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod error_classification_tests {
+    use crate::storage::is_locked_error;
+
+    fn sqlite_error(result_code: std::ffi::c_int) -> anyhow::Error {
+        let inner = rusqlite::ffi::Error::new(result_code);
+        anyhow::Error::new(rusqlite::Error::SqliteFailure(inner, None))
+    }
+
+    #[test]
+    fn classifies_busy_and_locked_as_transient() {
+        assert!(is_locked_error(&sqlite_error(rusqlite::ffi::SQLITE_BUSY)));
+        assert!(is_locked_error(&sqlite_error(rusqlite::ffi::SQLITE_LOCKED)));
+    }
+
+    #[test]
+    fn does_not_classify_other_errors_as_transient() {
+        assert!(!is_locked_error(&sqlite_error(
+            rusqlite::ffi::SQLITE_CORRUPT
+        )));
+        assert!(!is_locked_error(&anyhow::anyhow!("unrelated io error")));
+    }
+
+    #[test]
+    fn sees_through_context_wrapping() {
+        // `open`/`open_read_only` wrap the underlying rusqlite::Error with
+        // `.with_context(...)`; the classifier must still find it via the
+        // error chain, not just the outermost layer.
+        let wrapped = sqlite_error(rusqlite::ffi::SQLITE_BUSY).context("open index at /some/path");
+        assert!(is_locked_error(&wrapped));
+    }
+}

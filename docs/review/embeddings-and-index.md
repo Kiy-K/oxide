@@ -1,7 +1,7 @@
 # Embeddings and index review rules
 
 Scope: `src/embeddings/provider.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`),
-`src/embeddings/selection.rs` (`open_embedder`), `src/index.rs`'s `incompatible_stored_space` staleness
+`src/embeddings/selection.rs` (`open_embedder`), `src/index/embed.rs`'s `incompatible_stored_space` staleness
 check and the migration marker around it.
 
 ---
@@ -29,7 +29,7 @@ providers or new variants must follow the same pattern, not skip it.
 
 **Evidence required:** the behavior-changing diff, plus the (unchanged)
 `fingerprint()`/`name()` output for the same provider. Cite
-`incompatible_stored_space`'s tier comparison (`index.rs`) to show what
+`incompatible_stored_space`'s tier comparison (`index/embed.rs`) to show what
 compatibility signal the reviewer expects to change and doesn't.
 
 **Exceptions:** a change provably incapable of affecting the vector space

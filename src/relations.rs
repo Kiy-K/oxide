@@ -273,7 +273,7 @@ impl<'a> RelationGraph<'a> {
     ///   unambiguous indexed file via [`resolve_module`]; see its doc comment
     ///   and the README's "Import resolution" note).
     /// - **Heuristic** — identifier-name intersection with no scope analysis
-    ///   (see `# ponytail` note in `index.rs::extract_references`), so two
+    ///   (see `# ponytail` note in `index/pipeline.rs::extract_references`), so two
     ///   unrelated symbols sharing a name can produce a false link:
     ///   `uses←` (this symbol references a same-named definition) and
     ///   `test←` (from [`RelationGraph::related_tests`]). `uses←` is

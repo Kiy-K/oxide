@@ -9,7 +9,7 @@
 //! All three share [`RemoteHttpClient`]'s retry/backoff, batching, and
 //! response parsing, and all three follow `HttpEmbedder`'s existing failure
 //! convention exactly: after retries are exhausted, return an empty vector
-//! per failed input rather than erroring the whole batch — `index.rs`'s
+//! per failed input rather than erroring the whole batch — `index/embed.rs`'s
 //! content-hash-driven resume already retries those symbols on the next
 //! `oxide index`/`watch` run, so no new resumability machinery is needed
 //! here. Request bodies only ever carry the `texts: &[String]` that

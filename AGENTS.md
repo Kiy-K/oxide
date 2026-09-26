@@ -367,7 +367,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   `NO_COLOR`, `TERM=dumb`, and isatty) and never write escapes themselves;
   the `--json` paths and `mcp.rs` never touch a `Paint` at all, which is
   what keeps the machine surfaces byte-clean. Indexing progress is a
-  `ProgressSink` (`index.rs`) fed to `index_staged` — `begin(stage,
+  `ProgressSink` (`index/mod.rs`) fed to `index_staged` — `begin(stage,
   total)` carries the item count when it is known up front, so the sink
   picks a determinate bar vs. a spinner without guessing; only the CLI
   installs a drawing sink, on stderr — a cliclack step (`◒ … ◇ …`, one

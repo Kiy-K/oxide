@@ -1,7 +1,7 @@
 //! `oxide watch`: keep an index fresh via native filesystem events instead
 //! of re-running `oxide index` by hand. See
 //! `docs/auto-indexing-watcher-constraints/README.md` for the design this
-//! implements and the seams it opens in `src/index.rs`.
+//! implements and the seams it opens in `src/index/`.
 //!
 //! Architecture: a raw `notify::RecommendedWatcher` callback filters out
 //! `EventKind::Access` (opens/closes/reads — see below) and drops surviving
