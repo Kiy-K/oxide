@@ -1812,6 +1812,14 @@ mod tests {
     /// fallback.
     #[test]
     fn lean_snapshot_output_matches_the_complete_corpus_oracle() {
+        // Holds `TERM_COVERAGE_ENV_LOCK` for the same reason as the
+        // concurrency test above: each comparison runs search/context twice,
+        // and a term-coverage test setting `OXIDE_TERM_COVERAGE_ALPHA`
+        // between the two runs adds its bonus to one side only (reproduced
+        // on a 2-core runner: the lean side's scores carried the bonus).
+        let _guard = TERM_COVERAGE_ENV_LOCK
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
         let emb = HashedEmbedder::default();
         let cases: [(&str, &str, &[&str]); 2] = [
             (
