@@ -33,7 +33,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::OnceLock;
 
 /// Hard ceiling on results returned to a caller, regardless of the
-/// requested limit — mirrors `service::MAX_SEARCH_RESULTS`'s role for
+/// requested limit — mirrors `service::repository::MAX_SEARCH_RESULTS`'s role for
 /// symbol search.
 pub const MAX_RESULTS: usize = 200;
 

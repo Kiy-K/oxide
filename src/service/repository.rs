@@ -1,390 +1,39 @@
-//! Stable application-facing operations for the agent CLI.
-//!
-//! This module keeps repository lifecycle, error classification, and wire DTOs
-//! out of the argument parser. Retrieval and context algorithms stay below it.
+//! `RepositoryService`: repository discovery, opening the index for read
+//! or write, validation, and the orchestration of each operation
+//! (index/status/search/context/review) inside one request's read snapshot.
 
+use super::error::{ErrorCode, ServiceError};
+use super::evidence::compare_context_evidence;
+use super::types::{
+    ContextEvidence, ContextResult, Evidence, IndexResult, SearchRequest, StatusResult,
+};
 use crate::blast_radius::BlastItem;
-use crate::context::{build_context_with, ContextOptions, Omitted, Role};
+use crate::context::{build_context_with, ContextOptions};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
     update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
     ProgressSink, Stage,
 };
-use crate::relations::RelationIndex;
-use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
+use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
 use crate::storage::{
     IndexBackend, IndexStats, SqliteStore, EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION,
-    LEXICAL_INDEX_KEY, SCHEMA_VERSION,
+    SCHEMA_VERSION,
 };
-use crate::symbols::{Language, Symbol, SymbolKind};
-use serde::Serialize;
-use std::cmp::Ordering;
+use crate::symbols::{Language, Symbol};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::Arc;
 
 const MAX_SEARCH_RESULTS: usize = 100;
 
-/// Small, stable application error taxonomy. One variant per distinct
-/// failure semantic already present in the service boundary (not one per
-/// call site): a caller can `match` on this to decide retry / index / repair
-/// / fall back / stop without parsing `message`. `as_str()` is the wire code
-/// in JSON error output and is part of the stable contract — do not rename
-/// an existing variant's string.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ErrorCode {
-    RepositoryNotFound,
-    RepositoryUnsupported,
-    IndexMissing,
-    IndexEmpty,
-    IndexStale,
-    IndexIncompatible,
-    IndexCorrupt,
-    ProviderMismatch,
-    EmbedderUnavailable,
-    IndexFailed,
-    SearchFailed,
-    ContextFailed,
-    ReviewFailed,
-    StatusFailed,
-}
-
-/// What a caller should do about an [`ErrorCode`], independent of the
-/// human-readable message.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ErrorAction {
-    /// Run `oxide index PATH`, then retry.
-    Index,
-    /// The index is unusable as-is: delete `.oxide` and reindex from scratch.
-    Repair,
-    /// Likely transient (lock contention, network hiccup); retry the same call.
-    Retry,
-    /// Degrade gracefully (e.g. lexical-only search) instead of failing outright.
-    FallBack,
-    /// Not fixable by retrying; the input, path, or environment needs to change.
-    Stop,
-}
-
-impl ErrorCode {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::RepositoryNotFound => "repository_not_found",
-            Self::RepositoryUnsupported => "no_source_files",
-            Self::IndexMissing => "index_missing",
-            Self::IndexEmpty => "index_empty",
-            Self::IndexStale => "index_stale",
-            Self::IndexIncompatible => "index_incompatible",
-            Self::IndexCorrupt => "index_unreadable",
-            Self::ProviderMismatch => "provider_mismatch",
-            Self::EmbedderUnavailable => "embedder_unavailable",
-            Self::IndexFailed => "index_failed",
-            Self::SearchFailed => "search_failed",
-            Self::ContextFailed => "context_failed",
-            Self::ReviewFailed => "review_failed",
-            Self::StatusFailed => "status_failed",
-        }
-    }
-
-    pub fn action(&self) -> ErrorAction {
-        use ErrorAction::*;
-        match self {
-            Self::RepositoryNotFound | Self::RepositoryUnsupported => Stop,
-            Self::IndexMissing | Self::IndexEmpty | Self::IndexStale | Self::ProviderMismatch => {
-                Index
-            }
-            Self::IndexIncompatible | Self::IndexCorrupt => Repair,
-            Self::EmbedderUnavailable => FallBack,
-            Self::IndexFailed
-            | Self::SearchFailed
-            | Self::ContextFailed
-            | Self::ReviewFailed
-            | Self::StatusFailed => Retry,
-        }
-    }
-}
-
-impl ErrorAction {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Index => "index",
-            Self::Repair => "repair",
-            Self::Retry => "retry",
-            Self::FallBack => "fall_back",
-            Self::Stop => "stop",
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct ServiceError {
-    code: ErrorCode,
-    message: String,
-}
-
-impl ServiceError {
-    fn new(code: ErrorCode, message: impl Into<String>) -> Self {
-        Self {
-            code,
-            message: message.into(),
-        }
-    }
-
-    fn from_error(code: ErrorCode, error: impl std::fmt::Display) -> Self {
-        Self::new(code, error.to_string())
-    }
-
-    pub fn code(&self) -> &'static str {
-        self.code.as_str()
-    }
-
-    pub fn action(&self) -> ErrorAction {
-        self.code.action()
-    }
-
-    pub fn message(&self) -> &str {
-        &self.message
-    }
-}
-
-impl std::fmt::Display for ServiceError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&self.message)
-    }
-}
-
-impl std::error::Error for ServiceError {}
-
-#[derive(Debug, Clone, Copy)]
-pub struct SearchRequest {
-    pub limit: usize,
-    pub mode: SearchMode,
-    pub expand: bool,
-    pub retrieval_mode: RetrievalMode,
-    /// Attach each top hit's bounded impact neighborhood
-    /// (`blast_radius.rs`). Opt-in and strictly additive: ranking, scores
-    /// and hit order are computed before this and never consult it, and
-    /// with it off the serialized result is byte-identical to before the
-    /// feature existed (`blast_radius` skips serialization when empty).
-    pub blast_radius: bool,
-}
-
-#[derive(Debug, Serialize)]
-pub struct IndexResult {
-    pub scanned_files: usize,
-    pub changed_files: usize,
-    pub reused_files: usize,
-    pub removed_files: usize,
-    pub new_symbols: usize,
-    pub changed_symbols: usize,
-    pub deleted_symbols: usize,
-    pub embedded_symbols: usize,
-    pub reused_embeddings: usize,
-    pub embed_failures: usize,
-    pub errored_files: usize,
-    #[serde(default)]
-    pub relations_refreshed_symbols: usize,
-    #[serde(skip)]
-    pub duration_ms: u128,
-    /// Presentation only, like `duration_ms` — never on the wire. Whether
-    /// the store held no symbols before this run: the counters alone can't
-    /// tell a first build from an edit that happened to touch every file.
-    #[serde(skip)]
-    pub fresh_index: bool,
-    /// Presentation only. Symbols in the store after the run, so a full
-    /// build can report the corpus rather than "0 changed".
-    #[serde(skip)]
-    pub total_symbols: usize,
-    /// Presentation only, like the two fields above. Whether the provider
-    /// that ran this indexing pass is a remote one (`EmbeddingProvider::
-    /// is_remote`) — `cmd_index`'s large-repo hint only fires when this is
-    /// `false`, since recommending remote embeddings to someone already
-    /// using them would be nonsensical.
-    #[serde(skip)]
-    pub embedder_is_remote: bool,
-}
-
-impl From<IndexReport> for IndexResult {
-    fn from(r: IndexReport) -> Self {
-        Self {
-            scanned_files: r.scanned_files,
-            changed_files: r.reparsed_files,
-            reused_files: r.unchanged_files,
-            removed_files: r.removed_files,
-            new_symbols: r.new_symbols,
-            changed_symbols: r.changed_symbols,
-            deleted_symbols: r.deleted_symbols,
-            embedded_symbols: r.embedded_symbols,
-            reused_embeddings: r.reused_embeddings,
-            embed_failures: r.embed_failures,
-            errored_files: r.errored_files,
-            relations_refreshed_symbols: r.relations_refreshed_symbols,
-            duration_ms: r.duration_ms,
-            fresh_index: false,
-            total_symbols: 0,
-            embedder_is_remote: false,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct StatusResult {
-    pub root: String,
-    pub index_exists: bool,
-    /// Unchanged meaning from before the auto-indexing watcher: files
-    /// current AND embedder current AND embedding/symbol counts match.
-    /// `base_fresh`/`pending_embeddings` below are the new, finer-grained
-    /// fields — added alongside, not a replacement, since existing readers
-    /// of `is_current` (tests, the MCP surface) depend on this exact value.
-    pub is_current: bool,
-    pub embedder_current: bool,
-    /// True when every tracked file's on-disk content matches what's
-    /// indexed — independent of embedding freshness. A caller that only
-    /// needs lexical/structural signals (not semantic search) can treat the
-    /// index as usable whenever this is true, even while
-    /// `pending_embeddings` is nonzero (auto-indexing watcher: "track base
-    /// and semantic freshness independently").
-    pub base_fresh: bool,
-    /// Symbols whose embedding is missing, stale, or from a different
-    /// embedding space than the configured provider — 0 means semantic
-    /// search reflects current content. Computed without contacting the
-    /// embedder (see `index::content_stale_embedding_count`), so `oxide
-    /// status` stays network-free.
-    pub pending_embeddings: usize,
-    pub files: usize,
-    pub symbols: usize,
-    pub embeddings: usize,
-    pub embedder: Option<String>,
-    pub supported_languages: Vec<Language>,
-    pub schema_version: u32,
-}
-
-#[derive(Debug, Serialize, Clone, PartialEq)]
-pub struct Evidence {
-    pub id: String,
-    pub file: String,
-    pub qualified_name: String,
-    pub name: String,
-    pub kind: SymbolKind,
-    pub language: Language,
-    pub start_line: u32,
-    pub end_line: u32,
-    pub score: f32,
-    pub reasons: Vec<String>,
-    pub snippet: String,
-    /// Bounded impact neighborhood, present only when the caller asked for
-    /// it *and* this hit was one of the anchored seeds. Absent from JSON
-    /// when empty, so every existing consumer sees the shape it always saw.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub blast_radius: Vec<BlastItem>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct ContextEvidence {
-    #[serde(flatten)]
-    pub evidence: Evidence,
-    pub role: Role,
-    pub est_tokens: usize,
-}
-
-#[derive(Debug, Serialize)]
-pub struct ContextResult {
-    pub task: String,
-    pub budget_tokens: usize,
-    pub used_tokens: usize,
-    pub items: Vec<ContextEvidence>,
-    pub omitted: Vec<Omitted>,
-    #[serde(skip)]
-    pub embedder: String,
-    /// Non-symbol git provenance; `None` unless `--git` was requested. See
-    /// `context.rs::ContextPack::git`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub git: Option<crate::gitctx::GitEvidence>,
-    /// Evidence sources that degraded during this call — see
-    /// `context.rs::ContextPack::diagnostics`. Found missing here by
-    /// Codex review: `ContextPack` carried this field all along, but
-    /// `context()` dropped it when building `ContextResult`, silently
-    /// undoing the whole point of surfacing degraded-source visibility in
-    /// CLI/MCP JSON output instead of failing silently.
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub diagnostics: Vec<String>,
-}
-
 pub struct RepositoryService {
-    root: PathBuf,
-    /// Reuse loaded repository state across calls (see [`ProcessCache`]).
+    pub(super) root: PathBuf,
+    /// Reuse loaded repository state across calls (see `cache.rs`'s
+    /// `ProcessCache`).
     /// Off for one-shot CLI commands, on for `oxide mcp`.
-    use_process_cache: bool,
-}
-
-/// What a long-running host keeps between requests. Everything here is
-/// keyed so a stale entry can never be served: a snapshot is reused only
-/// when the index's `(index_id, index_generation)` and every
-/// compatibility key it depends on (`schema_version`,
-/// `extraction_version`, embedding identity, lexical generation) read
-/// back identical *inside the request's own read snapshot*, and the
-/// embedder is reused only for the same configured provider name. A miss
-/// simply loads and replaces. Memory is one symbol snapshot per repository
-/// root the process has served, which for MCP is normally one.
-#[derive(Default)]
-struct ProcessCache {
-    snapshots: Mutex<HashMap<PathBuf, Arc<CachedSnapshot>>>,
-    embedder: Mutex<Option<(String, Arc<dyn EmbeddingProvider + Send + Sync>)>>,
-}
-
-/// `(cache key, matching entry if any)` — `None` when the cache is off or
-/// the index cannot be keyed.
-type CacheLookup = Option<(Vec<String>, Option<Arc<CachedSnapshot>>)>;
-
-struct CachedSnapshot {
-    key: Vec<String>,
-    snapshot: SymbolSnapshot,
-    /// The structural index over `snapshot.symbols`, built once here so
-    /// every request at this generation reuses it (`RetrievalEngine::
-    /// with_snapshot_and_index`); it can never outlive the snapshot it
-    /// describes because the two share this entry and its key.
-    index: RelationIndex,
-    /// Row counts at this generation — `validate_index`'s completeness
-    /// check needs them, and `COUNT(*)` over the embeddings table walks
-    /// every row's page, so it is an O(N) read worth keying too.
-    stats: IndexStats,
-}
-
-static PROCESS_CACHE: OnceLock<ProcessCache> = OnceLock::new();
-
-fn process_cache() -> &'static ProcessCache {
-    PROCESS_CACHE.get_or_init(ProcessCache::default)
-}
-
-/// Meta values a cached snapshot must match, in a fixed order. `None`
-/// when the index carries no generation counter (never touched by a writer
-/// that has one), in which case nothing derived from it may be cached.
-fn snapshot_key(store: &SqliteStore) -> Result<Option<Vec<String>>, ServiceError> {
-    let Some((id, generation)) = store
-        .generation()
-        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-    else {
-        return Ok(None);
-    };
-    let mut key = vec![id, generation.to_string()];
-    for k in [
-        "schema_version",
-        "extraction_version",
-        "embedding_fingerprint",
-        "embedder",
-        "dim",
-        LEXICAL_INDEX_KEY,
-        EMBEDDING_MIGRATION_KEY,
-    ] {
-        key.push(
-            store
-                .get_meta(k)
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-                .unwrap_or_default(),
-        );
-    }
-    Ok(Some(key))
+    pub(super) use_process_cache: bool,
 }
 
 impl RepositoryService {
@@ -435,107 +84,6 @@ impl RepositoryService {
 
     pub fn root(&self) -> &Path {
         &self.root
-    }
-
-    /// The cache entry for this repository at the store's current
-    /// generation, if the cache is on, the index is keyable, and an entry
-    /// with exactly this key exists.
-    fn cache_lookup(&self, store: &SqliteStore) -> Result<CacheLookup, ServiceError> {
-        if !self.use_process_cache {
-            return Ok(None);
-        }
-        let Some(key) = snapshot_key(store)? else {
-            return Ok(None);
-        };
-        let hit = process_cache()
-            .snapshots
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .get(&self.root)
-            .filter(|c| c.key == key)
-            .map(Arc::clone);
-        Ok(Some((key, hit)))
-    }
-
-    /// Row counts for validation: from the cache entry when it matches
-    /// (identical generation ⇒ identical counts), else counted now.
-    fn stats_for(
-        &self,
-        store: &SqliteStore,
-        lookup: &CacheLookup,
-    ) -> Result<IndexStats, ServiceError> {
-        if let Some((_, Some(hit))) = lookup {
-            return Ok(hit.stats.clone());
-        }
-        store
-            .stats()
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))
-    }
-
-    /// The cached snapshot for this repository at the store's current
-    /// generation, loading (and replacing) it on a miss. Called only after
-    /// `validate_index` accepted the index, so a miss never loads a corpus
-    /// the request is about to reject. `None` when the cache is off or the
-    /// index cannot be keyed.
-    fn cached_snapshot(
-        &self,
-        store: &SqliteStore,
-        lookup: CacheLookup,
-        stats: &IndexStats,
-    ) -> Result<Option<Arc<CachedSnapshot>>, ServiceError> {
-        let Some((key, hit)) = lookup else {
-            return Ok(None);
-        };
-        if let Some(hit) = hit {
-            return Ok(Some(hit));
-        }
-        // Loaded inside the same read transaction that produced `key`, so
-        // the snapshot cannot describe a different generation than its key.
-        let snapshot = SymbolSnapshot::load(store)
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-        let index = RelationIndex::build(&snapshot.symbols);
-        let entry = Arc::new(CachedSnapshot {
-            key,
-            snapshot,
-            index,
-            stats: stats.clone(),
-        });
-        process_cache()
-            .snapshots
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .insert(self.root.clone(), Arc::clone(&entry));
-        Ok(Some(entry))
-    }
-
-    /// The configured embedding provider, constructed once per process
-    /// when the cache is on — `NativeEmbedder::new` loads an ONNX model,
-    /// which is most of a small repository's request latency.
-    fn embedder(&self) -> Result<Arc<dyn EmbeddingProvider + Send + Sync>, ServiceError> {
-        if !self.use_process_cache {
-            let provider = open_embedder(None)
-                .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?;
-            return Ok(Arc::from(provider));
-        }
-        let name = crate::embeddings::configured_provider_name(None);
-        let cache = process_cache();
-        if let Some((cached_name, provider)) = cache
-            .embedder
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .as_ref()
-        {
-            if *cached_name == name {
-                return Ok(Arc::clone(provider));
-            }
-        }
-        let provider: Arc<dyn EmbeddingProvider + Send + Sync> = Arc::from(
-            open_embedder(None)
-                .map_err(|e| ServiceError::from_error(ErrorCode::EmbedderUnavailable, e))?,
-        );
-        *cache.embedder.lock().unwrap_or_else(|e| e.into_inner()) =
-            Some((name, Arc::clone(&provider)));
-        Ok(provider)
     }
 
     pub fn index(
@@ -1058,7 +606,7 @@ impl RepositoryService {
         })
     }
 
-    fn open_index_for_read(&self) -> Result<SqliteStore, ServiceError> {
+    pub(super) fn open_index_for_read(&self) -> Result<SqliteStore, ServiceError> {
         let path = self.index_path();
         if !path.exists() {
             return Err(ServiceError::new(
@@ -1084,25 +632,6 @@ impl RepositoryService {
                 ServiceError::from_error(ErrorCode::IndexCorrupt, e)
             }
         })
-    }
-}
-
-impl Evidence {
-    fn from_symbol(symbol: &Symbol, score: f32, reasons: Vec<String>, snippet: String) -> Self {
-        Self {
-            id: format!("{}#{}", symbol.file, symbol.qualified_name),
-            file: symbol.file.clone(),
-            qualified_name: symbol.qualified_name.clone(),
-            name: symbol.name.clone(),
-            kind: symbol.kind,
-            language: symbol.language,
-            start_line: symbol.start_line,
-            end_line: symbol.end_line,
-            score,
-            reasons,
-            snippet,
-            blast_radius: Vec::new(),
-        }
     }
 }
 
@@ -1137,32 +666,12 @@ fn current_file_hashes(root: &Path) -> Result<HashMap<String, u64>, std::io::Err
     Ok(hashes)
 }
 
-fn compare_evidence(a: &Evidence, b: &Evidence) -> Ordering {
-    b.score
-        .partial_cmp(&a.score)
-        .unwrap_or(Ordering::Equal)
-        .then_with(|| a.id.cmp(&b.id))
-}
-
-fn role_rank(role: Role) -> u8 {
-    match role {
-        Role::Primary => 0,
-        Role::Dependency => 1,
-        Role::Test => 2,
-    }
-}
-
-fn compare_context_evidence(a: &ContextEvidence, b: &ContextEvidence) -> Ordering {
-    role_rank(a.role)
-        .cmp(&role_rank(b.role))
-        .then_with(|| compare_evidence(&a.evidence, &b.evidence))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::embeddings::EmbeddingSpaceFingerprint;
     use crate::index::update_index;
+    use crate::service::test_support::seed_repo;
 
     /// Reports a caller-supplied fingerprint regardless of name/dim, so
     /// tests can construct two providers that are indistinguishable by the
@@ -1206,12 +715,6 @@ mod tests {
             normalization: "l2".into(),
             similarity: "cosine".into(),
         }
-    }
-
-    fn seed_repo(root: &Path) {
-        let src = root.join("src/thing.py");
-        std::fs::create_dir_all(src.parent().unwrap()).unwrap();
-        std::fs::write(&src, "def thing():\n    return 1\n").unwrap();
     }
 
     #[test]
@@ -1352,101 +855,6 @@ mod tests {
             "fingerprint change must force a full re-embed even though name+dim are unchanged"
         );
         assert_eq!(report3.embedded_symbols, symbol_count);
-    }
-
-    #[test]
-    fn evidence_id_is_repository_relative_symbol_identity() {
-        let symbol = Symbol {
-            qualified_name: "Auth.refresh".into(),
-            name: "refresh".into(),
-            kind: SymbolKind::Method,
-            language: Language::Python,
-            file: "src/auth.py".into(),
-            start_line: 2,
-            end_line: 4,
-            content_hash: 1,
-            signature: "def refresh".into(),
-            imports: Vec::new(),
-            exported: false,
-            parent: Some("Auth".into()),
-            references: Vec::new(),
-            calls: Vec::new(),
-            bases: Vec::new(),
-            completeness: Default::default(),
-        };
-        let evidence = Evidence::from_symbol(&symbol, 1.0, Vec::new(), "return token".into());
-        assert_eq!(evidence.id, "src/auth.py#Auth.refresh");
-        assert_eq!(evidence.file, "src/auth.py");
-    }
-
-    /// The process cache must be hit on a repeat call at the same
-    /// generation and replaced — never served stale — once a write lands.
-    #[test]
-    fn process_cache_hits_at_the_same_generation_and_reloads_after_a_write() {
-        let tmp = tempfile::tempdir().unwrap();
-        let root = tmp.path().canonicalize().unwrap();
-        seed_repo(&root);
-        let emb = HashedEmbedder::default();
-        {
-            let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
-            update_index(&root, &mut store, &emb).unwrap();
-        }
-        let service = RepositoryService {
-            root: root.clone(),
-            use_process_cache: true,
-        };
-        let store = service.open_index_for_read().unwrap();
-        let stats = store.stats().unwrap();
-        let lookup = service.cache_lookup(&store).unwrap();
-        assert!(
-            matches!(lookup, Some((_, None))),
-            "keyable, nothing cached yet"
-        );
-        let first = service
-            .cached_snapshot(&store, lookup, &stats)
-            .unwrap()
-            .unwrap();
-        let lookup = service.cache_lookup(&store).unwrap();
-        assert!(
-            matches!(lookup, Some((_, Some(_)))),
-            "second lookup is a hit"
-        );
-        assert_eq!(service.stats_for(&store, &lookup).unwrap().symbols, 2);
-        let second = service
-            .cached_snapshot(&store, lookup, &stats)
-            .unwrap()
-            .unwrap();
-        assert!(Arc::ptr_eq(&first, &second), "same generation ⇒ same entry");
-        assert!(first.snapshot.with_relations);
-        assert_eq!(first.snapshot.symbols.len(), 2); // module + thing
-        drop(store);
-
-        std::fs::write(
-            root.join("src/thing.py"),
-            "def thing():\n    return 1\n\ndef other():\n    return 2\n",
-        )
-        .unwrap();
-        {
-            let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
-            update_index(&root, &mut store, &emb).unwrap();
-        }
-        let store = service.open_index_for_read().unwrap();
-        let stats = store.stats().unwrap();
-        let lookup = service.cache_lookup(&store).unwrap();
-        assert!(matches!(lookup, Some((_, None))), "new generation ⇒ miss");
-        let third = service
-            .cached_snapshot(&store, lookup, &stats)
-            .unwrap()
-            .unwrap();
-        assert!(!Arc::ptr_eq(&first, &third), "a write must invalidate");
-        assert_eq!(third.snapshot.symbols.len(), 3);
-        assert_ne!(first.key, third.key);
-
-        let off = RepositoryService {
-            root: root.clone(),
-            use_process_cache: false,
-        };
-        assert!(off.cache_lookup(&store).unwrap().is_none());
     }
 
     /// Regression for the bug reported as oxide#11: a repo containing one

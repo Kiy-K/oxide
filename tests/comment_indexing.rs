@@ -78,7 +78,7 @@ fn standalone_comment_between_symbols_is_lexically_findable() {
         hits.iter().map(|h| &h.symbol.file).collect::<Vec<_>>()
     );
     // `RetrievalEngine::search` itself always leaves `snippet` empty
-    // (populated later, by `service.rs`, from the matched span) — the
+    // (populated later, by `service/repository.rs`, from the matched span) — the
     // ranking assertion above is the actual proof the comment was found.
     assert_eq!(hits[0].symbol.kind, SymbolKind::Module);
 }

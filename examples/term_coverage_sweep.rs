@@ -142,7 +142,7 @@ fn main() -> anyhow::Result<()> {
     // Provenance gate: refuse to mix embedding spaces rather than silently
     // scoring a query vector from provider A against document vectors from
     // provider B. Same fingerprint-first, name+dim-fallback contract as
-    // `RepositoryService::validate_index` (service.rs) — comparing only the
+    // `RepositoryService::validate_index` (service/repository.rs) — comparing only the
     // provider *name* would pass a provider that kept the same URL/model
     // label but started returning a different dimension, silently
     // degrading every result to lexical-only once every stored vector

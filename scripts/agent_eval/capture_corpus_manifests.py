@@ -100,7 +100,7 @@ def main():
     # carries quantization, dimension, pooling, normalization and the query/
     # document prompt convention, and `update_index` re-embeds on a
     # fingerprint-only change with name and dim unchanged
-    # (`service.rs::update_index_reembeds_on_a_fingerprint_only_change_same_name_and_dim`).
+    # (`service/repository.rs::update_index_reembeds_on_a_fingerprint_only_change_same_name_and_dim`).
     # Empty meta is rejected rather than compared, since two blanks would
     # otherwise "match".
     blank = sorted(n for n, (_, _, m) in seen.items()

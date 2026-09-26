@@ -159,7 +159,7 @@ fn extract_embeddings(resp: &serde_json::Value, expected: usize) -> Vec<Vec<f32>
 /// `open_embedder`/`configured_provider_name` already hold for the local
 /// providers). Folding `dimensions` in closes a real gap: without it, a
 /// long-running `oxide mcp` process's provider cache (keyed on this string,
-/// `service.rs::embedder`) would not notice an output-dimension-only config
+/// `service/cache.rs::embedder`) would not notice an output-dimension-only config
 /// change.
 pub fn provider_name(
     provider: &str,

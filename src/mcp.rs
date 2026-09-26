@@ -96,7 +96,7 @@ fn search_input_schema() -> JsonObject {
             // Greptile review: this ceiling is shared by both modes, so it
             // must be the higher of the two service-side caps
             // (`literal::MAX_RESULTS` = 200) rather than hybrid's own
-            // `service::MAX_SEARCH_RESULTS` (100) alone -- otherwise a
+            // `service::repository::MAX_SEARCH_RESULTS` (100) alone -- otherwise a
             // `mode: "literal"` request for 101-200 results would be
             // rejected here even though the CLI's equivalent
             // `--mode literal --limit` has no such ceiling and the

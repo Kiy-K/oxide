@@ -45,7 +45,7 @@ pub struct RetrievalEngine<'a> {
     snapshot: std::cell::OnceCell<std::borrow::Cow<'a, SymbolSnapshot>>,
     /// A [`RelationIndex`] built over the caller-supplied snapshot — the
     /// `oxide mcp` process cache keeps one per index generation next to
-    /// the snapshot (`service.rs::CachedSnapshot`). Only ever paired with
+    /// the snapshot (`service/cache.rs::CachedSnapshot`). Only ever paired with
     /// that exact snapshot: `relation_graph` checks the pointer before
     /// using it and builds a fresh index otherwise.
     index: Option<(&'a SymbolSnapshot, &'a RelationIndex)>,

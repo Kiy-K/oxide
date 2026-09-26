@@ -140,7 +140,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   (`storage.rs::bump_generation`; `tests/index_generation.rs` enumerates
   the nine paths) and `meta.index_id` is a per-database random identity
   set on writer open. Together they key `oxide mcp`'s process cache
-  (`service.rs::ProcessCache`: symbol snapshot, row counts, embedder):
+  (`service/cache.rs::ProcessCache`: symbol snapshot, row counts, embedder):
   equal `(index_id, index_generation, schema/extraction/embedding/lexical
   keys)` read inside a request's own read snapshot ⇒ identical content.
   A new write path that forgets the bump lets a cached snapshot outlive

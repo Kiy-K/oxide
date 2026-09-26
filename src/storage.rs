@@ -360,7 +360,7 @@ const SCHEMA_SQL: &str = r#"
         vec BLOB NOT NULL
     );
     -- Only for `COUNT(*)`: every request validates the index by comparing
-    -- the embedding and symbol row counts (`service.rs::validate_index`),
+    -- the embedding and symbol row counts (`service/repository.rs::validate_index`),
     -- and without a secondary index that count has to walk the table
     -- b-tree, whose ~1 KB `vec` blobs spread the rows over every page —
     -- 7.5 ms at 15k symbols, 20% of a `--no-expand` search. SQLite counts

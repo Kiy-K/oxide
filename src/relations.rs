@@ -11,7 +11,7 @@ use std::sync::OnceLock;
 /// looked up by and holding `u32` positions into the corpus in corpus
 /// order. Owning no borrows is what lets `oxide mcp` keep one per
 /// `(index_id, index_generation)` next to the [`crate::retrieval::
-/// SymbolSnapshot`] it was built from (`service.rs::CachedSnapshot`) instead
+/// SymbolSnapshot`] it was built from (`service/cache.rs::CachedSnapshot`) instead
 /// of rebuilding it on every request, and it costs the one-shot path
 /// nothing: building it is the same hashing work the borrowed maps did,
 /// with no per-key `&str` and no owned `String` keys.
@@ -133,7 +133,7 @@ impl<'a> RelationGraph<'a> {
     }
 
     /// A graph over `symbols` using an index built earlier from **that same
-    /// corpus** — the cached path. The caller owns the pairing: `service.rs`
+    /// corpus** — the cached path. The caller owns the pairing: `service/cache.rs`
     /// builds the index inside the cache entry that holds the snapshot, so
     /// the two can only ever be read together at one generation.
     pub fn with_index(symbols: &'a [Symbol], index: &'a RelationIndex) -> Self {

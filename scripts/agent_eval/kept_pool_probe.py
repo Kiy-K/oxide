@@ -104,7 +104,7 @@ def main():
                 # 2. `oxide status`'s `embedder_current`: the index is stale
                 #    with respect to the provider configured right now. This
                 #    is a NAME-level comparison and network-free by design
-                #    (`service.rs::status`), so it catches a stale index, not
+                #    (`service/repository.rs::status`), so it catches a stale index, not
                 #    a same-name/different-fingerprint one.
                 # 3. The recorded fingerprint: that a space is recorded at
                 #    all, and that every worktree records the same one.
