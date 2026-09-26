@@ -96,7 +96,7 @@ impl EmbeddingProvider for CachingEmbedder {
         self.calls.fetch_add(1, Ordering::Relaxed);
         let v = self.inner.embed_query(text);
         // `HttpEmbedder` returns an empty vector on a transient failure
-        // (embeddings.rs's documented-by-design degrade-gracefully
+        // (embeddings/http.rs's documented-by-design degrade-gracefully
         // contract) — caching that would silently poison every later alpha
         // arm with a "successful" empty-vector result even after the
         // provider recovers, indistinguishable from a real lexical-only

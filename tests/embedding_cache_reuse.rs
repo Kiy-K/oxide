@@ -4,7 +4,7 @@
 //! entry point `examples/term_coverage_index.rs` uses, across two fully
 //! separate repositories with their own separate `.oxide/index.db` files —
 //! not just the unit-level `SharedEmbeddingCache` API in
-//! `src/embedding_cache.rs`'s own test module.
+//! `src/embeddings/cache.rs`'s own test module.
 //!
 //! Proves the two properties that matter together: identical content
 //! reuses its embedding across the two independently-indexed stores, AND

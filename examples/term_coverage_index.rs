@@ -1,7 +1,7 @@
 //! Thin CLI wrapper around `oxide::embedding_cache` — commit-correct
 //! indexing with a shared, content-addressed embedding cache (the
 //! harness-reuse follow-up to docs/term-coverage-eval/README.md). See
-//! `src/embedding_cache.rs` for the actual mechanism and its regression
+//! `src/embeddings/cache.rs` for the actual mechanism and its regression
 //! tests.
 //!
 //! Usage: `term_coverage_index <repo_dir> <expected_commit_sha> <cache_db_path>`

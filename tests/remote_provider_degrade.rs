@@ -86,7 +86,7 @@ fn read_request_body(stream: &mut std::net::TcpStream) -> serde_json::Value {
 
 /// A tiny `/v1/embeddings`-shaped server that answers every request with one
 /// fixed 4-dim vector *per input item* (matching the real contract — see
-/// `remote_embed.rs`'s `extract_embeddings`) until `alive` is cleared, at
+/// `embeddings/remote.rs`'s `extract_embeddings`) until `alive` is cleared, at
 /// which point its accept loop stops — a later connection to the same
 /// address gets refused, the same "endpoint went away" shape a real
 /// provider outage has.

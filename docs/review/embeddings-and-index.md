@@ -1,7 +1,7 @@
 # Embeddings and index review rules
 
-Scope: `src/embeddings.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`,
-`open_embedder`), `src/index.rs`'s `incompatible_stored_space` staleness
+Scope: `src/embeddings/provider.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`),
+`src/embeddings/selection.rs` (`open_embedder`), `src/index.rs`'s `incompatible_stored_space` staleness
 check and the migration marker around it.
 
 ---

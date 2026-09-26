@@ -288,7 +288,7 @@ fn body_only_term_is_lexically_findable_but_not_semantically_distinguishing() {
 /// Privacy/payload boundary for remote embedding providers: whatever
 /// `symbol_embed_text` returns for a symbol is the ONLY thing a configured
 /// remote provider (Voyage/Jina/OpenAI-compatible) ever sends over the
-/// network for it (`remote_embed.rs` embeds this string, never raw file
+/// network for it (`embeddings/remote.rs` embeds this string, never raw file
 /// content). For a markdown file's module symbol, that string must never
 /// contain body paragraph text — only path/kind/qualified_name/heading/
 /// imports/references — so indexing documentation does not silently widen

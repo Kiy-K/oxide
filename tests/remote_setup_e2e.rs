@@ -1,6 +1,6 @@
 //! End-to-end coverage for `oxide setup` that the original task promised —
 //! "tests for … privacy/consent behavior … JSON/MCP cleanliness" — and that
-//! the unit tests in `credentials.rs`/`user_config.rs`/`remote_embed.rs`
+//! the unit tests in `credentials.rs`/`user_config.rs`/`embeddings/remote.rs`
 //! don't reach, since they call those modules directly rather than through
 //! the real CLI/subprocess boundary `oxide setup` and a configured `oxide
 //! index`/`search --json` actually run through.
@@ -68,7 +68,7 @@ fn read_request_body(stream: &mut std::net::TcpStream) -> serde_json::Value {
 }
 
 /// A `/v1/embeddings`-shaped mock that answers with one fixed 4-dim vector
-/// *per input item* (matching the real contract — `remote_embed.rs`'s
+/// *per input item* (matching the real contract — `embeddings/remote.rs`'s
 /// `extract_embeddings`), until dropped. Returning a single embedding
 /// regardless of batch size made every multi-symbol `oxide index` fail with
 /// "embedder_unavailable" here — the same fix `remote_provider_degrade.rs`
