@@ -226,11 +226,13 @@ struct FileMeta {
 /// (`char **f(void)`, `__attribute__((pure)) int g(void)`). Recursive
 /// rather than depth-enumerated because the chain has no bound.
 fn function_declarator_of<'a>(node: Node<'a>) -> Option<Node<'a>> {
-    let decl = node.child_by_field_name("declarator")?;
-    if decl.kind() == "function_declarator" {
-        return Some(decl);
+    // A loop, not recursion: the chain is as long as the source makes it
+    // (`int ****…p;` nests one declarator per `*`).
+    let mut decl = node.child_by_field_name("declarator")?;
+    while decl.kind() != "function_declarator" {
+        decl = decl.child_by_field_name("declarator")?;
     }
-    function_declarator_of(decl)
+    Some(decl)
 }
 
 /// One Java parameter type, normalized the way the JVM's own overload rules
@@ -352,32 +354,45 @@ fn cpp_type_name(text: &str) -> String {
 }
 
 fn cpp_declarator_suffix(node: Node<'_>, src: &str) -> String {
-    match node.kind() {
-        "identifier" | "field_identifier" => String::new(),
-        "reference_declarator" | "pointer_declarator" => {
-            let Some(inner) = node.named_child(0) else {
-                return String::new();
-            };
-            let prefix = &src[node.start_byte()..inner.start_byte()];
-            let mut suffix: String = prefix.chars().filter(|c| matches!(c, '*' | '&')).collect();
-            suffix.push_str(&cpp_declarator_suffix(inner, src));
-            suffix
-        }
-        "array_declarator" => {
-            let Some(inner) = node.named_child(0) else {
-                return String::new();
-            };
-            let mut suffix = cpp_declarator_suffix(inner, src);
-            suffix
-                .push_str(&src[inner.end_byte()..node.end_byte()].replace(char::is_whitespace, ""));
-            suffix
-        }
-        "parenthesized_declarator" => node
-            .named_child(0)
-            .map(|inner| cpp_declarator_suffix(inner, src))
-            .unwrap_or_default(),
-        _ => String::new(),
+    // Iterative, because the declarator chain is as long as the source makes
+    // it: descend to the innermost declarator, then build outward. Each
+    // pointer/reference level prepends its `*`/`&`, each array level appends
+    // its dimensions, parentheses contribute nothing — the same string the
+    // recursive "outer part + inner suffix" definition produced. A level
+    // with no inner declarator ends the chain and contributes nothing.
+    enum Level<'s> {
+        Prefix(String),
+        Dims(&'s str),
     }
+    let mut levels = Vec::new();
+    let mut node = node;
+    while let Some(inner) = match node.kind() {
+        "reference_declarator"
+        | "pointer_declarator"
+        | "array_declarator"
+        | "parenthesized_declarator" => node.named_child(0),
+        _ => None,
+    } {
+        match node.kind() {
+            "reference_declarator" | "pointer_declarator" => levels.push(Level::Prefix(
+                src[node.start_byte()..inner.start_byte()]
+                    .chars()
+                    .filter(|c| matches!(c, '*' | '&'))
+                    .collect(),
+            )),
+            "array_declarator" => levels.push(Level::Dims(&src[inner.end_byte()..node.end_byte()])),
+            _ => {}
+        }
+        node = inner;
+    }
+    let mut suffix = String::new();
+    for level in levels.into_iter().rev() {
+        match level {
+            Level::Prefix(p) => suffix.insert_str(0, &p),
+            Level::Dims(d) => suffix.push_str(&d.replace(char::is_whitespace, "")),
+        }
+    }
+    suffix
 }
 
 fn cpp_parameter_type(param: Node<'_>, src: &str) -> Option<String> {
@@ -441,7 +456,15 @@ fn cpp_method_qualifier(declarator: Node<'_>, src: &str) -> String {
 /// One narrow walk collecting the things no tag capture exposes:
 /// import module strings, `export` wrapper ranges, and (for languages with
 /// no export concept) nothing. Not a general extractor — four node kinds.
-fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) {
+/// Iterative (`walk_preorder`): a recursive walk overflowed the parse
+/// worker's stack on deeply nested sources.
+fn collect_meta(root: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) {
+    super::walk_preorder(root, |node| visit_meta(node, lang, src, meta));
+}
+
+/// `collect_meta`'s per-node step. Returns whether the node's children should
+/// be visited: arms that fully consume their node return `false`.
+fn visit_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) -> bool {
     let imports = &mut meta.imports;
     match (lang, node.kind()) {
         (_, "decorator") => meta.decorators.push(node.byte_range()),
@@ -452,7 +475,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     imports.push(t.trim_matches('"').to_string());
                 }
             }
-            return;
+            return false;
         }
         (Language::Go, "method_declaration") => {
             // `func (s *Store) Get(...)` -> receiver type `Store`; the
@@ -500,7 +523,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     imports.push(path.to_string());
                 }
             }
-            return;
+            return false;
         }
         (
             Language::Java,
@@ -559,16 +582,16 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
         }
         (Language::Cpp, "operator_cast") => {
             let Some(ty) = node.child_by_field_name("type") else {
-                return;
+                return false;
             };
             let Some(declarator) = node.child_by_field_name("declarator") else {
-                return;
+                return false;
             };
             let Some(params) = declarator.child_by_field_name("parameters") else {
-                return;
+                return false;
             };
             let Ok(ty) = ty.utf8_text(src.as_bytes()) else {
-                return;
+                return false;
             };
             meta.cpp_casts.push((
                 node.byte_range().start,
@@ -641,7 +664,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                 } else if let Ok(value) = value.utf8_text(src.as_bytes()) {
                     format!("{value}.self.")
                 } else {
-                    return;
+                    return false;
                 };
                 if let Some(body) = node.child_by_field_name("body") {
                     for m in body.named_children(&mut body.walk()) {
@@ -707,7 +730,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     }
                 }
             }
-            return;
+            return false;
         }
         (
             Language::Php,
@@ -751,7 +774,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     imports.push(t.to_string());
                 }
             }
-            return;
+            return false;
         }
         (Language::Python, "import_statement") => {
             let mut cur = node.walk();
@@ -772,7 +795,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     _ => {}
                 }
             }
-            return;
+            return false;
         }
         (Language::Rust, "use_declaration") => {
             // The whole use tree as written (`std::collections::HashMap`,
@@ -785,7 +808,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
                     imports.push(t.to_string());
                 }
             }
-            return;
+            return false;
         }
         (Language::JavaScript, "call_expression") => {
             // CommonJS `require('./util')`. ESM is handled by the shared
@@ -831,10 +854,7 @@ fn collect_meta(node: Node<'_>, lang: Language, src: &str, meta: &mut FileMeta) 
         }
         _ => {}
     }
-    let mut cur = node.walk();
-    for child in node.children(&mut cur) {
-        collect_meta(child, lang, src, meta);
-    }
+    true
 }
 
 /// Walk `start` back over any decorators that sit immediately before it with

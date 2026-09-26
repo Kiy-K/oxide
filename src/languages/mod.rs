@@ -5,6 +5,33 @@ pub use crate::parser::LanguageExtractor;
 use crate::symbols::Language;
 use tags::LanguageProfile;
 
+/// Pre-order walk of `root`'s subtree without recursion: `visit` sees every
+/// node exactly as a recursive "visit, then each child in order" walk would,
+/// and returning `false` skips that node's children. A recursive walk spends
+/// one stack frame per AST level, and generated or pathological sources nest
+/// far deeper than a parse worker's stack allows (prettier's
+/// `tests/format/flow-repo/union/yuge.js`, one union type, parses to depth
+/// ~5,000 and aborted `oxide index` with a stack overflow).
+pub(crate) fn walk_preorder<'t>(
+    root: tree_sitter::Node<'t>,
+    mut visit: impl FnMut(tree_sitter::Node<'t>) -> bool,
+) {
+    let mut cursor = root.walk();
+    loop {
+        if visit(cursor.node()) && cursor.goto_first_child() {
+            continue;
+        }
+        // The nearest following sibling of this node or of an ancestor.
+        // `root.walk()` never leaves `root`'s subtree, so `goto_parent`
+        // failing means the walk is complete.
+        while !cursor.goto_next_sibling() {
+            if !cursor.goto_parent() {
+                return;
+            }
+        }
+    }
+}
+
 const PYTHON_TAGS: &str = include_str!("queries/python_tags.scm");
 const TS_TAGS: &str = include_str!("queries/typescript_tags.scm");
 const TS_LOCALS: &str = include_str!("queries/typescript_locals.scm");

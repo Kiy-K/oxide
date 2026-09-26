@@ -68,14 +68,17 @@ pub fn language_for_path(path: &Path) -> Option<crate::symbols::Language> {
 const MAX_MARKDOWN_BYTES: u64 = 64 * 1024;
 
 fn error_nodes(language: tree_sitter::Language, src: &str) -> usize {
-    fn count(node: tree_sitter::Node<'_>) -> usize {
-        let mut total = usize::from(node.is_error() || node.is_missing());
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            total += count(child);
-        }
+    // Counted with an iterative walk: this runs for every `.h` file on the
+    // index path, and a recursive count overflows on deeply nested headers
+    // the same way `tags::collect_meta` did.
+    let count = |root: tree_sitter::Node<'_>| {
+        let mut total = 0;
+        crate::languages::walk_preorder(root, |node| {
+            total += usize::from(node.is_error() || node.is_missing());
+            true
+        });
         total
-    }
+    };
 
     let mut parser = tree_sitter::Parser::new();
     if parser.set_language(&language).is_err() {
