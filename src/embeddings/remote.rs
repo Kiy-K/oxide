@@ -3,7 +3,7 @@
 //! constructed unless a user explicitly opted in — either via `$OXIDE_EMBED_
 //! PROVIDER` + its matching API-key env var, or via `oxide setup`, which
 //! records `remote_consent_ack` in `user_config::UserConfig` only after the
-//! privacy warning is confirmed (`cli.rs::cmd_setup`). `open_embedder`
+//! privacy warning is confirmed (`cli/commands/setup.rs::cmd_setup`). `open_embedder`
 //! (`embeddings/selection.rs`) is the only caller of [`resolve_configured_remote`].
 //!
 //! All three share [`RemoteHttpClient`]'s retry/backoff, batching, and

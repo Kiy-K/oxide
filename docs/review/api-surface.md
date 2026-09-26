@@ -1,6 +1,6 @@
 # API surface review rules
 
-Scope: `src/mcp.rs` (MCP tool list), `src/cli.rs` (subcommands), `--json`
+Scope: `src/mcp.rs` (MCP tool list), `src/cli/args.rs` (subcommands), `--json`
 output shapes across `search`/`context`/`review`.
 
 ---

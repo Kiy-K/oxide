@@ -129,7 +129,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   the query vector is back (both stages read through `store: &dyn
   IndexBackend`, and `SqliteStore` is not `Sync`). This is deliberate:
   `oxide context`/`oxide search` from the CLI run fully synchronously with
-  no tokio runtime at all (`cli.rs::run_mcp`'s own comment says so), while
+  no tokio runtime at all (`cli/commands/mcp.rs::run_mcp`'s own comment says so), while
   MCP already runs the whole service call inside `spawn_blocking`.
   `std::thread::scope` is the one primitive that works identically from
   both without adding a Cargo.toml tokio feature. The spawned closure
@@ -384,7 +384,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   drawing model), which is why a zero-size pty (`script … /dev/null`
   without `stty rows/cols`) shows them collapsed onto one line — a
   harness artifact, not a bug. `tests/terminal_output.rs` pins the matrix.
-- The `oxide index` result block is context-sensitive (`cli.rs::
+- The `oxide index` result block is context-sensitive (`cli/render/index.rs::
   print_index_summary`): `Indexed`/`Reindexed` (fresh store or `-a`,
   whole-corpus counts from two `#[serde(skip)]` presentation fields on
   `IndexResult`, plus a `Done!` footer), `Updated` (files touched +

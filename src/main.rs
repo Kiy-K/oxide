@@ -18,16 +18,7 @@ fn main() {
     let color = args.color;
     if let Err(e) = oxide::cli::run(args) {
         if e.json {
-            println!(
-                "{}",
-                serde_json::json!({
-                    "error": {
-                        "code": e.code,
-                        "action": e.action.as_str(),
-                        "message": e.message,
-                    }
-                })
-            );
+            println!("{}", oxide::cli::render_json_error(&e));
         } else {
             let paint = oxide::term::Paint::for_stderr(color);
             eprintln!(
