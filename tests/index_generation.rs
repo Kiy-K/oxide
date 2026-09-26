@@ -1,4 +1,4 @@
-//! `index_generation`/`index_id` (storage.rs): the cache key a long-running
+//! `index_generation`/`index_id` (storage/sqlite.rs): the cache key a long-running
 //! process uses to decide whether a loaded symbol snapshot still describes
 //! the database. Every write path must advance the counter, and the id must
 //! change when the database is rebuilt, or a cached snapshot could outlive

@@ -137,7 +137,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   is not `Send` (it holds the store reference and `OnceCell`s), even
   though the closure never touches those fields.
 - `meta.index_generation` is bumped inside **every** write transaction
-  (`storage.rs::bump_generation`; `tests/index_generation.rs` enumerates
+  (`storage/sqlite.rs::bump_generation`; `tests/index_generation.rs` enumerates
   the nine paths) and `meta.index_id` is a per-database random identity
   set on writer open. Together they key `oxide mcp`'s process cache
   (`service/cache.rs::ProcessCache`: symbol snapshot, row counts, embedder):
@@ -512,7 +512,7 @@ identity everywhere is `path#QualifiedName`.
   that preceded it, and `docs/astgrep-structural-search/`/
   `docs/astgrep-hardening/` for the original (now superseded) ast-grep
   spike and hardening pass.
-- Storage is SQLite behind the small `IndexBackend` trait (`src/index.rs`);
+- Storage is SQLite behind the small `IndexBackend` trait (`src/storage/backend.rs`);
   DB lives at `<repo>/.oxide/index.db`. The backend question is **closed**:
   SurrealDB and Turso were evaluated and rejected, and Enhanced SQLite was
   built and measured (`docs/storage-backend-eval/`). Enhancements are

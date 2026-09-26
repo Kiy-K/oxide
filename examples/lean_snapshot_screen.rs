@@ -86,7 +86,7 @@ enum Refs {
     None,
 }
 
-/// `storage.rs::row_to_symbol_without_imports` over a projection without
+/// `storage/row.rs::row_to_symbol_without_imports` over a projection without
 /// `imports_json` (and, for `Refs::None`, without `references_json`).
 /// `imports = true` (with `Refs::All`) is the `full_raw` control: the full
 /// production projection and `all_symbols`' per-file parse-once-then-clone

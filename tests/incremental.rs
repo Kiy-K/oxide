@@ -263,7 +263,7 @@ fn file_deleted_between_scan_and_read_is_accounted_not_silently_dropped() {
 
 /// End-to-end freshness half of the foreign-key audit: `replace_file`
 /// deletes only from `symbols` and lets `ON DELETE CASCADE` take the
-/// embedding and relation rows with it. `storage.rs`'s unit test pins the
+/// embedding and relation rows with it. `storage/sqlite.rs`'s unit test pins the
 /// pragma and the cascade directly; this pins the property that actually
 /// matters through `update_index`, so a future change that keeps foreign
 /// keys on but stops routing deletes through `symbols` still fails.
