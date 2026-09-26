@@ -58,7 +58,7 @@ def gold_lines(row) -> dict[str, list[tuple[int, int]]]:
     gold = cb.Gold(gold_data)
     lines: dict[str, list[tuple[int, int]]] = {}
     for item in gold.init + gold.add:
-        f = item.get("file")
+        f = cb.normalize_gold_path(item.get("file") or "")
         if f:
             lines.setdefault(f, []).append((item.get("start_line", 1), item.get("end_line", 1)))
     return lines

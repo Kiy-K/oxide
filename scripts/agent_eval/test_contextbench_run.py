@@ -136,3 +136,69 @@ def test_main_validates_provenance_even_when_every_task_is_already_done(tmp_path
 
     # Nothing was appended before (or instead of) the hard stop.
     assert results_path.read_text() == before
+
+
+# --- gold path normalization (docs/contextbench-scorer-fix/) -------------
+
+
+@pytest.mark.parametrize(
+    "raw, expected",
+    [
+        ("/workspace/darkreader__darkreader__0.1/src/utils/url.ts", "src/utils/url.ts"),
+        ("/workspace/clap-rs__clap__0.1/src/build/app/mod.rs", "src/build/app/mod.rs"),
+        ("/testbed/astropy/modeling/separable.py", "astropy/modeling/separable.py"),
+        # Already repo-relative, including dot-directories upstream's
+        # `lstrip("./")` would corrupt: unchanged.
+        ("src/generators/dynamic-theme.ts", "src/generators/dynamic-theme.ts"),
+        (".goreleaser.yml", ".goreleaser.yml"),
+        (".github/workflows/ci.yml", ".github/workflows/ci.yml"),
+        # Any other absolute path is not a known container prefix: unchanged,
+        # so it still matches nothing rather than being guessed into the repo.
+        ("/tmp/reproduce_test.sh", "/tmp/reproduce_test.sh"),
+        # A file directly under /workspace (68 `full` entries, e.g.
+        # /workspace/reproduce.cpp — a scratch file outside the repository)
+        # has no repo segment to strip; unlike upstream it is left as is.
+        ("/workspace/reproduce.js", "/workspace/reproduce.js"),
+        ("/workspace", "/workspace"),
+        ("", ""),
+    ],
+)
+def test_normalize_gold_path(raw, expected):
+    assert cb.normalize_gold_path(raw) == expected
+
+
+def _row(gold_file: str) -> dict:
+    return {
+        "gold_context": json.dumps([{"file": gold_file, "start_line": 1, "end_line": 4}]),
+        "repo_url": "https://example.invalid/o/r",
+        "base_commit": "0" * 40,
+    }
+
+
+def test_evaluate_task_scores_workspace_gold_exactly_like_relative_gold(tmp_path):
+    # Regression: before the fix a `/workspace/…` gold row scored line
+    # coverage 0 and span/symbol gold empty (vacuous coverage 1.0), while
+    # file coverage — normalized inside ContextBench's Gold.files() — was 1.
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "a.py").write_text("def f():\n    return 1\n\n\ndef g():\n    return 2\n")
+    items = [{"file": "src/a.py", "start_line": 1, "end_line": 2}]
+
+    relative = cb.evaluate_task(tmp_path, _row("src/a.py"), items)
+    workspace = cb.evaluate_task(tmp_path, _row("/workspace/o__r__0.1/src/a.py"), items)
+
+    assert workspace == relative
+    assert relative["line"]["gold_size"] == 4
+    assert relative["line"]["intersection"] == 2
+    assert relative["span"]["gold_size"] > 0
+    assert relative["symbol"]["gold_size"] > 0
+
+
+def test_evaluate_task_does_not_rescue_unknown_absolute_gold(tmp_path):
+    # Only the known container prefixes are stripped: an unrelated absolute
+    # path must not be mapped into the repository.
+    (tmp_path / "tmp").mkdir()
+    (tmp_path / "tmp" / "reproduce_test.sh").write_text("echo 1\necho 2\necho 3\necho 4\n")
+    items = [{"file": "tmp/reproduce_test.sh", "start_line": 1, "end_line": 4}]
+    m = cb.evaluate_task(tmp_path, _row("/tmp/reproduce_test.sh"), items)
+    assert m["line"]["intersection"] == 0

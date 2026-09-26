@@ -36,6 +36,7 @@ from contextbench_run import (  # noqa: E402
     ensure_repo_checkout,
     index_repo,
     est_tokens,
+    normalize_gold_path,
 )
 from tierb_agent_run import (  # noqa: E402
     MODEL, sh, render_pack_context, render_search_context, render_grep_context,
@@ -118,7 +119,7 @@ def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> d
 
     # Gold analysis
     gctx = json.loads(task["gold_context"]) if isinstance(task["gold_context"], str) else task["gold_context"]
-    gold_files = {g.get("file") for g in gctx}
+    gold_files = {normalize_gold_path(g.get("file") or "") for g in gctx}
     used_gold = [f for f in touched if f in gold_files]
     unnecessary = [f for f in touched if f not in gold_files]
 
@@ -231,7 +232,8 @@ def main() -> None:
                         "task": t["instance_id"], "repo": t["repo"], "language": t["language"],
                         "condition": cond, "ctx_tokens": 0, "wall_s": float(e.timeout or 0),
                         "agent_rc": 124, "files_touched": 0, "touched_files": [],
-                        "gold_files_utilized": 0, "gold_files_total": len(gctx),
+                        "gold_files_utilized": 0,
+                        "gold_files_total": len({normalize_gold_path(g.get("file") or "") for g in gctx}),
                         "unnecessary_edit_files": 0, "unnecessary_list": [],
                         "baseline_pytest_rc": None, "baseline_pytest_status": "no_tests",
                         "patched_pytest_rc": None, "patched_pytest_status": "no_tests",

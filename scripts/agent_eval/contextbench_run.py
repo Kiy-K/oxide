@@ -15,6 +15,7 @@ Run with the prepared venv:
 import argparse
 import json
 import os
+import re
 import shutil
 import sqlite3
 import subprocess
@@ -253,6 +254,23 @@ def to_spans(items: list[dict]) -> dict[str, list[tuple[int, int]]]:
     return spans
 
 
+# Some ContextBench rows record gold container-absolute
+# (`/workspace/<owner>__<repo>__0.1/src/x.ts`, SWE-bench's `/testbed/`).
+# ContextBench's own `Gold.files()` strips those prefixes, so file coverage
+# was always right, but the line/span/symbol gold built below used the raw
+# path: nothing matched, line coverage read 0 and span/symbol gold came out
+# empty (coverage a vacuous 1.0). Only these two container prefixes are
+# stripped — deliberately not upstream's whole `_normalize_rel_path`, whose
+# `lstrip("./")` would turn `.github/…` into `github/…`.
+_CONTAINER_PREFIX = re.compile(r"^/(?:workspace/[^/]+|testbed)/")
+
+
+def normalize_gold_path(path: str) -> str:
+    """Repo-relative form of a ContextBench gold path; every other path,
+    including other absolute ones, is returned unchanged."""
+    return _CONTAINER_PREFIX.sub("", path)
+
+
 def evaluate_task(repo_dir: Path, row: dict, items: list[dict]) -> dict:
     """Score one prediction against gold using ContextBench's metrics."""
     gold_data = {
@@ -264,7 +282,7 @@ def evaluate_task(repo_dir: Path, row: dict, items: list[dict]) -> dict:
     gold_files = set(gold.files())
     gold_lines = {}
     for item in gold.init + gold.add:
-        f = item.get("file")
+        f = normalize_gold_path(item.get("file") or "")
         if not f:
             continue
         gold_lines.setdefault(f, []).append((item.get("start_line", 1), item.get("end_line", 1)))

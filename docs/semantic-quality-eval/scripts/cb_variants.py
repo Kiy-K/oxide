@@ -49,7 +49,7 @@ def gold_lines(row):
     lines = defaultdict(set)
     for it in g.init + g.add:
         if it.get("file"):
-            lines[it["file"]].update(range(it.get("start_line", 1), it.get("end_line", 1) + 1))
+            lines[cb.normalize_gold_path(it["file"])].update(range(it.get("start_line", 1), it.get("end_line", 1) + 1))
     return lines
 
 

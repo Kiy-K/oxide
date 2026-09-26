@@ -30,6 +30,7 @@ from contextbench_run import (  # noqa: E402
     ensure_repo_checkout,
     index_repo,
     est_tokens,
+    normalize_gold_path,
 )
 
 MODEL = "opencode/muse-spark-1.2-contributor-free"
@@ -171,7 +172,7 @@ def run_condition(task: dict, condition: str, workdir: Path, log_dir: Path) -> d
     touched = [f for f in diff if f != "_PROMPT.md"]
     gold_file = None
     gctx = json.loads(task["gold_context"]) if isinstance(task["gold_context"], str) else task["gold_context"]
-    gold_files = {g.get("file") for g in gctx}
+    gold_files = {normalize_gold_path(g.get("file") or "") for g in gctx}
     used_gold = [f for f in touched if f in gold_files]
     unnecessary = [f for f in touched if f not in gold_files]
 
@@ -239,7 +240,7 @@ def main() -> None:
                     # Index/opencode wall-cap hit. Preserve the attempt so condition
                     # denominators stay honest; mark it failed (gold=0, bad=0).
                     gctx = json.loads(t["gold_context"]) if isinstance(t["gold_context"], str) else t["gold_context"]
-                    gold_n = len({g.get("file") for g in gctx})
+                    gold_n = len({normalize_gold_path(g.get("file") or "") for g in gctx})
                     kind = "index_timeout" if "index" in str(e.cmd) else "opencode_timeout"
                     rec = {
                         "task": t["instance_id"], "repo": t["repo"], "language": t["language"],
