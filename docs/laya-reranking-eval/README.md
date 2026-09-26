@@ -1,12 +1,30 @@
 # Issue #15 — local Laya as a task-aware evidence reranker
 
 Status: **research only. Nothing in `src/`, the defaults or the dependencies
-changed.** Hypothesis A is **rejected on operational cost** for OXIDE's
-local CPU request path: the pre-registered hard stop held in every official
-configuration tried. Its quality was **not measured**, as the protocol
-requires (stop early). Hypothesis B (entity alignment) was **not run**.
-Protocol, pins and deviations: [`protocol.md`](protocol.md), written before
-any Laya output was produced.
+changed.**
+
+- **Hypothesis A, reranking:** fails on **both** axes. The synchronous CPU
+  cost gate failed first (§3). The quality screen, completed at the
+  user's direction on 2026-09-26 (§4), then showed **no improvement** over
+  frozen OXIDE on the development set:
+  - The Q1 configuration (Laya fused with the original rank) is −0.032
+    (plain) and −0.002 (masked) nDCG@10; both CIs span zero.
+  - Ordering by Laya alone is significantly worse on plain (−0.143).
+  - A post-hoc, judged-only check with Jev-augmented relevance labels
+    leans slightly positive, with CIs spanning zero.
+
+  Quality under complete labels is therefore **insufficient evidence**,
+  not a proven loss.
+
+  Pre-registered gate Q1 fails, so ContextBench validation, selective
+  reranking and all runtime engineering stop there.
+- **Offline-judge use:** not supported. On the same pairs, Laya separates
+  gold far worse than the existing Jev judge.
+- **Hypothesis B, entity alignment:** not run. Only a labeling
+  specification exists.
+
+Protocol, pins, staging and deviations: [`protocol.md`](protocol.md).
+Stages were pre-registered in §10 before any relevance output.
 
 ## 1. Pinned baseline (post-#14, measured now)
 
@@ -136,27 +154,167 @@ End to end:
 The rejected cross-encoder in `docs/reranker-eval` was disqualified at
 about 36 s/query. This sits in the same regime.
 
-## 4. Quality: not measured
+## 4. Relevance quality (protocol §10; completed 2026-09-26)
 
-As pre-registered, the dev screen (Q1) and the ContextBench candidate and
-pack comparison (Q2) were not run after the hard stop. Everything they
-need is prepared and validated, so a future run can start directly:
-- shortlist inputs: `results/inputs/`, built only from query text and
-  candidate code, never gold;
-- the scorer (`scripts/laya_score.py score`);
-- the dev evaluator (`scripts/evaluate.py`);
-- the exact allocation replay (`scripts/oxide_replay.py`).
+All inputs are query text plus candidate code; no gold labels, gold
+names or diffs reach the model. The dev labels carry two biases that pull
+in opposite directions:
 
-One piece of evidence bears on quality, and it is not an OXIDE
-measurement: Laya's own figure for passage relevance, a task close to
-this one and in-distribution for it, is 0.63–0.66 accuracy.
+- **Leakage** favours a content reader. The snippets are post-commit code
+  (`protocol.md` §3).
+- **Incomplete commit gold** penalises a reranker that promotes relevant
+  but unlabeled symbols.
+
+§4.2's sensitivity check addresses the second.
+
+### 4.1 Stage 0: sanity, selection, offline-judge comparison
+
+The pairs are the 232 dev pairs already judged by Jev (TypeSafe System
+One, `ranking-fusion-eval/results/judgments.jsonl`) that lie inside the
+dev-plain top-20 shortlists: 28 tasks, 26 commit-gold. Each task also
+gets one unrelated cross-repository control.
+Raw data: `results/quality/stage0/`.
+
+Pooled AUC: all pairs are ranked on one scale, so ranks from different
+tasks mix. The pairs are Jev's top-5-per-channel selection, which
+compresses the rank baseline.
+
+| scorer | pooled AUC vs commit gold [task-bootstrap 95% CI] | AUC vs Jev labels | agree with Jev at 0.5 | judged relevant (≥ 0.5) | controls below task median |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| frozen OXIDE fused rank | 0.611 [0.43, 0.79] | — | — | — | — |
+| **Jev (existing independent judge)** | **0.924 [0.86, 0.97]** | — | — | 38% | — |
+| Laya english / `noul_ab` (**selected**) | 0.626 [0.51, 0.76] | 0.652 | 0.41 | 93% | 86% |
+| Laya english / `choice_ab` | 0.574 [0.44, 0.71] | 0.612 | 0.43 | 89% | 43% |
+| Laya english / `choice_ba` (label swap) | 0.622 [0.50, 0.76] | 0.628 | 0.39 | 93% | 79% |
+| Laya multilingual / `noul_ab` | 0.517 [0.42, 0.61] | 0.490 | 0.42 | 93% | 36% |
+| Laya multilingual / `choice_ab` | 0.607 [0.51, 0.70] | 0.583 | 0.54 | 61% | 29% |
+| Laya multilingual / `choice_ba` | 0.531 [0.44, 0.63] | 0.551 | 0.47 | 70% | 14% |
+
+- **Per-task AUC on the same pairs** (`results/quality/stage1/supplementary.json`):
+  - vs commit gold: Laya 0.75 against fused rank 0.657 (19 tasks with
+    both classes);
+  - vs Jev labels: 0.687 against 0.624 (25 tasks).
+
+  On this pre-selected subset Laya looks *better* than the fused order.
+  Stage 1, over the full top-20, did not reproduce that.
+- **Label-swap mirroring (Spearman):** English 0.65, which passes;
+  multilingual 0.26, which fails. The kill rule did not fire: English
+  mirrored, and not every upper CI was below the fused-rank AUC
+  (multilingual `noul_ab`'s upper bound of 0.6102 did fall just below
+  0.6105). English `noul_ab` was selected by the pre-registered rule.
+- **No calibration.** Laya calls 61–93% of candidates relevant, depending
+  on the configuration.
+- **Only English `noul_ab` rejects unrelated controls.** It places 86% of
+  cross-repository controls below the task median. Both `choice` forms
+  and the multilingual checkpoint mostly fail this basic check.
+
+### 4.2 Stage 1: full dev, gate Q1
+
+The setup is English `noul_ab`, fused top-20, 61 tasks × 2 regimes (2,440
+states), with 0 failures. Raw data: `results/quality/stage1/`,
+`stage1-eval.json`, `supplementary.json`.
+
+Input bounding: the model's tokenizer confirmed that no state exceeds
+Laya's window (0/3,660 per regime, `results/ops/truncation-check-dev-*`).
+The harness's own bounding did cut the query in 20 states per regime and
+the source window in 498 (plain) and 507 (masked) of 1,220.
+
+| regime | order | nDCG@10 | MRR | R@5 | R@10 | ΔnDCG@10 vs production [95% CI] | wins / losses |
+| --- | --- | ---: | ---: | ---: | ---: | --- | --- |
+| plain | **frozen OXIDE** | **0.401** | **0.371** | 0.397 | **0.580** | — | — |
+| plain | random permutation (10 seeds) | 0.146 | 0.131 | 0.120 | 0.329 | −0.255 [−0.342, −0.167] | 9 / 38 |
+| plain | Laya only (C1) | 0.258 | 0.244 | 0.239 | 0.451 | **−0.143 [−0.249, −0.042]** | 15 / 28 |
+| plain | RRF(original, Laya) (C2) | 0.369 | 0.363 | **0.425** | 0.555 | −0.032 [−0.081, +0.019] | 15 / 18 |
+| masked | **frozen OXIDE** | **0.164** | 0.153 | **0.209** | **0.287** | — | — |
+| masked | random permutation | 0.092 | 0.084 | 0.082 | 0.195 | −0.072 [−0.131, −0.017] | 9 / 20 |
+| masked | Laya only (C1) | 0.120 | 0.108 | 0.098 | 0.242 | −0.044 [−0.104, +0.016] | 8 / 17 |
+| masked | RRF(original, Laya) (C2) | 0.162 | **0.162** | 0.176 | 0.274 | −0.002 [−0.040, +0.039] | 7 / 9 |
+
+- **Per-task AUC within the top-20** (score AUC → **C2 ordering AUC**):
+
+  | regime | raw Laya score | C2 ordering | fused rank |
+  | --- | ---: | ---: | ---: |
+  | plain | 0.611 | 0.733 | **0.750** |
+  | masked | 0.579 | 0.656 | **0.691** |
+
+- **Gate Q1** required C2, the better combination, to beat production
+  nDCG@10 **and** fused-rank AUC in **both** regimes. It beats neither in
+  either regime, though its nDCG deltas are within noise. **Q1 fails.**
+- **Post-hoc sensitivity, not pre-registered, gate unchanged**
+  (`scripts/sensitivity_jev.py`, `sensitivity-jev-labels.json`). On the
+  28 Jev-judged tasks, relevance was widened to commit gold ∪ Jev-relevant.
+  - Jev judged exactly production's (fused) top-5, so the judged share
+    of each ordering's top-10 is asymmetric: production 68%, C2 64%, C1
+    43%.
+  - *Treating unjudged candidates as non-relevant* is therefore biased
+    toward production by construction. That view gives C1 −0.159
+    (6 wins / 20 losses) and C2 −0.026.
+  - *The judged-only condensed list* removes that bias and gives:
+
+    | labels | tasks | C1 Δ nDCG@10 | C2 Δ nDCG@10 |
+    | --- | ---: | --- | --- |
+    | commit gold ∪ Jev-relevant | 26 | +0.036 [−0.052, +0.134] (10 / 13) | +0.012 [−0.027, +0.055] (11 / 12) |
+    | commit gold only | 19 | −0.058 [−0.234, +0.129] | −0.024 [−0.125, +0.070] |
+
+  With broader relevance labels, the sign flips to slightly positive,
+  within noise. Incomplete commit gold may therefore account for part of
+  Laya's Stage 1 loss. Quality under complete labels is **unresolved**:
+  small, not significant, and measured on a leaky, pre-selected subset.
+- **Per repository**, nDCG@10 production → C2:
+
+  | repository | plain | masked |
+  | --- | --- | --- |
+  | pylint (37 tasks) | 0.389 → 0.354 | 0.189 → 0.153 |
+  | pytest (22 tasks) | 0.453 → 0.417 | **0.133 → 0.181** |
+
+  Requests and flask have 1 task each. Masked pytest is the only
+  multi-task cell where Laya helps. That is one positive stratum, not
+  enough to move the gate.
+- **Top-10 changes vs production (false positives and negatives), plain /
+  masked:**
+  - C1 promotes 298 / 303 non-gold candidates into the top-10, pushes
+    17 / 6 gold out, and pulls 8 / 5 gold in. It regresses 28 / 17 tasks.
+  - C2 promotes 147 / 145 non-gold, pushes out 8 / 2 gold, pulls in 5 / 2
+    gold, and regresses 18 / 9 tasks.
+- **Failure partition.** Where each task's gold stands relative to the
+  pool, plain / masked:
+  - gold in the reranked top-20 (at least one gold, reachable by
+    ordering): 47 / 29
+  - no gold in the top-20, but gold in the top-200 channel union
+    (candidate-generation loss beyond the shortlist): 8 / 20
+  - gold absent from the pool (route loss): 6 / 12
+
+  Some of the 47 / 29 tasks have *other* gold outside the top-20.
+
+  Ordering is the only failure a reranker can fix, and on the 47 / 29
+  tasks where it could, Laya makes ordering worse. Allocation (pack)
+  failures are not observable on dev, because no `kept` pools exist.
+- **Cost of the screen.** Mean 16.8 s (plain) and 17.0 s (masked) per
+  20-candidate task; p50 17.4 s and 17.6 s. P-core pinned with sorted
+  batches; peak RSS 2.8 GB.
+
+### 4.3 What was deliberately not run
+
+Q1 failed, so per `protocol.md` §10 the following were not run:
+
+- **ContextBench candidate and pack evaluation.** Gold-in-pack and
+  relevant tokens per 1,000 therefore **do not exist for Laya**; the
+  baseline packs are unchanged.
+- **The 1,024-token replay-parity check** that would have come before it.
+- **The held-out set.**
+- **Selective reranking.** It was gated on a measured gain, and there is
+  none. This was not tested.
+
+No held-out or ContextBench label was consulted at any point.
 
 ## 5. Dispositions
 
-| hypothesis | disposition | basis |
+| question | disposition | basis |
 | --- | --- | --- |
-| **A. Task-aware evidence reranking** (local CPU, official Laya) | **Reject (cost), for the local synchronous CPU path. Quality: insufficient evidence** | Stopped at the gate O hard stop in every official configuration (best p50 18.1 s, best mean 16.1 s per shortlist vs 5 s; 2.1–2.8 GB vs 83 MB). The protocol names only "stop" for this case, so the mapping to "reject (cost)" is recorded as `protocol.md` §9.4. It is not a quality rejection. |
-| **B. Entity / relationship alignment** | **Not run: insufficient labeled evidence** | No independently labeled identity / related-but-distinct / nonmatch pair set exists. Building one is its own budgeted task (issue #15 §4). A failed A is not a reason to run B. |
+| **Synchronous reranking feasibility** | **Reject** (cost), with quality **insufficient evidence**. | Cost alone decides it: best p50 18.1 s / mean 16.1 s per shortlist vs a 5 s hard stop; 2.1–2.8 GB vs 83 MB (§3). Quality: Q1, pre-registered on commit gold, fails. C2 shows no improvement (CIs span zero), and C1 is significantly worse on plain. A post-hoc judged-only check with Jev-augmented labels leans slightly positive (+0.01 to +0.04, CIs span zero), so the quality question is unresolved (§4.2). |
+| **Selective reranking feasibility** | **Reject (untested, gated).** | `protocol.md` §10 gates it on a measured quality gain, and none exists. |
+| **Offline evaluation utility** (Laya as a retrieval-quality judge) | **Reject** on this evidence (the leaky dev subset only). | Same 232 pairs, different inputs: Jev saw ≤ 1,200 snippet chars plus kind, signature and the full query; Laya saw a 416-token state with the query capped at 128 tokens. Laya's pooled AUC vs commit gold is 0.52–0.63 against Jev's 0.92. It labels 61–93% of candidates relevant, agrees with Jev on only 39–54%, and the multilingual checkpoint fails the label-swap check. Jev remains the better offline judge; its API-key and network constraints are unchanged from `docs/evals/phase-4.2-typesafe`. |
+| **Entity-alignment evidence** (B) | **Insufficient evidence (not run).** | No independently labeled identity / related / nonmatch set exists. [`entity-alignment-spec.md`](entity-alignment-spec.md) fixes how to build one from a SCIP oracle. It is a separate, budgeted task, and Laya's relevance result is not a reason to start it. |
 
 No production code, schema, graph, symbol ID, default or dependency was
 touched. The Laya venv, checkpoints and ONNX export live under
@@ -164,51 +322,108 @@ touched. The Laya venv, checkpoints and ONNX export live under
 
 ## 6. Smallest justified next action
 
-**Close A for the synchronous local path.** Re-opening it on CPU would
-need a measured *sustained* ≥ 1 TFLOPS fp32 path, or a smaller checkpoint
-of validated quality. The best software configuration here is 3–4× short,
-and the one that gets closer (int8) is no longer the same model.
+**Close hypothesis A for the request path.** Record the result on #15:
+rejected on cost, and Q1 failed on the pre-registered commit-gold
+measure. Do no further Laya runtime work: no port, no quantization, and
+no model competition. No measured gain on the pre-registered measure
+supports it.
 
-A quality screen would only be informative if a deployment exists where
-~15 s per query or a GPU is acceptable. One example is an offline
-evaluation judge that labels candidates, which is a different use from
-request-path reranking. In that case, the cheapest discriminating step is
-the prepared dev screen: run `laya_score.py score` on
-`results/inputs/dev-*-shortlists.jsonl`. There is no code change.
+The one open quality question, whether Laya helps under complete
+relevance labels, is not worth a runtime investment. It can only be
+settled offline, on clean labels: the ContextBench human-labeled set,
+which was gated off here. It is only worth running if someone wants
+Laya as an optional offline component, and that needs your approval.
 
-- **Size:** 2,440 states (61 tasks × 20 candidates × 2 regimes).
-- **Scoped version:** one checkpoint, one question, about 55 min of CPU.
-- **Full pre-registered screen:** 3 questions × 2 checkpoints, about 5–7 h.
+The losses that motivated A are still open, and they are not ordering
+losses a learned reranker fixes:
 
-Separately, the reasons A was proposed are still open:
-- route loss on description-style queries;
-- allocation caps.
+- **Candidate generation / route:** 8+6 / 20+12 of 61 tasks (plain /
+  masked) have no gold in the shortlist.
+- **Allocation caps.**
 
-They belong to the semantic-quality and allocator tracks (roadmap #9), not
-to a learned reranker.
+They belong to the semantic-quality and allocator tracks of roadmap #9.
+B stays parked behind its labeling spec until separately approved.
 
-## 7. Limitations
+## 7. Limitations and uncertainty
 
-- The dev (70) and held-out (65) dumps predate #14 and their indexes no
-  longer exist. Their validity at the pin is inferred from the CB
-  byte-identity and #14's oracle test, not re-verified (`protocol.md` §2).
-  They were not used for any result here.
-- The sweep used 3 shortlists × 2 timed calls per configuration.
-  Differences within about 10% (for example 18.1 s vs 19.6 s) are noise at
-  that sample size. The conclusion rests on the gap to the 5 s limit,
-  which is 3× or more.
-- Measured on one laptop CPU without a GPU. Laya's published GPU figure
-  (~33 ms/question on a T4) would change the operational picture. That
-  is not OXIDE's deployment target.
-- ONNX was exported with upstream's script at upstream HEAD `4066d5d5` and
-  run through `laya.onnx_agent` from the PyPI 0.3.20 package. That agent
-  has no batch API, and ONNX Runtime chose its own thread count inside the
-  6-CPU mask. A tuned, batched ONNX path could close some of the gap.
-  Nothing measured here indicates it reaches 5 s.
-- The §6.5 model sanity controls (relevant vs. unrelated pair, label swap)
-  were not run, because no quality stage ran.
-- The sweep's irregularities are listed in `protocol.md` §9.2: a manual
-  bf16 abort, an int8 crash and rerun, and rows from a different harness.
+- **Dev is commit-derived and leaky.**
+  - Post-commit code in the snippets favours Laya.
+  - Incomplete gold penalises it: Jev judged 27% of non-gold top-5
+    candidates relevant.
+  - The judged-only Jev-augmented check leans slightly positive for
+    Laya. It is post-hoc, covers only Jev's top-5-per-channel pairs in 26
+    tasks, and its CIs span zero, so it can neither confirm nor rule out
+    a real gain.
+  - ContextBench, the clean human-labeled set, was not reached because
+    the pre-registered gate stopped the screen.
+- **Pre-registration timing is not verifiable from mtimes.** `protocol.md`
+  §10 was edited again after the runs to add their outcome. The scripts
+  §10 relies on (`stage0.py`, `evaluate.py`, `laya_score.py`, modified
+  08:01–08:04) predate the first score file (08:16).
+- **Validity at the pin is inferred, not re-verified.** The dev dumps
+  predate #14 and their indexes no longer exist. Their validity at the pin
+  rests on the CB byte-identity and #14's oracle test (`protocol.md` §2).
+  Their candidate text was rebuilt from cached clones whose HEAD matches
+  5,671 of 5,676 dump spans; 2 (plain) and 6 (masked) candidates had
+  empty source.
+- **Stage 0 is small.** It has 26 positives in 28 tasks, so its CIs are
+  wide. It served only for selection and the offline-judge comparison.
+  Stage 1's conclusion rests on 61 tasks × 2 regimes, a CI that excludes
+  zero for C1 on plain, and consistent direction in every cell.
+- **Laya's inputs were bounded.** Only the pre-registered instruction
+  (reused from the Jev judge) and two answer forms were tried, with the
+  task capped at 128 tokens and the source at the remaining room. A
+  different prompt, a fine-tuned checkpoint (the README says the base
+  checkpoints need specialising), or longer context were not tried. Trying
+  them without a measured signal would be the post-hoc tuning the
+  protocol forbids.
+- **One machine, no GPU.** Only one laptop CPU was measured.
+- **ONNX run conditions.** ONNX was run through `laya.onnx_agent` (no
+  batch API; ONNX Runtime chose its own thread count).
+- **Sweep irregularities** are in `protocol.md` §9.2: a manual bf16 abort,
+  an int8 crash and rerun, and two rows from a different harness.
+
+## 8. Independent review
+
+Two independent passes were run, each reviewing the bundle under
+`docs/review/` with its own recomputation code.
+
+**Pass 1 (2026-09-25, operational stage).** No BLOCKER. It recomputed
+every §1–3 number and re-ran replay parity.
+
+It raised two MAJOR findings, both fixed:
+- the replay-parity provenance and its branch coverage;
+- an FLOP-floor argument contradicted by the data.
+
+It also raised MINOR findings on the disposition vocabulary, the
+deviation list, the one-shot estimate, determinism resolution and a
+truncation assertion.
+
+**Pass 2 (2026-09-26, quality stage).** No BLOCKER. It independently
+reproduced:
+- every Stage 0 and Stage 1 metric (CIs within 0.001);
+- the churn and route counts;
+- the input schema (no gold leaks into model input);
+- the gate logic.
+
+It raised one MAJOR finding: incomplete commit gold biases *against*
+Laya, so the dev result is not simply "conservative". That led to the
+post-hoc Jev-augmented sensitivity check in §4.2. A follow-up
+consultation found that check's first version biased toward production:
+unjudged candidates counted as non-relevant, and Jev had judged exactly
+production's top-5. The judged-only version leans slightly positive for
+Laya, within noise, and the quality verdict was changed to insufficient
+evidence.
+
+MINOR findings, all addressed above:
+- a false kill-rule sentence;
+- C2's AUC mislabeled;
+- pooled vs per-task AUC unlabeled;
+- unequal Jev/Laya inputs in the offline-judge comparison;
+- three soundness gaps in the entity-alignment spec;
+- cost and truncation wording;
+- missing per-repo strata;
+- the disposition vocabulary.
 
 ## Reproduce
 
@@ -220,4 +435,8 @@ python3 scripts/prep.py dev plain|masked results/inputs/dev-<regime>-shortlists.
 results/ops/sweep/run_sweep.sh            # CPU sweep; int8 rerun: scripts/cpu_sweep.py torch-int8 ...
 python3 scripts/evaluate.py parity <dir with extracted results/baseline/kept-and-packs.tar.gz>
 ~/.cache/oxide-laya-eval/venv/bin/python -I scripts/check_truncation.py <ckpt> results/inputs/cb-shortlists.jsonl
+# quality screen (protocol §10)
+python3 scripts/stage0.py build results/inputs/stage0-shortlists.jsonl results/quality/stage0/meta.json
+results/quality/stage0/run_stage0.sh && python3 scripts/stage0.py eval results/quality/stage0/meta.json results/quality/stage0/scores-{english,multilingual}.jsonl
+results/quality/stage1/run_stage1.sh && python3 scripts/evaluate.py dev results/quality/stage1/scores-english-noul-{plain,masked}.jsonl
 ```

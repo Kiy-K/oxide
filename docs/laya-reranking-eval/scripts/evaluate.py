@@ -62,6 +62,8 @@ def variants_for(sc, sids):
     """Production + every configuration + 10 seeded random permutations."""
     out = {"production": list(sids)}
     for q in QUESTIONS:
+        if sc.get("scores") is not None and q not in sc["scores"]:
+            continue  # question not asked in this run
         for c in COMBOS:
             if sc.get("scores") is None:
                 out[f"{q}/{c}"] = list(sids)  # failure fallback: production order
@@ -83,15 +85,40 @@ def dev(plain_path, masked_path):
         tasks = {json.loads(l)["id"]: json.loads(l) for l in open(RFE / tfile)}
         shortl = [json.loads(l) for l in open(INPUTS / f"dev-{regime}-shortlists.jsonl")]
         scores = {j["id"]: j for j in map(json.loads, open(path))}
+        import gzip
+        union = {}
+        for l in gzip.open(RFE / f"dump-{regime}.jsonl.gz", "rt"):
+            d = json.loads(l)
+            union[d["id"]] = {r[0] for r in d["lexical"] if r[0]} | {r[0] for r in d["semantic"] if r[0]}
         per_task, aucs, fails, absent = [], {"fused_rank": []}, 0, 0
+        route = {"gold_in_top20": 0, "gold_only_in_top200_union": 0, "gold_absent_from_pool": 0}
+        churn = {}
         for s in shortl:
             gold = set(tasks[s["id"]]["gold"])
             sids = [c["sid"] for c in s["cands"]]
             sc = scores[s["id"]]
             fails += sc.get("scores") is None
             absent += not (gold & set(sids))
+            if gold & set(sids):
+                route["gold_in_top20"] += 1
+            elif gold & union[s["id"]]:
+                route["gold_only_in_top200_union"] += 1
+            else:
+                route["gold_absent_from_pool"] += 1
             V = variants_for(sc, sids)
             m = {k: metrics(v, gold) for k, v in V.items()}
+            base10 = set(V["production"][:10])
+            for k, v in V.items():
+                if k.startswith("random#") or k == "production":
+                    continue
+                top10 = set(v[:10])
+                c = churn.setdefault(k, {"fp_promoted_into_top10": 0, "fn_gold_demoted_out_of_top10": 0,
+                                         "gold_promoted_into_top10": 0, "regressed_tasks": []})
+                c["fp_promoted_into_top10"] += len((top10 - base10) - gold)
+                c["fn_gold_demoted_out_of_top10"] += len((base10 - top10) & gold)
+                c["gold_promoted_into_top10"] += len((top10 - base10) & gold)
+                if m[k]["ndcg10"] < m["production"]["ndcg10"]:
+                    c["regressed_tasks"].append(s["id"])
             rnd = [m[k] for k in m if k.startswith("random#")]
             m["random"] = {x: statistics.fmean(r[x] for r in rnd) for x in rnd[0]}
             per_task.append(m)
@@ -100,8 +127,10 @@ def dev(plain_path, masked_path):
             if a is not None and sc.get("scores") is not None:
                 aucs["fused_rank"].append(a)
                 for q in QUESTIONS:
-                    aucs.setdefault(q, []).append(auc(sc["scores"][q], labels))
+                    if q in sc["scores"]:
+                        aucs.setdefault(q, []).append(auc(sc["scores"][q], labels))
         rows = {}
+        names = [n for n in names if n in per_task[0]]
         for name in names:
             rows[name] = {x: statistics.fmean(t[name][x] for t in per_task) for x in per_task[0][name]}
             if name != "production":
@@ -110,6 +139,7 @@ def dev(plain_path, masked_path):
                 rows[name]["d_ndcg10_ci95"] = boot_ci(d)
                 rows[name]["wins_losses"] = (sum(x > 0 for x in d), sum(x < 0 for x in d))
         out[regime] = {"n": len(per_task), "failures": fails, "gold_absent_from_top20": absent,
+                       "route": route, "top10_churn_vs_production": churn,
                        "auc_n_tasks": len(aucs["fused_rank"]),
                        "auc": {k: statistics.fmean(v) for k, v in aucs.items()}, "rows": rows}
     return out

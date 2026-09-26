@@ -1,0 +1,91 @@
+{
+ "n_pairs": 232,
+ "n_gold": 26,
+ "n_tasks": 28,
+ "fused_rank_auc_vs_gold": 0.6105302464525766,
+ "fused_rank_auc_ci95": [
+  0.4293318649045521,
+  0.7904878048780488
+ ],
+ "jev_auc_vs_gold": 0.9239171023151606,
+ "jev_auc_ci95": [
+  0.8606370009143554,
+  0.9726769075799546
+ ],
+ "configs": {
+  "english/noul_ab": {
+   "auc_vs_gold": 0.6264936519790889,
+   "auc_vs_gold_ci95": [
+    0.5106490872210954,
+    0.761136023916293
+   ],
+   "auc_vs_jev": 0.6521204914783987,
+   "agree_with_jev_at_0.5": 0.41379310344827586,
+   "frac_judged_relevant": 0.9267241379310345,
+   "controls_below_task_median": 0.8571428571428571,
+   "failures": 0
+  },
+  "english/choice_ab": {
+   "auc_vs_gold": 0.5738424197162061,
+   "auc_vs_gold_ci95": [
+    0.44425547996976567,
+    0.709643605870021
+   ],
+   "auc_vs_jev": 0.612128418549346,
+   "agree_with_jev_at_0.5": 0.4267241379310345,
+   "frac_judged_relevant": 0.8879310344827587,
+   "controls_below_task_median": 0.42857142857142855,
+   "failures": 0
+  },
+  "english/choice_ba": {
+   "auc_vs_gold": 0.6224794622852875,
+   "auc_vs_gold_ci95": [
+    0.5032967032967033,
+    0.7597368421052632
+   ],
+   "auc_vs_jev": 0.6278240190249703,
+   "agree_with_jev_at_0.5": 0.3922413793103448,
+   "frac_judged_relevant": 0.9310344827586207,
+   "controls_below_task_median": 0.7857142857142857,
+   "failures": 0
+  },
+  "english/swap_spearman": 0.6470856328472551,
+  "multilingual/noul_ab": {
+   "auc_vs_gold": 0.517083644510829,
+   "auc_vs_gold_ci95": [
+    0.4213632901751714,
+    0.6101973684210527
+   ],
+   "auc_vs_jev": 0.49021006738010303,
+   "agree_with_jev_at_0.5": 0.4224137931034483,
+   "frac_judged_relevant": 0.9267241379310345,
+   "controls_below_task_median": 0.35714285714285715,
+   "failures": 0
+  },
+  "multilingual/choice_ab": {
+   "auc_vs_gold": 0.6073562359970127,
+   "auc_vs_gold_ci95": [
+    0.514065934065934,
+    0.6963213213213213
+   ],
+   "auc_vs_jev": 0.582837891399128,
+   "agree_with_jev_at_0.5": 0.5431034482758621,
+   "frac_judged_relevant": 0.6077586206896551,
+   "controls_below_task_median": 0.2857142857142857,
+   "failures": 0
+  },
+  "multilingual/choice_ba": {
+   "auc_vs_gold": 0.530806572068708,
+   "auc_vs_gold_ci95": [
+    0.43507142857142855,
+    0.6312330885195206
+   ],
+   "auc_vs_jev": 0.5508125247720967,
+   "agree_with_jev_at_0.5": 0.47413793103448276,
+   "frac_judged_relevant": 0.7025862068965517,
+   "controls_below_task_median": 0.14285714285714285,
+   "failures": 0
+  },
+  "multilingual/swap_spearman": 0.2638949619202141
+ }
+}

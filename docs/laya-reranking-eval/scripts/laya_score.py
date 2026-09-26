@@ -10,7 +10,10 @@ Output: JSONL, one line per task: {"id", "sids", "scores": {question: [P(relevan
 
 usage:
   laya_score.py ops   <ckpt_dir> <shortlists.jsonl> <out.json> [threads]
-  laya_score.py score <ckpt_dir> <shortlists.jsonl> <out.jsonl> [threads]
+  laya_score.py score <ckpt_dir> <shortlists.jsonl> <out.jsonl> [threads] [q1,q2,...]
+`score` uses length-sorted batches of 4 (measured identical to one full
+batch within Laya's 1e-4 output rounding, results/ops/sweep); the optional
+question list restricts which of noul_ab / choice_ab / choice_ba are asked.
 """
 import json
 import os
@@ -96,8 +99,11 @@ def build_state(tok, room, c, query):
                         "source_tokens": len(s_ids), "source_room": s_room}
 
 
-def score_states(agent, states, questions):
-    res = agent.predict_batch(states, questions, batch_size=len(states))
+def score_states(agent, states, questions, sorted_batches=False):
+    if sorted_batches:
+        res = agent.predict_batch(states, questions, batch_size=4, sort_by_length=True)
+    else:
+        res = agent.predict_batch(states, questions, batch_size=len(states))
     return {qid: [p_relevant(qid, r["answers"][qid]) for r in res] for qid in questions}
 
 
@@ -148,10 +154,12 @@ def cmd_ops(ckpt, shortlists, out, threads):
     print(json.dumps(report, indent=1))
 
 
-def cmd_score(ckpt, shortlists, out, threads):
+def cmd_score(ckpt, shortlists, out, threads, only=None):
     agent, _ = load(ckpt, threads)
     qs = {**QUESTIONS, **SWAP}
-    room = room_for(agent, qs)
+    room = room_for(agent, qs)  # room is fixed by the full question set, so inputs never depend on `only`
+    if only:
+        qs = {k: qs[k] for k in only.split(",")}
     done = set()
     if os.path.exists(out):
         done = {json.loads(l)["id"] for l in open(out)}
@@ -163,7 +171,7 @@ def cmd_score(ckpt, shortlists, out, threads):
             built = [build_state(agent.tok, room, c, t["query"]) for c in t["cands"]]
             t0 = time.perf_counter()
             try:
-                scores, err = score_states(agent, [b[0] for b in built], qs), None
+                scores, err = score_states(agent, [b[0] for b in built], qs, sorted_batches=True), None
             except Exception as e:  # counted; the task falls back to production order
                 scores, err = None, repr(e)[:300]
             fh.write(json.dumps({
@@ -177,4 +185,7 @@ def cmd_score(ckpt, shortlists, out, threads):
 if __name__ == "__main__":
     cmd, ckpt, inp, out = sys.argv[1:5]
     threads = int(sys.argv[5]) if len(sys.argv) > 5 else 6
-    {"ops": cmd_ops, "score": cmd_score}[cmd](ckpt, inp, out, threads)
+    if cmd == "score":
+        cmd_score(ckpt, inp, out, threads, sys.argv[6] if len(sys.argv) > 6 else None)
+    else:
+        cmd_ops(ckpt, inp, out, threads)

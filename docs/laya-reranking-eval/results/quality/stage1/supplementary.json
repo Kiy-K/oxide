@@ -1,0 +1,92 @@
+{
+ "stage0_per_task_auc": {
+  "vs_gold": {
+   "tasks": 19,
+   "laya": 0.75,
+   "fused_rank": 0.657
+  },
+  "vs_jev": {
+   "tasks": 25,
+   "laya": 0.687,
+   "fused_rank": 0.624
+  }
+ },
+ "plain": {
+  "c2_ordering_per_task_auc": 0.733,
+  "fused_rank_per_task_auc": 0.75,
+  "per_repo_ndcg10": {
+   "requests": {
+    "n": 1,
+    "production": 0.113,
+    "C1": 0.281,
+    "C2": 0.257
+   },
+   "flask": {
+    "n": 1,
+    "production": 0.0,
+    "C1": 0.0,
+    "C2": 0.0
+   },
+   "pytest": {
+    "n": 22,
+    "production": 0.453,
+    "C1": 0.303,
+    "C2": 0.417
+   },
+   "pylint": {
+    "n": 37,
+    "production": 0.389,
+    "C1": 0.238,
+    "C2": 0.354
+   }
+  },
+  "bounding": {
+   "states": 1220,
+   "query_cut": 20,
+   "source_cut": 498
+  },
+  "ms_per_task": {
+   "mean": 16807,
+   "p50": 17359.9
+  }
+ },
+ "masked": {
+  "c2_ordering_per_task_auc": 0.656,
+  "fused_rank_per_task_auc": 0.691,
+  "per_repo_ndcg10": {
+   "requests": {
+    "n": 1,
+    "production": 0.113,
+    "C1": 0.281,
+    "C2": 0.257
+   },
+   "flask": {
+    "n": 1,
+    "production": 0.0,
+    "C1": 0.0,
+    "C2": 0.0
+   },
+   "pytest": {
+    "n": 22,
+    "production": 0.133,
+    "C1": 0.163,
+    "C2": 0.181
+   },
+   "pylint": {
+    "n": 37,
+    "production": 0.189,
+    "C1": 0.094,
+    "C2": 0.153
+   }
+  },
+  "bounding": {
+   "states": 1220,
+   "query_cut": 20,
+   "source_cut": 507
+  },
+  "ms_per_task": {
+   "mean": 16953,
+   "p50": 17576.6
+  }
+ }
+}

@@ -1,0 +1,1770 @@
+{
+ "pairs": [
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/sansio/app.py#App",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.64
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/app.py#src/flask/app.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.17
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/sansio/scaffold.py#Scaffold",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.6
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/app.py#Flask",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.59
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/sansio/app.py#App.__init__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.79
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/sansio/app.py#src/flask/sansio/app.py:__module__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/helpers.py#abort",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.07
+  },
+  {
+   "task": "flask-3d03098a",
+   "sid": "src/flask/sansio/app.py#App.make_aborter",
+   "rank": 17,
+   "gold": false,
+   "jev": 0.06
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/parallel.py#_worker_check_single_file",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.94
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/parallel.py#pylint/lint/parallel.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.62
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "tests/test_check_parallel.py#TestCheckParallel.test_parallel_message_stats_are_not_inflated",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/parallel.py#_worker_initialize",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.79
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/parallel.py#check_parallel",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.83
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/pylinter.py#PyLinter",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.77
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "pylint/lint/__init__.py#__all__",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.07
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "tests/test_check_parallel.py#tests/test_check_parallel.py:__module__",
+   "rank": 17,
+   "gold": false,
+   "jev": 0.32
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "doc/data/messages/d/docstring-first-line-empty/bad.py#doc/data/messages/d/docstring-first-line-empty/bad.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.78
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "tests/functional/ext/docstyle/docstyle_first_line_empty.py#tests/functional/ext/docstyle/docstyle_first_line_empty.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.77
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "doc/data/messages/d/docstring-first-line-empty/bad.py#foo",
+   "rank": 2,
+   "gold": true,
+   "jev": 0.83
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "tests/functional/ext/docstyle/docstyle_first_line_empty.py#FFFF",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.77
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "doc/data/messages/d/docstring-first-line-empty/good.py#doc/data/messages/d/docstring-first-line-empty/good.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.63
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "doc/data/messages/d/docstring-first-line-empty/good.py#foo",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.62
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "tests/functional/u/unnecessary/unnecessary_direct_lambda_call.py#tests/functional/u/unnecessary/unnecessary_direct_lambda_call.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.56
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "tests/functional/u/unnecessary/unnecessary_direct_lambda_call.py#ClassBodyWalrus",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.54
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "tests/functional/u/unnecessary/unnecessary_direct_lambda_call.py#outside_a_class_body",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "doc/data/messages/u/unnecessary-direct-lambda-call/bad.py#doc/data/messages/u/unnecessary-direct-lambda-call/bad.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.36
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "tests/functional/u/unnecessary/unnecessary_direct_lambda_call.py#y",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.41
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "doc/data/messages/u/unnecessary-direct-lambda-call/bad.py#y",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/extensions/typing.py#TypingChecker.visit_subscript",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.96
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker.visit_subscript",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.88
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker._check_invalid_sequence_index",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.06
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/variables.py#VariablesChecker.visit_subscript",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.87
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker._check_invalid_slice_index",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.05
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/refactoring/refactoring_checker.py#RefactoringChecker._check_unnecessary_dict_index_lookup",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.05
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/refactoring/refactoring_checker.py#RefactoringChecker",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.74
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/refactoring/refactoring_checker.py#pylint/checkers/refactoring/refactoring_checker.py:__module__",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.35
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "pylint/checkers/refactoring/recommendation_checker.py#RecommendationChecker",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.73
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "tests/functional/u/unnecessary/unnecessary_negation.py#tests/functional/u/unnecessary/unnecessary_negation.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.54
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "tests/functional/u/unnecessary/unnecessary_negation.py#unnecessary_negation",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "pylint/checkers/refactoring/not_checker.py#NotChecker.visit_unaryop",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.9
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "tests/functional/u/unnecessary/unnecessary_negation.py#tolerated_statements",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.35
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "doc/data/messages/u/unnecessary-negation/bad/double_not.py#doc/data/messages/u/unnecessary-negation/bad/double_not.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.24
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "doc/data/messages/u/unnecessary-negation/good/double_not.py#doc/data/messages/u/unnecessary-negation/good/double_not.py:__module__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.15
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "pylint/checkers/refactoring/not_checker.py#NotChecker",
+   "rank": 7,
+   "gold": true,
+   "jev": 0.83
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "pylint/checkers/refactoring/not_checker.py#pylint/checkers/refactoring/not_checker.py:__module__",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.83
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "tests/functional/u/unnecessary/unnecessary_negation.py#Klass",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.18
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/unicode.py#UTF_NAME_REGEX_COMPILED",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.39
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/spelling.py#CODE_FLANKED_IN_BACKTICK_REGEX",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.09
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/strings.py#QUOTE_DELIMITER_REGEX",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.32
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/strings.py#SINGLE_QUOTED_REGEX",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.15
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "script/check_newsfragments.py#VALID_CHANGELOG_COMPILED_PATTERN",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/misc.py#EncodingChecker.open",
+   "rank": 11,
+   "gold": true,
+   "jev": 0.41
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/extensions/_check_docs_utils.py#NumpyDocstring",
+   "rank": 12,
+   "gold": true,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/checkers/misc.py#EncodingChecker",
+   "rank": 13,
+   "gold": false,
+   "jev": 0.1
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "pylint/extensions/_check_docs_utils.py#EpytextDocstring",
+   "rank": 14,
+   "gold": true,
+   "jev": 0.5
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "pylint/lint/expand_modules.py#expand_modules",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.9
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "pylint/lint/expand_modules.py#pylint/lint/expand_modules.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.7
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "tests/lint/unittest_expand_modules.py#tests/lint/unittest_expand_modules.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "pylint/lint/expand_modules.py#_is_ignored_file",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.42
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "tests/lint/unittest_expand_modules.py#test__is_in_ignore_list_re_match",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.26
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "tests/lint/unittest_expand_modules.py#TestExpandModules.test_expand_modules_with_ignore",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.36
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "tests/lint/unittest_expand_modules.py#TestExpandModules",
+   "rank": 13,
+   "gold": false,
+   "jev": 0.3
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "pylint/lint/pylinter.py#PyLinter._expand_files",
+   "rank": 14,
+   "gold": false,
+   "jev": 0.62
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "tests/lint/unittest_expand_modules.py#TestExpandModules.test_expand_modules_relative_path",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "tests/functional/i/invalid/invalid_returned_subclass.py#tests/functional/i/invalid/invalid_returned_subclass.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.36
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "pylint/checkers/classes/special_methods_checker.py#SpecialMethodsChecker._is_wrapped_type",
+   "rank": 1,
+   "gold": true,
+   "jev": 0.95
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "tests/functional/i/invalid/invalid_returned_subclass.py#ReturnsSubclassInstances.__repr__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "tests/functional/i/invalid/invalid_returned_subclass.py#ReturnsSubclassInstances.__getnewargs_ex__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.36
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "tests/functional/i/invalid/invalid_returned_subclass.py#ReturnsSubclassInstances",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.32
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "tests/functional/i/invalid/invalid_returned_subclass.py#MyStr",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.32
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "pylint/checkers/classes/special_methods_checker.py#SpecialMethodsChecker",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.9
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "tests/functional/t/too/too_many_ancestors_abc.py#tests/functional/t/too/too_many_ancestors_abc.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.45
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "tests/functional/t/too/too_many_ancestors_abc_py312.py#tests/functional/t/too/too_many_ancestors_abc_py312.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.47
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "tests/functional/t/too/too_many_ancestors_abc_py312.py#FromBuffer",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.41
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "tests/functional/t/too/too_many_ancestors_abc_py312.py#FromBuffer.__buffer__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "tests/functional/t/too/too_many_ancestors_abc.py#FromCallable",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.37
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker._check_not_callable",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.93
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/typecheck.py#_determine_callable",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.81
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/base/comparison_checker.py#ComparisonChecker._check_callable_comparison",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.56
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker._check_uninferable_call",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "tests/functional/n/not_callable.py#tests/functional/n/not_callable.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.71
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.86
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "tests/functional/r/regression_02/regression_lambda_inference_not_callable.py#tests/functional/r/regression_02/regression_lambda_inference_not_callable.py:__module__",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.67
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "pylint/checkers/utils.py#safe_infer",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.18
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/bad.py#doc/data/messages/b/bare-name-capture-pattern/bad.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "tests/functional/b/bare_name_capture_pattern.py#tests/functional/b/bare_name_capture_pattern.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/bad.py#func",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.59
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "tests/functional/b/bare_name_capture_pattern.py#b",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.5
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/bad.py#red",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.49
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "tests/functional/b/bare_name_capture_pattern.py#a",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.53
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/bad.py#blue",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/bad.py#green",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "doc/data/messages/b/bare-name-capture-pattern/good.py#doc/data/messages/b/bare-name-capture-pattern/good.py:__module__",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.45
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "pylint/reporters/base_reporter.py#BaseReporter.reencode_output_after_unicode_error",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.77
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/checkers/unittest_unicode/unittest_bidirectional_unicode.py#TestBidirectionalUnicodeChecker",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.22
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/checkers/unittest_unicode/unittest_invalid_encoding.py#tests/checkers/unittest_unicode/unittest_invalid_encoding.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/checkers/unittest_unicode/unittest_bidirectional_unicode.py#tests/checkers/unittest_unicode/unittest_bidirectional_unicode.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.19
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/functional/e/excess_escapes.py#tests/functional/e/excess_escapes.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "pylint/reporters/base_reporter.py#BaseReporter",
+   "rank": 5,
+   "gold": true,
+   "jev": 0.79
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "pylint/checkers/unicode.py#UnicodeChecker",
+   "rank": 11,
+   "gold": false,
+   "jev": 0.65
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "pylint/checkers/unicode.py#UnicodeChecker._find_line_matches",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.82
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/functional/a/anomalous_unicode_escape.py#BAD_UNICODE",
+   "rank": 14,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "pylint/reporters/base_reporter.py#pylint/reporters/base_reporter.py:__module__",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.43
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "tests/checkers/unittest_imports.py#TestImportsChecker.test_preferred_module",
+   "rank": 16,
+   "gold": false,
+   "jev": 0.18
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/pyreverse/test_diadefs.py#test_class_diagram_warns_for_uninferable_target",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.54
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/testutils/_primer/test_pyreverse_primer.py#tests/testutils/_primer/test_pyreverse_primer.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/testutils/_primer/pyreverse_cases/no_change/expected_comment.md#tests/testutils/_primer/pyreverse_cases/no_change/expected_comment.md:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.12
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "pylint/testutils/_primer/pyreverse_primer_target.py#pylint/testutils/_primer/pyreverse_primer_target.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "pylint/pyreverse/diadefslib.py#DiaDefGenerator._set_option",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/testutils/_primer/test_pyreverse_primer.py#test_create_comment_prints_commit_drift",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/testutils/_primer/test_pyreverse_primer.py#COMMIT",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.07
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/testutils/_primer/test_pyreverse_primer.py#test_iter_changes_ignores_commit_only_move",
+   "rank": 11,
+   "gold": false,
+   "jev": 0.08
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "tests/pyreverse/functional/class_diagrams/annotations/line_breaks.py#tests/pyreverse/functional/class_diagrams/annotations/line_breaks.py:__module__",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "tests/functional/l/logging/logging_unsupported_format.py#tests/functional/l/logging/logging_unsupported_format.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.39
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "doc/data/messages/l/logging-unsupported-format/bad.py#doc/data/messages/l/logging-unsupported-format/bad.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.37
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "doc/data/messages/l/logging-unsupported-format/good.py#doc/data/messages/l/logging-unsupported-format/good.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "tests/functional/s/string/string_log_formatting.py#tests/functional/s/string/string_log_formatting.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.3
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "tests/functional/l/logging/logging_format_interpolation.py#tests/functional/l/logging/logging_format_interpolation.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.4
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "doc/data/messages/l/logging-format-interpolation/bad.py#doc/data/messages/l/logging-format-interpolation/bad.py:__module__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.31
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "tests/functional/l/logging/logging_format_interpolation.py#FORMAT_STR",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.37
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "pylint/checkers/logging.py#LoggingChecker._check_format_string",
+   "rank": 15,
+   "gold": true,
+   "jev": 0.89
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "tests/functional/ext/docparams/parameter/multiple_constructor_doc_default.py#ConstructorDocsInClassAndInit",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.49
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "tests/functional/ext/docparams/parameter/multiple_constructor_doc_default.py#tests/functional/ext/docparams/parameter/multiple_constructor_doc_default.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "tests/functional/ext/docparams/parameter/multiple_constructor_doc_default.py#ConstructorDocsInClassAndInit.__init__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.51
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "doc/data/messages/m/multiple-constructor-doc/bad.py#Point.__init__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.49
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "doc/data/messages/m/multiple-constructor-doc/bad.py#doc/data/messages/m/multiple-constructor-doc/bad.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.45
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "doc/data/messages/m/multiple-constructor-doc/bad.py#Point",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.54
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "doc/data/messages/d/duplicate-code/bad/apple.py#Apple.__init__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "pylint/extensions/docparams.py#DocstringParameterChecker.check_constructor_params_are_not_documented_twice",
+   "rank": 7,
+   "gold": true,
+   "jev": 0.69
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/async_checker.py#AsyncChecker.visit_asyncfunctiondef",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.84
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "tests/functional/y/yield_inside_async_function.py#tests/functional/y/yield_inside_async_function.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.23
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/typecheck.py#IterableChecker",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.76
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/typecheck.py#TypeChecker._includes_version_compatible_overload",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.05
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/base/function_checker.py#pylint/checkers/base/function_checker.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.3
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/async_checker.py#AsyncChecker",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.77
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "tests/functional/y/yield_inside_async_function.py#good_two",
+   "rank": 11,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/typecheck.py#IterableChecker.visit_yieldfrom",
+   "rank": 14,
+   "gold": false,
+   "jev": 0.62
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "tests/input/func_return_yield_mix_py_33.py#tests/input/func_return_yield_mix_py_33.py:__module__",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.09
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "pylint/checkers/utils.py#is_terminating_func",
+   "rank": 17,
+   "gold": false,
+   "jev": 0.08
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "tests/checkers/unittest_unicode/unittest_bad_chars.py#tests/checkers/unittest_unicode/unittest_bad_chars.py:__module__",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.16
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "tests/functional/n/new_style_class_py_30.py#tests/functional/n/new_style_class_py_30.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.16
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "tests/checkers/unittest_unicode/unittest_functions.py#tests/checkers/unittest_unicode/unittest_functions.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.17
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "tests/checkers/unittest_unicode/unittest_bad_chars.py#bad_char_file_generator._bad_char_file_generator",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.19
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/checkers/unicode.py#UnicodeChecker",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/config/callback_actions.py#_MessageHelpAction.__call__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/lint/message_state_handler.py#_MessageStateHandler",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.21
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/lint/message_state_handler.py#pylint/lint/message_state_handler.py:__module__",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.18
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/config/callback_actions.py#_MessageHelpAction",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.26
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "pylint/message/message_definition_store.py#MessageDefinitionStore",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.22
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/m/modified_iterating.py#update_existing_key",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.26
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/u/unhashable_member_py312.py#tests/functional/u/unhashable_member_py312.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/u/unnecessary/unnecessary_comprehension.py#tests/functional/u/unnecessary/unnecessary_comprehension.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.27
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/c/consider/consider_iterating_dictionary.py#tests/functional/c/consider/consider_iterating_dictionary.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.52
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/u/unbalanced/unbalanced_dict_unpacking.py#dict_keys",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/c/consider/consider_using_dict_items.py#tests/functional/c/consider/consider_using_dict_items.py:__module__",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.21
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/u/unnecessary/unnecessary_dict_index_lookup.py#S",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.4
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/c/consider/consider_iterating_dictionary.py#SOME_TUPLE",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "pylint/checkers/base/basic_checker.py#BasicChecker.visit_dict",
+   "rank": 16,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "tests/functional/u/unnecessary/unnecessary_dict_index_lookup.py#J",
+   "rank": 19,
+   "gold": false,
+   "jev": 0.2
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/functional/u/unnecessary/unnecessary_comprehension.py#my_set",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.1
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/functional/ext/set_membership/use_set_membership.py#tests/functional/ext/set_membership/use_set_membership.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.17
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/functional/u/unnecessary/unnecessary_comprehension.py#tests/functional/u/unnecessary/unnecessary_comprehension.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.35
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/functional/c/consider/consider_using_set_comprehension.py#tests/functional/c/consider/consider_using_set_comprehension.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.5
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/functional/u/undefined/undefined_loop_variable.py#do_stuff_with_a_set",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py#tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py:__module__",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.39
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py#CompositionContainer.__init__",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.24
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py#CompositionContainer",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py#AssociationContainer.__init__",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.16
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "tests/pyreverse/functional/class_diagrams/relationships/comprehensions.py#AssociationContainer",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.13
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/outcomes.py#importorskip",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.89
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/deprecated.py#src/_pytest/deprecated.py:__module__",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.47
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/outcomes.py#src/_pytest/outcomes.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.59
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/config/__init__.py#console_main",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.09
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/compat.py#src/_pytest/compat.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.26
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/_py/path.py#LocalPath.make_numbered_dir",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.07
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "testing/test_runner.py#test_importorskip_imports_last_module_part",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.35
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "src/_pytest/monkeypatch.py#resolve",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.2
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "src/_pytest/recwarn.py#WarningsChecker.__exit__",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.91
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "src/_pytest/recwarn.py#WarningsChecker",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.9
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "testing/test_recwarn.py#TestWarns.test_re_emit_filename_derived_module",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.38
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "src/_pytest/warning_types.py#src/_pytest/warning_types.py:__module__",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.14
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "src/_pytest/warnings.py#src/_pytest/warnings.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.55
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "src/_pytest/recwarn.py#src/_pytest/recwarn.py:__module__",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.51
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "testing/test_recwarn.py#testing/test_recwarn.py:__module__",
+   "rank": 10,
+   "gold": false,
+   "jev": 0.14
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "testing/test_recwarn.py#TestWarns",
+   "rank": 11,
+   "gold": false,
+   "jev": 0.21
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_parseopt.py#TestSplitHelpText",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.44
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "src/_pytest/config/argparsing.py#_split_help_text",
+   "rank": 1,
+   "gold": true,
+   "jev": 0.77
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_parseopt.py#TestSplitHelpText.test_relative_indentation_is_preserved_when_wrapping",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.44
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_helpconfig.py#test_help_ini_keeps_line_structure",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.42
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "src/_pytest/config/argparsing.py#DropShorterLongHelpFormatter",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.38
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_helpconfig.py#testing/test_helpconfig.py:__module__",
+   "rank": 6,
+   "gold": false,
+   "jev": 0.22
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "src/_pytest/helpconfig.py#showhelp",
+   "rank": 7,
+   "gold": true,
+   "jev": 0.76
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_parseopt.py#TestSplitHelpText.test_wraps_each_line_separately",
+   "rank": 9,
+   "gold": false,
+   "jev": 0.42
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "testing/test_parseopt.py#testing/test_parseopt.py:__module__",
+   "rank": 13,
+   "gold": false,
+   "jev": 0.33
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "src/_pytest/assertion/rewrite.py#_fix_code_filename",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.89
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "src/_pytest/assertion/rewrite.py#_replace_code_filenames",
+   "rank": 1,
+   "gold": true,
+   "jev": 0.81
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "src/_pytest/assertion/rewrite.py#_read_pyc",
+   "rank": 2,
+   "gold": true,
+   "jev": 0.81
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "testing/test_assertrewrite.py#TestRewriteOnImport.test_moved_test_file_updates_code_filename",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.46
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "scripts/release.py#fix_formatting",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.04
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "testing/test_assertrewrite.py#TestRewriteOnImport",
+   "rank": 5,
+   "gold": false,
+   "jev": 0.11
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "testing/test_faulthandler.py#test_timeout_and_exit",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.65
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "testing/test_faulthandler.py#test_timeout",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.69
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "testing/test_faulthandler.py#testing/test_faulthandler.py:__module__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.61
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "testing/test_faulthandler.py#test_cancel_timeout_on_hook",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.47
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "src/_pytest/faulthandler.py#src/_pytest/faulthandler.py:__module__",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.78
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "src/_pytest/faulthandler.py#get_exit_on_timeout_config_value",
+   "rank": 6,
+   "gold": true,
+   "jev": 0.74
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "src/_pytest/faulthandler.py#pytest_runtest_protocol",
+   "rank": 7,
+   "gold": true,
+   "jev": 0.85
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "scripts/release.py#scripts/release.py:__module__",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.15
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "testing/test_assertion.py#test_dict_extra_items_preserve_insertion_order",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.21
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "testing/test_assertion.py#TestAssert_reprcompare.test_dict_extra_items_bounded_under_budget",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "testing/test_assertion.py#TestAssert_reprcompare.test_mapping_different_items.SimpleMapping.__init__",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.23
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "testing/test_assertion.py#TestAssert_reprcompare.test_dict_different_items",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "testing/test_assertion.py#TestSetAssertions.test_dict_items_view_subset",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.55
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "src/_pytest/assertion/rewrite.py#AssertionRewriter.pop_format_context",
+   "rank": 7,
+   "gold": false,
+   "jev": 0.3
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "src/_pytest/assertion/_compare_set.py#SET_COMPARISON_FUNCTIONS",
+   "rank": 8,
+   "gold": false,
+   "jev": 0.51
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "doc/en/example/assertion/failure_demo.py#TestSpecialisedExplanations.test_eq_dict",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.37
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "src/_pytest/approx.py#_warn_on_inexact_decimal_tolerance",
+   "rank": 0,
+   "gold": true,
+   "jev": 0.78
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "testing/python/approx.py#TestApprox.test_inexact_float_tolerance_warns",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.61
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "src/_pytest/approx.py#ApproxScalar",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.82
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "testing/python/approx.py#TestApprox.test_decimal_approx_float_rel",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.48
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "src/_pytest/approx.py#ApproxDecimal",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.88
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "testing/python/approx.py#SOME_TOLERANCE",
+   "rank": 11,
+   "gold": false,
+   "jev": 0.18
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "testing/python/approx.py#TestApprox",
+   "rank": 12,
+   "gold": false,
+   "jev": 0.24
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "src/_pytest/approx.py#src/_pytest/approx.py:__module__",
+   "rank": 16,
+   "gold": false,
+   "jev": 0.51
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "testing/python/approx.py#TestApprox.test_inf_tolerance_expecting_zero",
+   "rank": 18,
+   "gold": false,
+   "jev": 0.12
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "testing/test_terminal.py#TestTerminalProgressPlugin.test_disabled_for_dumb_terminal",
+   "rank": 0,
+   "gold": false,
+   "jev": 0.38
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "testing/test_terminal.py#TestTerminalProgressPlugin",
+   "rank": 1,
+   "gold": false,
+   "jev": 0.14
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "testing/io/test_terminalwriter.py#test_terminalwriter_dumb_term_no_markup.MyFile.isatty",
+   "rank": 2,
+   "gold": false,
+   "jev": 0.29
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "testing/io/test_terminalwriter.py#test_terminalwriter_dumb_term_no_markup.MyFile",
+   "rank": 3,
+   "gold": false,
+   "jev": 0.17
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "testing/io/test_terminalwriter.py#test_terminalwriter_dumb_term_no_markup",
+   "rank": 4,
+   "gold": false,
+   "jev": 0.25
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "src/_pytest/terminalprogress.py#pytest_configure",
+   "rank": 14,
+   "gold": true,
+   "jev": 0.83
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "src/_pytest/terminalprogress.py#src/_pytest/terminalprogress.py:__module__",
+   "rank": 15,
+   "gold": false,
+   "jev": 0.58
+  }
+ ],
+ "controls": [
+  {
+   "task": "flask-3d03098a",
+   "sid": "CONTROL::pylint/lint/parallel.py#_worker_check_single_file",
+   "from_task": "pylint-0a259819"
+  },
+  {
+   "task": "pylint-0a259819",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-44cb5d48",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-4f303f68",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-5e00da60",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-60edffe5",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-68d9575c",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-77b0cd8c",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-7909c178",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-92b631fa",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-92bb20df",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-abcf2edc",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-b01a3fe4",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-b99a594d",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-c1f158c6",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-c34905fd",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-d66e7170",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-db0ff796",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-f4ce4072",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pylint-f672c5a1",
+   "sid": "CONTROL::src/_pytest/outcomes.py#importorskip",
+   "from_task": "pytest-10929dcd"
+  },
+  {
+   "task": "pytest-10929dcd",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-1c36631c",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-2348a087",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-3261273a",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-83da3437",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-9db66464",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-b7c1834d",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  },
+  {
+   "task": "pytest-beedab9c",
+   "sid": "CONTROL::src/flask/sansio/app.py#App",
+   "from_task": "flask-3d03098a"
+  }
+ ]
+}

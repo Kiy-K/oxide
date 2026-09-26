@@ -261,3 +261,92 @@ repository, and building one is its own budgeted task (issue #15 §4).
    baseline-dump hash. `protocol.md` is an untracked file, so its "written
    before any Laya output" claim is not verifiable from mtimes, which
    post-date the results because of these later edits.
+
+## 10. Quality-screen continuation (2026-09-26, written before any relevance output)
+
+Gate O remains failed and is not re-litigated: the 5 s threshold holds, and
+nothing here can promote Laya to the request path. On 2026-09-26 the user
+directed that the quality screen be completed, because the gate-O stop
+left Laya's relevance quality unmeasured. The stages below replace the
+all-at-once §5 selection with a staged one. The stages, the selection
+rules and the kill rules are fixed here, before any Laya relevance score
+exists. The pre-registered variant grid of §5 does not change.
+
+**Stage 0: sanity, selection, and offline-judge subset.**
+- *Pairs.* The 232 Jev-judged dev pairs that fall inside the dev-plain
+  top-20 shortlists (28 tasks, 26 commit-gold). Add one unrelated control
+  per task: a candidate taken from a task in a *different* repository,
+  which is non-relevant by construction.
+- *Scored.* Both checkpoints (`english`, `multilingual`), with all three
+  questions (`noul_ab`, `choice_ab`, `choice_ba`).
+- *Measured on the same pairs:*
+  - AUC vs. commit gold for each (checkpoint, question), next to the
+    fused-rank AUC (the position in the frozen fused list);
+  - AUC and thresholded agreement vs. Jev (Jev `noul` ≥ 0.5);
+  - Jev's own AUC vs. commit gold, which is the bar for the offline-judge
+    application;
+  - label-swap mirroring: Spearman correlation of `choice_ab` P(A) with
+    `choice_ba` P(B);
+  - separation of the unrelated controls: the fraction of controls scored
+    below the task's median judged candidate.
+- *Selection.* Exactly one (checkpoint, question) pair is selected: the
+  highest AUC vs. commit gold on these pairs. A tie goes to `english`,
+  then `noul_ab`.
+- *Kill rule (stop the screen, A-quality = reject).* Stop if the label
+  swap does not mirror (Spearman < 0.5 for both checkpoints). Also stop
+  if every configuration's bootstrap 95% upper bound on AUC (task-level
+  resampling, seed 0) is below the fused-rank AUC. With 26 positives,
+  nothing short of that clear loss stops the screen.
+
+**Stage 1: full dev (Q1 as pre-registered in §8).**
+- Only the selected pair is scored: plain + masked, 61 tasks, fused
+  top-20, P-core pinned, with length-sorted batches of 4. That setting was
+  measured to give output identical to within 1e-4 (§3.2).
+- Q1 unchanged: C1 or C2 (whichever is better on the mean of plain and
+  masked nDCG@10, as §5 specified) must beat production nDCG@10 **and**
+  fused-rank AUC in **both** regimes.
+- Also reported:
+  - the random-permutation control;
+  - route vs. ordering loss, where route means gold outside the top-20
+    shortlist, split into "in the top-200 union" and "absent";
+  - top-10 false positives (non-gold promoted into the top-10) and false
+    negatives (gold demoted out of it);
+  - per-task regressions.
+- Dev has no `kept` pools, so pack-level metrics do not exist on dev.
+
+**Stage 2: only if Q1 passes.**
+- ContextBench candidate + pack (Q2 as pre-registered).
+- *Before any challenger pack is trusted,* rerun production `oxide query`
+  at `--budget-tokens 1024` on the 21 tasks and require exact replay
+  parity at that budget. That exercises the over-budget and shrink-to-fit
+  paths the 4,096-token parity never hit.
+- The held-out set runs only if ContextBench also passes. It needs clones
+  that are missing.
+
+**Later steps, gated on measured quality.**
+- *Selective reranking* is tested only if Stage 1 and Stage 2 both show a
+  gain.
+- *Entity alignment* uses no Laya output until an independently labeled
+  identity / related / nonmatch set exists. That set comes from an oracle
+  independent of Laya, Jev and OXIDE's own name-matching heuristics.
+- No runtime engineering (port, quantization, new model) happens without
+  a measured quality gain.
+
+**Outcome (recorded after the runs).**
+- *Stage 0.* English label swap mirrored (Spearman 0.65); multilingual did
+  not (0.26). No kill: not every upper CI was below the fused-rank AUC
+  of 0.6105 (multilingual `noul_ab`'s upper bound of 0.6102 was, the
+  others were not). English `noul_ab` was selected (AUC 0.626).
+- *Stage 1.* C2 was chosen per §5, on the mean nDCG@10 (0.266 vs C1
+  0.189). It does not beat production nDCG@10 in either regime (plain
+  −0.032, masked −0.002; both CIs span zero). Its ordering's per-task AUC
+  (plain 0.733, masked 0.656) is below the fused-rank AUC (0.750, 0.691);
+  the raw Laya score AUC is 0.611 and 0.579. **Q1 fails.** Stage 2, the held-out set,
+  selective reranking and runtime work were not run.
+- *Deviations.*
+  - Stage 0 used the pre-existing Jev judgments as a second label source
+    for the offline-judge comparison only; they were never used for
+    selection.
+  - `laya_score.py score` gained a question filter and length-sorted
+    batches of 4 before any Stage 0 output. Sequence construction is
+    unchanged: the room is still computed from the full question set.

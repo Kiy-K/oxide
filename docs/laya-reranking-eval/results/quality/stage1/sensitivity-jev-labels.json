@@ -1,0 +1,151 @@
+{
+ "judged_fraction_of_top10": {
+  "production": 0.679,
+  "C1": 0.429,
+  "C2": 0.636
+ },
+ "full/commit_gold": {
+  "tasks": 23,
+  "production": 0.544,
+  "C1": 0.39,
+  "C2": 0.537,
+  "d_C1": -0.154,
+  "d_C1_ci95": [
+   -0.345,
+   0.056
+  ],
+  "wins_losses_C1": [
+   9,
+   11
+  ],
+  "d_C2": -0.006,
+  "d_C2_ci95": [
+   -0.108,
+   0.084
+  ],
+  "wins_losses_C2": [
+   7,
+   6
+  ]
+ },
+ "full/gold_or_jev_relevant": {
+  "tasks": 28,
+  "production": 0.632,
+  "C1": 0.473,
+  "C2": 0.607,
+  "d_C1": -0.159,
+  "d_C1_ci95": [
+   -0.311,
+   0.01
+  ],
+  "wins_losses_C1": [
+   6,
+   20
+  ],
+  "d_C2": -0.026,
+  "d_C2_ci95": [
+   -0.106,
+   0.054
+  ],
+  "wins_losses_C2": [
+   8,
+   17
+  ]
+ },
+ "full/jev_relevant_only": {
+  "tasks": 26,
+  "production": 0.696,
+  "C1": 0.491,
+  "C2": 0.655,
+  "d_C1": -0.205,
+  "d_C1_ci95": [
+   -0.365,
+   -0.02
+  ],
+  "wins_losses_C1": [
+   4,
+   20
+  ],
+  "d_C2": -0.041,
+  "d_C2_ci95": [
+   -0.127,
+   0.046
+  ],
+  "wins_losses_C2": [
+   8,
+   17
+  ]
+ },
+ "condensed/commit_gold": {
+  "tasks": 19,
+  "production": 0.724,
+  "C1": 0.666,
+  "C2": 0.7,
+  "d_C1": -0.058,
+  "d_C1_ci95": [
+   -0.234,
+   0.129
+  ],
+  "wins_losses_C1": [
+   8,
+   9
+  ],
+  "d_C2": -0.024,
+  "d_C2_ci95": [
+   -0.125,
+   0.07
+  ],
+  "wins_losses_C2": [
+   6,
+   7
+  ]
+ },
+ "condensed/gold_or_jev_relevant": {
+  "tasks": 26,
+  "production": 0.774,
+  "C1": 0.81,
+  "C2": 0.785,
+  "d_C1": 0.036,
+  "d_C1_ci95": [
+   -0.052,
+   0.134
+  ],
+  "wins_losses_C1": [
+   10,
+   13
+  ],
+  "d_C2": 0.012,
+  "d_C2_ci95": [
+   -0.027,
+   0.055
+  ],
+  "wins_losses_C2": [
+   11,
+   12
+  ]
+ },
+ "condensed/jev_relevant_only": {
+  "tasks": 26,
+  "production": 0.771,
+  "C1": 0.808,
+  "C2": 0.784,
+  "d_C1": 0.036,
+  "d_C1_ci95": [
+   -0.051,
+   0.135
+  ],
+  "wins_losses_C1": [
+   10,
+   13
+  ],
+  "d_C2": 0.012,
+  "d_C2_ci95": [
+   -0.026,
+   0.056
+  ],
+  "wins_losses_C2": [
+   11,
+   12
+  ]
+ }
+}
