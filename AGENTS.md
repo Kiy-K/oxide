@@ -84,7 +84,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   this, indexing dies on `UNIQUE constraint failed: symbols.id`.
 - Retrieval expansion must never displace direct hits: direct results keep
   their pre-expansion scores; expansion-only items are appended after. The
-  benchmark gate depends on this invariant (`src/retrieval.rs`).
+  benchmark gate depends on this invariant (`src/retrieval/engine.rs`).
 - Retrieval is **candidate-first** (docs/sqlite-request-path/README.md):
   `RetrievalEngine::search` scores BM25 over postings and streams the
   embedding rows through a bounded top-200 heap (`semantic_top_k`), then
@@ -176,7 +176,7 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
   overflow-page reads a plain scan only defers), and its tie order is
   `(file, rowid)`, which downstream corpus-order consumers depend on
   (docs/retrieval-profile/README.md §2.1).
-- `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval.rs`) only gates
+- `RetrievalMode` (`Fast`/`Balanced`/`Quality`, `retrieval/options.rs`) only gates
   the *bounded structural-relation expansion* stage in `context.rs`'s own
   expansion loop — never the always-on lexical+semantic stage, and never
   `RetrievalEngine::search`'s own RelationGraph expansion (`opts.expand`)
@@ -478,7 +478,7 @@ identity everywhere is `path#QualifiedName`.
   entry, even an empty one, which is what clears a stale relation after an
   edit removes a symbol's last call/base), and `context.rs`'s bounded
   expansion reads it back via `RelationGraph::callers_of`/`implementors_of`
-  (`retrieval.rs`, two `OnceCell`-lazy reverse indexes over `Symbol.calls`/
+  (`relations.rs`, two `OnceCell`-lazy reverse indexes over `Symbol.calls`/
   `bases` — `RelationGraph::build()` itself does zero extra work whether or
   not those fields are populated). Any caller of `callers_of`/
   `implementors_of` MUST intersect the result with an explicit bounded file

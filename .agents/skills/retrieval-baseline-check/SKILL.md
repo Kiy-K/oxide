@@ -1,9 +1,9 @@
 ---
 name: retrieval-baseline-check
-description: Captures or compares retrieval numbers before/after a change to src/retrieval.rs, src/config.rs, or embedding selection, and calls out any difference as a regression to explain. Use before and after touching ranking, scoring, RRF weights, or the embedding provider.
+description: Captures or compares retrieval numbers before/after a change to src/retrieval/, src/config.rs, or embedding selection, and calls out any difference as a regression to explain. Use before and after touching ranking, scoring, RRF weights, or the embedding provider.
 ---
 
-Any change to `src/retrieval.rs` (BM25 + cosine + RRF fusion + structural
+Any change to `src/retrieval/` (BM25 + cosine + RRF fusion + structural
 expansion) or `src/config.rs` (RRF weights, budget defaults) can silently
 shift ranking. This repo treats an unexplained shift as a bug, not a
 side effect — see `AGENTS.md`.

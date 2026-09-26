@@ -109,7 +109,7 @@ pub fn build_review_context(
     }
 
     // Score-descending with the same id tie-break every other ranked
-    // surface uses (`retrieval::cmp_score_id`): structural scores are
+    // surface uses (`retrieval::top_k::cmp_score_id`): structural scores are
     // exact small integers (1.0 per relation), so ties are the norm, and
     // `related_ids` is a `HashMap` whose iteration order changes per
     // process — without the tie-break the same diff produced a different

@@ -19,7 +19,7 @@ migration doc first.
 `RelationGraph::callers_of`/`implementors_of`.
 
 **Invariant:** `callers_of`/`implementors_of` are repo-wide by construction
-(`retrieval.rs`) — they answer for every indexed symbol, not a bounded
+(`relations.rs`) — they answer for every indexed symbol, not a bounded
 subset. Every call site that feeds context output back to a request must
 intersect the result with an explicit, bounded file scope — the files of
 already-retrieved symbols, capped by `RetrievalMode::structural_budget()` —

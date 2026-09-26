@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Term-coverage corroboration experiment: baseline vs several alphas.
 
-Pure Rust feature (`$OXIDE_TERM_COVERAGE_ALPHA`, see src/retrieval.rs) — no
+Pure Rust feature (`$OXIDE_TERM_COVERAGE_ALPHA`, see src/retrieval/engine.rs) — no
 model, no venv beyond the pinned one this script itself needs, no network
 call beyond the already-frozen embedder. Compares ranked-list metrics
 (Precision@5, Recall@5, MRR, nDCG@10) from a hybrid search against

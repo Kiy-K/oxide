@@ -8,7 +8,7 @@
 //!   1. Subprocess + engine-rebuild overhead: one process opens the store
 //!      and builds one `RetrievalEngine` (which loads the document-vector
 //!      cache and the `LexicalIndex` exactly once, per their own existing
-//!      "cached for the engine's lifetime" contracts — see retrieval.rs),
+//!      "cached for the engine's lifetime" contracts — see retrieval/engine.rs),
 //!      reused across all 5 `engine.search()` calls in the sweep.
 //!   2. Redundant query embedding: `CachingEmbedder` below memoizes
 //!      `embed_query` by exact query text, so the 10 calls that would
@@ -44,7 +44,7 @@ use std::time::Instant;
 /// Wraps any `EmbeddingProvider` and memoizes `embed_query` by exact input
 /// text. Every other method forwards unchanged — this only ever touches the
 /// query-embedding path `RetrievalEngine::search` calls (see
-/// `search_calls_embed_query_not_embed_for_the_query_text` in retrieval.rs's
+/// `search_calls_embed_query_not_embed_for_the_query_text` in retrieval/engine.rs's
 /// own test suite for why that distinction matters: `embed`/`embed_document`
 /// are for indexing-time document text, a different cache key space this
 /// wrapper deliberately does not touch).

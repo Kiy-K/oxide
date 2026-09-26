@@ -16,7 +16,7 @@ Full build/test/lint commands and load-bearing invariants (symbol id composition
 
 ## Before touching retrieval scoring
 
-`src/retrieval.rs` (BM25 + cosine + RRF fusion + structural expansion) is benchmark-gated. Before changing ranking/scoring logic, capture or compare against `docs/canonical-baseline.md` (the committed `oxide eval --config fixtures/benchmark.json` run) and treat any diff in the results as a regression to explain, not an expected side effect — including changes that only affect tie-breaking or ordering.
+`src/retrieval/` (BM25 + cosine + RRF fusion + structural expansion; the request path is `src/retrieval/engine.rs`) is benchmark-gated. Before changing ranking/scoring logic, capture or compare against `docs/canonical-baseline.md` (the committed `oxide eval --config fixtures/benchmark.json` run) and treat any diff in the results as a regression to explain, not an expected side effect — including changes that only affect tie-breaking or ordering.
 
 ## Agent skills
 

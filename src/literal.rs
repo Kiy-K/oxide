@@ -20,7 +20,7 @@
 //! Evidence`] on purpose: a literal hit is a line in a file, not a symbol —
 //! it has no qualified name, kind, or score, and `Evidence`'s shape would
 //! have to fabricate all three. Keeping literal search as its own type
-//! means `retrieval.rs` (benchmark-gated) never has to know this mode
+//! means `retrieval/` (benchmark-gated) never has to know this mode
 //! exists, and this scan never touches the index at all — it works on an
 //! unindexed repository, which is the whole point of a path that doesn't
 //! need embeddings or a `.oxide` directory to answer "where does this

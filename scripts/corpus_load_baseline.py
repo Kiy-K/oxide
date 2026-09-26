@@ -415,7 +415,7 @@ def environment(p):
             "search_limit": 10,
             "context_budget_tokens": 4096,
             "hydrate_candidates": 400,
-            "note": "frozen: RRF K=60, lexical/vector 0.6/0.4, 200 candidates per channel — read from src/retrieval.rs, not tuned here",
+            "note": "frozen: RRF K=60, lexical/vector 0.6/0.4, 200 candidates per channel — read from src/config.rs via src/retrieval/engine.rs, not tuned here",
         },
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
     }

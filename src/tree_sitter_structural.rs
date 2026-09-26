@@ -10,7 +10,7 @@
 //! implementation (`structural.rs`) are gone — nothing in this crate
 //! answers a structural query live against arbitrary source anymore, only
 //! against what's actually been indexed (`RelationGraph::callers_of`/
-//! `implementors_of`, `retrieval.rs`).
+//! `implementors_of`, `relations.rs`).
 //!
 //! Query source stays declarative (`.scm` files under
 //! `src/languages/queries/`): each `.scm` captures shape only (`@name`,

@@ -1,6 +1,6 @@
 # Retrieval and config review rules
 
-Scope: `src/config.rs`, `src/retrieval.rs`, `src/context.rs`'s use of
+Scope: `src/config.rs`, `src/retrieval/`, `src/context.rs`'s use of
 `RetrievalMode`, `cli.rs`/`mcp.rs` mode resolution.
 
 ---
@@ -67,7 +67,7 @@ agent-facing defaults.
 
 ### RET-003 — Lexical and semantic scoring must stay concurrent
 **Severity:** BLOCKER · **Scope:** `RetrievalEngine::search`'s
-`std::thread::scope` block in `retrieval.rs`.
+`std::thread::scope` block in `retrieval/engine.rs`.
 
 **Invariant:** lexical (`BM25`) and semantic (embed + dot-product) scoring
 run as two independently spawned threads inside one `std::thread::scope`,
@@ -91,14 +91,14 @@ code nearby changed, re-run `examples/coordinator_benchmark.rs`'s
 behavior.
 
 **Exceptions:** none. This is pinned by the dedicated regression-guard test
-in `retrieval.rs` (search for "Regression guard for the `std::thread::scope`
+in `retrieval/engine.rs` (search for "Regression guard for the `std::thread::scope`
 refactor").
 
 ---
 
 ### RET-004 — `RetrievalMode` only gates the bounded structural-relation stage
 **Severity:** MAJOR · **Scope:** `RetrievalMode`'s effect throughout
-`retrieval.rs`/`context.rs`.
+`retrieval/`/`context.rs`.
 
 **Invariant:** `Fast`/`Balanced`/`Quality` control only: (a) whether
 `context.rs`'s bounded structural-relation expansion (`RelationGraph::callers_of`,
@@ -133,7 +133,7 @@ implementation in `context.rs`, and any other code that assigns an
 externally-produced score onto `Candidate.score` or `SearchHit.score`.
 
 **Invariant:** `Candidate.score` is fused-scale (BM25/cosine fusion,
-`retrieval.rs`), and `build_context`'s relevance floor compares candidate
+`retrieval/engine.rs`), and `build_context`'s relevance floor compares candidate
 scores against a threshold anchored to that same scale (the original top
 *seed* score × `CONTEXT_RELEVANCE_FLOOR_FRACTION`). A reranker's own score
 — whatever its native range (sigmoid `[0,1]`, raw classifier logits,

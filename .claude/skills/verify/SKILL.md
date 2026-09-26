@@ -20,7 +20,7 @@ Stop at the first failing step and report it — do not run later steps against
 code you know is broken. If `cargo fmt --check` fails, run `cargo fmt` and
 re-check rather than hand-editing whitespace.
 
-If the change touched `src/retrieval.rs`, `src/config.rs`, or embedding
+If the change touched `src/retrieval/`, `src/config.rs`, or embedding
 selection logic, also do the extra retrieval-diff check described in the
 `retrieval-baseline-check` skill before declaring the change verified — the
 benchmark gate only catches a hybrid-vs-vector-only regression, not a

@@ -1,7 +1,13 @@
-//! Hybrid retrieval: lexical (BM25) + semantic (vector) fused with reciprocal
-//! rank fusion, followed by structural expansion. Every hit carries the
-//! evidence that selected it.
+//! [`RetrievalEngine`]: the candidate-first request path. BM25 (persisted
+//! postings, or the in-memory fallback) runs on the calling thread while the query is
+//! embedded on a scoped thread; the exact vector scan streams through a
+//! bounded top-K; RRF fuses the two candidate lists; only fused
+//! candidates are hydrated; structural expansion (the one stage that
+//! needs the whole corpus) appends after the direct hits.
 
+use super::options::{RetrievalMode, SearchHit, SearchMode, SearchOptions};
+use super::snapshot::{complete_symbols, lexical_persisted, SymbolSnapshot};
+use super::top_k::{cmp_score_id, top_k_by_score, TopK};
 use crate::config::{
     EXPANSION_STRONG_SEED_FRACTION, FUSION_CANDIDATE_LIMIT, FUSION_LEXICAL_WEIGHT, FUSION_RRF_K,
     FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
@@ -10,68 +16,8 @@ use crate::embeddings::EmbeddingProvider;
 use crate::lexical::LexicalIndex;
 use crate::relations::{RelationGraph, RelationIndex};
 use crate::storage::IndexBackend;
-use crate::symbols::{Completeness, Symbol, SymbolKind};
+use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SearchMode {
-    LexicalOnly,
-    VectorOnly,
-    Hybrid,
-}
-
-/// Relevance/latency tradeoff for a request. Controls how much *expensive*
-/// evidence (bounded ast-grep expansion, in `context.rs`) gets collected on
-/// top of the always-on lexical+semantic stage — it does not gate lexical or
-/// semantic scoring themselves, which run unconditionally and concurrently.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub enum RetrievalMode {
-    Fast,
-    #[default]
-    Balanced,
-    Quality,
-}
-
-impl RetrievalMode {
-    pub fn parse(s: &str) -> Option<Self> {
-        match s.trim().to_ascii_lowercase().as_str() {
-            "fast" => Some(Self::Fast),
-            "balanced" => Some(Self::Balanced),
-            "quality" => Some(Self::Quality),
-            _ => None,
-        }
-    }
-
-    /// `explicit` (a `--mode`/tool-argument flag) wins; then `$OXIDE_RETRIEVAL_MODE`;
-    /// an unconfigured agent always lands on `Balanced` (the `Default` impl).
-    /// Mirrors the existing embedder-selection precedence in `cli.rs`.
-    pub fn resolve(explicit: Option<&str>) -> Self {
-        explicit
-            .and_then(Self::parse)
-            .or_else(|| {
-                std::env::var("OXIDE_RETRIEVAL_MODE")
-                    .ok()
-                    .and_then(|v| Self::parse(&v))
-            })
-            .unwrap_or_default()
-    }
-
-    /// Bounded ast-grep expansion budget: `(max anchored seeds, max files per
-    /// seed)`. `None` means skip the stage entirely (`Fast`) — never a
-    /// whole-repo scan regardless of mode.
-    pub fn structural_budget(self) -> Option<(usize, usize)> {
-        match self {
-            Self::Fast => None,
-            Self::Balanced => Some((2, 3)),
-            Self::Quality => Some((3, 6)),
-        }
-    }
-
-    /// Whether the (currently no-op) downstream reranker stage runs.
-    pub fn rerank(self) -> bool {
-        matches!(self, Self::Quality)
-    }
-}
 
 /// `$OXIDE_TERM_COVERAGE_ALPHA` overrides `TERM_COVERAGE_ALPHA_DEFAULT` for
 /// the term-coverage corroboration experiment only (docs/term-coverage-eval/) —
@@ -83,126 +29,6 @@ fn resolve_term_coverage_alpha() -> f32 {
         .ok()
         .and_then(|v| v.parse::<f32>().ok())
         .unwrap_or(TERM_COVERAGE_ALPHA_DEFAULT)
-}
-
-pub struct SearchOptions {
-    pub limit: usize,
-    pub mode: SearchMode,
-    /// Include structural expansion around strong initial hits.
-    pub expand: bool,
-    pub retrieval_mode: RetrievalMode,
-}
-
-impl Default for SearchOptions {
-    fn default() -> Self {
-        Self {
-            limit: 10,
-            mode: SearchMode::Hybrid,
-            expand: true,
-            retrieval_mode: RetrievalMode::default(),
-        }
-    }
-}
-
-/// Score-descending order with a stable tie-break on symbol id. `HashMap`
-/// iteration order is randomized per process, so without this, results tied
-/// on score (a common outcome of the discrete RRF/BM25 formulas) would sort
-/// differently across otherwise-identical runs — read-only search/context
-/// must be deterministic for the same index and query.
-fn cmp_score_id(a: &(u64, f32), b: &(u64, f32)) -> std::cmp::Ordering {
-    b.1.partial_cmp(&a.1)
-        .unwrap_or(std::cmp::Ordering::Equal)
-        .then_with(|| a.0.cmp(&b.0))
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-pub struct SearchHit {
-    #[serde(flatten)]
-    pub symbol: Symbol,
-    pub score: f32,
-    pub reasons: Vec<String>,
-    pub snippet: String,
-}
-
-/// Every indexed symbol, with `calls`/`bases` merged in from the relations
-/// side table, plus an id index. Lean
-/// ([`IndexBackend::all_symbols_lean`]): every symbol is
-/// [`Completeness::Partial`] — `imports` empty, `references` only on test
-/// symbols — which is all `RelationGraph` reads of a non-seed symbol. A
-/// symbol that becomes a seed or leaves as output goes through
-/// [`complete_symbols`] first; `neighbors()` and serialization refuse a
-/// partial one. The one O(N) load retrieval still has,
-/// and it is only paid when something genuinely needs the whole corpus:
-/// structural expansion (`RelationGraph` answers `related_tests` by
-/// scanning every symbol, so it cannot be built from a candidate subset)
-/// or the in-memory lexical fallback. A long-lived process (`oxide mcp`)
-/// loads one per `(index_id, index_generation)` and hands it to every
-/// request's engine via [`RetrievalEngine::with_snapshot`].
-#[derive(Clone)]
-pub struct SymbolSnapshot {
-    pub symbols: Vec<Symbol>,
-    by_id: rustc_hash::FxHashMap<u64, usize>,
-    /// Whether `calls`/`bases` were merged in. Search's own expansion
-    /// (`RelationGraph::neighbors`) never reads them, so it loads without;
-    /// `context.rs` (`callers_of`) needs them.
-    pub with_relations: bool,
-}
-
-impl SymbolSnapshot {
-    /// Every symbol with relations merged in — what a long-lived cache
-    /// should hold, since it serves both search and context.
-    ///
-    /// Lean whenever BM25 is served from the persisted postings; complete
-    /// when it must fall back to [`LexicalIndex::build`], which indexes
-    /// `references`/`imports` — so one load serves both, as before, and the
-    /// `oxide mcp` cache (keyed on the lexical version too) holds whichever
-    /// its requests need.
-    pub fn load(store: &dyn IndexBackend) -> anyhow::Result<Self> {
-        let symbols = if lexical_persisted(store) {
-            crate::structural_relations::load_lean_symbols_with_relations(store)?
-        } else {
-            crate::structural_relations::load_symbols_with_relations(store)?
-        };
-        let mut snapshot = Self::from_symbols(symbols);
-        snapshot.with_relations = true;
-        Ok(snapshot)
-    }
-
-    fn load_without_relations(store: &dyn IndexBackend) -> anyhow::Result<Self> {
-        Ok(Self::from_symbols(if lexical_persisted(store) {
-            store.all_symbols_lean()?
-        } else {
-            store.all_symbols()?
-        }))
-    }
-
-    pub fn from_symbols(symbols: Vec<Symbol>) -> Self {
-        let by_id = symbols
-            .iter()
-            .enumerate()
-            .map(|(i, s)| (s.id(), i))
-            .collect();
-        Self {
-            symbols,
-            by_id,
-            with_relations: false,
-        }
-    }
-
-    pub fn get(&self, id: u64) -> Option<&Symbol> {
-        self.by_id.get(&id).map(|&i| &self.symbols[i])
-    }
-}
-
-/// Whether BM25 can be served from the persisted postings: only on an exact
-/// `meta.lexical_index_version` match (see [`RetrievalEngine`]'s
-/// construction). Otherwise retrieval rebuilds BM25 in memory from complete
-/// symbols, which also decides [`SymbolSnapshot::load`]'s shape.
-pub fn lexical_persisted(store: &dyn IndexBackend) -> bool {
-    matches!(
-        store.get_meta(crate::storage::LEXICAL_INDEX_KEY),
-        Ok(Some(v)) if v == crate::storage::LEXICAL_INDEX_VERSION.to_string()
-    )
 }
 
 /// Hybrid retrieval engine over a store snapshot. Candidate-first: a query
@@ -241,81 +67,6 @@ pub struct RetrievalEngine<'a> {
 enum LexicalSource {
     Persisted,
     Memory(LexicalIndex),
-}
-
-/// Bounded top-K under [`cmp_score_id`]: a max-heap whose top is the
-/// *worst* retained entry, so admission is one comparison and the result
-/// is exactly the first K of a full sort — the comparator is a total
-/// order over distinct ids, so the retained set and its order are the
-/// same either way.
-struct TopK {
-    k: usize,
-    heap: std::collections::BinaryHeap<Worst>,
-}
-
-struct Worst(u64, f32);
-
-impl PartialEq for Worst {
-    fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0
-    }
-}
-impl Eq for Worst {}
-impl PartialOrd for Worst {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-impl Ord for Worst {
-    /// `cmp_score_id` sorts best-first, so "greater" already means "sorts
-    /// later, i.e. worse": the heap's maximum is the eviction candidate.
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        cmp_score_id(&(self.0, self.1), &(other.0, other.1))
-    }
-}
-
-impl TopK {
-    fn new(k: usize) -> Self {
-        Self {
-            k,
-            heap: std::collections::BinaryHeap::with_capacity(k + 1),
-        }
-    }
-
-    fn push(&mut self, id: u64, score: f32) {
-        if self.k == 0 {
-            return;
-        }
-        if self.heap.len() < self.k {
-            self.heap.push(Worst(id, score));
-            return;
-        }
-        let worst = self.heap.peek().map(|w| (w.0, w.1)).unwrap_or((0, 0.0));
-        if cmp_score_id(&(id, score), &worst) == std::cmp::Ordering::Less {
-            self.heap.pop();
-            self.heap.push(Worst(id, score));
-        }
-    }
-
-    /// Retained entries, best first.
-    fn into_sorted(self) -> Vec<(u64, f32)> {
-        let mut out: Vec<(u64, f32)> = self.heap.into_iter().map(|w| (w.0, w.1)).collect();
-        out.sort_by(cmp_score_id);
-        out
-    }
-}
-
-/// The first `k` of `sort_by(cmp_score_id)`, without sorting the rest.
-fn top_k_by_score(mut items: Vec<(u64, f32)>, k: usize) -> Vec<(u64, f32)> {
-    if items.len() > k {
-        if k == 0 {
-            return Vec::new();
-        }
-        items.select_nth_unstable_by(k - 1, cmp_score_id);
-        items.truncate(k);
-    }
-    items.sort_by(cmp_score_id);
-    items
 }
 
 impl<'a> RetrievalEngine<'a> {
@@ -786,94 +537,14 @@ impl<'a> RetrievalEngine<'a> {
     }
 }
 
-/// Fill in what a lean snapshot left out ([`Completeness::Partial`]) for
-/// every partial symbol in `symbols`, from one bounded `symbols_by_ids`
-/// read (the candidate hydration statement). Complete symbols are left
-/// alone and, when there is no partial one, nothing is read. `calls`/
-/// `bases` — merged from the relations side table, which `symbols_by_ids`
-/// leaves empty — are kept. A row missing from the store is an error: a
-/// partial symbol is never passed off as complete.
-pub fn complete_symbols<'s>(
-    store: &dyn IndexBackend,
-    symbols: impl IntoIterator<Item = &'s mut Symbol>,
-) -> anyhow::Result<()> {
-    let partial: Vec<&mut Symbol> = symbols.into_iter().filter(|s| !s.is_complete()).collect();
-    if partial.is_empty() {
-        return Ok(());
-    }
-    let ids: Vec<u64> = partial.iter().map(|s| s.id()).collect();
-    let full: HashMap<u64, Symbol> = store
-        .symbols_by_ids(&ids)?
-        .into_iter()
-        .map(|s| (s.id(), s))
-        .collect();
-    for s in partial {
-        let f = full.get(&s.id()).ok_or_else(|| {
-            anyhow::anyhow!(
-                "cannot complete {}#{}: no such row in the index",
-                s.file,
-                s.qualified_name
-            )
-        })?;
-        s.imports.clone_from(&f.imports);
-        s.references.clone_from(&f.references);
-        s.completeness = Completeness::Complete;
-    }
-    Ok(())
-}
-
-/// Slice `start..end` (1-based inclusive) from a file, capped at `cap` lines.
-pub fn read_snippet(path: &std::path::Path, start: u32, end: u32, cap: usize) -> String {
-    let Ok(src) = std::fs::read_to_string(path) else {
-        return String::new();
-    };
-    src.lines()
-        .skip(start.saturating_sub(1) as usize)
-        .take(((end.saturating_sub(start - 1)) as usize).min(cap))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::lexical::LexicalIndex;
     use crate::relations::resolve_module;
+    use crate::retrieval::test_support::{fixture_repo, json, lcg, seed_store, sym};
     use crate::storage::{IndexBackend, SqliteStore};
-    use crate::symbols::{content_hash, SymbolKind};
     use std::collections::HashSet;
-
-    fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str, refs: &[&str]) -> Symbol {
-        let name = qname.rsplit('.').next().unwrap().to_string();
-        Symbol {
-            qualified_name: qname.into(),
-            name,
-            kind,
-            language: if file.ends_with(".py") {
-                crate::symbols::Language::Python
-            } else {
-                crate::symbols::Language::TypeScript
-            },
-            file: file.into(),
-            start_line: 1,
-            end_line: 5,
-            content_hash: content_hash(sig),
-            signature: sig.into(),
-            imports: vec![],
-            exported: true,
-            parent: None,
-            references: refs.iter().map(|s| s.to_string()).collect(),
-            calls: Vec::new(),
-            bases: Vec::new(),
-            completeness: Default::default(),
-        }
-    }
-
-    fn seed_store() -> SqliteStore {
-        let store = SqliteStore::open(std::path::Path::new(":memory:")).unwrap();
-        store
-    }
 
     /// Records which method the semantic stage actually calls, so the
     /// migration from `embed` to `embed_query` in `RetrievalEngine::search`
@@ -1145,25 +816,6 @@ mod tests {
             Some("pkg/api/index.ts")
         );
         assert_eq!(resolve_module("./missing", "src/main.ts", &files), None);
-    }
-
-    #[test]
-    fn retrieval_mode_parses_case_insensitively_and_rejects_garbage() {
-        assert_eq!(RetrievalMode::parse("Fast"), Some(RetrievalMode::Fast));
-        assert_eq!(
-            RetrievalMode::parse("QUALITY"),
-            Some(RetrievalMode::Quality)
-        );
-        assert_eq!(RetrievalMode::parse("turbo"), None);
-    }
-
-    #[test]
-    fn retrieval_mode_resolve_prefers_explicit_then_defaults_to_balanced() {
-        assert_eq!(RetrievalMode::resolve(Some("fast")), RetrievalMode::Fast);
-        // No explicit value and (in a clean test process) no
-        // $OXIDE_RETRIEVAL_MODE set: an unconfigured agent must land on
-        // Balanced, never silently on Fast or Quality.
-        assert_eq!(RetrievalMode::resolve(None), RetrievalMode::Balanced);
     }
 
     #[test]
@@ -1754,44 +1406,6 @@ mod tests {
         }
     }
 
-    /// Deterministic LCG so the parity tests below are reproducible without
-    /// a `rand` dependency.
-    fn lcg(seed: &mut u64) -> u64 {
-        *seed = seed
-            .wrapping_mul(6364136223846793005)
-            .wrapping_add(1442695040888963407);
-        *seed >> 11
-    }
-
-    /// The bounded heap must retain exactly the first K of a full sort —
-    /// same set, same order — including under heavy score ties, where the
-    /// id tie-break is what decides membership at the K boundary.
-    #[test]
-    fn bounded_top_k_equals_full_sort_then_take() {
-        let mut seed = 7u64;
-        for &n in &[0usize, 1, 5, 199, 200, 201, 1000, 5000] {
-            // Coarse scores force many exact ties.
-            let items: Vec<(u64, f32)> = (0..n)
-                .map(|_| (lcg(&mut seed), (lcg(&mut seed) % 7) as f32 / 3.0))
-                .collect();
-            for &k in &[0usize, 1, 25, 50, 100, 200, 500] {
-                let mut expected = items.clone();
-                expected.sort_by(cmp_score_id);
-                expected.truncate(k);
-                let mut heap = TopK::new(k);
-                for &(id, score) in &items {
-                    heap.push(id, score);
-                }
-                assert_eq!(heap.into_sorted(), expected, "n={n} k={k} (heap)");
-                assert_eq!(
-                    top_k_by_score(items.clone(), k),
-                    expected,
-                    "n={n} k={k} (select)"
-                );
-            }
-        }
-    }
-
     /// The streaming scan must produce bit-identical scores and the same
     /// ranking as the materialized `all_embeddings` + full sort it replaced,
     /// including its rules for skipping wrong-length vectors.
@@ -2189,61 +1803,6 @@ mod tests {
 
     // ---- lean snapshot: mechanism and frozen-oracle parity ----------------
 
-    fn git(dir: &std::path::Path, args: &[&str]) {
-        let st = std::process::Command::new("git")
-            .args(args)
-            .current_dir(dir)
-            .env("GIT_AUTHOR_NAME", "t")
-            .env("GIT_AUTHOR_EMAIL", "t@t")
-            .env("GIT_COMMITTER_NAME", "t")
-            .env("GIT_COMMITTER_EMAIL", "t@t")
-            .status()
-            .unwrap();
-        assert!(st.success(), "git {args:?}");
-    }
-
-    fn copy_dir(from: &std::path::Path, to: &std::path::Path) {
-        std::fs::create_dir_all(to).unwrap();
-        for e in std::fs::read_dir(from).unwrap() {
-            let e = e.unwrap();
-            let dst = to.join(e.file_name());
-            if e.file_type().unwrap().is_dir() {
-                copy_dir(&e.path(), &dst);
-            } else {
-                std::fs::copy(e.path(), dst).unwrap();
-            }
-        }
-    }
-
-    /// A committed fixture repo in a temp git repo with a non-empty diff
-    /// against `HEAD` (`changed`'s second half was committed, then undone
-    /// with `reset --soft`), while the working tree — and so the index —
-    /// is exactly the fixture: `--git` and `review` get real changed seeds.
-    fn fixture_repo(name: &str, changed: &str) -> tempfile::TempDir {
-        let tmp = tempfile::tempdir().unwrap();
-        let root = tmp.path();
-        copy_dir(
-            &std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("fixtures")
-                .join(name),
-            root,
-        );
-        let full = std::fs::read_to_string(root.join(changed)).unwrap();
-        let lines: Vec<&str> = full.lines().collect();
-        std::fs::write(root.join(changed), lines[..lines.len() / 2].join("\n")).unwrap();
-        git(root, &["init", "-q"]);
-        git(root, &["add", "-A"]);
-        git(root, &["commit", "-qm", "base"]);
-        std::fs::write(root.join(changed), &full).unwrap();
-        git(root, &["commit", "-qam", "change"]);
-        git(root, &["reset", "-q", "--soft", "HEAD~1"]);
-        tmp
-    }
-
-    fn json(v: &impl serde::Serialize) -> String {
-        serde_json::to_string(v).unwrap()
-    }
-
     /// Every request surface that reads the corpus snapshot serializes
     /// byte-identically over the lean snapshot and over the frozen
     /// pre-lean oracle (a store whose corpus loads are complete, i.e.
@@ -2379,63 +1938,5 @@ mod tests {
             assert!(seen_expansion, "{fixture}: queries must expand");
             assert!(seen_test, "{fixture}: queries must reach related_tests");
         }
-    }
-
-    /// The lean load is `all_symbols`' rows in the same order, partial
-    /// everywhere, with `references` exactly on test symbols; completing it
-    /// reproduces `all_symbols` byte for byte.
-    #[test]
-    fn completed_lean_corpus_equals_the_full_load() {
-        let emb = HashedEmbedder::default();
-        let repo = fixture_repo("py_repo", "oxidepy/retry.py");
-        let mut store = SqliteStore::open(&repo.path().join(".oxide/index.db")).unwrap();
-        crate::index::update_index(repo.path(), &mut store, &emb).unwrap();
-        let full = store.all_symbols().unwrap();
-        let mut lean = store.all_symbols_lean().unwrap();
-        let mut buf = Default::default();
-        assert_eq!(full.len(), lean.len());
-        let mut tests = 0;
-        for (f, l) in full.iter().zip(&lean) {
-            assert_eq!(f.id(), l.id());
-            assert!(!l.is_complete() && l.imports.is_empty());
-            if crate::symbols::is_test_symbol(&f.file, &f.name, f.kind, &mut buf) {
-                tests += 1;
-                assert_eq!(f.references, l.references);
-            } else {
-                assert!(l.references.is_empty());
-            }
-        }
-        assert!(tests > 0, "fixture has test symbols");
-        complete_symbols(&store, lean.iter_mut()).unwrap();
-        assert_eq!(json(&full), json(&lean));
-    }
-
-    #[test]
-    #[should_panic(expected = "partial seed")]
-    fn neighbors_refuses_a_partial_seed() {
-        let mut s = sym("src/a.py", "f", SymbolKind::Function, "def f():", &[]);
-        s.completeness = Completeness::Partial;
-        let corpus = vec![s.clone()];
-        RelationGraph::build(&corpus).neighbors(&s);
-    }
-
-    /// `skip_serializing_if` under `#[serde(flatten)]`: a complete symbol
-    /// emits no `completeness` key at all, a partial one fails to
-    /// serialize instead of emitting empty `imports`/`references`.
-    #[test]
-    fn a_partial_symbol_never_serializes() {
-        let s = sym("src/a.py", "f", SymbolKind::Function, "def f():", &["g"]);
-        let hit = |symbol: Symbol| SearchHit {
-            symbol,
-            score: 1.0,
-            reasons: vec![],
-            snippet: String::new(),
-        };
-        let out = serde_json::to_string(&hit(s.clone())).unwrap();
-        assert!(!out.contains("completeness"), "{out}");
-        let mut p = s;
-        p.completeness = Completeness::Partial;
-        assert!(serde_json::to_string(&hit(p.clone())).is_err());
-        assert!(serde_json::to_string(&p).is_err());
     }
 }
