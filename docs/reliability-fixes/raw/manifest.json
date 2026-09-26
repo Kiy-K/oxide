@@ -1,0 +1,24 @@
+{
+ "date": "2026-09-26",
+ "base_commit": "d1333a90a19498bab59350dd055419469ef51b3a",
+ "baseline_binary": {
+  "path": "~/.cache/oxide-baseline-d1333a9 (clean worktree at base_commit)",
+  "sha256": "6a806ce921d431d0c79c04a526ab2c27f434e3689e42991fdfd3a95f15a5585a"
+ },
+ "fixed_binary": {
+  "source": "base_commit + the committed fixes (src/languages/mod.rs, src/languages/tags.rs, src/scanner.rs, src/eval.rs)",
+  "sha256": "011987c11889dc96c322708a05125ac27be4f70e1679d1d4800a639f2f85b75b",
+  "note": "before_after runs used the build just before a clippy-only loop restructuring of cpp_declarator_suffix; the final binary (this hash) was re-checked on prettier and on the C++ declarator differential (identical)"
+ },
+ "embedder": "hashed (OXIDE_EMBED_NATIVE=hashed) for all before/after runs",
+ "prettier": {
+  "repo": "prettier/prettier",
+  "commit": "6905b39ec7bc",
+  "files": 5579,
+  "trigger": "tests/format/flow-repo/union/yuge.js (AST depth 5003)"
+ },
+ "host": {
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "kernel": "7.2.5-3-omarchy"
+ }
+}

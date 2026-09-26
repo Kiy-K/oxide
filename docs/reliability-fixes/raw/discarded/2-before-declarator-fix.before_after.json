@@ -1,0 +1,380 @@
+{
+ "checkouts": {
+  "prettier": {
+   "baseline": {
+    "rc": [
+     -6,
+     -6,
+     -6
+    ],
+    "median_wall_s": null,
+    "median_peak_rss_kb": null,
+    "walls": [
+     0.677,
+     0.836,
+     0.643
+    ],
+    "stderr_tail": "Loading semantic model... ready\nScanning files... 5579 files\n\nthread '<unknown>' (915895) has overflowed its stack\nfatal runtime error: stack overflow, aborting\n",
+    "digest": null
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 10.536,
+    "median_peak_rss_kb": 67252,
+    "walls": [
+     10.536,
+     10.826,
+     10.463
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 13043,
+     "symbols_sha": "b857ecb6d82a87335b017d64db700b97a35696d9a79153277062202ddcdec40d",
+     "relations_sha": "3665bcb9ea652144c231713c8d3be093000396596fdcbf10aa034c300e2c0800",
+     "context_sha": "197547c436fa4c0d95eb0240238f47b0692c5d5d973270da6aac2f58440362d4",
+     "search_sha": "16e91a360db0effcc97171166f1d9937d77ce666edb2b1daba528583dca89661"
+    }
+   },
+   "content_identical": null
+  },
+  "clap@135b15467eda": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 1.775,
+    "median_peak_rss_kb": 38092,
+    "walls": [
+     1.827,
+     1.756,
+     1.775
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 2750,
+     "symbols_sha": "f33c614f7794c3f8e3063b5d46eb625c663a387c57a04c72457dedc361a1e26c",
+     "relations_sha": "795c69463087980535642f534cd4be1472efbcbe197f68aad607b4be82aa0d8d",
+     "context_sha": "8520aee0da4fe1dbcca35af70394ca69d44446be4e1201e6a2a51306bc1a6839",
+     "search_sha": "e3936201e78d904c159dcc885d9b77b2c8c6220b7e5da22af5cd7d5f9975fda7"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 1.786,
+    "median_peak_rss_kb": 38908,
+    "walls": [
+     1.786,
+     1.809,
+     1.777
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 2750,
+     "symbols_sha": "f33c614f7794c3f8e3063b5d46eb625c663a387c57a04c72457dedc361a1e26c",
+     "relations_sha": "795c69463087980535642f534cd4be1472efbcbe197f68aad607b4be82aa0d8d",
+     "context_sha": "8520aee0da4fe1dbcca35af70394ca69d44446be4e1201e6a2a51306bc1a6839",
+     "search_sha": "e3936201e78d904c159dcc885d9b77b2c8c6220b7e5da22af5cd7d5f9975fda7"
+    }
+   },
+   "content_identical": true
+  },
+  "flipt@b22f5f02e40b": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 4.333,
+    "median_peak_rss_kb": 72320,
+    "walls": [
+     4.314,
+     4.357,
+     4.333
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 5714,
+     "symbols_sha": "9802ba86188de32d7e53c5dd9d005d2ec11dec2e458533bcf6e537da78d4f265",
+     "relations_sha": "2a18c22ae26a09a468f8d84a90ceec1fdf1e6a24b0dd1599d8e5ede42ae5a650",
+     "context_sha": "921290aef1417c97a4ead9486cd5260c9cb5d250bb39a7941f749cc53cdd835d",
+     "search_sha": "f0b9fba9a9ecc8b10d391d169db8cbefbce6ae09fe642ede749984b1331c157d"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 4.328,
+    "median_peak_rss_kb": 73128,
+    "walls": [
+     4.328,
+     4.353,
+     4.293
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 5714,
+     "symbols_sha": "9802ba86188de32d7e53c5dd9d005d2ec11dec2e458533bcf6e537da78d4f265",
+     "relations_sha": "2a18c22ae26a09a468f8d84a90ceec1fdf1e6a24b0dd1599d8e5ede42ae5a650",
+     "context_sha": "921290aef1417c97a4ead9486cd5260c9cb5d250bb39a7941f749cc53cdd835d",
+     "search_sha": "f0b9fba9a9ecc8b10d391d169db8cbefbce6ae09fe642ede749984b1331c157d"
+    }
+   },
+   "content_identical": true
+  },
+  "requests@22623bd8c265": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 0.98,
+    "median_peak_rss_kb": 41480,
+    "walls": [
+     0.979,
+     1.035,
+     0.98
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 844,
+     "symbols_sha": "f9b624c34d57cdccbea0f730a4327257a1041c8100ba4921249513ab83aad5b0",
+     "relations_sha": "a0d76edfb120b937434c95a00d041a400e1981a7a86de28268c275441c02cc25",
+     "context_sha": "6e7518d247d6e3658a356899e79496ff08d2ced288492f30e9bbe02ddbbc35ca",
+     "search_sha": "1f9449c6b2a900b3b30e40d4bdbae7b7fdc5ef7f1f9765b7c1ba4efd40ba6faa"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 1.002,
+    "median_peak_rss_kb": 40368,
+    "walls": [
+     1.008,
+     0.983,
+     1.002
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 844,
+     "symbols_sha": "f9b624c34d57cdccbea0f730a4327257a1041c8100ba4921249513ab83aad5b0",
+     "relations_sha": "a0d76edfb120b937434c95a00d041a400e1981a7a86de28268c275441c02cc25",
+     "context_sha": "6e7518d247d6e3658a356899e79496ff08d2ced288492f30e9bbe02ddbbc35ca",
+     "search_sha": "1f9449c6b2a900b3b30e40d4bdbae7b7fdc5ef7f1f9765b7c1ba4efd40ba6faa"
+    }
+   },
+   "content_identical": true
+  },
+  "dayjs@c39fb96e2a91": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 0.789,
+    "median_peak_rss_kb": 30232,
+    "walls": [
+     0.787,
+     0.789,
+     0.85
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 563,
+     "symbols_sha": "e2d6c1b23c6644bbd8bec56ff93c17eb572f7afecd780b23005617324137b06f",
+     "relations_sha": "0633c3ff9325df0b536d9003b40c2da7b78e6a99fa6bc8dda38025d0642d9e85",
+     "context_sha": "00109f6f9fc3826e84c4c63232fedb2d371fa4062ee493d66582057dbb189a73",
+     "search_sha": "67983237c1355fc4929ca1f020411c62b573994d327dcdb0d50e0f3b845d8228"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 0.857,
+    "median_peak_rss_kb": 29440,
+    "walls": [
+     0.846,
+     0.875,
+     0.857
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 563,
+     "symbols_sha": "e2d6c1b23c6644bbd8bec56ff93c17eb572f7afecd780b23005617324137b06f",
+     "relations_sha": "0633c3ff9325df0b536d9003b40c2da7b78e6a99fa6bc8dda38025d0642d9e85",
+     "context_sha": "00109f6f9fc3826e84c4c63232fedb2d371fa4062ee493d66582057dbb189a73",
+     "search_sha": "67983237c1355fc4929ca1f020411c62b573994d327dcdb0d50e0f3b845d8228"
+    }
+   },
+   "content_identical": true
+  },
+  "zstd@df09d4318f0f": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 5.972,
+    "median_peak_rss_kb": 55588,
+    "walls": [
+     5.972,
+     5.88,
+     6.013
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 6944,
+     "symbols_sha": "fb49ca0bde44e221b27930c51efe740b6ef64f93c2fdca0512b5241e0cbb4549",
+     "relations_sha": "f33faa8df8064b976193ba40f24a91253a8b88ba9a257ccc38c8a469ebdefcb4",
+     "context_sha": "cd593dce4570860f99e2c7fd8511dd3526d6c36da9254dfca2505b0cba797f23",
+     "search_sha": "949c3f388a7c4a439f61acdb1dd42618ed8ed4cdb24be2dc57e464433c9b57cd"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 5.97,
+    "median_peak_rss_kb": 57532,
+    "walls": [
+     5.641,
+     5.97,
+     5.972
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 6944,
+     "symbols_sha": "fb49ca0bde44e221b27930c51efe740b6ef64f93c2fdca0512b5241e0cbb4549",
+     "relations_sha": "f33faa8df8064b976193ba40f24a91253a8b88ba9a257ccc38c8a469ebdefcb4",
+     "context_sha": "cd593dce4570860f99e2c7fd8511dd3526d6c36da9254dfca2505b0cba797f23",
+     "search_sha": "949c3f388a7c4a439f61acdb1dd42618ed8ed4cdb24be2dc57e464433c9b57cd"
+    }
+   },
+   "content_identical": true
+  },
+  "darkreader@a787eb511f45": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 1.104,
+    "median_peak_rss_kb": 33408,
+    "walls": [
+     1.062,
+     1.104,
+     1.129
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 1498,
+     "symbols_sha": "38634ee78427e5e9cbec3d262b8dbfbdf93621689a76ab1c2423b01548de16e3",
+     "relations_sha": "bd3e86a5a242c3f3609b19543165bc67e1662f5f1c9ad74115fbc1d1bf1b2596",
+     "context_sha": "94e1a75ac3139f2008aadde613d5423fe81cd47955607c656f69324593903d80",
+     "search_sha": "3563b361a52da325cf82f956febaf9f9eec7dd45fa89be221330dbaadf29283f"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 1.108,
+    "median_peak_rss_kb": 33348,
+    "walls": [
+     1.108,
+     1.088,
+     1.147
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 1498,
+     "symbols_sha": "38634ee78427e5e9cbec3d262b8dbfbdf93621689a76ab1c2423b01548de16e3",
+     "relations_sha": "bd3e86a5a242c3f3609b19543165bc67e1662f5f1c9ad74115fbc1d1bf1b2596",
+     "context_sha": "94e1a75ac3139f2008aadde613d5423fe81cd47955607c656f69324593903d80",
+     "search_sha": "3563b361a52da325cf82f956febaf9f9eec7dd45fa89be221330dbaadf29283f"
+    }
+   },
+   "content_identical": true
+  },
+  "pylint@1e55ae64624d": {
+   "baseline": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 3.861,
+    "median_peak_rss_kb": 43380,
+    "walls": [
+     3.714,
+     3.861,
+     3.994
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 7948,
+     "symbols_sha": "a5604a9da06b73a34e5e8be7c12f178c9382d9c16109c8d23702a62b2722dd8f",
+     "relations_sha": "953cfd9470b36d89d0110cdf2545f5cce45050d465b5e1a020a8efaeecff7d32",
+     "context_sha": "d166af79e8cd305e387de13c4cb48b27603961bd6fa5da11ac8c1bf56a208f1c",
+     "search_sha": "27f67553275bf9f0e269a70fddec4a44d51487a2eeeba5327bdc6b2344be7a38"
+    }
+   },
+   "fixed": {
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "median_wall_s": 4.01,
+    "median_peak_rss_kb": 43916,
+    "walls": [
+     3.778,
+     4.01,
+     5.901
+    ],
+    "stderr_tail": "",
+    "digest": {
+     "symbols": 7948,
+     "symbols_sha": "a5604a9da06b73a34e5e8be7c12f178c9382d9c16109c8d23702a62b2722dd8f",
+     "relations_sha": "953cfd9470b36d89d0110cdf2545f5cce45050d465b5e1a020a8efaeecff7d32",
+     "context_sha": "d166af79e8cd305e387de13c4cb48b27603961bd6fa5da11ac8c1bf56a208f1c",
+     "search_sha": "27f67553275bf9f0e269a70fddec4a44d51487a2eeeba5327bdc6b2344be7a38"
+    }
+   },
+   "content_identical": true
+  }
+ },
+ "eval": {
+  "raw_identical": false,
+  "sorted_rows_identical": true,
+  "baseline_stdout": "query                              task               mode  recall@k   prec@k  ctx bytes\nts-exact-versionedstore            exact-symbol   vector-only     1.000     0.200       1500\nts-exact-versionedstore            exact-symbol     hybrid     1.000     0.200        990\nts-semantic-backoff                semantic       vector-only     0.500     0.200        668\nts-semantic-backoff                semantic         hybrid     0.500     0.200       1384\nts-crossfile-decode-jwt            cross-file     vector-only     1.000     0.200       1860\nts-crossfile-decode-jwt            cross-file       hybrid     1.000     0.200       1860\ntsx-button-component               tsx            vector-only     1.000     0.200       1225\ntsx-button-component               tsx              hybrid     1.000     0.200       1284\nts-related-test-button-click       related-test   vector-only     0.000     0.000       1340\nts-related-test-button-click       related-test     hybrid     1.000     0.200       1880\nts-default-policy-const            exported-declaration vector-only     1.000     0.200        983\nts-default-policy-const            exported-declaration   hybrid     1.000     0.200       1865\npy-exact-retrypolicy               exact-symbol   vector-only     1.000     0.200       1905\npy-exact-retrypolicy               exact-symbol     hybrid     1.000     0.200       1905\npy-semantic-http-retries           semantic       vector-only     0.500     0.200       4160\npy-semantic-http-retries           semantic         hybrid     0.500     0.200       4160\npy-crossfile-token-refresh         cross-file     vector-only     1.000     0.200       2442\npy-crossfile-token-refresh         cross-file       hybrid     1.000     0.200       3976\npy-related-test-gives-up           related-test   vector-only     1.000     0.200       2801\npy-related-test-gives-up           related-test     hybrid     1.000     0.200       3965\npy-ttl-cache-expiry                exact-symbol   vector-only     1.000     0.200       1416\npy-ttl-cache-expiry                exact-symbol     hybrid     1.000     0.200       1416\n\nvector-only  recall@5 0.818  precision@5 0.182  avg returned 5.0  avg ctx 1845B\nhybrid       recall@5 0.909  precision@5 0.200  avg returned 5.0  avg ctx 2244B\n",
+  "fixed_stdout": "query                              task               mode  recall@k   prec@k  ctx bytes\npy-exact-retrypolicy               exact-symbol   vector-only     1.000     0.200       1905\npy-exact-retrypolicy               exact-symbol     hybrid     1.000     0.200       1905\npy-semantic-http-retries           semantic       vector-only     0.500     0.200       4160\npy-semantic-http-retries           semantic         hybrid     0.500     0.200       4160\npy-crossfile-token-refresh         cross-file     vector-only     1.000     0.200       2442\npy-crossfile-token-refresh         cross-file       hybrid     1.000     0.200       3976\npy-related-test-gives-up           related-test   vector-only     1.000     0.200       2801\npy-related-test-gives-up           related-test     hybrid     1.000     0.200       3965\npy-ttl-cache-expiry                exact-symbol   vector-only     1.000     0.200       1416\npy-ttl-cache-expiry                exact-symbol     hybrid     1.000     0.200       1416\nts-exact-versionedstore            exact-symbol   vector-only     1.000     0.200       1500\nts-exact-versionedstore            exact-symbol     hybrid     1.000     0.200        990\nts-semantic-backoff                semantic       vector-only     0.500     0.200        668\nts-semantic-backoff                semantic         hybrid     0.500     0.200       1384\nts-crossfile-decode-jwt            cross-file     vector-only     1.000     0.200       1860\nts-crossfile-decode-jwt            cross-file       hybrid     1.000     0.200       1860\ntsx-button-component               tsx            vector-only     1.000     0.200       1225\ntsx-button-component               tsx              hybrid     1.000     0.200       1284\nts-related-test-button-click       related-test   vector-only     0.000     0.000       1340\nts-related-test-button-click       related-test     hybrid     1.000     0.200       1880\nts-default-policy-const            exported-declaration vector-only     1.000     0.200        983\nts-default-policy-const            exported-declaration   hybrid     1.000     0.200       1865\n\nvector-only  recall@5 0.818  precision@5 0.182  avg returned 5.0  avg ctx 1845B\nhybrid       recall@5 0.909  precision@5 0.200  avg returned 5.0  avg ctx 2244B\n"
+ }
+}

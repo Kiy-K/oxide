@@ -11,7 +11,11 @@ use std::path::{Path, PathBuf};
 
 #[derive(Debug, Deserialize)]
 pub struct BenchConfig {
-    pub repos: std::collections::HashMap<String, String>,
+    /// Ordered by repo name, so `per_query` (repo by repo, queries in config
+    /// order within each) and the f32 sums behind `aggregate` come out the
+    /// same on every run. A `HashMap` here made the row order — and the
+    /// summation order — depend on the process's random hash seed.
+    pub repos: std::collections::BTreeMap<String, String>,
     pub queries: Vec<BenchQuery>,
     #[serde(default = "default_k")]
     pub k: usize,
@@ -110,8 +114,8 @@ pub fn run_benchmark(config_path: &Path) -> Result<BenchmarkReport> {
 
     // Materialize and index each fixture repo once.
     let mut repos: Vec<(String, tempfile::TempDir, SqliteStore)> = Vec::new();
-    for name in config.repos.keys() {
-        let (dir, tmp) = materialize_repo(&config.repos[name])?;
+    for (name, fixture) in &config.repos {
+        let (dir, tmp) = materialize_repo(fixture)?;
         let mut store = SqliteStore::open(Path::new(":memory:"))?;
         update_index(&dir, &mut store, &HashedEmbedder::default())?;
         repos.push((name.clone(), tmp, store));

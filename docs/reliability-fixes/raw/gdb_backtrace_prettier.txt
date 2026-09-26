@@ -1,0 +1,15 @@
+# Trimmed excerpt of the gdb session (frames #2-#3434 elided; all identical).
+# oxide index on prettier@6905b39ec7bc (5,579 files), main d1333a9, OXIDE_EMBED_NATIVE=hashed
+# gdb -batch -ex run -ex "bt 25" -ex "bt -25" --args target/release/oxide index .
+Thread 28 "oxide" received signal SIGSEGV, Segmentation fault.
+#0  0x0000555556c1be28 in oxide::languages::tags::collect_meta ()
+#1  0x0000555556c1c079 in oxide::languages::tags::collect_meta ()
+... (frames #2-#3434 identical: oxide::languages::tags::collect_meta)
+#3435 0x0000555556c1c079 in oxide::languages::tags::collect_meta ()
+#3436 0x0000555556c89567 in <oxide::languages::tags::TagsExtractor as oxide::parser::LanguageExtractor>::collect_imports ()
+#3437 0x0000555556c0101f in oxide::parser::parse_file_with ()
+#3438 0x0000555556a8a21c in std::sys::backtrace::__rust_begin_short_backtrace::<oxide::index::parse_and_persist_changed_files::{closure#1}::{closure#0}, ...>
+#3439 0x0000555556b737d9 in <std::thread::lifecycle::spawn_unchecked<oxide::index::parse_and_persist_changed_files::{closure#1}::{closure#0}, ...>
+#3440 0x0000555556ec1464 in <std::sys::thread::unix::Thread>::new::thread_start ()
+# stderr without gdb: "thread '<unknown>' has overflowed its stack / fatal runtime error: stack overflow, aborting" (exit 134)
+# Deepest AST in the repo (tree_sitter_languages, tsx grammar): tests/format/flow-repo/union/yuge.js depth 5003 (34,771 bytes)
