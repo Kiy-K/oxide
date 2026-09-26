@@ -1,0 +1,35 @@
+{
+ "date": "2026-09-26",
+ "oxide_main": {
+  "commit": "d1333a90a19498bab59350dd055419469ef51b3a",
+  "src_dirty": false,
+  "release_binary_sha256": "8e994c2c3e6a96fada1fbf924ea53206aa8f6d3f6aeaaa837693e8a97dd7bdb6",
+  "release_binary_sha256_after_verify_rebuild": "c806cf41552904877c433259b654ec17aae7e765cda0906f83bed0f783fe464f",
+  "binary_note": "Both built from d1333a9 with no source changes; `mise run verify` rebuilt target/release/oxide. The first hash was used for the scorer re-run and the first parity file (raw/discarded/); raw/parity.json was produced with the rebuilt binary."
+ },
+ "challenger": {
+  "base_commit": "d1333a90a19498bab59350dd055419469ef51b3a",
+  "patch": "challenger.patch",
+  "patch_sha256": "160bd90d770b055f77ea3f2203ff53f663414c8dfe26c3b5a591ee0d31c103cb",
+  "binary_sha256": "d3d3eea060d2a908f116fd57b431bfadf42cec15887f1a0bd294b0cc9dd79a09",
+  "build": "cargo build --release -j 2 (rustc 1.98.0)"
+ },
+ "embedder": "native:arctic-embed-xs-q (shipped default) for quality/cost runs; hashed for parity",
+ "contextbench": {
+  "repo": "EuniAI/ContextBench",
+  "commit": "1436c28a8eb95496da4ea69ad458b9f8a8eb7d61",
+  "tasks": "full.parquet; rows loaded via contextbench_run.load_tasks()"
+ },
+ "scorer": "scripts/agent_eval/contextbench_run.py with normalize_gold_path (docs/contextbench-scorer-fix/)",
+ "host": {
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "threads": 16,
+  "kernel": "7.2.5-3-omarchy"
+ },
+ "notes": [
+  "arms per task rotated; cold index = fresh rsync copy, no .oxide",
+  "SWE-Bench-Pro\u2026788af515 (ansible) has a null problem_statement in ContextBench: unqueryable in every arm",
+  "prettier (108b2d38, 10ab7842): oxide index aborts with a stack overflow in every arm including main (pre-existing)",
+  "clap controls (raw/controls_clap*.jsonl) added after independent review"
+ ]
+}

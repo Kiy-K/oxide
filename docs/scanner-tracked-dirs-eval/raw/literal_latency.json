@@ -1,0 +1,53 @@
+{
+ "material-ui@43408b10ef81:useTheme": {
+  "main": {
+   "median_s": 0.2635,
+   "min_s": 0.2319,
+   "hits": 200
+  },
+  "tracked": {
+   "median_s": 0.2939,
+   "min_s": 0.2577,
+   "hits": 200
+  },
+  "narrow": {
+   "median_s": 0.2817,
+   "min_s": 0.2701,
+   "hits": 200
+  }
+ },
+ "material-ui@43408b10ef81:TODO": {
+  "main": {
+   "median_s": 0.2322,
+   "min_s": 0.223,
+   "hits": 200
+  },
+  "tracked": {
+   "median_s": 0.2983,
+   "min_s": 0.2726,
+   "hits": 200
+  },
+  "narrow": {
+   "median_s": 0.29,
+   "min_s": 0.2774,
+   "hits": 200
+  }
+ },
+ "vscode@7d8f55ebb1b7:createDecorator": {
+  "main": {
+   "median_s": 0.054,
+   "min_s": 0.0525,
+   "hits": 200
+  },
+  "tracked": {
+   "median_s": 0.0654,
+   "min_s": 0.063,
+   "hits": 200
+  },
+  "narrow": {
+   "median_s": 0.0677,
+   "min_s": 0.0639,
+   "hits": 200
+  }
+ }
+}

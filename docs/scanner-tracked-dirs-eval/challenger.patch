@@ -1,0 +1,128 @@
+diff --git i/src/scanner.rs w/src/scanner.rs
+index b031ec3..e3f6b6f 100644
+--- i/src/scanner.rs
++++ w/src/scanner.rs
+@@ -206,6 +206,75 @@ fn is_denied(path: &Path, is_dir: bool) -> bool {
+     false
+ }
+ 
++// ---- DIAGNOSTIC CHALLENGER (docs/scanner-tracked-dirs-eval), not main ----
++// `OXIDE_SCANNER_POLICY`: unset/`main` = current behavior; `tracked` = a
++// directory skipped by name may be descended when it holds Git-tracked
++// files, and inside it only tracked files are kept (VCS dirs never);
++// `narrow` = the same, only for build/dist/out/target.
++#[derive(Clone, Copy, PartialEq)]
++enum Policy {
++    Main,
++    Tracked,
++    Narrow,
++}
++
++fn policy() -> Policy {
++    match std::env::var("OXIDE_SCANNER_POLICY").as_deref() {
++        Ok("tracked") => Policy::Tracked,
++        Ok("narrow") => Policy::Narrow,
++        _ => Policy::Main,
++    }
++}
++
++fn overridable(name: &str, policy: Policy) -> bool {
++    match policy {
++        Policy::Main => false,
++        Policy::Tracked => !matches!(name, ".git" | ".hg" | ".svn"),
++        Policy::Narrow => matches!(name, "build" | "dist" | "out" | "target"),
++    }
++}
++
++struct TrackedSet {
++    files: std::collections::HashSet<PathBuf>,
++    dirs: std::collections::HashSet<PathBuf>,
++}
++
++/// `git ls-files -z` relative to `root`; `None` outside a Git work tree,
++/// which makes every policy behave like `main`.
++fn tracked_set(root: &Path) -> Option<TrackedSet> {
++    let out = std::process::Command::new("git")
++        .arg("-C")
++        .arg(root)
++        .args(["ls-files", "-z"])
++        .output()
++        .ok()?;
++    if !out.status.success() {
++        return None;
++    }
++    let mut files = std::collections::HashSet::new();
++    let mut dirs = std::collections::HashSet::new();
++    for raw in out.stdout.split(|b| *b == 0).filter(|b| !b.is_empty()) {
++        let rel = PathBuf::from(String::from_utf8_lossy(raw).into_owned());
++        let mut parent = rel.parent();
++        while let Some(d) = parent {
++            if d.as_os_str().is_empty() || !dirs.insert(d.to_path_buf()) {
++                break;
++            }
++            parent = d.parent();
++        }
++        files.insert(rel);
++    }
++    Some(TrackedSet { files, dirs })
++}
++
++fn has_denied_dir(rel: &Path) -> bool {
++    rel.parent().is_some_and(|p| {
++        p.components().any(|c| matches!(c, std::path::Component::Normal(n)
++            if DENYLIST_DIRS.contains(&n.to_str().unwrap_or(""))))
++    })
++}
++// ---- end challenger ----
++
+ fn looks_binary(bytes: &[u8]) -> bool {
+     bytes.contains(&0)
+ }
+@@ -227,6 +296,8 @@ fn walk_repo(
+     keep: impl Fn(&Path) -> bool + Send + Sync + 'static,
+ ) -> Result<Vec<PathBuf>> {
+     let root = root.canonicalize()?;
++    let policy = policy();
++    let tracked = std::sync::Arc::new(if policy == Policy::Main { None } else { tracked_set(&root) });
+     let (tx, rx) = mpsc::channel();
+     let walker_root = root.clone();
+     let tx_builder = tx.clone();
+@@ -242,6 +313,7 @@ fn walk_repo(
+             let tx = tx_builder.clone();
+             let root = walker_root.clone();
+             let keep = keep.clone();
++            let tracked = tracked.clone();
+             Box::new(move |entry| {
+                 let Ok(entry) = entry else {
+                     return WalkState::Continue;
+@@ -255,16 +327,25 @@ fn walk_repo(
+                 // must not just be excluded from results but pruned from descent:
+                 // otherwise any source file underneath (e.g. venv/lib/*/site-packages/*.py)
+                 // still gets walked and indexed as noise.
++                let rel = path.strip_prefix(&root).unwrap_or(path);
+                 if is_dir {
+-                    return if is_denied(path, true) {
+-                        WalkState::Skip
+-                    } else {
+-                        WalkState::Continue
+-                    };
++                    if !is_denied(path, true) {
++                        return WalkState::Continue;
++                    }
++                    let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
++                    let open = overridable(name, policy)
++                        && tracked.as_ref().as_ref().is_some_and(|t| t.dirs.contains(rel));
++                    return if open { WalkState::Continue } else { WalkState::Skip };
+                 }
+                 if is_denied(path, false) {
+                     return WalkState::Continue;
+                 }
++                // Under an overridden directory only tracked files survive.
++                if has_denied_dir(rel)
++                    && !tracked.as_ref().as_ref().is_some_and(|t| t.files.contains(rel))
++                {
++                    return WalkState::Continue;
++                }
+                 if !keep(path) {
+                     return WalkState::Continue;
+                 }

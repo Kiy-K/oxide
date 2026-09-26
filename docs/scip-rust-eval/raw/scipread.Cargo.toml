@@ -1,0 +1,13 @@
+[package]
+name = "scipread"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+scip = "=0.10.0"
+protobuf = "3"
+serde_json = "1"
+
+[profile.release]
+debug = false

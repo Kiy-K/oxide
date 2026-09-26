@@ -1,0 +1,34 @@
+{
+ "date": "2026-09-26",
+ "oxide": {
+  "git_head": "d1333a90a19498bab59350dd055419469ef51b3a",
+  "src_dirty": false,
+  "release_binary_sha256": "8e994c2c3e6a96fada1fbf924ea53206aa8f6d3f6aeaaa837693e8a97dd7bdb6",
+  "embedder_default": "native:arctic-embed-xs-q"
+ },
+ "rust_analyzer": {
+  "release_tag": "2026-09-21",
+  "version": "rust-analyzer 0.3.3057-standalone",
+  "asset": "rust-analyzer-x86_64-unknown-linux-gnu.gz (GitHub release, standalone)",
+  "sha256": "10d555c6a8dbae1e24092407eef81c698930e55c8eed31de763dd25226fd5c44",
+  "source_read": "rust-lang/rust-analyzer master: crates/rust-analyzer/src/cli/scip.rs, cli/flags.rs, crates/ide/src/static_index.rs"
+ },
+ "toolchain": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+ "scip_crate": "scip =0.10.0 (+ protobuf 3.7.2), scratch crate outside the repo; 20 crates, 20 s release build, 880 KB binary",
+ "cost_subject": {
+  "repo": "clap-rs/clap",
+  "commit": "6eacd8a7476e352d590c1bfae4b983e9eafae2b3",
+  "instance": "Multi-SWE-Bench__rust__maintenance__bugfix__0e4346f7",
+  "rs_files": 252,
+  "rs_lines": 55697,
+  "lockfile": "none upstream; resolved by cargo fetch on 2026-09-26 (clap-6eacd8a7.Cargo.lock)"
+ },
+ "corpus": "ContextBench contextbench_verified.parquet, language == rust (20 instances)",
+ "host": {
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13620H",
+  "threads": 16,
+  "mem_gb": 15.3,
+  "kernel": "7.2.5-3-omarchy",
+  "note": "an unrelated rust-analyzer LSP (editor plugin) was resident during the cost screen; no other benchmark ran concurrently"
+ }
+}

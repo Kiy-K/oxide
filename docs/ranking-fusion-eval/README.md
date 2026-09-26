@@ -305,6 +305,16 @@ out at their base commits and indexed with the shipped Arctic embedder,
 issue text as the query, scored with ContextBench's own metric code on
 the top-10 of each variant from identical candidates:
 
+> **Scoring correction (2026-09-26).** The symbol-coverage columns below
+> were computed before a ContextBench scorer fix: one of the 21 instances
+> (`Multi-SWE-Bench…8d780f70`) stores gold as `/workspace/<repo>/…`, which
+> made its symbol gold empty (a vacuous 1.0). File coverage and precision
+> are unaffected; retrieval output is unchanged. Re-scored from the same
+> dump, production K=60 symbol coverage is 0.748 (was 0.771), symbol@5
+> 0.631 (0.670), and every paired delta keeps its sign — the K=60 decision
+> and the reranker rejections stand. Numbers here are kept as originally
+> recorded; corrected tables: `docs/contextbench-scorer-fix/`.
+
 | variant | file coverage | file cov@5 | symbol coverage | symbol cov@5 | file precision |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | **RRF K=60 (production)** | **0.685** | **0.591** | **0.771** | **0.670** | **0.237** |

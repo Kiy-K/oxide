@@ -1,0 +1,215 @@
+{
+ "calls": {
+  "oxide_edges": 10819,
+  "oxide_edges_with_in_project_name": 4077,
+  "confirmed_by_scip": 1185,
+  "unconfirmed_in_project": 2892,
+  "unconfirmed_but_scip_resolves_into_unindexed_file": 2190,
+  "oxide_indexed_files": 251,
+  "scip_documents": 211,
+  "scip_documents_not_indexed_by_oxide": [
+   "src/build/app/debug_asserts.rs",
+   "src/build/app/mod.rs",
+   "src/build/app/settings.rs",
+   "src/build/app/tests.rs",
+   "src/build/arg/arg_value.rs",
+   "src/build/arg/debug_asserts.rs",
+   "src/build/arg/mod.rs",
+   "src/build/arg/settings.rs",
+   "src/build/arg/tests.rs",
+   "src/build/arg/value_hint.rs",
+   "src/build/arg_group.rs",
+   "src/build/macros.rs",
+   "src/build/mod.rs",
+   "src/build/usage_parser.rs"
+  ],
+  "ambiguous_name_edges": 2313,
+  "mean_name_candidates": 4.61,
+  "wrong_candidates_on_confirmed_edges": 1558,
+  "scip_callable_edges": 2341,
+  "scip_edges_missing_from_oxide_calls": 1133,
+  "scip_refs_into_unindexed_files": 5282,
+  "scip_targets_not_joined_to_oxide_symbol": 342,
+  "examples_unconfirmed": [
+   "tests/utf16.rs#invalid_utf16_lossy_option_short_no_space -> from",
+   "tests/utf16.rs#invalid_utf16_lossy_option_short_no_space -> new",
+   "clap_derive/src/utils/spanned.rs#Sp.as_ref -> as_ref",
+   "tests/opts.rs#default_values_user_value -> default_value",
+   "tests/opts.rs#default_values_user_value -> from",
+   "tests/opts.rs#default_values_user_value -> new",
+   "tests/utf8.rs#invalid_utf8_option_long_space -> long",
+   "tests/utf8.rs#invalid_utf8_option_long_space -> new",
+   "tests/utf8.rs#invalid_utf8_option_long_space -> short",
+   "benches/02_simple.rs#build_with_flag -> from",
+   "benches/02_simple.rs#build_with_flag -> iter",
+   "benches/02_simple.rs#build_with_flag -> new",
+   "tests/opts.rs#require_equals_fail_message -> long",
+   "tests/opts.rs#require_equals_fail_message -> new",
+   "tests/opts.rs#require_equals_fail_message -> setting"
+  ],
+  "examples_missing": [
+   "clap_generate_fig/src/fig.rs#gen_fig_inner -> clap_generate_fig/src/fig.rs#escape_string",
+   "clap_generate_fig/src/fig.rs#gen_options -> clap_generate_fig/src/fig.rs#escape_string",
+   "clap_generate_fig/src/fig.rs#gen_args -> clap_generate_fig/src/fig.rs#escape_string",
+   "clap_generate/examples/value_hints.rs#main -> src/parse/matches/arg_matches.rs#ArgMatches.value_of_t",
+   "clap_derive/tests/subcommands.rs#test_fetch -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#test_add -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#test_hyphenated_subcommands -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#test_null_commands -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#test_tuple_commands -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#test_tuple_commands -> clap_derive/tests/utils.rs#get_long_help",
+   "clap_derive/tests/subcommands.rs#global_passed_down -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#external_subcommand -> src/derive.rs#Parser.parse_from",
+   "clap_derive/tests/subcommands.rs#external_subcommand -> src/derive.rs#Parser.try_parse_from",
+   "clap_derive/tests/subcommands.rs#external_subcommand_os_string -> src/derive.rs#Parser.try_parse_from",
+   "clap_derive/tests/subcommands.rs#external_subcommand_optional -> src/derive.rs#Parser.try_parse_from"
+  ]
+ },
+ "bases": {
+  "oxide_pairs": 72,
+  "scip_impl_pairs": 65,
+  "both": 51,
+  "oxide_only": [
+   [
+    "ArgEnum",
+    "Clone"
+   ],
+   [
+    "ArgEnum",
+    "Sized"
+   ],
+   [
+    "Args",
+    "FromArgMatches"
+   ],
+   [
+    "Args",
+    "Sized"
+   ],
+   [
+    "ErrCode",
+    "Error"
+   ],
+   [
+    "Error",
+    "Foo"
+   ],
+   [
+    "Foo",
+    "Send"
+   ],
+   [
+    "Foo",
+    "Sync"
+   ],
+   [
+    "FromArgMatches",
+    "Sized"
+   ],
+   [
+    "GroupedValues",
+    "ExactSizeIterator"
+   ],
+   [
+    "Indices",
+    "ExactSizeIterator"
+   ],
+   [
+    "IntoApp",
+    "Sized"
+   ],
+   [
+    "Key",
+    "Display"
+   ],
+   [
+    "Key",
+    "Hash"
+   ],
+   [
+    "OsValues",
+    "ExactSizeIterator"
+   ],
+   [
+    "Parser",
+    "FromArgMatches"
+   ],
+   [
+    "Parser",
+    "IntoApp"
+   ],
+   [
+    "Parser",
+    "Sized"
+   ],
+   [
+    "Subcommand",
+    "FromArgMatches"
+   ],
+   [
+    "Subcommand",
+    "Sized"
+   ]
+  ],
+  "scip_only": [
+   [
+    "ArgChoice",
+    "Default"
+   ],
+   [
+    "ArgChoice",
+    "Display"
+   ],
+   [
+    "ClapAttr",
+    "Parse"
+   ],
+   [
+    "ColorChoice",
+    "Default"
+   ],
+   [
+    "Error",
+    "Display"
+   ],
+   [
+    "Error",
+    "Error"
+   ],
+   [
+    "Error",
+    "From"
+   ],
+   [
+    "KeyType",
+    "PartialEq"
+   ],
+   [
+    "Kind",
+    "Default"
+   ],
+   [
+    "Shell",
+    "ArgEnum"
+   ],
+   [
+    "Shell",
+    "Display"
+   ],
+   [
+    "Shell",
+    "FromStr"
+   ],
+   [
+    "Shell",
+    "Generator"
+   ],
+   [
+    "Vals",
+    "FromStr"
+   ]
+  ],
+  "scip_only_count": 14,
+  "oxide_only_count": 21
+ }
+}

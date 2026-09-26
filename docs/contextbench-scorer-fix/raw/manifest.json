@@ -1,0 +1,14 @@
+{
+ "date": "2026-09-26",
+ "oxide_commit": "d1333a90a19498bab59350dd055419469ef51b3a",
+ "src_dirty": false,
+ "rescore_binary_sha256": "8e994c2c3e6a96fada1fbf924ea53206aa8f6d3f6aeaaa837693e8a97dd7bdb6",
+ "rescore_binary_note": "target/release/oxide built from the commit above, before `mise run verify` rebuilt it (rebuilt hash c806cf41..., same source)",
+ "embedder": "native:arctic-embed-xs-q (shipped default)",
+ "contextbench": {
+  "commit": "1436c28a8eb95496da4ea69ad458b9f8a8eb7d61",
+  "pin": "eval-agent/results/tier_a_instances.txt (21 instances)"
+ },
+ "ranking_fusion_rescore": "cb_score.py over docs/ranking-fusion-eval/results/dump-contextbench.jsonl.gz; the old scorer reproduces results/cb-results.md exactly",
+ "tests": "scripts/agent_eval/test_contextbench_run.py: 20 pass (pytest added to eval-agent/.venv)"
+}

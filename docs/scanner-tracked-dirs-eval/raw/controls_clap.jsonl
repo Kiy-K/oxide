@@ -1,0 +1,2 @@
+{"instance_id": "Multi-SWE-Bench__rust__maintenance__bugfix__0e4346f7", "repo": "clap-rs/clap", "language": "rust", "base_commit": "6eacd8a7476e352d590c1bfae4b983e9eafae2b3", "gold_in_denied_dirs": [], "path": "/home/khoi/.cache/oxide-contextbench/repos/clap@6eacd8a7476e"}
+{"instance_id": "Multi-SWE-Bench__rust__maintenance__bugfix__0e4e102e", "repo": "clap-rs/clap", "language": "rust", "base_commit": "ddd55e57dc4b0205e02c121f1116704bd1b51956", "gold_in_denied_dirs": [], "path": "/home/khoi/.cache/oxide-contextbench/repos/clap@ddd55e57dc4b"}

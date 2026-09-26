@@ -1,0 +1,44 @@
+[
+ {
+  "instance": "2dc6f037",
+  "control_target": "clap_derive/tests/arg_enum.rs#alias",
+  "target_reasons": [
+   "uses\u2190tests/subcommands.rs:__module__"
+  ],
+  "rows": 1,
+  "target_still_in_pack": false,
+  "dropped": [
+   "clap_derive/tests/arg_enum.rs#alias"
+  ],
+  "added": [
+   "benches/05_ripgrep.rs#app"
+  ],
+  "direct_identical": true
+ },
+ {
+  "instance": "d3133dfb",
+  "control_target": "src/error/mod.rs#Error.format",
+  "target_reasons": [
+   "ast-grep-caller\u2190Command.render_usage_"
+  ],
+  "rows": 1,
+  "target_still_in_pack": true,
+  "dropped": [],
+  "added": [],
+  "direct_identical": true
+ },
+ {
+  "instance": "d3133dfb",
+  "control": "delete calls row Error.format -> render_usage_",
+  "rows": 1,
+  "target_still_in_pack": false,
+  "dropped": [
+   "clap_mangen/src/render.rs#clap_mangen/src/render.rs:__module__",
+   "src/error/mod.rs#Error.format"
+  ],
+  "added": [
+   "src/error/mod.rs#src/error/mod.rs:__module__"
+  ],
+  "direct_identical": false
+ }
+]

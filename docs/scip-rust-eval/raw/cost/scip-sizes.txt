@@ -1,0 +1,5 @@
+-rw-r--r-- 1 khoi khoi 6453133 Sep 26 10:10 <scratch>/cost/ra-default-after-edit.scip
+-rw-r--r-- 1 khoi khoi 6453133 Sep 26 10:10 <scratch>/cost/ra-default-cold-1.scip
+-rw-r--r-- 1 khoi khoi 6453133 Sep 26 10:10 <scratch>/cost/ra-default-cold-2.scip
+-rw-r--r-- 1 khoi khoi 6453133 Sep 26 10:10 <scratch>/cost/ra-default-warm.scip
+-rw-r--r-- 1 khoi khoi 6453133 Sep 26 10:10 <scratch>/cost/ra-nobuild-cold.scip

@@ -1,0 +1,20 @@
+{"task": "0e4346f7", "repo": "clap-rs/clap", "arm": "tracked", "identical_to": null, "error": false, "added_files": 15, "ctx_file": [0.0, 0.0], "ctx_line": [0.0, 0.0], "srch_file": [0.0, 0.0], "skipped_gold_in_pack": [], "skipped_gold_in_search": [], "dep_items": [], "pack_changed": true, "new_in_pack": []}
+{"task": "0e4346f7", "repo": "clap-rs/clap", "arm": "narrow", "identical_to": null, "error": false, "added_files": 15, "ctx_file": [0.0, 0.0], "ctx_line": [0.0, 0.0], "srch_file": [0.0, 0.0], "skipped_gold_in_pack": [], "skipped_gold_in_search": [], "dep_items": [], "pack_changed": true, "new_in_pack": []}
+{"task": "0e4e102e", "repo": "clap-rs/clap", "arm": "tracked", "identical_to": null, "error": false, "added_files": 12, "ctx_file": [1.0, 1.0], "ctx_line": [1.0, 1.0], "srch_file": [1.0, 1.0], "skipped_gold_in_pack": [], "skipped_gold_in_search": [], "dep_items": [], "pack_changed": true, "new_in_pack": ["src/build/app/mod.rs#App", "src/build/arg/mod.rs#Arg"]}
+{"task": "0e4e102e", "repo": "clap-rs/clap", "arm": "narrow", "identical_to": null, "error": false, "added_files": 12, "ctx_file": [1.0, 1.0], "ctx_line": [1.0, 1.0], "srch_file": [1.0, 1.0], "skipped_gold_in_pack": [], "skipped_gold_in_search": [], "dep_items": [], "pack_changed": true, "new_in_pack": ["src/build/app/mod.rs#App", "src/build/arg/mod.rs#Arg"]}
+== ops tracked (n=2 re-indexed tasks)
+  cold  median +21.0%  max +38.7%  (0e4e102e)
+  rss   median +61.8%  max +98.8%  (0e4346f7)
+  db    median +25.4%  max +26.1%  (0e4e102e)
+  incr_regular_ms median +2.0  max +30.0
+  ctx_ms          median +2.3  max +4.9
+  srch_ms         median -0.6  max +8.1
+== ops narrow (n=2 re-indexed tasks)
+  cold  median +25.3%  max +44.6%  (0e4e102e)
+  rss   median +56.5%  max +90.0%  (0e4346f7)
+  db    median +25.4%  max +26.3%  (0e4e102e)
+  incr_regular_ms median +27.5  max +79.0
+  ctx_ms          median +6.0  max +6.8
+  srch_ms         median +4.3  max +6.6
+== tracked: tasks 2; skipped gold enters pack in 0 []; packs changed 2; ctx file cov mean 0.500 -> 0.500; line 0.500 -> 0.500; file-cov losses 0, gains 0; dependency items 0
+== narrow: tasks 2; skipped gold enters pack in 0 []; packs changed 2; ctx file cov mean 0.500 -> 0.500; line 0.500 -> 0.500; file-cov losses 0, gains 0; dependency items 0

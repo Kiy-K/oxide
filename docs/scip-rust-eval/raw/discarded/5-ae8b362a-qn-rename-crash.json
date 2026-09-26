@@ -1,0 +1,1 @@
+[{"instance_id": "Multi-SWE-Bench__rust__maintenance__bugfix__ae8b362a", "repo": "clap-rs/clap", "aa_identical": true, "generation_unchanged": true, "lexical_persisted": true, "gold_omitted_baseline": [], "names": ["new"], "renamed": 85, "relations_deleted": 604, "evicted_structural": 8, "containment_renamed": 72, "rounds": 3, "error": "RuntimeError: "}]

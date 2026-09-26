@@ -244,7 +244,12 @@ Per-alpha win/loss/tie vs. alpha=0.0, from `summarize_term_coverage.py`
 
 4 of 21 tasks (`...10750f29`, `...da598baa`,
 `Multi-SWE-Bench...2fb50735`, `Multi-SWE-Bench...8d780f70`) are all-zero at
-every alpha (gold never retrieved at all, unaffected by alpha). Of the
+every alpha (gold never retrieved at all, unaffected by alpha).
+[Correction, 2026-09-26: for `…8d780f70` the zeros are a scoring artifact —
+its gold is stored as `/workspace/<repo>/…`, which `gold_lines` did not
+normalize, so no item could match. At current `main`, lexical and hybrid
+retrieval do reach its gold (the original runs cannot be re-scored). The
+recorded values are kept as measured; see `docs/contextbench-scorer-fix/`.] Of the
 remaining 17, 15 move at least one ranked metric at *some* alpha, but most
 of that is small nDCG@10/MRR drift (±0.01–0.05) from reordering among
 already-near-tied candidates, with no P@5/recall@5 change. Four additional
