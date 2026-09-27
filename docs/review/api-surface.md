@@ -57,7 +57,7 @@ existing `ErrorCode` string. Adding a *new* `ErrorCode` variant/string is
 not a violation on its own.
 
 **Evidence required:** diff the actual serialized shape (not just the
-Rust struct) against `AGENTS.md`'s "JSON output contracts" section; for
+Rust struct) against `docs/agents/invariants.md`'s "JSON output contracts" section; for
 `ErrorCode`, diff `as_str()`'s match arms directly.
 
 **Exceptions:** adding a new optional field to an existing response type is

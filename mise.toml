@@ -10,7 +10,7 @@
 min_version = "2024.1.0"
 
 [tools]
-# eval-agent/.venv must be 3.11 (AGENTS.md: tree-sitter-languages has no
+# eval-agent/.venv must be 3.11 (docs/agents/workflow.md: tree-sitter-languages has no
 # wheels for >=3.12) — previously an undeclared local dependency.
 python = "3.11"
 uv = "0.12.16"
@@ -85,7 +85,7 @@ run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 # A `depends` list would let mise run these in parallel, which is wrong
-# here: AGENTS.md's fmt -> clippy -> test -> benchmark-gate order is a real
+# here: docs/agents/workflow.md's fmt -> clippy -> test -> benchmark-gate order is a real
 # sequential contract (a later step's failure should stop before wasting
 # time on the next), so this is an explicit script instead.
 mise run lint

@@ -265,7 +265,7 @@ from anything comment-specific:
   license header, a leading `# TODO`) is metadata like any declaration's
   signature would be, and is sent.
 - `references` is the project's existing, pre-existing (not new)
-  identifier-name-intersection heuristic (`AGENTS.md`): if a comment
+  identifier-name-intersection heuristic (`docs/agents/invariants.md`): if a comment
   *mentions* the bare name of an already-declared project symbol —
   anywhere in the file, not just the first line — that name is extracted
   as a reference the same way it would be from real code, and `references`

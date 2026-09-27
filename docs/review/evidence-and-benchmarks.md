@@ -54,7 +54,7 @@ version of the final result.
 run that was interrupted, without either completing it or explicitly
 caveating the numbers as provisional; treating an intermediate read of the
 resumable, keyed-by-`(task, condition)` `cb_results.jsonl` (this format is
-resumable by design, per `AGENTS.md`) as if it were the finished result.
+resumable by design, per `docs/agents/workflow.md`) as if it were the finished result.
 
 **Evidence required:** check the run's own completion signal against what
 was actually reported — e.g. `tests/benchmark_gate.rs`'s exact-count
@@ -72,7 +72,7 @@ fine — the violation is citing that read as a finished result.
 
 **Invariant:** a passing test supports only the specific invariant its
 assertions actually check — not the general area of code it happens to
-touch. Several of `AGENTS.md`'s own load-bearing invariants exist precisely
+touch. Several of `docs/agents/invariants.md`'s load-bearing invariants exist precisely
 because a narrow, targeted regression test was the only thing that caught a
 real bug (e.g. `languages::tags::tests::content_hash_matches_span_text_reconstruction`,
 the `ts-default-policy-const` export-const-override regression in

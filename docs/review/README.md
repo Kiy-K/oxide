@@ -2,7 +2,7 @@
 
 For a reviewer (Codex, Claude, or human) looking at a diff against this repo.
 Generic Rust/style feedback is not the point — clippy/rustfmt already gate
-that (`AGENTS.md`). This policy exists because OXIDE has invariants a
+that (`docs/agents/workflow.md`). This policy exists because OXIDE has invariants a
 competent reviewer cannot reliably infer from the diff alone: frozen
 benchmark-affecting constants, an index-compatibility contract keyed off a
 struct most providers don't override, a deliberately bounded structural-
@@ -19,9 +19,9 @@ file below before reviewing a change in that area.
 | `evidence-and-benchmarks.md` | Benchmark provenance, incomplete/cancelled runs, what a passing test actually proves |
 | `api-surface.md` | MCP/CLI surface growth, JSON output contract stability |
 
-## Load-bearing invariants (AGENTS.md)
+## Load-bearing invariants (docs/agents/invariants.md)
 
-`AGENTS.md`'s "Load-bearing invariants" section (symbol id composition, the
+`docs/agents/invariants.md`'s "Load-bearing invariants" section (symbol id composition, the
 `i64` bit-casts, first-wins definition dedup, expansion-ordering, the
 `std::thread::scope` rationale, `RetrievalMode`'s gating scope, lexical body
 weighting, the embedding cache-invalidation key, the cross-file staleness

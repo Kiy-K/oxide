@@ -217,7 +217,7 @@ their own right because no same-named struct in that file dedups them away
 | Go | import *resolution* | A Go import names a package *directory* of many files, and is usually module-qualified (`github.com/…`) or stdlib. `resolve_module`'s contract is "exactly one unambiguous file", so Go imports are recorded on the symbol but never produce an `imported-definition` edge. Rust `use` paths do resolve (`crate::backend::Backend` → `src/backend.rs`). |
 | all | import *bindings* (the names, not the module) | `SymbolKind::Import` is never produced. The `uses` precision this was wanted for came from file-level import resolution instead; per-name bindings would only help when two *imported* files define the same name. |
 | all | `exported` for Python/Rust/Go | The flag is derived only from TypeScript's `export` wrapper; Python is unconditionally `true`, Rust `pub` and Go's leading-capital convention are not read. |
-| Python | cross-file reference staleness within one run | Known, accepted, architectural — see AGENTS.md. |
+| Python | cross-file reference staleness within one run | Known, accepted, architectural — see `docs/agents/invariants.md`. |
 | TypeScript | `.d.ts` files | Excluded by the scanner denylist. |
 | TSX | JSX member usage as a *distinct* relation | `<ns.Button />` is recorded as a call of `Button`, on the same bare-name tier as everything else. |
 | Rust | `macro_rules!` definitions | Dropped rather than mislabelled — OXIDE has no macro kind. |

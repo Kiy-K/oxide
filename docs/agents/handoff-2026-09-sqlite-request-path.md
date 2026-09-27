@@ -1,7 +1,7 @@
 # Handoff — OXIDE, September 2026: storage / request-path track
 
 For a fresh session picking up roadmap #9's "Next" items. Read
-`AGENTS.md` first (load-bearing invariants; everything below assumes it),
+`AGENTS.md` and `docs/agents/invariants.md` first (load-bearing invariants; everything below assumes it),
 then `docs/review/README.md` before reviewing anything.
 
 ## Where main is

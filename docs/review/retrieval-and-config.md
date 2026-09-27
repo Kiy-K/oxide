@@ -13,7 +13,7 @@ duplicates one of its values elsewhere.
 `FUSION_SEMANTIC_WEIGHT`, `EXPANSION_STRONG_SEED_FRACTION`, and every
 `CONTEXT_*` constant change only with a fresh canonical benchmark and an
 intentional re-baseline — this is `config.rs`'s own doc comment, and
-`CLAUDE.md`'s "Before touching retrieval scoring" rule points at
+the root `AGENTS.md`'s benchmark-gated-ranking rule points at
 `docs/canonical-baseline.md` as the thing to diff against.
 
 **What constitutes a violation:** a diff touching any value in `config.rs`
@@ -74,7 +74,7 @@ run as two independently spawned threads inside one `std::thread::scope`,
 joined afterward — a request pays `max(lexical_ms, semantic_ms)`, not their
 sum. This has to stay `std::thread::scope`, not a tokio task: `oxide
 context`/`oxide search` run with no tokio runtime present at all (see
-`AGENTS.md`'s load-bearing invariant on this), so a tokio-based rewrite
+`docs/agents/invariants.md`'s load-bearing invariant on this), so a tokio-based rewrite
 would need to introduce a runtime into a path deliberately kept synchronous.
 
 **What constitutes a violation:** collapsing the two spawned threads back

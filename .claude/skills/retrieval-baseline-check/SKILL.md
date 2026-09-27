@@ -6,7 +6,7 @@ description: Captures or compares retrieval numbers before/after a change to src
 Any change to `src/retrieval/` (BM25 + cosine + RRF fusion + structural
 expansion) or `src/config.rs` (RRF weights, budget defaults) can silently
 shift ranking. This repo treats an unexplained shift as a bug, not a
-side effect — see `CLAUDE.md`.
+side effect — see the root `AGENTS.md`.
 
 ## Fast check (every retrieval-adjacent change)
 
@@ -38,5 +38,5 @@ repos, real `qwen3-Q8_0` embedder via `scripts/embedder.sh start`). This is
 slower and requires the embedder server plus cloned task repos
 (`eval-agent/third_party/ContextBench`, gitignored) — don't run it for a
 routine change. Use `scripts/agent_eval/contextbench_run.py` and
-`summarize_cb.py` per `AGENTS.md`, and update `docs/canonical-baseline.md`
+`summarize_cb.py` per `docs/agents/workflow.md`, and update `docs/canonical-baseline.md`
 with the new numbers and date if the retune is intentional and kept.

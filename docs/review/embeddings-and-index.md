@@ -145,7 +145,7 @@ marker cannot exist unless the embeddings table was emptied in the same
 transaction, so "marker == the provider about to run" implies every
 surviving row is that provider's. Across processes the proof rests on
 `ensure_migration_marker`, which both `put_embeddings_batch` and
-`set_meta_all` run inside their own transaction. See AGENTS.md's
+`set_meta_all` run inside their own transaction. See `docs/agents/invariants.md`'s
 load-bearing invariant of the same name, including the residual
 compatibility-check race it declares out of scope.
 

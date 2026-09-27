@@ -3,7 +3,7 @@ name: verify
 description: Runs OXIDE's full pre-commit checklist (fmt, clippy, test, benchmark gate) in the order that matters and reports pass/fail. Use before committing any change to this repo, or when asked to "verify", "check everything passes", or "run the checklist".
 ---
 
-Run these in order — order matters, per `AGENTS.md`:
+Run these in order — order matters, per `docs/agents/workflow.md`:
 
 ```bash
 cargo fmt --check
