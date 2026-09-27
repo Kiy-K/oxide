@@ -22,6 +22,7 @@
 
 use super::LanguageExtractor;
 use crate::symbols::{content_hash, Language, Symbol, SymbolKind};
+use crate::tree_sitter_structural::{calls_and_bases_in_tree, StructuralSites};
 use std::ops::Range;
 use std::sync::OnceLock;
 use tree_sitter::{Node, Parser};
@@ -59,6 +60,20 @@ impl TagsExtractor {
             collect_meta(tree.root_node(), self.profile.language, src, &mut meta);
         }
         meta
+    }
+
+    /// [`Self::meta`] plus the file's call sites and base clauses, queried on
+    /// the same tree before it is dropped: the profile's grammar is the one
+    /// `tree_sitter_structural` parses `self.profile.language` with, so this
+    /// is the tree `all_calls_and_bases_in_file` would have built itself.
+    fn meta_and_sites(&self, src: &str) -> (FileMeta, StructuralSites) {
+        let mut meta = FileMeta::default();
+        let mut sites = StructuralSites::default();
+        if let Some(tree) = parse(self.profile, src) {
+            collect_meta(tree.root_node(), self.profile.language, src, &mut meta);
+            sites = calls_and_bases_in_tree(self.profile.language, &tree, src);
+        }
+        (meta, sites)
     }
 
     fn config(&self) -> Option<&TagsConfiguration> {
@@ -935,6 +950,18 @@ impl LanguageExtractor for TagsExtractor {
         let imports = sorted_imports(&meta);
         let symbols = self.extract_from_meta(file, src, &imports, &meta);
         (imports, symbols)
+    }
+
+    /// The same, with the relation queries run on that parse too.
+    fn extract_with_structure(
+        &self,
+        file: &str,
+        src: &str,
+    ) -> (Vec<String>, Vec<Symbol>, StructuralSites) {
+        let (meta, sites) = self.meta_and_sites(src);
+        let imports = sorted_imports(&meta);
+        let symbols = self.extract_from_meta(file, src, &imports, &meta);
+        (imports, symbols, sites)
     }
 }
 

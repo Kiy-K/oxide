@@ -1,0 +1,226 @@
+{
+ "mode": "langseam",
+ "wall_ms": 88443.324047,
+ "cpu_ms": 113510.233,
+ "vmhwm_kb": 225728,
+ "parse_calls": 5321,
+ "parse_ms": 17360.069491,
+ "sites": {
+  "c\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 175,
+   "ms": 1176.346478
+  },
+  "c\textract: tree-sitter-tags [worker]": {
+   "calls": 175,
+   "ms": 1167.914878
+  },
+  "c\trelations: separate calls+bases parse [main]": {
+   "calls": 175,
+   "ms": 1077.632934
+  },
+  "c\tscanner: .h C/C++ disambiguation [worker]": {
+   "calls": 132,
+   "ms": 313.920953
+  },
+  "cpp\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 104,
+   "ms": 1289.265559
+  },
+  "cpp\textract: tree-sitter-tags [worker]": {
+   "calls": 104,
+   "ms": 1197.387057
+  },
+  "cpp\trelations: separate calls+bases parse [main]": {
+   "calls": 104,
+   "ms": 1029.526723
+  },
+  "cpp\tscanner: .h C/C++ disambiguation [worker]": {
+   "calls": 80,
+   "ms": 2733.800778
+  },
+  "go\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 101,
+   "ms": 294.436312
+  },
+  "go\textract: tree-sitter-tags [worker]": {
+   "calls": 101,
+   "ms": 283.856067
+  },
+  "go\trelations: separate calls+bases parse [main]": {
+   "calls": 101,
+   "ms": 252.243532
+  },
+  "java\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 270,
+   "ms": 541.622173
+  },
+  "java\textract: tree-sitter-tags [worker]": {
+   "calls": 270,
+   "ms": 538.051361
+  },
+  "java\trelations: separate calls+bases parse [main]": {
+   "calls": 270,
+   "ms": 497.708122
+  },
+  "javascript\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 175,
+   "ms": 176.40552
+  },
+  "javascript\textract: tree-sitter-tags [worker]": {
+   "calls": 175,
+   "ms": 183.344024
+  },
+  "javascript\trelations: separate calls+bases parse [main]": {
+   "calls": 175,
+   "ms": 149.499906
+  },
+  "php\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 6,
+   "ms": 1.27801
+  },
+  "php\textract: tree-sitter-tags [worker]": {
+   "calls": 6,
+   "ms": 1.151479
+  },
+  "php\trelations: separate calls+bases parse [main]": {
+   "calls": 6,
+   "ms": 0.839445
+  },
+  "python\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 90,
+   "ms": 219.279575
+  },
+  "python\textract: tree-sitter-tags [worker]": {
+   "calls": 90,
+   "ms": 221.201857
+  },
+  "python\trelations: separate calls+bases parse [main]": {
+   "calls": 90,
+   "ms": 164.541877
+  },
+  "ruby\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 5,
+   "ms": 0.691337
+  },
+  "ruby\textract: tree-sitter-tags [worker]": {
+   "calls": 5,
+   "ms": 0.592558
+  },
+  "ruby\trelations: separate calls+bases parse [main]": {
+   "calls": 5,
+   "ms": 0.631594
+  },
+  "rust\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 567,
+   "ms": 1088.02544
+  },
+  "rust\textract: tree-sitter-tags [worker]": {
+   "calls": 567,
+   "ms": 1099.057881
+  },
+  "rust\trelations: separate calls+bases parse [main]": {
+   "calls": 567,
+   "ms": 848.526143
+  },
+  "tsx\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 95,
+   "ms": 66.853119
+  },
+  "tsx\textract: tree-sitter-tags [worker]": {
+   "calls": 95,
+   "ms": 62.487933
+  },
+  "tsx\trelations: separate calls+bases parse [main]": {
+   "calls": 95,
+   "ms": 55.499606
+  },
+  "typescript\textract: shared OXIDE tree (tags.rs) [worker]": {
+   "calls": 115,
+   "ms": 225.099873
+  },
+  "typescript\textract: tree-sitter-tags [worker]": {
+   "calls": 115,
+   "ms": 222.986852
+  },
+  "typescript\trelations: separate calls+bases parse [main]": {
+   "calls": 115,
+   "ms": 178.362535
+  }
+ },
+ "extra": {
+  "languages": {
+   "c": {
+    "copied": 175,
+    "reparsed": 175,
+    "parses": 657,
+    "parses_per_file": 3.7542857142857144
+   },
+   "cpp": {
+    "copied": 104,
+    "reparsed": 104,
+    "parses": 392,
+    "parses_per_file": 3.769230769230769
+   },
+   "go": {
+    "copied": 101,
+    "reparsed": 101,
+    "parses": 303,
+    "parses_per_file": 3.0
+   },
+   "java": {
+    "copied": 270,
+    "reparsed": 270,
+    "parses": 810,
+    "parses_per_file": 3.0
+   },
+   "javascript": {
+    "copied": 184,
+    "reparsed": 175,
+    "parses": 525,
+    "parses_per_file": 3.0
+   },
+   "markdown": {
+    "copied": 110,
+    "reparsed": 84,
+    "parses": 0,
+    "parses_per_file": 0.0
+   },
+   "php": {
+    "copied": 6,
+    "reparsed": 6,
+    "parses": 18,
+    "parses_per_file": 3.0
+   },
+   "python": {
+    "copied": 90,
+    "reparsed": 90,
+    "parses": 270,
+    "parses_per_file": 3.0
+   },
+   "ruby": {
+    "copied": 5,
+    "reparsed": 5,
+    "parses": 15,
+    "parses_per_file": 3.0
+   },
+   "rust": {
+    "copied": 567,
+    "reparsed": 567,
+    "parses": 1701,
+    "parses_per_file": 3.0
+   },
+   "tsx": {
+    "copied": 95,
+    "reparsed": 95,
+    "parses": 285,
+    "parses_per_file": 3.0
+   },
+   "typescript": {
+    "copied": 115,
+    "reparsed": 115,
+    "parses": 345,
+    "parses_per_file": 3.0
+   }
+  }
+ }
+}

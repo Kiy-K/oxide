@@ -1,0 +1,108 @@
+[installer-check] $ shellcheck -s sh install.sh tests/install_sh_test.sh
+Testing install.sh with x86_64-unknown-linux-gnu binary: /tmp/oxide-29/chal/target/release/oxide
+
+clean first install
+  ok   installer exits 0
+  ok   binary lands at the default name
+  ok   reports the version it installed
+  ok   checksum verification is reported
+  ok   points at `oxide install` next
+
+explicit version install
+  ok   installs the requested version
+  ok   version without a leading v is accepted
+
+upgrade in place
+  ok   binary is replaced, not merely re-run
+  ok   still executable after upgrade
+  ok   no staging file left behind
+
+reinstall the same version
+  ok   reinstall is not an error
+  ok   binary still works
+
+invalid version
+  ok   a missing release fails
+  ok   says which asset was missing
+  ok   leaves the working binary in place
+
+unsupported architecture
+  ok   an unsupported architecture fails
+  ok   names the architecture it saw
+  ok   says which architectures exist
+  ok   an unsupported OS fails
+  ok   names the operating system it saw
+
+missing checksum file
+  ok   a missing SHA256SUMS fails
+  ok   refuses to install unverified
+  ok   leaves the working binary in place
+
+asset not listed in SHA256SUMS
+  ok   an unlisted asset fails
+  ok   says the asset is not listed
+
+checksum mismatch
+  ok   a checksum mismatch fails
+  ok   says checksum mismatch
+  ok   prints both checksums
+  ok   leaves the working binary in place
+  ok   unpacks nothing on mismatch
+
+no SHA-256 tool available
+  ok   no checksum tool fails
+  ok   names the tools it needs
+  ok   refuses to install unverified
+  ok   leaves the working binary in place
+
+destination containing spaces
+  ok   installs into a path with spaces
+  ok   binary is there and runs
+
+destination not on PATH
+  ok   warns the directory is not on PATH
+  ok   shows the export line to add
+
+destination already on PATH
+  ok   does not warn about PATH
+
+downloaded binary does not run
+  ok   an unrunnable binary fails
+  ok   says the existing install was left alone
+  ok   previous binary is untouched
+  ok   previous binary still runs
+
+installing without curl
+  ok   installing without curl (skipped: no wget on this machine)
+
+a directory where the binary belongs
+  ok   a directory at the destination fails
+  ok   says the destination is a directory
+  ok   does not nest the binary inside it
+
+interrupted midway through installing
+  ok   an interrupted install fails
+  ok   previous binary is untouched
+  ok   previous binary still runs
+  ok   no staging file left behind
+
+upgrade keeps agent MCP configuration valid
+  ok   installed at the path agents will record
+  ok   MCP config records the absolute install path
+  ok   the upgrade actually replaced the binary
+  ok   MCP config is byte-identical after the upgrade
+  ok   the recorded path still exists and is executable
+  ok   the recorded path serves MCP after the upgrade
+  ok   it identifies itself as oxide
+  ok   uninstall removes the entry it wrote
+  ok   unrelated agent settings survive
+
+setup prompt: $OXIDE_SKIP_SETUP always skips, even with a tty
+  ok   install with OXIDE_SKIP_SETUP=1 exits 0
+  ok   does not ask about a remote embedding provider
+
+setup prompt: no controlling tty skips without hanging
+  ok   install with no controlling tty exits 0 (does not hang)
+  ok   does not ask about a remote embedding provider
+
+64 passed, 0 failed

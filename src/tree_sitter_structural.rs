@@ -251,19 +251,33 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
 pub type CallSite = (u32, String);
 /// One [`all_bases_in_file`] entry: `(class_start_line, class_name, base_name)`.
 pub type BaseClause = (u32, String, String);
+/// A file's call sites and base clauses, as [`all_calls_and_bases_in_file`]
+/// returns them.
+pub type StructuralSites = (Vec<CallSite>, Vec<BaseClause>);
 
 /// [`all_calls_in_file`] and [`all_bases_in_file`] from a single parse —
 /// what `structural_relations::compute_file_relations` uses, so a reparsed
 /// file pays for one tree here instead of two. Each half is exactly what
 /// its standalone function returns.
-pub fn all_calls_and_bases_in_file(lang: Language, src: &str) -> (Vec<CallSite>, Vec<BaseClause>) {
-    match parse(lang, src) {
-        Some(tree) => (
-            calls_in_tree(lang, &tree, src),
-            bases_in_tree(lang, &tree, src),
-        ),
-        None => (Vec::new(), Vec::new()),
-    }
+pub fn all_calls_and_bases_in_file(lang: Language, src: &str) -> StructuralSites {
+    parse(lang, src).map_or_else(Default::default, |tree| {
+        calls_and_bases_in_tree(lang, &tree, src)
+    })
+}
+
+/// [`all_calls_and_bases_in_file`] on a tree the caller already parsed from
+/// `src` with `lang`'s grammar (`tags.rs` shares the one it builds for
+/// extraction metadata). A tree from any other grammar or source would
+/// silently answer for that one instead.
+pub(crate) fn calls_and_bases_in_tree(
+    lang: Language,
+    tree: &tree_sitter::Tree,
+    src: &str,
+) -> StructuralSites {
+    (
+        calls_in_tree(lang, tree, src),
+        bases_in_tree(lang, tree, src),
+    )
 }
 
 fn calls_in_tree(lang: Language, tree: &tree_sitter::Tree, src: &str) -> Vec<(u32, String)> {

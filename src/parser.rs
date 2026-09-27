@@ -1,6 +1,7 @@
 //! Tree-sitter plumbing and the per-language extraction interface.
 
 use crate::symbols::{Language, Symbol};
+use crate::tree_sitter_structural::StructuralSites;
 use std::collections::HashSet;
 
 /// A grammar-backed extractor producing declaration symbols for one language.
@@ -19,6 +20,26 @@ pub trait LanguageExtractor: Sync {
         let imports = self.collect_imports(src);
         let symbols = self.extract(file, src, &imports);
         (imports, symbols)
+    }
+    /// `extract_with_imports` plus the file's call sites and base clauses
+    /// (`tree_sitter_structural::all_calls_and_bases_in_file`; none for a
+    /// language without structural queries), so an extractor that already
+    /// parses the file with the same grammar can run the relation queries on
+    /// that tree instead of parsing it again. Must return exactly what the
+    /// separate calls would.
+    fn extract_with_structure(
+        &self,
+        file: &str,
+        src: &str,
+    ) -> (Vec<String>, Vec<Symbol>, StructuralSites) {
+        let (imports, symbols) = self.extract_with_imports(file, src);
+        let lang = self.language();
+        let sites = if lang.has_structural_queries() {
+            crate::tree_sitter_structural::all_calls_and_bases_in_file(lang, src)
+        } else {
+            StructuralSites::default()
+        };
+        (imports, symbols, sites)
     }
 }
 
@@ -106,7 +127,32 @@ pub fn parse_file_with(
     src: &str,
     lang: Language,
 ) -> Vec<Symbol> {
-    let (imports, mut syms) = ext.extract_with_imports(file, src);
+    let (imports, syms) = ext.extract_with_imports(file, src);
+    finish_symbols(file, src, lang, imports, syms)
+}
+
+/// `parse_file` plus the file's call sites and base clauses from the same
+/// Tree-sitter parse (`LanguageExtractor::extract_with_structure`) — what
+/// the index pipeline's parse workers feed to
+/// `structural_relations::relations_from_sites`, so relations cost no
+/// parse of their own there.
+pub fn parse_file_with_structure(
+    file: &str,
+    src: &str,
+    lang: Language,
+) -> (Vec<Symbol>, StructuralSites) {
+    let (imports, syms, sites) = extractor_for(lang).extract_with_structure(file, src);
+    (finish_symbols(file, src, lang, imports, syms), sites)
+}
+
+/// Dedup + module fallback, shared by both entry points above.
+fn finish_symbols(
+    file: &str,
+    src: &str,
+    lang: Language,
+    imports: Vec<String>,
+    mut syms: Vec<Symbol>,
+) -> Vec<Symbol> {
     // Stable ids are (file, qualified_name); duplicate qualified names in one
     // file (overloads, conditional defs) would violate the primary key. Keep
     // the first declaration per name.
@@ -169,6 +215,27 @@ pub fn parse_file_with(
 mod tests {
     use super::*;
     use crate::symbols::Language;
+
+    #[test]
+    fn extract_with_structure_matches_the_separate_calls() {
+        for (rel, src, lang) in crate::languages::conformance_sources() {
+            let ext = extractor_for(lang);
+            let (imports, symbols) = ext.extract_with_imports(&rel, &src);
+            let sites = if lang.has_structural_queries() {
+                crate::tree_sitter_structural::all_calls_and_bases_in_file(lang, &src)
+            } else {
+                StructuralSites::default()
+            };
+            let (s_imports, s_symbols, s_sites) = ext.extract_with_structure(&rel, &src);
+            assert_eq!(s_imports, imports, "{rel}");
+            assert_eq!(
+                serde_json::to_string(&s_symbols).unwrap(),
+                serde_json::to_string(&symbols).unwrap(),
+                "{rel}"
+            );
+            assert_eq!(s_sites, sites, "{rel}");
+        }
+    }
 
     #[test]
     fn duplicate_qualified_names_are_deduped() {

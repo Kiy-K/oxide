@@ -25,7 +25,7 @@
 
 use crate::storage::IndexBackend;
 use crate::symbols::{Language, Symbol, SymbolKind};
-use crate::tree_sitter_structural::all_calls_and_bases_in_file;
+use crate::tree_sitter_structural::{all_calls_and_bases_in_file, StructuralSites};
 use anyhow::Result;
 use std::collections::HashMap;
 
@@ -128,8 +128,21 @@ pub fn compute_file_relations(
             .collect();
     }
 
+    relations_from_sites(file_symbols, all_calls_and_bases_in_file(lang, src))
+}
+
+/// The attribution half of [`compute_file_relations`], for a caller that
+/// already has the file's call sites and base clauses — the index
+/// pipeline's parse workers get them from the extraction parse
+/// (`parser::parse_file_with_structure`). Reads only each symbol's id,
+/// name, kind and span, all final once `parse_file` returns, so running
+/// this before `references`/`content_hash` are filled in is the same as
+/// running it after.
+pub fn relations_from_sites(
+    file_symbols: &[Symbol],
+    (calls, bases): StructuralSites,
+) -> Vec<(u64, Vec<String>, Vec<String>)> {
     let refs: Vec<&Symbol> = file_symbols.iter().collect();
-    let (calls, bases) = all_calls_and_bases_in_file(lang, src);
 
     let mut calls_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
     for (line, name) in calls {
@@ -227,6 +240,25 @@ mod tests {
     use crate::index::update_index;
     use crate::storage::SqliteStore;
     use std::fs;
+
+    /// The parse workers' path (one shared parse, then attribution) against
+    /// the separate parse + `compute_file_relations` the store loop used to
+    /// run, on every conformance file: identical symbols and relations.
+    #[test]
+    fn worker_relations_match_the_separate_parse() {
+        for (rel, src, lang) in crate::languages::conformance_sources() {
+            let symbols = crate::parser::parse_file(&rel, &src, lang);
+            let expected = compute_file_relations(&symbols, &src, lang);
+            let (shared, sites) = crate::parser::parse_file_with_structure(&rel, &src, lang);
+            // `Symbol` has no PartialEq; its serialized form covers every field.
+            assert_eq!(
+                serde_json::to_string(&shared).unwrap(),
+                serde_json::to_string(&symbols).unwrap(),
+                "{rel}"
+            );
+            assert_eq!(relations_from_sites(&shared, sites), expected, "{rel}");
+        }
+    }
     use std::path::Path;
 
     fn write(dir: &Path, rel: &str, contents: &str) {

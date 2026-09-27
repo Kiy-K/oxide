@@ -1,0 +1,1912 @@
+[verify] $ # A `depends` list would let mise run these in parallel, which is wrong
+[lint] $ cargo fmt --check
+    Checking oxide v0.1.1 (/tmp/oxide-29/chal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.22s
+[lint:no-default-features] $ cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
+   Compiling num-traits v0.2.19
+   Compiling ahash v0.8.12
+   Compiling crossbeam-utils v0.8.22
+    Checking http v1.5.0
+    Checking chrono v0.4.45
+    Checking ureq-proto v0.6.1
+    Checking hashbrown v0.14.5
+    Checking crossbeam-epoch v0.9.20
+    Checking ureq v3.4.0
+    Checking hashlink v0.9.1
+    Checking schemars v1.2.2
+    Checking crossbeam-deque v0.8.7
+    Checking sentry v0.49.2
+    Checking rusqlite v0.32.1
+    Checking rmcp v3.1.4
+    Checking ignore v0.4.33
+    Checking oxide v0.1.1 (/tmp/oxide-29/chal)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.85s
+[test] $ env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running unittests src/lib.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/oxide-9f00d5763300e4ca)
+
+running 269 tests
+test agents::tests::a_disabled_opencode_entry_is_not_configured ... ok
+test agents::tests::extra_user_fields_do_not_make_an_entry_look_unconfigured ... ok
+test agents::tests::malformed_toml_is_refused_rather_than_appended_to ... ok
+test agents::tests::an_entry_named_oxide_that_runs_something_else_is_not_ours ... ok
+test agents::tests::a_table_header_inside_a_multiline_string_is_not_a_table_header ... ok
+test agents::tests::updating_a_stale_entry_keeps_the_users_own_settings ... ok
+test agents::tests::a_quoted_root_key_that_reads_like_the_oxide_path_is_not_ours ... ok
+test cli::error::tests::actionable_errors_say_what_to_run ... ok
+test cli::error::tests::unrecognized_errors_keep_their_own_message ... ok
+test cli::error::tests::embedder_unavailable_shows_its_cause ... ok
+test agents::tests::an_inline_entry_is_updated_without_being_reshaped ... ok
+test agents::tests::a_nested_user_table_still_reads_back_as_configured ... ok
+test blast_radius::tests::provenance_identifies_its_seed_by_path_not_by_bare_name ... ok
+test blast_radius::tests::a_seed_never_appears_in_its_own_blast_radius ... ok
+test blast_radius::tests::direct_callers_and_implementors_are_reported_across_files ... ok
+test blast_radius::tests::the_transitive_hop_is_opt_in_and_separately_capped ... ok
+test blast_radius::tests::the_transitive_hop_works_for_a_language_whose_names_carry_a_signature ... ok
+test agents::tests::codex_edits_preserve_every_unrelated_line ... ok
+test blast_radius::tests::the_distinct_file_cap_holds_even_when_the_item_cap_does_not_bind ... ok
+test cli::prompt::tests::selection_accepts_numbers_names_and_all ... ok
+test blast_radius::tests::the_absolute_item_cap_holds_when_every_seed_spends_both_budgets ... ok
+test agents::tests::paths_with_spaces_survive_both_config_formats ... ok
+test context::tests::relevance_floor_drops_weak_but_keeps_everything_when_all_weak ... ok
+test blast_radius::tests::one_seeds_direct_members_are_capped_and_the_hop_is_budgeted_separately ... ok
+test credentials::tests::missing_credentials_file_is_none_not_an_error ... ok
+test credentials::tests::keyfile_is_created_owner_only ... ok
+test credentials::tests::concurrent_first_time_key_creation_converges_on_one_key ... ok
+test credentials::tests::neither_stored_file_ever_contains_the_plaintext_key ... ok
+test context::tests::window_centers_on_query_terms_within_cap ... ok
+test credentials::tests::round_trips_a_key_through_a_fresh_load ... ok
+test credentials::tests::saving_a_second_provider_keeps_the_first ... ok
+test credentials::tests::unknown_provider_is_none_not_an_error ... ok
+test blast_radius::tests::traversal_is_deterministic_across_runs ... ok
+test embeddings::cache::tests::failed_or_empty_embeddings_are_never_cached ... ok
+test embeddings::cache::tests::different_fingerprints_never_share_cached_vectors ... ok
+test embeddings::cache::tests::malformed_wrong_dimension_embeddings_are_never_cached_or_served ... ok
+test embeddings::hashed::tests::default_embed_documents_is_order_preserving_passthrough ... ok
+test embeddings::cache::tests::identical_content_reuses_cached_embedding_without_a_second_provider_call ... ok
+test embeddings::cache::tests::changed_content_is_re_embedded_not_served_stale ... ok
+test embeddings::http::tests::http_embedder_name_discriminates_protocol_and_truncation ... ok
+test embeddings::hashed::tests::embeddings_are_deterministic_normalized_and_discriminating ... ok
+test embeddings::hashed::tests::hashed_embedder_embed_query_and_embed_document_are_unmodified_passthrough ... ok
+test embeddings::http::tests::prefixed_text_prepends_verbatim_and_passes_through_when_empty ... ok
+test embeddings::http::tests::truncate_and_renormalize_is_noop_when_already_short_enough ... ok
+test embeddings::native::tests::dump_vectors_for_authoritative_comparison ... ignored
+test embeddings::native::tests::dynamic_quant_batch_matches_single_text ... ignored
+test embeddings::http::tests::truncate_and_renormalize_shortens_and_restores_unit_norm ... ok
+test embeddings::native::tests::from_local_files_matches_hf_hub_loaded_output ... ignored
+test embeddings::native::tests::gemma_query_prompt_variants_actually_produce_different_text ... ok
+test embeddings::native::tests::from_local_files_rejects_unsupported_profiles_without_touching_disk ... ok
+test embeddings::native::tests::gemma_query_prompt_variants_produce_different_vectors ... ignored
+test embeddings::native::tests::non_gemma_profile_ignores_gemma_query_prompt_in_identity ... ignored
+test embeddings::native::tests::session_pool_matches_single_session_bit_for_bit ... ignored
+test embeddings::native::tests::from_local_files_fails_deterministically_when_assets_are_missing ... ok
+test embeddings::remote::tests::different_voyage_models_have_unequal_fingerprints ... ok
+test embeddings::remote::tests::different_jina_dimensions_have_unequal_fingerprints ... ok
+test embeddings::cache::tests::verify_commit_fails_closed_when_not_a_git_repo ... ok
+test embeddings::remote::tests::known_dim_skips_the_construction_probe_entirely ... ok
+test embeddings::remote::tests::normalize_provider_accepts_common_spellings ... ok
+test embeddings::remote::tests::provider_name_folds_in_dimensions_so_the_process_cache_notices_a_change ... ok
+test embeddings::remote::tests::jina_known_dim_is_not_sent_as_dimensions ... ok
+test embeddings::remote::tests::voyage_known_dim_is_not_sent_as_output_dimension ... ok
+test embeddings::remote::tests::batches_respect_the_configured_chunk_size ... ok
+test embeddings::remote::tests::voyage_query_and_document_fingerprints_differ_only_in_profile ... ok
+test embeddings::selection::tests::native_profile_resolution_defaults_to_arctic_and_opts_out_on_hashed ... ok
+test embeddings::sessions::tests::auto_embed_sessions_scales_with_cores_memory_and_model_size ... ok
+test embeddings::selection::tests::unconfigured_provider_name_is_the_shipped_native_default ... ok
+test embeddings::sessions::tests::embed_sessions_setting_parses_auto_counts_and_rejects_the_rest ... ok
+test embeddings::text::tests::qwen3_query_text_matches_legacy_instructed_query_format ... ok
+test embeddings::tokenize::tests::tokenizer_splits_cases_and_drops_stopwords ... ok
+test evidence::coordinator::tests::blast_radius_evidence_matches_pre_refactor_score_fraction ... ok
+test evidence::coordinator::tests::structural_evidence_matches_pre_refactor_reason_tag_and_score_fraction ... ok
+test evidence::scope::tests::caps_to_max_files_preserving_seed_order_and_dedups ... ok
+test evidence::scope::tests::empty_seeds_yields_empty_scope ... ok
+test gitctx::tests::a_class_level_edit_outside_any_method_still_seeds_the_class ... ok
+test gitctx::tests::a_class_hunk_and_a_separate_method_hunk_in_one_file_both_survive ... ok
+test gitctx::tests::attributes_modify_and_add_to_the_right_symbol ... ok
+test context::tests::build_context_routes_raw_task_through_embed_query_unprefixed ... ok
+test context::tests::module_symbols_yield_to_concrete_siblings ... ok
+test embeddings::cache::tests::verify_commit_fails_closed_on_wrong_commit ... ok
+test context::tests::ordering_groups_by_role ... ok
+test gitctx::tests::nested_containers_are_not_double_counted_as_independent_seeds ... ok
+test gitctx::tests::noisy_cochange_files_are_recognized ... ok
+test gitctx::tests::one_hunk_spanning_both_class_body_and_a_nested_method_keeps_both ... ok
+test gitctx::tests::partial_deletion_attributes_to_enclosing_symbol ... ok
+test gitctx::tests::same_qualified_name_in_different_files_are_not_conflated ... ok
+test gitctx::tests::two_independently_edited_methods_both_remain_seeds ... ok
+test gitctx::tests::whole_symbol_deletion_yields_no_changed_symbol ... ok
+test gitutil::tests::hunk_header_without_count_is_single_line ... ok
+test gitutil::tests::deleted_file_section_does_not_leak_into_previous_file ... ok
+test gitutil::tests::parses_added_ranges_and_multiple_files ... ok
+test context::tests::orphan_module_stays_a_direct_hit_but_subsumed_when_sibling_exists ... ok
+test context::tests::bounded_ast_grep_expansion_is_mode_gated ... ok
+test gitctx::tests::non_git_repo_degrades_to_empty_context ... ok
+test index::base::read_capped_tests::a_file_exactly_at_the_cap_is_not_oversized ... ok
+test index::base::read_capped_tests::a_file_within_the_cap_returns_every_byte ... ok
+test index::base::read_capped_tests::a_missing_file_propagates_not_found ... ok
+test index::base::read_capped_tests::oversized_and_invalid_utf8_is_still_reported_as_oversized ... ok
+test context::tests::diversity_cap_limits_items_per_file ... ok
+test context::tests::budget_is_respected_and_overflows_are_recorded ... ok
+test context::tests::primary_cap_bounds_semantic_tail ... ok
+test embeddings::cache::tests::verify_commit_succeeds_when_head_matches ... ok
+test context::tests::expansion_is_capped_per_seed_and_total ... ok
+test languages::tags::tests::c_includes_are_relative_when_quoted_and_verbatim_when_angled ... ok
+test index::base::read_capped_tests::a_file_much_larger_than_the_cap_is_never_read_past_cap_plus_one ... ok
+test gitctx::tests::fresh_single_commit_repo_head_tilde_1_gets_a_truthful_message ... ok
+test gitctx::tests::invalid_range_returns_an_error_not_an_empty_context ... ok
+test gitutil::tests::real_git_diff_roundtrip ... ok
+test context::tests::big_primary_survives_tight_budget_by_shrinking ... ok
+test gitutil::tests::real_git_diff_roundtrip_survives_mnemonicprefix_config ... ok
+test gitctx::tests::valid_range_still_returns_ok ... ok
+test gitutil::tests::recent_commits_and_co_change_are_deterministic ... ok
+test languages::tags::tests::a_decorator_on_a_previous_definition_is_not_absorbed ... ok
+test languages::tags::tests::content_hash_matches_span_text_reconstruction ... ok
+test languages::tags::tests::decorated_definitions_span_their_decorators ... ok
+test languages::tags::tests::java_type_normalization_matches_the_jvms_own_overload_rules ... ok
+test languages::tags::tests::php_imports_take_use_statements_and_literal_includes_only ... ok
+test languages::tags::tests::java_overloads_survive_as_distinct_symbols ... ok
+test languages::tags::tests::ruby_requires_are_imports_and_dynamic_ones_are_not ... ok
+test languages::tags::tests::java_identity_ignores_parameter_names_annotations_and_formatting ... ok
+test languages::tags::tests::same_named_methods_in_different_classes_do_not_collide ... ok
+test literal::tests::empty_pattern_is_rejected ... ok
+test languages::tags::tests::c_function_spans_cover_the_body_through_any_pointer_depth ... ok
+test languages::tags::tests::c_prototype_loses_to_a_definition_but_survives_alone ... ok
+test literal::tests::finds_matches_with_line_and_column ... ok
+test literal::tests::exactly_at_the_per_file_cap_does_not_falsely_report_truncated ... ok
+test literal::tests::matches_non_utf8_files_byte_exactly ... ok
+test literal::tests::per_file_cap_skips_to_the_next_file_and_flags_truncated ... ok
+test literal::tests::respects_ignore_policy_and_denylist ... ok
+test languages::tags::tests::a_scoped_impl_type_still_nests_and_relates ... ok
+test languages::tags::tests::an_impl_block_never_displaces_the_type_it_names ... ok
+test literal::tests::searches_files_a_symbol_index_would_never_parse ... ok
+test literal::tests::truncates_deterministically_when_over_limit ... ok
+test parser::tests::markdown_yields_one_whole_file_module_symbol ... ok
+test languages::tags::tests::php_methods_are_methods_and_enum_cases_are_constants ... ok
+test relations::uses_narrowing_tests::an_aliased_import_is_a_known_gap_shared_with_uses_not_new_here ... ok
+test relations::uses_narrowing_tests::an_imported_definition_wins_over_a_same_named_one_elsewhere ... ok
+test relations::uses_narrowing_tests::bare_dot_import_resolves_at_the_repo_root ... ok
+test relations::uses_narrowing_tests::cached_index_answers_exactly_like_a_freshly_built_graph ... ok
+test relations::uses_narrowing_tests::imported_definition_is_empty_when_the_seed_references_nothing_from_it ... ok
+test relations::uses_narrowing_tests::imported_definition_is_narrowed_to_symbols_the_seed_actually_references ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_import_is_ambiguous_when_both_forms_exist ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_import_only_considers_python_candidates ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_imports_resolve_without_a_path_separator ... ok
+test relations::uses_narrowing_tests::python_relative_import_now_produces_imported_definition_and_narrows_uses ... ok
+test relations::uses_narrowing_tests::rust_self_and_super_paths_resolve_relative_to_the_importing_file ... ok
+test relations::uses_narrowing_tests::rust_use_paths_resolve_to_module_files ... ok
+test relations::uses_narrowing_tests::with_no_import_backing_the_old_fan_out_is_kept ... ok
+test parser::tests::empty_file_yields_module_fallback ... ok
+test parser::tests::duplicate_qualified_names_are_deduped ... ok
+test retrieval::engine::tests::a_failed_embedding_scan_yields_no_semantic_evidence_not_partial_evidence ... ok
+test retrieval::engine::tests::context_propagates_a_failed_relations_load ... ok
+test retrieval::engine::tests::exact_identifier_search_works_without_embeddings ... ok
+test retrieval::engine::tests::hybrid_expands_to_referenced_definition_and_test ... ok
+test retrieval::engine::tests::lexical_index_repeated_query_token_counts_once_for_coverage_not_for_bm25 ... ok
+test retrieval::engine::tests::lexical_index_term_coverage_is_additive_evidence_not_a_score_change ... ok
+test retrieval::engine::tests::module_resolution_probes_extensions_and_indexes ... ok
+test retrieval::engine::tests::hybrid_search_runs_lexical_and_semantic_concurrently_without_changing_results ... ok
+test retrieval::engine::tests::search_calls_embed_query_not_embed_for_the_query_text ... ok
+test retrieval::engine::tests::semantic_search_finds_related_without_name_overlap ... ok
+test languages::tags::tests::cpp_type_definitions_do_not_lose_to_forward_declarations ... ok
+test languages::tags::tests::cpp_spans_and_imports_follow_c_while_signatures_keep_templates ... ok
+test literal::tests::parallel_scan_folds_to_exactly_the_sequential_result_around_the_global_cap ... ok
+test languages::tags::tests::ruby_singleton_methods_survive_alongside_instance_methods ... ok
+test retrieval::engine::tests::search_hydrates_only_candidates_unless_expansion_needs_the_corpus ... ok
+test languages::tags::tests::a_dynamic_require_names_no_module ... ok
+test retrieval::options::tests::retrieval_mode_parses_case_insensitively_and_rejects_garbage ... ok
+test retrieval::options::tests::retrieval_mode_resolve_prefers_explicit_then_defaults_to_balanced ... ok
+test retrieval::snapshot::tests::a_partial_symbol_never_serializes ... ok
+test languages::tags::tests::javascript_gets_the_tsx_grammar_esm_and_commonjs ... ok
+test languages::tags::tests::typescript_decorators_widen_class_and_method_spans ... ok
+test languages::tags::tests::export_const_with_non_function_value_is_captured ... ok
+test retrieval::snapshot::tests::neighbors_refuses_a_partial_seed - should panic ... ok
+test scanner::tests::ambiguous_headers_choose_the_lower_error_grammar_and_keep_c_on_a_tie ... ok
+test scanner::tests::binary_sniffing_skips_nul_files ... ok
+test scanner::tests::dangling_symlink_does_not_crash_the_scan_and_siblings_are_still_found ... ok
+test scanner::tests::finds_sources_and_respects_gitignore_and_denylist ... ok
+test scanner::tests::markdown_over_the_selective_size_cap_is_excluded_a_small_one_is_kept ... ok
+test service::cache::tests::process_cache_hits_at_the_same_generation_and_reloads_after_a_write ... ok
+test service::evidence::tests::evidence_id_is_repository_relative_symbol_identity ... ok
+test service::cache::tests::process_cache_misses_on_a_replaced_database_and_skips_an_unkeyable_one ... ok
+test retrieval::engine::tests::streaming_semantic_scan_matches_materialized_scan_exactly ... ok
+test retrieval::top_k::tests::bounded_top_k_equals_full_sort_then_take ... ok
+test parser::tests::ts_overloads_do_not_crash_ids ... ok
+test service::repository::tests::fingerprint_catches_semantic_mismatch_that_name_and_dim_alone_would_miss ... ok
+test storage::sqlite::error_classification_tests::classifies_busy_and_locked_as_transient ... ok
+test storage::sqlite::error_classification_tests::does_not_classify_other_errors_as_transient ... ok
+test storage::sqlite::error_classification_tests::sees_through_context_wrapping ... ok
+test storage::sqlite::tests::foreign_keys_are_enforced_so_cascades_actually_fire ... ok
+test service::repository::tests::legacy_index_without_a_stored_fingerprint_falls_back_to_name_and_dim ... ok
+test service::repository::tests::status_is_current_when_a_non_utf8_file_is_present ... ok
+test service::repository::tests::status_still_fails_on_a_genuine_io_error ... ok
+test service::repository::tests::update_index_reembeds_on_a_fingerprint_only_change_same_name_and_dim ... ok
+test structural_relations::tests::a_preexisting_index_with_no_relations_gets_backfilled_without_any_file_edit ... ok
+test structural_relations::tests::a_generic_go_receiver_qualifies_by_the_declared_type ... ok
+test retrieval::snapshot::tests::completed_lean_corpus_equals_the_full_load ... ok
+test structural_relations::tests::markdown_files_get_empty_relations_and_never_crash_indexing ... ok
+test structural_relations::tests::editing_away_a_call_clears_the_stale_relation_on_reindex ... ok
+test structural_relations::tests::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does ... ok
+test structural_relations::tests::update_index_populates_relations_directly_no_second_pass_needed ... ok
+test structural_relations::tests::call_inside_a_one_line_nested_function_attaches_to_the_inner_function ... ok
+test symbols::tests::fnv_is_stable_and_order_sensitive ... ok
+test symbols::tests::span_text_slices_source ... ok
+test structural_relations::tests::top_level_calls_attach_to_the_module_fallback_symbol ... ok
+test symbols::tests::symbol_id_uses_path_and_name ... ok
+test structural_relations::tests::same_line_nested_classes_each_keep_their_own_base ... ok
+test telemetry::tests::enabled_options_never_send_default_pii_or_a_hostname ... ok
+test telemetry::tests::only_affirmative_values_opt_in ... ok
+test term::tests::auto_follows_the_terminal_unless_the_environment_objects ... ok
+test term::tests::explicit_flags_override_everything ... ok
+test term::tests::plain_paint_emits_no_escapes ... ok
+test term::tests::thousands_separates_only_where_needed ... ok
+test tree_sitter_structural::tests::abstract_class_bases_are_found ... ok
+test tree_sitter_structural::tests::anonymous_class_expression_bases_are_skipped_not_misattributed ... ok
+test tree_sitter_structural::tests::bare_and_method_calls_are_both_found ... ok
+test tree_sitter_structural::tests::c_calls_include_dispatch_through_a_struct_field ... ok
+test tree_sitter_structural::tests::c_embedding_requires_a_direct_first_member ... ok
+test tree_sitter_structural::tests::c_first_member_struct_embedding_is_the_only_base_relation ... ok
+test tree_sitter_structural::tests::cpp_bases_ignore_access_specifiers ... ok
+test tree_sitter_structural::tests::cpp_calls_include_qualified_and_member_dispatch ... ok
+test structural_relations::tests::same_bare_name_classes_in_different_scopes_do_not_cross_attribute_bases ... ok
+test tree_sitter_structural::tests::java_calls_cover_invocations_and_constructions_but_not_method_references ... ok
+test tree_sitter_structural::tests::java_interface_enum_and_record_heritage_is_matched ... ok
+test tree_sitter_structural::tests::java_extends_and_implements_each_produce_their_own_base ... ok
+test structural_relations::tests::a_declared_module_owns_its_own_module_level_calls ... ok
+test tree_sitter_structural::tests::jsx_components_are_calls_but_intrinsics_are_not ... ok
+test tree_sitter_structural::tests::php_traits_extends_and_implements_all_land_in_bases ... ok
+test tree_sitter_structural::tests::qualified_and_generic_bases_are_reduced_to_their_last_segment ... ok
+test tree_sitter_structural::tests::qualified_generic_traits_and_pointer_embeddings_are_matched ... ok
+test tree_sitter_structural::tests::javascript_reuses_the_tsx_call_and_heritage_patterns_jsx_included ... ok
+test tree_sitter_structural::tests::php_calls_cover_free_member_static_and_construction ... ok
+test tree_sitter_structural::tests::ruby_construction_attributes_to_the_class_not_to_new ... ok
+test tree_sitter_structural::tests::rust_impl_blocks_report_the_type_as_the_implementor ... ok
+test tree_sitter_structural::tests::rust_qualified_calls_and_macros_are_found ... ok
+test tree_sitter_structural::tests::rust_scoped_implementor_types_are_matched ... ok
+test tree_sitter_structural::tests::all_language_queries_compile ... ok
+test tree_sitter_structural::tests::ruby_conditional_mixins_are_not_declared_bases ... ok
+test tree_sitter_structural::tests::ruby_mixins_count_as_bases_alongside_real_inheritance ... ok
+test user_config::tests::known_timestamp_round_trips ... ok
+test user_config::tests::missing_config_loads_as_default ... ok
+test user_config::tests::unix_epoch_formats_as_epoch_start ... ok
+test user_config::tests::save_then_load_round_trips_every_field ... ok
+test watcher::tests::concurrent_acquire_admits_exactly_one_watcher ... ok
+test watcher::tests::atomic_editor_save_temp_file_is_never_indexed ... ok
+test tree_sitter_structural::tests::shared_parse_matches_separate_calls_and_bases ... ok
+test watcher::tests::concurrent_manual_index_while_watcher_state_is_open_does_not_corrupt ... ok
+test watcher::tests::edit_burst_collapses_to_one_up_to_date_symbol ... ok
+test watcher::tests::create_delete_rename_in_one_batch ... ok
+test watcher::tests::deleting_or_renaming_a_cached_markdown_file_still_converges ... ok
+test watcher::tests::converges_to_the_same_state_as_a_manual_index_across_a_mixed_changeset ... ok
+test watcher::tests::markdown_growing_past_the_cap_mid_watch_is_removed_not_left_stale ... ok
+test watcher::tests::ignored_tree_never_triggers_a_rescan_or_indexing ... ok
+test watcher::tests::gitignored_file_is_never_indexed_even_with_a_recognized_extension ... ok
+test watcher::tests::stale_lock_is_reclaimed_but_a_fresh_one_blocks ... ok
+test watcher::tests::ignore_rule_change_reconciles_files_hidden_and_revealed_by_the_rule ... ok
+test watcher::tests::offline_changes_are_recovered_by_reconciliation_not_the_watcher ... ok
+test watcher::tests::new_gitignore_rule_is_picked_up_via_the_ignore_file_itself ... ok
+test languages::tags::tests::extract_with_imports_matches_the_two_separate_calls ... ok
+test parser::tests::extract_with_structure_matches_the_separate_calls ... ok
+test structural_relations::tests::worker_relations_match_the_separate_parse ... ok
+test embeddings::remote::tests::retries_on_429_then_succeeds ... ok
+test telemetry::tests::an_enabled_client_reports_a_panic_to_the_configured_dsn_without_identity ... ok
+test retrieval::engine::tests::lean_snapshot_output_matches_the_complete_corpus_oracle ... ok
+test retrieval::engine::tests::term_coverage_alpha_unset_matches_explicit_zero_byte_for_byte ... ok
+test retrieval::engine::tests::term_coverage_bonus_cannot_overturn_a_leader_whose_margin_exceeds_it ... ok
+test retrieval::engine::tests::term_coverage_boost_never_applies_in_vector_only_mode ... ok
+test retrieval::engine::tests::term_coverage_boost_never_applies_to_module_symbols ... ok
+test retrieval::engine::tests::term_coverage_boost_widens_exact_identifiers_lead_over_common_term_corroborators ... ok
+test embeddings::remote::tests::gives_up_after_exhausting_retries_and_returns_empty_vectors ... ok
+
+test result: ok. 263 passed; 0 failed; 6 ignored; 0 measured; 0 filtered out; finished in 15.53s
+
+     Running unittests src/main.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/oxide-9496a3844d6ec5ad)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/agent_install.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/agent_install-7d23b869a570dea0)
+
+running 23 tests
+test an_unknown_agent_name_lists_the_known_ones ... ok
+test dry_run_prints_the_exact_change_and_writes_nothing ... ok
+test a_failed_write_leaves_the_original_config_intact ... ok
+test a_commented_opencode_config_is_refused_with_the_entry_to_paste ... ok
+test end_of_input_at_the_prompt_is_an_error_not_a_silent_no_op ... ok
+test a_config_edited_after_the_plan_was_shown_is_not_overwritten ... ok
+test a_malformed_agent_config_is_refused_loudly_and_left_untouched ... ok
+test first_install_writes_one_entry_per_selected_agent ... ok
+test install_writes_only_the_agents_that_were_selected ... ok
+test nothing_detected_reports_it_and_writes_nothing ... ok
+test a_declined_confirmation_writes_nothing ... ok
+test a_foreign_server_named_oxide_is_never_touched ... ok
+test a_moved_oxide_binary_is_still_recognised_as_ours ... ok
+test a_symlinked_config_is_edited_through_the_link_not_over_it ... ok
+test a_nested_env_table_does_not_break_codex_idempotency ... ok
+test a_conflicting_oxide_registration_is_shown_and_updated_in_place ... ok
+test updating_a_stale_entry_preserves_settings_oxide_does_not_manage ... ok
+test installing_over_a_disabled_opencode_entry_re_enables_it ... ok
+test detection_distinguishes_present_absent_and_configured ... ok
+test reinstalling_is_idempotent_and_never_duplicates_the_entry ... ok
+test user_extras_do_not_break_idempotency ... ok
+test uninstall_removes_only_oxides_own_entry ... ok
+test a_binary_path_containing_spaces_round_trips_through_both_formats ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tests/benchmark_gate.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/benchmark_gate-9078f2f110f1e9a7)
+
+running 1 test
+test benchmark_runs_and_hybrid_matches_or_beats_vector_only ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running tests/blast_radius_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/blast_radius_e2e-87ef620e73fc9d4b)
+
+running 6 tests
+test fast_query_labels_blast_radius_evidence_in_its_reasons ... ok
+test search_ranking_is_untouched_and_evidence_is_attached_to_its_seed ... ok
+test search_blast_radius_reaches_files_the_search_itself_did_not_return ... ok
+test query_keeps_blast_radius_inside_the_existing_token_budget ... ok
+test absent_flag_leaves_search_and_query_json_byte_identical ... ok
+test output_is_deterministic_and_bounded_across_repeated_runs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/cli_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/cli_e2e-33911bdede36af9c)
+
+running 22 tests
+test invalid_repository_path_is_structured ... ok
+test json_errors_carry_a_machine_actionable_action_alongside_the_code ... ok
+test index_help_promotes_rebuild_and_demotes_the_per_layer_scopes ... ok
+test status_describes_missing_index_and_search_fails_structurally ... ok
+test clean_index_write_leaves_no_wal_or_schema_artifacts ... ok
+test corrupt_index_file_is_a_structured_error_not_a_panic ... ok
+test context_json_is_deterministic_for_same_index_and_configuration ... ok
+test repository_path_with_spaces_and_unicode_is_indexable_and_readable ... ok
+test unavailable_embedder_is_a_nonzero_structured_failure ... ok
+test stale_status_and_no_source_error_are_explicit ... ok
+test empty_search_and_invalid_invocation_keep_distinct_contracts ... ok
+test index_status_search_context_form_one_machine_readable_flow ... ok
+test search_context_review_and_stats_accept_an_explicit_repository_path ... ok
+test search_json_is_deterministic_across_process_runs_with_tied_scores ... ok
+test status_succeeds_on_a_repo_with_one_non_utf8_file ... ok
+test concurrent_reindexing_of_an_existing_index_all_succeed ... ok
+test repeated_indexing_and_renames_report_incremental_work ... ok
+test read_only_commands_never_modify_index_db_content ... ok
+test concurrent_first_time_indexing_never_panics_or_corrupts_state ... ok
+test index_scope_flags_are_wired_through_the_cli ... ok
+test search_succeeds_while_another_process_is_indexing ... ok
+test sustained_concurrent_read_write_stress_never_corrupts_or_panics ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+
+     Running tests/cli_surface.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/cli_surface-3324dbb56f24c084)
+
+running 12 tests
+test top_level_help_names_every_public_command_and_a_quick_start ... ok
+test running_outside_a_repository_points_at_an_explicit_path ... ok
+test query_and_search_help_distinguish_question_from_expression ... ok
+test a_missing_index_tells_a_human_exactly_what_to_run ... ok
+test every_public_subcommand_has_its_own_help ... ok
+test query_takes_the_task_positionally_in_both_output_modes ... ok
+test profile_and_retrieval_mode_are_the_same_flag ... ok
+test malformed_invocations_stay_clap_errors_with_exit_two ... ok
+test json_output_keeps_its_pre_rename_shape ... ok
+test context_stays_a_byte_identical_compatibility_alias_for_query ... ok
+test status_is_readable_before_indexing_when_current_and_when_stale ... ok
+test status_verbose_absorbs_stats_without_changing_the_json ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/comment_indexing.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/comment_indexing-9b6f939e56d1081e)
+
+running 4 tests
+test a_leading_comment_is_the_one_real_exception_and_does_reach_the_payload ... ok
+test code_comment_text_never_reaches_the_remote_embedding_payload ... ok
+test a_comment_naming_a_real_known_symbol_leaks_that_name_via_references ... ok
+test standalone_comment_between_symbols_is_lexically_findable ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/context_max_primaries_override.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/context_max_primaries_override-8fa557c355fe0397)
+
+running 1 test
+test env_override_replaces_the_shipped_primary_cap ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/debug_dump_kept.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/debug_dump_kept-df266b371ab620fc)
+
+running 1 test
+test debug_dump_kept_writes_exactly_when_env_var_set ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/deep_nesting.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/deep_nesting-1bbf5cdda341d4ca)
+
+running 6 tests
+test cpp_declarator_signatures_are_unchanged_by_the_iterative_rewrite ... ok
+test a_deep_cpp_parameter_declarator_indexes_on_a_small_stack ... ok
+test a_deep_c_pointer_declarator_indexes_on_a_small_stack ... ok
+test a_deep_c_header_resolves_its_language_on_a_small_stack ... ok
+test metadata_after_a_deep_subtree_is_still_collected ... ok
+test a_deep_typescript_union_type_indexes_on_a_small_stack ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+
+     Running tests/determinism_stress.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/determinism_stress-721824198470e6bd)
+
+running 4 tests
+test deterministic_after_fresh_rebuild ... ok
+test deterministic_after_incremental_edit ... ok
+test deterministic_after_delete_and_readd ... ok
+test deterministic_after_rename ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.16s
+
+     Running tests/embedding_batch_writes.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_batch_writes-ee45b63f04555ff4)
+
+running 3 tests
+test empty_batch_is_a_harmless_no_op ... ok
+test batched_writes_skip_symbol_ids_with_no_matching_row_same_as_put_embedding ... ok
+test batched_writes_are_identical_to_one_call_per_item ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/embedding_cache_reuse.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_cache_reuse-1c48ddc4d1ab822b)
+
+running 1 test
+test identical_files_reuse_embeddings_across_commits_without_leaking_symbols ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/embedding_staleness.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_staleness-5d6e79ac4e6b58c0)
+
+running 11 tests
+test markdown_mid_file_edit_reembeds_the_whole_file_module_symbol ... ok
+test unchanged_file_reuses_module_embedding ... ok
+test body_only_change_to_a_concrete_symbol_still_reembeds_that_symbol ... ok
+test comment_only_file_fallback_hash_still_covers_the_full_source ... ok
+test signature_only_change_invalidates_module_embedding ... ok
+test new_same_file_definition_reembeds_an_untouched_symbol_that_now_references_it ... ok
+test doc_comment_change_that_does_not_touch_embed_input_leaves_module_embedding_reused ... ok
+test import_only_change_invalidates_module_embedding ... ok
+test new_in_file_reference_invalidates_module_embedding ... ok
+test import_only_change_reembeds_untouched_concrete_symbols ... ok
+test removed_in_file_reference_invalidates_module_embedding ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/eval_determinism.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/eval_determinism-8162490bb3cffe0e)
+
+running 2 tests
+test benchmark_report_is_byte_stable_and_grouped_by_sorted_repo_name ... ok
+test oxide_eval_stdout_is_identical_across_processes ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.65s
+
+     Running tests/full_incremental_parity.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/full_incremental_parity-77e7945de2d95e7e)
+
+running 2 tests
+test javascript_and_java_reach_the_same_state_incrementally_as_from_scratch ... ok
+test incremental_mutation_sequence_matches_clean_full_rebuild ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+     Running tests/git_context_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/git_context_e2e-34996430a53a880d)
+
+running 13 tests
+test whole_file_deletion_is_listed_but_maps_to_no_symbol ... ok
+test rename_attributes_to_the_new_path ... ok
+test detached_head_works ... ok
+test root_commit_does_not_manufacture_a_co_change_pair ... ok
+test merge_commit_neither_crashes_nor_pollutes_co_change ... ok
+test partial_deletion_in_a_real_repo_attributes_to_the_enclosing_symbol ... ok
+test non_git_directory_degrades_for_both_query_and_review ... ok
+test staged_and_unstaged_changes_both_surface ... ok
+test shallow_clone_does_not_error ... ok
+test absent_git_flag_leaves_query_json_byte_identical ... ok
+test git_query_output_is_deterministic_across_repeated_runs ... ok
+test git_evidence_reflects_the_currently_indexed_working_tree_state ... ok
+test git_caller_expansion_is_scoped_to_the_seed_pool_not_repo_wide ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/incremental.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/incremental-8643cdfba44c260f)
+
+running 9 tests
+test unreadable_file_is_counted_as_errored_not_silently_dropped ... ok
+test unchanged_files_are_not_reparsed_and_embeddings_reused ... ok
+test deleted_files_and_symbols_are_removed_from_persistent_index ... ok
+test deleting_a_file_strands_no_orphan_embeddings_or_relations ... ok
+test index_survives_reopen_from_disk ... ok
+test editing_a_file_strands_no_orphan_embeddings_or_relations ... ok
+test changing_one_symbol_only_reembeds_that_symbol ... ok
+test renaming_a_symbol_within_a_still_present_file_counts_as_deleted ... ok
+test file_deleted_between_scan_and_read_is_accounted_not_silently_dropped ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/index_generation.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/index_generation-fe9115c95090afeb)
+
+running 4 tests
+test every_write_path_advances_the_generation_exactly_once ... ok
+test an_index_that_predates_the_counter_is_not_keyable_until_a_writer_touches_it ... ok
+test reads_never_advance_the_generation ... ok
+test a_rebuilt_database_gets_a_new_identity_even_at_the_same_generation ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/index_scope_flags.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/index_scope_flags-bc9af1894b5f747b)
+
+running 10 tests
+test force_graph_refreshes_relations_without_reparsing_or_reembedding ... ok
+test force_graph_and_force_embeddings_combine_without_forcing_reparse ... ok
+test default_options_is_the_unchanged_plain_incremental_contract ... ok
+test force_embeddings_reembeds_everything_without_reparsing_or_graph_refresh ... ok
+test a_stale_extraction_version_forces_a_reparse_without_any_flag ... ok
+test update_base_alone_never_touches_embeddings ... ok
+test force_reparse_reparses_every_file_even_unchanged ... ok
+test e_never_embeds_against_stale_symbols_when_a_file_actually_changed ... ok
+test all_forces_every_layer ... ok
+test update_embeddings_after_update_base_matches_update_index_scoped ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/interrupted_index_recovery.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/interrupted_index_recovery-f127e4bc0930c5f7)
+
+running 7 tests
+test schema_only_index_is_rejected_not_treated_as_healthy ... ok
+test partially_committed_files_without_metadata_are_rejected ... ok
+test embedding_phase_interrupted_before_meta_write_is_rejected ... ok
+test torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes ... ok
+test closing_meta_writes_are_atomic_as_a_group ... ok
+test a_follow_up_index_recovers_cleanly_from_any_interruption_point ... ok
+test sigkill_mid_index_under_bulk_checkpointing_recovers_on_the_next_run ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.10s
+
+     Running tests/language_conformance.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/language_conformance-8f16e09977191270)
+
+running 20 tests
+test go_conformance ... ok
+test java_conformance ... ok
+test python_conformance ... ok
+test c_definitions_win_over_prototypes_and_lone_prototypes_survive ... ok
+test c_conformance ... ok
+test php_conformance ... ok
+test rust_conformance ... ok
+test cpp_conformance ... ok
+test cpp_overloads_keep_distinct_scoped_symbols ... ok
+test cpp_header_uses_the_cpp_grammar_when_its_source_is_unambiguously_cpp ... ok
+test javascript_conformance ... ok
+test tsx_conformance ... ok
+test typescript_conformance ... ok
+test ruby_conformance ... ok
+test ruby_singleton_methods_do_not_collide_with_instance_methods ... ok
+test java_overloads_keep_distinct_ids_without_touching_other_languages ... ok
+test broken_files_do_not_abort_indexing ... ok
+test no_change_reindex_is_a_no_op ... ok
+test single_file_edit_touches_only_that_file ... ok
+test cold_index_is_deterministic ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+     Running tests/lexical_persistence.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/lexical_persistence-938b7ffa5d2f0a19)
+
+running 7 tests
+test a_full_index_publishes_the_generation_key ... ok
+test every_symbol_has_a_document_length_row ... ok
+test an_unrecognized_generation_is_rebuilt_not_trusted ... ok
+test an_old_index_is_backfilled_on_the_next_run ... ok
+test persisted_postings_score_identically_to_the_in_memory_index ... ok
+test an_interrupted_backfill_is_never_read_and_is_repaired ... ok
+test single_file_edits_stay_consistent_during_and_after_migration ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/literal_search.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/literal_search-10f5361da1bf70eb)
+
+running 11 tests
+test empty_pattern_is_an_actionable_error_not_a_match_everything_scan ... ok
+test unknown_mode_is_rejected_and_literal_is_listed_in_the_error ... ok
+test no_matches_returns_empty_bounded_result_not_an_error ... ok
+test empty_repository_is_not_an_error ... ok
+test literal_search_never_creates_an_oxide_directory ... ok
+test literal_search_needs_no_index ... ok
+test non_utf8_files_are_scanned_without_crashing ... ok
+test json_shape_is_file_line_column_snippet_no_symbol_fields ... ok
+test quoted_substrings_with_special_characters_match_literally ... ok
+test matches_ripgrep_over_the_same_file_set ... ok
+test literal_search_never_touches_an_existing_index_db ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/markdown_indexing.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/markdown_indexing-d075566b7e8d487f)
+
+running 5 tests
+test markdown_embed_text_never_contains_body_paragraph_text ... ok
+test gitignored_markdown_secret_never_reaches_the_index ... ok
+test excluded_secret_never_becomes_a_reference_on_a_tracked_symbol ... ok
+test readme_prose_is_reachable_via_hybrid_search ... ok
+test body_only_term_is_lexically_findable_but_not_semantically_distinguishing ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/mcp_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/mcp_e2e-96cbb495ebf51166)
+
+running 12 tests
+test search_literal_mode_rejects_missing_query_as_malformed_params ... ok
+test initialize_and_list_expose_only_compact_agent_tools ... ok
+test malformed_parameters_and_service_failures_preserve_structured_semantics ... ok
+test search_literal_mode_needs_no_index_and_matches_cli_output ... ok
+test search_rejects_a_lexical_semantic_or_hybrid_mode_value ... ok
+test repeated_reads_are_deterministic_and_empty_search_is_valid ... ok
+test unavailable_embedder_preserves_fallback_action ... ok
+test context_and_search_return_service_evidence_over_real_protocol ... ok
+test blast_radius_is_opt_in_over_the_protocol_and_absent_by_default ... ok
+test repository_and_incompatible_index_errors_keep_service_actions ... ok
+test concurrent_mcp_reads_return_valid_results ... ok
+test a_live_server_sees_an_out_of_process_reindex_on_the_next_call ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/pending_embedding_count.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/pending_embedding_count-bfbcabe76317a9f1)
+
+running 5 tests
+test freshly_based_but_never_embedded_index_reports_every_symbol_pending ... ok
+test pending_count_matches_what_update_embeddings_actually_embeds ... ok
+test fully_embedded_index_reports_zero_pending ... ok
+test switching_embedder_makes_everything_pending_even_if_content_hashes_match ... ok
+test editing_one_file_after_embedding_makes_exactly_its_symbols_pending ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/precomputed_relations_conformance.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/precomputed_relations_conformance-aba0577fc23a3e6c)
+
+running 10 tests
+test finds_method_style_calls_not_just_bare_calls ... ok
+test python_multiple_inheritance_matches_every_base ... ok
+test python_subclass_implementors_across_files ... ok
+test typescript_finds_method_style_calls_not_just_bare_calls ... ok
+test tsx_finds_bare_and_method_calls_inside_jsx_expressions ... ok
+test typescript_implements_list_matches_every_interface ... ok
+test call_matching_is_ast_precise_not_lexical ... ok
+test typescript_extends_plus_implements_matches_both_sides ... ok
+test finds_cross_file_implementors_and_excludes_non_implementors ... ok
+test tsx_finds_implementors_across_component_files ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/provider_migration_recovery.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/provider_migration_recovery-3e74ffaee96964a4)
+
+running 11 tests
+test real_default_provider_indexes_searches_and_stays_current ... ignored, downloads real model weights; run deliberately with --ignored
+test embedder_initialization_failure_leaves_an_existing_index_byte_identical ... ok
+test unreadable_stored_fingerprint_does_not_fail_open_to_the_name_check ... ok
+test a_concurrent_migration_makes_the_losing_indexer_fail_loudly ... ok
+test threaded_embedding_path_counts_empty_vectors_as_failures ... ok
+test legacy_index_dimension_change_under_one_provider_name_clears_vectors ... ok
+test continuing_with_the_new_provider_resumes_instead_of_re_embedding ... ok
+test different_dimension_interrupted_migration_is_not_served_as_healthy ... ok
+test reverting_to_the_previous_provider_re_embeds_instead_of_reusing ... ok
+test same_dimension_interrupted_migration_is_not_served_as_healthy ... ok
+test provider_precedence_resolves_the_same_way_the_indexer_does ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/python_relative_import_resolution.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/python_relative_import_resolution-abcd3a65fa816501)
+
+running 1 test
+test python_relative_import_resolves_cross_file_and_survives_incremental_reindex ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/query_plans.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/query_plans-75727e9ea771ecde)
+
+running 1 test
+test request_path_plans_are_index_driven_with_and_without_statistics ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/remote_config_home_unset.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_config_home_unset-0f64fad529314e91)
+
+running 1 test
+test local_indexing_and_search_work_with_no_home_directory_set ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/remote_provider_degrade.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_provider_degrade-ecb72fb510bb061b)
+
+running 1 test
+test remote_provider_degrades_to_lexical_while_local_still_hard_fails ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests/remote_setup_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_setup_e2e-df0f66e663935c95)
+
+running 3 tests
+test unreachable_provider_leaves_config_and_credentials_untouched ... ok
+test declined_confirmation_leaves_config_and_credentials_untouched ... ok
+test setup_yes_persists_consent_and_encrypted_key_then_index_and_search_json_stay_clean ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/review_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/review_e2e-d80203a96a300276)
+
+running 4 tests
+test review_finds_changed_symbols_and_related_test ... ok
+test invalid_diff_range_fails_with_review_failed ... ok
+test review_related_order_is_deterministic_under_tied_scores ... ok
+test fresh_single_commit_repo_default_diff_fails_truthfully ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/service_hardening.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/service_hardening-ef938502c58868af)
+
+running 3 tests
+test index_without_version_meta_is_incompatible_not_legacy_compatible ... ok
+test incompatible_index_version_is_a_structured_error_not_a_guess ... ok
+test dimension_mismatch_under_same_provider_name_is_a_structured_error ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/telemetry.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/telemetry-15de868c3b5d983c)
+
+running 1 test
+test ordinary_commands_make_no_telemetry_request_by_default ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+     Running tests/terminal_output.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/terminal_output-3f99dd125b2c462c)
+
+running 4 tests
+test color_always_forces_escapes_even_when_piped ... ok
+test piped_and_json_output_never_contain_escapes ... ok
+test every_state_is_readable_without_color ... ok
+test a_terminal_gets_color_and_progress_unless_told_otherwise ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/update_base_for_files.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/update_base_for_files-947698aa6100dfdf)
+
+running 12 tests
+test empty_changed_set_is_a_harmless_no_op ... ok
+test a_never_tracked_path_that_does_not_exist_is_a_silent_no_op ... ok
+test force_reparse_bypasses_the_content_hash_shortcut_in_scoped_mode_too ... ok
+test deletion_requires_both_notfound_and_prior_tracking ... ok
+test unreadable_existing_file_is_errored_not_deleted ... ok
+test untouched_files_survive_even_when_absent_from_the_changed_set ... ok
+test duplicate_paths_in_one_batch_are_deduped_not_double_counted ... ok
+test new_file_in_the_changed_set_is_indexed ... ok
+test rename_is_a_delete_plus_a_create_in_the_same_batch ... ok
+test a_tracked_file_growing_past_the_generic_size_cap_is_removed_not_reparsed ... ok
+test a_stale_extraction_version_escalates_a_scoped_update_to_a_full_reconcile ... ok
+test converges_to_the_same_state_as_full_update_base ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/watcher_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/watcher_e2e-84bbd27996ff321d)
+
+running 4 tests
+test watching_a_nonexistent_path_fails_visibly ... ok
+test real_filesystem_edit_is_detected_and_converges ... ok
+test shutdown_then_restart_both_converge ... ok
+test oxide_internal_writes_do_not_schedule_watcher_batches ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+
+   Doc-tests oxide
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+[test:no-default-features] $ env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features
+   Compiling num-traits v0.2.19
+   Compiling ahash v0.8.12
+   Compiling crossbeam-utils v0.8.22
+   Compiling http v1.5.0
+   Compiling crossbeam-epoch v0.9.20
+   Compiling chrono v0.4.45
+   Compiling ureq-proto v0.6.1
+   Compiling hashbrown v0.14.5
+   Compiling ureq v3.4.0
+   Compiling hashlink v0.9.1
+   Compiling schemars v1.2.2
+   Compiling crossbeam-deque v0.8.7
+   Compiling rmcp v3.1.4
+   Compiling ignore v0.4.33
+   Compiling rusqlite v0.32.1
+   Compiling sentry v0.49.2
+   Compiling oxide v0.1.1 (/tmp/oxide-29/chal)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 41.02s
+     Running unittests src/lib.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/oxide-5ffe38dd1b4faf0b)
+
+running 258 tests
+test agents::tests::a_disabled_opencode_entry_is_not_configured ... ok
+test agents::tests::extra_user_fields_do_not_make_an_entry_look_unconfigured ... ok
+test agents::tests::malformed_toml_is_refused_rather_than_appended_to ... ok
+test blast_radius::tests::provenance_identifies_its_seed_by_path_not_by_bare_name ... ok
+test blast_radius::tests::a_seed_never_appears_in_its_own_blast_radius ... ok
+test blast_radius::tests::direct_callers_and_implementors_are_reported_across_files ... ok
+test agents::tests::a_quoted_root_key_that_reads_like_the_oxide_path_is_not_ours ... ok
+test agents::tests::a_table_header_inside_a_multiline_string_is_not_a_table_header ... ok
+test agents::tests::updating_a_stale_entry_keeps_the_users_own_settings ... ok
+test blast_radius::tests::the_transitive_hop_is_opt_in_and_separately_capped ... ok
+test agents::tests::an_inline_entry_is_updated_without_being_reshaped ... ok
+test agents::tests::paths_with_spaces_survive_both_config_formats ... ok
+test agents::tests::an_entry_named_oxide_that_runs_something_else_is_not_ours ... ok
+test agents::tests::a_nested_user_table_still_reads_back_as_configured ... ok
+test blast_radius::tests::the_distinct_file_cap_holds_even_when_the_item_cap_does_not_bind ... ok
+test cli::error::tests::embedder_unavailable_shows_its_cause ... ok
+test cli::prompt::tests::selection_accepts_numbers_names_and_all ... ok
+test cli::error::tests::actionable_errors_say_what_to_run ... ok
+test blast_radius::tests::the_transitive_hop_works_for_a_language_whose_names_carry_a_signature ... ok
+test cli::error::tests::unrecognized_errors_keep_their_own_message ... ok
+test agents::tests::codex_edits_preserve_every_unrelated_line ... ok
+test blast_radius::tests::one_seeds_direct_members_are_capped_and_the_hop_is_budgeted_separately ... ok
+test blast_radius::tests::the_absolute_item_cap_holds_when_every_seed_spends_both_budgets ... ok
+test context::tests::relevance_floor_drops_weak_but_keeps_everything_when_all_weak ... ok
+test credentials::tests::missing_credentials_file_is_none_not_an_error ... ok
+test credentials::tests::keyfile_is_created_owner_only ... ok
+test credentials::tests::neither_stored_file_ever_contains_the_plaintext_key ... ok
+test context::tests::window_centers_on_query_terms_within_cap ... ok
+test credentials::tests::unknown_provider_is_none_not_an_error ... ok
+test credentials::tests::saving_a_second_provider_keeps_the_first ... ok
+test credentials::tests::concurrent_first_time_key_creation_converges_on_one_key ... ok
+test blast_radius::tests::traversal_is_deterministic_across_runs ... ok
+test credentials::tests::round_trips_a_key_through_a_fresh_load ... ok
+test embeddings::cache::tests::changed_content_is_re_embedded_not_served_stale ... ok
+test embeddings::cache::tests::failed_or_empty_embeddings_are_never_cached ... ok
+test embeddings::cache::tests::malformed_wrong_dimension_embeddings_are_never_cached_or_served ... ok
+test embeddings::hashed::tests::default_embed_documents_is_order_preserving_passthrough ... ok
+test embeddings::hashed::tests::embeddings_are_deterministic_normalized_and_discriminating ... ok
+test embeddings::hashed::tests::hashed_embedder_embed_query_and_embed_document_are_unmodified_passthrough ... ok
+test embeddings::cache::tests::different_fingerprints_never_share_cached_vectors ... ok
+test embeddings::http::tests::http_embedder_name_discriminates_protocol_and_truncation ... ok
+test embeddings::http::tests::prefixed_text_prepends_verbatim_and_passes_through_when_empty ... ok
+test embeddings::http::tests::truncate_and_renormalize_is_noop_when_already_short_enough ... ok
+test embeddings::cache::tests::verify_commit_fails_closed_when_not_a_git_repo ... ok
+test embeddings::http::tests::truncate_and_renormalize_shortens_and_restores_unit_norm ... ok
+test embeddings::remote::tests::different_jina_dimensions_have_unequal_fingerprints ... ok
+test embeddings::remote::tests::different_voyage_models_have_unequal_fingerprints ... ok
+test embeddings::cache::tests::identical_content_reuses_cached_embedding_without_a_second_provider_call ... ok
+test embeddings::remote::tests::known_dim_skips_the_construction_probe_entirely ... ok
+test embeddings::remote::tests::normalize_provider_accepts_common_spellings ... ok
+test embeddings::remote::tests::provider_name_folds_in_dimensions_so_the_process_cache_notices_a_change ... ok
+test embeddings::remote::tests::jina_known_dim_is_not_sent_as_dimensions ... ok
+test embeddings::remote::tests::voyage_known_dim_is_not_sent_as_output_dimension ... ok
+test embeddings::remote::tests::voyage_query_and_document_fingerprints_differ_only_in_profile ... ok
+test embeddings::sessions::tests::auto_embed_sessions_scales_with_cores_memory_and_model_size ... ok
+test embeddings::sessions::tests::embed_sessions_setting_parses_auto_counts_and_rejects_the_rest ... ok
+test embeddings::remote::tests::batches_respect_the_configured_chunk_size ... ok
+test embeddings::text::tests::qwen3_query_text_matches_legacy_instructed_query_format ... ok
+test embeddings::tokenize::tests::tokenizer_splits_cases_and_drops_stopwords ... ok
+test evidence::coordinator::tests::blast_radius_evidence_matches_pre_refactor_score_fraction ... ok
+test evidence::coordinator::tests::structural_evidence_matches_pre_refactor_reason_tag_and_score_fraction ... ok
+test evidence::scope::tests::caps_to_max_files_preserving_seed_order_and_dedups ... ok
+test evidence::scope::tests::empty_seeds_yields_empty_scope ... ok
+test gitctx::tests::a_class_hunk_and_a_separate_method_hunk_in_one_file_both_survive ... ok
+test gitctx::tests::a_class_level_edit_outside_any_method_still_seeds_the_class ... ok
+test gitctx::tests::attributes_modify_and_add_to_the_right_symbol ... ok
+test context::tests::build_context_routes_raw_task_through_embed_query_unprefixed ... ok
+test gitctx::tests::nested_containers_are_not_double_counted_as_independent_seeds ... ok
+test gitctx::tests::noisy_cochange_files_are_recognized ... ok
+test context::tests::orphan_module_stays_a_direct_hit_but_subsumed_when_sibling_exists ... ok
+test context::tests::ordering_groups_by_role ... ok
+test context::tests::bounded_ast_grep_expansion_is_mode_gated ... ok
+test embeddings::cache::tests::verify_commit_fails_closed_on_wrong_commit ... ok
+test gitctx::tests::one_hunk_spanning_both_class_body_and_a_nested_method_keeps_both ... ok
+test context::tests::module_symbols_yield_to_concrete_siblings ... ok
+test gitctx::tests::partial_deletion_attributes_to_enclosing_symbol ... ok
+test gitctx::tests::same_qualified_name_in_different_files_are_not_conflated ... ok
+test gitctx::tests::two_independently_edited_methods_both_remain_seeds ... ok
+test gitctx::tests::whole_symbol_deletion_yields_no_changed_symbol ... ok
+test gitutil::tests::hunk_header_without_count_is_single_line ... ok
+test gitutil::tests::deleted_file_section_does_not_leak_into_previous_file ... ok
+test gitctx::tests::non_git_repo_degrades_to_empty_context ... ok
+test gitutil::tests::parses_added_ranges_and_multiple_files ... ok
+test index::base::read_capped_tests::a_file_exactly_at_the_cap_is_not_oversized ... ok
+test index::base::read_capped_tests::a_file_within_the_cap_returns_every_byte ... ok
+test index::base::read_capped_tests::a_missing_file_propagates_not_found ... ok
+test index::base::read_capped_tests::oversized_and_invalid_utf8_is_still_reported_as_oversized ... ok
+test context::tests::budget_is_respected_and_overflows_are_recorded ... ok
+test context::tests::diversity_cap_limits_items_per_file ... ok
+test context::tests::primary_cap_bounds_semantic_tail ... ok
+test context::tests::expansion_is_capped_per_seed_and_total ... ok
+test embeddings::cache::tests::verify_commit_succeeds_when_head_matches ... ok
+test languages::tags::tests::c_includes_are_relative_when_quoted_and_verbatim_when_angled ... ok
+test index::base::read_capped_tests::a_file_much_larger_than_the_cap_is_never_read_past_cap_plus_one ... ok
+test gitctx::tests::invalid_range_returns_an_error_not_an_empty_context ... ok
+test gitctx::tests::fresh_single_commit_repo_head_tilde_1_gets_a_truthful_message ... ok
+test gitutil::tests::real_git_diff_roundtrip ... ok
+test context::tests::big_primary_survives_tight_budget_by_shrinking ... ok
+test gitctx::tests::valid_range_still_returns_ok ... ok
+test gitutil::tests::real_git_diff_roundtrip_survives_mnemonicprefix_config ... ok
+test gitutil::tests::recent_commits_and_co_change_are_deterministic ... ok
+test languages::tags::tests::java_identity_ignores_parameter_names_annotations_and_formatting ... ok
+test languages::tags::tests::java_overloads_survive_as_distinct_symbols ... ok
+test languages::tags::tests::java_type_normalization_matches_the_jvms_own_overload_rules ... ok
+test languages::tags::tests::php_imports_take_use_statements_and_literal_includes_only ... ok
+test languages::tags::tests::a_decorator_on_a_previous_definition_is_not_absorbed ... ok
+test languages::tags::tests::content_hash_matches_span_text_reconstruction ... ok
+test languages::tags::tests::decorated_definitions_span_their_decorators ... ok
+test languages::tags::tests::ruby_requires_are_imports_and_dynamic_ones_are_not ... ok
+test languages::tags::tests::same_named_methods_in_different_classes_do_not_collide ... ok
+test literal::tests::empty_pattern_is_rejected ... ok
+test languages::tags::tests::c_function_spans_cover_the_body_through_any_pointer_depth ... ok
+test languages::tags::tests::c_prototype_loses_to_a_definition_but_survives_alone ... ok
+test literal::tests::matches_non_utf8_files_byte_exactly ... ok
+test literal::tests::finds_matches_with_line_and_column ... ok
+test literal::tests::exactly_at_the_per_file_cap_does_not_falsely_report_truncated ... ok
+test literal::tests::per_file_cap_skips_to_the_next_file_and_flags_truncated ... ok
+test literal::tests::respects_ignore_policy_and_denylist ... ok
+test languages::tags::tests::php_methods_are_methods_and_enum_cases_are_constants ... ok
+test literal::tests::searches_files_a_symbol_index_would_never_parse ... ok
+test literal::tests::truncates_deterministically_when_over_limit ... ok
+test languages::tags::tests::a_scoped_impl_type_still_nests_and_relates ... ok
+test languages::tags::tests::an_impl_block_never_displaces_the_type_it_names ... ok
+test parser::tests::markdown_yields_one_whole_file_module_symbol ... ok
+test relations::uses_narrowing_tests::an_aliased_import_is_a_known_gap_shared_with_uses_not_new_here ... ok
+test relations::uses_narrowing_tests::an_imported_definition_wins_over_a_same_named_one_elsewhere ... ok
+test relations::uses_narrowing_tests::bare_dot_import_resolves_at_the_repo_root ... ok
+test relations::uses_narrowing_tests::cached_index_answers_exactly_like_a_freshly_built_graph ... ok
+test relations::uses_narrowing_tests::imported_definition_is_empty_when_the_seed_references_nothing_from_it ... ok
+test relations::uses_narrowing_tests::imported_definition_is_narrowed_to_symbols_the_seed_actually_references ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_import_is_ambiguous_when_both_forms_exist ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_import_only_considers_python_candidates ... ok
+test relations::uses_narrowing_tests::python_dotted_relative_imports_resolve_without_a_path_separator ... ok
+test relations::uses_narrowing_tests::python_relative_import_now_produces_imported_definition_and_narrows_uses ... ok
+test relations::uses_narrowing_tests::rust_self_and_super_paths_resolve_relative_to_the_importing_file ... ok
+test relations::uses_narrowing_tests::rust_use_paths_resolve_to_module_files ... ok
+test relations::uses_narrowing_tests::with_no_import_backing_the_old_fan_out_is_kept ... ok
+test parser::tests::empty_file_yields_module_fallback ... ok
+test parser::tests::duplicate_qualified_names_are_deduped ... ok
+test retrieval::engine::tests::context_propagates_a_failed_relations_load ... ok
+test retrieval::engine::tests::exact_identifier_search_works_without_embeddings ... ok
+test retrieval::engine::tests::a_failed_embedding_scan_yields_no_semantic_evidence_not_partial_evidence ... ok
+test retrieval::engine::tests::hybrid_expands_to_referenced_definition_and_test ... ok
+test retrieval::engine::tests::lexical_index_repeated_query_token_counts_once_for_coverage_not_for_bm25 ... ok
+test retrieval::engine::tests::lexical_index_term_coverage_is_additive_evidence_not_a_score_change ... ok
+test retrieval::engine::tests::module_resolution_probes_extensions_and_indexes ... ok
+test retrieval::engine::tests::hybrid_search_runs_lexical_and_semantic_concurrently_without_changing_results ... ok
+test retrieval::engine::tests::search_calls_embed_query_not_embed_for_the_query_text ... ok
+test languages::tags::tests::cpp_type_definitions_do_not_lose_to_forward_declarations ... ok
+test languages::tags::tests::cpp_spans_and_imports_follow_c_while_signatures_keep_templates ... ok
+test retrieval::engine::tests::semantic_search_finds_related_without_name_overlap ... ok
+test literal::tests::parallel_scan_folds_to_exactly_the_sequential_result_around_the_global_cap ... ok
+test languages::tags::tests::ruby_singleton_methods_survive_alongside_instance_methods ... ok
+test retrieval::engine::tests::search_hydrates_only_candidates_unless_expansion_needs_the_corpus ... ok
+test languages::tags::tests::a_dynamic_require_names_no_module ... ok
+test retrieval::options::tests::retrieval_mode_parses_case_insensitively_and_rejects_garbage ... ok
+test retrieval::options::tests::retrieval_mode_resolve_prefers_explicit_then_defaults_to_balanced ... ok
+test retrieval::snapshot::tests::a_partial_symbol_never_serializes ... ok
+test languages::tags::tests::javascript_gets_the_tsx_grammar_esm_and_commonjs ... ok
+test languages::tags::tests::export_const_with_non_function_value_is_captured ... ok
+test languages::tags::tests::typescript_decorators_widen_class_and_method_spans ... ok
+test scanner::tests::ambiguous_headers_choose_the_lower_error_grammar_and_keep_c_on_a_tie ... ok
+test scanner::tests::binary_sniffing_skips_nul_files ... ok
+test scanner::tests::dangling_symlink_does_not_crash_the_scan_and_siblings_are_still_found ... ok
+test scanner::tests::finds_sources_and_respects_gitignore_and_denylist ... ok
+test scanner::tests::markdown_over_the_selective_size_cap_is_excluded_a_small_one_is_kept ... ok
+test retrieval::snapshot::tests::neighbors_refuses_a_partial_seed - should panic ... ok
+test retrieval::top_k::tests::bounded_top_k_equals_full_sort_then_take ... ok
+test service::evidence::tests::evidence_id_is_repository_relative_symbol_identity ... ok
+test service::repository::tests::fingerprint_catches_semantic_mismatch_that_name_and_dim_alone_would_miss ... ok
+test service::cache::tests::process_cache_hits_at_the_same_generation_and_reloads_after_a_write ... ok
+test service::cache::tests::process_cache_misses_on_a_replaced_database_and_skips_an_unkeyable_one ... ok
+test service::repository::tests::legacy_index_without_a_stored_fingerprint_falls_back_to_name_and_dim ... ok
+test retrieval::engine::tests::streaming_semantic_scan_matches_materialized_scan_exactly ... ok
+test storage::sqlite::error_classification_tests::classifies_busy_and_locked_as_transient ... ok
+test storage::sqlite::error_classification_tests::does_not_classify_other_errors_as_transient ... ok
+test storage::sqlite::error_classification_tests::sees_through_context_wrapping ... ok
+test storage::sqlite::tests::foreign_keys_are_enforced_so_cascades_actually_fire ... ok
+test service::repository::tests::status_is_current_when_a_non_utf8_file_is_present ... ok
+test structural_relations::tests::a_generic_go_receiver_qualifies_by_the_declared_type ... ok
+test service::repository::tests::status_still_fails_on_a_genuine_io_error ... ok
+test parser::tests::ts_overloads_do_not_crash_ids ... ok
+test service::repository::tests::update_index_reembeds_on_a_fingerprint_only_change_same_name_and_dim ... ok
+test structural_relations::tests::a_preexisting_index_with_no_relations_gets_backfilled_without_any_file_edit ... ok
+test structural_relations::tests::java_annotations_do_not_cause_attribution_ties_but_one_line_packing_does ... ok
+test retrieval::snapshot::tests::completed_lean_corpus_equals_the_full_load ... ok
+test structural_relations::tests::markdown_files_get_empty_relations_and_never_crash_indexing ... ok
+test structural_relations::tests::editing_away_a_call_clears_the_stale_relation_on_reindex ... ok
+test structural_relations::tests::update_index_populates_relations_directly_no_second_pass_needed ... ok
+test structural_relations::tests::top_level_calls_attach_to_the_module_fallback_symbol ... ok
+test structural_relations::tests::call_inside_a_one_line_nested_function_attaches_to_the_inner_function ... ok
+test symbols::tests::span_text_slices_source ... ok
+test symbols::tests::symbol_id_uses_path_and_name ... ok
+test symbols::tests::fnv_is_stable_and_order_sensitive ... ok
+test telemetry::tests::enabled_options_never_send_default_pii_or_a_hostname ... ok
+test telemetry::tests::only_affirmative_values_opt_in ... ok
+test term::tests::auto_follows_the_terminal_unless_the_environment_objects ... ok
+test term::tests::explicit_flags_override_everything ... ok
+test term::tests::plain_paint_emits_no_escapes ... ok
+test structural_relations::tests::same_line_nested_classes_each_keep_their_own_base ... ok
+test term::tests::thousands_separates_only_where_needed ... ok
+test tree_sitter_structural::tests::abstract_class_bases_are_found ... ok
+test tree_sitter_structural::tests::anonymous_class_expression_bases_are_skipped_not_misattributed ... ok
+test structural_relations::tests::same_bare_name_classes_in_different_scopes_do_not_cross_attribute_bases ... ok
+test tree_sitter_structural::tests::bare_and_method_calls_are_both_found ... ok
+test tree_sitter_structural::tests::c_embedding_requires_a_direct_first_member ... ok
+test tree_sitter_structural::tests::c_calls_include_dispatch_through_a_struct_field ... ok
+test tree_sitter_structural::tests::c_first_member_struct_embedding_is_the_only_base_relation ... ok
+test tree_sitter_structural::tests::cpp_bases_ignore_access_specifiers ... ok
+test tree_sitter_structural::tests::cpp_calls_include_qualified_and_member_dispatch ... ok
+test tree_sitter_structural::tests::java_extends_and_implements_each_produce_their_own_base ... ok
+test tree_sitter_structural::tests::java_calls_cover_invocations_and_constructions_but_not_method_references ... ok
+test tree_sitter_structural::tests::java_interface_enum_and_record_heritage_is_matched ... ok
+test structural_relations::tests::a_declared_module_owns_its_own_module_level_calls ... ok
+test tree_sitter_structural::tests::jsx_components_are_calls_but_intrinsics_are_not ... ok
+test tree_sitter_structural::tests::javascript_reuses_the_tsx_call_and_heritage_patterns_jsx_included ... ok
+test tree_sitter_structural::tests::qualified_and_generic_bases_are_reduced_to_their_last_segment ... ok
+test tree_sitter_structural::tests::qualified_generic_traits_and_pointer_embeddings_are_matched ... ok
+test tree_sitter_structural::tests::php_traits_extends_and_implements_all_land_in_bases ... ok
+test tree_sitter_structural::tests::php_calls_cover_free_member_static_and_construction ... ok
+test tree_sitter_structural::tests::ruby_construction_attributes_to_the_class_not_to_new ... ok
+test tree_sitter_structural::tests::rust_impl_blocks_report_the_type_as_the_implementor ... ok
+test tree_sitter_structural::tests::rust_qualified_calls_and_macros_are_found ... ok
+test tree_sitter_structural::tests::rust_scoped_implementor_types_are_matched ... ok
+test tree_sitter_structural::tests::all_language_queries_compile ... ok
+test tree_sitter_structural::tests::ruby_conditional_mixins_are_not_declared_bases ... ok
+test user_config::tests::known_timestamp_round_trips ... ok
+test user_config::tests::missing_config_loads_as_default ... ok
+test tree_sitter_structural::tests::ruby_mixins_count_as_bases_alongside_real_inheritance ... ok
+test user_config::tests::unix_epoch_formats_as_epoch_start ... ok
+test user_config::tests::save_then_load_round_trips_every_field ... ok
+test watcher::tests::concurrent_acquire_admits_exactly_one_watcher ... ok
+test watcher::tests::atomic_editor_save_temp_file_is_never_indexed ... ok
+test tree_sitter_structural::tests::shared_parse_matches_separate_calls_and_bases ... ok
+test watcher::tests::concurrent_manual_index_while_watcher_state_is_open_does_not_corrupt ... ok
+test watcher::tests::edit_burst_collapses_to_one_up_to_date_symbol ... ok
+test watcher::tests::deleting_or_renaming_a_cached_markdown_file_still_converges ... ok
+test watcher::tests::converges_to_the_same_state_as_a_manual_index_across_a_mixed_changeset ... ok
+test watcher::tests::create_delete_rename_in_one_batch ... ok
+test watcher::tests::gitignored_file_is_never_indexed_even_with_a_recognized_extension ... ok
+test watcher::tests::markdown_growing_past_the_cap_mid_watch_is_removed_not_left_stale ... ok
+test watcher::tests::ignored_tree_never_triggers_a_rescan_or_indexing ... ok
+test watcher::tests::stale_lock_is_reclaimed_but_a_fresh_one_blocks ... ok
+test watcher::tests::ignore_rule_change_reconciles_files_hidden_and_revealed_by_the_rule ... ok
+test watcher::tests::offline_changes_are_recovered_by_reconciliation_not_the_watcher ... ok
+test watcher::tests::new_gitignore_rule_is_picked_up_via_the_ignore_file_itself ... ok
+test languages::tags::tests::extract_with_imports_matches_the_two_separate_calls ... ok
+test parser::tests::extract_with_structure_matches_the_separate_calls ... ok
+test structural_relations::tests::worker_relations_match_the_separate_parse ... ok
+test embeddings::remote::tests::retries_on_429_then_succeeds ... ok
+test telemetry::tests::an_enabled_client_reports_a_panic_to_the_configured_dsn_without_identity ... ok
+test retrieval::engine::tests::lean_snapshot_output_matches_the_complete_corpus_oracle ... ok
+test retrieval::engine::tests::term_coverage_alpha_unset_matches_explicit_zero_byte_for_byte ... ok
+test retrieval::engine::tests::term_coverage_bonus_cannot_overturn_a_leader_whose_margin_exceeds_it ... ok
+test retrieval::engine::tests::term_coverage_boost_never_applies_in_vector_only_mode ... ok
+test retrieval::engine::tests::term_coverage_boost_never_applies_to_module_symbols ... ok
+test retrieval::engine::tests::term_coverage_boost_widens_exact_identifiers_lead_over_common_term_corroborators ... ok
+test embeddings::remote::tests::gives_up_after_exhausting_retries_and_returns_empty_vectors ... ok
+
+test result: ok. 258 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 15.53s
+
+     Running unittests src/main.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/oxide-0a8fce976138808b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/agent_install.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/agent_install-8fbafce8eb69d858)
+
+running 23 tests
+test a_commented_opencode_config_is_refused_with_the_entry_to_paste ... ok
+test end_of_input_at_the_prompt_is_an_error_not_a_silent_no_op ... ok
+test dry_run_prints_the_exact_change_and_writes_nothing ... ok
+test an_unknown_agent_name_lists_the_known_ones ... ok
+test a_malformed_agent_config_is_refused_loudly_and_left_untouched ... ok
+test a_config_edited_after_the_plan_was_shown_is_not_overwritten ... ok
+test a_failed_write_leaves_the_original_config_intact ... ok
+test first_install_writes_one_entry_per_selected_agent ... ok
+test nothing_detected_reports_it_and_writes_nothing ... ok
+test a_foreign_server_named_oxide_is_never_touched ... ok
+test a_declined_confirmation_writes_nothing ... ok
+test a_moved_oxide_binary_is_still_recognised_as_ours ... ok
+test install_writes_only_the_agents_that_were_selected ... ok
+test a_nested_env_table_does_not_break_codex_idempotency ... ok
+test a_conflicting_oxide_registration_is_shown_and_updated_in_place ... ok
+test a_symlinked_config_is_edited_through_the_link_not_over_it ... ok
+test updating_a_stale_entry_preserves_settings_oxide_does_not_manage ... ok
+test installing_over_a_disabled_opencode_entry_re_enables_it ... ok
+test detection_distinguishes_present_absent_and_configured ... ok
+test reinstalling_is_idempotent_and_never_duplicates_the_entry ... ok
+test user_extras_do_not_break_idempotency ... ok
+test uninstall_removes_only_oxides_own_entry ... ok
+test a_binary_path_containing_spaces_round_trips_through_both_formats ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/benchmark_gate.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/benchmark_gate-15eac706ce73cd21)
+
+running 1 test
+test benchmark_runs_and_hybrid_matches_or_beats_vector_only ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/blast_radius_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/blast_radius_e2e-f82c947daac69a6d)
+
+running 6 tests
+test fast_query_labels_blast_radius_evidence_in_its_reasons ... ok
+test search_blast_radius_reaches_files_the_search_itself_did_not_return ... ok
+test query_keeps_blast_radius_inside_the_existing_token_budget ... ok
+test search_ranking_is_untouched_and_evidence_is_attached_to_its_seed ... ok
+test absent_flag_leaves_search_and_query_json_byte_identical ... ok
+test output_is_deterministic_and_bounded_across_repeated_runs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/cli_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/cli_e2e-7d5353384b0c1147)
+
+running 22 tests
+test invalid_repository_path_is_structured ... ok
+test index_help_promotes_rebuild_and_demotes_the_per_layer_scopes ... ok
+test json_errors_carry_a_machine_actionable_action_alongside_the_code ... ok
+test status_describes_missing_index_and_search_fails_structurally ... ok
+test clean_index_write_leaves_no_wal_or_schema_artifacts ... ok
+test empty_search_and_invalid_invocation_keep_distinct_contracts ... ok
+test corrupt_index_file_is_a_structured_error_not_a_panic ... ok
+test context_json_is_deterministic_for_same_index_and_configuration ... ok
+test repository_path_with_spaces_and_unicode_is_indexable_and_readable ... ok
+test unavailable_embedder_is_a_nonzero_structured_failure ... ok
+test search_json_is_deterministic_across_process_runs_with_tied_scores ... ok
+test stale_status_and_no_source_error_are_explicit ... ok
+test status_succeeds_on_a_repo_with_one_non_utf8_file ... ok
+test index_status_search_context_form_one_machine_readable_flow ... ok
+test search_context_review_and_stats_accept_an_explicit_repository_path ... ok
+test concurrent_reindexing_of_an_existing_index_all_succeed ... ok
+test repeated_indexing_and_renames_report_incremental_work ... ok
+test read_only_commands_never_modify_index_db_content ... ok
+test concurrent_first_time_indexing_never_panics_or_corrupts_state ... ok
+test index_scope_flags_are_wired_through_the_cli ... ok
+test search_succeeds_while_another_process_is_indexing ... ok
+test sustained_concurrent_read_write_stress_never_corrupts_or_panics ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+     Running tests/cli_surface.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/cli_surface-490064eee54f8fa2)
+
+running 12 tests
+test running_outside_a_repository_points_at_an_explicit_path ... ok
+test top_level_help_names_every_public_command_and_a_quick_start ... ok
+test query_and_search_help_distinguish_question_from_expression ... ok
+test a_missing_index_tells_a_human_exactly_what_to_run ... ok
+test every_public_subcommand_has_its_own_help ... ok
+test json_output_keeps_its_pre_rename_shape ... ok
+test query_takes_the_task_positionally_in_both_output_modes ... ok
+test profile_and_retrieval_mode_are_the_same_flag ... ok
+test status_is_readable_before_indexing_when_current_and_when_stale ... ok
+test malformed_invocations_stay_clap_errors_with_exit_two ... ok
+test context_stays_a_byte_identical_compatibility_alias_for_query ... ok
+test status_verbose_absorbs_stats_without_changing_the_json ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/comment_indexing.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/comment_indexing-29b0644b40406940)
+
+running 4 tests
+test a_leading_comment_is_the_one_real_exception_and_does_reach_the_payload ... ok
+test code_comment_text_never_reaches_the_remote_embedding_payload ... ok
+test a_comment_naming_a_real_known_symbol_leaks_that_name_via_references ... ok
+test standalone_comment_between_symbols_is_lexically_findable ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/context_max_primaries_override.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/context_max_primaries_override-251e9b8b64d3aaf9)
+
+running 1 test
+test env_override_replaces_the_shipped_primary_cap ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/debug_dump_kept.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/debug_dump_kept-f15badb3615234af)
+
+running 1 test
+test debug_dump_kept_writes_exactly_when_env_var_set ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/deep_nesting.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/deep_nesting-85201c6048f4ec72)
+
+running 6 tests
+test cpp_declarator_signatures_are_unchanged_by_the_iterative_rewrite ... ok
+test a_deep_cpp_parameter_declarator_indexes_on_a_small_stack ... ok
+test a_deep_c_pointer_declarator_indexes_on_a_small_stack ... ok
+test a_deep_c_header_resolves_its_language_on_a_small_stack ... ok
+test metadata_after_a_deep_subtree_is_still_collected ... ok
+test a_deep_typescript_union_type_indexes_on_a_small_stack ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+
+     Running tests/determinism_stress.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/determinism_stress-8c8c81b885412ae6)
+
+running 4 tests
+test deterministic_after_fresh_rebuild ... ok
+test deterministic_after_incremental_edit ... ok
+test deterministic_after_rename ... ok
+test deterministic_after_delete_and_readd ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+     Running tests/embedding_batch_writes.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_batch_writes-b7b557c424f1c4e7)
+
+running 3 tests
+test empty_batch_is_a_harmless_no_op ... ok
+test batched_writes_skip_symbol_ids_with_no_matching_row_same_as_put_embedding ... ok
+test batched_writes_are_identical_to_one_call_per_item ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/embedding_cache_reuse.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_cache_reuse-59bfc18081ec2a34)
+
+running 1 test
+test identical_files_reuse_embeddings_across_commits_without_leaking_symbols ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/embedding_staleness.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/embedding_staleness-8279233f018da981)
+
+running 11 tests
+test markdown_mid_file_edit_reembeds_the_whole_file_module_symbol ... ok
+test unchanged_file_reuses_module_embedding ... ok
+test body_only_change_to_a_concrete_symbol_still_reembeds_that_symbol ... ok
+test doc_comment_change_that_does_not_touch_embed_input_leaves_module_embedding_reused ... ok
+test comment_only_file_fallback_hash_still_covers_the_full_source ... ok
+test signature_only_change_invalidates_module_embedding ... ok
+test import_only_change_reembeds_untouched_concrete_symbols ... ok
+test new_same_file_definition_reembeds_an_untouched_symbol_that_now_references_it ... ok
+test removed_in_file_reference_invalidates_module_embedding ... ok
+test import_only_change_invalidates_module_embedding ... ok
+test new_in_file_reference_invalidates_module_embedding ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/eval_determinism.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/eval_determinism-52887326e09ff937)
+
+running 2 tests
+test benchmark_report_is_byte_stable_and_grouped_by_sorted_repo_name ... ok
+test oxide_eval_stdout_is_identical_across_processes ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+
+     Running tests/full_incremental_parity.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/full_incremental_parity-881267eb60bbcc4e)
+
+running 2 tests
+test javascript_and_java_reach_the_same_state_incrementally_as_from_scratch ... ok
+test incremental_mutation_sequence_matches_clean_full_rebuild ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests/git_context_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/git_context_e2e-5fdb13b0fe0591b1)
+
+running 13 tests
+test whole_file_deletion_is_listed_but_maps_to_no_symbol ... ok
+test detached_head_works ... ok
+test absent_git_flag_leaves_query_json_byte_identical ... ok
+test partial_deletion_in_a_real_repo_attributes_to_the_enclosing_symbol ... ok
+test rename_attributes_to_the_new_path ... ok
+test non_git_directory_degrades_for_both_query_and_review ... ok
+test root_commit_does_not_manufacture_a_co_change_pair ... ok
+test merge_commit_neither_crashes_nor_pollutes_co_change ... ok
+test staged_and_unstaged_changes_both_surface ... ok
+test shallow_clone_does_not_error ... ok
+test git_query_output_is_deterministic_across_repeated_runs ... ok
+test git_evidence_reflects_the_currently_indexed_working_tree_state ... ok
+test git_caller_expansion_is_scoped_to_the_seed_pool_not_repo_wide ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/incremental.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/incremental-682ab09dbda800e2)
+
+running 9 tests
+test unchanged_files_are_not_reparsed_and_embeddings_reused ... ok
+test unreadable_file_is_counted_as_errored_not_silently_dropped ... ok
+test deleted_files_and_symbols_are_removed_from_persistent_index ... ok
+test index_survives_reopen_from_disk ... ok
+test editing_a_file_strands_no_orphan_embeddings_or_relations ... ok
+test deleting_a_file_strands_no_orphan_embeddings_or_relations ... ok
+test renaming_a_symbol_within_a_still_present_file_counts_as_deleted ... ok
+test changing_one_symbol_only_reembeds_that_symbol ... ok
+test file_deleted_between_scan_and_read_is_accounted_not_silently_dropped ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/index_generation.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/index_generation-77191b3d66890d23)
+
+running 4 tests
+test reads_never_advance_the_generation ... ok
+test every_write_path_advances_the_generation_exactly_once ... ok
+test an_index_that_predates_the_counter_is_not_keyable_until_a_writer_touches_it ... ok
+test a_rebuilt_database_gets_a_new_identity_even_at_the_same_generation ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/index_scope_flags.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/index_scope_flags-4ad463db637bb433)
+
+running 10 tests
+test force_graph_refreshes_relations_without_reparsing_or_reembedding ... ok
+test default_options_is_the_unchanged_plain_incremental_contract ... ok
+test force_reparse_reparses_every_file_even_unchanged ... ok
+test force_embeddings_reembeds_everything_without_reparsing_or_graph_refresh ... ok
+test a_stale_extraction_version_forces_a_reparse_without_any_flag ... ok
+test force_graph_and_force_embeddings_combine_without_forcing_reparse ... ok
+test update_base_alone_never_touches_embeddings ... ok
+test all_forces_every_layer ... ok
+test e_never_embeds_against_stale_symbols_when_a_file_actually_changed ... ok
+test update_embeddings_after_update_base_matches_update_index_scoped ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/interrupted_index_recovery.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/interrupted_index_recovery-7710760f0eaece0d)
+
+running 7 tests
+test schema_only_index_is_rejected_not_treated_as_healthy ... ok
+test partially_committed_files_without_metadata_are_rejected ... ok
+test embedding_phase_interrupted_before_meta_write_is_rejected ... ok
+test torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes ... ok
+test closing_meta_writes_are_atomic_as_a_group ... ok
+test a_follow_up_index_recovers_cleanly_from_any_interruption_point ... ok
+test sigkill_mid_index_under_bulk_checkpointing_recovers_on_the_next_run ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.12s
+
+     Running tests/language_conformance.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/language_conformance-4b7e8ddd2c2045c4)
+
+running 20 tests
+test java_conformance ... ok
+test go_conformance ... ok
+test python_conformance ... ok
+test c_definitions_win_over_prototypes_and_lone_prototypes_survive ... ok
+test c_conformance ... ok
+test php_conformance ... ok
+test rust_conformance ... ok
+test cpp_overloads_keep_distinct_scoped_symbols ... ok
+test cpp_header_uses_the_cpp_grammar_when_its_source_is_unambiguously_cpp ... ok
+test cpp_conformance ... ok
+test javascript_conformance ... ok
+test typescript_conformance ... ok
+test ruby_singleton_methods_do_not_collide_with_instance_methods ... ok
+test ruby_conformance ... ok
+test tsx_conformance ... ok
+test java_overloads_keep_distinct_ids_without_touching_other_languages ... ok
+test broken_files_do_not_abort_indexing ... ok
+test no_change_reindex_is_a_no_op ... ok
+test single_file_edit_touches_only_that_file ... ok
+test cold_index_is_deterministic ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running tests/lexical_persistence.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/lexical_persistence-e2659e22bc95af4a)
+
+running 7 tests
+test every_symbol_has_a_document_length_row ... ok
+test a_full_index_publishes_the_generation_key ... ok
+test an_old_index_is_backfilled_on_the_next_run ... ok
+test an_unrecognized_generation_is_rebuilt_not_trusted ... ok
+test an_interrupted_backfill_is_never_read_and_is_repaired ... ok
+test persisted_postings_score_identically_to_the_in_memory_index ... ok
+test single_file_edits_stay_consistent_during_and_after_migration ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/literal_search.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/literal_search-677e4fa3ac35c89b)
+
+running 11 tests
+test empty_pattern_is_an_actionable_error_not_a_match_everything_scan ... ok
+test unknown_mode_is_rejected_and_literal_is_listed_in_the_error ... ok
+test json_shape_is_file_line_column_snippet_no_symbol_fields ... ok
+test quoted_substrings_with_special_characters_match_literally ... ok
+test empty_repository_is_not_an_error ... ok
+test literal_search_never_creates_an_oxide_directory ... ok
+test non_utf8_files_are_scanned_without_crashing ... ok
+test literal_search_needs_no_index ... ok
+test no_matches_returns_empty_bounded_result_not_an_error ... ok
+test matches_ripgrep_over_the_same_file_set ... ok
+test literal_search_never_touches_an_existing_index_db ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/markdown_indexing.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/markdown_indexing-9810b6a4a8b2124b)
+
+running 5 tests
+test markdown_embed_text_never_contains_body_paragraph_text ... ok
+test excluded_secret_never_becomes_a_reference_on_a_tracked_symbol ... ok
+test gitignored_markdown_secret_never_reaches_the_index ... ok
+test readme_prose_is_reachable_via_hybrid_search ... ok
+test body_only_term_is_lexically_findable_but_not_semantically_distinguishing ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/mcp_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/mcp_e2e-0d524cc4d8d9df3c)
+
+running 12 tests
+test search_literal_mode_rejects_missing_query_as_malformed_params ... ok
+test initialize_and_list_expose_only_compact_agent_tools ... ok
+test malformed_parameters_and_service_failures_preserve_structured_semantics ... ok
+test search_literal_mode_needs_no_index_and_matches_cli_output ... ok
+test search_rejects_a_lexical_semantic_or_hybrid_mode_value ... ok
+test concurrent_mcp_reads_return_valid_results ... ok
+test repeated_reads_are_deterministic_and_empty_search_is_valid ... ok
+test context_and_search_return_service_evidence_over_real_protocol ... ok
+test blast_radius_is_opt_in_over_the_protocol_and_absent_by_default ... ok
+test unavailable_embedder_preserves_fallback_action ... ok
+test repository_and_incompatible_index_errors_keep_service_actions ... ok
+test a_live_server_sees_an_out_of_process_reindex_on_the_next_call ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/pending_embedding_count.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/pending_embedding_count-6d24c8955731fc75)
+
+running 5 tests
+test freshly_based_but_never_embedded_index_reports_every_symbol_pending ... ok
+test pending_count_matches_what_update_embeddings_actually_embeds ... ok
+test fully_embedded_index_reports_zero_pending ... ok
+test switching_embedder_makes_everything_pending_even_if_content_hashes_match ... ok
+test editing_one_file_after_embedding_makes_exactly_its_symbols_pending ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/precomputed_relations_conformance.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/precomputed_relations_conformance-5c5775940f2c824e)
+
+running 10 tests
+test finds_method_style_calls_not_just_bare_calls ... ok
+test python_multiple_inheritance_matches_every_base ... ok
+test python_subclass_implementors_across_files ... ok
+test typescript_implements_list_matches_every_interface ... ok
+test call_matching_is_ast_precise_not_lexical ... ok
+test tsx_finds_bare_and_method_calls_inside_jsx_expressions ... ok
+test typescript_extends_plus_implements_matches_both_sides ... ok
+test typescript_finds_method_style_calls_not_just_bare_calls ... ok
+test finds_cross_file_implementors_and_excludes_non_implementors ... ok
+test tsx_finds_implementors_across_component_files ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/provider_migration_recovery.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/provider_migration_recovery-7772593e349976c2)
+
+running 10 tests
+test unreadable_stored_fingerprint_does_not_fail_open_to_the_name_check ... ok
+test a_concurrent_migration_makes_the_losing_indexer_fail_loudly ... ok
+test threaded_embedding_path_counts_empty_vectors_as_failures ... ok
+test legacy_index_dimension_change_under_one_provider_name_clears_vectors ... ok
+test embedder_initialization_failure_leaves_an_existing_index_byte_identical ... ok
+test continuing_with_the_new_provider_resumes_instead_of_re_embedding ... ok
+test different_dimension_interrupted_migration_is_not_served_as_healthy ... ok
+test same_dimension_interrupted_migration_is_not_served_as_healthy ... ok
+test reverting_to_the_previous_provider_re_embeds_instead_of_reusing ... ok
+test provider_precedence_resolves_the_same_way_the_indexer_does ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/python_relative_import_resolution.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/python_relative_import_resolution-b9a7fda2f9925480)
+
+running 1 test
+test python_relative_import_resolves_cross_file_and_survives_incremental_reindex ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/query_plans.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/query_plans-e075e6fe507c491d)
+
+running 1 test
+test request_path_plans_are_index_driven_with_and_without_statistics ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/remote_config_home_unset.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_config_home_unset-c0f08935ba10d3bc)
+
+running 1 test
+test local_indexing_and_search_work_with_no_home_directory_set ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/remote_provider_degrade.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_provider_degrade-80c571af4da377ec)
+
+running 1 test
+test remote_provider_degrades_to_lexical_while_local_still_hard_fails ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/remote_setup_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/remote_setup_e2e-e5150b59629c8694)
+
+running 3 tests
+test declined_confirmation_leaves_config_and_credentials_untouched ... ok
+test unreachable_provider_leaves_config_and_credentials_untouched ... ok
+test setup_yes_persists_consent_and_encrypted_key_then_index_and_search_json_stay_clean ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/review_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/review_e2e-bddfcf839eafec1f)
+
+running 4 tests
+test invalid_diff_range_fails_with_review_failed ... ok
+test review_related_order_is_deterministic_under_tied_scores ... ok
+test fresh_single_commit_repo_default_diff_fails_truthfully ... ok
+test review_finds_changed_symbols_and_related_test ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/service_hardening.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/service_hardening-2efa70a4af931033)
+
+running 3 tests
+test incompatible_index_version_is_a_structured_error_not_a_guess ... ok
+test index_without_version_meta_is_incompatible_not_legacy_compatible ... ok
+test dimension_mismatch_under_same_provider_name_is_a_structured_error ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/telemetry.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/telemetry-5381315b684f63ca)
+
+running 1 test
+test ordinary_commands_make_no_telemetry_request_by_default ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+
+     Running tests/terminal_output.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/terminal_output-510677835cd73a5d)
+
+running 4 tests
+test color_always_forces_escapes_even_when_piped ... ok
+test piped_and_json_output_never_contain_escapes ... ok
+test every_state_is_readable_without_color ... ok
+test a_terminal_gets_color_and_progress_unless_told_otherwise ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+
+     Running tests/update_base_for_files.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/update_base_for_files-5bf10ed27fd36533)
+
+running 12 tests
+test unreadable_existing_file_is_errored_not_deleted ... ok
+test new_file_in_the_changed_set_is_indexed ... ok
+test empty_changed_set_is_a_harmless_no_op ... ok
+test deletion_requires_both_notfound_and_prior_tracking ... ok
+test a_never_tracked_path_that_does_not_exist_is_a_silent_no_op ... ok
+test untouched_files_survive_even_when_absent_from_the_changed_set ... ok
+test force_reparse_bypasses_the_content_hash_shortcut_in_scoped_mode_too ... ok
+test rename_is_a_delete_plus_a_create_in_the_same_batch ... ok
+test duplicate_paths_in_one_batch_are_deduped_not_double_counted ... ok
+test a_tracked_file_growing_past_the_generic_size_cap_is_removed_not_reparsed ... ok
+test a_stale_extraction_version_escalates_a_scoped_update_to_a_full_reconcile ... ok
+test converges_to_the_same_state_as_full_update_base ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/watcher_e2e.rs (/home/khoi/.cache/oxide-29/chal/check/debug/deps/watcher_e2e-03c383f3b224a9f5)
+
+running 4 tests
+test watching_a_nonexistent_path_fails_visibly ... ok
+test real_filesystem_edit_is_detected_and_converges ... ok
+test shutdown_then_restart_both_converge ... ok
+test oxide_internal_writes_do_not_schedule_watcher_batches ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.04s
+
+   Doc-tests oxide
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+[bench] $ cargo build --release -j 2
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling libc v0.2.189
+   Compiling find-msvc-tools v0.1.11
+   Compiling shlex v2.0.1
+   Compiling cc v1.4.4
+   Compiling syn v3.0.3
+   Compiling syn v2.0.119
+   Compiling cfg-if v1.0.4
+   Compiling serde_core v1.0.229
+   Compiling memchr v2.8.3
+   Compiling synstructure v0.13.2
+   Compiling serde v1.0.229
+   Compiling zerofrom-derive v0.1.7
+   Compiling serde_derive v1.0.229
+   Compiling zmij v1.0.23
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling yoke v0.8.3
+   Compiling tree-sitter-language v0.1.8
+   Compiling zerovec-derive v0.11.6
+   Compiling zerovec v0.11.8
+   Compiling displaydoc v0.2.7
+   Compiling version_check v0.9.5
+   Compiling ring v0.17.14
+   Compiling writeable v0.6.4
+   Compiling smallvec v1.15.2
+   Compiling tinystr v0.8.4
+   Compiling getrandom v0.2.17
+   Compiling once_cell v1.21.4
+   Compiling equivalent v1.0.2
+   Compiling litemap v0.8.3
+   Compiling getrandom v0.3.4
+   Compiling zerocopy v0.8.56
+   Compiling itoa v1.0.18
+   Compiling icu_locale_core v2.3.0
+   Compiling potential_utf v0.1.6
+   Compiling zerotrie v0.2.5
+   Compiling hashbrown v0.17.1
+   Compiling indexmap v2.14.1
+   Compiling icu_provider v2.3.1
+   Compiling serde_json v1.0.151
+   Compiling utf8_iter v1.0.4
+   Compiling icu_collections v2.3.0
+   Compiling httparse v1.10.1
+   Compiling getrandom v0.4.3
+   Compiling rustls v0.23.43
+   Compiling autocfg v1.5.1
+   Compiling strsim v0.11.1
+   Compiling icu_normalizer_data v2.3.0
+   Compiling icu_properties_data v2.3.0
+   Compiling ident_case v1.0.1
+   Compiling thiserror v2.0.20
+   Compiling generic-array v0.14.7
+   Compiling zeroize_derive v1.5.0
+   Compiling thiserror-impl v2.0.20
+   Compiling log v0.4.34
+   Compiling percent-encoding v2.3.2
+   Compiling zeroize v1.9.0
+   Compiling ppv-lite86 v0.2.21
+   Compiling rand_core v0.9.5
+   Compiling aho-corasick v1.1.5
+   Compiling typenum v1.20.1
+   Compiling regex-syntax v0.8.11
+   Compiling regex-automata v0.4.18
+   Compiling rand_chacha v0.9.0
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling num-traits v0.2.19
+   Compiling pkg-config v0.3.34
+   Compiling subtle v2.6.1
+   Compiling adler2 v2.0.1
+   Compiling bitflags v2.13.1
+   Compiling simd-adler32 v0.3.10
+   Compiling crossbeam-utils v0.8.22
+   Compiling rustls-pki-types v1.15.1
+   Compiling miniz_oxide v0.8.9
+   Compiling idna_adapter v1.2.2
+   Compiling rand v0.9.5
+   Compiling rand_core v0.6.4
+   Compiling bytes v1.12.1
+   Compiling untrusted v0.9.0
+   Compiling crossbeam-epoch v0.9.20
+   Compiling crypto-common v0.1.7
+   Compiling idna v1.1.0
+   Compiling form_urlencoded v1.2.2
+   Compiling uuid v1.26.0
+   Compiling fnv v1.0.7
+   Compiling crossbeam-deque v0.8.7
+   Compiling crc32fast v1.5.1
+   Compiling http v1.5.0
+   Compiling darling_core v0.20.11
+   Compiling url v2.5.8
+   Compiling rustls-webpki v0.103.15
+   Compiling regex v1.13.1
+   Compiling ahash v0.8.12
+   Compiling num-conv v0.2.2
+   Compiling time-core v0.1.9
+   Compiling byteorder v1.5.0
+   Compiling base64 v0.23.1
+   Compiling deranged v0.5.8
+   Compiling powerfmt v0.2.0
+   Compiling pin-project-lite v0.2.17
+   Compiling time v0.3.55
+   Compiling ureq-proto v0.6.1
+   Compiling socks v0.3.4
+   Compiling darling_macro v0.20.11
+   Compiling debugid v0.8.0
+   Compiling webpki-roots v1.0.9
+   Compiling object v0.37.3
+   Compiling rustversion v1.0.23
+   Compiling hex v0.4.3
+   Compiling unicode-width v0.2.2
+   Compiling futures-core v0.3.34
+   Compiling futures-sink v0.3.34
+   Compiling utf8-zero v0.8.1
+   Compiling rayon-core v1.13.0
+   Compiling icu_locale_fallback_data v2.3.0
+   Compiling portable-atomic v1.15.0
+   Compiling ureq v3.4.0
+   Compiling sentry-types v0.49.2
+   Compiling flate2 v1.1.9
+   Compiling darling v0.20.11
+   Compiling onig_sys v69.9.3
+   Compiling matrixmultiply v0.3.11
+   Compiling icu_segmenter_data v2.3.0
+   Compiling semver v1.0.28
+   Compiling hmac-sha256 v1.1.14
+   Compiling lzma-rust2 v0.15.8
+   Compiling either v1.18.0
+   Compiling gimli v0.32.3
+   Compiling rustix v1.1.4
+   Compiling addr2line v0.25.1
+   Compiling ort-sys v2.0.0-rc.13
+   Compiling rustc_version v0.4.1
+   Compiling derive_builder_core v0.20.2
+   Compiling sentry-core v0.49.2
+   Compiling futures-channel v0.3.34
+   Compiling console v0.16.4
+   Compiling inout v0.1.4
+   Compiling darling_core v0.24.1
+   Compiling futures-macro v0.3.34
+   Compiling minimal-lexical v0.2.1
+   Compiling utf8parse v0.2.2
+   Compiling rustc-demangle v0.1.28
+   Compiling esaxx-rs v0.1.10
+   Compiling inotify-sys v0.1.8
+   Compiling option-ext v0.2.0
+   Compiling ref-cast v1.0.27
+   Compiling unit-prefix v0.5.2
+   Compiling cpufeatures v0.2.17
+   Compiling linux-raw-sys v0.12.1
+   Compiling futures-io v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling paste v1.0.15
+   Compiling slab v0.4.12
+   Compiling rawpointer v0.2.1
+   Compiling pastey v0.2.3
+   Compiling vcpkg v0.2.15
+   Compiling futures-util v0.3.34
+   Compiling libsqlite3-sys v0.30.1
+   Compiling darling_macro v0.24.1
+   Compiling indicatif v0.18.6
+   Compiling dirs-sys v0.5.0
+   Compiling backtrace v0.3.76
+   Compiling anstyle-parse v1.0.0
+   Compiling nom v7.1.3
+   Compiling cipher v0.4.4
+   Compiling icu_locale_fallback v2.3.0
+   Compiling rayon v1.12.0
+   Compiling castaway v0.2.4
+   Compiling derive_builder_macro v0.20.2
+   Compiling sentry-contexts v0.49.2
+   Compiling itertools v0.14.0
+   Compiling tree-sitter v0.27.0
+   Compiling num-complex v0.4.6
+   Compiling num-integer v0.1.47
+   Compiling universal-hash v0.5.1
+   Compiling monostate-impl v0.1.18
+   Compiling ref-cast-impl v1.0.27
+   Compiling tokio-macros v2.7.2
+   Compiling serde_derive_internals v0.30.0
+   Compiling anstyle-query v1.1.5
+   Compiling base64 v0.13.1
+   Compiling allocator-api2 v0.2.21
+   Compiling foldhash v0.2.0
+   Compiling macro_rules_attribute-proc_macro v0.2.3
+   Compiling unicode-segmentation v1.13.3
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling ryu v1.0.23
+   Compiling fastrand v2.5.0
+   Compiling opaque-debug v0.3.1
+   Compiling static_assertions v1.1.0
+   Compiling same-file v1.0.6
+   Compiling colorchoice v1.0.5
+   Compiling cfg_aliases v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling anstream v1.0.0
+   Compiling sentry v0.49.2
+   Compiling tempfile v3.27.0
+   Compiling walkdir v2.5.0
+   Compiling compact_str v0.9.1
+   Compiling polyval v0.6.2
+   Compiling spm_precompiled v0.1.4
+   Compiling macro_rules_attribute v0.2.3
+   Compiling hashbrown v0.16.1
+   Compiling schemars_derive v1.2.2
+   Compiling tokio v1.53.1
+   Compiling monostate v0.1.18
+   Compiling ndarray v0.17.2
+   Compiling rayon-cond v0.4.0
+   Compiling icu_segmenter v2.3.0
+   Compiling derive_builder v0.20.2
+   Compiling onig v6.5.3
+   Compiling sentry-backtrace v0.49.2
+   Compiling dirs v6.0.0
+   Compiling futures-executor v0.3.34
+   Compiling darling v0.24.1
+   Compiling hashbrown v0.14.5
+   Compiling chrono v0.4.45
+   Compiling tracing-core v0.1.36
+   Compiling unicode-normalization-alignments v0.1.12
+   Compiling dary_heap v0.3.9
+   Compiling bstr v1.13.1
+   Compiling tracing-attributes v0.1.31
+   Compiling hostname v0.4.2
+   Compiling uname v0.1.1
+   Compiling tree-sitter-java v0.23.5
+   Compiling tree-sitter-php v0.24.2
+   Compiling tree-sitter-ruby v0.23.1
+   Compiling tree-sitter-python v0.25.0
+   Compiling tree-sitter-go v0.25.0
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling tree-sitter-cpp v0.23.4
+   Compiling tree-sitter-c v0.24.2
+   Compiling tree-sitter-rust v0.24.2
+   Compiling rmcp v3.1.4
+   Compiling clap_lex v1.1.0
+   Compiling dyn-clone v1.0.20
+   Compiling smawk v0.3.3
+   Compiling heck v0.5.0
+   Compiling streaming-iterator v0.1.9
+   Compiling anyhow v1.0.104
+   Compiling unicode_categories v0.1.1
+   Compiling winnow v1.0.4
+   Compiling toml_parser v1.1.3+spec-1.1.0
+   Compiling tokenizers v0.22.2
+   Compiling clap_derive v4.6.4
+   Compiling textwrap v0.16.3
+   Compiling schemars v1.2.2
+   Compiling clap_builder v4.6.6
+   Compiling tracing v0.1.44
+   Compiling globset v0.4.20
+   Compiling hashlink v0.9.1
+   Compiling rmcp-macros v3.1.4
+   Compiling futures v0.3.34
+   Compiling hf-hub v0.5.0
+   Compiling inotify v0.11.5
+   Compiling sentry-panic v0.49.2
+   Compiling ort v2.0.0-rc.13
+   Compiling tokio-util v0.7.19
+   Compiling safetensors v0.8.0
+   Compiling ghash v0.5.1
+   Compiling ctr v0.9.2
+   Compiling aes v0.8.4
+   Compiling webpki-roots v0.26.11
+   Compiling aead v0.5.2
+   Compiling notify-types v2.1.0
+   Compiling mio v1.2.2
+   Compiling httpdate v1.0.3
+   Compiling toml_datetime v1.1.1+spec-1.1.0
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling base64 v0.22.1
+   Compiling toml_writer v1.1.2+spec-1.1.0
+   Compiling fallible-iterator v0.3.0
+   Compiling toml_edit v0.25.13+spec-1.1.0
+   Compiling rusqlite v0.32.1
+   Compiling ureq v2.12.1
+   Compiling notify v8.2.0
+   Compiling aes-gcm v0.10.3
+   Compiling fastembed v6.0.2
+   Compiling ignore v0.4.33
+   Compiling clap v4.6.6
+   Compiling cliclack v0.5.6
+   Compiling tree-sitter-tags v0.27.0
+   Compiling rustc-hash v2.1.3
+   Compiling oxide v0.1.1 (/tmp/oxide-29/chal)
+    Finished `release` profile [optimized] target(s) in 3m 16s
+query                              task               mode  recall@k   prec@k  ctx bytes
+py-exact-retrypolicy               exact-symbol   vector-only     1.000     0.200       1905
+py-exact-retrypolicy               exact-symbol     hybrid     1.000     0.200       1905
+py-semantic-http-retries           semantic       vector-only     0.500     0.200       4160
+py-semantic-http-retries           semantic         hybrid     0.500     0.200       4160
+py-crossfile-token-refresh         cross-file     vector-only     1.000     0.200       2442
+py-crossfile-token-refresh         cross-file       hybrid     1.000     0.200       3976
+py-related-test-gives-up           related-test   vector-only     1.000     0.200       2801
+py-related-test-gives-up           related-test     hybrid     1.000     0.200       3965
+py-ttl-cache-expiry                exact-symbol   vector-only     1.000     0.200       1416
+py-ttl-cache-expiry                exact-symbol     hybrid     1.000     0.200       1416
+ts-exact-versionedstore            exact-symbol   vector-only     1.000     0.200       1500
+ts-exact-versionedstore            exact-symbol     hybrid     1.000     0.200        990
+ts-semantic-backoff                semantic       vector-only     0.500     0.200        668
+ts-semantic-backoff                semantic         hybrid     0.500     0.200       1384
+ts-crossfile-decode-jwt            cross-file     vector-only     1.000     0.200       1860
+ts-crossfile-decode-jwt            cross-file       hybrid     1.000     0.200       1860
+tsx-button-component               tsx            vector-only     1.000     0.200       1225
+tsx-button-component               tsx              hybrid     1.000     0.200       1284
+ts-related-test-button-click       related-test   vector-only     0.000     0.000       1340
+ts-related-test-button-click       related-test     hybrid     1.000     0.200       1880
+ts-default-policy-const            exported-declaration vector-only     1.000     0.200        983
+ts-default-policy-const            exported-declaration   hybrid     1.000     0.200       1865
+
+vector-only  recall@5 0.818  precision@5 0.182  avg returned 5.0  avg ctx 1845B
+hybrid       recall@5 0.909  precision@5 0.200  avg returned 5.0  avg ctx 2244B
+[installer-check] $ shellcheck -s sh install.sh tests/install_sh_test.sh
+no release binary at /tmp/oxide-29/chal/target/release/oxide — run: cargo build --release
+[installer-check] ERROR task failed
+[verify] ERROR task failed
+verify exit=1

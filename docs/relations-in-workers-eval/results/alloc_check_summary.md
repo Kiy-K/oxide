@@ -1,0 +1,49 @@
+Peak RSS (VmHWM) and wall, medians over 5 interleaved reps; Δ = median paired challenger-baseline.
+
+| repo | scenario | malloc | RSS MiB B | RSS MiB C | Δ RSS MiB | wall ms B | wall ms C | Δ wall |
+|---|---|---|--:|--:|--:|--:|--:|--:|
+| darkreader | full | arena_max_1 | 20.3 | 21.5 | +1.0 | 672 | 480 | -28.5% |
+| darkreader | full | default | 25.8 | 26.3 | +2.6 | 601 | 427 | -29.2% |
+| darkreader | full | pinned_thresholds | 20.5 | 19.7 | +0.0 | 603 | 452 | -31.5% |
+| darkreader | noop | arena_max_1 | 12.4 | 12.4 | -0.0 | 17 | 16 | -6.2% |
+| darkreader | noop | default | 12.5 | 12.5 | -0.1 | 16 | 16 | -5.4% |
+| darkreader | noop | pinned_thresholds | 12.2 | 12.3 | -0.0 | 17 | 16 | -7.6% |
+| darkreader | edit_median | arena_max_1 | 15.6 | 15.4 | -0.1 | 79 | 81 | -1.8% |
+| darkreader | edit_median | default | 16.3 | 17.9 | +1.6 | 78 | 80 | +0.0% |
+| darkreader | edit_median | pinned_thresholds | 16.1 | 15.7 | -0.4 | 79 | 79 | -0.5% |
+| darkreader | edit_largest | arena_max_1 | 16.9 | 16.6 | -0.4 | 101 | 100 | -1.2% |
+| darkreader | edit_largest | default | 18.3 | 18.4 | +0.3 | 101 | 95 | -3.4% |
+| darkreader | edit_largest | pinned_thresholds | 17.8 | 16.6 | -1.4 | 101 | 100 | +1.5% |
+| darkreader | watch_median | arena_max_1 | 14.4 | 14.4 | +0.0 | 72 | 71 | +0.9% |
+| darkreader | watch_median | default | 14.9 | 17.4 | +2.4 | 73 | 73 | +0.0% |
+| darkreader | watch_median | pinned_thresholds | 14.8 | 14.2 | -0.5 | 74 | 74 | +0.2% |
+| flask | full | arena_max_1 | 16.7 | 16.8 | +0.1 | 490 | 397 | -18.6% |
+| flask | full | default | 20.5 | 19.7 | -0.4 | 425 | 328 | -20.7% |
+| flask | full | pinned_thresholds | 19.2 | 18.7 | -0.7 | 435 | 333 | -20.3% |
+| flask | noop | arena_max_1 | 14.0 | 14.0 | +0.1 | 17 | 18 | +6.8% |
+| flask | noop | default | 14.2 | 14.1 | -0.0 | 17 | 16 | -2.4% |
+| flask | noop | pinned_thresholds | 14.0 | 13.9 | -0.1 | 18 | 17 | -6.6% |
+| flask | edit_median | arena_max_1 | 14.6 | 14.8 | +0.2 | 29 | 27 | -5.2% |
+| flask | edit_median | default | 14.8 | 16.2 | +1.5 | 27 | 28 | +3.5% |
+| flask | edit_median | pinned_thresholds | 14.7 | 14.7 | -0.1 | 28 | 34 | +6.9% |
+| flask | edit_largest | arena_max_1 | 14.9 | 14.7 | -0.2 | 89 | 85 | -6.2% |
+| flask | edit_largest | default | 16.1 | 17.5 | +1.3 | 86 | 86 | -0.8% |
+| flask | edit_largest | pinned_thresholds | 15.9 | 15.8 | -0.3 | 90 | 91 | +3.1% |
+| flask | watch_median | arena_max_1 | 14.0 | 14.2 | +0.2 | 24 | 25 | +2.4% |
+| flask | watch_median | default | 14.1 | 15.5 | +1.5 | 25 | 25 | -2.8% |
+| flask | watch_median | pinned_thresholds | 14.0 | 14.0 | +0.1 | 26 | 25 | -3.9% |
+| fmt | full | arena_max_1 | 48.5 | 47.3 | -1.1 | 6058 | 4946 | -16.6% |
+| fmt | full | default | 58.7 | 66.6 | +2.9 | 5959 | 4382 | -18.1% |
+| fmt | full | pinned_thresholds | 61.1 | 58.7 | -2.3 | 5359 | 4975 | -10.9% |
+| fmt | noop | arena_max_1 | 34.4 | 34.3 | -0.0 | 68 | 69 | +1.6% |
+| fmt | noop | default | 34.4 | 34.5 | +0.1 | 69 | 69 | -0.1% |
+| fmt | noop | pinned_thresholds | 34.3 | 34.2 | -0.2 | 69 | 69 | +0.5% |
+| fmt | edit_median | arena_max_1 | 38.9 | 38.9 | -0.1 | 129 | 126 | -2.9% |
+| fmt | edit_median | default | 39.4 | 43.1 | +3.8 | 130 | 127 | -4.6% |
+| fmt | edit_median | pinned_thresholds | 38.6 | 38.6 | -0.0 | 127 | 129 | -0.8% |
+| fmt | edit_largest | arena_max_1 | 54.7 | 45.6 | -9.1 | 2074 | 1984 | -4.5% |
+| fmt | edit_largest | default | 59.0 | 53.2 | -5.8 | 2078 | 1986 | -4.5% |
+| fmt | edit_largest | pinned_thresholds | 55.0 | 50.0 | -5.0 | 2079 | 2038 | -2.0% |
+| fmt | watch_median | arena_max_1 | 38.3 | 37.8 | -0.4 | 118 | 118 | +0.0% |
+| fmt | watch_median | default | 38.6 | 42.5 | +3.9 | 119 | 119 | +1.0% |
+| fmt | watch_median | pinned_thresholds | 37.9 | 37.9 | -0.0 | 121 | 119 | -1.6% |

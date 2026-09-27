@@ -1,6 +1,6 @@
 //! The per-file path shared by `update_base` and `update_base_for_files`:
-//! parse → references → embedding-input hash → structural relations and
-//! lexical postings → one `replace_file` transaction per file.
+//! parse + structural relations (parallel) → references → embedding-input
+//! hash → lexical postings → one `replace_file` transaction per file.
 
 use super::{count_summary, IndexReport, ProgressSink, Stage};
 use crate::embeddings::symbol_embed_text;
@@ -10,6 +10,9 @@ use crate::symbols::Symbol;
 use anyhow::Result;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
+
+/// One file's `(symbol_id, calls, bases)` rows, as `replace_file` takes them.
+type FileRelations = Vec<(u64, Vec<String>, Vec<String>)>;
 
 /// Shared parse → reference-resolve → structural-relations → persist
 /// pipeline for a batch of changed files, extracted so `update_base`
@@ -39,12 +42,10 @@ pub(super) fn parse_and_persist_changed_files(
     let parse_total = to_parse.len();
     let parse_done = std::sync::atomic::AtomicUsize::new(0);
     let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
-    // The language each parsed file resolved to, parallel to `parsed`: the
-    // store loop reuses it instead of resolving again, which for a `.h`
-    // file means parsing it with both C-family grammars a second time.
-    let mut langs: Vec<crate::symbols::Language> = Vec::with_capacity(to_parse.len());
-    let mut results: Vec<(Vec<(ParsedFile, crate::symbols::Language)>, usize)> =
-        Vec::with_capacity(workers);
+    // Each parsed file's precomputed structural relations, parallel to
+    // `parsed` (see the worker below).
+    let mut file_relations: Vec<FileRelations> = Vec::with_capacity(to_parse.len());
+    let mut results: Vec<(Vec<(ParsedFile, FileRelations)>, usize)> = Vec::with_capacity(workers);
     progress.begin(Stage::Parse, Some(parse_total));
     std::thread::scope(|scope| {
         let mut handles = Vec::new();
@@ -67,7 +68,18 @@ pub(super) fn parse_and_persist_changed_files(
                             continue;
                         }
                     };
-                    let syms = crate::parser::parse_file(rel, src, lang);
+                    // Structural relations (structural_relations.rs) come
+                    // from the extraction parse itself — the call and base
+                    // queries run on the tree `tags.rs` already built — and
+                    // are attributed here, off the serial store loop.
+                    // Attribution reads only ids, names, kinds and spans,
+                    // which `parse_file_with_structure` returns final; the
+                    // later `references`/`content_hash` pass touches
+                    // neither. Only for reparsed files, matching
+                    // `extract_references`: an unchanged file keeps its
+                    // existing `symbol_relations` rows untouched.
+                    let (syms, sites) = crate::parser::parse_file_with_structure(rel, src, lang);
+                    let relations = crate::structural_relations::relations_from_sites(&syms, sites);
                     out.push((
                         ParsedFile {
                             file: (*rel).clone(),
@@ -75,7 +87,7 @@ pub(super) fn parse_and_persist_changed_files(
                             src: src.clone(),
                             symbols: syms,
                         },
-                        lang,
+                        relations,
                     ));
                     let done = parse_done.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
                     progress.advance(Stage::Parse, done, parse_total);
@@ -93,9 +105,9 @@ pub(super) fn parse_and_persist_changed_files(
     })?;
     let mut parse_unresolved: usize = 0;
     for (part, unresolved) in results {
-        for (pf, lang) in part {
+        for (pf, relations) in part {
             parsed.push(pf);
-            langs.push(lang);
+            file_relations.push(relations);
         }
         parse_unresolved += unresolved;
     }
@@ -153,7 +165,7 @@ pub(super) fn parse_and_persist_changed_files(
     }
 
     progress.begin(Stage::Store, Some(parsed.len()));
-    for (i, (pf, &lang)) in parsed.iter().zip(&langs).enumerate() {
+    for (i, (pf, relations)) in parsed.iter().zip(&file_relations).enumerate() {
         progress.advance(Stage::Store, i + 1, parsed.len());
         let mut new_ids: HashSet<u64> = HashSet::with_capacity(pf.symbols.len());
         for s in &pf.symbols {
@@ -167,26 +179,17 @@ pub(super) fn parse_and_persist_changed_files(
         if let Some(old_ids) = existing_ids_by_file.get(pf.file.as_str()) {
             report.deleted_symbols += old_ids.difference(&new_ids).count();
         }
-        // Precomputed structural relations (structural_relations.rs): reuses
-        // this loop's already-open `pf.src` and already-parsed `pf.symbols`
-        // — one extra tree-sitter Query pass per reparsed file, no second
-        // file read. Computed before `replace_file` so both land in the
-        // same transaction (`replace_file`'s doc comment explains why a
-        // separate follow-up call was a real interrupted-process bug: the
-        // file's content_hash would already be updated, so a crash between
-        // two separate calls would strand stale relations permanently,
-        // since that file would never be reparsed again). Only for `parsed`
-        // (reparsed) files, matching `extract_references` above: an
-        // unchanged file keeps its existing `symbol_relations` rows
-        // untouched, same incremental contract as everything else here.
-        // `lang` is the parse worker's own `language_for_source` result for
-        // this file — a pure function of path and source, so identical to
-        // resolving it again here.
-        let relations =
-            crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang);
+        // The relations the parse worker computed land in the same
+        // `replace_file` transaction as the symbols (`replace_file`'s doc
+        // comment explains why a separate follow-up call was a real
+        // interrupted-process bug: the file's content_hash would already be
+        // updated, so a crash between two separate calls would strand stale
+        // relations permanently, since that file would never be reparsed
+        // again).
+        //
         // Lexical postings, from the same already-open `pf.src` and
-        // already-parsed `pf.symbols` as the relations above — no second
-        // file read, and (unlike `LexicalIndex::build`) no file read at
+        // already-parsed `pf.symbols` — no second file read, and (unlike
+        // `LexicalIndex::build`) no file read at
         // query time at all. Written in `replace_file`'s transaction so a
         // file's symbols and its postings can never disagree. This is the
         // shared helper, so the watcher's fs-event-scoped path
@@ -194,7 +197,7 @@ pub(super) fn parse_and_persist_changed_files(
         // not, a watcher edit would leave a published lexical index
         // silently incomplete.
         let postings = crate::lexical::compute_file_postings(&pf.symbols, &pf.src);
-        store.replace_file(&pf.file, pf.hash, &pf.symbols, &relations, &postings)?;
+        store.replace_file(&pf.file, pf.hash, &pf.symbols, relations, &postings)?;
     }
     progress.end(Stage::Store, &count_summary(parsed.len(), parsed.len()));
     Ok(())
