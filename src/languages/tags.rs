@@ -50,6 +50,17 @@ impl TagsExtractor {
         }
     }
 
+    /// Everything `collect_meta` gathers from one parse of `src` (empty when
+    /// the parse fails, which the extractors below already treat as "no
+    /// metadata").
+    fn meta(&self, src: &str) -> FileMeta {
+        let mut meta = FileMeta::default();
+        if let Some(tree) = parse(self.profile, src) {
+            collect_meta(tree.root_node(), self.profile.language, src, &mut meta);
+        }
+        meta
+    }
+
     fn config(&self) -> Option<&TagsConfiguration> {
         self.config
             .get_or_init(|| {
@@ -910,24 +921,40 @@ impl LanguageExtractor for TagsExtractor {
     }
 
     fn collect_imports(&self, src: &str) -> Vec<String> {
-        let Some(tree) = parse(self.profile, src) else {
-            return Vec::new();
-        };
-        let mut meta = FileMeta::default();
-        collect_meta(tree.root_node(), self.profile.language, src, &mut meta);
-        meta.imports.sort();
-        meta.imports.dedup();
-        meta.imports
+        sorted_imports(&self.meta(src))
     }
 
     fn extract(&self, file: &str, src: &str, imports: &[String]) -> Vec<Symbol> {
+        self.extract_from_meta(file, src, imports, &self.meta(src))
+    }
+
+    /// `collect_imports` and `extract` both start from the same parse and
+    /// the same `collect_meta` walk; do that once.
+    fn extract_with_imports(&self, file: &str, src: &str) -> (Vec<String>, Vec<Symbol>) {
+        let meta = self.meta(src);
+        let imports = sorted_imports(&meta);
+        let symbols = self.extract_from_meta(file, src, &imports, &meta);
+        (imports, symbols)
+    }
+}
+
+fn sorted_imports(meta: &FileMeta) -> Vec<String> {
+    let mut imports = meta.imports.clone();
+    imports.sort();
+    imports.dedup();
+    imports
+}
+
+impl TagsExtractor {
+    fn extract_from_meta(
+        &self,
+        file: &str,
+        src: &str,
+        imports: &[String],
+        meta: &FileMeta,
+    ) -> Vec<Symbol> {
         let profile = self.profile;
         let bytes = src.as_bytes();
-
-        let mut meta = FileMeta::default();
-        if let Some(tree) = parse(profile, src) {
-            collect_meta(tree.root_node(), profile.language, src, &mut meta);
-        }
         let export_ranges = &meta.exports;
         let decorators = &meta.decorators;
 
@@ -1176,6 +1203,23 @@ impl LanguageExtractor for TagsExtractor {
 mod tests {
     use super::*;
     use crate::parser::parse_file_with;
+
+    #[test]
+    fn extract_with_imports_matches_the_two_separate_calls() {
+        for (rel, src, lang) in crate::languages::conformance_sources() {
+            let ext = crate::parser::extractor_for(lang);
+            let imports = ext.collect_imports(&src);
+            let symbols = ext.extract(&rel, &src, &imports);
+            let (shared_imports, shared_symbols) = ext.extract_with_imports(&rel, &src);
+            assert_eq!(shared_imports, imports, "{rel}");
+            // `Symbol` has no PartialEq; its serialized form covers every field.
+            assert_eq!(
+                serde_json::to_string(&shared_symbols).unwrap(),
+                serde_json::to_string(&symbols).unwrap(),
+                "{rel}"
+            );
+        }
+    }
 
     #[test]
     fn same_named_methods_in_different_classes_do_not_collide() {

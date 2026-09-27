@@ -39,7 +39,12 @@ pub(super) fn parse_and_persist_changed_files(
     let parse_total = to_parse.len();
     let parse_done = std::sync::atomic::AtomicUsize::new(0);
     let mut parsed: Vec<ParsedFile> = Vec::with_capacity(to_parse.len());
-    let mut results: Vec<(Vec<ParsedFile>, usize)> = Vec::with_capacity(workers);
+    // The language each parsed file resolved to, parallel to `parsed`: the
+    // store loop reuses it instead of resolving again, which for a `.h`
+    // file means parsing it with both C-family grammars a second time.
+    let mut langs: Vec<crate::symbols::Language> = Vec::with_capacity(to_parse.len());
+    let mut results: Vec<(Vec<(ParsedFile, crate::symbols::Language)>, usize)> =
+        Vec::with_capacity(workers);
     progress.begin(Stage::Parse, Some(parse_total));
     std::thread::scope(|scope| {
         let mut handles = Vec::new();
@@ -63,12 +68,15 @@ pub(super) fn parse_and_persist_changed_files(
                         }
                     };
                     let syms = crate::parser::parse_file(rel, src, lang);
-                    out.push(ParsedFile {
-                        file: (*rel).clone(),
-                        hash: *hash,
-                        src: src.clone(),
-                        symbols: syms,
-                    });
+                    out.push((
+                        ParsedFile {
+                            file: (*rel).clone(),
+                            hash: *hash,
+                            src: src.clone(),
+                            symbols: syms,
+                        },
+                        lang,
+                    ));
                     let done = parse_done.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
                     progress.advance(Stage::Parse, done, parse_total);
                 }
@@ -84,8 +92,11 @@ pub(super) fn parse_and_persist_changed_files(
         Ok::<(), anyhow::Error>(())
     })?;
     let mut parse_unresolved: usize = 0;
-    for (mut part, unresolved) in results {
-        parsed.append(&mut part);
+    for (part, unresolved) in results {
+        for (pf, lang) in part {
+            parsed.push(pf);
+            langs.push(lang);
+        }
         parse_unresolved += unresolved;
     }
     report.reparsed_files = parsed.len();
@@ -142,7 +153,7 @@ pub(super) fn parse_and_persist_changed_files(
     }
 
     progress.begin(Stage::Store, Some(parsed.len()));
-    for (i, pf) in parsed.iter().enumerate() {
+    for (i, (pf, &lang)) in parsed.iter().zip(&langs).enumerate() {
         progress.advance(Stage::Store, i + 1, parsed.len());
         let mut new_ids: HashSet<u64> = HashSet::with_capacity(pf.symbols.len());
         for s in &pf.symbols {
@@ -168,11 +179,11 @@ pub(super) fn parse_and_persist_changed_files(
         // (reparsed) files, matching `extract_references` above: an
         // unchanged file keeps its existing `symbol_relations` rows
         // untouched, same incremental contract as everything else here.
-        let relations = scanner::language_for_source(Path::new(&pf.file), &pf.src)
-            .map(|lang| {
-                crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang)
-            })
-            .unwrap_or_default();
+        // `lang` is the parse worker's own `language_for_source` result for
+        // this file — a pure function of path and source, so identical to
+        // resolving it again here.
+        let relations =
+            crate::structural_relations::compute_file_relations(&pf.symbols, &pf.src, lang);
         // Lexical postings, from the same already-open `pf.src` and
         // already-parsed `pf.symbols` as the relations above — no second
         // file read, and (unlike `LexicalIndex::build`) no file read at

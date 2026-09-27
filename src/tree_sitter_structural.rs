@@ -244,6 +244,29 @@ fn parse(lang: Language, src: &str) -> Option<tree_sitter::Tree> {
 /// component in a repo becomes a "caller" of `div` — and any symbol
 /// unlucky enough to be named `div` inherits them all.
 pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
+    parse(lang, src).map_or_else(Vec::new, |tree| calls_in_tree(lang, &tree, src))
+}
+
+/// One [`all_calls_in_file`] entry: `(start_line, callee_name)`.
+pub type CallSite = (u32, String);
+/// One [`all_bases_in_file`] entry: `(class_start_line, class_name, base_name)`.
+pub type BaseClause = (u32, String, String);
+
+/// [`all_calls_in_file`] and [`all_bases_in_file`] from a single parse —
+/// what `structural_relations::compute_file_relations` uses, so a reparsed
+/// file pays for one tree here instead of two. Each half is exactly what
+/// its standalone function returns.
+pub fn all_calls_and_bases_in_file(lang: Language, src: &str) -> (Vec<CallSite>, Vec<BaseClause>) {
+    match parse(lang, src) {
+        Some(tree) => (
+            calls_in_tree(lang, &tree, src),
+            bases_in_tree(lang, &tree, src),
+        ),
+        None => (Vec::new(), Vec::new()),
+    }
+}
+
+fn calls_in_tree(lang: Language, tree: &tree_sitter::Tree, src: &str) -> Vec<(u32, String)> {
     let query = compiled_callers(lang);
     let name_idx = query
         .capture_index_for_name("name")
@@ -251,9 +274,6 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
     let call_idx = query
         .capture_index_for_name("call")
         .expect("callers query defines @call");
-    let Some(tree) = parse(lang, src) else {
-        return Vec::new();
-    };
     let mut out = Vec::new();
     let mut cursor = QueryCursor::new();
     let mut matches = cursor.matches(query, tree.root_node(), src.as_bytes());
@@ -299,6 +319,14 @@ pub fn all_calls_in_file(lang: Language, src: &str) -> Vec<(u32, String)> {
 /// key them by, since anonymous classes have no declared symbol to attach to
 /// either.
 pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String, String)> {
+    parse(lang, src).map_or_else(Vec::new, |tree| bases_in_tree(lang, &tree, src))
+}
+
+fn bases_in_tree(
+    lang: Language,
+    tree: &tree_sitter::Tree,
+    src: &str,
+) -> Vec<(u32, String, String)> {
     let query = compiled_implementors(lang);
     let base_idx = query
         .capture_index_for_name("base")
@@ -309,9 +337,6 @@ pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String, String)
     let class_idx = query
         .capture_index_for_name("class")
         .expect("implementors query defines @class");
-    let Some(tree) = parse(lang, src) else {
-        return Vec::new();
-    };
     let mut out = Vec::new();
     let mut cursor = QueryCursor::new();
     let mut matches = cursor.matches(query, tree.root_node(), src.as_bytes());
@@ -345,6 +370,20 @@ pub fn all_bases_in_file(lang: Language, src: &str) -> Vec<(u32, String, String)
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn shared_parse_matches_separate_calls_and_bases() {
+        for (rel, src, lang) in crate::languages::conformance_sources() {
+            if !lang.has_structural_queries() {
+                continue;
+            }
+            assert_eq!(
+                all_calls_and_bases_in_file(lang, &src),
+                (all_calls_in_file(lang, &src), all_bases_in_file(lang, &src)),
+                "{rel}"
+            );
+        }
+    }
 
     #[test]
     fn all_language_queries_compile() {

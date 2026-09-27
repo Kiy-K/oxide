@@ -1,0 +1,25 @@
+# Research-only (issue #24): counts, attributes and times every Tree-sitter
+# parse OXIDE performs, by wrapping the one C entry point all of tree-sitter
+# 0.27's Rust parse methods funnel into (`ts_parser_parse_with_options`) at
+# link time. Standalone package with its own [workspace]: OXIDE's cargo
+# commands and CI never build it, and OXIDE's own sources carry no probe.
+[package]
+name = "parse-probe"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+oxide = { path = "../../../..", default-features = false }
+tree-sitter = "0.27"
+serde_json = "1"
+libc = "0.2"
+
+# Same settings as OXIDE's own [profile.release] so timings are comparable
+# with the shipped binary.
+[profile.release]
+debug = false
+lto = "thin"
+codegen-units = 1

@@ -1,0 +1,201 @@
+{
+ "mode": "seam",
+ "wall_ms": 83858.796266,
+ "cpu_ms": 83064.22700000001,
+ "vmhwm_kb": 177284,
+ "parse_calls": 5560,
+ "parse_ms": 17844.326791,
+ "sites": {
+  "c\t#files": {
+   "calls": 175,
+   "ms": 0.0
+  },
+  "c\textract: collect_meta walk": {
+   "calls": 175,
+   "ms": 1037.291213
+  },
+  "c\textract: tree-sitter-tags": {
+   "calls": 175,
+   "ms": 1029.893159
+  },
+  "c\trelations: shared calls+bases parse": {
+   "calls": 175,
+   "ms": 1032.703289
+  },
+  "c\tscanner: .h C/C++ disambiguation [other]": {
+   "calls": 264,
+   "ms": 556.106074
+  },
+  "cpp\t#files": {
+   "calls": 104,
+   "ms": 0.0
+  },
+  "cpp\textract: collect_meta walk": {
+   "calls": 104,
+   "ms": 1004.140675
+  },
+  "cpp\textract: tree-sitter-tags": {
+   "calls": 104,
+   "ms": 999.152239
+  },
+  "cpp\trelations: shared calls+bases parse": {
+   "calls": 104,
+   "ms": 999.206242
+  },
+  "cpp\tscanner: .h C/C++ disambiguation [other]": {
+   "calls": 160,
+   "ms": 4564.173508
+  },
+  "go\t#files": {
+   "calls": 101,
+   "ms": 0.0
+  },
+  "go\textract: collect_meta walk": {
+   "calls": 101,
+   "ms": 238.561457
+  },
+  "go\textract: tree-sitter-tags": {
+   "calls": 101,
+   "ms": 236.088947
+  },
+  "go\trelations: shared calls+bases parse": {
+   "calls": 101,
+   "ms": 236.531155
+  },
+  "java\t#files": {
+   "calls": 270,
+   "ms": 0.0
+  },
+  "java\textract: collect_meta walk": {
+   "calls": 270,
+   "ms": 484.470454
+  },
+  "java\textract: tree-sitter-tags": {
+   "calls": 270,
+   "ms": 479.159414
+  },
+  "java\trelations: shared calls+bases parse": {
+   "calls": 270,
+   "ms": 481.764254
+  },
+  "javascript\t#files": {
+   "calls": 184,
+   "ms": 0.0
+  },
+  "javascript\textract: collect_meta walk": {
+   "calls": 184,
+   "ms": 291.000071
+  },
+  "javascript\textract: tree-sitter-tags": {
+   "calls": 184,
+   "ms": 285.791354
+  },
+  "javascript\trelations: shared calls+bases parse": {
+   "calls": 184,
+   "ms": 287.878658
+  },
+  "markdown\t#files": {
+   "calls": 110,
+   "ms": 0.0
+  },
+  "php\t#files": {
+   "calls": 6,
+   "ms": 0.0
+  },
+  "php\textract: collect_meta walk": {
+   "calls": 6,
+   "ms": 0.788475
+  },
+  "php\textract: tree-sitter-tags": {
+   "calls": 6,
+   "ms": 0.720536
+  },
+  "php\trelations: shared calls+bases parse": {
+   "calls": 6,
+   "ms": 0.69024
+  },
+  "python\t#files": {
+   "calls": 90,
+   "ms": 0.0
+  },
+  "python\textract: collect_meta walk": {
+   "calls": 90,
+   "ms": 159.318778
+  },
+  "python\textract: tree-sitter-tags": {
+   "calls": 90,
+   "ms": 154.8889
+  },
+  "python\trelations: shared calls+bases parse": {
+   "calls": 90,
+   "ms": 156.166889
+  },
+  "ruby\t#files": {
+   "calls": 5,
+   "ms": 0.0
+  },
+  "ruby\textract: collect_meta walk": {
+   "calls": 5,
+   "ms": 0.597831
+  },
+  "ruby\textract: tree-sitter-tags": {
+   "calls": 5,
+   "ms": 0.517564
+  },
+  "ruby\trelations: shared calls+bases parse": {
+   "calls": 5,
+   "ms": 0.511187
+  },
+  "rust\t#files": {
+   "calls": 567,
+   "ms": 0.0
+  },
+  "rust\textract: collect_meta walk": {
+   "calls": 567,
+   "ms": 824.26216
+  },
+  "rust\textract: tree-sitter-tags": {
+   "calls": 567,
+   "ms": 806.665853
+  },
+  "rust\trelations: shared calls+bases parse": {
+   "calls": 567,
+   "ms": 811.375891
+  },
+  "tsx\t#files": {
+   "calls": 95,
+   "ms": 0.0
+  },
+  "tsx\textract: collect_meta walk": {
+   "calls": 95,
+   "ms": 55.453773
+  },
+  "tsx\textract: tree-sitter-tags": {
+   "calls": 95,
+   "ms": 53.632612
+  },
+  "tsx\trelations: shared calls+bases parse": {
+   "calls": 95,
+   "ms": 53.412599
+  },
+  "typescript\t#files": {
+   "calls": 115,
+   "ms": 0.0
+  },
+  "typescript\textract: collect_meta walk": {
+   "calls": 115,
+   "ms": 175.896184
+  },
+  "typescript\textract: tree-sitter-tags": {
+   "calls": 115,
+   "ms": 172.174079
+  },
+  "typescript\trelations: shared calls+bases parse": {
+   "calls": 115,
+   "ms": 173.341077
+  }
+ },
+ "extra": {
+  "files": 1822
+ }
+}

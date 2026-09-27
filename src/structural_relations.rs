@@ -25,7 +25,7 @@
 
 use crate::storage::IndexBackend;
 use crate::symbols::{Language, Symbol, SymbolKind};
-use crate::tree_sitter_structural::{all_bases_in_file, all_calls_in_file};
+use crate::tree_sitter_structural::all_calls_and_bases_in_file;
 use anyhow::Result;
 use std::collections::HashMap;
 
@@ -129,9 +129,10 @@ pub fn compute_file_relations(
     }
 
     let refs: Vec<&Symbol> = file_symbols.iter().collect();
+    let (calls, bases) = all_calls_and_bases_in_file(lang, src);
 
     let mut calls_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
-    for (line, name) in all_calls_in_file(lang, src) {
+    for (line, name) in calls {
         if let Some(sym) = enclosing(&refs, line) {
             calls_by_symbol.entry(sym.id()).or_default().push(name);
         }
@@ -148,7 +149,7 @@ pub fn compute_file_relations(
     // kind filter keeps a same-line member out of the running. See
     // `all_bases_in_file`'s doc comment.
     let mut bases_by_symbol: HashMap<u64, Vec<String>> = HashMap::new();
-    for (class_line, class_name, base_name) in all_bases_in_file(lang, src) {
+    for (class_line, class_name, base_name) in bases {
         let is_type = |s: &Symbol| matches!(s.kind, SymbolKind::Class | SymbolKind::Interface);
         // Name first, among the symbols that actually contain the clause's
         // line. Containment alone is ambiguous whenever two nested

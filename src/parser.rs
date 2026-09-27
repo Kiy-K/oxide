@@ -12,6 +12,14 @@ pub trait LanguageExtractor: Sync {
     fn extract(&self, file: &str, src: &str, file_imports: &[String]) -> Vec<Symbol>;
     /// Raw import module strings declared anywhere in the file.
     fn collect_imports(&self, src: &str) -> Vec<String>;
+    /// `(collect_imports(src), extract(file, src, &imports))` in one call,
+    /// so an extractor whose two halves share work (one parse, one metadata
+    /// walk) can do it once. Must return exactly what the two calls would.
+    fn extract_with_imports(&self, file: &str, src: &str) -> (Vec<String>, Vec<Symbol>) {
+        let imports = self.collect_imports(src);
+        let symbols = self.extract(file, src, &imports);
+        (imports, symbols)
+    }
 }
 
 pub use crate::languages::tags;
@@ -98,8 +106,7 @@ pub fn parse_file_with(
     src: &str,
     lang: Language,
 ) -> Vec<Symbol> {
-    let imports = ext.collect_imports(src);
-    let mut syms = ext.extract(file, src, &imports);
+    let (imports, mut syms) = ext.extract_with_imports(file, src);
     // Stable ids are (file, qualified_name); duplicate qualified names in one
     // file (overloads, conditional defs) would violate the primary key. Keep
     // the first declaration per name.

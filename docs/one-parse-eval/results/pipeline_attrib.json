@@ -1,0 +1,139 @@
+{
+ "zstd/baseline_dbg": {
+  "full": {
+   "reparsed": 221,
+   "parse_calls": 1316,
+   "sites": {
+    "extract: collect_meta walk": 200,
+    "extract: tree-sitter-tags": 200,
+    "imports: collect_meta walk": 200,
+    "relations: bases query": 200,
+    "relations: calls query": 200,
+    "scanner: .h C/C++ disambiguation [parse worker]": 158,
+    "scanner: .h C/C++ disambiguation [store loop]": 158
+   }
+  },
+  "edit": {
+   "reparsed": 1,
+   "parse_calls": 9,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "imports: collect_meta walk": 1,
+    "relations: bases query": 1,
+    "relations: calls query": 1,
+    "scanner: .h C/C++ disambiguation [parse worker]": 2,
+    "scanner: .h C/C++ disambiguation [store loop]": 2
+   }
+  },
+  "watch": {
+   "reparsed": 1,
+   "parse_calls": 9,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "imports: collect_meta walk": 1,
+    "relations: bases query": 1,
+    "relations: calls query": 1,
+    "scanner: .h C/C++ disambiguation [parse worker]": 2,
+    "scanner: .h C/C++ disambiguation [store loop]": 2
+   }
+  }
+ },
+ "zstd/challenger_dbg": {
+  "full": {
+   "reparsed": 221,
+   "parse_calls": 758,
+   "sites": {
+    "extract: collect_meta walk": 200,
+    "extract: tree-sitter-tags": 200,
+    "relations: shared calls+bases parse": 200,
+    "scanner: .h C/C++ disambiguation [parse worker]": 158
+   }
+  },
+  "edit": {
+   "reparsed": 1,
+   "parse_calls": 5,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "relations: shared calls+bases parse": 1,
+    "scanner: .h C/C++ disambiguation [parse worker]": 2
+   }
+  },
+  "watch": {
+   "reparsed": 1,
+   "parse_calls": 5,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "relations: shared calls+bases parse": 1,
+    "scanner: .h C/C++ disambiguation [parse worker]": 2
+   }
+  }
+ },
+ "flask/baseline_dbg": {
+  "full": {
+   "reparsed": 82,
+   "parse_calls": 400,
+   "sites": {
+    "extract: collect_meta walk": 80,
+    "extract: tree-sitter-tags": 80,
+    "imports: collect_meta walk": 80,
+    "relations: bases query": 80,
+    "relations: calls query": 80
+   }
+  },
+  "edit": {
+   "reparsed": 1,
+   "parse_calls": 5,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "imports: collect_meta walk": 1,
+    "relations: bases query": 1,
+    "relations: calls query": 1
+   }
+  },
+  "watch": {
+   "reparsed": 1,
+   "parse_calls": 5,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "imports: collect_meta walk": 1,
+    "relations: bases query": 1,
+    "relations: calls query": 1
+   }
+  }
+ },
+ "flask/challenger_dbg": {
+  "full": {
+   "reparsed": 82,
+   "parse_calls": 240,
+   "sites": {
+    "extract: collect_meta walk": 80,
+    "extract: tree-sitter-tags": 80,
+    "relations: shared calls+bases parse": 80
+   }
+  },
+  "edit": {
+   "reparsed": 1,
+   "parse_calls": 3,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "relations: shared calls+bases parse": 1
+   }
+  },
+  "watch": {
+   "reparsed": 1,
+   "parse_calls": 3,
+   "sites": {
+    "extract: collect_meta walk": 1,
+    "extract: tree-sitter-tags": 1,
+    "relations: shared calls+bases parse": 1
+   }
+  }
+ }
+}

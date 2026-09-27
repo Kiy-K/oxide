@@ -1,0 +1,16 @@
+Control: the BASELINE binary run twice on the same input (fresh copies).
+
+py_repo  full    physical_order=DIFFERS rows_multiset=same json=same
+py_repo  noop    physical_order=DIFFERS rows_multiset=same json=same
+py_repo  edit    physical_order=DIFFERS rows_multiset=same json=same
+py_repo  watch   physical_order=DIFFERS rows_multiset=same json=same
+py_repo  delete  physical_order=DIFFERS rows_multiset=same json=same
+py_repo  add     physical_order=DIFFERS rows_multiset=same json=same
+py_repo  noop2   physical_order=DIFFERS rows_multiset=same json=same
+flask    full    physical_order=DIFFERS rows_multiset=same json=same
+flask    noop    physical_order=DIFFERS rows_multiset=same json=same
+flask    edit    physical_order=DIFFERS rows_multiset=same json=same
+flask    watch   physical_order=DIFFERS rows_multiset=same json=same
+flask    delete  physical_order=DIFFERS rows_multiset=same json=same
+flask    add     physical_order=DIFFERS rows_multiset=same json=same
+flask    noop2   physical_order=DIFFERS rows_multiset=same json=same

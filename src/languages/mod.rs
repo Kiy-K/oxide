@@ -156,3 +156,32 @@ pub static CPP_PROFILE: LanguageProfile = LanguageProfile {
     tags_query: CPP_TAGS,
     locals_query: "",
 };
+
+#[cfg(test)]
+/// Every source file under `fixtures/conformance/`, with the language
+/// the scanner resolves for it.
+pub(crate) fn conformance_sources() -> Vec<(String, String, crate::symbols::Language)> {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/conformance");
+    let mut stack = vec![root.clone()];
+    let mut out = Vec::new();
+    while let Some(dir) = stack.pop() {
+        for entry in std::fs::read_dir(&dir).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                stack.push(path);
+            } else if let Ok(src) = std::fs::read_to_string(&path) {
+                let rel = path
+                    .strip_prefix(&root)
+                    .unwrap()
+                    .to_string_lossy()
+                    .into_owned();
+                if let Some(lang) = crate::scanner::language_for_source(&path, &src) {
+                    out.push((rel, src, lang));
+                }
+            }
+        }
+    }
+    out.sort_by(|a, b| a.0.cmp(&b.0));
+    assert!(out.len() > 30, "conformance fixtures not found");
+    out
+}

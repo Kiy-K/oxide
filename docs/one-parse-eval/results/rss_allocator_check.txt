@@ -1,0 +1,17 @@
+Peak RSS (VmHWM, MiB) for the fmt edit_largest scenario (test/gtest/gmock-gtest-all.cc),
+fresh full index then one-file edit, per-rep values. Probe binaries in work/bin/*.
+
+default glibc malloc:
+  baseline    [55.0, 54.9, 55.0, 54.9]  5 parses for the file
+  no_c2       [58.9, 58.6, 58.9, 59.0]  (C1 + C4 only)
+  no_c1       [59.0, 59.1, 59.1]        4 parses (C2 + C4 only)
+  challenger  [58.9, 59.0, 59.1, 59.1]  3 parses
+
+MALLOC_MMAP_THRESHOLD_=131072 MALLOC_TRIM_THRESHOLD_=131072 (dynamic threshold disabled):
+  baseline    [54.9, 55.0, 54.9]  wall 2317 / 2316 / 2327 ms
+  challenger  [55.0, 55.0, 55.2]  wall 2138 / 2139 / 2137 ms
+
+Reading: removing either redundant parse alone produces the same +4 MiB, and it vanishes
+once glibc's dynamic mmap/trim threshold is pinned, while the speedup remains. The delta is
+allocator high-water behavior from a different sequence of large tree allocations/frees,
+not data the challenger keeps alive.
