@@ -1,0 +1,14 @@
+primary tasks 61 from 8 repos: {'axios': 8, 'clap': 8, 'flask': 8, 'httpx': 8, 'rayon': 6, 'requests': 8, 'ripgrep': 7, 'zod': 8}  max share 13.1%
+arm ch0: cov 0.3096  rel 19.4057  used 1598.3115  eff 0.0134  items 7.1803  util 0.3902  files 6.0656  ms 10.7751
+arm ch5: cov 0.3474  rel 24.1680  used 1794.9180  eff 0.0133  items 8.2131  util 0.4382  files 6.0656  ms 11.2153
+Δ coverage +0.0378 [+0.0043, +0.0833]
+relative efficiency change -0.48% [-12.96%, +24.06%]
+coverage: improved 4 / unchanged 57 / regressed 0;  efficiency dropped on 11
+ch5 activates on 33/61 tasks; added 63 items; crossed primary cap 49 (tasks 27); gold-bearing 7 (11.1%); mean tokens added/task 196.6 (per activated task 363.4)
+reasons: {'per-file diversity cap': 63}  roles: {'primary': 54, 'dependency': 9}
+baseline items 438 gold-bearing 27 (6.2%)
+  added primary crossed cap: 49 items, gold-bearing 6 (12.2%)
+  added primary within cap: 5 items, gold-bearing 1 (20.0%)
+  added dependency: 9 items, gold-bearing 0 (0.0%)
+context ms median ch0 9.88 ch5 9.97; median paired Δ +0.663 ms; median search 37.83 ms → Δ/search +1.75%
+GATES: {'Q1': True, 'E1': False, 'validity': True, 'O1': True, 'coverage_regressions': 0}

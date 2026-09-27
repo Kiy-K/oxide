@@ -1,0 +1,2508 @@
+{
+ "ids": [
+  "axios-2d2a21af",
+  "axios-878bb29d",
+  "axios-a092bae5",
+  "axios-a75bf446",
+  "axios-c3f553c7",
+  "axios-d8a919fd",
+  "axios-e8147e6a",
+  "axios-f8df2e24",
+  "clap-07c6fd2d",
+  "clap-1ab0dbd2",
+  "clap-24719832",
+  "clap-8cf344b7",
+  "clap-9a0248c8",
+  "clap-a1b6be72",
+  "clap-dee8b8e4",
+  "clap-eb39a0eb",
+  "flask-17e146ad",
+  "flask-1af8f957",
+  "flask-1d5abfad",
+  "flask-2abb7513",
+  "flask-3f6b243c",
+  "flask-438edcdf",
+  "flask-65271c10",
+  "flask-80cf589a",
+  "httpx-1a660147",
+  "httpx-4de13707",
+  "httpx-4f6edf36",
+  "httpx-99cba6ac",
+  "httpx-a11fc384",
+  "httpx-c6907c22",
+  "httpx-ca51b453",
+  "httpx-cabd1c09",
+  "rayon-1dfc35c5",
+  "rayon-4208de2a",
+  "rayon-6b1367fe",
+  "rayon-8582ad08",
+  "rayon-a15dff94",
+  "rayon-f1c56c9b",
+  "requests-2edca111",
+  "requests-4bd79e39",
+  "requests-5b4b64c3",
+  "requests-5f338446",
+  "requests-96ba401c",
+  "requests-a62a2d35",
+  "requests-b1d73ddb",
+  "requests-e1887993",
+  "ripgrep-068a63ea",
+  "ripgrep-0d7054d8",
+  "ripgrep-241b87b3",
+  "ripgrep-2ed0c006",
+  "ripgrep-626b8951",
+  "ripgrep-653d7f5b",
+  "ripgrep-6e527e92",
+  "zod-07c43e2a",
+  "zod-08ba069e",
+  "zod-2ec972ec",
+  "zod-319f47f4",
+  "zod-68a609ac",
+  "zod-a2a019a5",
+  "zod-bec73bea",
+  "zod-cd4f9a67"
+ ],
+ "metrics": {
+  "axios-2d2a21af": {
+   "0": {
+    "cov": 0.2,
+    "rel": 10.5,
+    "used": 1682,
+    "eff": 0.00624256837098692,
+    "items": 8,
+    "util": 0.41064453125,
+    "files": 7,
+    "ms": 5.696578,
+    "search_ms": 5.879932
+   },
+   "5": {
+    "cov": 0.8,
+    "rel": 68.0,
+    "used": 1979,
+    "eff": 0.03436078827690753,
+    "items": 10,
+    "util": 0.483154296875,
+    "files": 7,
+    "ms": 7.232095,
+    "search_ms": 5.879932
+   }
+  },
+  "axios-878bb29d": {
+   "0": {
+    "cov": 1.0,
+    "rel": 9.0,
+    "used": 1680,
+    "eff": 0.005357142857142857,
+    "items": 10,
+    "util": 0.41015625,
+    "files": 8,
+    "ms": 5.771107,
+    "search_ms": 6.57643
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 9.0,
+    "used": 1680,
+    "eff": 0.005357142857142857,
+    "items": 10,
+    "util": 0.41015625,
+    "files": 8,
+    "ms": 5.336481,
+    "search_ms": 6.57643
+   }
+  },
+  "axios-a092bae5": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2102,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.51318359375,
+    "files": 8,
+    "ms": 7.078923,
+    "search_ms": 6.3602360000000004
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2102,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.51318359375,
+    "files": 8,
+    "ms": 8.793831,
+    "search_ms": 6.3602360000000004
+   }
+  },
+  "axios-a75bf446": {
+   "0": {
+    "cov": 0.9166666666666666,
+    "rel": 105.5,
+    "used": 2425,
+    "eff": 0.04350515463917526,
+    "items": 8,
+    "util": 0.592041015625,
+    "files": 8,
+    "ms": 6.911816,
+    "search_ms": 6.769448
+   },
+   "5": {
+    "cov": 0.9166666666666666,
+    "rel": 105.5,
+    "used": 2425,
+    "eff": 0.04350515463917526,
+    "items": 8,
+    "util": 0.592041015625,
+    "files": 8,
+    "ms": 7.909586999999999,
+    "search_ms": 6.769448
+   }
+  },
+  "axios-c3f553c7": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1488,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.36328125,
+    "files": 5,
+    "ms": 6.127647,
+    "search_ms": 7.494563
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1753,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.427978515625,
+    "files": 5,
+    "ms": 5.382607999999999,
+    "search_ms": 7.494563
+   }
+  },
+  "axios-d8a919fd": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1076,
+    "eff": 0.0,
+    "items": 3,
+    "util": 0.2626953125,
+    "files": 3,
+    "ms": 6.082078999999999,
+    "search_ms": 30.067936
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1076,
+    "eff": 0.0,
+    "items": 3,
+    "util": 0.2626953125,
+    "files": 3,
+    "ms": 4.970174,
+    "search_ms": 30.067936
+   }
+  },
+  "axios-e8147e6a": {
+   "0": {
+    "cov": 1.0,
+    "rel": 157.0,
+    "used": 1057,
+    "eff": 0.14853358561967833,
+    "items": 5,
+    "util": 0.258056640625,
+    "files": 4,
+    "ms": 6.594517000000001,
+    "search_ms": 33.224208
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 157.0,
+    "used": 1272,
+    "eff": 0.12342767295597484,
+    "items": 7,
+    "util": 0.310546875,
+    "files": 4,
+    "ms": 6.594412,
+    "search_ms": 33.224208
+   }
+  },
+  "axios-f8df2e24": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2527,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.616943359375,
+    "files": 8,
+    "ms": 10.380154000000001,
+    "search_ms": 39.76522
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2527,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.616943359375,
+    "files": 8,
+    "ms": 7.054265,
+    "search_ms": 39.76522
+   }
+  },
+  "clap-07c6fd2d": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1336,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.326171875,
+    "files": 6,
+    "ms": 10.732973,
+    "search_ms": 186.759224
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1736,
+    "eff": 0.0,
+    "items": 10,
+    "util": 0.423828125,
+    "files": 6,
+    "ms": 10.066469999999999,
+    "search_ms": 186.759224
+   }
+  },
+  "clap-1ab0dbd2": {
+   "0": {
+    "cov": 0.5714285714285714,
+    "rel": 40.75,
+    "used": 1657,
+    "eff": 0.024592637296318647,
+    "items": 8,
+    "util": 0.404541015625,
+    "files": 6,
+    "ms": 21.506092000000002,
+    "search_ms": 24.496238
+   },
+   "5": {
+    "cov": 0.5714285714285714,
+    "rel": 40.75,
+    "used": 2104,
+    "eff": 0.01936787072243346,
+    "items": 10,
+    "util": 0.513671875,
+    "files": 6,
+    "ms": 21.726881,
+    "search_ms": 24.496238
+   }
+  },
+  "clap-24719832": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1393,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.340087890625,
+    "files": 5,
+    "ms": 10.087293,
+    "search_ms": 195.318703
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1967,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.480224609375,
+    "files": 5,
+    "ms": 11.116519,
+    "search_ms": 195.318703
+   }
+  },
+  "clap-8cf344b7": {
+   "0": {
+    "cov": 0.15,
+    "rel": 32.0,
+    "used": 1912,
+    "eff": 0.016736401673640166,
+    "items": 8,
+    "util": 0.466796875,
+    "files": 7,
+    "ms": 11.437696,
+    "search_ms": 37.746824
+   },
+   "5": {
+    "cov": 0.15,
+    "rel": 32.0,
+    "used": 1912,
+    "eff": 0.016736401673640166,
+    "items": 8,
+    "util": 0.466796875,
+    "files": 7,
+    "ms": 13.449786999999999,
+    "search_ms": 37.746824
+   }
+  },
+  "clap-9a0248c8": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1866,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.45556640625,
+    "files": 7,
+    "ms": 9.383875999999999,
+    "search_ms": 36.381396
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1866,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.45556640625,
+    "files": 7,
+    "ms": 10.399893,
+    "search_ms": 36.381396
+   }
+  },
+  "clap-a1b6be72": {
+   "0": {
+    "cov": 1.0,
+    "rel": 10.75,
+    "used": 2547,
+    "eff": 0.004220651747153514,
+    "items": 8,
+    "util": 0.621826171875,
+    "files": 6,
+    "ms": 15.349995999999999,
+    "search_ms": 202.891413
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 10.75,
+    "used": 3006,
+    "eff": 0.003576180971390552,
+    "items": 10,
+    "util": 0.73388671875,
+    "files": 6,
+    "ms": 16.802688,
+    "search_ms": 202.891413
+   }
+  },
+  "clap-dee8b8e4": {
+   "0": {
+    "cov": 1.0,
+    "rel": 10.5,
+    "used": 2457,
+    "eff": 0.004273504273504274,
+    "items": 7,
+    "util": 0.599853515625,
+    "files": 7,
+    "ms": 11.246984999999999,
+    "search_ms": 215.342875
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 10.5,
+    "used": 2457,
+    "eff": 0.004273504273504274,
+    "items": 7,
+    "util": 0.599853515625,
+    "files": 7,
+    "ms": 12.185006,
+    "search_ms": 215.342875
+   }
+  },
+  "clap-eb39a0eb": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1782,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.43505859375,
+    "files": 6,
+    "ms": 14.660011,
+    "search_ms": 39.934726
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2190,
+    "eff": 0.0,
+    "items": 10,
+    "util": 0.53466796875,
+    "files": 6,
+    "ms": 14.995286,
+    "search_ms": 39.934726
+   }
+  },
+  "flask-17e146ad": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 719,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.175537109375,
+    "files": 6,
+    "ms": 7.4562919999999995,
+    "search_ms": 66.414564
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 797,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.194580078125,
+    "files": 6,
+    "ms": 9.693191,
+    "search_ms": 66.414564
+   }
+  },
+  "flask-1af8f957": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1224,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.298828125,
+    "files": 4,
+    "ms": 9.881466,
+    "search_ms": 60.535209
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1658,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.40478515625,
+    "files": 4,
+    "ms": 5.5962950000000005,
+    "search_ms": 60.535209
+   }
+  },
+  "flask-1d5abfad": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1828,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.4462890625,
+    "files": 8,
+    "ms": 6.4057200000000005,
+    "search_ms": 59.862671
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1828,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.4462890625,
+    "files": 8,
+    "ms": 6.340291,
+    "search_ms": 59.862671
+   }
+  },
+  "flask-2abb7513": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1615,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.394287109375,
+    "files": 5,
+    "ms": 7.821165,
+    "search_ms": 80.297081
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1615,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.394287109375,
+    "files": 5,
+    "ms": 8.483793,
+    "search_ms": 80.297081
+   }
+  },
+  "flask-3f6b243c": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2338,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.57080078125,
+    "files": 7,
+    "ms": 10.820883,
+    "search_ms": 63.737461999999994
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2338,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.57080078125,
+    "files": 7,
+    "ms": 10.342146,
+    "search_ms": 63.737461999999994
+   }
+  },
+  "flask-438edcdf": {
+   "0": {
+    "cov": 1.0,
+    "rel": 9.25,
+    "used": 1837,
+    "eff": 0.005035383777898748,
+    "items": 7,
+    "util": 0.448486328125,
+    "files": 6,
+    "ms": 7.221362,
+    "search_ms": 25.45027
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 9.25,
+    "used": 2194,
+    "eff": 0.004216043755697356,
+    "items": 8,
+    "util": 0.53564453125,
+    "files": 6,
+    "ms": 7.8224290000000005,
+    "search_ms": 25.45027
+   }
+  },
+  "flask-65271c10": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2493,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.608642578125,
+    "files": 7,
+    "ms": 8.133776000000001,
+    "search_ms": 70.562613
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2493,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.608642578125,
+    "files": 7,
+    "ms": 7.48503,
+    "search_ms": 70.562613
+   }
+  },
+  "flask-80cf589a": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1511,
+    "eff": 0.0,
+    "items": 5,
+    "util": 0.368896484375,
+    "files": 4,
+    "ms": 9.214236000000001,
+    "search_ms": 66.977764
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2166,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.52880859375,
+    "files": 4,
+    "ms": 5.97373,
+    "search_ms": 66.977764
+   }
+  },
+  "httpx-1a660147": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1864,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.455078125,
+    "files": 7,
+    "ms": 8.316711,
+    "search_ms": 21.839351999999998
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1864,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.455078125,
+    "files": 7,
+    "ms": 9.971694,
+    "search_ms": 21.839351999999998
+   }
+  },
+  "httpx-4de13707": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1156,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.2822265625,
+    "files": 5,
+    "ms": 9.761395,
+    "search_ms": 13.845684
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1156,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.2822265625,
+    "files": 5,
+    "ms": 13.743933,
+    "search_ms": 13.845684
+   }
+  },
+  "httpx-4f6edf36": {
+   "0": {
+    "cov": 1.0,
+    "rel": 57.0,
+    "used": 1378,
+    "eff": 0.041364296081277216,
+    "items": 6,
+    "util": 0.33642578125,
+    "files": 6,
+    "ms": 11.560651,
+    "search_ms": 32.315599
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 57.0,
+    "used": 1378,
+    "eff": 0.041364296081277216,
+    "items": 6,
+    "util": 0.33642578125,
+    "files": 6,
+    "ms": 9.330862,
+    "search_ms": 32.315599
+   }
+  },
+  "httpx-99cba6ac": {
+   "0": {
+    "cov": 1.0,
+    "rel": 64.0,
+    "used": 1897,
+    "eff": 0.03373748023194518,
+    "items": 8,
+    "util": 0.463134765625,
+    "files": 7,
+    "ms": 8.830174,
+    "search_ms": 58.585882999999995
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 64.0,
+    "used": 2386,
+    "eff": 0.026823134953897737,
+    "items": 10,
+    "util": 0.58251953125,
+    "files": 7,
+    "ms": 9.122387,
+    "search_ms": 58.585882999999995
+   }
+  },
+  "httpx-a11fc384": {
+   "0": {
+    "cov": 0.2222222222222222,
+    "rel": 26.0,
+    "used": 1676,
+    "eff": 0.015513126491646777,
+    "items": 8,
+    "util": 0.4091796875,
+    "files": 6,
+    "ms": 12.299335999999998,
+    "search_ms": 61.900670999999996
+   },
+   "5": {
+    "cov": 0.6666666666666666,
+    "rel": 98.25,
+    "used": 2013,
+    "eff": 0.04880774962742176,
+    "items": 10,
+    "util": 0.491455078125,
+    "files": 6,
+    "ms": 13.627256000000001,
+    "search_ms": 61.900670999999996
+   }
+  },
+  "httpx-c6907c22": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 505,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.123291015625,
+    "files": 4,
+    "ms": 9.080875,
+    "search_ms": 11.510192
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 505,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.123291015625,
+    "files": 4,
+    "ms": 9.121832,
+    "search_ms": 11.510192
+   }
+  },
+  "httpx-ca51b453": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1045,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.255126953125,
+    "files": 5,
+    "ms": 8.60788,
+    "search_ms": 41.814907
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1760,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.4296875,
+    "files": 5,
+    "ms": 7.5396209999999995,
+    "search_ms": 41.814907
+   }
+  },
+  "httpx-cabd1c09": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1483,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.362060546875,
+    "files": 8,
+    "ms": 15.296953,
+    "search_ms": 15.026537
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1483,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.362060546875,
+    "files": 8,
+    "ms": 15.290035,
+    "search_ms": 15.026537
+   }
+  },
+  "rayon-1dfc35c5": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1346,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.32861328125,
+    "files": 7,
+    "ms": 8.140547999999999,
+    "search_ms": 142.748942
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1481,
+    "eff": 0.0,
+    "items": 10,
+    "util": 0.361572265625,
+    "files": 7,
+    "ms": 9.852809,
+    "search_ms": 142.748942
+   }
+  },
+  "rayon-4208de2a": {
+   "0": {
+    "cov": 1.0,
+    "rel": 31.0,
+    "used": 1406,
+    "eff": 0.022048364153627313,
+    "items": 7,
+    "util": 0.34326171875,
+    "files": 6,
+    "ms": 11.422873,
+    "search_ms": 151.666924
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 31.0,
+    "used": 1406,
+    "eff": 0.022048364153627313,
+    "items": 7,
+    "util": 0.34326171875,
+    "files": 6,
+    "ms": 12.281036,
+    "search_ms": 151.666924
+   }
+  },
+  "rayon-6b1367fe": {
+   "0": {
+    "cov": 1.0,
+    "rel": 19.5,
+    "used": 1438,
+    "eff": 0.013560500695410291,
+    "items": 7,
+    "util": 0.35107421875,
+    "files": 5,
+    "ms": 12.024745,
+    "search_ms": 148.126324
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 19.5,
+    "used": 1791,
+    "eff": 0.010887772194304857,
+    "items": 9,
+    "util": 0.437255859375,
+    "files": 5,
+    "ms": 13.517443,
+    "search_ms": 148.126324
+   }
+  },
+  "rayon-8582ad08": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1274,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.31103515625,
+    "files": 7,
+    "ms": 10.443276,
+    "search_ms": 19.330773
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1337,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.326416015625,
+    "files": 7,
+    "ms": 12.371164,
+    "search_ms": 19.330773
+   }
+  },
+  "rayon-a15dff94": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 219,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.053466796875,
+    "files": 5,
+    "ms": 9.799485,
+    "search_ms": 28.537019
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 237,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.057861328125,
+    "files": 5,
+    "ms": 9.386385,
+    "search_ms": 28.537019
+   }
+  },
+  "rayon-f1c56c9b": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 737,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.179931640625,
+    "files": 5,
+    "ms": 11.508879,
+    "search_ms": 157.69017399999998
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 835,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.203857421875,
+    "files": 5,
+    "ms": 10.765469,
+    "search_ms": 157.69017399999998
+   }
+  },
+  "requests-2edca111": {
+   "0": {
+    "cov": 1.0,
+    "rel": 6.25,
+    "used": 1121,
+    "eff": 0.005575379125780553,
+    "items": 7,
+    "util": 0.273681640625,
+    "files": 5,
+    "ms": 9.314224,
+    "search_ms": 7.9480249999999995
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 6.25,
+    "used": 1121,
+    "eff": 0.005575379125780553,
+    "items": 7,
+    "util": 0.273681640625,
+    "files": 5,
+    "ms": 8.752376,
+    "search_ms": 7.9480249999999995
+   }
+  },
+  "requests-4bd79e39": {
+   "0": {
+    "cov": 1.0,
+    "rel": 15.5,
+    "used": 1329,
+    "eff": 0.011662904439428141,
+    "items": 8,
+    "util": 0.324462890625,
+    "files": 8,
+    "ms": 3.605302,
+    "search_ms": 5.647047
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 15.5,
+    "used": 1329,
+    "eff": 0.011662904439428141,
+    "items": 8,
+    "util": 0.324462890625,
+    "files": 8,
+    "ms": 4.660533,
+    "search_ms": 5.647047
+   }
+  },
+  "requests-5b4b64c3": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2396,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.5849609375,
+    "files": 7,
+    "ms": 9.497103,
+    "search_ms": 37.832453
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2396,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.5849609375,
+    "files": 7,
+    "ms": 6.838968,
+    "search_ms": 37.832453
+   }
+  },
+  "requests-5f338446": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1723,
+    "eff": 0.0,
+    "items": 6,
+    "util": 0.420654296875,
+    "files": 4,
+    "ms": 6.131728000000001,
+    "search_ms": 8.509867000000002
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2355,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.574951171875,
+    "files": 4,
+    "ms": 7.934586,
+    "search_ms": 8.509867000000002
+   }
+  },
+  "requests-96ba401c": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2363,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.576904296875,
+    "files": 7,
+    "ms": 8.197484,
+    "search_ms": 20.224596000000002
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 74.5,
+    "used": 2941,
+    "eff": 0.02533151989119347,
+    "items": 10,
+    "util": 0.718017578125,
+    "files": 7,
+    "ms": 5.072309,
+    "search_ms": 20.224596000000002
+   }
+  },
+  "requests-a62a2d35": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2268,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.5537109375,
+    "files": 7,
+    "ms": 6.507114,
+    "search_ms": 15.856833
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2609,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.636962890625,
+    "files": 7,
+    "ms": 6.0293660000000004,
+    "search_ms": 15.856833
+   }
+  },
+  "requests-b1d73ddb": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 501,
+    "eff": 0.0,
+    "items": 4,
+    "util": 0.122314453125,
+    "files": 2,
+    "ms": 6.775517,
+    "search_ms": 6.156766999999999
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 934,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.22802734375,
+    "files": 2,
+    "ms": 4.512408,
+    "search_ms": 6.156766999999999
+   }
+  },
+  "requests-e1887993": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1490,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.36376953125,
+    "files": 6,
+    "ms": 9.682765,
+    "search_ms": 22.039448999999998
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1507,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.367919921875,
+    "files": 6,
+    "ms": 8.905483,
+    "search_ms": 22.039448999999998
+   }
+  },
+  "ripgrep-068a63ea": {
+   "0": {
+    "cov": 1.0,
+    "rel": 79.25,
+    "used": 1495,
+    "eff": 0.05301003344481605,
+    "items": 7,
+    "util": 0.364990234375,
+    "files": 6,
+    "ms": 7.876052,
+    "search_ms": 9.924197
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 79.25,
+    "used": 1495,
+    "eff": 0.05301003344481605,
+    "items": 7,
+    "util": 0.364990234375,
+    "files": 6,
+    "ms": 8.534702999999999,
+    "search_ms": 9.924197
+   }
+  },
+  "ripgrep-0d7054d8": {
+   "0": {
+    "cov": 0.8823529411764706,
+    "rel": 167.75,
+    "used": 1787,
+    "eff": 0.09387241186345831,
+    "items": 5,
+    "util": 0.436279296875,
+    "files": 4,
+    "ms": 12.66579,
+    "search_ms": 22.902069
+   },
+   "5": {
+    "cov": 0.8823529411764706,
+    "rel": 167.75,
+    "used": 2490,
+    "eff": 0.06736947791164659,
+    "items": 7,
+    "util": 0.60791015625,
+    "files": 4,
+    "ms": 13.914084,
+    "search_ms": 22.902069
+   }
+  },
+  "ripgrep-241b87b3": {
+   "0": {
+    "cov": 0.4444444444444444,
+    "rel": 138.25,
+    "used": 915,
+    "eff": 0.15109289617486338,
+    "items": 6,
+    "util": 0.223388671875,
+    "files": 4,
+    "ms": 15.073044000000001,
+    "search_ms": 66.216976
+   },
+   "5": {
+    "cov": 0.7037037037037037,
+    "rel": 224.5,
+    "used": 1496,
+    "eff": 0.15006684491978609,
+    "items": 10,
+    "util": 0.365234375,
+    "files": 4,
+    "ms": 18.528833000000002,
+    "search_ms": 66.216976
+   }
+  },
+  "ripgrep-2ed0c006": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1813,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.442626953125,
+    "files": 5,
+    "ms": 15.025675,
+    "search_ms": 74.259738
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1813,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.442626953125,
+    "files": 5,
+    "ms": 16.427,
+    "search_ms": 74.259738
+   }
+  },
+  "ripgrep-626b8951": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2023,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.493896484375,
+    "files": 7,
+    "ms": 13.727497,
+    "search_ms": 27.989199
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2023,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.493896484375,
+    "files": 7,
+    "ms": 15.452422,
+    "search_ms": 27.989199
+   }
+  },
+  "ripgrep-653d7f5b": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1731,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.422607421875,
+    "files": 6,
+    "ms": 11.622367,
+    "search_ms": 28.785494
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2325,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.567626953125,
+    "files": 6,
+    "ms": 13.102808000000001,
+    "search_ms": 28.785494
+   }
+  },
+  "ripgrep-6e527e92": {
+   "0": {
+    "cov": 1.0,
+    "rel": 156.75,
+    "used": 1768,
+    "eff": 0.08865950226244344,
+    "items": 6,
+    "util": 0.431640625,
+    "files": 5,
+    "ms": 11.208091,
+    "search_ms": 15.95452
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 156.75,
+    "used": 2220,
+    "eff": 0.07060810810810811,
+    "items": 8,
+    "util": 0.5419921875,
+    "files": 5,
+    "ms": 10.903896,
+    "search_ms": 15.95452
+   }
+  },
+  "zod-07c43e2a": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1131,
+    "eff": 0.0,
+    "items": 7,
+    "util": 0.276123046875,
+    "files": 6,
+    "ms": 13.394446,
+    "search_ms": 175.76667600000002
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1192,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.291015625,
+    "files": 6,
+    "ms": 15.354282,
+    "search_ms": 175.76667600000002
+   }
+  },
+  "zod-08ba069e": {
+   "0": {
+    "cov": 1.0,
+    "rel": 9.5,
+    "used": 1148,
+    "eff": 0.008275261324041812,
+    "items": 9,
+    "util": 0.2802734375,
+    "files": 7,
+    "ms": 10.779866,
+    "search_ms": 117.897242
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 9.5,
+    "used": 1505,
+    "eff": 0.006312292358803987,
+    "items": 10,
+    "util": 0.367431640625,
+    "files": 7,
+    "ms": 10.669694999999999,
+    "search_ms": 117.897242
+   }
+  },
+  "zod-2ec972ec": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1229,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.300048828125,
+    "files": 7,
+    "ms": 15.034702000000001,
+    "search_ms": 39.832986
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1260,
+    "eff": 0.0,
+    "items": 9,
+    "util": 0.3076171875,
+    "files": 7,
+    "ms": 16.386411,
+    "search_ms": 39.832986
+   }
+  },
+  "zod-319f47f4": {
+   "0": {
+    "cov": 1.0,
+    "rel": 12.75,
+    "used": 1402,
+    "eff": 0.009094151212553496,
+    "items": 8,
+    "util": 0.34228515625,
+    "files": 7,
+    "ms": 16.478956999999998,
+    "search_ms": 80.805734
+   },
+   "5": {
+    "cov": 1.0,
+    "rel": 12.75,
+    "used": 1402,
+    "eff": 0.009094151212553496,
+    "items": 8,
+    "util": 0.34228515625,
+    "files": 7,
+    "ms": 19.850959000000003,
+    "search_ms": 80.805734
+   }
+  },
+  "zod-68a609ac": {
+   "0": {
+    "cov": 0.5,
+    "rel": 15.0,
+    "used": 1704,
+    "eff": 0.008802816901408451,
+    "items": 8,
+    "util": 0.416015625,
+    "files": 7,
+    "ms": 15.369228,
+    "search_ms": 76.477816
+   },
+   "5": {
+    "cov": 0.5,
+    "rel": 15.0,
+    "used": 2120,
+    "eff": 0.007075471698113208,
+    "items": 10,
+    "util": 0.517578125,
+    "files": 7,
+    "ms": 17.16684,
+    "search_ms": 76.477816
+   }
+  },
+  "zod-a2a019a5": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1860,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.4541015625,
+    "files": 7,
+    "ms": 22.503877,
+    "search_ms": 132.07038400000002
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1860,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.4541015625,
+    "files": 7,
+    "ms": 26.696621,
+    "search_ms": 132.07038400000002
+   }
+  },
+  "zod-bec73bea": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2101,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.512939453125,
+    "files": 8,
+    "ms": 19.058153,
+    "search_ms": 182.06136
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2101,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.512939453125,
+    "files": 8,
+    "ms": 19.920569999999998,
+    "search_ms": 182.06136
+   }
+  },
+  "zod-cd4f9a67": {
+   "0": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2223,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.542724609375,
+    "files": 7,
+    "ms": 24.652746999999998,
+    "search_ms": 129.274529
+   },
+   "5": {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2223,
+    "eff": 0.0,
+    "items": 8,
+    "util": 0.542724609375,
+    "files": 7,
+    "ms": 26.843467999999998,
+    "search_ms": 129.274529
+   }
+  }
+ },
+ "added": [
+  {
+   "task": "axios-2d2a21af",
+   "repo": "axios",
+   "symbol": "lib/core/InterceptorManager.js#syncHandlerEntries",
+   "file": "lib/core/InterceptorManager.js",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 0,
+   "tokens": 164,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 0.6000000000000001,
+   "task_d_eff": 0.02811821990592061
+  },
+  {
+   "task": "axios-2d2a21af",
+   "repo": "axios",
+   "symbol": "lib/core/InterceptorManager.js#InterceptorManager.forEach",
+   "file": "lib/core/InterceptorManager.js",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 2,
+   "tokens": 133,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 0.6000000000000001,
+   "task_d_eff": 0.02811821990592061
+  },
+  {
+   "task": "axios-c3f553c7",
+   "repo": "axios",
+   "symbol": "lib/adapters/xhr.js#dispatchXhrRequest.ontimeout",
+   "file": "lib/adapters/xhr.js",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 4,
+   "tokens": 186,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "axios-c3f553c7",
+   "repo": "axios",
+   "symbol": "lib/adapters/xhr.js#dispatchXhrRequest.onCanceled",
+   "file": "lib/adapters/xhr.js",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 5,
+   "tokens": 79,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "axios-e8147e6a",
+   "repo": "axios",
+   "symbol": "lib/adapters/http.js#httpAdapter.dispatchHttpRequest.onFinished",
+   "file": "lib/adapters/http.js",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 13,
+   "tokens": 91,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.02510591266370349
+  },
+  {
+   "task": "axios-e8147e6a",
+   "repo": "axios",
+   "symbol": "lib/adapters/http.js#httpAdapter.dispatchHttpRequest.lookup",
+   "file": "lib/adapters/http.js",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": null,
+   "tokens": 124,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.02510591266370349
+  },
+  {
+   "task": "clap-07c6fd2d",
+   "repo": "clap",
+   "symbol": "clap_mangen/src/render.rs#render_synopsis_arg",
+   "file": "clap_mangen/src/render.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 9,
+   "tokens": 165,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "clap-07c6fd2d",
+   "repo": "clap",
+   "symbol": "clap_mangen/src/render.rs#render_synopsis_option",
+   "file": "clap_mangen/src/render.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 7,
+   "fused_rank": 11,
+   "tokens": 235,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "clap-1ab0dbd2",
+   "repo": "clap",
+   "symbol": "clap_builder/src/builder/command.rs#Command.render_usage_",
+   "file": "clap_builder/src/builder/command.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 8,
+   "tokens": 92,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.005224766573885188
+  },
+  {
+   "task": "clap-1ab0dbd2",
+   "repo": "clap",
+   "symbol": "clap_builder/src/builder/command.rs#Command._build_bin_names_internal",
+   "file": "clap_builder/src/builder/command.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 12,
+   "tokens": 355,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.005224766573885188
+  },
+  {
+   "task": "clap-24719832",
+   "repo": "clap",
+   "symbol": "clap_derive/src/derives/subcommand.rs#gen_augment",
+   "file": "clap_derive/src/derives/subcommand.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 1,
+   "tokens": 358,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "clap-24719832",
+   "repo": "clap",
+   "symbol": "clap_derive/src/derives/subcommand.rs#derive_subcommand",
+   "file": "clap_derive/src/derives/subcommand.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 8,
+   "fused_rank": 10,
+   "tokens": 216,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "clap-a1b6be72",
+   "repo": "clap",
+   "symbol": "clap_complete/src/aot/shells/zsh.rs#write_positionals_of",
+   "file": "clap_complete/src/aot/shells/zsh.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 3,
+   "tokens": 359,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.000644470775762962
+  },
+  {
+   "task": "clap-a1b6be72",
+   "repo": "clap",
+   "symbol": "clap_complete/src/aot/shells/zsh.rs#escape_value",
+   "file": "clap_complete/src/aot/shells/zsh.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 8,
+   "tokens": 100,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.000644470775762962
+  },
+  {
+   "task": "clap-eb39a0eb",
+   "repo": "clap",
+   "symbol": "clap_mangen/src/lib.rs#Man.render",
+   "file": "clap_mangen/src/lib.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 6,
+   "tokens": 243,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "clap-eb39a0eb",
+   "repo": "clap",
+   "symbol": "clap_mangen/src/render.rs#render_synopsis_arg",
+   "file": "clap_mangen/src/render.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 7,
+   "tokens": 165,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-17e146ad",
+   "repo": "flask",
+   "symbol": "tests/test_basic.py#test_url_for_passes_special_values_to_build_error_handler.handler",
+   "file": "tests/test_basic.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 15,
+   "tokens": 78,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-1af8f957",
+   "repo": "flask",
+   "symbol": "src/flask/templating.py#DispatchingJinjaLoader.__init__",
+   "file": "src/flask/templating.py",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 12,
+   "fused_rank": null,
+   "tokens": 28,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-1af8f957",
+   "repo": "flask",
+   "symbol": "src/flask/cli.py#FlaskGroup.__init__",
+   "file": "src/flask/cli.py",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 13,
+   "fused_rank": null,
+   "tokens": 335,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-1af8f957",
+   "repo": "flask",
+   "symbol": "src/flask/templating.py#Environment.__init__",
+   "file": "src/flask/templating.py",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 14,
+   "fused_rank": null,
+   "tokens": 71,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-438edcdf",
+   "repo": "flask",
+   "symbol": "src/flask/app.py#Flask.__init__",
+   "file": "src/flask/app.py",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 10,
+   "fused_rank": null,
+   "tokens": 357,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0008193400222013918
+  },
+  {
+   "task": "flask-80cf589a",
+   "repo": "flask",
+   "symbol": "src/flask/app.py#Flask.handle_user_exception",
+   "file": "src/flask/app.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 10,
+   "tokens": 298,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "flask-80cf589a",
+   "repo": "flask",
+   "symbol": "src/flask/app.py#Flask.handle_exception",
+   "file": "src/flask/app.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 3,
+   "tokens": 357,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "httpx-99cba6ac",
+   "repo": "httpx",
+   "symbol": "httpx/_auth.py#DigestAuth._resolve_qop",
+   "file": "httpx/_auth.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 10,
+   "tokens": 137,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0069143452780474415
+  },
+  {
+   "task": "httpx-99cba6ac",
+   "repo": "httpx",
+   "symbol": "httpx/_auth.py#DigestAuth._parse_challenge",
+   "file": "httpx/_auth.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 7,
+   "fused_rank": 13,
+   "tokens": 352,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0069143452780474415
+  },
+  {
+   "task": "httpx-a11fc384",
+   "repo": "httpx",
+   "symbol": "httpx/_urlparse.py#is_safe",
+   "file": "httpx/_urlparse.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 7,
+   "tokens": 129,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 0.4444444444444444,
+   "task_d_eff": 0.033294623135774984
+  },
+  {
+   "task": "httpx-a11fc384",
+   "repo": "httpx",
+   "symbol": "httpx/_urlparse.py#urlencode",
+   "file": "httpx/_urlparse.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 13,
+   "tokens": 208,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 0.4444444444444444,
+   "task_d_eff": 0.033294623135774984
+  },
+  {
+   "task": "httpx-ca51b453",
+   "repo": "httpx",
+   "symbol": "httpx/_client.py#BaseClient",
+   "file": "httpx/_client.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 4,
+   "tokens": 357,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "httpx-ca51b453",
+   "repo": "httpx",
+   "symbol": "httpx/_client.py#AsyncClient.__init__",
+   "file": "httpx/_client.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 6,
+   "tokens": 358,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-1dfc35c5",
+   "repo": "rayon",
+   "symbol": "src/iter/update.rs#UpdateSeq.fold",
+   "file": "src/iter/update.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 4,
+   "tokens": 55,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-1dfc35c5",
+   "repo": "rayon",
+   "symbol": "src/iter/update.rs#UpdateFolder.consume_iter",
+   "file": "src/iter/update.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 7,
+   "tokens": 80,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-6b1367fe",
+   "repo": "rayon",
+   "symbol": "rayon-core/src/sleep/mod.rs#IdleState",
+   "file": "rayon-core/src/sleep/mod.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 7,
+   "tokens": 98,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.002672728501105434
+  },
+  {
+   "task": "rayon-6b1367fe",
+   "repo": "rayon",
+   "symbol": "rayon-core/src/sleep/mod.rs#Sleep.wake_specific_thread",
+   "file": "rayon-core/src/sleep/mod.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 10,
+   "fused_rank": 13,
+   "tokens": 255,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.002672728501105434
+  },
+  {
+   "task": "rayon-8582ad08",
+   "repo": "rayon",
+   "symbol": "src/iter/collect/mod.rs#special_extend",
+   "file": "src/iter/collect/mod.rs",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 15,
+   "fused_rank": null,
+   "tokens": 63,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-a15dff94",
+   "repo": "rayon",
+   "symbol": "src/iter/panic_fuse.rs#PanicFuseIter.Item",
+   "file": "src/iter/panic_fuse.rs",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 17,
+   "fused_rank": null,
+   "tokens": 18,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-f1c56c9b",
+   "repo": "rayon",
+   "symbol": "src/iter/test.rs#check_ge_greater_to_seq",
+   "file": "src/iter/test.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 2,
+   "tokens": 61,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "rayon-f1c56c9b",
+   "repo": "rayon",
+   "symbol": "src/iter/test.rs#check_ge_equal_direct",
+   "file": "src/iter/test.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 3,
+   "tokens": 37,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-5f338446",
+   "repo": "requests",
+   "symbol": "src/requests/sessions.py#merge_setting",
+   "file": "src/requests/sessions.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 5,
+   "tokens": 270,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-5f338446",
+   "repo": "requests",
+   "symbol": "src/requests/sessions.py#Session.__init__",
+   "file": "src/requests/sessions.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 9,
+   "tokens": 362,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-96ba401c",
+   "repo": "requests",
+   "symbol": "src/requests/utils.py#get_netrc_auth",
+   "file": "src/requests/utils.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 4,
+   "tokens": 361,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 1.0,
+   "task_d_eff": 0.02533151989119347
+  },
+  {
+   "task": "requests-96ba401c",
+   "repo": "requests",
+   "symbol": "src/requests/utils.py#requote_uri",
+   "file": "src/requests/utils.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 6,
+   "tokens": 217,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 1.0,
+   "task_d_eff": 0.02533151989119347
+  },
+  {
+   "task": "requests-a62a2d35",
+   "repo": "requests",
+   "symbol": "src/requests/adapters.py#_urllib3_request_context",
+   "file": "src/requests/adapters.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 14,
+   "tokens": 341,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-b1d73ddb",
+   "repo": "requests",
+   "symbol": "src/requests/adapters.py#HTTPAdapter.build_connection_pool_key_attributes",
+   "file": "src/requests/adapters.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 1,
+   "tokens": 351,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-b1d73ddb",
+   "repo": "requests",
+   "symbol": "tests/test_requests.py#TestRequests.test_post_with_custom_mapping.CustomMapping.__setitem__",
+   "file": "tests/test_requests.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 8,
+   "tokens": 34,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-b1d73ddb",
+   "repo": "requests",
+   "symbol": "src/requests/adapters.py#DEFAULT_POOLBLOCK",
+   "file": "src/requests/adapters.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 9,
+   "tokens": 19,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-b1d73ddb",
+   "repo": "requests",
+   "symbol": "tests/test_requests.py#TestRequests.test_post_with_custom_mapping.CustomMapping.__len__",
+   "file": "tests/test_requests.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 7,
+   "fused_rank": 10,
+   "tokens": 29,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "requests-e1887993",
+   "repo": "requests",
+   "symbol": "src/requests/adapters.py#DEFAULT_RETRIES",
+   "file": "src/requests/adapters.py",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 11,
+   "fused_rank": 15,
+   "tokens": 17,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "ripgrep-0d7054d8",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/walk.rs#Worker",
+   "file": "crates/ignore/src/walk.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 2,
+   "tokens": 346,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.02650293395181172
+  },
+  {
+   "task": "ripgrep-0d7054d8",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/walk.rs#Worker.get_work",
+   "file": "crates/ignore/src/walk.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 4,
+   "tokens": 357,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.02650293395181172
+  },
+  {
+   "task": "ripgrep-241b87b3",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/gitignore.rs#excludes_file_default",
+   "file": "crates/ignore/src/gitignore.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 2,
+   "tokens": 79,
+   "crossed_primary_cap": false,
+   "gold": true,
+   "task_d_cov": 0.2592592592592593,
+   "task_d_eff": -0.0010260512550772927
+  },
+  {
+   "task": "ripgrep-241b87b3",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/gitignore.rs#gitconfig_xdg_contents",
+   "file": "crates/ignore/src/gitignore.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 4,
+   "tokens": 141,
+   "crossed_primary_cap": true,
+   "gold": true,
+   "task_d_cov": 0.2592592592592593,
+   "task_d_eff": -0.0010260512550772927
+  },
+  {
+   "task": "ripgrep-241b87b3",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#IgnoreOptions",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 8,
+   "tokens": 178,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.2592592592592593,
+   "task_d_eff": -0.0010260512550772927
+  },
+  {
+   "task": "ripgrep-241b87b3",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#IgnoreBuilder.new",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 7,
+   "fused_rank": 9,
+   "tokens": 183,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.2592592592592593,
+   "task_d_eff": -0.0010260512550772927
+  },
+  {
+   "task": "ripgrep-653d7f5b",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#Ignore.add_parents",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 2,
+   "fused_rank": 2,
+   "tokens": 358,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "ripgrep-653d7f5b",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#tests.absolute_parent",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 4,
+   "tokens": 236,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "ripgrep-6e527e92",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#Ignore.matched_dir_entry",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 13,
+   "fused_rank": 47,
+   "tokens": 96,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.018051394154335335
+  },
+  {
+   "task": "ripgrep-6e527e92",
+   "repo": "ripgrep",
+   "symbol": "crates/ignore/src/dir.rs#Ignore.add_child_path_with_found_ignore_files",
+   "file": "crates/ignore/src/dir.rs",
+   "role": "dependency",
+   "reason": "per-file diversity cap",
+   "fill_rank": 15,
+   "fused_rank": 29,
+   "tokens": 356,
+   "crossed_primary_cap": false,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.018051394154335335
+  },
+  {
+   "task": "zod-07c43e2a",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v4/core/regexes.ts#sha384_base64",
+   "file": "packages/zod/src/v4/core/regexes.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 3,
+   "fused_rank": 4,
+   "tokens": 30,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "zod-07c43e2a",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v4/core/regexes.ts#sha512_base64",
+   "file": "packages/zod/src/v4/core/regexes.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 5,
+   "tokens": 31,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "zod-08ba069e",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v4/core/util.ts#defineLazyInternal",
+   "file": "packages/zod/src/v4/core/util.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 6,
+   "fused_rank": 10,
+   "tokens": 357,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0019629689652378244
+  },
+  {
+   "task": "zod-2ec972ec",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v3/helpers/enumUtil.ts#UnionToTupleString",
+   "file": "packages/zod/src/v3/helpers/enumUtil.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 10,
+   "tokens": 31,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": 0.0
+  },
+  {
+   "task": "zod-68a609ac",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v4/core/compile.ts#generateObjectCheck",
+   "file": "packages/zod/src/v4/core/compile.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 4,
+   "fused_rank": 9,
+   "tokens": 362,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0017273452032952434
+  },
+  {
+   "task": "zod-68a609ac",
+   "repo": "zod",
+   "symbol": "packages/zod/src/v4/core/compile.ts#literalPropertyKey",
+   "file": "packages/zod/src/v4/core/compile.ts",
+   "role": "primary",
+   "reason": "per-file diversity cap",
+   "fill_rank": 5,
+   "fused_rank": 10,
+   "tokens": 54,
+   "crossed_primary_cap": true,
+   "gold": false,
+   "task_d_cov": 0.0,
+   "task_d_eff": -0.0017273452032952434
+  }
+ ],
+ "gates": {
+  "Q1": true,
+  "E1": false,
+  "validity": true,
+  "O1": true,
+  "coverage_regressions": 0
+ },
+ "cov": [
+  0.03776563448694596,
+  0.004250151791135398,
+  0.08330297510625381
+ ],
+ "rel_eff": [
+  -0.004796338666293317,
+  -0.12962125811968034,
+  0.2405829164482134
+ ],
+ "eff_down": [
+  "axios-e8147e6a",
+  "clap-1ab0dbd2",
+  "clap-a1b6be72",
+  "flask-438edcdf",
+  "httpx-99cba6ac",
+  "rayon-6b1367fe",
+  "ripgrep-0d7054d8",
+  "ripgrep-241b87b3",
+  "ripgrep-6e527e92",
+  "zod-08ba069e",
+  "zod-68a609ac"
+ ]
+}

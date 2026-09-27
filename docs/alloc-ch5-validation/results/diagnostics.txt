@@ -1,0 +1,77 @@
+IMPROVED axios-2d2a21af  cov 0.20->0.80  eff 0.0062->0.0344  used 1682->1979
+   query: 'fix(interceptors): tolerate nullish handlers in syncHandlerEntries'
+   gold: ['lib/core/InterceptorManager.js#InterceptorManager.forEach', 'lib/core/InterceptorManager.js#InterceptorManager.use', 'lib/core/InterceptorManager.js#syncHandlerEntries', 'lib/core/InterceptorManager.js#trimHandlers']
+   + lib/core/InterceptorManager.js#syncHandlerEntries [primary, per-file diversity cap] fill#2 fused#0 164tok crossed_cap=True gold=True
+   + lib/core/InterceptorManager.js#InterceptorManager.forEach [primary, per-file diversity cap] fill#3 fused#2 133tok crossed_cap=True gold=True
+IMPROVED httpx-a11fc384  cov 0.22->0.67  eff 0.0155->0.0488  used 1676->2013
+   query: 'Cleanup URL percent-encoding behavior. (#2990) * Replace path_query_fragment encoding tests * Remove'
+   gold: ['httpx/_urlparse.py#is_safe', 'httpx/_urlparse.py#quote', 'httpx/_urlparse.py#urlencode', 'httpx/_urlparse.py#urlparse']
+   + httpx/_urlparse.py#is_safe [primary, per-file diversity cap] fill#2 fused#7 129tok crossed_cap=True gold=True
+   + httpx/_urlparse.py#urlencode [primary, per-file diversity cap] fill#6 fused#13 208tok crossed_cap=True gold=True
+IMPROVED requests-96ba401c  cov 0.00->1.00  eff 0.0000->0.0253  used 2363->2941
+   query: 'Only use hostname to do netrc lookup instead of netloc'
+   gold: ['src/requests/utils.py#get_netrc_auth']
+   + src/requests/utils.py#get_netrc_auth [primary, per-file diversity cap] fill#3 fused#4 361tok crossed_cap=True gold=True
+   + src/requests/utils.py#requote_uri [primary, per-file diversity cap] fill#5 fused#6 217tok crossed_cap=True gold=False
+IMPROVED ripgrep-241b87b3  cov 0.44->0.70  eff 0.1511->0.1501  used 915->1496
+   query: 'ignore: support `GIT_CONFIG_GLOBAL` and `GIT_CONFIG_SYSTEM` for `core.excludesFile` `gitconfig_exclu'
+   gold: ['crates/ignore/src/gitignore.rs#excludes_file_default', 'crates/ignore/src/gitignore.rs#gitconfig_excludes_path', 'crates/ignore/src/gitignore.rs#gitconfig_home_contents', 'crates/ignore/src/gitignore.rs#gitconfig_xdg_contents']
+   + crates/ignore/src/gitignore.rs#excludes_file_default [primary, per-file diversity cap] fill#2 fused#2 79tok crossed_cap=False gold=True
+   + crates/ignore/src/gitignore.rs#gitconfig_xdg_contents [primary, per-file diversity cap] fill#4 fused#4 141tok crossed_cap=True gold=True
+   + crates/ignore/src/dir.rs#IgnoreOptions [primary, per-file diversity cap] fill#6 fused#8 178tok crossed_cap=True gold=False
+   + crates/ignore/src/dir.rs#IgnoreBuilder.new [primary, per-file diversity cap] fill#7 fused#9 183tok crossed_cap=True gold=False
+EFF-DOWN axios-e8147e6a  cov 1.00->1.00  eff 0.1485->0.1234  used 1057->1272
+   query: "fix(http): stop per-socket error listener from retaining the installing request's context (memory le"
+   gold: ['lib/adapters/http.js#httpAdapter.dispatchHttpRequest.handleRequestSocket']
+   + lib/adapters/http.js#httpAdapter.dispatchHttpRequest.onFinished [primary, per-file diversity cap] fill#3 fused#13 91tok crossed_cap=False gold=False
+   + lib/adapters/http.js#httpAdapter.dispatchHttpRequest.lookup [dependency, per-file diversity cap] fill#5 fused#None 124tok crossed_cap=False gold=False
+EFF-DOWN clap-1ab0dbd2  cov 0.57->0.57  eff 0.0246->0.0194  used 1657->2104
+   query: 'feat(builder): Expose Command::get_overridden_usage The usage set with `Command::override_usage` was'
+   gold: ['clap_builder/src/builder/command.rs#Command.get_override_help', 'clap_builder/src/output/usage.rs#Usage.write_usage_no_title']
+   + clap_builder/src/builder/command.rs#Command.render_usage_ [primary, per-file diversity cap] fill#3 fused#8 92tok crossed_cap=True gold=False
+   + clap_builder/src/builder/command.rs#Command._build_bin_names_internal [primary, per-file diversity cap] fill#5 fused#12 355tok crossed_cap=True gold=False
+EFF-DOWN clap-a1b6be72  cov 1.00->1.00  eff 0.0042->0.0036  used 2547->3006
+   query: "fix(clap_complete): Fix value escape in zsh completion Currently, if there's no help set in the poss"
+   gold: ['clap_complete/src/aot/shells/zsh.rs#value_completion']
+   + clap_complete/src/aot/shells/zsh.rs#write_positionals_of [primary, per-file diversity cap] fill#3 fused#3 359tok crossed_cap=True gold=False
+   + clap_complete/src/aot/shells/zsh.rs#escape_value [primary, per-file diversity cap] fill#6 fused#8 100tok crossed_cap=True gold=False
+EFF-DOWN flask-438edcdf  cov 1.00->1.00  eff 0.0050->0.0042  used 1837->2194
+   query: 'Allow self as an argument to url_for This makes the Flask.url_for self argument positional only (Fla'
+   gold: ['src/flask/app.py#Flask.url_for']
+   + src/flask/app.py#Flask.__init__ [dependency, per-file diversity cap] fill#10 fused#None 357tok crossed_cap=False gold=False
+EFF-DOWN httpx-99cba6ac  cov 1.00->1.00  eff 0.0337->0.0268  used 1897->2386
+   query: 'Fix RFC 2069 mode digest authentication (#3045) * Fix RFC 2069 mode digest authentication * Update C'
+   gold: ['httpx/_auth.py#DigestAuth._build_auth_header']
+   + httpx/_auth.py#DigestAuth._resolve_qop [primary, per-file diversity cap] fill#6 fused#10 137tok crossed_cap=True gold=False
+   + httpx/_auth.py#DigestAuth._parse_challenge [primary, per-file diversity cap] fill#7 fused#13 352tok crossed_cap=True gold=False
+EFF-DOWN rayon-6b1367fe  cov 1.00->1.00  eff 0.0136->0.0109  used 1438->1791
+   query: 'Make `CoreLatch::set` use `SeqCst` instead of `AcqRel` Every other modification of this variable use'
+   gold: ['rayon-core/src/latch.rs#CoreLatch.set']
+   + rayon-core/src/sleep/mod.rs#IdleState [primary, per-file diversity cap] fill#4 fused#7 98tok crossed_cap=True gold=False
+   + rayon-core/src/sleep/mod.rs#Sleep.wake_specific_thread [primary, per-file diversity cap] fill#10 fused#13 255tok crossed_cap=True gold=False
+EFF-DOWN ripgrep-0d7054d8  cov 0.88->0.88  eff 0.0939->0.0674  used 1787->2490
+   query: 'ignore: fix deadlock when visitor panics When a visitor panics and the workers shutdown, we indicate'
+   gold: ['crates/ignore/src/walk.rs#WalkParallel.visit', 'crates/ignore/src/walk.rs#Worker.get_work']
+   + crates/ignore/src/walk.rs#Worker [primary, per-file diversity cap] fill#2 fused#2 346tok crossed_cap=True gold=False
+   + crates/ignore/src/walk.rs#Worker.get_work [primary, per-file diversity cap] fill#3 fused#4 357tok crossed_cap=True gold=False
+EFF-DOWN ripgrep-241b87b3  cov 0.44->0.70  eff 0.1511->0.1501  used 915->1496
+   query: 'ignore: support `GIT_CONFIG_GLOBAL` and `GIT_CONFIG_SYSTEM` for `core.excludesFile` `gitconfig_exclu'
+   gold: ['crates/ignore/src/gitignore.rs#excludes_file_default', 'crates/ignore/src/gitignore.rs#gitconfig_excludes_path', 'crates/ignore/src/gitignore.rs#gitconfig_home_contents', 'crates/ignore/src/gitignore.rs#gitconfig_xdg_contents']
+   + crates/ignore/src/gitignore.rs#excludes_file_default [primary, per-file diversity cap] fill#2 fused#2 79tok crossed_cap=False gold=True
+   + crates/ignore/src/gitignore.rs#gitconfig_xdg_contents [primary, per-file diversity cap] fill#4 fused#4 141tok crossed_cap=True gold=True
+   + crates/ignore/src/dir.rs#IgnoreOptions [primary, per-file diversity cap] fill#6 fused#8 178tok crossed_cap=True gold=False
+   + crates/ignore/src/dir.rs#IgnoreBuilder.new [primary, per-file diversity cap] fill#7 fused#9 183tok crossed_cap=True gold=False
+EFF-DOWN ripgrep-6e527e92  cov 1.00->1.00  eff 0.0887->0.0706  used 1768->2220
+   query: 'ignore: add routine for checking if a path is hidden or not This needs to do a bit more work on Wind'
+   gold: ['crates/ignore/src/pathutil.rs#is_hidden_entry', 'crates/ignore/src/pathutil.rs#is_hidden_entry.imp']
+   + crates/ignore/src/dir.rs#Ignore.matched_dir_entry [dependency, per-file diversity cap] fill#13 fused#47 96tok crossed_cap=False gold=False
+   + crates/ignore/src/dir.rs#Ignore.add_child_path_with_found_ignore_files [dependency, per-file diversity cap] fill#15 fused#29 356tok crossed_cap=False gold=False
+EFF-DOWN zod-08ba069e  cov 1.00->1.00  eff 0.0083->0.0063  used 1148->1505
+   query: 'perf(v4): read Luhn digits with charCodeAt instead of string indexing'
+   gold: ['packages/zod/src/v4/core/schemas.ts#isLuhnAlgo']
+   + packages/zod/src/v4/core/util.ts#defineLazyInternal [primary, per-file diversity cap] fill#6 fused#10 357tok crossed_cap=True gold=False
+EFF-DOWN zod-68a609ac  cov 0.50->0.50  eff 0.0088->0.0071  used 1704->2120
+   query: 'Widen literal inputs in property check types (#6520) * Widen literal inputs in property check types '
+   gold: ['packages/zod/src/v4/core/api.ts#_properties', 'packages/zod/src/v4/core/api.ts#_property']
+   + packages/zod/src/v4/core/compile.ts#generateObjectCheck [primary, per-file diversity cap] fill#4 fused#9 362tok crossed_cap=True gold=False
+   + packages/zod/src/v4/core/compile.ts#literalPropertyKey [primary, per-file diversity cap] fill#5 fused#10 54tok crossed_cap=True gold=False
