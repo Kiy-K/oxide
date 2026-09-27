@@ -34,6 +34,135 @@
     "bases": []
   },
   {
+    "file": "store/config.go",
+    "qualified_name": "store/config.go:__module__",
+    "kind": "module",
+    "language": "go",
+    "parent": null,
+    "start_line": 1,
+    "end_line": 23,
+    "exported": false,
+    "id": 9929229036058875005,
+    "content_hash": 10244592574793265754,
+    "imports": [
+      "errors"
+    ],
+    "references": [
+      "ErrClosed",
+      "ErrMissing",
+      "ModeRead",
+      "ModeWrite",
+      "New",
+      "Open"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/config.go",
+    "qualified_name": "ModeRead",
+    "kind": "constant",
+    "language": "go",
+    "parent": null,
+    "start_line": 6,
+    "end_line": 6,
+    "exported": false,
+    "id": 9385179587001067854,
+    "content_hash": 12468369308029820470,
+    "imports": [
+      "errors"
+    ],
+    "references": [
+      "ModeWrite"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/config.go",
+    "qualified_name": "ModeWrite",
+    "kind": "constant",
+    "language": "go",
+    "parent": null,
+    "start_line": 7,
+    "end_line": 7,
+    "exported": false,
+    "id": 13098586071457370846,
+    "content_hash": 13466463521207054317,
+    "imports": [
+      "errors"
+    ],
+    "references": [],
+    "calls": [],
+    "bases": []
+  },
+  {
+    "file": "store/config.go",
+    "qualified_name": "ErrMissing",
+    "kind": "constant",
+    "language": "go",
+    "parent": null,
+    "start_line": 11,
+    "end_line": 11,
+    "exported": false,
+    "id": 2843647200958976226,
+    "content_hash": 14459031749805925414,
+    "imports": [
+      "errors"
+    ],
+    "references": [
+      "ErrClosed",
+      "New"
+    ],
+    "calls": [
+      "New"
+    ],
+    "bases": []
+  },
+  {
+    "file": "store/config.go",
+    "qualified_name": "ErrClosed",
+    "kind": "constant",
+    "language": "go",
+    "parent": null,
+    "start_line": 12,
+    "end_line": 12,
+    "exported": false,
+    "id": 12605042746676582331,
+    "content_hash": 1652745529236817382,
+    "imports": [
+      "errors"
+    ],
+    "references": [
+      "New"
+    ],
+    "calls": [
+      "New"
+    ],
+    "bases": []
+  },
+  {
+    "file": "store/config.go",
+    "qualified_name": "Open",
+    "kind": "function",
+    "language": "go",
+    "parent": null,
+    "start_line": 15,
+    "end_line": 23,
+    "exported": false,
+    "id": 44751194169247609,
+    "content_hash": 17409607785146577431,
+    "imports": [
+      "errors"
+    ],
+    "references": [
+      "ErrClosed",
+      "ModeWrite"
+    ],
+    "calls": [],
+    "bases": []
+  },
+  {
     "file": "store/store.go",
     "qualified_name": "store/store.go:__module__",
     "kind": "module",

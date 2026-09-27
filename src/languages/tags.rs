@@ -1433,6 +1433,79 @@ export const scale = (x) => x * 2;
         assert!(imports.contains(&"./ns".to_string()), "{imports:?}");
     }
 
+    /// `kind qualified_name parent start-end`, one line per non-module symbol.
+    fn outline(syms: &[Symbol]) -> String {
+        syms.iter()
+            .filter(|s| s.kind != SymbolKind::Module)
+            .map(|s| {
+                format!(
+                    "{:?} {} {} {}-{}",
+                    s.kind,
+                    s.qualified_name,
+                    s.parent.as_deref().unwrap_or("-"),
+                    s.start_line,
+                    s.end_line
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n")
+    }
+
+    #[test]
+    fn go_var_and_const_are_package_level_siblings_with_their_own_spans() {
+        let src = "\
+package p
+
+const Single = 1
+
+var Solo = 2
+
+const (
+\tMIMEJSON = \"application/json\"
+\tMIMEHTML = \"text/html\"
+)
+
+var (
+\tX = 1
+\tY = map[string]int{
+\t\t\"a\": 1,
+\t}
+)
+
+var A, B = 1, 2
+
+func Handle() {
+\tvar obj int
+\tconst limit = 3
+\tvar (
+\t\tinner = 4
+\t)
+\t_, _, _ = obj, limit, inner
+}
+";
+        let syms = parse_file_with(&GO_TAGS, "p.go", src, Language::Go);
+        // Grouped entries are top-level siblings spanning their own spec
+        // (a grouped `var` used to produce nothing, a grouped `const` a
+        // `MIMEJSON.MIMEHTML` chain over the whole group), and nothing
+        // declared inside `Handle` is a symbol. `A.B` is the one chain left:
+        // two names in one spec share a range, which the generic
+        // containment stack nests the same way it does C's `int a, b;` and
+        // PHP's `const A = 1, B = 2;`.
+        assert_eq!(
+            outline(&syms),
+            "\
+Constant Single - 3-3
+Constant Solo - 5-5
+Constant MIMEJSON - 8-8
+Constant MIMEHTML - 9-9
+Constant X - 13-13
+Constant Y - 14-16
+Constant A - 19-19
+Constant A.B A 19-19
+Function Handle - 21-28"
+        );
+    }
+
     #[test]
     fn a_dynamic_require_names_no_module() {
         let src = "const a = require(name);\nconst b = require('x', 'y');\n";
@@ -1440,6 +1513,7 @@ export const scale = (x) => x * 2;
         assert!(syms.first().unwrap().imports.is_empty());
     }
 
+    static GO_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::GO_PROFILE);
     static JAVA_TAGS: TagsExtractor = TagsExtractor::new(&crate::languages::JAVA_PROFILE);
     static JAVASCRIPT_TAGS: TagsExtractor =
         TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);

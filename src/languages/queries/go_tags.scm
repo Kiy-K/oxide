@@ -61,13 +61,27 @@
 ; Upstream lists var_declaration/const_declaration with a bare @name and no
 ; @definition capture, so package-level state is never a symbol. It is
 ; frequently exactly what a reader is looking for (`var DefaultClient = ...`).
-(var_declaration
-  (var_spec
-    name: (identifier) @name)) @definition.constant
+; Anchored under `source_file` so a function-local var/const is never a
+; symbol, and the definition is the *spec*, not the declaration: every entry
+; of a grouped `const ( ... )` would otherwise share the group's range, and
+; the containment stack in tags.rs would nest each one under its previous
+; sibling (`A.B.C`). A grouped `var ( ... )` wraps its specs in a
+; `var_spec_list` that `const` has no counterpart for.
+(source_file
+  (var_declaration
+    (var_spec
+      name: (identifier) @name) @definition.constant))
 
-(const_declaration
-  (const_spec
-    name: (identifier) @name)) @definition.constant
+(source_file
+  (var_declaration
+    (var_spec_list
+      (var_spec
+        name: (identifier) @name) @definition.constant)))
+
+(source_file
+  (const_declaration
+    (const_spec
+      name: (identifier) @name) @definition.constant))
 
 ; Interface method signatures. Upstream captures none, so `Backend.Get` —
 ; the exact name a reader searches for — was not a symbol. The enclosing
