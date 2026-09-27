@@ -1,0 +1,31 @@
+
+## funnel / classification  mode=balanced blast=False  n=63
+  delivered                                        130 gold lines   27.7%
+  pool-dropped:per-file diversity cap               71 gold lines   15.1%
+  M:module-candidate-only                           61 gold lines   13.0%
+  D:truncated-snippet                               55 gold lines   11.7%
+  pool-dropped:beyond primary cap                   43 gold lines    9.1%
+  A:fused-rank>seed-limit                           37 gold lines    7.9%
+  A:not-retrieved                                   34 gold lines    7.2%
+  dedup:subsumed by overlapping symbol              25 gold lines    5.3%
+  A:expansion-cap                                   12 gold lines    2.6%
+  M:packed-module                                    2 gold lines    0.4%
+  primary label: {'A': 19, 'B': 25, 'C': 13, 'D': 6}  multi-label: {'A': 30, 'B': 25, 'C': 13, 'D': 10}
+  per task: {'seeds': 16.0, 'exp_add': 2.0, 'ev_add': 0.98, 'exp_lost': 50.78, 'st_lost': 0.54, 'pool': 14.17, 'packed': 6.48, 'pool_full': 16982.4, 'pool_cap': 2888.44, 'unused_cap': 1525.9, 'trunc_packed': 2.57}
+  omissions/task: {'per-file diversity cap': 3.19, 'beyond primary cap': 3.13, 'subsumed by overlapping symbol': 2.16, 'module subsumed by concrete symbols': 2.1, 'beyond test cap': 1.38}
+
+## arms (mean over tasks)
+mode blast ch | util | items | files | gold_line_cov | rel_tok | rel_per_used | rel_per_budget | gold_file_cov | added_items | added_tok | added_hit_tok | ms | gold_sym_cov
+balanced 0 0 | 0.333 | 6.476 | 5.254 | 0.293 | 22.524 | 0.016 | 0.005 | 0.683 | 0.000 | 0.000 | 0.000 | 20.701 | 0.378
+balanced 0 5 | 0.404 | 7.905 | 5.254 | 0.346 | 29.183 | 0.017 | 0.007 | 0.683 | 1.429 | 293.937 | 41.413 | 19.039 | 0.446
+balanced 0 7 | 0.372 | 7.238 | 5.254 | 0.306 | 23.385 | 0.015 | 0.006 | 0.683 | 0.762 | 163.048 | 16.730 | 18.554 | 0.406
+
+## paired vs baseline (ch0, same mode/blast): mean [95% CI], improved/regressed tasks
+  balanced blast=0 ch5 gold_line_cov  +0.0528 [+0.0192,+0.0952]  +10/-0 of 63
+  balanced blast=0 ch5 rel_per_used   +0.0007 [-0.0016,+0.0036]  +9/-18 of 63
+  balanced blast=0 ch5 rel_tok        +6.6587 [+2.3056,+12.2738]  +10/-0 of 63
+  balanced blast=0 ch5 gold_sym_cov   +0.0681 [+0.0282,+0.1178]  +10/-0 of 63
+  balanced blast=0 ch7 gold_line_cov  +0.0124 [+0.0000,+0.0343]  +3/-0 of 63
+  balanced blast=0 ch7 rel_per_used   -0.0007 [-0.0018,+0.0004]  +2/-12 of 63
+  balanced blast=0 ch7 rel_tok        +0.8611 [+0.0000,+2.3333]  +3/-0 of 63
+  balanced blast=0 ch7 gold_sym_cov   +0.0275 [+0.0000,+0.0667]  +3/-0 of 63

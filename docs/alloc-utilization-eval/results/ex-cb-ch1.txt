@@ -1,0 +1,107 @@
+IMPROVED Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70  cov 0.00->0.25  rel/used 0.000->0.226  used 1098->3294
+    query: 'Fix: ensure that first fix is generic fix\n\nFixes #6739.\r\n\r\nThis fixes regression introduced in commit\r\n2cf5456'
+    + src/generators/utils/parse.ts#parseSitesFixesConfig  [per-file diversity cap]  321 tok  span [21, 57]  gold lines 21
+    + CONTRIBUTING.md#CONTRIBUTING.md:__module__  [beyond primary cap]  352 tok  span [8, 33]  gold lines 0
+    + tests/generators/utils/parse.tests.ts#tests/generators/utils/parse.tests.ts:__module__  [beyond primary cap]  359 tok  span [12, 65]  gold lines 0
+    + src/generators/dynamic-theme.ts#getDynamicThemeFixesFor  [beyond primary cap]  359 tok  span [49, 84]  gold lines 33
+    + src/utils/url.ts#src/utils/url.ts:__module__  [beyond primary cap]  360 tok  span [14, 70]  gold lines 38
+    + src/generators/utils/format.ts#SiteFix  [beyond primary cap]  29 tok  span [3, 6]  gold lines 0
+    + src/generators/utils/format.ts#SitesFixesFormatOptions  [beyond primary cap]  67 tok  span [8, 13]  gold lines 0
+    + src/generators/css-filter.ts#cssFilterStyleSheetTemplate  [per-file diversity cap]  349 tok  span [36, 75]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__049a7048  cov 0.71->0.71  rel/used 0.239->0.138  used 1948->3369
+    query: 'Running pylint in Kubernetes Pod with --jobs=0 fails\n### Bug description\n\nI run pylint in multiple parallel st'
+    + pylint/lint/run.py#Run  [per-file diversity cap]  359 tok  span [88, 132]  gold lines 0
+    + pylint/lint/pylinter.py#PyLinter  [beyond primary cap]  351 tok  span [507, 544]  gold lines 0
+    + pylint/config/config_initialization.py#pylint/config/config_initialization.py:__module__  [beyond primary cap]  357 tok  span [1, 39]  gold lines 0
+    + pylint/testutils/configuration_test.py#pylint/testutils/configuration_test.py:__module__  [beyond test cap]  354 tok  span [1, 43]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__07f7e78f  cov 0.40->0.40  rel/used 0.089->0.072  used 2457->3072
+    query: "quote qop options in Digest Auth\nBased on RFC2617 (http://tools.ietf.org/html/rfc2617), the value of\n'qop-opti"
+    + requests/utils.py#parse_list_header  [beyond primary cap]  260 tok  span [159, 186]  gold lines 0
+    + requests/packages/urllib3/util.py#requests/packages/urllib3/util.py:__module__  [beyond primary cap]  355 tok  span [355, 416]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__0eecae1e  cov 0.26->0.49  rel/used 0.215->0.226  used 2148->3553
+    query: 'skipping: --runxfail breaks pytest.mark.skip location reporting\npytest versions: 5.4.x, current master\r\n\r\nWhen'
+    + src/_pytest/skipping.py#evaluate_skip_marks  [per-file diversity cap]  253 tok  span [159, 187]  gold lines 29
+    + src/_pytest/skipping.py#pytest_configure  [per-file diversity cap]  356 tok  span [49, 81]  gold lines 14
+    + testing/test_skipping.py#TestSkip  [per-file diversity cap]  359 tok  span [588, 636]  gold lines 0
+    + testing/test_skipping.py#test_errors_in_xfail_skip_expressions  [per-file diversity cap]  275 tok  span [894, 928]  gold lines 0
+    + testing/test_skipping.py#test_imperativeskip_on_xfail_test  [per-file diversity cap]  162 tok  span [979, 1006]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__1397ea97  cov 0.14->0.39  rel/used 0.059->0.085  used 1652->3275
+    query: '_pytest.capture.EncodedFile mode should not include `b` (binary)\n<!--\r\nThanks for submitting an issue!\r\n\r\nHere'
+    + testing/test_assertrewrite.py#testing/test_assertrewrite.py:__module__  [beyond primary cap]  357 tok  span [239, 283]  gold lines 0
+    + src/_pytest/assertion/rewrite.py#_saferepr  [beyond primary cap]  211 tok  span [471, 490]  gold lines 0
+    + src/_pytest/capture.py#EncodedFile.__init__  [per-file diversity cap]  38 tok  span [428, 430]  gold lines 3
+    + src/_pytest/capture.py#pytest_load_initial_conftests  [per-file diversity cap]  226 tok  span [45, 66]  gold lines 0
+    + src/_pytest/capture.py#safe_text_dupfile  [per-file diversity cap]  167 tok  span [406, 422]  gold lines 17
+    + testing/acceptance_test.py#testing/acceptance_test.py:__module__  [beyond test cap]  355 tok  span [555, 607]  gold lines 0
+    + testing/test_capture.py#test_typeerror_encodedfile_write  [beyond test cap]  175 tok  span [1556, 1576]  gold lines 0
+    + testing/test_capture.py#test_pickling_and_unpickling_encoded_file  [beyond test cap]  94 tok  span [1455, 1461]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275  cov 0.67->0.67  rel/used 0.195->0.115  used 1944->3309
+    query: 'Request with binary payload fails due to calling to_native_string\nIntroduced with https://github.com/kennethre'
+    + requests/sessions.py#requests/sessions.py:__module__  [beyond primary cap]  362 tok  span [129, 160]  gold lines 0
+    + requests/api.py#put  [beyond primary cap]  122 tok  span [110, 120]  gold lines 0
+    + requests/models.py#PreparedRequest.prepare_body  [per-file diversity cap]  355 tok  span [406, 448]  gold lines 0
+    + requests/models.py#RequestEncodingMixin.path_url  [per-file diversity cap]  100 tok  span [53, 72]  gold lines 0
+    + requests/models.py#PreparedRequest.prepare_url  [per-file diversity cap]  359 tok  span [324, 359]  gold lines 0
+    + test_requests.py#TestRequests.test_unicode_header_name  [beyond test cap]  67 tok  span [518, 522]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__237decf1  cov 0.71->0.71  rel/used 0.069->0.043  used 2319->3728
+    query: "ValueError when collecting tests that patch an array \n<!--\r\nThanks for submitting an issue!\r\n\r\nHere's a quick "
+    + src/_pytest/monkeypatch.py#MonkeyPatch  [beyond primary cap]  352 tok  span [124, 157]  gold lines 0
+    + src/_pytest/python.py#pytest_pycollect_makeitem  [beyond primary cap]  353 tok  span [199, 226]  gold lines 0
+    + src/_pytest/main.py#src/_pytest/main.py:__module__  [beyond primary cap]  358 tok  span [607, 646]  gold lines 0
+    + src/_pytest/python_api.py#src/_pytest/python_api.py:__module__  [beyond primary cap]  346 tok  span [60, 102]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__23963510  cov 0.39->0.39  rel/used 0.120->0.056  used 1714->3715
+    query: 'Getting http://.example.com raises UnicodeError\nAttempting to get e.g. `http://.example.com` results in a `Uni'
+    + tests/test_utils.py#tests/test_utils.py:__module__  [beyond primary cap]  353 tok  span [413, 457]  gold lines 0
+    + requests/exceptions.py#requests/exceptions.py:__module__  [beyond primary cap]  361 tok  span [1, 56]  gold lines 0
+    + tests/test_requests.py#tests/test_requests.py:__module__  [beyond primary cap]  362 tok  span [2225, 2269]  gold lines 0
+    + requests/__init__.py#requests/__init__.py:__module__  [beyond primary cap]  353 tok  span [104, 144]  gold lines 0
+    + requests/status_codes.py#requests/status_codes.py:__module__  [beyond primary cap]  355 tok  span [1, 48]  gold lines 0
+    + requests/utils.py#requote_uri  [beyond primary cap]  217 tok  span [632, 651]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__36989b6d  cov 0.20->0.20  rel/used 0.373->0.204  used 2243->4094
+    query: 'Nominal scale should be drawn the same way as categorical scales\nThree distinctive things happen on the catego'
+    + seaborn/_oldcore.py#VectorPlotter._attach  [beyond primary cap]  361 tok  span [1179, 1212]  gold lines 0
+    + seaborn/categorical.py#_categorical_docs  [beyond primary cap]  361 tok  span [2050, 2083]  gold lines 0
+    + seaborn/categorical.py#_CategoricalPlotterNew.__init__  [beyond primary cap]  362 tok  span [56, 86]  gold lines 0
+    + seaborn/_marks/bar.py#Bar._plot  [beyond primary cap]  359 tok  span [133, 159]  gold lines 0
+    + seaborn/axisgrid.py#FacetGrid  [beyond primary cap]  356 tok  span [502, 547]  gold lines 0
+    + seaborn/_oldcore.py#VectorPlotter.__init__  [per-file diversity cap]  52 tok  span [632, 635]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__4b7ae9d9  cov 0.54->0.96  rel/used 0.131->0.170  used 1549->2436
+    query: 'Lexer "python3" in --pastebin feature causes HTTP errors\nThe `--pastebin` option currently submits the output '
+    + src/_pytest/pastebin.py#pytest_addoption  [per-file diversity cap]  94 tok  span [15, 25]  gold lines 0
+    + src/_pytest/pastebin.py#pytest_configure  [per-file diversity cap]  213 tok  span [28, 46]  gold lines 0
+    + src/_pytest/capture.py#FDCaptureBinary  [beyond primary cap]  356 tok  span [565, 604]  gold lines 0
+    + src/_pytest/pastebin.py#pytest_terminal_summary  [per-file diversity cap]  224 tok  span [94, 114]  gold lines 21
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__51b4c299  cov 0.00->0.14  rel/used 0.005->0.082  used 1683->4073
+    query: 'Setting `min-similarity-lines` to `0` should stop pylint from checking duplicate code\n### Current problem\n\nSet'
+    + pylint/checkers/similar.py#Run  [per-file diversity cap]  339 tok  span [887, 929]  gold lines 0
+    + pylint/checkers/similar.py#SimilarChecker  [per-file diversity cap]  361 tok  span [793, 828]  gold lines 14
+    + pylint/checkers/similar.py#Similar.__init__  [per-file diversity cap]  145 tok  span [356, 369]  gold lines 14
+    + pylint/checkers/format.py#pylint/checkers/format.py:__module__  [beyond primary cap]  352 tok  span [753, 784]  gold lines 0
+    + tests/functional/l/line_too_long_end_of_module.py#tests/functional/l/line_too_long_end_of_module.py:__module__  [beyond primary cap]  133 tok  span [1, 7]  gold lines 0
+    + pylint/utils/file_state.py#FileState  [beyond primary cap]  349 tok  span [25, 55]  gold lines 0
+    + tests/functional/t/too/too_many_lines_disabled.py#tests/functional/t/too/too_many_lines_disabled.py:__module__  [beyond primary cap]  299 tok  span [1, 1018]  gold lines 0
+    + tests/input/similar_lines_a.py#tests/input/similar_lines_a.py:__module__  [beyond primary cap]  358 tok  span [1, 49]  gold lines 0
+    + pylint/checkers/similar.py#Similar._find_common  [per-file diversity cap]  54 tok  span [466, 468]  gold lines 3
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__88e1ffd3  cov 0.00->0.12  rel/used 0.000->0.025  used 1553->3615
+    query: "requests.get is ALWAYS sending content length\nHi,\n\nIt seems like that request.get always adds 'content-length'"
+    + requests/models.py#PreparedRequest.prepare_content_length  [beyond primary cap]  102 tok  span [388, 395]  gold lines 8
+    + requests/packages/urllib3/request.py#RequestMethods  [beyond primary cap]  344 tok  span [66, 94]  gold lines 0
+    + requests/sessions.py#requests/sessions.py:__module__  [beyond primary cap]  354 tok  span [288, 329]  gold lines 0
+    + requests/packages/urllib3/contrib/ntlmpool.py#requests/packages/urllib3/contrib/ntlmpool.py:__module__  [beyond primary cap]  361 tok  span [29, 66]  gold lines 0
+    + requests/packages/urllib3/response.py#requests/packages/urllib3/response.py:__module__  [beyond primary cap]  350 tok  span [178, 214]  gold lines 0
+    + requests/cookies.py#MockRequest  [beyond primary cap]  344 tok  span [20, 59]  gold lines 0
+    + requests/auth.py#HTTPDigestAuth.handle_401  [beyond primary cap]  207 tok  span [144, 165]  gold lines 0
+IMPROVED SWE-PolyBench__typescript__evolution__feature__41cd3842  cov 0.33->0.40  rel/used 0.048->0.044  used 2508->4092
+    query: 'Add option to set unix socket permissions\nHello,\r\n\r\nwhen using the --socket option, I can tell code-server whi'
+    + docs/guide.md#docs/guide.md:__module__  [beyond primary cap]  362 tok  span [434, 473]  gold lines 0
+    + docs/CONTRIBUTING.md#docs/CONTRIBUTING.md:__module__  [beyond primary cap]  337 tok  span [251, 260]  gold lines 0
+    + src/node/main.ts#src/node/main.ts:__module__  [beyond primary cap]  357 tok  span [127, 164]  gold lines 0
+    + src/node/cli.ts#src/node/cli.ts:__module__  [beyond primary cap]  358 tok  span [148, 178]  gold lines 4
+    + CHANGELOG.md#CHANGELOG.md:__module__  [beyond primary cap]  83 tok  span [43, 52]  gold lines 0
+    + src/node/routes/vscode.ts#CodeServerRouteWrapper  [beyond primary cap]  87 tok  span [147, 155]  gold lines 0
+EFF-REGRESSED SWE-PolyBench__typescript__maintenance__bugfix__42165c4e  cov 0.01->0.01  rel/used 0.009->0.006  used 2209->3624
+    query: "[Bug]: Can't start 2 instances of code-server `4.14.0` for separate users\n### Is there an existing issue for t"
+    + test/utils/helpers.ts#test/utils/helpers.ts:__module__  [beyond primary cap]  354 tok  span [142, 201]  gold lines 0
+    + docs/CONTRIBUTING.md#docs/CONTRIBUTING.md:__module__  [beyond primary cap]  350 tok  span [178, 221]  gold lines 0
+    + test/unit/node/vscodeSocket.test.ts#test/unit/node/vscodeSocket.test.ts:__module__  [beyond test cap]  361 tok  span [14, 68]  gold lines 0
+    + test/unit/node/util.test.ts#test/unit/node/util.test.ts:__module__  [beyond test cap]  350 tok  span [136, 169]  gold lines 0

@@ -1,0 +1,32 @@
+IMPROVED Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70  cov 0.00->0.06  rel/used 0.000->0.096  used 1098->1768
+    query: 'Fix: ensure that first fix is generic fix\n\nFixes #6739.\r\n\r\nThis fixes regression introduced in commit\r\n2cf5456'
+    + src/generators/utils/parse.ts#parseSitesFixesConfig  [per-file diversity cap]  321 tok  span [21, 57]  gold lines 21
+    + src/generators/css-filter.ts#cssFilterStyleSheetTemplate  [per-file diversity cap]  349 tok  span [36, 75]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__049a7048  cov 0.71->0.71  rel/used 0.239->0.202  used 1948->2307
+    query: 'Running pylint in Kubernetes Pod with --jobs=0 fails\n### Bug description\n\nI run pylint in multiple parallel st'
+    + pylint/lint/run.py#Run  [per-file diversity cap]  359 tok  span [88, 132]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__0eecae1e  cov 0.26->0.49  rel/used 0.215->0.257  used 2148->3116
+    query: 'skipping: --runxfail breaks pytest.mark.skip location reporting\npytest versions: 5.4.x, current master\r\n\r\nWhen'
+    + src/_pytest/skipping.py#evaluate_skip_marks  [per-file diversity cap]  253 tok  span [159, 187]  gold lines 29
+    + src/_pytest/skipping.py#pytest_configure  [per-file diversity cap]  356 tok  span [49, 81]  gold lines 14
+    + testing/test_skipping.py#TestSkip  [per-file diversity cap]  359 tok  span [588, 636]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__1397ea97  cov 0.14->0.18  rel/used 0.059->0.065  used 1652->1916
+    query: '_pytest.capture.EncodedFile mode should not include `b` (binary)\n<!--\r\nThanks for submitting an issue!\r\n\r\nHere'
+    + src/_pytest/capture.py#EncodedFile.__init__  [per-file diversity cap]  38 tok  span [428, 430]  gold lines 3
+    + src/_pytest/capture.py#pytest_load_initial_conftests  [per-file diversity cap]  226 tok  span [45, 66]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__1fdd9275  cov 0.67->0.67  rel/used 0.195->0.158  used 1944->2399
+    query: 'Request with binary payload fails due to calling to_native_string\nIntroduced with https://github.com/kennethre'
+    + requests/models.py#PreparedRequest.prepare_body  [per-file diversity cap]  355 tok  span [406, 448]  gold lines 0
+    + requests/models.py#RequestEncodingMixin.path_url  [per-file diversity cap]  100 tok  span [53, 72]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__36989b6d  cov 0.20->0.20  rel/used 0.373->0.296  used 2243->2825
+    query: 'Nominal scale should be drawn the same way as categorical scales\nThree distinctive things happen on the catego'
+    + seaborn/_oldcore.py#VectorPlotter.__init__  [per-file diversity cap]  223 tok  span [632, 649]  gold lines 0
+    + seaborn/categorical.py#swarmplot  [per-file diversity cap]  359 tok  span [2615, 2664]  gold lines 0
+EFF-REGRESSED SWE-Bench-Verified__python__maintenance__bugfix__4b7ae9d9  cov 0.54->0.54  rel/used 0.131->0.109  used 1549->1856
+    query: 'Lexer "python3" in --pastebin feature causes HTTP errors\nThe `--pastebin` option currently submits the output '
+    + src/_pytest/pastebin.py#pytest_addoption  [per-file diversity cap]  94 tok  span [15, 25]  gold lines 0
+    + src/_pytest/pastebin.py#pytest_configure  [per-file diversity cap]  213 tok  span [28, 46]  gold lines 0
+IMPROVED SWE-Bench-Verified__python__maintenance__bugfix__51b4c299  cov 0.00->0.06  rel/used 0.005->0.066  used 1683->2383
+    query: 'Setting `min-similarity-lines` to `0` should stop pylint from checking duplicate code\n### Current problem\n\nSet'
+    + pylint/checkers/similar.py#Run  [per-file diversity cap]  339 tok  span [887, 929]  gold lines 0
+    + pylint/checkers/similar.py#SimilarChecker  [per-file diversity cap]  361 tok  span [793, 828]  gold lines 14

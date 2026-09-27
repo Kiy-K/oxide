@@ -1,0 +1,109 @@
+IMPROVED flask-5fdce4c3  cov 0.19->0.56  rel/used 0.032->0.050  used 1200->2205
+    query: "Don't set the cli attribute in the sansio scaffold It is (currently) Flask specific and hence cannot be shared"
+    + src/flask/sansio/scaffold.py#Scaffold.__init__  [per-file diversity cap]  359 tok  span [73, 107]  gold lines 6
+    + src/flask/sansio/scaffold.py#Scaffold.before_request  [per-file diversity cap]  295 tok  span [463, 488]  gold lines 0
+    + src/flask/sansio/app.py#App.teardown_appcontext  [per-file diversity cap]  351 tok  span [782, 814]  gold lines 0
+EFF-REGRESSED flask-6c44dd4b  cov 1.00->1.00  rel/used 0.009->0.006  used 1659->2496
+    query: 'update helpers.send_from_directory docstring (#5599) Update helpers.send_from_directory docstring to match wer'
+    + src/flask/helpers.py#_prepare_send_file_kwargs  [per-file diversity cap]  116 tok  span [387, 397]  gold lines 0
+    + src/flask/app.py#Flask.__init__  [per-file diversity cap]  362 tok  span [218, 253]  gold lines 0
+    + src/flask/helpers.py#url_for  [per-file diversity cap]  359 tok  span [188, 222]  gold lines 0
+IMPROVED flask-a411a243  cov 0.18->0.82  rel/used 0.018->0.064  used 1454->1722
+    query: 'add back opening session on context push'
+    + src/flask/ctx.py#AppContext.session  [per-file diversity cap]  193 tok  span [380, 397]  gold lines 7
+    + src/flask/testing.py#FlaskClient._copy_environ  [per-file diversity cap]  75 tok  span [185, 191]  gold lines 0
+EFF-REGRESSED flask-dbd4c288  cov 1.00->1.00  rel/used 0.014->0.008  used 1147->1983
+    query: 'Changed the static annotated type of select_jinja_autoescape method in src/flask/sansio/app.py'
+    + src/flask/sansio/scaffold.py#Scaffold.__init__  [per-file diversity cap]  352 tok  span [75, 109]  gold lines 0
+    + src/flask/sansio/scaffold.py#Scaffold.static_url_path  [per-file diversity cap]  137 tok  span [248, 262]  gold lines 0
+    + src/flask/sansio/app.py#App.__init__  [per-file diversity cap]  347 tok  span [318, 347]  gold lines 0
+EFF-REGRESSED flask-fb541598  cov 1.00->1.00  rel/used 0.012->0.011  used 1950->2098
+    query: 'secret key rotation: fix key list ordering The `itsdangerous` serializer interface[1] expects keys to be provi'
+    + src/flask/sessions.py#SecureCookieSessionInterface.open_session  [per-file diversity cap]  148 tok  span [336, 348]  gold lines 0
+EFF-REGRESSED httpx-37593c19  cov 1.00->1.00  rel/used 0.039->0.025  used 809->1270
+    query: 'Fast path returns for normalize_path cases'
+    + httpx/_urlparse.py#percent_encoded  [per-file diversity cap]  113 tok  span [413, 425]  gold lines 0
+    + httpx/_urlparse.py#urlparse  [per-file diversity cap]  348 tok  span [228, 259]  gold lines 0
+EFF-REGRESSED httpx-49d74a2e  cov 1.00->1.00  rel/used 0.016->0.015  used 1034->1094
+    query: 'Clarified error when header value is None'
+    + httpx/_status_codes.py#codes.is_server_error  [per-file diversity cap]  60 tok  span [73, 78]  gold lines 0
+EFF-REGRESSED httpx-5dda2aa3  cov 1.00->1.00  rel/used 0.027->0.017  used 605->997
+    query: 'Just use default `safe=...` characters for `urlescape`'
+    + httpx/_urlparse.py#urlparse  [per-file diversity cap]  353 tok  span [228, 260]  gold lines 0
+    + httpx/_urlparse.py#FRAG_SAFE  [per-file diversity cap]  39 tok  span [43, 45]  gold lines 0
+EFF-REGRESSED httpx-83a85189  cov 0.91->0.91  rel/used 0.297->0.283  used 1333->1400
+    query: 'Move normalize header functions from _utils.py to _models.py'
+    + httpx/_models.py#Headers.raw  [per-file diversity cap]  67 tok  span [123, 128]  gold lines 0
+IMPROVED httpx-ba2e5121  cov 0.10->0.20  rel/used 0.009->0.017  used 1394->1583
+    query: 'Review urlescape percent-safe set, and use + behavior for form spaces.'
+    + httpx/_urlparse.py#percent_encoded  [per-file diversity cap]  113 tok  span [481, 493]  gold lines 1
+    + httpx/_urlparse.py#PASSWORD_SAFE  [per-file diversity cap]  76 tok  span [76, 85]  gold lines 0
+IMPROVED pytest-92113cea  cov 0.00->0.04  rel/used 0.000->0.003  used 1068->1777
+    query: 'approx: keep float sentinels out of Decimal failure messages All three _repr_compare implementations seeded th'
+    + src/_pytest/approx.py#ApproxMapping  [per-file diversity cap]  348 tok  span [249, 283]  gold lines 1
+    + src/_pytest/approx.py#Approx  [per-file diversity cap]  361 tok  span [63, 112]  gold lines 0
+IMPROVED pytest-ef8ac544  cov 0.29->0.43  rel/used 0.040->0.027  used 645->1347
+    query: "approx: don't route Decimal through float for nan/inf checks Decimal.__float__ returns inf for values outside "
+    + src/_pytest/approx.py#ApproxTimedelta.__init__  [per-file diversity cap]  350 tok  span [669, 695]  gold lines 0
+    + src/_pytest/approx.py#ApproxScalar.tolerance  [per-file diversity cap]  352 tok  span [547, 577]  gold lines 1
+EFF-REGRESSED requests-3816cfa1  cov 0.67->0.67  rel/used 0.024->0.023  used 879->910
+    query: 'Parameterize SupportsItems to handle Mapping key invariance'
+    + tests/test_requests.py#TestRequests.test_post_with_custom_mapping.CustomMapping.__delitem__  [per-file diversity cap]  31 tok  span [904, 905]  gold lines 0
+EFF-REGRESSED requests-6404f345  cov 1.00->1.00  rel/used 0.026->0.019  used 1171->1637
+    query: 'Fix `prepare_body` stream detection for `__getattr__`-based file wrappers (#7433) ---------'
+    + src/requests/models.py#PreparedRequest.prepare  [per-file diversity cap]  280 tok  span [422, 449]  gold lines 0
+    + src/requests/models.py#PreparedRequest.__init__  [per-file diversity cap]  186 tok  span [405, 420]  gold lines 0
+IMPROVED requests-a044b020  cov 0.00->0.60  rel/used 0.000->0.023  used 1284->1702
+    query: 'Move DigestAuth hash algorithms to use usedforsecurity=False'
+    + src/requests/auth.py#HTTPDigestAuth.build_digest_header  [per-file diversity cap]  354 tok  span [126, 169]  gold lines 3
+    + src/requests/auth.py#HTTPDigestAuth.__init__  [per-file diversity cap]  64 tok  span [110, 114]  gold lines 0
+EFF-REGRESSED requests-bc7dd0fc  cov 0.25->0.25  rel/used 0.012->0.008  used 1296->1859
+    query: 'Fix cosmetic header validity parsing regex'
+    + src/requests/utils.py#_validate_header_part  [per-file diversity cap]  203 tok  span [1035, 1051]  gold lines 0
+    + src/requests/utils.py#unquote_header_value  [per-file diversity cap]  292 tok  span [432, 454]  gold lines 0
+    + src/requests/_internal_utils.py#_HEADER_VALIDATORS_BYTE  [per-file diversity cap]  33 tok  span [19, 19]  gold lines 0
+    + src/requests/_internal_utils.py#HEADER_VALIDATORS  [per-file diversity cap]  35 tok  span [20, 23]  gold lines 0
+IMPROVED requests-d2f6bdec  cov 0.50->1.00  rel/used 0.012->0.025  used 1107->1801
+    query: 'Clarify decode_unicode behaviour in iter_{content,lines} docstrings'
+    + src/requests/models.py#Response.iter_content  [per-file diversity cap]  353 tok  span [801, 829]  gold lines 2
+    + src/requests/models.py#Response.text  [per-file diversity cap]  341 tok  span [911, 947]  gold lines 0
+EFF-REGRESSED requests-e511bc72  cov 0.25->0.25  rel/used 0.013->0.009  used 935->1395
+    query: 'Fix mutability issues with headers input types'
+    + src/requests/_types.py#HookType  [per-file diversity cap]  25 tok  span [38, 38]  gold lines 0
+    + src/requests/utils.py#_validate_header_part  [per-file diversity cap]  251 tok  span [1098, 1119]  gold lines 0
+    + src/requests/utils.py#get_encoding_from_headers  [per-file diversity cap]  184 tok  span [569, 591]  gold lines 0
+EFF-REGRESSED requests-ef439eb7  cov 1.00->1.00  rel/used 0.017->0.013  used 1590->2118
+    query: 'Prevent Response self-reference in redirect history'
+    + src/requests/sessions.py#SessionRedirectMixin.get_redirect_target  [per-file diversity cap]  298 tok  span [108, 126]  gold lines 0
+    + src/requests/sessions.py#SessionRedirectMixin.rebuild_method  [per-file diversity cap]  230 tok  span [334, 354]  gold lines 0
+EFF-REGRESSED requests-fd628095  cov 1.00->1.00  rel/used 0.016->0.011  used 1532->2170
+    query: 'Preserve leading slashes in request path_url (#7315) ---------'
+    + src/requests/models.py#Request  [per-file diversity cap]  358 tok  span [283, 316]  gold lines 0
+    + src/requests/models.py#PreparedRequest.prepare  [per-file diversity cap]  280 tok  span [422, 449]  gold lines 0
+EFF-REGRESSED ripgrep-00e501b5  cov 1.00->1.00  rel/used 0.041->0.032  used 1538->1995
+    query: 'build: emit warning if git is missing during build'
+    + crates/ignore/src/dir.rs#IgnoreBuilder.build  [per-file diversity cap]  348 tok  span [614, 649]  gold lines 0
+    + crates/ignore/src/dir.rs#tests.gitignore_no_git  [per-file diversity cap]  109 tok  span [972, 981]  gold lines 0
+EFF-REGRESSED ripgrep-bf63fe8f  cov 1.00->1.00  rel/used 0.013->0.010  used 1465->1866
+    query: 'regex: add as_match method to Captures trait PR'
+    + crates/regex/src/matcher.rs#RegexMatcherBuilder.octal  [per-file diversity cap]  42 tok  span [199, 202]  gold lines 0
+    + crates/regex/src/matcher.rs#RegexMatcherBuilder.build_many  [per-file diversity cap]  359 tok  span [53, 79]  gold lines 0
+IMPROVED ripgrep-c93fc793  cov 0.50->1.00  rel/used 0.024->0.033  used 830->1289
+    query: 'searcher: add more tests for `replace_bytes` ... and add a comment explaining an optimization.'
+    + crates/searcher/src/line_buffer.rs#tests.replace  [per-file diversity cap]  110 tok  span [579, 585]  gold lines 2
+    + crates/searcher/src/line_buffer.rs#LineBuffer.fill  [per-file diversity cap]  349 tok  span [406, 435]  gold lines 0
+EFF-REGRESSED zod-213ee75d  cov 0.50->0.50  rel/used 0.158->0.131  used 1976->2382
+    query: 'feat(compile): add z.withParser for externally generated parsers (#6575) Extracts the installer half of compil'
+    + packages/zod/src/v4/core/compile.ts#compileValidator  [per-file diversity cap]  66 tok  span [102, 108]  gold lines 0
+    + packages/zod/src/v4/core/compile.ts#compileFn  [per-file diversity cap]  340 tok  span [238, 267]  gold lines 0
+IMPROVED zod-36f17960  cov 0.22->0.44  rel/used 0.020->0.028  used 2089->2325
+    query: 'fix(v4): stop the memoizer from pinning a finished parse (#6572) The bucket fast path in `attach` caches the c'
+    + packages/zod/src/v4/core/memoizer.ts#bucketFor  [per-file diversity cap]  65 tok  span [202, 209]  gold lines 2
+    + packages/zod/src/v4/core/memoizer.ts#guard  [per-file diversity cap]  171 tok  span [228, 240]  gold lines 0
+EFF-REGRESSED zod-51caf010  cov 0.91->0.91  rel/used 0.047->0.041  used 1696->1949
+    query: 'refactor: collapse cachedInternal back into cached (#6540) The two helpers existed so the exported cached() co'
+    + packages/zod/src/v4/core/util.ts#cachedInternal  [per-file diversity cap]  37 tok  span [324, 326]  gold lines 0
+    + packages/zod/src/v4/core/util.ts#members  [per-file diversity cap]  216 tok  span [1121, 1133]  gold lines 0
+IMPROVED zod-eca96871  cov 0.00->0.21  rel/used 0.000->0.048  used 2051->2413
+    query: 'fix(v4): enforce the six JSON Schema keywords fromJSONSchema silently dropped (#6535) * fix(v4): enforce the s'
+    + packages/zod/src/v4/classic/from-json-schema.ts#convertSchema  [per-file diversity cap]  362 tok  span [653, 685]  gold lines 3

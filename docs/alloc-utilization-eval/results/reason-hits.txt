@@ -1,0 +1,19 @@
+  baseline item             items  148 tok  40278  hit  19 (12.8%)  hit-tok share 10.9%
+  per-file diversity cap    items   25 tok   5672  hit   9 (36.0%)  hit-tok share 33.8%
+  beyond primary cap        items   77 tok  22640  hit   4 (5.2%)  hit-tok share 5.2%
+  beyond test cap           items   13 tok   2748  hit   0 (0.0%)  hit-tok share 0.0%
+--heldout
+  baseline item             items  408 tok  85840  hit  28 (6.9%)  hit-tok share 7.2%
+  beyond primary cap        items  194 tok  45834  hit  10 (5.2%)  hit-tok share 3.7%
+  beyond test cap           items   86 tok  13249  hit   0 (0.0%)  hit-tok share 0.0%
+  per-file diversity cap    items  198 tok  33467  hit  16 (8.1%)  hit-tok share 10.5%
+--dev
+  baseline item             items  487 tok  85995  hit  55 (11.3%)  hit-tok share 16.1%
+  per-file diversity cap    items  166 tok  22418  hit  10 (6.0%)  hit-tok share 6.5%
+  beyond primary cap        items  257 tok  54709  hit  14 (5.4%)  hit-tok share 7.0%
+  beyond test cap           items   53 tok  12285  hit   0 (0.0%)  hit-tok share 0.0%
+--bcd
+  baseline item             items  244 tok  57214  hit  20 (8.2%)  hit-tok share 7.5%
+  per-file diversity cap    items  112 tok  20645  hit   2 (1.8%)  hit-tok share 2.2%
+  beyond primary cap        items  136 tok  34412  hit   2 (1.5%)  hit-tok share 1.0%
+  beyond test cap           items   47 tok  10284  hit   0 (0.0%)  hit-tok share 0.0%

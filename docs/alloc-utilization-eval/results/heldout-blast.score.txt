@@ -1,0 +1,36 @@
+
+## funnel / classification  mode=balanced blast=True  n=63
+  delivered                                        132 gold lines   28.1%
+  pool-dropped:per-file diversity cap               71 gold lines   15.1%
+  M:module-candidate-only                           61 gold lines   13.0%
+  D:truncated-snippet                               55 gold lines   11.7%
+  pool-dropped:beyond primary cap                   43 gold lines    9.1%
+  A:fused-rank>seed-limit                           37 gold lines    7.9%
+  A:not-retrieved                                   34 gold lines    7.2%
+  dedup:subsumed by overlapping symbol              25 gold lines    5.3%
+  A:expansion-cap                                   10 gold lines    2.1%
+  M:packed-module                                    2 gold lines    0.4%
+  primary label: {'A': 19, 'B': 25, 'C': 13, 'D': 6}  multi-label: {'A': 30, 'B': 25, 'C': 13, 'D': 10}
+  per task: {'seeds': 16.0, 'exp_add': 2.0, 'ev_add': 4.52, 'exp_lost': 50.78, 'st_lost': 0.54, 'pool': 16.48, 'packed': 7.51, 'pool_full': 19251.71, 'pool_cap': 3433.03, 'unused_cap': 1810.41, 'trunc_packed': 2.95}
+  omissions/task: {'per-file diversity cap': 3.4, 'beyond primary cap': 3.02, 'beyond test cap': 2.56, 'subsumed by overlapping symbol': 2.29, 'module subsumed by concrete symbols': 2.16}
+
+## arms (mean over tasks)
+mode blast ch | util | items | files | gold_line_cov | rel_tok | rel_per_used | rel_per_budget | gold_file_cov | added_items | added_tok | added_hit_tok | ms | gold_sym_cov
+balanced 1 0 | 0.396 | 7.508 | 6.159 | 0.295 | 22.837 | 0.012 | 0.006 | 0.694 | 0.000 | 0.000 | 0.000 | 17.086 | 0.380
+balanced 1 1 | 0.779 | 15.952 | 9.397 | 0.478 | 38.988 | 0.012 | 0.010 | 0.829 | 8.444 | 1568.286 | 82.333 | 18.738 | 0.631
+balanced 1 5 | 0.475 | 9.000 | 6.159 | 0.348 | 29.496 | 0.013 | 0.007 | 0.694 | 1.492 | 321.540 | 41.413 | 16.758 | 0.457
+balanced 1 6 | 0.431 | 8.270 | 5.794 | 0.317 | 28.012 | 0.014 | 0.007 | 0.657 | 0.000 | 0.000 | 0.000 | 16.926 | 0.434
+
+## paired vs baseline (ch0, same mode/blast): mean [95% CI], improved/regressed tasks
+  balanced blast=1 ch1 gold_line_cov  +0.1833 [+0.1086,+0.2637]  +21/-0 of 63
+  balanced blast=1 ch1 rel_per_used   +0.0005 [-0.0030,+0.0046]  +17/-21 of 63
+  balanced blast=1 ch1 rel_tok        +16.1508 [+8.8889,+26.0238]  +21/-0 of 63
+  balanced blast=1 ch1 gold_sym_cov   +0.2509 [+0.1658,+0.3429]  +24/-0 of 63
+  balanced blast=1 ch5 gold_line_cov  +0.0528 [+0.0192,+0.0952]  +10/-0 of 63
+  balanced blast=1 ch5 rel_per_used   +0.0012 [-0.0009,+0.0039]  +9/-19 of 63
+  balanced blast=1 ch5 rel_tok        +6.6587 [+2.3056,+12.2738]  +10/-0 of 63
+  balanced blast=1 ch5 gold_sym_cov   +0.0761 [+0.0328,+0.1265]  +11/-0 of 63
+  balanced blast=1 ch6 gold_line_cov  +0.0221 [-0.0270,+0.0688]  +9/-2 of 63
+  balanced blast=1 ch6 rel_per_used   +0.0023 [-0.0004,+0.0056]  +13/-14 of 63
+  balanced blast=1 ch6 rel_tok        +5.1746 [+1.1151,+10.6190]  +9/-2 of 63
+  balanced blast=1 ch6 gold_sym_cov   +0.0540 [+0.0146,+0.1029]  +8/-1 of 63

@@ -1,0 +1,143 @@
+
+## funnel / classification  mode=balanced blast=False  n=63
+  delivered                                        130 gold lines   27.7%
+  pool-dropped:per-file diversity cap               71 gold lines   15.1%
+  M:module-candidate-only                           61 gold lines   13.0%
+  D:truncated-snippet                               55 gold lines   11.7%
+  pool-dropped:beyond primary cap                   43 gold lines    9.1%
+  A:fused-rank>seed-limit                           37 gold lines    7.9%
+  A:not-retrieved                                   34 gold lines    7.2%
+  dedup:subsumed by overlapping symbol              25 gold lines    5.3%
+  A:expansion-cap                                   12 gold lines    2.6%
+  M:packed-module                                    2 gold lines    0.4%
+  primary label: {'A': 19, 'B': 25, 'C': 13, 'D': 6}  multi-label: {'A': 30, 'B': 25, 'C': 13, 'D': 10}
+  per task: {'seeds': 16.0, 'exp_add': 2.0, 'ev_add': 0.98, 'exp_lost': 50.78, 'st_lost': 0.54, 'pool': 14.17, 'packed': 6.48, 'pool_full': 16982.4, 'pool_cap': 2888.44, 'unused_cap': 1525.9, 'trunc_packed': 2.57}
+  omissions/task: {'per-file diversity cap': 3.19, 'beyond primary cap': 3.13, 'subsumed by overlapping symbol': 2.16, 'module subsumed by concrete symbols': 2.1, 'beyond test cap': 1.38}
+
+## funnel / classification  mode=fast blast=False  n=63
+  delivered                                        135 gold lines   28.7%
+  pool-dropped:per-file diversity cap               62 gold lines   13.2%
+  M:module-candidate-only                           61 gold lines   13.0%
+  D:truncated-snippet                               59 gold lines   12.6%
+  A:fused-rank>seed-limit                           47 gold lines   10.0%
+  pool-dropped:beyond primary cap                   43 gold lines    9.1%
+  A:not-retrieved                                   34 gold lines    7.2%
+  dedup:subsumed by overlapping symbol              15 gold lines    3.2%
+  A:expansion-cap                                   12 gold lines    2.6%
+  M:packed-module                                    2 gold lines    0.4%
+  primary label: {'A': 19, 'B': 22, 'C': 14, 'D': 8}  multi-label: {'A': 30, 'B': 22, 'C': 14, 'D': 12}
+  per task: {'seeds': 16.0, 'exp_add': 2.0, 'ev_add': 0.0, 'exp_lost': 50.78, 'st_lost': 0.0, 'pool': 13.78, 'packed': 6.46, 'pool_full': 16823.92, 'pool_cap': 2808.3, 'unused_cap': 1453.32, 'trunc_packed': 2.6}
+  omissions/task: {'beyond primary cap': 3.13, 'per-file diversity cap': 2.83, 'subsumed by overlapping symbol': 2.14, 'module subsumed by concrete symbols': 2.08, 'beyond test cap': 1.37}
+
+## funnel / classification  mode=quality blast=False  n=63
+  delivered                                        130 gold lines   27.7%
+  pool-dropped:per-file diversity cap               71 gold lines   15.1%
+  M:module-candidate-only                           61 gold lines   13.0%
+  D:truncated-snippet                               55 gold lines   11.7%
+  pool-dropped:beyond primary cap                   43 gold lines    9.1%
+  A:fused-rank>seed-limit                           37 gold lines    7.9%
+  A:not-retrieved                                   34 gold lines    7.2%
+  dedup:subsumed by overlapping symbol              25 gold lines    5.3%
+  A:expansion-cap                                   12 gold lines    2.6%
+  M:packed-module                                    2 gold lines    0.4%
+  primary label: {'A': 19, 'B': 25, 'C': 13, 'D': 6}  multi-label: {'A': 30, 'B': 25, 'C': 13, 'D': 10}
+  per task: {'seeds': 16.0, 'exp_add': 2.0, 'ev_add': 1.46, 'exp_lost': 50.78, 'st_lost': 1.06, 'pool': 14.44, 'packed': 6.6, 'pool_full': 16608.35, 'pool_cap': 2948.38, 'unused_cap': 1549.32, 'trunc_packed': 2.62}
+  omissions/task: {'per-file diversity cap': 3.33, 'beyond primary cap': 3.08, 'subsumed by overlapping symbol': 2.19, 'module subsumed by concrete symbols': 2.11, 'beyond test cap': 1.43}
+
+## arms (mean over tasks)
+mode blast ch | util | items | files | gold_line_cov | rel_tok | rel_per_used | rel_per_budget | gold_file_cov | added_items | added_tok | added_hit_tok | ms | gold_sym_cov
+balanced 0 0 | 0.333 | 6.476 | 5.254 | 0.293 | 22.524 | 0.016 | 0.005 | 0.683 | 0.000 | 0.000 | 0.000 | 16.256 | 0.378
+balanced 0 1 | 0.691 | 14.063 | 8.000 | 0.492 | 38.798 | 0.015 | 0.009 | 0.841 | 7.587 | 1469.048 | 83.175 | 18.132 | 0.637
+balanced 0 2 | 0.531 | 10.095 | 8.000 | 0.394 | 27.456 | 0.014 | 0.007 | 0.841 | 3.619 | 814.349 | 27.175 | 17.573 | 0.504
+balanced 0 3 | 0.693 | 6.476 | 5.254 | 0.369 | 34.028 | 0.015 | 0.008 | 0.683 | 2.270 | 2277.556 | 253.937 | 17.863 | 0.389
+balanced 0 4 | 0.497 | 9.286 | 7.508 | 0.394 | 27.456 | 0.015 | 0.007 | 0.841 | 2.810 | 671.667 | 27.175 | 17.056 | 0.504
+balanced 0 5 | 0.404 | 7.905 | 5.254 | 0.346 | 29.183 | 0.017 | 0.007 | 0.683 | 1.429 | 293.937 | 41.413 | 16.696 | 0.446
+balanced 0 6 | 0.358 | 7.143 | 4.841 | 0.323 | 28.063 | 0.019 | 0.007 | 0.646 | 0.000 | 0.000 | 0.000 | 16.386 | 0.432
+fast 0 0 | 0.331 | 6.460 | 5.254 | 0.311 | 23.667 | 0.017 | 0.006 | 0.683 | 0.000 | 0.000 | 0.000 | 16.295 | 0.402
+fast 0 1 | 0.673 | 13.698 | 8.000 | 0.476 | 38.329 | 0.015 | 0.009 | 0.841 | 7.238 | 1401.079 | 73.127 | 17.623 | 0.621
+fast 0 2 | 0.531 | 10.095 | 8.000 | 0.411 | 28.599 | 0.014 | 0.007 | 0.841 | 3.635 | 818.651 | 27.175 | 17.426 | 0.528
+fast 0 3 | 0.683 | 6.460 | 5.254 | 0.408 | 36.048 | 0.016 | 0.009 | 0.683 | 2.302 | 2258.175 | 293.270 | 17.709 | 0.428
+fast 0 4 | 0.496 | 9.286 | 7.508 | 0.411 | 28.599 | 0.016 | 0.007 | 0.841 | 2.825 | 675.857 | 27.175 | 17.600 | 0.528
+fast 0 5 | 0.391 | 7.730 | 5.254 | 0.359 | 32.278 | 0.019 | 0.008 | 0.683 | 1.270 | 247.857 | 39.254 | 16.291 | 0.462
+fast 0 6 | 0.345 | 6.968 | 4.841 | 0.336 | 31.159 | 0.022 | 0.008 | 0.646 | 0.000 | 0.000 | 0.000 | 15.890 | 0.448
+quality 0 0 | 0.342 | 6.603 | 5.317 | 0.293 | 22.524 | 0.014 | 0.005 | 0.698 | 0.000 | 0.000 | 0.000 | 16.370 | 0.378
+quality 0 1 | 0.705 | 14.333 | 7.968 | 0.492 | 38.798 | 0.014 | 0.009 | 0.841 | 7.730 | 1489.143 | 83.175 | 17.714 | 0.645
+quality 0 2 | 0.533 | 10.111 | 7.968 | 0.394 | 27.456 | 0.013 | 0.007 | 0.841 | 3.508 | 783.603 | 27.175 | 17.581 | 0.504
+quality 0 3 | 0.703 | 6.603 | 5.317 | 0.369 | 34.028 | 0.012 | 0.008 | 0.698 | 2.286 | 2287.048 | 253.937 | 17.432 | 0.389
+quality 0 4 | 0.499 | 9.286 | 7.476 | 0.394 | 27.456 | 0.015 | 0.007 | 0.841 | 2.683 | 643.063 | 27.175 | 17.167 | 0.504
+quality 0 5 | 0.417 | 8.079 | 5.317 | 0.346 | 29.183 | 0.015 | 0.007 | 0.698 | 1.476 | 307.286 | 41.413 | 16.290 | 0.454
+quality 0 6 | 0.372 | 7.317 | 4.968 | 0.315 | 27.698 | 0.017 | 0.007 | 0.661 | 0.000 | 0.000 | 0.000 | 15.989 | 0.432
+
+## paired vs baseline (ch0, same mode/blast): mean [95% CI], improved/regressed tasks
+  balanced blast=0 ch1 gold_line_cov  +0.1992 [+0.1182,+0.2831]  +22/-0 of 63
+  balanced blast=0 ch1 rel_per_used   -0.0010 [-0.0068,+0.0050]  +18/-21 of 63
+  balanced blast=0 ch1 rel_tok        +16.2738 [+8.9802,+26.1548]  +22/-0 of 63
+  balanced blast=0 ch1 gold_sym_cov   +0.2589 [+0.1721,+0.3516]  +24/-0 of 63
+  balanced blast=0 ch2 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  balanced blast=0 ch2 rel_per_used   -0.0021 [-0.0066,+0.0021]  +8/-23 of 63
+  balanced blast=0 ch2 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  balanced blast=0 ch2 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  balanced blast=0 ch3 gold_line_cov  +0.0757 [+0.0283,+0.1368]  +10/-0 of 63
+  balanced blast=0 ch3 rel_per_used   -0.0009 [-0.0030,+0.0015]  +9/-19 of 63
+  balanced blast=0 ch3 rel_tok        +11.5040 [+2.4087,+26.9802]  +10/-0 of 63
+  balanced blast=0 ch3 gold_sym_cov   +0.0106 [+0.0000,+0.0317]  +1/-0 of 63
+  balanced blast=0 ch4 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  balanced blast=0 ch4 rel_per_used   -0.0009 [-0.0051,+0.0032]  +9/-18 of 63
+  balanced blast=0 ch4 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  balanced blast=0 ch4 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  balanced blast=0 ch5 gold_line_cov  +0.0528 [+0.0192,+0.0952]  +10/-0 of 63
+  balanced blast=0 ch5 rel_per_used   +0.0007 [-0.0016,+0.0036]  +9/-18 of 63
+  balanced blast=0 ch5 rel_tok        +6.6587 [+2.3056,+12.2738]  +10/-0 of 63
+  balanced blast=0 ch5 gold_sym_cov   +0.0681 [+0.0282,+0.1178]  +10/-0 of 63
+  balanced blast=0 ch6 gold_line_cov  +0.0300 [-0.0208,+0.0785]  +10/-2 of 63
+  balanced blast=0 ch6 rel_per_used   +0.0030 [+0.0001,+0.0065]  +15/-11 of 63
+  balanced blast=0 ch6 rel_tok        +5.5397 [+1.3968,+10.9246]  +10/-2 of 63
+  balanced blast=0 ch6 gold_sym_cov   +0.0540 [+0.0090,+0.1082]  +9/-2 of 63
+  fast blast=0 ch1 gold_line_cov  +0.1659 [+0.0927,+0.2487]  +19/-0 of 63
+  fast blast=0 ch1 rel_per_used   -0.0018 [-0.0075,+0.0041]  +14/-24 of 63
+  fast blast=0 ch1 rel_tok        +14.6627 [+7.2302,+24.4802]  +19/-0 of 63
+  fast blast=0 ch1 gold_sym_cov   +0.2192 [+0.1360,+0.3095]  +21/-0 of 63
+  fast blast=0 ch2 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  fast blast=0 ch2 rel_per_used   -0.0024 [-0.0068,+0.0019]  +8/-24 of 63
+  fast blast=0 ch2 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  fast blast=0 ch2 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  fast blast=0 ch3 gold_line_cov  +0.0979 [+0.0418,+0.1636]  +12/-0 of 63
+  fast blast=0 ch3 rel_per_used   -0.0011 [-0.0034,+0.0014]  +10/-21 of 63
+  fast blast=0 ch3 rel_tok        +12.3810 [+3.2262,+27.9405]  +12/-0 of 63
+  fast blast=0 ch3 gold_sym_cov   +0.0265 [+0.0000,+0.0688]  +2/-0 of 63
+  fast blast=0 ch4 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  fast blast=0 ch4 rel_per_used   -0.0010 [-0.0052,+0.0031]  +9/-18 of 63
+  fast blast=0 ch4 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  fast blast=0 ch4 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  fast blast=0 ch5 gold_line_cov  +0.0486 [+0.0157,+0.0936]  +9/-0 of 63
+  fast blast=0 ch5 rel_per_used   +0.0024 [-0.0015,+0.0082]  +8/-20 of 63
+  fast blast=0 ch5 rel_tok        +8.6111 [+2.2103,+17.7143]  +9/-0 of 63
+  fast blast=0 ch5 gold_sym_cov   +0.0602 [+0.0234,+0.1106]  +9/-0 of 63
+  fast blast=0 ch6 gold_line_cov  +0.0258 [-0.0257,+0.0777]  +9/-2 of 63
+  fast blast=0 ch6 rel_per_used   +0.0049 [+0.0007,+0.0111]  +15/-12 of 63
+  fast blast=0 ch6 rel_tok        +7.4921 [+1.3492,+16.3571]  +9/-2 of 63
+  fast blast=0 ch6 gold_sym_cov   +0.0460 [+0.0040,+0.0976]  +8/-2 of 63
+  quality blast=0 ch1 gold_line_cov  +0.1992 [+0.1182,+0.2831]  +22/-0 of 63
+  quality blast=0 ch1 rel_per_used   -0.0002 [-0.0049,+0.0054]  +18/-21 of 63
+  quality blast=0 ch1 rel_tok        +16.2738 [+8.9802,+26.1548]  +22/-0 of 63
+  quality blast=0 ch1 gold_sym_cov   +0.2668 [+0.1800,+0.3610]  +25/-0 of 63
+  quality blast=0 ch2 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  quality blast=0 ch2 rel_per_used   -0.0008 [-0.0038,+0.0027]  +8/-23 of 63
+  quality blast=0 ch2 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  quality blast=0 ch2 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  quality blast=0 ch3 gold_line_cov  +0.0757 [+0.0283,+0.1368]  +10/-0 of 63
+  quality blast=0 ch3 rel_per_used   -0.0017 [-0.0045,+0.0010]  +9/-19 of 63
+  quality blast=0 ch3 rel_tok        +11.5040 [+2.4087,+26.9802]  +10/-0 of 63
+  quality blast=0 ch3 gold_sym_cov   +0.0106 [+0.0000,+0.0317]  +1/-0 of 63
+  quality blast=0 ch4 gold_line_cov  +0.1009 [+0.0378,+0.1784]  +9/-0 of 63
+  quality blast=0 ch4 rel_per_used   +0.0004 [-0.0022,+0.0036]  +9/-17 of 63
+  quality blast=0 ch4 rel_tok        +4.9325 [+1.6706,+9.0397]  +9/-0 of 63
+  quality blast=0 ch4 gold_sym_cov   +0.1259 [+0.0571,+0.2106]  +10/-0 of 63
+  quality blast=0 ch5 gold_line_cov  +0.0528 [+0.0192,+0.0952]  +10/-0 of 63
+  quality blast=0 ch5 rel_per_used   +0.0007 [-0.0015,+0.0035]  +9/-18 of 63
+  quality blast=0 ch5 rel_tok        +6.6587 [+2.3056,+12.2738]  +10/-0 of 63
+  quality blast=0 ch5 gold_sym_cov   +0.0761 [+0.0328,+0.1265]  +11/-0 of 63
+  quality blast=0 ch6 gold_line_cov  +0.0221 [-0.0270,+0.0688]  +9/-2 of 63
+  quality blast=0 ch6 rel_per_used   +0.0025 [-0.0003,+0.0057]  +14/-12 of 63
+  quality blast=0 ch6 rel_tok        +5.1746 [+1.1151,+10.6190]  +9/-2 of 63
+  quality blast=0 ch6 gold_sym_cov   +0.0540 [+0.0146,+0.1029]  +8/-1 of 63
