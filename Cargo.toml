@@ -143,6 +143,11 @@ required-features = ["native-embed"]
 name = "semantic_variant"
 required-features = ["native-embed"]
 
+# Developer-intent research harness (#30); uses the native embedder.
+[[example]]
+name = "intent_dump"
+required-features = ["native-embed"]
+
 # Provider-agnostic (reads an existing index, never embeds), so unlike the
 # probes above it needs no native-embed feature.
 [[example]]
