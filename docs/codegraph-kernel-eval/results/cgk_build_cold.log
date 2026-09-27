@@ -1,0 +1,114 @@
+   Compiling find-msvc-tools v0.1.9
+   Compiling shlex v2.0.1
+   Compiling cc v1.2.67
+   Compiling tree-sitter-language v0.1.7
+   Compiling zmij v1.0.23
+   Compiling serde_core v1.0.228
+   Compiling version_check v0.9.5
+   Compiling generic-array v0.14.7
+   Compiling serde_json v1.0.150
+   Compiling equivalent v1.0.2
+   Compiling hashbrown v0.17.1
+   Compiling indexmap v2.14.0
+   Compiling memchr v2.8.3
+   Compiling typenum v1.20.1
+   Compiling itoa v1.0.18
+   Compiling aho-corasick v1.1.4
+   Compiling tree-sitter v0.25.10
+   Compiling regex-syntax v0.8.11
+   Compiling regex-automata v0.4.16
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling tree-sitter-cpp v0.23.4
+   Compiling tree-sitter-python v0.23.6
+   Compiling tree-sitter-r v1.2.0
+   Compiling tree-sitter-luau v1.2.0
+   Compiling tree-sitter-java v0.23.5
+   Compiling tree-sitter-swift v0.7.3
+   Compiling tree-sitter-c v0.24.2
+   Compiling tree-sitter-go v0.23.4
+   Compiling tree-sitter-ruby v0.23.1
+   Compiling tree-sitter-typescript v0.23.2
+   Compiling tree-sitter-php v0.24.2
+   Compiling tree-sitter-c-sharp v0.23.5
+   Compiling tree-sitter-rust v0.24.2
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling libc v0.2.186
+   Compiling digest v0.10.7
+   Compiling regex v1.13.1
+   Compiling cgk-native v0.0.0 (/home/khoi/Work/oxide/docs/codegraph-kernel-eval/harness/cgk-native)
+   Compiling cpufeatures v0.2.17
+   Compiling cfg-if v1.0.4
+   Compiling streaming-iterator v0.1.9
+   Compiling sha2 v0.10.9
+warning: cgk-native@0.0.0: In file included from vendor/codegraph/codegraph-kernel/grammars/scala/scanner.c:2:
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/scanner.c: In function 'tree_sitter_scala_external_scanner_scan':
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/tree_sitter/array.h:127:42: warning: value computed is not used [-Wunused-value]
+warning: cgk-native@0.0.0:   127 | #define array_pop(self) ((self)->contents[--(self)->size])
+warning: cgk-native@0.0.0:       |                         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/scanner.c:338:7: note: in expansion of macro 'array_pop'
+warning: cgk-native@0.0.0:   338 |       array_pop(&scanner->indents);
+warning: cgk-native@0.0.0:       |       ^~~~~~~~~
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/tree_sitter/array.h:127:42: warning: value computed is not used [-Wunused-value]
+warning: cgk-native@0.0.0:   127 | #define array_pop(self) ((self)->contents[--(self)->size])
+warning: cgk-native@0.0.0:       |                         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/scanner.c:366:9: note: in expansion of macro 'array_pop'
+warning: cgk-native@0.0.0:   366 |         array_pop(&scanner->indents);
+warning: cgk-native@0.0.0:       |         ^~~~~~~~~
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/tree_sitter/array.h:127:42: warning: value computed is not used [-Wunused-value]
+warning: cgk-native@0.0.0:   127 | #define array_pop(self) ((self)->contents[--(self)->size])
+warning: cgk-native@0.0.0:       |                         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+warning: cgk-native@0.0.0: vendor/codegraph/codegraph-kernel/grammars/scala/scanner.c:420:7: note: in expansion of macro 'array_pop'
+warning: cgk-native@0.0.0:   420 |       array_pop(&scanner->indents);
+warning: cgk-native@0.0.0:       |       ^~~~~~~~~
+warning: variable does not need to be mutable
+   --> src/../vendor/codegraph/codegraph-kernel/src/go.rs:683:13
+    |
+683 |         let mut handle_spec = |w: &mut Self, spec: Node<'t>| {
+    |             ----^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+    --> src/../vendor/codegraph/codegraph-kernel/src/go.rs:1089:13
+     |
+1089 | ...   let mut bump = |decl_counts: &mut HashMap<&'t str, u32>, name_node: Option<Node<'t>>, src: &'t str, targets: &HashMap<String...
+     |           ----^^^^
+     |           |
+     |           help: remove this `mut`
+
+warning: variable does not need to be mutable
+    --> src/../vendor/codegraph/codegraph-kernel/src/rustlang.rs:1353:13
+     |
+1353 | ...   let mut bump = |decl_counts: &mut HashMap<&'t str, u32>, name_node: Option<Node<'t>>, src: &'t str, targets: &HashMap<String...
+     |           ----^^^^
+     |           |
+     |           help: remove this `mut`
+
+warning: `cgk-native` (lib) generated 3 warnings (run `cargo fix --lib -p cgk-native` to apply 3 suggestions)
+    Finished `release` profile [optimized] target(s) in 44.05s
+	Command being timed: "cargo build --release -j 2"
+	User time (seconds): 68.42
+	System time (seconds): 4.18
+	Percent of CPU this job got: 164%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:44.07
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 482504
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 36
+	Minor (reclaiming a frame) page faults: 1392005
+	Voluntary context switches: 17518
+	Involuntary context switches: 3571
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 971192
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

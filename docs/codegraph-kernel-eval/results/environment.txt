@@ -1,0 +1,5 @@
+7.2.5-3-omarchy
+rustc 1.98.0 (88d9e12ae 2026-08-18)
+cargo 1.98.0 (797e8a9bc 2026-08-05)
+Model name:                              13th Gen Intel(R) Core(TM) i7-13620H
+v24.16.0
