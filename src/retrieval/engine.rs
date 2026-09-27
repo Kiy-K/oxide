@@ -541,10 +541,8 @@ impl<'a> RetrievalEngine<'a> {
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::relations::resolve_module;
     use crate::retrieval::test_support::{fixture_repo, json, lcg, seed_store, sym};
     use crate::storage::{IndexBackend, SqliteStore};
-    use std::collections::HashSet;
 
     /// Records which method the semantic stage actually calls, so the
     /// migration from `embed` to `embed_query` in `RetrievalEngine::search`
@@ -800,22 +798,6 @@ mod tests {
                 .iter()
                 .all(|reason| !reason.starts_with("uses←") && !reason.starts_with("test←"))
         }));
-    }
-
-    #[test]
-    fn module_resolution_probes_extensions_and_indexes() {
-        let files: HashSet<&str> = ["src/utils/token.py", "pkg/api/index.ts"]
-            .into_iter()
-            .collect();
-        assert_eq!(
-            resolve_module("./token", "src/utils/auth.py", &files).as_deref(),
-            Some("src/utils/token.py")
-        );
-        assert_eq!(
-            resolve_module("pkg/api", "src/main.ts", &files).as_deref(),
-            Some("pkg/api/index.ts")
-        );
-        assert_eq!(resolve_module("./missing", "src/main.ts", &files), None);
     }
 
     #[test]

@@ -10,48 +10,17 @@
 //! implementation (`structural.rs`) are gone — nothing in this crate
 //! answers a structural query live against arbitrary source anymore, only
 //! against what's actually been indexed (`RelationGraph::callers_of`/
-//! `implementors_of`, `relations.rs`).
+//! `implementors_of`, `relations/mod.rs`).
 //!
 //! Query source stays declarative (`.scm` files under
 //! `src/languages/queries/`): each `.scm` captures shape only (`@name`,
 //! `@base`, `@call`, `@class`), and callers filter/attribute in Rust after
 //! matching.
 
-use crate::languages::{
-    CPP_PROFILE, C_PROFILE, GO_PROFILE, JAVASCRIPT_PROFILE, JAVA_PROFILE, PHP_PROFILE,
-    PYTHON_PROFILE, RUBY_PROFILE, RUST_PROFILE, TSX_PROFILE, TYPESCRIPT_PROFILE,
-};
+use crate::languages::{profile_for, tags::LanguageProfile};
 use crate::symbols::Language;
 use std::sync::OnceLock;
 use tree_sitter::{Parser, Query, QueryCursor, StreamingIterator};
-
-const PYTHON_CALLERS_SRC: &str = include_str!("languages/queries/python_callers.scm");
-const PYTHON_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/python_implementors.scm");
-const TS_CALLERS_SRC: &str = include_str!("languages/queries/typescript_callers.scm");
-/// TSX gets the shared TypeScript patterns plus JSX element usage. Kept as a
-/// concatenation rather than a duplicated file so the two grammars can never
-/// drift apart on the call-site patterns they do share; the JSX patterns
-/// cannot go in the shared file because `jsx_opening_element` does not exist
-/// in the TypeScript grammar and `Query::new` would reject the whole source.
-const TSX_CALLERS_SRC: &str = concat!(
-    include_str!("languages/queries/typescript_callers.scm"),
-    include_str!("languages/queries/tsx_callers.scm")
-);
-const TS_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/typescript_implementors.scm");
-const RUST_CALLERS_SRC: &str = include_str!("languages/queries/rust_callers.scm");
-const RUST_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/rust_implementors.scm");
-const GO_CALLERS_SRC: &str = include_str!("languages/queries/go_callers.scm");
-const GO_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/go_implementors.scm");
-const JAVA_CALLERS_SRC: &str = include_str!("languages/queries/java_callers.scm");
-const JAVA_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/java_implementors.scm");
-const RUBY_CALLERS_SRC: &str = include_str!("languages/queries/ruby_callers.scm");
-const RUBY_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/ruby_implementors.scm");
-const PHP_CALLERS_SRC: &str = include_str!("languages/queries/php_callers.scm");
-const PHP_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/php_implementors.scm");
-const C_CALLERS_SRC: &str = include_str!("languages/queries/c_callers.scm");
-const C_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/c_implementors.scm");
-const CPP_CALLERS_SRC: &str = include_str!("languages/queries/cpp_callers.scm");
-const CPP_IMPLEMENTORS_SRC: &str = include_str!("languages/queries/cpp_implementors.scm");
 
 /// Compiled once per process, mirroring `tags.rs::TagsExtractor::config`'s
 /// `OnceLock` precedent — that pass measured ~15x slower indexing from
@@ -62,125 +31,24 @@ struct LangQueries {
     implementors: OnceLock<Query>,
 }
 
-static PYTHON_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static TYPESCRIPT_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static TSX_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static RUST_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static GO_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static JAVASCRIPT_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static JAVA_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static RUBY_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static PHP_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static C_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
-static CPP_QUERIES: LangQueries = LangQueries {
-    callers: OnceLock::new(),
-    implementors: OnceLock::new(),
-};
+/// One slot per `Language` (its discriminant; `Language::ALL` lists every
+/// variant), so each language keeps its own compiled pair — JavaScript and
+/// TSX share a grammar and query source but not a cache, as before.
+static QUERIES: [LangQueries; Language::ALL.len()] = [const {
+    LangQueries {
+        callers: OnceLock::new(),
+        implementors: OnceLock::new(),
+    }
+}; Language::ALL.len()];
+
+fn profile(lang: Language) -> &'static LanguageProfile {
+    profile_for(lang).expect(
+        "markdown has no grammar; compute_file_relations skips it via has_structural_queries",
+    )
+}
 
 fn ts_language(lang: Language) -> tree_sitter::Language {
-    match lang {
-        Language::Python => (PYTHON_PROFILE.ts_language)(),
-        Language::TypeScript => (TYPESCRIPT_PROFILE.ts_language)(),
-        Language::Tsx => (TSX_PROFILE.ts_language)(),
-        Language::JavaScript => (JAVASCRIPT_PROFILE.ts_language)(),
-        Language::Rust => (RUST_PROFILE.ts_language)(),
-        Language::Go => (GO_PROFILE.ts_language)(),
-        Language::Java => (JAVA_PROFILE.ts_language)(),
-        Language::Ruby => (RUBY_PROFILE.ts_language)(),
-        Language::Php => (PHP_PROFILE.ts_language)(),
-        Language::C => (C_PROFILE.ts_language)(),
-        Language::Cpp => (CPP_PROFILE.ts_language)(),
-        Language::Markdown => unreachable!(
-            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
-        ),
-    }
-}
-
-fn queries_for(lang: Language) -> &'static LangQueries {
-    match lang {
-        Language::Python => &PYTHON_QUERIES,
-        Language::TypeScript => &TYPESCRIPT_QUERIES,
-        Language::Tsx => &TSX_QUERIES,
-        Language::JavaScript => &JAVASCRIPT_QUERIES,
-        Language::Rust => &RUST_QUERIES,
-        Language::Go => &GO_QUERIES,
-        Language::Java => &JAVA_QUERIES,
-        Language::Ruby => &RUBY_QUERIES,
-        Language::Php => &PHP_QUERIES,
-        Language::C => &C_QUERIES,
-        Language::Cpp => &CPP_QUERIES,
-        Language::Markdown => unreachable!(
-            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
-        ),
-    }
-}
-
-fn callers_src(lang: Language) -> &'static str {
-    match lang {
-        Language::Python => PYTHON_CALLERS_SRC,
-        Language::TypeScript => TS_CALLERS_SRC,
-        // JavaScript runs on the TSX grammar, so it gets the TSX call
-        // patterns verbatim — JSX element usage included, which is the
-        // point: `<Button />` in a `.jsx` file is a call of `Button`.
-        Language::Tsx | Language::JavaScript => TSX_CALLERS_SRC,
-        Language::Rust => RUST_CALLERS_SRC,
-        Language::Go => GO_CALLERS_SRC,
-        Language::Java => JAVA_CALLERS_SRC,
-        Language::Ruby => RUBY_CALLERS_SRC,
-        Language::Php => PHP_CALLERS_SRC,
-        Language::C => C_CALLERS_SRC,
-        Language::Cpp => CPP_CALLERS_SRC,
-        Language::Markdown => unreachable!(
-            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
-        ),
-    }
-}
-
-fn implementors_src(lang: Language) -> &'static str {
-    match lang {
-        Language::Python => PYTHON_IMPLEMENTORS_SRC,
-        Language::TypeScript | Language::Tsx | Language::JavaScript => TS_IMPLEMENTORS_SRC,
-        Language::Rust => RUST_IMPLEMENTORS_SRC,
-        Language::Go => GO_IMPLEMENTORS_SRC,
-        Language::Java => JAVA_IMPLEMENTORS_SRC,
-        Language::Ruby => RUBY_IMPLEMENTORS_SRC,
-        Language::Php => PHP_IMPLEMENTORS_SRC,
-        Language::C => C_IMPLEMENTORS_SRC,
-        Language::Cpp => CPP_IMPLEMENTORS_SRC,
-        Language::Markdown => unreachable!(
-            "markdown has no grammar; compute_file_relations skips it via has_structural_queries"
-        ),
-    }
+    (profile(lang).ts_language)()
 }
 
 /// `Query::new` fails only for a query source that references a node kind
@@ -191,14 +59,15 @@ fn implementors_src(lang: Language) -> &'static str {
 /// (TS vs TSX diverging on a node kind) surfaces as a test failure, not a
 /// first-caller panic.
 fn compiled_callers(lang: Language) -> &'static Query {
-    queries_for(lang).callers.get_or_init(|| {
-        Query::new(&ts_language(lang), callers_src(lang)).expect("static callers query compiles")
+    QUERIES[lang as usize].callers.get_or_init(|| {
+        Query::new(&ts_language(lang), profile(lang).callers_query)
+            .expect("static callers query compiles")
     })
 }
 
 fn compiled_implementors(lang: Language) -> &'static Query {
-    queries_for(lang).implementors.get_or_init(|| {
-        Query::new(&ts_language(lang), implementors_src(lang))
+    QUERIES[lang as usize].implementors.get_or_init(|| {
+        Query::new(&ts_language(lang), profile(lang).implementors_query)
             .expect("static implementors query compiles")
     })
 }

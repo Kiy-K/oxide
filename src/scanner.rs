@@ -111,8 +111,8 @@ pub fn language_for_source(path: &Path, src: &str) -> Option<crate::symbols::Lan
     if language != C || path.extension().and_then(|ext| ext.to_str()) != Some("h") {
         return Some(language);
     }
-    let c_errors = error_nodes(tree_sitter_c::LANGUAGE.into(), src);
-    let cpp_errors = error_nodes(tree_sitter_cpp::LANGUAGE.into(), src);
+    let c_errors = error_nodes((crate::languages::C_PROFILE.ts_language)(), src);
+    let cpp_errors = error_nodes((crate::languages::CPP_PROFILE.ts_language)(), src);
     Some(
         if cpp_errors < c_errors || (cpp_errors == c_errors && has_cpp_header_syntax(src)) {
             Cpp

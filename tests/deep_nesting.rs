@@ -85,7 +85,7 @@ fn a_deep_c_pointer_declarator_indexes_on_a_small_stack() {
 #[test]
 fn a_deep_cpp_parameter_declarator_indexes_on_a_small_stack() {
     // A parameter's declarator chain is rendered into the overload
-    // signature (`tags::cpp_declarator_suffix`).
+    // signature (`signatures::cpp_declarator_suffix`).
     let src = format!(
         "void take(int {}p);\nvoid after() {{}}\n",
         "*".repeat(DEPTH)

@@ -5,7 +5,8 @@ use crate::tree_sitter_structural::StructuralSites;
 use std::collections::HashSet;
 
 /// A grammar-backed extractor producing declaration symbols for one language.
-/// Adding a language = implementing this trait + registering below.
+/// Adding a language = implementing this trait + registering it in
+/// `languages::tags_extractor_for`.
 pub trait LanguageExtractor: Sync {
     fn language(&self) -> Language;
     fn ts_language(&self) -> tree_sitter::Language;
@@ -45,21 +46,6 @@ pub trait LanguageExtractor: Sync {
 
 pub use crate::languages::tags;
 
-static PYTHON_TAGS: tags::TagsExtractor =
-    tags::TagsExtractor::new(&crate::languages::PYTHON_PROFILE);
-static TYPESCRIPT_TAGS: tags::TagsExtractor =
-    tags::TagsExtractor::new(&crate::languages::TYPESCRIPT_PROFILE);
-static TSX_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::TSX_PROFILE);
-static RUST_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::RUST_PROFILE);
-static GO_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::GO_PROFILE);
-static JAVASCRIPT_TAGS: tags::TagsExtractor =
-    tags::TagsExtractor::new(&crate::languages::JAVASCRIPT_PROFILE);
-static JAVA_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::JAVA_PROFILE);
-static RUBY_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::RUBY_PROFILE);
-static PHP_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::PHP_PROFILE);
-static C_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::C_PROFILE);
-static CPP_TAGS: tags::TagsExtractor = tags::TagsExtractor::new(&crate::languages::CPP_PROFILE);
-
 /// Deliberately extracts nothing: markdown has no declarations to find, so
 /// `parse_file_with`'s existing whole-file module fallback (the same path a
 /// comment-only source file already takes) becomes the file's only symbol —
@@ -97,18 +83,9 @@ impl LanguageExtractor for MarkdownExtractor {
 /// (decorator-inclusive spans) they were still retained for.
 pub fn extractor_for(lang: Language) -> &'static dyn LanguageExtractor {
     match lang {
-        Language::Python => &PYTHON_TAGS,
-        Language::TypeScript => &TYPESCRIPT_TAGS,
-        Language::Tsx => &TSX_TAGS,
-        Language::JavaScript => &JAVASCRIPT_TAGS,
-        Language::Rust => &RUST_TAGS,
-        Language::Go => &GO_TAGS,
-        Language::Java => &JAVA_TAGS,
-        Language::Ruby => &RUBY_TAGS,
-        Language::Php => &PHP_TAGS,
-        Language::C => &C_TAGS,
-        Language::Cpp => &CPP_TAGS,
         Language::Markdown => &MARKDOWN_EXTRACTOR,
+        _ => crate::languages::tags_extractor_for(lang)
+            .expect("every language but markdown registers a tags extractor"),
     }
 }
 

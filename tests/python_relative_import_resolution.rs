@@ -1,6 +1,6 @@
 //! End-to-end contract for `relations::resolve_module` resolving Python's
 //! dot-only relative import syntax (`.store`, `..pkg.util`, bare `.`/`..`)
-//! through the real indexing path — `src/relations.rs`'s own unit tests
+//! through the real indexing path — `src/relations/imports.rs`'s own unit tests
 //! pin the pure-function cases (valid, unresolved, ambiguous); this pins
 //! that the fix survives a real `update_index` round trip and stays correct
 //! across an incremental re-index, not just against hand-built `Symbol`s.

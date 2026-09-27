@@ -2,7 +2,7 @@
 
 Scope: `src/structural_relations.rs` (index-time precomputation),
 `src/tree_sitter_structural.rs` (the Tree-sitter query substrate),
-`src/relations.rs`'s `RelationGraph::callers_of`/`implementors_of`,
+`src/relations/mod.rs`'s `RelationGraph::callers_of`/`implementors_of`,
 `src/parser.rs` / `src/languages/tags.rs` (language extraction).
 
 `src/structural.rs` (the `ast-grep-core` adapter) and its query-time
@@ -19,7 +19,7 @@ migration doc first.
 `RelationGraph::callers_of`/`implementors_of`.
 
 **Invariant:** `callers_of`/`implementors_of` are repo-wide by construction
-(`relations.rs`) — they answer for every indexed symbol, not a bounded
+(`relations/mod.rs`) — they answer for every indexed symbol, not a bounded
 subset. Every call site that feeds context output back to a request must
 intersect the result with an explicit, bounded file scope — the files of
 already-retrieved symbols, capped by `RetrievalMode::structural_budget()` —
@@ -162,7 +162,7 @@ persisted; an id that moves orphans a stored embedding and re-embeds a
 symbol whose source never changed. Java is the precedent for the only safe
 way to buy overload-distinct identity: put the discriminator in *that
 language's* `qualified_name` (`Store.get(String,String)`,
-`tags.rs::java_signature`), gated on the language, leaving the formula and
+`signatures.rs::java_signature`), gated on the language, leaving the formula and
 every other language's names untouched. Changing the formula itself — or
 adding a component every language pays for — is a cross-language
 re-embedding migration, not a language addition.

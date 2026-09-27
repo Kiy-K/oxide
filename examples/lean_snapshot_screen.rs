@@ -57,7 +57,7 @@ unsafe impl GlobalAlloc for Counting {
 #[global_allocator]
 static GLOBAL: Counting = Counting;
 
-/// `relations.rs::is_test_symbol`, same mapping (ASCII byte-wise lowercase,
+/// `relations/mod.rs::is_test_symbol`, same mapping (ASCII byte-wise lowercase,
 /// `to_lowercase` otherwise; last clause Function|Method only).
 fn is_test(file: &str, name: &str, kind: SymbolKind) -> bool {
     let lower = |s: &str| {

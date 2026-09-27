@@ -71,7 +71,7 @@ pub struct ProbeGraph<'c> {
     stats: Cell<ProbeStats>,
 }
 
-/// `relations.rs::is_test_symbol`, same behavior: ASCII input lowercased
+/// `relations/mod.rs::is_test_symbol`, same behavior: ASCII input lowercased
 /// byte-wise, anything else through `to_lowercase`, and the last clause
 /// is `ends_with("test") && (Function | Method)`.
 pub fn is_test_symbol(file: &str, name: &str, kind: SymbolKind) -> bool {

@@ -1,9 +1,10 @@
+mod signatures;
 pub mod tags;
 
 pub use crate::parser::LanguageExtractor;
 
 use crate::symbols::Language;
-use tags::LanguageProfile;
+use tags::{LanguageProfile, TagsExtractor};
 
 /// Pre-order walk of `root`'s subtree without recursion: `visit` sees every
 /// node exactly as a recursive "visit, then each child in order" walk would,
@@ -43,11 +44,41 @@ const PHP_TAGS: &str = include_str!("queries/php_tags.scm");
 const C_TAGS: &str = include_str!("queries/c_tags.scm");
 const CPP_TAGS: &str = include_str!("queries/cpp_tags.scm");
 
+const PYTHON_CALLERS: &str = include_str!("queries/python_callers.scm");
+const PYTHON_IMPLEMENTORS: &str = include_str!("queries/python_implementors.scm");
+const TS_CALLERS: &str = include_str!("queries/typescript_callers.scm");
+/// TSX gets the shared TypeScript patterns plus JSX element usage. Kept as a
+/// concatenation rather than a duplicated file so the two grammars can never
+/// drift apart on the call-site patterns they do share; the JSX patterns
+/// cannot go in the shared file because `jsx_opening_element` does not exist
+/// in the TypeScript grammar and `Query::new` would reject the whole source.
+const TSX_CALLERS: &str = concat!(
+    include_str!("queries/typescript_callers.scm"),
+    include_str!("queries/tsx_callers.scm")
+);
+const TS_IMPLEMENTORS: &str = include_str!("queries/typescript_implementors.scm");
+const RUST_CALLERS: &str = include_str!("queries/rust_callers.scm");
+const RUST_IMPLEMENTORS: &str = include_str!("queries/rust_implementors.scm");
+const GO_CALLERS: &str = include_str!("queries/go_callers.scm");
+const GO_IMPLEMENTORS: &str = include_str!("queries/go_implementors.scm");
+const JAVA_CALLERS: &str = include_str!("queries/java_callers.scm");
+const JAVA_IMPLEMENTORS: &str = include_str!("queries/java_implementors.scm");
+const RUBY_CALLERS: &str = include_str!("queries/ruby_callers.scm");
+const RUBY_IMPLEMENTORS: &str = include_str!("queries/ruby_implementors.scm");
+const PHP_CALLERS: &str = include_str!("queries/php_callers.scm");
+const PHP_IMPLEMENTORS: &str = include_str!("queries/php_implementors.scm");
+const C_CALLERS: &str = include_str!("queries/c_callers.scm");
+const C_IMPLEMENTORS: &str = include_str!("queries/c_implementors.scm");
+const CPP_CALLERS: &str = include_str!("queries/cpp_callers.scm");
+const CPP_IMPLEMENTORS: &str = include_str!("queries/cpp_implementors.scm");
+
 pub static PYTHON_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Python,
     ts_language: || tree_sitter_python::LANGUAGE.into(),
     tags_query: PYTHON_TAGS,
     locals_query: "",
+    callers_query: PYTHON_CALLERS,
+    implementors_query: PYTHON_IMPLEMENTORS,
 };
 
 pub static TYPESCRIPT_PROFILE: LanguageProfile = LanguageProfile {
@@ -55,6 +86,8 @@ pub static TYPESCRIPT_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into(),
     tags_query: TS_TAGS,
     locals_query: TS_LOCALS,
+    callers_query: TS_CALLERS,
+    implementors_query: TS_IMPLEMENTORS,
 };
 
 pub static TSX_PROFILE: LanguageProfile = LanguageProfile {
@@ -62,6 +95,8 @@ pub static TSX_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_typescript::LANGUAGE_TSX.into(),
     tags_query: TS_TAGS,
     locals_query: TS_LOCALS,
+    callers_query: TSX_CALLERS,
+    implementors_query: TS_IMPLEMENTORS,
 };
 
 /// JavaScript and JSX, parsed with the **TSX** grammar and the TypeScript
@@ -78,7 +113,7 @@ pub static TSX_PROFILE: LanguageProfile = LanguageProfile {
 /// private fields, static blocks, generators, optional chaining and CJS.
 ///
 /// Sharing the queries rather than forking them is the same argument
-/// `TSX_CALLERS_SRC` already makes for its concatenation: two copies of the
+/// `TSX_CALLERS` already makes for its concatenation: two copies of the
 /// same call/definition patterns drift, and every TypeScript pattern that
 /// isn't JavaScript (`interface_declaration`, `type_alias_declaration`)
 /// simply never matches in a `.js` file.
@@ -87,6 +122,11 @@ pub static JAVASCRIPT_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_typescript::LANGUAGE_TSX.into(),
     tags_query: TS_TAGS,
     locals_query: TS_LOCALS,
+    // JavaScript runs on the TSX grammar, so it gets the TSX call
+    // patterns verbatim — JSX element usage included, which is the
+    // point: `<Button />` in a `.jsx` file is a call of `Button`.
+    callers_query: TSX_CALLERS,
+    implementors_query: TS_IMPLEMENTORS,
 };
 
 pub static RUST_PROFILE: LanguageProfile = LanguageProfile {
@@ -94,6 +134,8 @@ pub static RUST_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_rust::LANGUAGE.into(),
     tags_query: RUST_TAGS,
     locals_query: "",
+    callers_query: RUST_CALLERS,
+    implementors_query: RUST_IMPLEMENTORS,
 };
 
 pub static GO_PROFILE: LanguageProfile = LanguageProfile {
@@ -101,6 +143,8 @@ pub static GO_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_go::LANGUAGE.into(),
     tags_query: GO_TAGS,
     locals_query: "",
+    callers_query: GO_CALLERS,
+    implementors_query: GO_IMPLEMENTORS,
 };
 
 /// Java. Upstream `tree-sitter-java`'s `tags.scm` covers only classes,
@@ -108,12 +152,14 @@ pub static GO_PROFILE: LanguageProfile = LanguageProfile {
 /// query is OXIDE-owned: constructors, enums, records and annotation types
 /// are appended. Method and constructor *qualified names* carry a
 /// normalized parameter-type list (`Store.get(String,String)`) — see
-/// `tags.rs::java_signature` for why that is required and why it is safe.
+/// `signatures.rs::java_signature` for why that is required and why it is safe.
 pub static JAVA_PROFILE: LanguageProfile = LanguageProfile {
     language: Language::Java,
     ts_language: || tree_sitter_java::LANGUAGE.into(),
     tags_query: JAVA_TAGS,
     locals_query: "",
+    callers_query: JAVA_CALLERS,
+    implementors_query: JAVA_IMPLEMENTORS,
 };
 
 /// Ruby. Upstream `tree-sitter-ruby`'s `tags.scm` covers methods, classes
@@ -126,6 +172,8 @@ pub static RUBY_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_ruby::LANGUAGE.into(),
     tags_query: RUBY_TAGS,
     locals_query: "",
+    callers_query: RUBY_CALLERS,
+    implementors_query: RUBY_IMPLEMENTORS,
 };
 
 /// PHP, on the `LANGUAGE_PHP` grammar rather than `LANGUAGE_PHP_ONLY`: a
@@ -137,6 +185,8 @@ pub static PHP_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_php::LANGUAGE_PHP.into(),
     tags_query: PHP_TAGS,
     locals_query: "",
+    callers_query: PHP_CALLERS,
+    implementors_query: PHP_IMPLEMENTORS,
 };
 
 /// C.
@@ -145,6 +195,8 @@ pub static C_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_c::LANGUAGE.into(),
     tags_query: C_TAGS,
     locals_query: "",
+    callers_query: C_CALLERS,
+    implementors_query: C_IMPLEMENTORS,
 };
 
 /// C++ uses a dedicated grammar: it is not a C superset in the direction a
@@ -155,7 +207,49 @@ pub static CPP_PROFILE: LanguageProfile = LanguageProfile {
     ts_language: || tree_sitter_cpp::LANGUAGE.into(),
     tags_query: CPP_TAGS,
     locals_query: "",
+    callers_query: CPP_CALLERS,
+    implementors_query: CPP_IMPLEMENTORS,
 };
+
+static PYTHON_EXTRACTOR: TagsExtractor = TagsExtractor::new(&PYTHON_PROFILE);
+static TYPESCRIPT_EXTRACTOR: TagsExtractor = TagsExtractor::new(&TYPESCRIPT_PROFILE);
+static TSX_EXTRACTOR: TagsExtractor = TagsExtractor::new(&TSX_PROFILE);
+static JAVASCRIPT_EXTRACTOR: TagsExtractor = TagsExtractor::new(&JAVASCRIPT_PROFILE);
+static RUST_EXTRACTOR: TagsExtractor = TagsExtractor::new(&RUST_PROFILE);
+static GO_EXTRACTOR: TagsExtractor = TagsExtractor::new(&GO_PROFILE);
+static JAVA_EXTRACTOR: TagsExtractor = TagsExtractor::new(&JAVA_PROFILE);
+static RUBY_EXTRACTOR: TagsExtractor = TagsExtractor::new(&RUBY_PROFILE);
+static PHP_EXTRACTOR: TagsExtractor = TagsExtractor::new(&PHP_PROFILE);
+static C_EXTRACTOR: TagsExtractor = TagsExtractor::new(&C_PROFILE);
+static CPP_EXTRACTOR: TagsExtractor = TagsExtractor::new(&CPP_PROFILE);
+
+/// The one `Language` → grammar registration: every grammar-backed
+/// language's extractor, and through it (`profile_for`) its grammar and
+/// queries. `parser::extractor_for` and `tree_sitter_structural` both read
+/// from here, so adding a language is a profile, an extractor static and an
+/// arm below. `None` only for `Markdown`, which has no grammar by design
+/// (`Language::has_structural_queries`).
+pub(crate) fn tags_extractor_for(lang: Language) -> Option<&'static TagsExtractor> {
+    match lang {
+        Language::Python => Some(&PYTHON_EXTRACTOR),
+        Language::TypeScript => Some(&TYPESCRIPT_EXTRACTOR),
+        Language::Tsx => Some(&TSX_EXTRACTOR),
+        Language::JavaScript => Some(&JAVASCRIPT_EXTRACTOR),
+        Language::Rust => Some(&RUST_EXTRACTOR),
+        Language::Go => Some(&GO_EXTRACTOR),
+        Language::Java => Some(&JAVA_EXTRACTOR),
+        Language::Ruby => Some(&RUBY_EXTRACTOR),
+        Language::Php => Some(&PHP_EXTRACTOR),
+        Language::C => Some(&C_EXTRACTOR),
+        Language::Cpp => Some(&CPP_EXTRACTOR),
+        Language::Markdown => None,
+    }
+}
+
+/// `lang`'s grammar and queries; `None` only for `Markdown`.
+pub(crate) fn profile_for(lang: Language) -> Option<&'static LanguageProfile> {
+    tags_extractor_for(lang).map(|e| e.profile)
+}
 
 #[cfg(test)]
 /// Every source file under `fixtures/conformance/`, with the language
@@ -184,4 +278,22 @@ pub(crate) fn conformance_sources() -> Vec<(String, String, crate::symbols::Lang
     out.sort_by(|a, b| a.0.cmp(&b.0));
     assert!(out.len() > 30, "conformance fixtures not found");
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn every_grammar_language_registers_its_own_profile() {
+        // `parser::extractor_for` and `tree_sitter_structural` both resolve
+        // through `profile_for`; an arm pointing at a neighbour's profile
+        // (TSX's for TypeScript) would parse with the wrong grammar.
+        for &lang in Language::ALL {
+            match profile_for(lang) {
+                Some(profile) => assert_eq!(profile.language, lang),
+                None => assert!(!lang.has_structural_queries(), "{lang:?}"),
+            }
+        }
+    }
 }
