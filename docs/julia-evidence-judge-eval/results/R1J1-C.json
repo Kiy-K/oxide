@@ -1,0 +1,7758 @@
+{
+ "summary": {
+  "n": 117,
+  "A": {
+   "cov": 0.4124375231346513,
+   "rel": 56.76495726495727,
+   "used": 1560.6410256410256,
+   "eff": 0.04210930569068846,
+   "items": 6.914529914529915,
+   "files": 5.735042735042735
+  },
+  "B": {
+   "cov": 0.2998085035751851,
+   "rel": 36.284188034188034,
+   "used": 1396.7094017094016,
+   "eff": 0.02684260695593133,
+   "items": 6.923076923076923,
+   "files": 5.752136752136752
+  },
+  "d_cov": [
+   -0.11262901955946625,
+   -0.19837411515898515,
+   -0.02998617150663934
+  ],
+  "rel_eff": [
+   -0.3625492865377028,
+   -0.5756869788240166,
+   -0.08622935035754052
+  ],
+  "improved": 10,
+  "regressed": 22,
+  "unchanged": 85,
+  "pack_changed": 112,
+  "eff_down": 28,
+  "rescued_gold": 10,
+  "suppressed_gold": 23,
+  "fp_tokens_added": 63352,
+  "tokens_added": 64914,
+  "tokens_removed": 84094,
+  "rel_over_budget": [
+   0.013858632144764958,
+   0.008858444344284188
+  ]
+ },
+ "metrics": {
+  "bcd:bcd-flask-00": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1188,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1446,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-flask-01": [
+   {
+    "cov": 1.0,
+    "rel": 108.0,
+    "used": 1931,
+    "eff": 0.055929570170895906,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 108.0,
+    "used": 1678,
+    "eff": 0.06436233611442194,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-flask-02": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1302,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1094,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-flask-03": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1846,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 83.0,
+    "used": 1440,
+    "eff": 0.05763888888888889,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-flask-04": [
+   {
+    "cov": 1.0,
+    "rel": 173.25,
+    "used": 1420,
+    "eff": 0.12200704225352113,
+    "items": 5,
+    "files": 3
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1080,
+    "eff": 0.0,
+    "items": 5,
+    "files": 3
+   }
+  ],
+  "bcd:bcd-flask-05": [
+   {
+    "cov": 1.0,
+    "rel": 185.0,
+    "used": 1512,
+    "eff": 0.12235449735449735,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 185.0,
+    "used": 1733,
+    "eff": 0.10675129832660127,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-flask-06": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1994,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1617,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-flask-07": [
+   {
+    "cov": 1.0,
+    "rel": 106.5,
+    "used": 986,
+    "eff": 0.10801217038539554,
+    "items": 8,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 913,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-flask-08": [
+   {
+    "cov": 1.0,
+    "rel": 271.0,
+    "used": 1504,
+    "eff": 0.18018617021276595,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1381,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-flask-09": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 929,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 819,
+    "eff": 0.0,
+    "items": 5,
+    "files": 3
+   }
+  ],
+  "bcd:bcd-httpx-10": [
+   {
+    "cov": 1.0,
+    "rel": 256.5,
+    "used": 1009,
+    "eff": 0.25421209117938554,
+    "items": 5,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 256.5,
+    "used": 1009,
+    "eff": 0.25421209117938554,
+    "items": 5,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-httpx-11": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1516,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1214,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-httpx-12": [
+   {
+    "cov": 0.723404255319149,
+    "rel": 334.0,
+    "used": 1426,
+    "eff": 0.23422159887798036,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1428,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "bcd:bcd-httpx-13": [
+   {
+    "cov": 1.0,
+    "rel": 92.0,
+    "used": 412,
+    "eff": 0.22330097087378642,
+    "items": 3,
+    "files": 2
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 518,
+    "eff": 0.0,
+    "items": 3,
+    "files": 2
+   }
+  ],
+  "bcd:bcd-httpx-14": [
+   {
+    "cov": 1.0,
+    "rel": 181.5,
+    "used": 1048,
+    "eff": 0.17318702290076335,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1246,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-httpx-15": [
+   {
+    "cov": 1.0,
+    "rel": 73.25,
+    "used": 824,
+    "eff": 0.08889563106796117,
+    "items": 3,
+    "files": 2
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 623,
+    "eff": 0.0,
+    "items": 3,
+    "files": 2
+   }
+  ],
+  "bcd:bcd-httpx-16": [
+   {
+    "cov": 1.0,
+    "rel": 125.75,
+    "used": 1947,
+    "eff": 0.06458654340010272,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 125.75,
+    "used": 1722,
+    "eff": 0.07302555168408827,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-httpx-17": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1040,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 386,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-ripgrep-18": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1086,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 587,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-ripgrep-19": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2311,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2051,
+    "eff": 0.0,
+    "items": 8,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-ripgrep-20": [
+   {
+    "cov": 1.0,
+    "rel": 191.5,
+    "used": 1622,
+    "eff": 0.11806411837237978,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1393,
+    "eff": 0.0,
+    "items": 5,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-ripgrep-21": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1223,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1083,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-ripgrep-22": [
+   {
+    "cov": 1.0,
+    "rel": 141.5,
+    "used": 1780,
+    "eff": 0.07949438202247192,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 141.5,
+    "used": 1892,
+    "eff": 0.07478858350951374,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "bcd:bcd-ripgrep-23": [
+   {
+    "cov": 1.0,
+    "rel": 146.25,
+    "used": 2117,
+    "eff": 0.06908360888049127,
+    "items": 9,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 146.25,
+    "used": 1974,
+    "eff": 0.07408814589665653,
+    "items": 9,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-ripgrep-24": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1678,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1908,
+    "eff": 0.0,
+    "items": 6,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-ripgrep-25": [
+   {
+    "cov": 1.0,
+    "rel": 135.75,
+    "used": 1437,
+    "eff": 0.09446764091858037,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1420,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "bcd:bcd-ripgrep-26": [
+   {
+    "cov": 1.0,
+    "rel": 235.0,
+    "used": 1278,
+    "eff": 0.1838810641627543,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1149,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "bcd:bcd-zod-27": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2072,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2127,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "bcd:bcd-zod-28": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2021,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1882,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "bcd:bcd-zod-29": [
+   {
+    "cov": 1.0,
+    "rel": 111.0,
+    "used": 1790,
+    "eff": 0.06201117318435754,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 111.0,
+    "used": 1417,
+    "eff": 0.07833450952717008,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "bcd:bcd-zod-30": [
+   {
+    "cov": 1.0,
+    "rel": 249.0,
+    "used": 1839,
+    "eff": 0.13539967373572595,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 249.0,
+    "used": 1712,
+    "eff": 0.14544392523364486,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "bcd:bcd-zod-31": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1917,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1829,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-zod-32": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1660,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1031,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "bcd:bcd-zod-33": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2545,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 1.0,
+    "rel": 214.25,
+    "used": 2481,
+    "eff": 0.08635630794034664,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "bcd:bcd-zod-34": [
+   {
+    "cov": 1.0,
+    "rel": 100.75,
+    "used": 1764,
+    "eff": 0.05711451247165533,
+    "items": 9,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 100.75,
+    "used": 1465,
+    "eff": 0.06877133105802048,
+    "items": 9,
+    "files": 7
+   }
+  ],
+  "bcd:bcd-zod-35": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2142,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 1.0,
+    "rel": 104.25,
+    "used": 1776,
+    "eff": 0.05869932432432432,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "bcd:bcd-zod-36": [
+   {
+    "cov": 0.9285714285714286,
+    "rel": 59.0,
+    "used": 1098,
+    "eff": 0.05373406193078324,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.9285714285714286,
+    "rel": 59.0,
+    "used": 810,
+    "eff": 0.0728395061728395,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "ca:ca-flask-00": [
+   {
+    "cov": 1.0,
+    "rel": 150.0,
+    "used": 1853,
+    "eff": 0.08094981111710739,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 150.0,
+    "used": 1064,
+    "eff": 0.14097744360902256,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "ca:ca-flask-01": [
+   {
+    "cov": 0.4482758620689655,
+    "rel": 129.75,
+    "used": 1031,
+    "eff": 0.1258486905916586,
+    "items": 4,
+    "files": 3
+   },
+   {
+    "cov": 0.4482758620689655,
+    "rel": 129.75,
+    "used": 967,
+    "eff": 0.13417786970010342,
+    "items": 4,
+    "files": 3
+   }
+  ],
+  "ca:ca-flask-02": [
+   {
+    "cov": 1.0,
+    "rel": 309.5,
+    "used": 1196,
+    "eff": 0.25877926421404684,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 617,
+    "eff": 0.0,
+    "items": 5,
+    "files": 3
+   }
+  ],
+  "ca:ca-flask-03": [
+   {
+    "cov": 1.0,
+    "rel": 180.75,
+    "used": 937,
+    "eff": 0.19290288153681964,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 180.75,
+    "used": 1080,
+    "eff": 0.1673611111111111,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "ca:ca-flask-04": [
+   {
+    "cov": 1.0,
+    "rel": 172.75,
+    "used": 780,
+    "eff": 0.22147435897435896,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 907,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "ca:ca-httpx-05": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1061,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 620,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "ca:ca-httpx-06": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1023,
+    "eff": 0.0,
+    "items": 6,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1035,
+    "eff": 0.0,
+    "items": 6,
+    "files": 6
+   }
+  ],
+  "ca:ca-httpx-07": [
+   {
+    "cov": 0.5,
+    "rel": 14.5,
+    "used": 1946,
+    "eff": 0.007451181911613566,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.5,
+    "rel": 14.5,
+    "used": 1946,
+    "eff": 0.007451181911613566,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "ca:ca-httpx-08": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1915,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 336.5,
+    "used": 1593,
+    "eff": 0.21123666038920277,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "ca:ca-ripgrep-09": [
+   {
+    "cov": 1.0,
+    "rel": 81.25,
+    "used": 809,
+    "eff": 0.10043263288009889,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 81.25,
+    "used": 801,
+    "eff": 0.10143570536828964,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "ca:ca-ripgrep-10": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1593,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1515,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "ca:ca-ripgrep-11": [
+   {
+    "cov": 1.0,
+    "rel": 156.25,
+    "used": 1361,
+    "eff": 0.1148052902277737,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 775,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "ca:ca-ripgrep-12": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1078,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 955,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "ca:ca-ripgrep-13": [
+   {
+    "cov": 1.0,
+    "rel": 195.5,
+    "used": 1628,
+    "eff": 0.12008599508599509,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1333,
+    "eff": 0.0,
+    "items": 5,
+    "files": 5
+   }
+  ],
+  "ca:ca-zod-14": [
+   {
+    "cov": 0.2765957446808511,
+    "rel": 143.75,
+    "used": 1867,
+    "eff": 0.07699517943224424,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.2765957446808511,
+    "rel": 143.75,
+    "used": 1287,
+    "eff": 0.1116938616938617,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "ca:ca-zod-15": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2064,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1707,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "ca:ca-zod-16": [
+   {
+    "cov": 0.49122807017543857,
+    "rel": 334.25,
+    "used": 2071,
+    "eff": 0.16139546112988895,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2042,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "ca:ca-zod-17": [
+   {
+    "cov": 1.0,
+    "rel": 313.0,
+    "used": 1833,
+    "eff": 0.1707583196944899,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1828,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "ca:ca-zod-18": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1838,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 323.25,
+    "used": 1589,
+    "eff": 0.20342983008181245,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:axios-2d2a21af": [
+   {
+    "cov": 0.2,
+    "rel": 10.5,
+    "used": 1682,
+    "eff": 0.00624256837098692,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.4,
+    "rel": 36.5,
+    "used": 1555,
+    "eff": 0.02347266881028939,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:axios-878bb29d": [
+   {
+    "cov": 1.0,
+    "rel": 9.0,
+    "used": 1680,
+    "eff": 0.005357142857142857,
+    "items": 10,
+    "files": 8
+   },
+   {
+    "cov": 1.0,
+    "rel": 9.0,
+    "used": 1358,
+    "eff": 0.0066273932253313695,
+    "items": 9,
+    "files": 7
+   }
+  ],
+  "c5:axios-a092bae5": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2102,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1915,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:axios-a75bf446": [
+   {
+    "cov": 0.9166666666666666,
+    "rel": 105.5,
+    "used": 2425,
+    "eff": 0.04350515463917526,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.9166666666666666,
+    "rel": 105.5,
+    "used": 1967,
+    "eff": 0.053634977122521604,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:axios-c3f553c7": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1488,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1596,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:axios-d8a919fd": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1076,
+    "eff": 0.0,
+    "items": 3,
+    "files": 3
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1076,
+    "eff": 0.0,
+    "items": 3,
+    "files": 3
+   }
+  ],
+  "c5:axios-e8147e6a": [
+   {
+    "cov": 1.0,
+    "rel": 157.0,
+    "used": 1057,
+    "eff": 0.14853358561967833,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 1.0,
+    "rel": 157.0,
+    "used": 1057,
+    "eff": 0.14853358561967833,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "c5:axios-f8df2e24": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2527,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2481,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:clap-07c6fd2d": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1336,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1050,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:clap-1ab0dbd2": [
+   {
+    "cov": 0.5714285714285714,
+    "rel": 40.75,
+    "used": 1657,
+    "eff": 0.024592637296318647,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.5714285714285714,
+    "rel": 40.75,
+    "used": 1669,
+    "eff": 0.024415817855002995,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "c5:clap-24719832": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1393,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1242,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:clap-8cf344b7": [
+   {
+    "cov": 0.15,
+    "rel": 32.0,
+    "used": 1912,
+    "eff": 0.016736401673640166,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.15,
+    "rel": 32.0,
+    "used": 1870,
+    "eff": 0.017112299465240642,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "c5:clap-9a0248c8": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1866,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1698,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:clap-a1b6be72": [
+   {
+    "cov": 1.0,
+    "rel": 10.75,
+    "used": 2547,
+    "eff": 0.004220651747153514,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1713,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "c5:clap-dee8b8e4": [
+   {
+    "cov": 1.0,
+    "rel": 10.5,
+    "used": 2457,
+    "eff": 0.004273504273504274,
+    "items": 7,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 10.5,
+    "used": 2364,
+    "eff": 0.004441624365482234,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:clap-eb39a0eb": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1782,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1922,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:flask-17e146ad": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 719,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 454,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:flask-1af8f957": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1224,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 885,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:flask-1d5abfad": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1828,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1526,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:flask-2abb7513": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1615,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1620,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "c5:flask-3f6b243c": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2338,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2470,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:flask-438edcdf": [
+   {
+    "cov": 1.0,
+    "rel": 9.25,
+    "used": 1837,
+    "eff": 0.005035383777898748,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 9.25,
+    "used": 2192,
+    "eff": 0.004219890510948905,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:flask-65271c10": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2493,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2496,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:flask-80cf589a": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1511,
+    "eff": 0.0,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 1.0,
+    "rel": 16.0,
+    "used": 1467,
+    "eff": 0.010906612133605999,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "c5:httpx-1a660147": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1864,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1681,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "c5:httpx-4de13707": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1156,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1670,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:httpx-4f6edf36": [
+   {
+    "cov": 1.0,
+    "rel": 57.0,
+    "used": 1378,
+    "eff": 0.041364296081277216,
+    "items": 6,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 57.0,
+    "used": 1290,
+    "eff": 0.044186046511627906,
+    "items": 6,
+    "files": 6
+   }
+  ],
+  "c5:httpx-99cba6ac": [
+   {
+    "cov": 1.0,
+    "rel": 64.0,
+    "used": 1897,
+    "eff": 0.03373748023194518,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1611,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:httpx-a11fc384": [
+   {
+    "cov": 0.2222222222222222,
+    "rel": 26.0,
+    "used": 1676,
+    "eff": 0.015513126491646777,
+    "items": 8,
+    "files": 6
+   },
+   {
+    "cov": 0.2222222222222222,
+    "rel": 26.0,
+    "used": 1683,
+    "eff": 0.015448603683897801,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:httpx-c6907c22": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 505,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 559,
+    "eff": 0.0,
+    "items": 6,
+    "files": 3
+   }
+  ],
+  "c5:httpx-ca51b453": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1045,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1180,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:httpx-cabd1c09": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1483,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1113,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:rayon-1dfc35c5": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1346,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 760,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:rayon-4208de2a": [
+   {
+    "cov": 1.0,
+    "rel": 31.0,
+    "used": 1406,
+    "eff": 0.022048364153627313,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.5,
+    "rel": 15.5,
+    "used": 1060,
+    "eff": 0.014622641509433962,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:rayon-6b1367fe": [
+   {
+    "cov": 1.0,
+    "rel": 19.5,
+    "used": 1438,
+    "eff": 0.013560500695410291,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 19.5,
+    "used": 1420,
+    "eff": 0.013732394366197184,
+    "items": 7,
+    "files": 5
+   }
+  ],
+  "c5:rayon-8582ad08": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1274,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1191,
+    "eff": 0.0,
+    "items": 9,
+    "files": 7
+   }
+  ],
+  "c5:rayon-a15dff94": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 219,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 209,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "c5:rayon-f1c56c9b": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 737,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1165,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:requests-2edca111": [
+   {
+    "cov": 1.0,
+    "rel": 6.25,
+    "used": 1121,
+    "eff": 0.005575379125780553,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 1.0,
+    "rel": 6.25,
+    "used": 186,
+    "eff": 0.033602150537634407,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "c5:requests-4bd79e39": [
+   {
+    "cov": 1.0,
+    "rel": 15.5,
+    "used": 1329,
+    "eff": 0.011662904439428141,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1111,
+    "eff": 0.0,
+    "items": 8,
+    "files": 6
+   }
+  ],
+  "c5:requests-5b4b64c3": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2396,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1893,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:requests-5f338446": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1723,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1723,
+    "eff": 0.0,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "c5:requests-96ba401c": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2363,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1995,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:requests-a62a2d35": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2268,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2255,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:requests-b1d73ddb": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 501,
+    "eff": 0.0,
+    "items": 4,
+    "files": 2
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 254,
+    "eff": 0.0,
+    "items": 4,
+    "files": 2
+   }
+  ],
+  "c5:requests-e1887993": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1490,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1378,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:ripgrep-068a63ea": [
+   {
+    "cov": 1.0,
+    "rel": 79.25,
+    "used": 1495,
+    "eff": 0.05301003344481605,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 962,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:ripgrep-0d7054d8": [
+   {
+    "cov": 0.8823529411764706,
+    "rel": 167.75,
+    "used": 1787,
+    "eff": 0.09387241186345831,
+    "items": 5,
+    "files": 4
+   },
+   {
+    "cov": 0.8823529411764706,
+    "rel": 167.75,
+    "used": 1773,
+    "eff": 0.0946136491821771,
+    "items": 5,
+    "files": 4
+   }
+  ],
+  "c5:ripgrep-241b87b3": [
+   {
+    "cov": 0.4444444444444444,
+    "rel": 138.25,
+    "used": 915,
+    "eff": 0.15109289617486338,
+    "items": 6,
+    "files": 4
+   },
+   {
+    "cov": 0.48148148148148145,
+    "rel": 158.25,
+    "used": 651,
+    "eff": 0.24308755760368664,
+    "items": 6,
+    "files": 4
+   }
+  ],
+  "c5:ripgrep-2ed0c006": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1813,
+    "eff": 0.0,
+    "items": 7,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1502,
+    "eff": 0.0,
+    "items": 6,
+    "files": 5
+   }
+  ],
+  "c5:ripgrep-626b8951": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2023,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2240,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:ripgrep-653d7f5b": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1731,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 1.0,
+    "rel": 36.25,
+    "used": 1612,
+    "eff": 0.02248759305210918,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:ripgrep-6e527e92": [
+   {
+    "cov": 1.0,
+    "rel": 156.75,
+    "used": 1768,
+    "eff": 0.08865950226244344,
+    "items": 6,
+    "files": 5
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1897,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ],
+  "c5:zod-07c43e2a": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1131,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1181,
+    "eff": 0.0,
+    "items": 7,
+    "files": 7
+   }
+  ],
+  "c5:zod-08ba069e": [
+   {
+    "cov": 1.0,
+    "rel": 9.5,
+    "used": 1148,
+    "eff": 0.008275261324041812,
+    "items": 9,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 9.5,
+    "used": 836,
+    "eff": 0.011363636363636364,
+    "items": 9,
+    "files": 7
+   }
+  ],
+  "c5:zod-2ec972ec": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1229,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 896,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:zod-319f47f4": [
+   {
+    "cov": 1.0,
+    "rel": 12.75,
+    "used": 1402,
+    "eff": 0.009094151212553496,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 1.0,
+    "rel": 12.75,
+    "used": 1011,
+    "eff": 0.012611275964391691,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:zod-68a609ac": [
+   {
+    "cov": 0.5,
+    "rel": 15.0,
+    "used": 1704,
+    "eff": 0.008802816901408451,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.5,
+    "rel": 15.0,
+    "used": 1132,
+    "eff": 0.013250883392226149,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:zod-a2a019a5": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1860,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 1860,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   }
+  ],
+  "c5:zod-bec73bea": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2101,
+    "eff": 0.0,
+    "items": 8,
+    "files": 8
+   },
+   {
+    "cov": 0.3,
+    "rel": 61.0,
+    "used": 1736,
+    "eff": 0.03513824884792627,
+    "items": 8,
+    "files": 8
+   }
+  ],
+  "c5:zod-cd4f9a67": [
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2223,
+    "eff": 0.0,
+    "items": 8,
+    "files": 7
+   },
+   {
+    "cov": 0.0,
+    "rel": 0.0,
+    "used": 2101,
+    "eff": 0.0,
+    "items": 7,
+    "files": 6
+   }
+  ]
+ },
+ "changes": [
+  {
+   "task": "bcd:bcd-flask-00",
+   "kind": "added",
+   "key": "tests/test_blueprints.py#test_nested_callback_order",
+   "gold": false,
+   "tok": 358,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-flask-00",
+   "kind": "removed",
+   "key": "tests/test_blueprints.py#test_dotted_names_from_app",
+   "gold": false,
+   "tok": 100,
+   "role": "test",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.route",
+   "gold": false,
+   "tok": 280,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "added",
+   "key": "tests/test_basic.py#test_multi_route_class_views.View",
+   "gold": false,
+   "tok": 69,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#Blueprint.add_url_rule",
+   "gold": false,
+   "tok": 289,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#BlueprintSetupState.add_url_rule",
+   "gold": false,
+   "tok": 283,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "removed",
+   "key": "src/flask/views.py#View",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.add_url_rule",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.add_url_rule",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-01",
+   "kind": "removed",
+   "key": "src/flask/ctx.py#RequestContext.match_request",
+   "gold": false,
+   "tok": 112,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-02",
+   "kind": "added",
+   "key": "src/flask/cli.py#AppGroup.command",
+   "gold": false,
+   "tok": 142,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-02",
+   "kind": "removed",
+   "key": "src/flask/cli.py#find_app_by_string",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-03",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#_matching_loader_thinks_module_is_package",
+   "gold": false,
+   "tok": 219,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-03",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.static_folder",
+   "gold": true,
+   "tok": 95,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-03",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#find_package",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-03",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#_find_package_path",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-04",
+   "kind": "added",
+   "key": "tests/test_cli.py#test_flaskgroup_debug.cli",
+   "gold": false,
+   "tok": 43,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-04",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.open_instance_resource",
+   "gold": false,
+   "tok": 162,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-04",
+   "kind": "removed",
+   "key": "src/flask/config.py#Config",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-04",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.make_config",
+   "gold": true,
+   "tok": 185,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-05",
+   "kind": "added",
+   "key": "src/flask/helpers.py#send_file",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-05",
+   "kind": "added",
+   "key": "src/flask/helpers.py#send_from_directory",
+   "gold": false,
+   "tok": 350,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-05",
+   "kind": "removed",
+   "key": "src/flask/cli.py#load_dotenv",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-05",
+   "kind": "removed",
+   "key": "src/flask/helpers.py#_prepare_send_file_kwargs",
+   "gold": false,
+   "tok": 116,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.context_processor",
+   "gold": false,
+   "tok": 206,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "added",
+   "key": "src/flask/cli.py#_env_file_callback",
+   "gold": false,
+   "tok": 153,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.trap_http_exception",
+   "gold": false,
+   "tok": 333,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.handle_exception",
+   "gold": false,
+   "tok": 356,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.errorhandler",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-06",
+   "kind": "removed",
+   "key": "src/flask/ctx.py#RequestContext",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-07",
+   "kind": "added",
+   "key": "tests/test_basic.py#test_session_cookie_setting.run_test",
+   "gold": false,
+   "tok": 111,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-07",
+   "kind": "removed",
+   "key": "src/flask/wrappers.py#Response.max_cookie_size",
+   "gold": true,
+   "tok": 119,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-07",
+   "kind": "removed",
+   "key": "tests/test_basic.py#test_session_vary_cookie.vary_cookie_header_set",
+   "gold": false,
+   "tok": 65,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "tests/test_instance_config.py#test_egg_installed_paths",
+   "gold": false,
+   "tok": 133,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "src/flask/config.py#Config.get_namespace",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "src/flask/signals.py#_signals",
+   "gold": false,
+   "tok": 18,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#Blueprint.add_url_rule",
+   "gold": false,
+   "tok": 289,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#BlueprintSetupState.__init__",
+   "gold": false,
+   "tok": 349,
+   "role": "dependency"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.url_defaults",
+   "gold": false,
+   "tok": 181,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.add_url_rule",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "removed",
+   "key": "src/flask/blueprints.py#Blueprint.register",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.register_blueprint",
+   "gold": false,
+   "tok": 338,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "removed",
+   "key": "src/flask/blueprints.py#BlueprintSetupState.add_url_rule",
+   "gold": true,
+   "tok": 283,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-flask-08",
+   "kind": "removed",
+   "key": "tests/test_instance_config.py#test_prefix_package_paths",
+   "gold": false,
+   "tok": 121,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-flask-09",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.add_template_filter",
+   "gold": false,
+   "tok": 120,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-09",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#Blueprint.add_app_template_filter",
+   "gold": false,
+   "tok": 177,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-flask-09",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.template_global.decorator",
+   "gold": false,
+   "tok": 47,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-flask-09",
+   "kind": "removed",
+   "key": "src/flask/templating.py#DispatchingJinjaLoader",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-11",
+   "kind": "added",
+   "key": "httpx/_utils.py#to_bytes_or_str",
+   "gold": false,
+   "tok": 50,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-11",
+   "kind": "removed",
+   "key": "httpx/_utils.py#get_environment_proxies",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-12",
+   "kind": "added",
+   "key": "httpx/_client.py#httpx/_client.py:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-12",
+   "kind": "added",
+   "key": "tests/test_config.py#test_load_ssl_config_verify_existing_file",
+   "gold": false,
+   "tok": 75,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-httpx-12",
+   "kind": "removed",
+   "key": "httpx/_config.py#create_ssl_context",
+   "gold": true,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-12",
+   "kind": "removed",
+   "key": "tests/test_config.py#test_load_ssl_config_cert_and_key",
+   "gold": false,
+   "tok": 84,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-13",
+   "kind": "added",
+   "key": "httpx/_models.py#Cookies.set",
+   "gold": false,
+   "tok": 228,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-13",
+   "kind": "added",
+   "key": "httpx/_models.py#Cookies.update",
+   "gold": false,
+   "tok": 60,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-13",
+   "kind": "removed",
+   "key": "httpx/_models.py#Cookies.set_cookie_header",
+   "gold": false,
+   "tok": 78,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-13",
+   "kind": "removed",
+   "key": "httpx/_models.py#Cookies.extract_cookies",
+   "gold": true,
+   "tok": 104,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "added",
+   "key": "httpx/_models.py#Cookies.__repr__",
+   "gold": false,
+   "tok": 79,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "added",
+   "key": "httpx/_models.py#Cookies.set",
+   "gold": false,
+   "tok": 228,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "added",
+   "key": "tests/models/test_cookies.py#test_multiple_set_cookie",
+   "gold": false,
+   "tok": 230,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "removed",
+   "key": "tests/models/test_cookies.py#test_cookies_with_domain_and_path",
+   "gold": false,
+   "tok": 113,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "removed",
+   "key": "httpx/_models.py#Cookies.delete",
+   "gold": true,
+   "tok": 194,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-14",
+   "kind": "removed",
+   "key": "httpx/_models.py#Cookies.__delitem__",
+   "gold": false,
+   "tok": 32,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-15",
+   "kind": "added",
+   "key": "httpx/_multipart.py#_format_form_param",
+   "gold": false,
+   "tok": 97,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-15",
+   "kind": "added",
+   "key": "tests/test_content.py#test_multipart_files_content",
+   "gold": false,
+   "tok": 344,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-httpx-15",
+   "kind": "removed",
+   "key": "httpx/_multipart.py#DataField",
+   "gold": true,
+   "tok": 352,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-15",
+   "kind": "removed",
+   "key": "tests/test_multipart.py#test_multipart",
+   "gold": false,
+   "tok": 290,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "added",
+   "key": "docs/api.md#docs/api.md:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "added",
+   "key": "tests/client/test_properties.py#test_client_base_url_without_trailing_slash",
+   "gold": false,
+   "tok": 77,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "added",
+   "key": "httpx/_urlparse.py#ParseResult.__str__",
+   "gold": false,
+   "tok": 114,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "removed",
+   "key": "httpx/_urlparse.py#urlparse",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "removed",
+   "key": "docs/advanced/extensions.md#docs/advanced/extensions.md:__module__",
+   "gold": false,
+   "tok": 337,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-16",
+   "kind": "removed",
+   "key": "tests/client/test_properties.py#test_client_base_url_with_trailing_slash",
+   "gold": false,
+   "tok": 77,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "added",
+   "key": "httpx/_transports/default.py#ResponseStream.close",
+   "gold": false,
+   "tok": 43,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "added",
+   "key": "httpx/_transports/default.py#HTTPTransport.close",
+   "gold": false,
+   "tok": 26,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "added",
+   "key": "tests/client/test_async_client.py#test_client_closed_state_using_with_block",
+   "gold": false,
+   "tok": 102,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "added",
+   "key": "httpx/_client.py#Client.close",
+   "gold": false,
+   "tok": 100,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "removed",
+   "key": "CHANGELOG.md#CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "removed",
+   "key": "docs/advanced/transports.md#docs/advanced/transports.md:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "removed",
+   "key": "tests/client/test_client.py#test_client_closed_state_using_with_block",
+   "gold": false,
+   "tok": 90,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-httpx-17",
+   "kind": "removed",
+   "key": "httpx/_client.py#ClientState",
+   "gold": false,
+   "tok": 124,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "added",
+   "key": "ignore/src/walk.rs#WalkEventIter.next",
+   "gold": false,
+   "tok": 224,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "added",
+   "key": "ignore/src/types.rs#GlobInner",
+   "gold": false,
+   "tok": 119,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "added",
+   "key": "ignore/src/types.rs#Glob.file_type_def",
+   "gold": false,
+   "tok": 73,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "removed",
+   "key": "ignore/src/types.rs#Types",
+   "gold": false,
+   "tok": 218,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "removed",
+   "key": "src/subject.rs#SubjectBuilder.build",
+   "gold": false,
+   "tok": 337,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-18",
+   "kind": "removed",
+   "key": "GUIDE.md#GUIDE.md:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "added",
+   "key": "grep-regex/src/literal.rs#repeat_range_literals",
+   "gold": false,
+   "tok": 250,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "added",
+   "key": "grep-regex/src/literal.rs#alternate_literals",
+   "gold": false,
+   "tok": 311,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "added",
+   "key": "src/args.rs#ArgMatches.patterns",
+   "gold": false,
+   "tok": 329,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "added",
+   "key": "globset/src/glob.rs#MatchStrategy.new",
+   "gold": false,
+   "tok": 194,
+   "role": "dependency"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "added",
+   "key": "src/args.rs#ArgMatches.pattern_literal",
+   "gold": false,
+   "tok": 58,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "removed",
+   "key": "globset/src/lib.rs#globset/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "removed",
+   "key": "globset/src/glob.rs#MatchStrategy",
+   "gold": false,
+   "tok": 340,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "removed",
+   "key": "src/app.rs#flag_auto_hybrid_regex",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-19",
+   "kind": "removed",
+   "key": "FAQ.md#FAQ.md:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "added",
+   "key": "grep-matcher/src/lib.rs#Captures",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "added",
+   "key": "grep-printer/src/standard.rs#Standard.needs_match_granularity",
+   "gold": false,
+   "tok": 217,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "added",
+   "key": "src/app.rs#flag_only_matching",
+   "gold": false,
+   "tok": 105,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "added",
+   "key": "grep-regex/src/matcher.rs#grep-regex/src/matcher.rs:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "removed",
+   "key": "grep-matcher/src/lib.rs#Matcher",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "removed",
+   "key": "grep-searcher/src/searcher/core.rs#Core.find_by_line_fast",
+   "gold": false,
+   "tok": 345,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "removed",
+   "key": "src/app.rs#flag_byte_offset",
+   "gold": true,
+   "tok": 204,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-20",
+   "kind": "removed",
+   "key": "src/app.rs#flag_pre",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "added",
+   "key": "ignore/src/types.rs#Types",
+   "gold": false,
+   "tok": 218,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "added",
+   "key": "src/args.rs#Args.patterns",
+   "gold": false,
+   "tok": 29,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "added",
+   "key": "src/args.rs#ArgMatches.matcher",
+   "gold": false,
+   "tok": 355,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "removed",
+   "key": "src/app.rs#flag_count_matches",
+   "gold": false,
+   "tok": 243,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "removed",
+   "key": "src/args.rs#ArgMatches.patterns",
+   "gold": false,
+   "tok": 329,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-21",
+   "kind": "removed",
+   "key": "src/args.rs#ArgMatches.paths",
+   "gold": false,
+   "tok": 170,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "added",
+   "key": "grep-searcher/src/line_buffer.rs#LineBuffer",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "added",
+   "key": "src/args.rs#ArgMatches.regex_size_limit",
+   "gold": false,
+   "tok": 56,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "added",
+   "key": "src/app.rs#all_args_and_flags",
+   "gold": false,
+   "tok": 358,
+   "role": "dependency"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "added",
+   "key": "grep-searcher/src/searcher/core.rs#Core.roll",
+   "gold": false,
+   "tok": 288,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "added",
+   "key": "grep-searcher/src/sink.rs#Sink",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "removed",
+   "key": "src/app.rs#flag_auto_hybrid_regex",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "removed",
+   "key": "src/args.rs#ArgMatches.mmap_choice",
+   "gold": false,
+   "tok": 300,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "removed",
+   "key": "FAQ.md#FAQ.md:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-22",
+   "kind": "removed",
+   "key": "grep-searcher/src/searcher/mod.rs#Config",
+   "gold": false,
+   "tok": 292,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-23",
+   "kind": "added",
+   "key": "ignore/src/gitignore.rs#Gitignore.global",
+   "gold": false,
+   "tok": 39,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-23",
+   "kind": "added",
+   "key": "ignore/src/dir.rs#IgnoreBuilder",
+   "gold": false,
+   "tok": 128,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-23",
+   "kind": "removed",
+   "key": "ignore/src/gitignore.rs#Gitignore.new",
+   "gold": false,
+   "tok": 164,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-23",
+   "kind": "removed",
+   "key": "ignore/src/dir.rs#IgnoreOptions",
+   "gold": false,
+   "tok": 146,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "added",
+   "key": "ignore/src/types.rs#Types",
+   "gold": false,
+   "tok": 218,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "added",
+   "key": "grep-matcher/src/lib.rs#Matcher",
+   "gold": false,
+   "tok": 345,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "added",
+   "key": "grep-regex/src/word.rs#grep-regex/src/word.rs:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "added",
+   "key": "grep-regex/src/matcher.rs#RegexCapturesImp",
+   "gold": false,
+   "tok": 268,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "added",
+   "key": "src/app.rs#all_args_and_flags",
+   "gold": false,
+   "tok": 358,
+   "role": "dependency"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "removed",
+   "key": "grep-matcher/src/lib.rs#Captures",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "removed",
+   "key": "grep-pcre2/src/matcher.rs#grep-pcre2/src/matcher.rs:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "removed",
+   "key": "src/app.rs#flag_auto_hybrid_regex",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-24",
+   "kind": "removed",
+   "key": "src/app.rs#flag_replace",
+   "gold": false,
+   "tok": 249,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "added",
+   "key": "globset/src/glob.rs#globset/src/glob.rs:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "added",
+   "key": "grep-cli/src/decompress.rs#DecompressionMatcher.command",
+   "gold": false,
+   "tok": 97,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "added",
+   "key": "grep-cli/src/decompress.rs#DecompressionMatcherBuilder",
+   "gold": false,
+   "tok": 63,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "removed",
+   "key": "grep-cli/src/decompress.rs#DecompressionMatcherBuilder.associate",
+   "gold": true,
+   "tok": 148,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "removed",
+   "key": "grep-cli/src/decompress.rs#DecompressionCommand",
+   "gold": false,
+   "tok": 68,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-25",
+   "kind": "removed",
+   "key": "src/app.rs#flag_pre_glob",
+   "gold": false,
+   "tok": 320,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "added",
+   "key": "grep-searcher/src/searcher/core.rs#Core.roll",
+   "gold": false,
+   "tok": 288,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "added",
+   "key": "grep-searcher/src/lines.rs#tests.preceding_lines_sherlock",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "added",
+   "key": "grep-searcher/src/searcher/core.rs#Core.binary_data",
+   "gold": false,
+   "tok": 58,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "removed",
+   "key": "grep-searcher/src/searcher/core.rs#Core.sink_other_context",
+   "gold": false,
+   "tok": 226,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "removed",
+   "key": "grep-searcher/src/sink.rs#Sink",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-ripgrep-26",
+   "kind": "removed",
+   "key": "grep-searcher/src/searcher/core.rs#Core.sink_after_context",
+   "gold": true,
+   "tok": 247,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "added",
+   "key": "packages/zod/src/v3/types.ts#ZodNumber._parse",
+   "gold": false,
+   "tok": 356,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#compile",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "added",
+   "key": "packages/bench/error-construction-breakdown.ts#packages/bench/error-construction-breakdown.ts:__module__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 339,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#handleCatchall",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-27",
+   "kind": "removed",
+   "key": "CLAUDE.md#CLAUDE.md:__module__",
+   "gold": false,
+   "tok": 316,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#unionProcessor",
+   "gold": false,
+   "tok": 169,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/deep-partial.ts#deepPartial",
+   "gold": false,
+   "tok": 135,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/util.ts#installLazyProp",
+   "gold": false,
+   "tok": 308,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#_$ZodTypeInternals",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/json-schema-generator.ts#JSONSchemaGenerator.constructor",
+   "gold": false,
+   "tok": 191,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#compile",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "removed",
+   "key": "packages/integration/fixtures/internal-types/mini.ts#packages/integration/fixtures/internal-types/mini.ts:__module__",
+   "gold": false,
+   "tok": 225,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/util.ts#isPlainObject",
+   "gold": false,
+   "tok": 145,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-28",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/core.ts#$constructor._",
+   "gold": false,
+   "tok": 220,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "added",
+   "key": "packages/docs/components/github-star-pill.tsx#GitHubMark",
+   "gold": false,
+   "tok": 229,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "added",
+   "key": "packages/docs-v3/CONTRIBUTING.md#packages/docs-v3/CONTRIBUTING.md:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "added",
+   "key": "packages/bench/memory/leaks.ts#Scenario",
+   "gold": false,
+   "tok": 65,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "removed",
+   "key": "packages/docs/loaders/stars.ts#packages/docs/loaders/stars.ts:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "removed",
+   "key": "scripts/triage-signal.ts#buildReport",
+   "gold": false,
+   "tok": 356,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-29",
+   "kind": "removed",
+   "key": "AGENTS.md#AGENTS.md:__module__",
+   "gold": false,
+   "tok": 316,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-30",
+   "kind": "added",
+   "key": "packages/docs/components/inkeep-bubble.tsx#InkeepBubble",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-30",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/checks.ts#$ZodCheckMaxLength.check",
+   "gold": false,
+   "tok": 191,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-30",
+   "kind": "removed",
+   "key": "packages/bench/compile-validate-vs-parse.ts#parseNestedObject",
+   "gold": false,
+   "tok": 324,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-30",
+   "kind": "removed",
+   "key": "packages/bench/compile-output.ts#packages/bench/compile-output.ts:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodDefault.parse",
+   "gold": false,
+   "tok": 302,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "added",
+   "key": "packages/zod/src/v3/benchmarks/datetime.ts#packages/zod/src/v3/benchmarks/datetime.ts:__module__",
+   "gold": false,
+   "tok": 328,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/set.test.ts#packages/zod/src/v4/classic/tests/set.test.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/from-json-schema.ts#checkArrayGuards",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "removed",
+   "key": "packages/zod/src/v3/types.ts#ZodSet",
+   "gold": false,
+   "tok": 356,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-31",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/refine.test.ts#packages/zod/src/v4/classic/tests/refine.test.ts:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/standard-schema.ts#Converter",
+   "gold": false,
+   "tok": 112,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/core.ts#$constructor.Internals",
+   "gold": false,
+   "tok": 41,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/core.ts#$constructor.init",
+   "gold": false,
+   "tok": 23,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "removed",
+   "key": "packages/integration/fixtures/internal-types/index.ts#packages/integration/fixtures/internal-types/index.ts:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "removed",
+   "key": "packages/integration/fixtures/internal-types/mini.ts#packages/integration/fixtures/internal-types/mini.ts:__module__",
+   "gold": false,
+   "tok": 225,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-32",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/core.ts#$constructor._",
+   "gold": false,
+   "tok": 220,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/errors.ts#packages/zod/src/v4/core/errors.ts:__module__",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "added",
+   "key": "packages/bench/error-construction-breakdown.ts#finalizeLoop",
+   "gold": true,
+   "tok": 226,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/issue-schema.test.ts#packages/zod/src/v4/classic/tests/issue-schema.test.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/util.ts#finalizeIssue",
+   "gold": false,
+   "tok": 313,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "removed",
+   "key": "README.md#README.md:__module__",
+   "gold": false,
+   "tok": 322,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-33",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/refine.test.ts#packages/zod/src/v4/classic/tests/refine.test.ts:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "added",
+   "key": "packages/zod/src/v3/types.ts#ZodType.constructor",
+   "gold": false,
+   "tok": 323,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "added",
+   "key": "packages/zod/src/v4/mini/in-out.ts#input.default",
+   "gold": false,
+   "tok": 34,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "added",
+   "key": "packages/zod/src/v4/mini/in-out.ts#input.pipe",
+   "gold": false,
+   "tok": 21,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/deep-partial.test.ts#packages/zod/src/v4/classic/tests/deep-partial.test.ts:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/in-out.ts#input.pipe",
+   "gold": false,
+   "tok": 21,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/optin-ladder.test.ts#packages/zod/src/v4/classic/tests/optin-ladder.test.ts:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "removed",
+   "key": "wiki/optionality.md#wiki/optionality.md:__module__",
+   "gold": false,
+   "tok": 315,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-34",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#handlePropertyResult",
+   "gold": false,
+   "tok": 345,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/core.ts#newError",
+   "gold": true,
+   "tok": 116,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/issue-schema.test.ts#packages/zod/src/v4/classic/tests/issue-schema.test.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "test"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/parse.ts#_parseAsync",
+   "gold": false,
+   "tok": 178,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 339,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/error.test.ts#packages/zod/src/v4/classic/tests/error.test.ts:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "bcd:bcd-zod-35",
+   "kind": "removed",
+   "key": "README.md#README.md:__module__",
+   "gold": false,
+   "tok": 322,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/schemas.ts#ZodNumber.minValue",
+   "gold": false,
+   "tok": 70,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#narrowBoth",
+   "gold": false,
+   "tok": 48,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#narrowMin",
+   "gold": false,
+   "tok": 55,
+   "role": "primary"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#aggregateChecks",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/schemas.ts#ZodNumber.maxValue",
+   "gold": false,
+   "tok": 70,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "bcd:bcd-zod-36",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#less_than",
+   "gold": false,
+   "tok": 38,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "added",
+   "key": "src/flask/blueprints.py#Blueprint.__init__",
+   "gold": false,
+   "tok": 320,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "added",
+   "key": "src/flask/cli.py#_env_file_option",
+   "gold": false,
+   "tok": 81,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.send_static_file",
+   "gold": false,
+   "tok": 197,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.__init__",
+   "gold": false,
+   "tok": 360,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "removed",
+   "key": "CODE_OF_CONDUCT.md#CODE_OF_CONDUCT.md:__module__",
+   "gold": false,
+   "tok": 345,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "removed",
+   "key": "src/flask/config.py#Config.from_file",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-00",
+   "kind": "removed",
+   "key": "src/flask/config.py#Config.from_pyfile",
+   "gold": false,
+   "tok": 323,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-01",
+   "kind": "added",
+   "key": "src/flask/cli.py#shell_command",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-01",
+   "kind": "added",
+   "key": "tests/test_cli.py#test_flaskgroup_app_context",
+   "gold": false,
+   "tok": 108,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-flask-01",
+   "kind": "removed",
+   "key": "tests/test_cli.py#test_app_cli_has_app_context",
+   "gold": false,
+   "tok": 174,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-flask-01",
+   "kind": "removed",
+   "key": "src/flask/cli.py#FlaskGroup",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "added",
+   "key": "tests/test_basic.py#test_baseexception_error_handling.broken_func",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "added",
+   "key": "tests/test_basic.py#test_error_handling.index",
+   "gold": false,
+   "tok": 28,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.__init__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.__call__",
+   "gold": false,
+   "tok": 91,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.full_dispatch_request",
+   "gold": false,
+   "tok": 158,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.add_url_rule",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "removed",
+   "key": "tests/test_basic.py#test_multi_route_class_views.View",
+   "gold": false,
+   "tok": 69,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "removed",
+   "key": "src/flask/scaffold.py#Scaffold.endpoint",
+   "gold": false,
+   "tok": 175,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-02",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.dispatch_request",
+   "gold": true,
+   "tok": 322,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "added",
+   "key": "tests/test_logging.py#test_wsgi_errors_stream",
+   "gold": false,
+   "tok": 125,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.trap_http_exception",
+   "gold": false,
+   "tok": 333,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "added",
+   "key": "src/flask/logging.py#default_handler",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.log_exception",
+   "gold": false,
+   "tok": 156,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "removed",
+   "key": "tests/test_logging.py#test_logger_debug",
+   "gold": false,
+   "tok": 49,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-flask-03",
+   "kind": "removed",
+   "key": "src/flask/logging.py#has_level_handler",
+   "gold": false,
+   "tok": 141,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-flask-04",
+   "kind": "added",
+   "key": "src/flask/templating.py#Environment",
+   "gold": false,
+   "tok": 135,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-04",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.__init__",
+   "gold": false,
+   "tok": 353,
+   "role": "dependency"
+  },
+  {
+   "task": "ca:ca-flask-04",
+   "kind": "added",
+   "key": "tests/test_templating.py#test_add_template_global.get_stuff",
+   "gold": false,
+   "tok": 29,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-flask-04",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.template_global",
+   "gold": false,
+   "tok": 205,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-flask-04",
+   "kind": "removed",
+   "key": "src/flask/blueprints.py#Blueprint.add_app_template_global",
+   "gold": true,
+   "tok": 185,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "added",
+   "key": "tests/test_wsgi.py#echo_body_with_response_stream.output_generator",
+   "gold": false,
+   "tok": 62,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "added",
+   "key": "tests/models/test_responses.py#test_generator_with_content_length_header.content",
+   "gold": false,
+   "tok": 35,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "added",
+   "key": "tests/models/test_requests.py#test_generator_with_transfer_encoding_header.content",
+   "gold": false,
+   "tok": 35,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "removed",
+   "key": "httpx/_auth.py#Auth.sync_auth_flow",
+   "gold": false,
+   "tok": 198,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "removed",
+   "key": "tests/client/test_auth.py#ResponseBodyAuth",
+   "gold": false,
+   "tok": 172,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-httpx-05",
+   "kind": "removed",
+   "key": "httpx/_auth.py#Auth.async_auth_flow",
+   "gold": false,
+   "tok": 203,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-httpx-06",
+   "kind": "added",
+   "key": "tests/models/test_responses.py#test_iter_raw_with_chunksize",
+   "gold": false,
+   "tok": 176,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-httpx-06",
+   "kind": "removed",
+   "key": "tests/models/test_responses.py#test_aiter_raw_with_chunksize",
+   "gold": false,
+   "tok": 164,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "added",
+   "key": "httpx/_multipart.py#_format_form_param",
+   "gold": false,
+   "tok": 97,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "added",
+   "key": "httpx/_content.py#encode_request",
+   "gold": true,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "added",
+   "key": "httpx/_multipart.py#MultipartStream.__init__",
+   "gold": false,
+   "tok": 121,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "removed",
+   "key": "httpx/_multipart.py#DataField",
+   "gold": false,
+   "tok": 356,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "removed",
+   "key": "httpx/_multipart.py#FileField.render_headers",
+   "gold": false,
+   "tok": 182,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-httpx-08",
+   "kind": "removed",
+   "key": "docs/advanced/transports.md#docs/advanced/transports.md:__module__",
+   "gold": false,
+   "tok": 351,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "added",
+   "key": "globset/src/glob.rs#GlobStrategic.is_match_candidate",
+   "gold": false,
+   "tok": 286,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "added",
+   "key": "globset/src/lib.rs#BasenameLiteralStrategy.is_match",
+   "gold": false,
+   "tok": 62,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "added",
+   "key": "globset/src/lib.rs#GlobSetMatchStrategy.is_match",
+   "gold": false,
+   "tok": 143,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "removed",
+   "key": "globset/src/lib.rs#LiteralStrategy.is_match",
+   "gold": false,
+   "tok": 41,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "removed",
+   "key": "globset/src/glob.rs#MatchStrategy",
+   "gold": false,
+   "tok": 340,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-09",
+   "kind": "removed",
+   "key": "globset/src/lib.rs#RequiredExtensionStrategy.matches_into",
+   "gold": false,
+   "tok": 118,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "added",
+   "key": "ignore/src/dir.rs#Ignore.matched_ignore",
+   "gold": false,
+   "tok": 348,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "added",
+   "key": "ignore/tests/gitignore_matched_path_or_any_parents_tests.rs#test_files_in_deep",
+   "gold": false,
+   "tok": 299,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "added",
+   "key": "ignore/src/dir.rs#tests.absolute_parent_anchored",
+   "gold": false,
+   "tok": 192,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "removed",
+   "key": "ignore/src/dir.rs#tests.absolute_parent",
+   "gold": false,
+   "tok": 236,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "removed",
+   "key": "ignore/tests/gitignore_matched_path_or_any_parents_tests.rs#test_dirs_in_deep",
+   "gold": false,
+   "tok": 344,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-10",
+   "kind": "removed",
+   "key": "ignore/src/dir.rs#IgnoreBuilder.build",
+   "gold": false,
+   "tok": 337,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "added",
+   "key": "tests/json.rs#Data",
+   "gold": false,
+   "tok": 62,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "added",
+   "key": "grep-printer/src/color.rs#SpecValue",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "added",
+   "key": "grep-matcher/src/lib.rs#LineMatchKind",
+   "gold": false,
+   "tok": 135,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "added",
+   "key": "grep-printer/src/color.rs#SpecType",
+   "gold": false,
+   "tok": 26,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "removed",
+   "key": "ignore/src/dir.rs#IgnoreMatchInner",
+   "gold": false,
+   "tok": 47,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "removed",
+   "key": "grep-regex/src/error.rs#ErrorKind",
+   "gold": false,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "removed",
+   "key": "grep-pcre2/src/error.rs#ErrorKind",
+   "gold": true,
+   "tok": 168,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-11",
+   "kind": "removed",
+   "key": "grep-searcher/src/searcher/mod.rs#ConfigError",
+   "gold": false,
+   "tok": 279,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-12",
+   "kind": "added",
+   "key": "src/app.rs#flag_null_data",
+   "gold": false,
+   "tok": 234,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-12",
+   "kind": "removed",
+   "key": "src/app.rs#all_args_and_flags",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "added",
+   "key": "grep-matcher/src/lib.rs#Matcher",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "added",
+   "key": "grep-searcher/src/sink.rs#SinkContextKind",
+   "gold": false,
+   "tok": 79,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "added",
+   "key": "grep-searcher/src/line_buffer.rs#BinaryDetection",
+   "gold": false,
+   "tok": 184,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "added",
+   "key": "grep-searcher/src/lib.rs#grep-searcher/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "removed",
+   "key": "grep-matcher/src/lib.rs#Captures",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "removed",
+   "key": "grep-searcher/src/sink.rs#Sink",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "removed",
+   "key": "grep-searcher/src/sink.rs#SinkError",
+   "gold": true,
+   "tok": 208,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-ripgrep-13",
+   "kind": "removed",
+   "key": "src/search.rs#src/search.rs:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "added",
+   "key": "packages/bench/memory/compiled-slope.ts#nested",
+   "gold": false,
+   "tok": 79,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/error-utils.test.ts#packages/zod/src/v4/classic/tests/error-utils.test.ts:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/errors.ts#formatError",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 328,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/errors.ts#formatError.processError",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-zod-14",
+   "kind": "removed",
+   "key": "packages/zod/src/v3/tests/error.test.ts#packages/zod/src/v3/tests/error.test.ts:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodProperties.parse",
+   "gold": false,
+   "tok": 287,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/to-json-schema.ts#finalize.flattenRef",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/properties.test.ts#when",
+   "gold": false,
+   "tok": 18,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 339,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/from-json-schema.test.ts#packages/zod/src/v4/classic/tests/from-json-schema.test.ts:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-zod-15",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/json-schema-processors.ts#propertiesProcessor",
+   "gold": false,
+   "tok": 330,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "added",
+   "key": "packages/bench/compile-helper-scope.ts#packages/bench/compile-helper-scope.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#installCompiledUserMethods",
+   "gold": false,
+   "tok": 221,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/parse.ts#packages/zod/src/v4/core/parse.ts:__module__",
+   "gold": false,
+   "tok": 351,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "added",
+   "key": "packages/bench/memory/throughput.ts#packages/bench/memory/throughput.ts:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/tests/locales/parity.test.ts#packages/zod/src/v4/core/tests/locales/parity.test.ts:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 279,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "removed",
+   "key": "packages/zod/src/compile.ts#postProcessor",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#compile",
+   "gold": true,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#fastPathAcceptsAbsence",
+   "gold": false,
+   "tok": 344,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-16",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/tests/compile-global.test.ts#packages/zod/src/v4/core/tests/compile-global.test.ts:__module__",
+   "gold": false,
+   "tok": 351,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "ca:ca-zod-17",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodTuple.parse",
+   "gold": false,
+   "tok": 356,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-17",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodIPv6.check",
+   "gold": false,
+   "tok": 75,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-17",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodArray.parse",
+   "gold": true,
+   "tok": 325,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-zod-17",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#handleOptionalResult",
+   "gold": false,
+   "tok": 111,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodProperties.check",
+   "gold": false,
+   "tok": 75,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/error-utils.test.ts#packages/zod/src/v4/classic/tests/error-utils.test.ts:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "test"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#CompiledFn",
+   "gold": false,
+   "tok": 67,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#generatePropertiesChecks",
+   "gold": true,
+   "tok": 335,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "added",
+   "key": "packages/zod/src/v3/locales/en.ts#packages/zod/src/v3/locales/en.ts:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 328,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#compileValidator",
+   "gold": false,
+   "tok": 66,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#compileFn",
+   "gold": false,
+   "tok": 340,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "removed",
+   "key": "README.md#README.md:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "ca:ca-zod-18",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/instanceof.test.ts#packages/zod/src/v4/classic/tests/instanceof.test.ts:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:axios-2d2a21af",
+   "kind": "added",
+   "key": "lib/core/InterceptorManager.js#trimHandlers",
+   "gold": true,
+   "tok": 45,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-2d2a21af",
+   "kind": "removed",
+   "key": "lib/core/InterceptorManager.js#InterceptorManager.eject",
+   "gold": false,
+   "tok": 172,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:axios-878bb29d",
+   "kind": "added",
+   "key": "lib/adapters/http.js#wrapAsync._resolve",
+   "gold": false,
+   "tok": 33,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-878bb29d",
+   "kind": "added",
+   "key": "lib/adapters/xhr.js#lib/adapters/xhr.js:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-878bb29d",
+   "kind": "removed",
+   "key": "lib/adapters/http.js#buildAddressEntry",
+   "gold": false,
+   "tok": 42,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:axios-878bb29d",
+   "kind": "removed",
+   "key": "AGENTS.md#AGENTS.md:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-878bb29d",
+   "kind": "removed",
+   "key": "PRE_RELEASE_CHANGELOG.md#PRE_RELEASE_CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 304,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-a092bae5",
+   "kind": "added",
+   "key": "MIGRATION_GUIDE.md#MIGRATION_GUIDE.md:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-a092bae5",
+   "kind": "added",
+   "key": "lib/adapters/http.js#httpAdapter.dispatchHttpRequest.abort",
+   "gold": false,
+   "tok": 78,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-a092bae5",
+   "kind": "removed",
+   "key": "docs/pages/advanced/interceptors.md#docs/pages/advanced/interceptors.md:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-a092bae5",
+   "kind": "removed",
+   "key": "docs/zh/pages/advanced/interceptors.md#docs/zh/pages/advanced/interceptors.md:__module__",
+   "gold": false,
+   "tok": 257,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "added",
+   "key": "lib/core/InterceptorManager.js#InterceptorManager",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "added",
+   "key": "tests/unit/axios.test.js#testUnwritableErrorStack",
+   "gold": false,
+   "tok": 141,
+   "role": "test"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "added",
+   "key": "lib/core/AxiosError.js#aggregateErrorMessage",
+   "gold": false,
+   "tok": 100,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "removed",
+   "key": "docs/pages/misc/security.md#docs/pages/misc/security.md:__module__",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "removed",
+   "key": "tests/unit/adapters/http.test.js#tests/unit/adapters/http.test.js:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:axios-a75bf446",
+   "kind": "removed",
+   "key": "lib/core/AxiosError.js#AxiosError.from",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-c3f553c7",
+   "kind": "added",
+   "key": "lib/adapters/xhr.js#dispatchXhrRequest.ontimeout",
+   "gold": false,
+   "tok": 186,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-c3f553c7",
+   "kind": "added",
+   "key": "lib/adapters/xhr.js#dispatchXhrRequest.onloadend._resolve",
+   "gold": false,
+   "tok": 37,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-c3f553c7",
+   "kind": "removed",
+   "key": "lib/adapters/xhr.js#dispatchXhrRequest.onloadend._reject",
+   "gold": false,
+   "tok": 35,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:axios-c3f553c7",
+   "kind": "removed",
+   "key": "lib/adapters/xhr.js#dispatchXhrRequest.onabort.handleAbort",
+   "gold": false,
+   "tok": 80,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "added",
+   "key": "tests/smoke/cjs/tests/fetch.smoke.test.cjs#tests/smoke/cjs/tests/fetch.smoke.test.cjs:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "test"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "added",
+   "key": "AGENTS.md#AGENTS.md:__module__",
+   "gold": false,
+   "tok": 336,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "added",
+   "key": "lib/adapters/http.js#normalizeLookup",
+   "gold": false,
+   "tok": 229,
+   "role": "primary"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "removed",
+   "key": "tests/unit/adapters/fetch.test.js#tests/unit/adapters/fetch.test.js:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "removed",
+   "key": "docs/pages/advanced/fetch-adapter.md#docs/pages/advanced/fetch-adapter.md:__module__",
+   "gold": false,
+   "tok": 303,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:axios-f8df2e24",
+   "kind": "removed",
+   "key": "PRE_RELEASE_CHANGELOG.md#PRE_RELEASE_CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 312,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "added",
+   "key": "clap_complete/src/engine/candidate.rs#CompletionCandidate.hide",
+   "gold": false,
+   "tok": 37,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "added",
+   "key": "clap_mangen/tests/testsuite/roff.rs#hidden_options",
+   "gold": false,
+   "tok": 59,
+   "role": "test"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "added",
+   "key": "clap_builder/src/builder/arg.rs#Arg.hide_short_help",
+   "gold": false,
+   "tok": 67,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "added",
+   "key": "clap_mangen/src/render.rs#option_help",
+   "gold": false,
+   "tok": 91,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "removed",
+   "key": "clap_mangen/src/render.rs#synopsis",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "removed",
+   "key": "clap_mangen/src/lib.rs#Man._render_synopsis_section",
+   "gold": false,
+   "tok": 49,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "removed",
+   "key": "clap_mangen/src/lib.rs#Man.render_synopsis_section",
+   "gold": false,
+   "tok": 66,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-07c6fd2d",
+   "kind": "removed",
+   "key": "clap_mangen/tests/testsuite/roff.rs#hidden_positionals",
+   "gold": false,
+   "tok": 68,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:clap-1ab0dbd2",
+   "kind": "added",
+   "key": "clap_mangen/tests/testsuite/roff.rs#override_usage_single_form",
+   "gold": false,
+   "tok": 72,
+   "role": "test"
+  },
+  {
+   "task": "c5:clap-1ab0dbd2",
+   "kind": "removed",
+   "key": "clap_mangen/tests/testsuite/roff.rs#override_usage",
+   "gold": false,
+   "tok": 60,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "added",
+   "key": "tests/derive/naming.rs#test_rename_all_is_propagated_from_enum_to_variants.Opt",
+   "gold": false,
+   "tok": 44,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "added",
+   "key": "tests/derive/naming.rs#test_rename_all_is_propagated_from_enum_to_variant_fields.Opt",
+   "gold": false,
+   "tok": 44,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "added",
+   "key": "clap_derive/src/derives/subcommand.rs#gen_from_arg_matches",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "removed",
+   "key": "tests/derive_ui/enum_variant_not_args.rs#Opt",
+   "gold": false,
+   "tok": 20,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "removed",
+   "key": "clap_derive/src/derives/subcommand.rs#gen_for_enum",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-24719832",
+   "kind": "removed",
+   "key": "tests/derive/value_enum.rs#skip_non_unit_variant",
+   "gold": false,
+   "tok": 218,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-8cf344b7",
+   "kind": "added",
+   "key": "tests/derive_ui/subcommand_and_methods.rs#MakeCookie",
+   "gold": false,
+   "tok": 42,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-8cf344b7",
+   "kind": "added",
+   "key": "tests/derive_ui/subcommand_and_methods.rs#main",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-8cf344b7",
+   "kind": "removed",
+   "key": "tests/derive_ui/subcommand_and_methods.rs#Command",
+   "gold": false,
+   "tok": 52,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-8cf344b7",
+   "kind": "removed",
+   "key": "clap_derive/src/item.rs#Item.final_top_level_methods",
+   "gold": false,
+   "tok": 63,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "added",
+   "key": "clap_complete/examples/dynamic.rs#verify_cli",
+   "gold": false,
+   "tok": 25,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "added",
+   "key": "clap_builder/src/error/context.rs#ContextKind",
+   "gold": false,
+   "tok": 229,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "added",
+   "key": "clap_builder/src/builder/value_parser.rs#RangedU64ValueParser.range",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "added",
+   "key": "src/_faq.rs#src/_faq.rs:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "added",
+   "key": "clap_builder/src/builder/debug_asserts.rs#_verify_positionals",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "removed",
+   "key": "src/_derive/_tutorial.rs#src/_derive/_tutorial.rs:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "removed",
+   "key": "src/_tutorial.rs#src/_tutorial.rs:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "removed",
+   "key": "CONTRIBUTING.md#CONTRIBUTING.md:__module__",
+   "gold": false,
+   "tok": 348,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "removed",
+   "key": "clap_complete/CHANGELOG.md#clap_complete/CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-9a0248c8",
+   "kind": "removed",
+   "key": "clap_complete/src/macros.rs#clap_complete/src/macros.rs:__module__",
+   "gold": false,
+   "tok": 73,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "added",
+   "key": "clap_complete/src/aot/shells/zsh.rs#escape_value",
+   "gold": false,
+   "tok": 100,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "added",
+   "key": "clap_complete/src/aot/shells/zsh.rs#escape_help",
+   "gold": false,
+   "tok": 85,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "added",
+   "key": "clap_complete/src/env/shells.rs#Zsh.escape_value",
+   "gold": false,
+   "tok": 39,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "removed",
+   "key": "clap_complete/src/env/shells.rs#Zsh.write_registration",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "removed",
+   "key": "clap_complete/src/aot/shells/zsh.rs#write_opts_of",
+   "gold": false,
+   "tok": 346,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-a1b6be72",
+   "kind": "removed",
+   "key": "clap_complete/src/aot/shells/zsh.rs#value_completion",
+   "gold": true,
+   "tok": 360,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-dee8b8e4",
+   "kind": "added",
+   "key": "clap_complete/tests/testsuite/engine.rs#suggest_value_hint_file_path_symlink_to_dir",
+   "gold": false,
+   "tok": 268,
+   "role": "test"
+  },
+  {
+   "task": "c5:clap-dee8b8e4",
+   "kind": "removed",
+   "key": "clap_complete_nushell/tests/common.rs#value_hint_command",
+   "gold": false,
+   "tok": 361,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "added",
+   "key": "clap_mangen/src/render.rs#render_synopsis_arg",
+   "gold": false,
+   "tok": 165,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "added",
+   "key": "clap_mangen/CHANGELOG.md#clap_mangen/CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "added",
+   "key": "src/_derive/_tutorial.rs#src/_derive/_tutorial.rs:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "removed",
+   "key": "clap_mangen/examples/man.rs#main",
+   "gold": false,
+   "tok": 307,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "removed",
+   "key": "clap_mangen/src/render.rs#synopsis",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:clap-eb39a0eb",
+   "kind": "removed",
+   "key": "clap_mangen/src/lib.rs#Man.render_synopsis_section",
+   "gold": false,
+   "tok": 66,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-17e146ad",
+   "kind": "added",
+   "key": "src/flask/cli.py#pass_script_info",
+   "gold": false,
+   "tok": 30,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-17e146ad",
+   "kind": "added",
+   "key": "tests/test_basic.py#test_url_for_passes_special_values_to_build_error_handler.handler",
+   "gold": false,
+   "tok": 78,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-17e146ad",
+   "kind": "removed",
+   "key": "src/flask/wrappers.py#Request",
+   "gold": false,
+   "tok": 348,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-17e146ad",
+   "kind": "removed",
+   "key": "tests/test_basic.py#test_provide_automatic_options_kwarg.index",
+   "gold": false,
+   "tok": 25,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "added",
+   "key": "src/flask/templating.py#Environment.__init__",
+   "gold": false,
+   "tok": 71,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "added",
+   "key": "tests/test_blueprints.py#test_add_template_filter_with_template.super_reverse",
+   "gold": false,
+   "tok": 24,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "added",
+   "key": "src/flask/cli.py#FlaskGroup.__init__",
+   "gold": false,
+   "tok": 335,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "added",
+   "key": "tests/test_converters.py#test_custom_converters.ListConverter",
+   "gold": false,
+   "tok": 74,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "added",
+   "key": "tests/test_templating.py#test_add_template_filter_with_template.super_reverse",
+   "gold": false,
+   "tok": 24,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "removed",
+   "key": "src/flask/debughelpers.py#DebugFilesKeyError.__init__",
+   "gold": false,
+   "tok": 215,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "removed",
+   "key": "src/flask/cli.py#_called_with_wrong_args",
+   "gold": false,
+   "tok": 199,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "removed",
+   "key": "src/flask/sansio/scaffold.py#Scaffold.__init__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-1af8f957",
+   "kind": "removed",
+   "key": "src/flask/templating.py#DispatchingJinjaLoader.get_source",
+   "gold": false,
+   "tok": 93,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:flask-1d5abfad",
+   "kind": "added",
+   "key": "tests/test_apps/blueprintapp/apps/frontend/__init__.py#missing_template",
+   "gold": false,
+   "tok": 38,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-1d5abfad",
+   "kind": "added",
+   "key": "src/flask/debughelpers.py#src/flask/debughelpers.py:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-1d5abfad",
+   "kind": "removed",
+   "key": "src/flask/config.py#Config",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-1d5abfad",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask",
+   "gold": false,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-2abb7513",
+   "kind": "added",
+   "key": "src/flask/scaffold.py#Scaffold.__init__",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-2abb7513",
+   "kind": "removed",
+   "key": "src/flask/helpers.py#send_file",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "added",
+   "key": "src/flask/json/__init__.py#jsonify",
+   "gold": false,
+   "tok": 353,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "added",
+   "key": "src/flask/helpers.py#send_file",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "added",
+   "key": "src/flask/cli.py#src/flask/cli.py:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "removed",
+   "key": "src/flask/sansio/app.py#App",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "removed",
+   "key": "src/flask/sansio/scaffold.py#Scaffold.context_processor",
+   "gold": false,
+   "tok": 206,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-3f6b243c",
+   "kind": "removed",
+   "key": "src/flask/ctx.py#AppContext",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "added",
+   "key": "src/flask/sansio/scaffold.py#Scaffold.url_value_preprocessor",
+   "gold": false,
+   "tok": 286,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "added",
+   "key": "src/flask/typing.py#src/flask/typing.py:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.__init__",
+   "gold": false,
+   "tok": 357,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "removed",
+   "key": "src/flask/helpers.py#url_for",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "removed",
+   "key": "tests/test_converters.py#test_custom_converters.ListConverter.to_url",
+   "gold": false,
+   "tok": 45,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-438edcdf",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.get_send_file_max_age",
+   "gold": false,
+   "tok": 246,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:flask-65271c10",
+   "kind": "added",
+   "key": "src/flask/ctx.py#_AppCtxGlobals",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-65271c10",
+   "kind": "added",
+   "key": "src/flask/cli.py#src/flask/cli.py:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-65271c10",
+   "kind": "removed",
+   "key": "src/flask/sansio/scaffold.py#src/flask/sansio/scaffold.py:__module__",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-65271c10",
+   "kind": "removed",
+   "key": "src/flask/sansio/app.py#App",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "added",
+   "key": "src/flask/typing.py#ErrorHandlerCallable",
+   "gold": true,
+   "tok": 28,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "added",
+   "key": "src/flask/app.py#Flask.get_send_file_max_age",
+   "gold": false,
+   "tok": 246,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "added",
+   "key": "tests/test_user_error_handler.py#tests/test_user_error_handler.py:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "added",
+   "key": "src/flask/ctx.py#AppContext",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "removed",
+   "key": "src/flask/app.py#Flask.handle_http_exception",
+   "gold": false,
+   "tok": 341,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "removed",
+   "key": "src/flask/ctx.py#copy_current_request_context",
+   "gold": false,
+   "tok": 338,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:flask-80cf589a",
+   "kind": "removed",
+   "key": "src/flask/helpers.py#flash",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "added",
+   "key": "tests/test_content.py#test_invalid_argument",
+   "gold": false,
+   "tok": 71,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "added",
+   "key": "httpx/_client.py#BaseClient._merge_cookies",
+   "gold": false,
+   "tok": 129,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "added",
+   "key": "httpx/_client.py#BaseClient.build_request",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "removed",
+   "key": "tests/test_config.py#test_timeout_missing_default",
+   "gold": false,
+   "tok": 38,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "removed",
+   "key": "docs/contributing.md#docs/contributing.md:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-1a660147",
+   "kind": "removed",
+   "key": "docs/quickstart.md#docs/quickstart.md:__module__",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "added",
+   "key": "LICENSE.md#LICENSE.md:__module__",
+   "gold": false,
+   "tok": 200,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "added",
+   "key": "httpx/_urls.py#QueryParams",
+   "gold": false,
+   "tok": 354,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "added",
+   "key": "httpx/_client.py#httpx/_client.py:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "added",
+   "key": "docs/advanced/clients.md#docs/advanced/clients.md:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "removed",
+   "key": "httpx/_models.py#Cookies",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "removed",
+   "key": "httpx/_types.py#RequestExtensions",
+   "gold": false,
+   "tok": 23,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "removed",
+   "key": "CHANGELOG.md#CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-4de13707",
+   "kind": "removed",
+   "key": "httpx/_types.py#ResponseExtensions",
+   "gold": false,
+   "tok": 24,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-4f6edf36",
+   "kind": "added",
+   "key": "tests/models/test_headers.py#test_header_mutations",
+   "gold": false,
+   "tok": 110,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-4f6edf36",
+   "kind": "removed",
+   "key": "tests/test_utils.py#test_parse_header_links",
+   "gold": false,
+   "tok": 198,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "added",
+   "key": "httpx/_auth.py#DigestAuth._resolve_qop",
+   "gold": false,
+   "tok": 137,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "added",
+   "key": "docs/index.md#docs/index.md:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "added",
+   "key": "tests/client/test_auth.py#test_digest_auth_no_specified_qop",
+   "gold": false,
+   "tok": 310,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "removed",
+   "key": "httpx/_auth.py#DigestAuth._build_auth_header",
+   "gold": true,
+   "tok": 360,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "removed",
+   "key": "CHANGELOG.md#CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-99cba6ac",
+   "kind": "removed",
+   "key": "tests/client/test_auth.py#test_digest_auth_resets_nonce_count_after_401",
+   "gold": false,
+   "tok": 362,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:httpx-a11fc384",
+   "kind": "added",
+   "key": "httpx/_urlparse.py#ParseResult",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-a11fc384",
+   "kind": "added",
+   "key": "httpx/_utils.py#httpx/_utils.py:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-a11fc384",
+   "kind": "removed",
+   "key": "httpx/_urls.py#QueryParams",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-a11fc384",
+   "kind": "removed",
+   "key": "httpx/_urlparse.py#urlparse",
+   "gold": false,
+   "tok": 347,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:httpx-c6907c22",
+   "kind": "added",
+   "key": "httpx/_urls.py#QueryParams.remove",
+   "gold": false,
+   "tok": 108,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-c6907c22",
+   "kind": "added",
+   "key": "tests/test_main.py#test_follow_redirects",
+   "gold": false,
+   "tok": 161,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-c6907c22",
+   "kind": "removed",
+   "key": "httpx/__init__.py#main",
+   "gold": false,
+   "tok": 91,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-c6907c22",
+   "kind": "removed",
+   "key": "tests/test_main.py#test_json",
+   "gold": false,
+   "tok": 124,
+   "role": "test",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:httpx-ca51b453",
+   "kind": "added",
+   "key": "httpx/_client.py#BaseClient",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-ca51b453",
+   "kind": "added",
+   "key": "tests/client/test_auth.py#test_sync_auth_history",
+   "gold": false,
+   "tok": 202,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-ca51b453",
+   "kind": "removed",
+   "key": "tests/client/test_auth.py#test_sync_auth_reads_response_body",
+   "gold": false,
+   "tok": 128,
+   "role": "test",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:httpx-ca51b453",
+   "kind": "removed",
+   "key": "httpx/_client.py#Client._send_single_request",
+   "gold": false,
+   "tok": 296,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "added",
+   "key": "tests/test_asgi.py#test_asgi_transport",
+   "gold": false,
+   "tok": 106,
+   "role": "test"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "added",
+   "key": "httpx/_transports/wsgi.py#WSGITransport.__init__",
+   "gold": false,
+   "tok": 122,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "added",
+   "key": "httpx/_client.py#Client._init_transport",
+   "gold": false,
+   "tok": 190,
+   "role": "primary"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "removed",
+   "key": "tests/test_asgi.py#test_asgi_exc_no_raise",
+   "gold": false,
+   "tok": 89,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "removed",
+   "key": "CHANGELOG.md#CHANGELOG.md:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:httpx-cabd1c09",
+   "kind": "removed",
+   "key": "httpx/__init__.py#__all__",
+   "gold": false,
+   "tok": 339,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "added",
+   "key": "src/iter/step_by.rs#StepBy.opt_len",
+   "gold": false,
+   "tok": 30,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "added",
+   "key": "rayon-core/src/spawn/mod.rs#rayon-core/src/spawn/mod.rs:__module__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "added",
+   "key": "src/iter/update.rs#UpdateSeq.fold",
+   "gold": false,
+   "tok": 55,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "added",
+   "key": "src/compile_fail/cannot_zip_filtered_data.rs#src/compile_fail/cannot_zip_filtered_data.rs:__module__",
+   "gold": false,
+   "tok": 95,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "removed",
+   "key": "src/iter/update.rs#apply",
+   "gold": false,
+   "tok": 46,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "removed",
+   "key": "src/iter/plumbing/mod.rs#src/iter/plumbing/mod.rs:__module__",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "removed",
+   "key": "RELEASES.md#RELEASES.md:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-1dfc35c5",
+   "kind": "removed",
+   "key": "FAQ.md#FAQ.md:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "added",
+   "key": "rayon-core/src/registry.rs#default_global_registry",
+   "gold": false,
+   "tok": 258,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "added",
+   "key": "rayon-core/src/lib.rs#ThreadPoolBuildError.source",
+   "gold": false,
+   "tok": 74,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "added",
+   "key": "rayon-core/src/thread_pool/test.rs#in_place_scope_no_deadlock",
+   "gold": false,
+   "tok": 123,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "removed",
+   "key": "README.md#README.md:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "removed",
+   "key": "FAQ.md#FAQ.md:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-4208de2a",
+   "kind": "removed",
+   "key": "rayon-core/src/scope/mod.rs#do_in_place_scope_fifo",
+   "gold": true,
+   "tok": 92,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-6b1367fe",
+   "kind": "added",
+   "key": "rayon-core/src/lib.rs#rayon-core/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 346,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-6b1367fe",
+   "kind": "added",
+   "key": "rayon-core/src/sleep/mod.rs#Sleep.new_jobs",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-6b1367fe",
+   "kind": "removed",
+   "key": "rayon-core/src/sleep/mod.rs#Sleep.sleep",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:rayon-6b1367fe",
+   "kind": "removed",
+   "key": "rayon-core/src/scope/mod.rs#rayon-core/src/scope/mod.rs:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "added",
+   "key": "src/iter/collect/mod.rs#special_extend",
+   "gold": false,
+   "tok": 63,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "added",
+   "key": "src/iter/walk_tree.rs#WalkTreePostfixProducer.split",
+   "gold": false,
+   "tok": 338,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "added",
+   "key": "src/iter/plumbing/README.md#src/iter/plumbing/README.md:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "added",
+   "key": "src/iter/mod.rs#IndexedParallelIterator.collect_into_vec",
+   "gold": false,
+   "tok": 41,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "removed",
+   "key": "src/iter/collect/mod.rs#collect_with_consumer",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "removed",
+   "key": "rayon-demo/src/vec_collect.rs#rayon-demo/src/vec_collect.rs:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-8582ad08",
+   "kind": "removed",
+   "key": "rayon-demo/src/tree.rs#tree_postfix_collect",
+   "gold": false,
+   "tok": 170,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "added",
+   "key": "src/iter/panic_fuse.rs#PanicFuseIter.Item",
+   "gold": false,
+   "tok": 18,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "added",
+   "key": "src/iter/intersperse.rs#IntersperseIter.size_hint",
+   "gold": false,
+   "tok": 40,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "added",
+   "key": "src/iter/chain.rs#ChainSeq.size_hint",
+   "gold": false,
+   "tok": 34,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "removed",
+   "key": "src/iter/panic_fuse.rs#PanicFuseIter",
+   "gold": false,
+   "tok": 28,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "removed",
+   "key": "src/iter/chunks.rs#ChunkSeq.size_hint",
+   "gold": false,
+   "tok": 40,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-a15dff94",
+   "kind": "removed",
+   "key": "src/iter/update.rs#UpdateSeq.size_hint",
+   "gold": false,
+   "tok": 34,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "added",
+   "key": "src/iter/test.rs#check_ge_equal_direct",
+   "gold": false,
+   "tok": 37,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "added",
+   "key": "src/slice/sort.rs#split_for_merge",
+   "gold": false,
+   "tok": 277,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "added",
+   "key": "src/iter/test.rs#check_le_equal_direct",
+   "gold": false,
+   "tok": 37,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "added",
+   "key": "src/iter/interleave_shortest.rs#src/iter/interleave_shortest.rs:__module__",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "removed",
+   "key": "src/iter/test.rs#check_ge_equal_to_seq",
+   "gold": false,
+   "tok": 61,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "removed",
+   "key": "src/iter/mod.rs#IndexedParallelIterator.le",
+   "gold": false,
+   "tok": 81,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "removed",
+   "key": "src/iter/mod.rs#IndexedParallelIterator.ge",
+   "gold": false,
+   "tok": 82,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:rayon-f1c56c9b",
+   "kind": "removed",
+   "key": "src/iter/test.rs#check_le_equal_to_seq",
+   "gold": false,
+   "tok": 61,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "added",
+   "key": "docs/conf.py#pygments_style",
+   "gold": false,
+   "tok": 25,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "added",
+   "key": "src/requests/__version__.py#__version__",
+   "gold": false,
+   "tok": 18,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "added",
+   "key": "tests/test_requests.py#TestRequests._patch_adapter_gzipped_redirect.build_response",
+   "gold": false,
+   "tok": 81,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "removed",
+   "key": "src/requests/__init__.py#src/requests/__init__.py:__module__",
+   "gold": false,
+   "tok": 343,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "removed",
+   "key": "docs/_themes/flask_theme_support.py#docs/_themes/flask_theme_support.py:__module__",
+   "gold": false,
+   "tok": 345,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "removed",
+   "key": "src/requests/__version__.py#__author__",
+   "gold": false,
+   "tok": 19,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-2edca111",
+   "kind": "removed",
+   "key": "src/requests/help.py#_implementation",
+   "gold": false,
+   "tok": 352,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "added",
+   "key": "src/requests/auth.py#HTTPDigestAuth",
+   "gold": false,
+   "tok": 355,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "added",
+   "key": "src/requests/models.py#Response.apparent_encoding",
+   "gold": false,
+   "tok": 112,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "added",
+   "key": "src/requests/help.py#main",
+   "gold": false,
+   "tok": 42,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "removed",
+   "key": "src/requests/compat.py#chardet",
+   "gold": false,
+   "tok": 21,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "removed",
+   "key": "src/requests/__init__.py#check_compatibility",
+   "gold": true,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-4bd79e39",
+   "kind": "removed",
+   "key": "src/requests/sessions.py#Session.__init__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "added",
+   "key": "tests/test_adapters.py#test_request_url_trims_leading_path_separators",
+   "gold": false,
+   "tok": 83,
+   "role": "test"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "added",
+   "key": "src/requests/cookies.py#RequestsCookieJar",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "added",
+   "key": "src/requests/utils.py#urldefragauth",
+   "gold": false,
+   "tok": 110,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "removed",
+   "key": "src/requests/utils.py#_parse_content_type_header",
+   "gold": false,
+   "tok": 206,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "removed",
+   "key": "docs/conf.py#docs/conf.py:__module__",
+   "gold": false,
+   "tok": 344,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "removed",
+   "key": "HISTORY.md#HISTORY.md:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-5b4b64c3",
+   "kind": "removed",
+   "key": "tests/test_utils.py#test_prepend_scheme_if_needed",
+   "gold": false,
+   "tok": 153,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "added",
+   "key": "src/requests/utils.py#urldefragauth",
+   "gold": false,
+   "tok": 110,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "added",
+   "key": "tests/test_utils.py#test_should_bypass_proxies_pass_only_hostname",
+   "gold": false,
+   "tok": 221,
+   "role": "test"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "added",
+   "key": "src/requests/utils.py#select_proxy",
+   "gold": false,
+   "tok": 184,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "added",
+   "key": "src/requests/adapters.py#HTTPAdapter",
+   "gold": false,
+   "tok": 359,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "removed",
+   "key": "src/requests/utils.py#prepend_scheme_if_needed",
+   "gold": false,
+   "tok": 264,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "removed",
+   "key": "HISTORY.md#HISTORY.md:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "removed",
+   "key": "src/requests/utils.py#should_bypass_proxies",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-96ba401c",
+   "kind": "removed",
+   "key": "tests/test_requests.py#TestRequests.test_basicauth_with_netrc",
+   "gold": false,
+   "tok": 266,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:requests-a62a2d35",
+   "kind": "added",
+   "key": "src/requests/sessions.py#src/requests/sessions.py:__module__",
+   "gold": false,
+   "tok": 346,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-a62a2d35",
+   "kind": "removed",
+   "key": "src/requests/adapters.py#HTTPAdapter",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-b1d73ddb",
+   "kind": "added",
+   "key": "tests/test_requests.py#TestRequests.test_post_with_custom_mapping.CustomMapping.__len__",
+   "gold": false,
+   "tok": 29,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-b1d73ddb",
+   "kind": "added",
+   "key": "src/requests/adapters.py#DEFAULT_POOLSIZE",
+   "gold": false,
+   "tok": 18,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-b1d73ddb",
+   "kind": "removed",
+   "key": "tests/test_requests.py#TestRequests.test_post_with_custom_mapping.CustomMapping.__init__",
+   "gold": false,
+   "tok": 37,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-b1d73ddb",
+   "kind": "removed",
+   "key": "src/requests/adapters.py#HTTPAdapter.init_poolmanager",
+   "gold": false,
+   "tok": 257,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "added",
+   "key": "src/requests/certs.py#src/requests/certs.py:__module__",
+   "gold": false,
+   "tok": 119,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "added",
+   "key": "tests/testserver/server.py#Server.run",
+   "gold": false,
+   "tok": 147,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "added",
+   "key": "src/requests/help.py#src/requests/help.py:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "removed",
+   "key": "src/requests/adapters.py#HTTPAdapter.build_connection_pool_key_attributes",
+   "gold": false,
+   "tok": 351,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "removed",
+   "key": "src/requests/adapters.py#_preloaded_ssl_context",
+   "gold": false,
+   "tok": 25,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:requests-e1887993",
+   "kind": "removed",
+   "key": "tests/conftest.py#tests/conftest.py:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "added",
+   "key": "crates/globset/src/lib.rs#SuffixStrategy.matches_into",
+   "gold": false,
+   "tok": 100,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "added",
+   "key": "crates/globset/src/fnv.rs#crates/globset/src/fnv.rs:__module__",
+   "gold": false,
+   "tok": 202,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "added",
+   "key": "crates/globset/src/lib.rs#GlobSet.matches_candidate_into",
+   "gold": false,
+   "tok": 97,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "added",
+   "key": "crates/globset/benches/bench.rs#new_reglob_many",
+   "gold": false,
+   "tok": 61,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "removed",
+   "key": "crates/globset/src/lib.rs#GlobSet.new",
+   "gold": false,
+   "tok": 354,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "removed",
+   "key": "crates/globset/src/pathutil.rs#file_name_ext",
+   "gold": true,
+   "tok": 139,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "removed",
+   "key": "crates/globset/README.md#crates/globset/README.md:__module__",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-068a63ea",
+   "kind": "removed",
+   "key": "crates/globset/src/pathutil.rs#file_name",
+   "gold": true,
+   "tok": 145,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-0d7054d8",
+   "kind": "added",
+   "key": "crates/ignore/src/lib.rs#Error",
+   "gold": false,
+   "tok": 350,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-0d7054d8",
+   "kind": "added",
+   "key": "crates/ignore/src/walk.rs#Worker",
+   "gold": false,
+   "tok": 346,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-0d7054d8",
+   "kind": "removed",
+   "key": "crates/ignore/src/walk.rs#Worker.run_one",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-0d7054d8",
+   "kind": "removed",
+   "key": "crates/core/messages.rs#crates/core/messages.rs:__module__",
+   "gold": false,
+   "tok": 350,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-241b87b3",
+   "kind": "added",
+   "key": "crates/ignore/src/dir.rs#tests.stops_at_git_dir",
+   "gold": false,
+   "tok": 216,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-241b87b3",
+   "kind": "added",
+   "key": "crates/ignore/src/gitignore.rs#excludes_file_default",
+   "gold": true,
+   "tok": 79,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-241b87b3",
+   "kind": "removed",
+   "key": "crates/ignore/src/dir.rs#IgnoreInner",
+   "gold": false,
+   "tok": 351,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-241b87b3",
+   "kind": "removed",
+   "key": "crates/ignore/src/gitignore.rs#GitignoreBuilder.build_global",
+   "gold": false,
+   "tok": 208,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "added",
+   "key": "crates/core/flags/defs.rs#check_indexing_allowed",
+   "gold": false,
+   "tok": 59,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "added",
+   "key": "crates/regex/src/config.rs#crates/regex/src/config.rs:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "added",
+   "key": "crates/core/flags/doc/man.rs#crates/core/flags/doc/man.rs:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "removed",
+   "key": "crates/core/flags/mod.rs#Flag",
+   "gold": false,
+   "tok": 355,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "removed",
+   "key": "crates/core/flags/mod.rs#Category",
+   "gold": false,
+   "tok": 361,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "removed",
+   "key": "crates/core/flags/hiargs.rs#crates/core/flags/hiargs.rs:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-2ed0c006",
+   "kind": "removed",
+   "key": "crates/core/flags/defs.rs#Encoding",
+   "gold": false,
+   "tok": 16,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-626b8951",
+   "kind": "added",
+   "key": "crates/regex/src/literal.rs#InnerLiterals.new",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-626b8951",
+   "kind": "added",
+   "key": "crates/cli/src/lib.rs#crates/cli/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-626b8951",
+   "kind": "removed",
+   "key": "crates/ignore/src/walk.rs#Worker",
+   "gold": false,
+   "tok": 346,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-626b8951",
+   "kind": "removed",
+   "key": "crates/core/haystack.rs#Haystack.is_explicit",
+   "gold": false,
+   "tok": 147,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-653d7f5b",
+   "kind": "added",
+   "key": "crates/ignore/src/dir.rs#Ignore.matched_ignore",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-653d7f5b",
+   "kind": "added",
+   "key": "crates/ignore/src/dir.rs#Ignore",
+   "gold": true,
+   "tok": 131,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-653d7f5b",
+   "kind": "removed",
+   "key": "crates/ignore/src/dir.rs#tests.absolute_parent_matchers_are_cached_across_roots",
+   "gold": false,
+   "tok": 250,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-653d7f5b",
+   "kind": "removed",
+   "key": "crates/ignore/src/dir.rs#IgnoreInner",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "added",
+   "key": "crates/searcher/src/searcher/mod.rs#crates/searcher/src/searcher/mod.rs:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "added",
+   "key": "crates/ignore/src/dir.rs#Ignore.matched_dir_entry",
+   "gold": false,
+   "tok": 96,
+   "role": "dependency"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "added",
+   "key": "crates/ignore/src/walk.rs#Worker.run_one",
+   "gold": false,
+   "tok": 348,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "added",
+   "key": "crates/cli/src/lib.rs#crates/cli/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "added",
+   "key": "crates/matcher/src/lib.rs#crates/matcher/src/lib.rs:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "removed",
+   "key": "GUIDE.md#GUIDE.md:__module__",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "removed",
+   "key": "FAQ.md#FAQ.md:__module__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "removed",
+   "key": "crates/ignore/src/dir.rs#IgnoreInner",
+   "gold": false,
+   "tok": 349,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:ripgrep-6e527e92",
+   "kind": "removed",
+   "key": "crates/ignore/src/pathutil.rs#is_hidden_entry",
+   "gold": true,
+   "tok": 332,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodBase64URL.check",
+   "gold": false,
+   "tok": 79,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/regexes.ts#md5_base64",
+   "gold": false,
+   "tok": 30,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#generateStringFormatCheck",
+   "gold": false,
+   "tok": 361,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/regexes.ts#sha1_base64",
+   "gold": false,
+   "tok": 30,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "removed",
+   "key": "packages/bench/compile-base64-inline-vs-hoist.ts#packages/bench/compile-base64-inline-vs-hoist.ts:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-07c43e2a",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/regexes.ts#sha256_base64",
+   "gold": false,
+   "tok": 30,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "added",
+   "key": "packages/docs/content/api.test.ts#readCodeFence",
+   "gold": false,
+   "tok": 105,
+   "role": "test"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "added",
+   "key": "packages/zod/src/v4/locales/lt.ts#capitalizeFirstCharacter",
+   "gold": false,
+   "tok": 42,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "added",
+   "key": "packages/zod/src/v4/locales/ru.ts#packages/zod/src/v4/locales/ru.ts:__module__",
+   "gold": false,
+   "tok": 333,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/credit-card.test.ts#packages/zod/src/v4/classic/tests/credit-card.test.ts:__module__",
+   "gold": false,
+   "tok": 347,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/errors.ts#formatError.processError",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-08ba069e",
+   "kind": "removed",
+   "key": "packages/bench/benchUtil.ts#randomString",
+   "gold": false,
+   "tok": 87,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "added",
+   "key": "packages/zod/src/v3/helpers/enumUtil.ts#UnionToTupleString",
+   "gold": false,
+   "tok": 31,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "added",
+   "key": "packages/zod/src/v3/tests/discriminated-unions.test.ts#packages/zod/src/v3/tests/discriminated-unions.test.ts:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "test"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "added",
+   "key": "packages/zod/src/v3/types.ts#ZodObject.keyof",
+   "gold": false,
+   "tok": 50,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/from-json-schema.ts#convertSchema",
+   "gold": false,
+   "tok": 362,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/discriminated-unions.test.ts#packages/zod/src/v4/classic/tests/discriminated-unions.test.ts:__module__",
+   "gold": false,
+   "tok": 358,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:zod-2ec972ec",
+   "kind": "removed",
+   "key": "packages/zod/src/v3/helpers/enumUtil.ts#UnionToIntersectionFn",
+   "gold": false,
+   "tok": 53,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "added",
+   "key": "packages/zod/src/v3/types.ts#ZodString.base64url",
+   "gold": false,
+   "tok": 74,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "added",
+   "key": "packages/zod/src/v3/types.ts#ZodString.isBase64url",
+   "gold": false,
+   "tok": 61,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/regexes.ts#fixedBase64url",
+   "gold": false,
+   "tok": 38,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "removed",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 287,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#isValidBase64",
+   "gold": false,
+   "tok": 91,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-319f47f4",
+   "kind": "removed",
+   "key": "packages/zod/src/v3/types.ts#isValidJWT",
+   "gold": false,
+   "tok": 186,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#urlProtocolOk",
+   "gold": false,
+   "tok": 60,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/tests/compile-differential.test.ts#packages/zod/src/v4/core/tests/compile-differential.test.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "test"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#generateObjectCheck",
+   "gold": false,
+   "tok": 362,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/compile.ts#literalPropertyKey",
+   "gold": false,
+   "tok": 54,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#generateRecordCheck",
+   "gold": false,
+   "tok": 353,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "removed",
+   "key": "packages/bench/memory/dict-mode.ts#packages/bench/memory/dict-mode.ts:__module__",
+   "gold": false,
+   "tok": 356,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/instanceof.test.ts#packages/zod/src/v4/classic/tests/instanceof.test.ts:__module__",
+   "gold": false,
+   "tok": 351,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:zod-68a609ac",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/compile.ts#fastPathAcceptsAbsence",
+   "gold": false,
+   "tok": 344,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-a2a019a5",
+   "kind": "added",
+   "key": "packages/zod/src/v4/classic/tests/intersection.test.ts#packages/zod/src/v4/classic/tests/intersection.test.ts:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "test"
+  },
+  {
+   "task": "c5:zod-a2a019a5",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/classic/tests/discriminated-unions.test.ts#packages/zod/src/v4/classic/tests/discriminated-unions.test.ts:__module__",
+   "gold": false,
+   "tok": 361,
+   "role": "test",
+   "why": "beyond test cap"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/util.ts#members",
+   "gold": false,
+   "tok": 166,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/parse.ts#_safeParse",
+   "gold": true,
+   "tok": 158,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "added",
+   "key": "README.md#README.md:__module__",
+   "gold": false,
+   "tok": 347,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "removed",
+   "key": "CLAUDE.md#CLAUDE.md:__module__",
+   "gold": false,
+   "tok": 326,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/memoizer.ts#packages/zod/src/v4/core/memoizer.ts:__module__",
+   "gold": false,
+   "tok": 359,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-bec73bea",
+   "kind": "removed",
+   "key": "packages/bench/failing-safeparse.ts#packages/bench/failing-safeparse.ts:__module__",
+   "gold": false,
+   "tok": 351,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#handleCatchResult",
+   "gold": false,
+   "tok": 246,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "added",
+   "key": "wiki/compile.md#wiki/compile.md:__module__",
+   "gold": false,
+   "tok": 328,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/util.ts#finalizeIssue",
+   "gold": false,
+   "tok": 356,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "added",
+   "key": "packages/zod/src/v4/core/schemas.ts#$ZodRecord.parse",
+   "gold": false,
+   "tok": 349,
+   "role": "primary"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#handleIntersectionResults",
+   "gold": false,
+   "tok": 358,
+   "role": "primary",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/schemas.ts#ParseContext",
+   "gold": false,
+   "tok": 122,
+   "role": "dependency",
+   "why": "per-file diversity cap"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/parse.ts#validateFallback",
+   "gold": false,
+   "tok": 204,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "removed",
+   "key": "packages/zod/src/v4/core/standard-schema.ts#packages/zod/src/v4/core/standard-schema.ts:__module__",
+   "gold": false,
+   "tok": 360,
+   "role": "primary",
+   "why": "beyond primary cap"
+  },
+  {
+   "task": "c5:zod-cd4f9a67",
+   "kind": "removed",
+   "key": "packages/zod/src/v3/standard-schema.ts#packages/zod/src/v3/standard-schema.ts:__module__",
+   "gold": false,
+   "tok": 357,
+   "role": "primary",
+   "why": "beyond primary cap"
+  }
+ ],
+ "improved": [
+  "bcd:bcd-flask-03",
+  "bcd:bcd-zod-33",
+  "bcd:bcd-zod-35",
+  "c5:axios-2d2a21af",
+  "c5:flask-80cf589a",
+  "c5:ripgrep-241b87b3",
+  "c5:ripgrep-653d7f5b",
+  "c5:zod-bec73bea",
+  "ca:ca-httpx-08",
+  "ca:ca-zod-18"
+ ],
+ "regressed": [
+  "bcd:bcd-flask-04",
+  "bcd:bcd-flask-07",
+  "bcd:bcd-flask-08",
+  "bcd:bcd-httpx-12",
+  "bcd:bcd-httpx-13",
+  "bcd:bcd-httpx-14",
+  "bcd:bcd-httpx-15",
+  "bcd:bcd-ripgrep-20",
+  "bcd:bcd-ripgrep-25",
+  "bcd:bcd-ripgrep-26",
+  "c5:clap-a1b6be72",
+  "c5:httpx-99cba6ac",
+  "c5:rayon-4208de2a",
+  "c5:requests-4bd79e39",
+  "c5:ripgrep-068a63ea",
+  "c5:ripgrep-6e527e92",
+  "ca:ca-flask-02",
+  "ca:ca-flask-04",
+  "ca:ca-ripgrep-11",
+  "ca:ca-ripgrep-13",
+  "ca:ca-zod-16",
+  "ca:ca-zod-17"
+ ],
+ "repo": {
+  "bcd:bcd-flask-00": "flask",
+  "bcd:bcd-flask-01": "flask",
+  "bcd:bcd-flask-02": "flask",
+  "bcd:bcd-flask-03": "flask",
+  "bcd:bcd-flask-04": "flask",
+  "bcd:bcd-flask-05": "flask",
+  "bcd:bcd-flask-06": "flask",
+  "bcd:bcd-flask-07": "flask",
+  "bcd:bcd-flask-08": "flask",
+  "bcd:bcd-flask-09": "flask",
+  "bcd:bcd-httpx-10": "httpx",
+  "bcd:bcd-httpx-11": "httpx",
+  "bcd:bcd-httpx-12": "httpx",
+  "bcd:bcd-httpx-13": "httpx",
+  "bcd:bcd-httpx-14": "httpx",
+  "bcd:bcd-httpx-15": "httpx",
+  "bcd:bcd-httpx-16": "httpx",
+  "bcd:bcd-httpx-17": "httpx",
+  "bcd:bcd-ripgrep-18": "ripgrep",
+  "bcd:bcd-ripgrep-19": "ripgrep",
+  "bcd:bcd-ripgrep-20": "ripgrep",
+  "bcd:bcd-ripgrep-21": "ripgrep",
+  "bcd:bcd-ripgrep-22": "ripgrep",
+  "bcd:bcd-ripgrep-23": "ripgrep",
+  "bcd:bcd-ripgrep-24": "ripgrep",
+  "bcd:bcd-ripgrep-25": "ripgrep",
+  "bcd:bcd-ripgrep-26": "ripgrep",
+  "bcd:bcd-zod-27": "zod",
+  "bcd:bcd-zod-28": "zod",
+  "bcd:bcd-zod-29": "zod",
+  "bcd:bcd-zod-30": "zod",
+  "bcd:bcd-zod-31": "zod",
+  "bcd:bcd-zod-32": "zod",
+  "bcd:bcd-zod-33": "zod",
+  "bcd:bcd-zod-34": "zod",
+  "bcd:bcd-zod-35": "zod",
+  "bcd:bcd-zod-36": "zod",
+  "ca:ca-flask-00": "flask",
+  "ca:ca-flask-01": "flask",
+  "ca:ca-flask-02": "flask",
+  "ca:ca-flask-03": "flask",
+  "ca:ca-flask-04": "flask",
+  "ca:ca-httpx-05": "httpx",
+  "ca:ca-httpx-06": "httpx",
+  "ca:ca-httpx-07": "httpx",
+  "ca:ca-httpx-08": "httpx",
+  "ca:ca-ripgrep-09": "ripgrep",
+  "ca:ca-ripgrep-10": "ripgrep",
+  "ca:ca-ripgrep-11": "ripgrep",
+  "ca:ca-ripgrep-12": "ripgrep",
+  "ca:ca-ripgrep-13": "ripgrep",
+  "ca:ca-zod-14": "zod",
+  "ca:ca-zod-15": "zod",
+  "ca:ca-zod-16": "zod",
+  "ca:ca-zod-17": "zod",
+  "ca:ca-zod-18": "zod",
+  "c5:axios-2d2a21af": "axios",
+  "c5:axios-878bb29d": "axios",
+  "c5:axios-a092bae5": "axios",
+  "c5:axios-a75bf446": "axios",
+  "c5:axios-c3f553c7": "axios",
+  "c5:axios-d8a919fd": "axios",
+  "c5:axios-e8147e6a": "axios",
+  "c5:axios-f8df2e24": "axios",
+  "c5:clap-07c6fd2d": "clap",
+  "c5:clap-1ab0dbd2": "clap",
+  "c5:clap-24719832": "clap",
+  "c5:clap-8cf344b7": "clap",
+  "c5:clap-9a0248c8": "clap",
+  "c5:clap-a1b6be72": "clap",
+  "c5:clap-dee8b8e4": "clap",
+  "c5:clap-eb39a0eb": "clap",
+  "c5:flask-17e146ad": "flask",
+  "c5:flask-1af8f957": "flask",
+  "c5:flask-1d5abfad": "flask",
+  "c5:flask-2abb7513": "flask",
+  "c5:flask-3f6b243c": "flask",
+  "c5:flask-438edcdf": "flask",
+  "c5:flask-65271c10": "flask",
+  "c5:flask-80cf589a": "flask",
+  "c5:httpx-1a660147": "httpx",
+  "c5:httpx-4de13707": "httpx",
+  "c5:httpx-4f6edf36": "httpx",
+  "c5:httpx-99cba6ac": "httpx",
+  "c5:httpx-a11fc384": "httpx",
+  "c5:httpx-c6907c22": "httpx",
+  "c5:httpx-ca51b453": "httpx",
+  "c5:httpx-cabd1c09": "httpx",
+  "c5:rayon-1dfc35c5": "rayon",
+  "c5:rayon-4208de2a": "rayon",
+  "c5:rayon-6b1367fe": "rayon",
+  "c5:rayon-8582ad08": "rayon",
+  "c5:rayon-a15dff94": "rayon",
+  "c5:rayon-f1c56c9b": "rayon",
+  "c5:requests-2edca111": "requests",
+  "c5:requests-4bd79e39": "requests",
+  "c5:requests-5b4b64c3": "requests",
+  "c5:requests-5f338446": "requests",
+  "c5:requests-96ba401c": "requests",
+  "c5:requests-a62a2d35": "requests",
+  "c5:requests-b1d73ddb": "requests",
+  "c5:requests-e1887993": "requests",
+  "c5:ripgrep-068a63ea": "ripgrep",
+  "c5:ripgrep-0d7054d8": "ripgrep",
+  "c5:ripgrep-241b87b3": "ripgrep",
+  "c5:ripgrep-2ed0c006": "ripgrep",
+  "c5:ripgrep-626b8951": "ripgrep",
+  "c5:ripgrep-653d7f5b": "ripgrep",
+  "c5:ripgrep-6e527e92": "ripgrep",
+  "c5:zod-07c43e2a": "zod",
+  "c5:zod-08ba069e": "zod",
+  "c5:zod-2ec972ec": "zod",
+  "c5:zod-319f47f4": "zod",
+  "c5:zod-68a609ac": "zod",
+  "c5:zod-a2a019a5": "zod",
+  "c5:zod-bec73bea": "zod",
+  "c5:zod-cd4f9a67": "zod"
+ }
+}

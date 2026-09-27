@@ -1,0 +1,52 @@
+{
+ "threads": 6,
+ "env_threads": "6",
+ "affinity": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10
+ ],
+ "import_s": 0.7261404330001824,
+ "load_s": 4.377337488998819,
+ "rss_before_load_mb": 225.0234375,
+ "rss_after_load_mb": 782.8125,
+ "cold_first_ms": 31665.229631998955,
+ "cold_first_cpu_ms": 25060.164999999997,
+ "grid": [
+  {
+   "n": 1,
+   "state_tok": 512,
+   "median_ms": 142.65411499945913,
+   "p95_ms": 144.40080100030173,
+   "min_ms": 141.46671500020602,
+   "cpu_ms_median": 853.6100000000033,
+   "per_cand_ms": 142.65411499945913
+  },
+  {
+   "n": 1,
+   "state_tok": 1024,
+   "median_ms": 322.68184299937275,
+   "p95_ms": 326.68072399974335,
+   "min_ms": 321.86375399942335,
+   "cpu_ms_median": 1928.3549999999964,
+   "per_cand_ms": 322.68184299937275
+  },
+  {
+   "n": 16,
+   "state_tok": 400,
+   "median_ms": 1953.8021230000595,
+   "p95_ms": 2015.2532400006749,
+   "min_ms": 1871.3552740009618,
+   "cpu_ms_median": 11662.947000000002,
+   "per_cand_ms": 122.11263268750372
+  }
+ ],
+ "determinism_identical_5x": true,
+ "max_abs_logit_diff_single_vs_batch": 4.76837158203125e-07,
+ "rss_steady_mb": 1301.9609375,
+ "peak_rss_mb": 1441.91796875,
+ "torch": "2.14.0+cpu"
+}
