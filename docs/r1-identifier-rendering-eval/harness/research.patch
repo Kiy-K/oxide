@@ -1,0 +1,68 @@
+diff --git a/examples/semantic_variant.rs b/examples/semantic_variant.rs
+index e4dde12..9b9d385 100644
+--- a/examples/semantic_variant.rs
++++ b/examples/semantic_variant.rs
+@@ -274,10 +274,52 @@ fn variant_text(variant: &str, s: &Symbol, src: &mut Sources) -> String {
+                 t
+             }
+         }
++        // R1 (docs: R1 identifier-rendering experiment, frozen PROTOCOL §1):
++        // D0 with one space inserted at camelCase/PascalCase boundaries in the
++        // identifier-bearing fields only; file and kind untouched.
++        "R1" => format!(
++            "{} {} {} {} {} {}",
++            s.file,
++            s.kind,
++            r1_split(&s.qualified_name),
++            r1_split(&s.signature),
++            s.imports
++                .iter()
++                .map(|x| r1_split(x))
++                .collect::<Vec<_>>()
++                .join(" "),
++            s.references
++                .iter()
++                .map(|x| r1_split(x))
++                .collect::<Vec<_>>()
++                .join(" ")
++        ),
+         other => panic!("unknown variant {other}"),
+     }
+ }
+ 
++/// Frozen R1 rule: the regex
++/// `(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])` → one ASCII space.
++/// ASCII classes only; nothing is removed or re-cased.
++fn r1_split(s: &str) -> String {
++    let c: Vec<char> = s.chars().collect();
++    let mut out = String::with_capacity(s.len() + 8);
++    for i in 0..c.len() {
++        if i > 0 {
++            let (p, n) = (c[i - 1], c[i]);
++            let a = (p.is_ascii_lowercase() || p.is_ascii_digit()) && n.is_ascii_uppercase();
++            let b = p.is_ascii_uppercase()
++                && n.is_ascii_uppercase()
++                && c.get(i + 1).is_some_and(|x| x.is_ascii_lowercase());
++            if a || b {
++                out.push(' ');
++            }
++        }
++        out.push(c[i]);
++    }
++    out
++}
++
+ // ---------------------------------------------------------------------------
+ // Local ONNX provider for models fastembed has no enum for (Granite R2).
+ // ---------------------------------------------------------------------------
+@@ -508,7 +550,9 @@ fn main() -> anyhow::Result<()> {
+             let text = variant_text(&variant, s, &mut src);
+             println!(
+                 "{}",
+-                json!({"id": format!("{}#{}", s.file, s.qualified_name), "text": text})
++                json!({"id": format!("{}#{}", s.file, s.qualified_name), "text": text,
++                    "file": s.file, "kind": s.kind.to_string(), "span": [s.start_line, s.end_line],
++                    "d0": symbol_embed_text(s)})
+             );
+         }
+         return Ok(());

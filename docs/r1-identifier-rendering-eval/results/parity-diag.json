@@ -1,0 +1,73 @@
+{
+ "a": {
+  "('missing_dump', 'dev')": 4,
+  "('missing_dump', 'cb')": 18,
+  "('missing_dump', 'parity_heldout_head')": 3,
+  "('dev', 'sem_keys', False)": 1,
+  "('dev', 'sem_scores', False)": 1,
+  "('dev', 'lex_keys', True)": 1,
+  "('dev', 'fused_order', False)": 1,
+  "('cb', 'sem_keys', False)": 3,
+  "('cb', 'sem_scores', False)": 3,
+  "('cb', 'lex_keys', True)": 3,
+  "('cb', 'fused_order', False)": 3
+ },
+ "a_bad": [
+  [
+   "dev",
+   "requests-6f66281a",
+   [
+    "sem_keys",
+    "sem_scores",
+    "fused_order"
+   ]
+  ],
+  [
+   "cb",
+   "SWE-Bench-Verified__python__maintenance__bugfix__23963510",
+   [
+    "sem_keys",
+    "sem_scores",
+    "fused_order"
+   ]
+  ],
+  [
+   "cb",
+   "SWE-Bench-Verified__python__maintenance__bugfix__9cca0774",
+   [
+    "sem_keys",
+    "sem_scores",
+    "fused_order"
+   ]
+  ],
+  [
+   "cb",
+   "SWE-Bench-Verified__python__maintenance__bugfix__88e1ffd3",
+   [
+    "sem_keys",
+    "sem_scores",
+    "fused_order"
+   ]
+  ]
+ ],
+ "b": {
+  "head-requests@611c6162cbc4": {
+   "stored": 933,
+   "reembedded": 933,
+   "bit_identical": 933,
+   "pass": true
+  }
+ },
+ "c": {
+  "('d0_text_eq_symbol_embed_text', True)": 3776,
+  "('r1_eq_python', True)": 3776,
+  "('r1_changed', True)": 2852,
+  "('r1_changed', False)": 924
+ },
+ "c_bad": [],
+ "pass": {
+  "a": false,
+  "b": true,
+  "c": true
+ }
+}

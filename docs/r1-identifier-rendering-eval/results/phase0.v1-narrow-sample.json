@@ -1,0 +1,2178 @@
+{
+ "tokenizer_version": "0.22.2",
+ "exposure": {
+  "dev": {
+   "tasks": 70,
+   "with_gold": 70,
+   "exposed": 20,
+   "ident": 21,
+   "exposed_and_ident": 5,
+   "exposed_ids": [
+    "zod-56222cd1",
+    "zod-f3e7c72e",
+    "zod-908c9e17",
+    "zod-fedb06fa",
+    "pytest-2348a087",
+    "pytest-b7c1834d",
+    "pytest-4f7f02e2",
+    "pytest-1c36631c",
+    "pytest-47d7c14b",
+    "pytest-2786ed2c",
+    "pylint-4f303f68",
+    "pylint-47bd3be2",
+    "pylint-4be9585e",
+    "pylint-e9f5fac5",
+    "pylint-fbf3eef4",
+    "pylint-d66e7170",
+    "pylint-60edffe5",
+    "pylint-a87eaa6d",
+    "pylint-38bdf024",
+    "pylint-c1f158c6"
+   ],
+   "hits": [
+    {
+     "id": "zod-56222cd1",
+     "hits": [
+      [
+       "packages/zod/src/v4/classic/schemas.ts#ZodInstanceOf",
+       "ZodInstanceOf",
+       [
+        "instance"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/schemas.ts#ZodInstanceOf.properties",
+       "ZodInstanceOf",
+       [
+        "instance"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-f3e7c72e",
+     "hits": [
+      [
+       "packages/docs/app/(doc)/not-found.tsx#NotFound",
+       "NotFound",
+       [
+        "not",
+        "found"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-908c9e17",
+     "hits": [
+      [
+       "packages/docs/loaders/stars.ts#fetchStars",
+       "fetchStars",
+       [
+        "fetch",
+        "stars"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-fedb06fa",
+     "hits": [
+      [
+       "packages/docs/components/blog-toc.tsx#BlogToc",
+       "BlogToc",
+       [
+        "blog",
+        "toc"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-2348a087",
+     "hits": [
+      [
+       "src/_pytest/config/argparsing.py#DropShorterLongHelpFormatter._format_action",
+       "DropShorterLongHelpFormatter",
+       [
+        "long",
+        "help"
+       ]
+      ],
+      [
+       "src/_pytest/config/argparsing.py#DropShorterLongHelpFormatter._split_lines",
+       "DropShorterLongHelpFormatter",
+       [
+        "long",
+        "help"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-b7c1834d",
+     "hits": [
+      [
+       "src/_pytest/warning_types.py#PytestApproxDecimalToleranceWarning",
+       "PytestApproxDecimalToleranceWarning",
+       [
+        "approx",
+        "decimal",
+        "tolerance"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-4f7f02e2",
+     "hits": [
+      [
+       "src/_pytest/logging.py#ColoredLevelFormatter",
+       "ColoredLevelFormatter",
+       [
+        "level"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-1c36631c",
+     "hits": [
+      [
+       "src/_pytest/recwarn.py#WarningsChecker.__exit__",
+       "WarningsChecker",
+       [
+        "warnings"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-47d7c14b",
+     "hits": [
+      [
+       "src/_pytest/doctest.py#DoctestModule.collect.MockAwareDocTestFinder",
+       "DoctestModule",
+       [
+        "doctest"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-2786ed2c",
+     "hits": [
+      [
+       "src/_pytest/capture.py#FDCapture.snap",
+       "FDCapture",
+       [
+        "capture"
+       ]
+      ],
+      [
+       "src/_pytest/capture.py#FDCaptureBinary.snap",
+       "FDCaptureBinary",
+       [
+        "capture"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-4f303f68",
+     "hits": [
+      [
+       "pylint/checkers/lambda_expressions.py#LambdaExpressionChecker.visit_call",
+       "LambdaExpressionChecker",
+       [
+        "lambda"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-47bd3be2",
+     "hits": [
+      [
+       "pylint/checkers/ellipsis_checker.py#EllipsisChecker.visit_const",
+       "EllipsisChecker",
+       [
+        "ellipsis"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-4be9585e",
+     "hits": [
+      [
+       "pylint/checkers/base_checker.py#BaseChecker.get_full_documentation",
+       "BaseChecker",
+       [
+        "checker"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-e9f5fac5",
+     "hits": [
+      [
+       "pylint/checkers/base/comparison_checker.py#ComparisonChecker._check_nan_comparison._is_float_nan",
+       "ComparisonChecker",
+       [
+        "comparison"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-fbf3eef4",
+     "hits": [
+      [
+       "pylint/checkers/refactoring/recommendation_checker.py#RecommendationChecker._check_consider_using_dict_items",
+       "RecommendationChecker",
+       [
+        "checker"
+       ]
+      ],
+      [
+       "pylint/checkers/refactoring/recommendation_checker.py#RecommendationChecker._check_consider_using_dict_items_comprehension",
+       "RecommendationChecker",
+       [
+        "checker"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-d66e7170",
+     "hits": [
+      [
+       "pylint/checkers/async_checker.py#AsyncChecker.visit_asyncfunctiondef",
+       "AsyncChecker",
+       [
+        "async"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-60edffe5",
+     "hits": [
+      [
+       "pylint/checkers/refactoring/not_checker.py#NotChecker",
+       "NotChecker",
+       [
+        "not"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-a87eaa6d",
+     "hits": [
+      [
+       "pylint/checkers/nested_min_max.py#NestedMinMaxChecker.visit_call",
+       "NestedMinMaxChecker",
+       [
+        "nested",
+        "min",
+        "max"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-38bdf024",
+     "hits": [
+      [
+       "pylint/checkers/logging.py#LoggingChecker._check_format_string",
+       "LoggingChecker",
+       [
+        "logging"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pylint-c1f158c6",
+     "hits": [
+      [
+       "pylint/checkers/logging.py#LoggingChecker._check_format_string",
+       "LoggingChecker",
+       [
+        "logging"
+       ]
+      ]
+     ]
+    }
+   ]
+  },
+  "heldout": {
+   "tasks": 65,
+   "with_gold": 65,
+   "exposed": 22,
+   "ident": 24,
+   "exposed_and_ident": 12,
+   "exposed_ids": [
+    "ripgrep-020687a7",
+    "ripgrep-d47663b1",
+    "ripgrep-63209ae0",
+    "requests-ef439eb7",
+    "flask-a411a243",
+    "flask-fb541598",
+    "flask-da600394",
+    "pytest-737d5d89",
+    "pytest-92113cea",
+    "pytest-04405f86",
+    "pytest-ef8ac544",
+    "pytest-aeb5b3eb",
+    "zod-9446b5cc",
+    "zod-b12aa523",
+    "zod-dd9c36fa",
+    "zod-213ee75d",
+    "zod-36f17960",
+    "zod-62e6624b",
+    "zod-eca96871",
+    "zod-51caf010",
+    "httpx-7b19cd5f",
+    "httpx-6d852d31"
+   ],
+   "hits": [
+    {
+     "id": "ripgrep-020687a7",
+     "hits": [
+      [
+       "crates/ignore/src/gitignore.rs#GitignoreBuilder.build",
+       "GitignoreBuilder",
+       [
+        "gitignore"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "ripgrep-d47663b1",
+     "hits": [
+      [
+       "crates/searcher/src/line_buffer.rs#LineBuffer.fill",
+       "LineBuffer",
+       [
+        "line",
+        "buffer"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "ripgrep-63209ae0",
+     "hits": [
+      [
+       "crates/printer/src/json.rs#JSONSink.finish",
+       "JSONSink",
+       [
+        "json",
+        "sink"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "requests-ef439eb7",
+     "hits": [
+      [
+       "src/requests/sessions.py#SessionRedirectMixin.resolve_redirects",
+       "SessionRedirectMixin",
+       [
+        "redirect"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "flask-a411a243",
+     "hits": [
+      [
+       "src/flask/ctx.py#AppContext",
+       "AppContext",
+       [
+        "context"
+       ]
+      ],
+      [
+       "src/flask/ctx.py#AppContext._get_session",
+       "AppContext",
+       [
+        "context"
+       ]
+      ],
+      [
+       "src/flask/ctx.py#AppContext.push",
+       "AppContext",
+       [
+        "context"
+       ]
+      ],
+      [
+       "src/flask/ctx.py#AppContext.session",
+       "AppContext",
+       [
+        "context"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "flask-fb541598",
+     "hits": [
+      [
+       "src/flask/sessions.py#SecureCookieSessionInterface.get_signing_serializer",
+       "SecureCookieSessionInterface",
+       [
+        "interface"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "flask-da600394",
+     "hits": [
+      [
+       "src/flask/cli.py#FlaskGroup.parse_args",
+       "FlaskGroup",
+       [
+        "flask"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-737d5d89",
+     "hits": [
+      [
+       "src/_pytest/approx.py#ApproxNumpy._yield_comparisons",
+       "ApproxNumpy",
+       [
+        "approx",
+        "numpy"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-92113cea",
+     "hits": [
+      [
+       "src/_pytest/approx.py#ApproxMapping",
+       "ApproxMapping",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxMapping._repr_compare",
+       "ApproxMapping",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxNumpy._repr_compare",
+       "ApproxNumpy",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxSequenceLike",
+       "ApproxSequenceLike",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxSequenceLike._repr_compare",
+       "ApproxSequenceLike",
+       [
+        "approx"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-04405f86",
+     "hits": [
+      [
+       "src/_pytest/approx.py#ApproxDecimal.__init__",
+       "ApproxDecimal",
+       [
+        "approx",
+        "decimal"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxScalar.__repr__",
+       "ApproxScalar",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxScalar.tolerance",
+       "ApproxScalar",
+       [
+        "approx"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-ef8ac544",
+     "hits": [
+      [
+       "src/_pytest/approx.py#ApproxScalar.__eq__",
+       "ApproxScalar",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxScalar.__repr__",
+       "ApproxScalar",
+       [
+        "approx"
+       ]
+      ],
+      [
+       "src/_pytest/approx.py#ApproxScalar.tolerance",
+       "ApproxScalar",
+       [
+        "approx"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "pytest-aeb5b3eb",
+     "hits": [
+      [
+       "src/_pytest/fixtures.py#FixtureManager.__init__",
+       "FixtureManager",
+       [
+        "fixture"
+       ]
+      ],
+      [
+       "src/_pytest/fixtures.py#FixtureManager._get_all_fixture_defs",
+       "FixtureManager",
+       [
+        "fixture"
+       ]
+      ],
+      [
+       "src/_pytest/fixtures.py#FixtureManager._get_all_fixture_defs_for_node",
+       "FixtureManager",
+       [
+        "fixture"
+       ]
+      ],
+      [
+       "src/_pytest/fixtures.py#FixtureManager._register_fixture",
+       "FixtureManager",
+       [
+        "fixture"
+       ]
+      ],
+      [
+       "src/_pytest/fixtures.py#FixtureManager.getfixturedefs",
+       "FixtureManager",
+       [
+        "fixture"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-9446b5cc",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/compile.ts#generateObjectCheck",
+       "generateObjectCheck",
+       [
+        "object"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/core/compile.ts#mayOmitUndefined",
+       "mayOmitUndefined",
+       [
+        "undefined"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/core/schemas.ts#$ZodObjectJIT.generateFastpass",
+       "ZodObjectJIT",
+       [
+        "object"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/core/schemas.ts#$ZodPrefaultInternals",
+       "ZodPrefaultInternals",
+       [
+        "prefault"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-b12aa523",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/schemas.ts#discriminatorMap",
+       "discriminatorMap",
+       [
+        "discriminator"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-dd9c36fa",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/schemas.ts#$InferObjectInput",
+       "InferObjectInput",
+       [
+        "object"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/core/schemas.ts#$InferObjectOutput",
+       "InferObjectOutput",
+       [
+        "object"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-213ee75d",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/compile.ts#withParser",
+       "withParser",
+       [
+        "parser"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/core/compile.ts#withParser.wrapped",
+       "withParser",
+       [
+        "parser"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-36f17960",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/memoizer.ts#bucketFor",
+       "bucketFor",
+       [
+        "bucket"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-62e6624b",
+     "hits": [
+      [
+       "packages/zod/src/v4/classic/schemas.ts#ZodType.validate",
+       "ZodType",
+       [
+        "zod",
+        "type"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/schemas.ts#ZodType.validateAsync",
+       "ZodType",
+       [
+        "zod",
+        "type"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/schemas.ts#ZodType.validateAsync",
+       "validateAsync",
+       [
+        "validate"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-eca96871",
+     "hits": [
+      [
+       "packages/zod/src/v4/classic/from-json-schema.ts#checkArrayGuards",
+       "checkArrayGuards",
+       [
+        "array"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/from-json-schema.ts#containsRef",
+       "containsRef",
+       [
+        "contains"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/from-json-schema.ts#convertBaseSchema",
+       "convertBaseSchema",
+       [
+        "schema"
+       ]
+      ],
+      [
+       "packages/zod/src/v4/classic/from-json-schema.ts#convertSchema",
+       "convertSchema",
+       [
+        "schema"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "zod-51caf010",
+     "hits": [
+      [
+       "packages/zod/src/v4/core/schemas.ts#$ZodObjectJIT",
+       "ZodObjectJIT",
+       [
+        "zod"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "httpx-7b19cd5f",
+     "hits": [
+      [
+       "httpx/_client.py#BaseClient._redirect_headers",
+       "BaseClient",
+       [
+        "client"
+       ]
+      ]
+     ]
+    },
+    {
+     "id": "httpx-6d852d31",
+     "hits": [
+      [
+       "httpx/_client.py#AsyncClient.send",
+       "AsyncClient",
+       [
+        "client"
+       ]
+      ],
+      [
+       "httpx/_client.py#BaseClient._set_timeout",
+       "BaseClient",
+       [
+        "client"
+       ]
+      ]
+     ]
+    }
+   ]
+  },
+  "cb": {
+   "tasks": 21,
+   "with_gold": 0,
+   "exposed": null,
+   "ident": null,
+   "exposed_and_ident": null,
+   "exposed_ids": [],
+   "hits": []
+  }
+ },
+ "exposed_sample": {
+  "n_tokens": 50,
+  "base_cont": 176,
+  "r1_cont": 56,
+  "base_pieces": 226,
+  "r1_pieces": 180,
+  "components": 121,
+  "base_recov": 27,
+  "r1_recov": 78,
+  "cont_reduction": 0.6818181818181819,
+  "pieces_delta_pct": -20.353982300884955,
+  "base_recov_rate": 0.2231404958677686,
+  "r1_recov_rate": 0.6446280991735537
+ },
+ "exposed_rows": [
+  {
+   "token": "AppContext",
+   "r1": "App Context",
+   "base": [
+    "app",
+    "##con",
+    "##text"
+   ],
+   "r1_pieces": [
+    "app",
+    "context"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "app",
+    "context"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "ApproxDecimal",
+   "r1": "Approx Decimal",
+   "base": [
+    "approx",
+    "##de",
+    "##ci",
+    "##mal"
+   ],
+   "r1_pieces": [
+    "approx",
+    "decimal"
+   ],
+   "base_cont": 3,
+   "r1_cont": 0,
+   "base_n": 4,
+   "r1_n": 2,
+   "comps": [
+    "approx",
+    "decimal"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "ApproxMapping",
+   "r1": "Approx Mapping",
+   "base": [
+    "approx",
+    "##ma",
+    "##pping"
+   ],
+   "r1_pieces": [
+    "approx",
+    "mapping"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "approx",
+    "mapping"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "ApproxNumpy",
+   "r1": "Approx Numpy",
+   "base": [
+    "approx",
+    "##num",
+    "##py"
+   ],
+   "r1_pieces": [
+    "approx",
+    "nu",
+    "##mp",
+    "##y"
+   ],
+   "base_cont": 2,
+   "r1_cont": 2,
+   "base_n": 3,
+   "r1_n": 4,
+   "comps": [
+    "approx",
+    "numpy"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "ApproxScalar",
+   "r1": "Approx Scalar",
+   "base": [
+    "approx",
+    "##sca",
+    "##lar"
+   ],
+   "r1_pieces": [
+    "approx",
+    "scala",
+    "##r"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "approx",
+    "scalar"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "ApproxSequenceLike",
+   "r1": "Approx Sequence Like",
+   "base": [
+    "approx",
+    "##se",
+    "##que",
+    "##nce",
+    "##like"
+   ],
+   "r1_pieces": [
+    "approx",
+    "sequence",
+    "like"
+   ],
+   "base_cont": 4,
+   "r1_cont": 0,
+   "base_n": 5,
+   "r1_n": 3,
+   "comps": [
+    "approx",
+    "sequence",
+    "like"
+   ],
+   "base_recov": 1,
+   "r1_recov": 3
+  },
+  {
+   "token": "AsyncChecker",
+   "r1": "Async Checker",
+   "base": [
+    "as",
+    "##yn",
+    "##cc",
+    "##he",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "as",
+    "##yn",
+    "##c",
+    "check",
+    "##er"
+   ],
+   "base_cont": 4,
+   "r1_cont": 3,
+   "base_n": 5,
+   "r1_n": 5,
+   "comps": [
+    "async",
+    "checker"
+   ],
+   "base_recov": 0,
+   "r1_recov": 0
+  },
+  {
+   "token": "AsyncClient",
+   "r1": "Async Client",
+   "base": [
+    "as",
+    "##yn",
+    "##cc",
+    "##lie",
+    "##nt"
+   ],
+   "r1_pieces": [
+    "as",
+    "##yn",
+    "##c",
+    "client"
+   ],
+   "base_cont": 4,
+   "r1_cont": 2,
+   "base_n": 5,
+   "r1_n": 4,
+   "comps": [
+    "async",
+    "client"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "BaseChecker",
+   "r1": "Base Checker",
+   "base": [
+    "base",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "base",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "base",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "BaseClient",
+   "r1": "Base Client",
+   "base": [
+    "base",
+    "##cl",
+    "##ient"
+   ],
+   "r1_pieces": [
+    "base",
+    "client"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "base",
+    "client"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "BlogToc",
+   "r1": "Blog Toc",
+   "base": [
+    "blog",
+    "##to",
+    "##c"
+   ],
+   "r1_pieces": [
+    "blog",
+    "to",
+    "##c"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "blog",
+    "toc"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "ColoredLevelFormatter",
+   "r1": "Colored Level Formatter",
+   "base": [
+    "colored",
+    "##lev",
+    "##el",
+    "##form",
+    "##atter"
+   ],
+   "r1_pieces": [
+    "colored",
+    "level",
+    "format",
+    "##ter"
+   ],
+   "base_cont": 4,
+   "r1_cont": 1,
+   "base_n": 5,
+   "r1_n": 4,
+   "comps": [
+    "colored",
+    "level",
+    "formatter"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "ComparisonChecker",
+   "r1": "Comparison Checker",
+   "base": [
+    "comparison",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "comparison",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "comparison",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "DoctestModule",
+   "r1": "Doctest Module",
+   "base": [
+    "doc",
+    "##test",
+    "##mo",
+    "##du",
+    "##le"
+   ],
+   "r1_pieces": [
+    "doc",
+    "##test",
+    "module"
+   ],
+   "base_cont": 4,
+   "r1_cont": 1,
+   "base_n": 5,
+   "r1_n": 3,
+   "comps": [
+    "doctest",
+    "module"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "DropShorterLongHelpFormatter",
+   "r1": "Drop Shorter Long Help Formatter",
+   "base": [
+    "drops",
+    "##hort",
+    "##er",
+    "##long",
+    "##hel",
+    "##pf",
+    "##or",
+    "##mat",
+    "##ter"
+   ],
+   "r1_pieces": [
+    "drop",
+    "shorter",
+    "long",
+    "help",
+    "format",
+    "##ter"
+   ],
+   "base_cont": 8,
+   "r1_cont": 1,
+   "base_n": 9,
+   "r1_n": 6,
+   "comps": [
+    "drop",
+    "shorter",
+    "long",
+    "help",
+    "formatter"
+   ],
+   "base_recov": 0,
+   "r1_recov": 4
+  },
+  {
+   "token": "EllipsisChecker",
+   "r1": "Ellipsis Checker",
+   "base": [
+    "el",
+    "##lip",
+    "##sis",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "el",
+    "##lip",
+    "##sis",
+    "check",
+    "##er"
+   ],
+   "base_cont": 4,
+   "r1_cont": 3,
+   "base_n": 5,
+   "r1_n": 5,
+   "comps": [
+    "ellipsis",
+    "checker"
+   ],
+   "base_recov": 0,
+   "r1_recov": 0
+  },
+  {
+   "token": "FDCapture",
+   "r1": "FD Capture",
+   "base": [
+    "f",
+    "##dc",
+    "##ap",
+    "##ture"
+   ],
+   "r1_pieces": [
+    "f",
+    "##d",
+    "capture"
+   ],
+   "base_cont": 3,
+   "r1_cont": 1,
+   "base_n": 4,
+   "r1_n": 3,
+   "comps": [
+    "capture"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "FDCaptureBinary",
+   "r1": "FD Capture Binary",
+   "base": [
+    "f",
+    "##dc",
+    "##ap",
+    "##ture",
+    "##bina",
+    "##ry"
+   ],
+   "r1_pieces": [
+    "f",
+    "##d",
+    "capture",
+    "binary"
+   ],
+   "base_cont": 5,
+   "r1_cont": 1,
+   "base_n": 6,
+   "r1_n": 4,
+   "comps": [
+    "capture",
+    "binary"
+   ],
+   "base_recov": 0,
+   "r1_recov": 2
+  },
+  {
+   "token": "FixtureManager",
+   "r1": "Fixture Manager",
+   "base": [
+    "fixture",
+    "##mana",
+    "##ger"
+   ],
+   "r1_pieces": [
+    "fixture",
+    "manager"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "fixture",
+    "manager"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "FlaskGroup",
+   "r1": "Flask Group",
+   "base": [
+    "fl",
+    "##ask",
+    "##group"
+   ],
+   "r1_pieces": [
+    "fl",
+    "##ask",
+    "group"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "flask",
+    "group"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "GitignoreBuilder",
+   "r1": "Gitignore Builder",
+   "base": [
+    "gi",
+    "##ti",
+    "##gno",
+    "##re",
+    "##bu",
+    "##ilde",
+    "##r"
+   ],
+   "r1_pieces": [
+    "gi",
+    "##ti",
+    "##gno",
+    "##re",
+    "builder"
+   ],
+   "base_cont": 6,
+   "r1_cont": 3,
+   "base_n": 7,
+   "r1_n": 5,
+   "comps": [
+    "gitignore",
+    "builder"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "InferObjectInput",
+   "r1": "Infer Object Input",
+   "base": [
+    "in",
+    "##fer",
+    "##ob",
+    "##ject",
+    "##in",
+    "##put"
+   ],
+   "r1_pieces": [
+    "in",
+    "##fer",
+    "object",
+    "input"
+   ],
+   "base_cont": 5,
+   "r1_cont": 1,
+   "base_n": 6,
+   "r1_n": 4,
+   "comps": [
+    "infer",
+    "object",
+    "input"
+   ],
+   "base_recov": 0,
+   "r1_recov": 2
+  },
+  {
+   "token": "InferObjectOutput",
+   "r1": "Infer Object Output",
+   "base": [
+    "in",
+    "##fer",
+    "##ob",
+    "##ject",
+    "##out",
+    "##put"
+   ],
+   "r1_pieces": [
+    "in",
+    "##fer",
+    "object",
+    "output"
+   ],
+   "base_cont": 5,
+   "r1_cont": 1,
+   "base_n": 6,
+   "r1_n": 4,
+   "comps": [
+    "infer",
+    "object",
+    "output"
+   ],
+   "base_recov": 0,
+   "r1_recov": 2
+  },
+  {
+   "token": "JSONSink",
+   "r1": "JSON Sink",
+   "base": [
+    "j",
+    "##sons",
+    "##ink"
+   ],
+   "r1_pieces": [
+    "j",
+    "##son",
+    "sink"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "json",
+    "sink"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "LambdaExpressionChecker",
+   "r1": "Lambda Expression Checker",
+   "base": [
+    "lambda",
+    "##ex",
+    "##press",
+    "##ion",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "lambda",
+    "expression",
+    "check",
+    "##er"
+   ],
+   "base_cont": 5,
+   "r1_cont": 1,
+   "base_n": 6,
+   "r1_n": 4,
+   "comps": [
+    "lambda",
+    "expression",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "LineBuffer",
+   "r1": "Line Buffer",
+   "base": [
+    "line",
+    "##bu",
+    "##ffer"
+   ],
+   "r1_pieces": [
+    "line",
+    "buffer"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "line",
+    "buffer"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "LoggingChecker",
+   "r1": "Logging Checker",
+   "base": [
+    "logging",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "logging",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "logging",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "NestedMinMaxChecker",
+   "r1": "Nested Min Max Checker",
+   "base": [
+    "nest",
+    "##ed",
+    "##min",
+    "##max",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "nest",
+    "##ed",
+    "min",
+    "max",
+    "check",
+    "##er"
+   ],
+   "base_cont": 5,
+   "r1_cont": 2,
+   "base_n": 6,
+   "r1_n": 6,
+   "comps": [
+    "nested",
+    "min",
+    "max",
+    "checker"
+   ],
+   "base_recov": 0,
+   "r1_recov": 2
+  },
+  {
+   "token": "NotChecker",
+   "r1": "Not Checker",
+   "base": [
+    "notch",
+    "##eck",
+    "##er"
+   ],
+   "r1_pieces": [
+    "not",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "not",
+    "checker"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "NotFound",
+   "r1": "Not Found",
+   "base": [
+    "not",
+    "##fo",
+    "##und"
+   ],
+   "r1_pieces": [
+    "not",
+    "found"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "not",
+    "found"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "PytestApproxDecimalToleranceWarning",
+   "r1": "Pytest Approx Decimal Tolerance Warning",
+   "base": [
+    "p",
+    "##yte",
+    "##sta",
+    "##pp",
+    "##ro",
+    "##x",
+    "##de",
+    "##ci",
+    "##mal",
+    "##to",
+    "##ler",
+    "##ance",
+    "##war",
+    "##ning"
+   ],
+   "r1_pieces": [
+    "p",
+    "##yte",
+    "##st",
+    "approx",
+    "decimal",
+    "tolerance",
+    "warning"
+   ],
+   "base_cont": 13,
+   "r1_cont": 2,
+   "base_n": 14,
+   "r1_n": 7,
+   "comps": [
+    "pytest",
+    "approx",
+    "decimal",
+    "tolerance",
+    "warning"
+   ],
+   "base_recov": 0,
+   "r1_recov": 4
+  },
+  {
+   "token": "RecommendationChecker",
+   "r1": "Recommendation Checker",
+   "base": [
+    "recommendation",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "recommendation",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "recommendation",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "SecureCookieSessionInterface",
+   "r1": "Secure Cookie Session Interface",
+   "base": [
+    "secure",
+    "##co",
+    "##oki",
+    "##eses",
+    "##sion",
+    "##int",
+    "##er",
+    "##face"
+   ],
+   "r1_pieces": [
+    "secure",
+    "cookie",
+    "session",
+    "interface"
+   ],
+   "base_cont": 7,
+   "r1_cont": 0,
+   "base_n": 8,
+   "r1_n": 4,
+   "comps": [
+    "secure",
+    "cookie",
+    "session",
+    "interface"
+   ],
+   "base_recov": 1,
+   "r1_recov": 4
+  },
+  {
+   "token": "SessionRedirectMixin",
+   "r1": "Session Redirect Mixin",
+   "base": [
+    "session",
+    "##red",
+    "##ire",
+    "##ct",
+    "##mi",
+    "##xin"
+   ],
+   "r1_pieces": [
+    "session",
+    "red",
+    "##ire",
+    "##ct",
+    "mix",
+    "##in"
+   ],
+   "base_cont": 5,
+   "r1_cont": 3,
+   "base_n": 6,
+   "r1_n": 6,
+   "comps": [
+    "session",
+    "redirect",
+    "mixin"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "WarningsChecker",
+   "r1": "Warnings Checker",
+   "base": [
+    "warnings",
+    "##che",
+    "##cker"
+   ],
+   "r1_pieces": [
+    "warnings",
+    "check",
+    "##er"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "warnings",
+    "checker"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  },
+  {
+   "token": "ZodInstanceOf",
+   "r1": "Zod Instance Of",
+   "base": [
+    "z",
+    "##od",
+    "##ins",
+    "##tance",
+    "##of"
+   ],
+   "r1_pieces": [
+    "z",
+    "##od",
+    "instance",
+    "of"
+   ],
+   "base_cont": 4,
+   "r1_cont": 1,
+   "base_n": 5,
+   "r1_n": 4,
+   "comps": [
+    "zod",
+    "instance"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "ZodObjectJIT",
+   "r1": "Zod Object JIT",
+   "base": [
+    "z",
+    "##od",
+    "##ob",
+    "##ject",
+    "##jit"
+   ],
+   "r1_pieces": [
+    "z",
+    "##od",
+    "object",
+    "ji",
+    "##t"
+   ],
+   "base_cont": 4,
+   "r1_cont": 2,
+   "base_n": 5,
+   "r1_n": 5,
+   "comps": [
+    "zod",
+    "object",
+    "jit"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "ZodPrefaultInternals",
+   "r1": "Zod Prefault Internals",
+   "base": [
+    "z",
+    "##od",
+    "##pre",
+    "##fa",
+    "##ult",
+    "##int",
+    "##ern",
+    "##als"
+   ],
+   "r1_pieces": [
+    "z",
+    "##od",
+    "pre",
+    "##fa",
+    "##ult",
+    "internal",
+    "##s"
+   ],
+   "base_cont": 7,
+   "r1_cont": 4,
+   "base_n": 8,
+   "r1_n": 7,
+   "comps": [
+    "zod",
+    "prefault",
+    "internals"
+   ],
+   "base_recov": 0,
+   "r1_recov": 0
+  },
+  {
+   "token": "ZodType",
+   "r1": "Zod Type",
+   "base": [
+    "z",
+    "##od",
+    "##type"
+   ],
+   "r1_pieces": [
+    "z",
+    "##od",
+    "type"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "zod",
+    "type"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "bucketFor",
+   "r1": "bucket For",
+   "base": [
+    "bucket",
+    "##for"
+   ],
+   "r1_pieces": [
+    "bucket",
+    "for"
+   ],
+   "base_cont": 1,
+   "r1_cont": 0,
+   "base_n": 2,
+   "r1_n": 2,
+   "comps": [
+    "bucket",
+    "for"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "checkArrayGuards",
+   "r1": "check Array Guards",
+   "base": [
+    "check",
+    "##ar",
+    "##ray",
+    "##guard",
+    "##s"
+   ],
+   "r1_pieces": [
+    "check",
+    "array",
+    "guards"
+   ],
+   "base_cont": 4,
+   "r1_cont": 0,
+   "base_n": 5,
+   "r1_n": 3,
+   "comps": [
+    "check",
+    "array",
+    "guards"
+   ],
+   "base_recov": 1,
+   "r1_recov": 3
+  },
+  {
+   "token": "containsRef",
+   "r1": "contains Ref",
+   "base": [
+    "contains",
+    "##re",
+    "##f"
+   ],
+   "r1_pieces": [
+    "contains",
+    "ref"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "contains",
+    "ref"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "convertBaseSchema",
+   "r1": "convert Base Schema",
+   "base": [
+    "convert",
+    "##base",
+    "##sche",
+    "##ma"
+   ],
+   "r1_pieces": [
+    "convert",
+    "base",
+    "sc",
+    "##hema"
+   ],
+   "base_cont": 3,
+   "r1_cont": 1,
+   "base_n": 4,
+   "r1_n": 4,
+   "comps": [
+    "convert",
+    "base",
+    "schema"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "convertSchema",
+   "r1": "convert Schema",
+   "base": [
+    "converts",
+    "##che",
+    "##ma"
+   ],
+   "r1_pieces": [
+    "convert",
+    "sc",
+    "##hema"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "convert",
+    "schema"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "discriminatorMap",
+   "r1": "discriminator Map",
+   "base": [
+    "disc",
+    "##rim",
+    "##inator",
+    "##ma",
+    "##p"
+   ],
+   "r1_pieces": [
+    "disc",
+    "##rim",
+    "##inator",
+    "map"
+   ],
+   "base_cont": 4,
+   "r1_cont": 2,
+   "base_n": 5,
+   "r1_n": 4,
+   "comps": [
+    "discriminator",
+    "map"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "fetchStars",
+   "r1": "fetch Stars",
+   "base": [
+    "fetch",
+    "##star",
+    "##s"
+   ],
+   "r1_pieces": [
+    "fetch",
+    "stars"
+   ],
+   "base_cont": 2,
+   "r1_cont": 0,
+   "base_n": 3,
+   "r1_n": 2,
+   "comps": [
+    "fetch",
+    "stars"
+   ],
+   "base_recov": 1,
+   "r1_recov": 2
+  },
+  {
+   "token": "generateObjectCheck",
+   "r1": "generate Object Check",
+   "base": [
+    "generate",
+    "##ob",
+    "##ject",
+    "##che",
+    "##ck"
+   ],
+   "r1_pieces": [
+    "generate",
+    "object",
+    "check"
+   ],
+   "base_cont": 4,
+   "r1_cont": 0,
+   "base_n": 5,
+   "r1_n": 3,
+   "comps": [
+    "generate",
+    "object",
+    "check"
+   ],
+   "base_recov": 1,
+   "r1_recov": 3
+  },
+  {
+   "token": "mayOmitUndefined",
+   "r1": "may Omit Undefined",
+   "base": [
+    "mayo",
+    "##mit",
+    "##und",
+    "##efined"
+   ],
+   "r1_pieces": [
+    "may",
+    "om",
+    "##it",
+    "und",
+    "##efined"
+   ],
+   "base_cont": 3,
+   "r1_cont": 2,
+   "base_n": 4,
+   "r1_n": 5,
+   "comps": [
+    "may",
+    "omit",
+    "undefined"
+   ],
+   "base_recov": 0,
+   "r1_recov": 1
+  },
+  {
+   "token": "validateAsync",
+   "r1": "validate Async",
+   "base": [
+    "valid",
+    "##ate",
+    "##as",
+    "##yn",
+    "##c"
+   ],
+   "r1_pieces": [
+    "valid",
+    "##ate",
+    "as",
+    "##yn",
+    "##c"
+   ],
+   "base_cont": 4,
+   "r1_cont": 3,
+   "base_n": 5,
+   "r1_n": 5,
+   "comps": [
+    "validate",
+    "async"
+   ],
+   "base_recov": 0,
+   "r1_recov": 0
+  },
+  {
+   "token": "withParser",
+   "r1": "with Parser",
+   "base": [
+    "with",
+    "##par",
+    "##ser"
+   ],
+   "r1_pieces": [
+    "with",
+    "par",
+    "##ser"
+   ],
+   "base_cont": 2,
+   "r1_cont": 1,
+   "base_n": 3,
+   "r1_n": 3,
+   "comps": [
+    "with",
+    "parser"
+   ],
+   "base_recov": 1,
+   "r1_recov": 1
+  }
+ ],
+ "heldout_top50_affected_tokens": {
+  "n_tokens": 344,
+  "base_cont": 1207,
+  "r1_cont": 307,
+  "base_pieces": 1573,
+  "r1_pieces": 1185,
+  "components": 830,
+  "base_recov": 209,
+  "r1_recov": 595,
+  "cont_reduction": 0.7456503728251864,
+  "pieces_delta_pct": -24.666242848061025,
+  "base_recov_rate": 0.25180722891566265,
+  "r1_recov_rate": 0.7168674698795181
+ },
+ "length_proxy_qualified_name": {
+  "n": 2473,
+  "mean_base": 8.090982612211889,
+  "mean_r1": 7.458552365547917,
+  "delta_pct": -7.816482582837725,
+  "p95_base": 19,
+  "p95_r1": 18,
+  "note": "qualified_name only (proxy); full symbol_embed_text needs the index"
+ },
+ "stop_rule_1_cont_reduction": 0.6818181818181819,
+ "stop_rule_1_pass": true,
+ "stop_rule_2_heldout_exposed": 22,
+ "stop_rule_2_pass": true,
+ "phase0": "PASS"
+}

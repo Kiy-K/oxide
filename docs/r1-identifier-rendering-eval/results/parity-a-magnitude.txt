@@ -1,0 +1,3 @@
+dev n 70 sem@50 overlap mean 49.24 min 47 sem@200 overlap mean 197.6 min 190 fused top10 same set 60 fused@16 overlap mean 15.79 min 14 lexical identical 70
+cb n 21 sem@50 overlap mean 48.81 min 46 sem@200 overlap mean 196.7 min 188 fused top10 same set 18 fused@16 overlap mean 15.81 min 15 lexical identical 21
+parity_heldout_head n 15 sem@50 overlap mean 49.00 min 48 sem@200 overlap mean 197.8 min 193 fused top10 same set 13 fused@16 overlap mean 15.93 min 15 lexical identical 15

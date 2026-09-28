@@ -1,0 +1,374 @@
+{
+ "head-requests@611c6162cbc4": [
+  "requests",
+  "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60"
+ ],
+ "head-flask@d73fa1cdcbd8": [
+  "flask",
+  "d73fa1cdcbd8b1465c151db8924ba58b1dd14e35"
+ ],
+ "head-zod@2bf7b0630d53": [
+  "zod",
+  "2bf7b0630d5378033e90bcee82cb32b0fe04628e"
+ ],
+ "head-pytest@79833c82b924": [
+  "pytest",
+  "79833c82b92409dd74c9236c59b8b18970d026e0"
+ ],
+ "head-pylint@ba5c0c79bc9c": [
+  "pylint",
+  "ba5c0c79bc9c5f752404de96e4cde7e3aa684c82"
+ ],
+ "par-pylint@45b9cd0f71dc": [
+  "pylint",
+  "45b9cd0f71dc783cdc276740adbe4e45c993e7cf"
+ ],
+ "par-pylint@71e2d0f13712": [
+  "pylint",
+  "71e2d0f137122a935ca693ff972e0d9e99212eb7"
+ ],
+ "par-httpx@6c7af967734b": [
+  "httpx",
+  "6c7af967734bafd011164f2a1653abc87905a62b"
+ ],
+ "head-httpx@b5addb64f016": [
+  "httpx",
+  "b5addb64f0161ff6bfe94c124ef76f6a1fba5254"
+ ],
+ "par-httpx@8e36f2bc685d": [
+  "httpx",
+  "8e36f2bc685dfbe43cd7503bc1c422a6ed6e05a5"
+ ],
+ "par-ripgrep@7525479a9576": [
+  "ripgrep",
+  "7525479a9576f1ca4c2d04339d78e47ff5ae9b05"
+ ],
+ "head-ripgrep@3fce3b5bb023": [
+  "ripgrep",
+  "3fce3b5bb0236da2df6d99672afb8a719642eca7"
+ ],
+ "par-ripgrep@dffd776a737d": [
+  "ripgrep",
+  "dffd776a737dc19a48b758dd6a621de113794121"
+ ],
+ "par-ripgrep@9548e86b14f1": [
+  "ripgrep",
+  "9548e86b14f1aa853911239f439e27a20c10fb69"
+ ],
+ "par-ripgrep@9b84e154c8e4": [
+  "ripgrep",
+  "9b84e154c8e404f4c40f6f4e4c674ea02e77324a"
+ ],
+ "par-ripgrep@38d630261ade": [
+  "ripgrep",
+  "38d630261aded3a8e535fe85761e68af35bc462d"
+ ],
+ "par-ripgrep@b610d1cb1506": [
+  "ripgrep",
+  "b610d1cb1506feab33459c5853e4c0d0cb16a6e2"
+ ],
+ "par-ripgrep@8c6595c215d1": [
+  "ripgrep",
+  "8c6595c215d1e24bed5b7b86e2b18f3c871439ef"
+ ],
+ "par-ripgrep@2ebd768d4049": [
+  "ripgrep",
+  "2ebd768d404952b5412997555b84b6ca2e20f8b8"
+ ],
+ "par-ripgrep@7c004f224eb2": [
+  "ripgrep",
+  "7c004f224eb2c7b7a04ac246b456f0e4d6d36c9d"
+ ],
+ "par-ripgrep@8bd595029656": [
+  "ripgrep",
+  "8bd595029656370927f846406ca4ce4ffe0b3e91"
+ ],
+ "par-ripgrep@304a60e8e9d4": [
+  "ripgrep",
+  "304a60e8e9d4b2a42dc3dfb1ba4cef6d7bf92515"
+ ],
+ "par-requests@661970d171d9": [
+  "requests",
+  "661970d171d9c3e12e4c789c4768db647d8c4da0"
+ ],
+ "par-requests@3be097d450ee": [
+  "requests",
+  "3be097d450ee4ca8a2f9c1a3a58eb61ed19936b0"
+ ],
+ "par-requests@5691f596134c": [
+  "requests",
+  "5691f596134c2feb121e595c77a0178921fcce61"
+ ],
+ "par-requests@0b401c76b6e8": [
+  "requests",
+  "0b401c76b6e80a4eecf3c690085b2553f6e261ca"
+ ],
+ "par-requests@b684dcb9bbf3": [
+  "requests",
+  "b684dcb9bbf3aa557d1238e72062c4a29737dd1c"
+ ],
+ "par-requests@e8d2c015eecd": [
+  "requests",
+  "e8d2c015eecda8273612dd4562425e00cd164ba5"
+ ],
+ "par-requests@a044b020dea4": [
+  "requests",
+  "a044b020dea43230585126901684a0f30ec635a8"
+ ],
+ "par-requests@16df2a09173b": [
+  "requests",
+  "16df2a09173b17a82d607c31a6826b7c5dd0fc57"
+ ],
+ "par-requests@cbce031327be": [
+  "requests",
+  "cbce031327be4f1b4b5fd041ff4dcaa8efa2ce53"
+ ],
+ "par-requests@bc7dd0fc4d56": [
+  "requests",
+  "bc7dd0fc4d56e808bcdd85ac2d797b3107c89259"
+ ],
+ "par-requests@4443b1a847b1": [
+  "requests",
+  "4443b1a847b190010c2972a658924b98b5db6360"
+ ],
+ "par-requests@392b01f26e1c": [
+  "requests",
+  "392b01f26e1cca4a2ada1539a6ae1a1b607ec33a"
+ ],
+ "par-flask@f00ad424ee3b": [
+  "flask",
+  "f00ad424ee3b050d382cc5b4aabb18afbb5e4ae7"
+ ],
+ "par-flask@daca74d93a0e": [
+  "flask",
+  "daca74d93a0edc458e618136de7d14803f06bc28"
+ ],
+ "par-flask@85793d6c223d": [
+  "flask",
+  "85793d6c223dd845e8f218403a5ced83041d37e1"
+ ],
+ "par-flask@c56c5ec7c41e": [
+  "flask",
+  "c56c5ec7c41e6ffd02516bf7cb80dd2ba9ba7aa3"
+ ],
+ "par-flask@941efd4a36ed": [
+  "flask",
+  "941efd4a36ed0f27e13758874f95e3aa1d3ee163"
+ ],
+ "par-flask@08c480b3b31e": [
+  "flask",
+  "08c480b3b31e896698bb773069026a61eb53d158"
+ ],
+ "par-flask@98ae71897600": [
+  "flask",
+  "98ae71897600a3162f529b1b30c70b8abdf0961b"
+ ],
+ "par-flask@62c56e08c43f": [
+  "flask",
+  "62c56e08c43f5eb174d15dd050591cfba9aed548"
+ ],
+ "par-flask@0ce27278d234": [
+  "flask",
+  "0ce27278d234c13ce00019540ff8e9891542d1f2"
+ ],
+ "par-flask@bb16048ad74d": [
+  "flask",
+  "bb16048ad74dfd07364226d02ab656f5a5cf6730"
+ ],
+ "par-flask@f958b6500b2a": [
+  "flask",
+  "f958b6500b2aeb8edc578a07f00546becdad4c80"
+ ],
+ "par-flask@adb7dd99c295": [
+  "flask",
+  "adb7dd99c295a28726c8d818fba54c7b3f958ecc"
+ ],
+ "par-pytest@53bc06b9933e": [
+  "pytest",
+  "53bc06b9933eb50b40cd904aa50bcd1b6cf2a49c"
+ ],
+ "par-pytest@92113ceaeaac": [
+  "pytest",
+  "92113ceaeaaca505264137453f3c5c8180a16f81"
+ ],
+ "par-pytest@04405f8653a6": [
+  "pytest",
+  "04405f8653a6d4be5896f18e37ec9941fcd358ce"
+ ],
+ "par-pytest@ef8ac544f738": [
+  "pytest",
+  "ef8ac544f738c51b28f416819f56aa83201eea3a"
+ ],
+ "par-pytest@ff42276a55b9": [
+  "pytest",
+  "ff42276a55b99a315c304db882edf0e69de9fae3"
+ ],
+ "par-pytest@a84e5039c631": [
+  "pytest",
+  "a84e5039c6311735b44dc6518b7e8cfb00d63775"
+ ],
+ "par-zod@0c483c58849f": [
+  "zod",
+  "0c483c58849fdb6445aea4f54b1bac6b57ab3d22"
+ ],
+ "par-zod@dd9c36fa2ddc": [
+  "zod",
+  "dd9c36fa2ddcee79f71d19f9635586c7b65ead86"
+ ],
+ "par-zod@574d480fb443": [
+  "zod",
+  "574d480fb443d3fd396efbcb8230f3dfee4a2cd2"
+ ],
+ "par-zod@c532d766de54": [
+  "zod",
+  "c532d766de54e13aea5d03698980bf7d976fc544"
+ ],
+ "par-zod@f9465d4e6497": [
+  "zod",
+  "f9465d4e6497f92fe85ef7118ea64d7f86c28676"
+ ],
+ "par-zod@22bed6132811": [
+  "zod",
+  "22bed613281143efa3815fe26ab666c6c56586af"
+ ],
+ "par-zod@cafbee4772ef": [
+  "zod",
+  "cafbee4772ef481611fef6f5fb9ed9a1b9597069"
+ ],
+ "par-zod@81ded9918fe3": [
+  "zod",
+  "81ded9918fe39d51b232be72f23ba0d5fb6a837e"
+ ],
+ "par-zod@abfb38977dc2": [
+  "zod",
+  "abfb38977dc28dc9993e3fa6a2ecc2f52a8d0c4c"
+ ],
+ "par-zod@bf9902164b53": [
+  "zod",
+  "bf9902164b5396449540415c2221a24bc9fd0e22"
+ ],
+ "par-httpx@b47d94c90445": [
+  "httpx",
+  "b47d94c90445921dc74f42c8390a474892c3f097"
+ ],
+ "par-httpx@66225539796d": [
+  "httpx",
+  "66225539796d819b5114ead2fd5e4d61865ab708"
+ ],
+ "par-httpx@544038155382": [
+  "httpx",
+  "544038155382473ce87b17ef2238c96e48dee700"
+ ],
+ "par-httpx@d293374b6603": [
+  "httpx",
+  "d293374b6603816420a2bb8e7f4fe5a5f09cbfcc"
+ ],
+ "par-httpx@489fef48ba86": [
+  "httpx",
+  "489fef48ba8619c7604376165c7e8007398e1b5d"
+ ],
+ "par-httpx@2e01aa007532": [
+  "httpx",
+  "2e01aa0075327c5c30632207e8b7a1961dda5303"
+ ],
+ "par-httpx@92e9dfb3997a": [
+  "httpx",
+  "92e9dfb3997ab07353bbe98f9b5a6e69b7701c70"
+ ],
+ "par-httpx@88a81c5d31a4": [
+  "httpx",
+  "88a81c5d31a4a8b4bd0a860dedd3bb12dc09ff86"
+ ],
+ "par-httpx@fa6dac838354": [
+  "httpx",
+  "fa6dac8383541669f42086d4f07c71b0f8d6a279"
+ ],
+ "par-httpx@df5345140e09": [
+  "httpx",
+  "df5345140e09ac6c2de0d9589bcd6f3e31c6aa3f"
+ ],
+ "cb-darkreader@991883df4d59": [
+  "darkreader",
+  "991883df4d5910851130e3dc0e21fcbce604ea7d"
+ ],
+ "cb-darkreader@a787eb511f45": [
+  "darkreader",
+  "a787eb511f45159c8869d30e5a6ba1f91cb67709"
+ ],
+ "cb-pylint@ca80f03a43bc": [
+  "pylint",
+  "ca80f03a43bc39e4cc2c67dc99817b3c9f13b8a6"
+ ],
+ "cb-requests@847735553aed": [
+  "requests",
+  "847735553aeda6e6633f2b32e14ba14ba86887a4"
+ ],
+ "cb-pytest@e6e300e729dd": [
+  "pytest",
+  "e6e300e729dd33956e5448d8be9a0b1540b4e53a"
+ ],
+ "cb-pylint@99589b08de8c": [
+  "pylint",
+  "99589b08de8c5a2c6cc61e13a37420a868c80599"
+ ],
+ "cb-pytest@58e6a09db49f": [
+  "pytest",
+  "58e6a09db49f34886ff13f3b7520dd0bcd7063cd"
+ ],
+ "cb-pylint@1e55ae64624d": [
+  "pylint",
+  "1e55ae64624d28c5fe8b63ad7979880ee2e6ef3f"
+ ],
+ "cb-requests@5f7a3a74aab1": [
+  "requests",
+  "5f7a3a74aab1625c2bb65f643197ee885e3da576"
+ ],
+ "cb-pytest@cb828ebe70b4": [
+  "pytest",
+  "cb828ebe70b4fa35cd5f9a7ee024272237eab351"
+ ],
+ "cb-requests@39d0fdd9096f": [
+  "requests",
+  "39d0fdd9096f7dceccbc8f82e1eda7dd64717a8e"
+ ],
+ "cb-flask@7ee9ceb71e86": [
+  "flask",
+  "7ee9ceb71e868944a46e1ff00b506772a53a4f1d"
+ ],
+ "cb-seaborn@54cab15bdacf": [
+  "seaborn",
+  "54cab15bdacfaa05a88fbc5502a5b322d99f148e"
+ ],
+ "cb-pytest@8aba863a634f": [
+  "pytest",
+  "8aba863a634f40560e25055d179220f0eefabe9a"
+ ],
+ "cb-pylint@40cc2ffd7887": [
+  "pylint",
+  "40cc2ffd7887959157aaf469e09585ec2be7f528"
+ ],
+ "cb-pytest@7f7a36478abe": [
+  "pytest",
+  "7f7a36478abe7dd1fa993b115d22606aa0e35e88"
+ ],
+ "cb-requests@22623bd8c265": [
+  "requests",
+  "22623bd8c265b78b161542663ee980738441c307"
+ ],
+ "cb-requests@091991be0da1": [
+  "requests",
+  "091991be0da19de9108dbe5e3752917fea3d7fdc"
+ ],
+ "cb-pylint@1f8c4d9eb185": [
+  "pylint",
+  "1f8c4d9eb185c16a2c1d881c054f015e1c2eb334"
+ ],
+ "cb-code-server@78658f1cf48a": [
+  "code-server",
+  "78658f1cf48a5e019a82cde937cfa8feed8b986b"
+ ],
+ "cb-code-server@5d3c9edce436": [
+  "code-server",
+  "5d3c9edce436d11d51aa1e586c11eaa49d626dc2"
+ ]
+}
