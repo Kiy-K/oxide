@@ -1,0 +1,932 @@
+diff --git a/examples/taxonomy_dump.rs b/examples/taxonomy_dump.rs
+new file mode 100644
+index 0000000..310cdbd
+--- /dev/null
++++ b/examples/taxonomy_dump.rs
+@@ -0,0 +1,318 @@
++//! Failure-taxonomy research harness (research-only, /tmp worktree).
++//!
++//! Per task: injects the committed arctic-embed-xs-q semantic top-200
++//! (`taxonomy_research::SEM_OVERRIDE`), runs the real current-main search and
++//! `build_context_with` (balanced, 4096) with the allocator trace on, and
++//! dumps every stage: lexical/semantic channels, the full fused list, seeds,
++//! expansion/evidence, the pre-dedup pool, the kept pool, omissions and
++//! delivered spans. Then re-runs the pack under research arms:
++//!   B  oracle fusion order (gold ids first, same score ladder)
++//!   C  oracle expansion (gold reachable from the 16 anchors added)
++//!   T  #25: canonical `symbols::is_test_symbol` for role assignment
++//! and records a research-only literal channel (not routed in production).
++//!
++//! Usage: taxonomy_dump <repo_root> <tasks.jsonl> > out.jsonl
++//! Task line: {id, query, sem:[[key,id,score]..], gold_keys?:[..],
++//!             gold_lines?:{file:[[s,e]..]}, literal_patterns:[..]}
++use oxide::context::{alloc_research, build_context_with, ContextOptions};
++use oxide::embeddings::HashedEmbedder;
++use oxide::retrieval::{
++    taxonomy_research as tr, RetrievalEngine, RetrievalMode, SearchMode, SearchOptions,
++    SymbolSnapshot,
++};
++use oxide::storage::{IndexBackend, SqliteStore};
++use oxide::symbols::{Symbol, SymbolKind};
++use serde_json::{json, Value};
++use std::collections::{BTreeMap, HashMap, HashSet};
++use std::io::{BufRead, Write};
++
++fn key(s: &Symbol) -> String {
++    format!("{}#{}", s.file, s.qualified_name)
++}
++
++fn pack(
++    root: &std::path::Path,
++    engine: &RetrievalEngine<'_>,
++    q: &str,
++) -> anyhow::Result<(Value, usize)> {
++    alloc_research::set(0, true);
++    let p = build_context_with(root, engine, q, &ContextOptions::default())?;
++    let t = alloc_research::take().unwrap_or(Value::Null);
++    alloc_research::set(0, false);
++    Ok((t, p.used_tokens))
++}
++
++fn main() -> anyhow::Result<()> {
++    let args: Vec<String> = std::env::args().collect();
++    let root = std::path::PathBuf::from(&args[1]).canonicalize()?;
++    let tasks = std::io::BufReader::new(std::fs::File::open(&args[2])?);
++    let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
++    let persisted = store.get_meta(oxide::storage::LEXICAL_INDEX_KEY)?;
++    anyhow::ensure!(
++        persisted.as_deref() == Some(oxide::storage::LEXICAL_INDEX_VERSION.to_string().as_str()),
++        "no current persisted lexical index at {}",
++        root.display()
++    );
++    let embedder = HashedEmbedder::default();
++    let snapshot = SymbolSnapshot::load(&store)?;
++    let engine = RetrievalEngine::with_snapshot(&store, &embedder, &snapshot);
++    let graph = engine.relation_graph()?;
++    let full = engine.snapshot_with_relations()?;
++    // file -> symbols (for line -> bearer lookups)
++    let mut by_file: HashMap<&str, Vec<&Symbol>> = HashMap::new();
++    for s in &full.symbols {
++        by_file.entry(s.file.as_str()).or_default().push(s);
++    }
++    let by_key: HashMap<String, &Symbol> = full.symbols.iter().map(|s| (key(s), s)).collect();
++    let indexed_files: HashSet<&str> = by_file.keys().copied().collect();
++    let innermost = |file: &str, line: u32| -> Option<&Symbol> {
++        by_file.get(file).and_then(|v| {
++            v.iter()
++                .filter(|s| s.start_line <= line && line <= s.end_line)
++                .min_by_key(|s| {
++                    (
++                        s.kind == SymbolKind::Module,
++                        s.end_line - s.start_line,
++                        s.id(),
++                    )
++                })
++                .copied()
++        })
++    };
++    let out = std::io::stdout();
++    let mut out = out.lock();
++
++    for line in tasks.lines() {
++        let line = line?;
++        if line.trim().is_empty() {
++            continue;
++        }
++        let task: Value = serde_json::from_str(&line)?;
++        let q = task["query"].as_str().unwrap_or_default().to_string();
++
++        // ---- semantic override from the committed dump ----
++        let mut sem: Vec<(u64, f32)> = Vec::new();
++        let mut sem_missing: Vec<String> = Vec::new();
++        for e in task["sem"].as_array().cloned().unwrap_or_default() {
++            let k = e[0].as_str().unwrap_or_default();
++            let id: u64 = e[1].as_str().unwrap_or("0").parse().unwrap_or(0);
++            let sc = e[2].as_f64().unwrap_or(0.0) as f32;
++            match by_key.get(k) {
++                Some(s) if s.id() == id => sem.push((id, sc)),
++                _ => sem_missing.push(k.to_string()),
++            }
++        }
++        *tr::SEM_OVERRIDE.lock().unwrap() = Some(sem);
++
++        // ---- gold: lines + oracle id set ----
++        let mut gold_lines: BTreeMap<String, Vec<(u32, u32)>> = BTreeMap::new();
++        let mut gold_ids: HashSet<u64> = HashSet::new();
++        let mut gold_keys_missing: Vec<String> = Vec::new();
++        if let Some(gk) = task["gold_keys"].as_array() {
++            for k in gk {
++                let k = k.as_str().unwrap_or_default();
++                match by_key.get(k) {
++                    Some(s) => {
++                        gold_ids.insert(s.id());
++                        gold_lines
++                            .entry(s.file.clone())
++                            .or_default()
++                            .push((s.start_line, s.end_line));
++                    }
++                    None => gold_keys_missing.push(k.to_string()),
++                }
++            }
++        }
++        if let Some(gl) = task["gold_lines"].as_object() {
++            for (f, rs) in gl {
++                for r in rs.as_array().cloned().unwrap_or_default() {
++                    let (a, b) = (
++                        r[0].as_u64().unwrap_or(1) as u32,
++                        r[1].as_u64().unwrap_or(1) as u32,
++                    );
++                    gold_lines.entry(f.clone()).or_default().push((a, b));
++                    if task["gold_keys"].is_null() {
++                        for l in a..=b {
++                            if let Some(s) = innermost(f, l) {
++                                gold_ids.insert(s.id());
++                            }
++                        }
++                    }
++                }
++            }
++        }
++        // every symbol overlapping a gold line ("bearer"), with its windows
++        let mut bearers: Vec<Value> = Vec::new();
++        let mut gold_files_unindexed: Vec<String> = Vec::new();
++        for (f, rs) in &gold_lines {
++            if !indexed_files.contains(f.as_str()) {
++                gold_files_unindexed.push(f.clone());
++                continue;
++            }
++            for s in by_file.get(f.as_str()).cloned().unwrap_or_default() {
++                if rs
++                    .iter()
++                    .any(|(a, b)| s.start_line <= *b && *a <= s.end_line)
++                {
++                    let mut c = s.clone();
++                    engine.complete(std::iter::once(&mut c))?;
++                    let (lo, hi, t, tok) = alloc_research::snippet_span(&root, &c, &q, 350);
++                    let (flo, fhi, _, ftok) =
++                        alloc_research::snippet_span(&root, &c, &q, usize::MAX / 8);
++                    bearers.push(json!({"key": key(s), "kind": format!("{:?}", s.kind),
++                        "span": [s.start_line, s.end_line], "cap_span": [lo, hi],
++                        "truncated": t, "cap_tok": tok, "full_span": [flo, fhi], "full_tok": ftok,
++                        "oracle_gold": gold_ids.contains(&s.id()),
++                        "test_local": alloc_research::local_is_test(&c),
++                        "test_canon": alloc_research::canon_is_test(&c)}));
++                }
++            }
++        }
++
++        // ---- channels + full fused list (baseline) ----
++        *tr::CHANNELS.lock().unwrap() = Some(None);
++        let fused = engine.search(
++            &q,
++            &SearchOptions {
++                limit: 100_000,
++                mode: SearchMode::Hybrid,
++                expand: false,
++                retrieval_mode: RetrievalMode::Balanced,
++            },
++        )?;
++        let (lex, semr) = tr::CHANNELS
++            .lock()
++            .unwrap()
++            .take()
++            .flatten()
++            .unwrap_or_default();
++        let name = |id: u64| -> String { snapshot.get(id).map(key).unwrap_or_default() };
++        let lex: Vec<Value> = lex.iter().map(|(i, s)| json!([name(*i), s])).collect();
++        let semr: Vec<Value> = semr.iter().map(|(i, s)| json!([name(*i), s])).collect();
++        let fused: Vec<Value> = fused
++            .iter()
++            .map(|h| json!([key(&h.symbol), h.score]))
++            .collect();
++
++        // ---- baseline pack ----
++        let (base, used) = pack(&root, &engine, &q)?;
++
++        // ---- reachability of gold from the 16 anchors ----
++        let seeds = engine.search(
++            &q,
++            &SearchOptions {
++                limit: 16,
++                mode: SearchMode::Hybrid,
++                expand: false,
++                retrieval_mode: RetrievalMode::Balanced,
++            },
++        )?;
++        let mut reach: Vec<Value> = Vec::new();
++        for (rank, seed) in seeds.iter().enumerate() {
++            for (i, (rel, n)) in graph.neighbors(&seed.symbol).into_iter().enumerate() {
++                if gold_ids.contains(&n.id()) {
++                    reach.push(json!({"key": key(n), "rel": rel, "seed_rank": rank, "pos": i}));
++                }
++            }
++            for (i, c) in graph.callers_of(&seed.symbol.name).into_iter().enumerate() {
++                if gold_ids.contains(&c.id()) && c.id() != seed.symbol.id() {
++                    reach
++                        .push(json!({"key": key(c), "rel": "caller", "seed_rank": rank, "pos": i}));
++                }
++            }
++        }
++
++        // ---- research arms ----
++        *tr::ORACLE_B.lock().unwrap() = Some(gold_ids.clone());
++        let (arm_b, _) = pack(&root, &engine, &q)?;
++        *tr::ORACLE_B.lock().unwrap() = None;
++        // bounded Oracle B variants: promote only gold within fused top-N, or
++        // gold some single channel already ranked in its top-16
++        let fr: HashMap<String, usize> = fused
++            .iter()
++            .enumerate()
++            .map(|(i, v)| (v[0].as_str().unwrap_or_default().to_string(), i + 1))
++            .collect();
++        let chan16: HashSet<String> = lex
++            .iter()
++            .take(16)
++            .chain(semr.iter().take(16))
++            .map(|v| v[0].as_str().unwrap_or_default().to_string())
++            .collect();
++        let mut arm_bn = serde_json::Map::new();
++        for (tag, n) in [("b16", 16usize), ("b20", 20), ("b50", 50), ("b100", 100), ("bchan16", 0)] {
++            let sub: HashSet<u64> = gold_ids
++                .iter()
++                .copied()
++                .filter(|id| {
++                    let k = name(*id);
++                    if n == 0 {
++                        chan16.contains(&k)
++                    } else {
++                        fr.get(&k).is_some_and(|r| *r <= n)
++                    }
++                })
++                .collect();
++            *tr::ORACLE_B.lock().unwrap() = Some(sub);
++            let (t, _) = pack(&root, &engine, &q)?;
++            arm_bn.insert(tag.into(), t);
++        }
++        *tr::ORACLE_B.lock().unwrap() = None;
++        *alloc_research::ORACLE_C.lock().unwrap() = Some(gold_ids.clone());
++        alloc_research::ORACLE_C_PRIMARY.store(true, std::sync::atomic::Ordering::SeqCst);
++        let (arm_cp, _) = pack(&root, &engine, &q)?;
++        alloc_research::ORACLE_C_TOP.store(true, std::sync::atomic::Ordering::SeqCst);
++        let (arm_ctop, _) = pack(&root, &engine, &q)?;
++        alloc_research::ORACLE_C_TOP.store(false, std::sync::atomic::Ordering::SeqCst);
++        alloc_research::ORACLE_C_PRIMARY.store(false, std::sync::atomic::Ordering::SeqCst);
++        let (arm_c, _) = pack(&root, &engine, &q)?;
++        *alloc_research::ORACLE_C.lock().unwrap() = None;
++        alloc_research::CANON_TEST.store(true, std::sync::atomic::Ordering::SeqCst);
++        let (arm_t, _) = pack(&root, &engine, &q)?;
++        alloc_research::CANON_TEST.store(false, std::sync::atomic::Ordering::SeqCst);
++        alloc_research::ROOT_TESTS.store(true, std::sync::atomic::Ordering::SeqCst);
++        let (arm_rt, _) = pack(&root, &engine, &q)?;
++        alloc_research::ROOT_TESTS.store(false, std::sync::atomic::Ordering::SeqCst);
++        *tr::SEM_OVERRIDE.lock().unwrap() = None;
++
++        // ---- research-only literal channel ----
++        let mut lit: Vec<Value> = Vec::new();
++        let mut lit_seen: HashSet<u64> = HashSet::new();
++        for pat in task["literal_patterns"]
++            .as_array()
++            .cloned()
++            .unwrap_or_default()
++        {
++            let pat = pat.as_str().unwrap_or_default();
++            if pat.len() < 3 {
++                continue;
++            }
++            let Ok(res) = oxide::literal::search(&root, pat, 200) else {
++                continue;
++            };
++            for h in res.hits {
++                if let Some(s) = innermost(&h.file, h.line) {
++                    if lit_seen.insert(s.id()) {
++                        lit.push(json!([key(s), pat, h.line]));
++                    }
++                }
++            }
++        }
++
++        let rec = json!({
++            "id": task["id"], "sem_missing": sem_missing, "gold_keys_missing": gold_keys_missing,
++            "gold_files_unindexed": gold_files_unindexed,
++            "gold_lines": gold_lines, "bearers": bearers,
++            "lexical": lex, "semantic": semr, "fused": fused, "literal": lit,
++            "reach": reach, "used": used,
++            "base": base, "arm_b": arm_b, "arm_c": arm_c, "arm_t": arm_t,
++            "arm_bn": arm_bn, "arm_cp": arm_cp, "arm_rt": arm_rt, "arm_ctop": arm_ctop,
++        });
++        writeln!(out, "{}", serde_json::to_string(&rec)?)?;
++    }
++    eprintln!(
++        "{}",
++        json!({"root": root.display().to_string(), "symbols": store.symbol_count()?})
++    );
++    Ok(())
++}
+diff --git a/src/context.rs b/src/context.rs
+index 770940b..b2e8a1c 100644
+--- a/src/context.rs
++++ b/src/context.rs
+@@ -52,6 +52,73 @@ fn resolve_context_max_primaries() -> usize {
+         .unwrap_or(CONTEXT_MAX_PRIMARIES)
+ }
+ 
++/// RESEARCH ONLY (allocator-utilization track; lives in a /tmp worktree and
++/// is never committed). Default state is `Baseline` with tracing off, which
++/// leaves `build_context_with` byte-identical to production.
++pub mod alloc_research {
++    use std::sync::atomic::{AtomicBool, AtomicU8, Ordering};
++    use std::sync::Mutex;
++
++    /// 0 baseline, 1 top-up, 2 diversity-aware top-up, 3 widen truncated
++    /// snippets, 4 relax primary cap only (per-file cap kept), 5 per-file
++    /// top-up (per-file-cap drops only, no tests, <= 2x per-file cap),
++    /// 6 per-file cap 2x in the main pass (in-place reallocation), 7 = 5 but
++    /// honoring the primary/test caps counted over the whole pack.
++    pub static CHALLENGER: AtomicU8 = AtomicU8::new(0);
++    pub static TRACE_ON: AtomicBool = AtomicBool::new(false);
++    pub static TRACE: Mutex<Option<serde_json::Value>> = Mutex::new(None);
++
++    pub fn set(challenger: u8, trace: bool) {
++        CHALLENGER.store(challenger, Ordering::SeqCst);
++        TRACE_ON.store(trace, Ordering::SeqCst);
++    }
++    pub fn challenger() -> u8 {
++        CHALLENGER.load(Ordering::SeqCst)
++    }
++    pub fn tracing() -> bool {
++        TRACE_ON.load(Ordering::SeqCst)
++    }
++    pub fn take() -> Option<serde_json::Value> {
++        TRACE.lock().unwrap().take()
++    }
++
++    /// Taxonomy track: Oracle C gold ids (reachable-gold expansion from the
++    /// current 16 anchors), and the #25 arm (canonical test predicate for
++    /// role assignment). Both off by default.
++    pub static ORACLE_C: Mutex<Option<std::collections::HashSet<u64>>> = Mutex::new(None);
++    pub static CANON_TEST: AtomicBool = AtomicBool::new(false);
++    /// Diagnostic arm: also treat symbols under a repo-root tests/ test/ testing/ dir as tests.
++    pub static ROOT_TESTS: AtomicBool = AtomicBool::new(false);
++    /// Oracle C variant: admitted gold scored at the top seed's score (competes for primary slots).
++    pub static ORACLE_C_TOP: AtomicBool = AtomicBool::new(false);
++    /// Oracle C variant: admitted gold gets the Primary role (honors the primary cap).
++    pub static ORACLE_C_PRIMARY: AtomicBool = AtomicBool::new(false);
++
++    /// Production snippet window for any symbol: (lo, hi, truncated, est
++    /// tokens incl. overhead) at `cap` tokens.
++    pub fn snippet_span(
++        root: &std::path::Path,
++        s: &crate::symbols::Symbol,
++        task: &str,
++        cap: usize,
++    ) -> (u32, u32, bool, usize) {
++        let terms = super::query_terms(task);
++        let (snip, lo, hi, t) = super::render_snippet_span(root, s, &terms, cap);
++        (lo, hi, t, super::estimate_tokens(&snip) + super::CONTEXT_ITEM_OVERHEAD_TOKENS)
++    }
++    pub fn local_is_test(s: &crate::symbols::Symbol) -> bool {
++        super::is_test_symbol_local(s)
++    }
++    pub fn canon_is_test(s: &crate::symbols::Symbol) -> bool {
++        let mut b = (String::new(), String::new());
++        crate::symbols::is_test_symbol(&s.file, &s.name, s.kind, &mut b)
++    }
++}
++
++fn research_key(s: &Symbol) -> String {
++    format!("{}#{}", s.file, s.qualified_name)
++}
++
+ pub const CHARS_PER_TOKEN: f32 = CONTEXT_CHARS_PER_TOKEN;
+ 
+ #[derive(Debug, Serialize)]
+@@ -165,6 +232,20 @@ pub fn build_context_with(
+         retrieval_mode: opts.retrieval_mode,
+     };
+     let seeds = engine.search(query, &seed_opts)?;
++    let tracing = alloc_research::tracing();
++    let mut tr = serde_json::Map::new();
++    if tracing {
++        tr.insert(
++            "seeds".into(),
++            serde_json::json!(seeds
++                .iter()
++                .map(
++                    |h| serde_json::json!({"key": research_key(&h.symbol), "score": h.score,
++                    "test": is_test_symbol(&h.symbol)})
++                )
++                .collect::<Vec<_>>()),
++        );
++    }
+ 
+     let mut candidates: HashMap<u64, Candidate> = HashMap::new();
+     let mut order_note = |c: Candidate| {
+@@ -231,6 +312,14 @@ pub fn build_context_with(
+                     "test" => Role::Test,
+                     _ => Role::Dependency,
+                 };
++                if tracing {
++                    tr.entry("expansion_added")
++                        .or_insert_with(|| serde_json::json!([]))
++                        .as_array_mut()
++                        .unwrap()
++                        .push(serde_json::json!({"key": research_key(n), "rel": rel,
++                            "via": research_key(&seed.symbol)}));
++                }
+                 order_note(Candidate {
+                     symbol: n.clone(),
+                     score: seed.score * 0.4,
+@@ -239,7 +328,48 @@ pub fn build_context_with(
+                 });
+             }
+         }
++        if tracing {
++            // Neighbors of the top-5 seeds that the per-seed/total expansion
++            // caps kept out of the pool (not already a seed or admitted).
++            let mut lost: Vec<serde_json::Value> = Vec::new();
++            let mut lost_ids: HashSet<u64> = HashSet::new();
++            for seed in seeds.iter().take(5) {
++                for (rel, n) in graph.neighbors(&seed.symbol) {
++                    if !seen_seeds.contains(&n.id()) && lost_ids.insert(n.id()) {
++                        lost.push(serde_json::json!({"key": research_key(n), "rel": rel,
++                            "via": research_key(&seed.symbol)}));
++                    }
++                }
++            }
++            tr.insert("expansion_lost".into(), serde_json::json!(lost));
++        }
+ 
++        if let Some(gold) = alloc_research::ORACLE_C.lock().unwrap().clone() {
++            for seed in seeds.iter() {
++                let mut reach: Vec<(String, &Symbol)> = graph.neighbors(&seed.symbol);
++                for c in graph.callers_of(&seed.symbol.name) {
++                    reach.push(("caller".into(), c));
++                }
++                for (rel, n) in reach {
++                    if !gold.contains(&n.id()) || seen_seeds.contains(&n.id()) {
++                        continue;
++                    }
++                    seen_seeds.insert(n.id());
++                    let role = match rel.as_str() {
++                        _ if alloc_research::ORACLE_C_PRIMARY.load(std::sync::atomic::Ordering::SeqCst) => Role::Primary,
++                        "test" => Role::Test,
++                        _ => Role::Dependency,
++                    };
++                    let top = alloc_research::ORACLE_C_TOP.load(std::sync::atomic::Ordering::SeqCst);
++                    order_note(Candidate {
++                        symbol: n.clone(),
++                        score: if top { seeds[0].score } else { seed.score * 0.4 },
++                        reasons: vec![format!("oracle-c:{rel}←{}", seed.symbol.qualified_name)],
++                        role,
++                    });
++                }
++            }
++        }
+         let (structural_max_seeds, structural_max_files) =
+             opts.retrieval_mode.structural_budget().unwrap_or((0, 0));
+         let output = crate::evidence::EvidenceCoordinator::collect(
+@@ -255,6 +385,36 @@ pub fn build_context_with(
+                 git: opts.git,
+             },
+         );
++        if tracing {
++            tr.insert(
++                "evidence_added".into(),
++                serde_json::json!(output
++                    .candidates
++                    .iter()
++                    .map(
++                        |c| serde_json::json!({"key": research_key(&c.symbol), "score": c.score,
++                        "reasons": c.reasons})
++                    )
++                    .collect::<Vec<_>>()),
++            );
++            // ast-grep callers the per-seed cap (2) kept out, same scope rule.
++            let scope =
++                crate::evidence::scope::scope_files_from_seeds(&seeds, structural_max_files);
++            let mut lost: Vec<serde_json::Value> = Vec::new();
++            for seed in seeds.iter().take(structural_max_seeds) {
++                for c in graph
++                    .callers_of(&seed.symbol.name)
++                    .into_iter()
++                    .filter(|c| scope.contains(&c.file))
++                    .filter(|c| c.id() != seed.symbol.id())
++                    .skip(2)
++                {
++                    lost.push(serde_json::json!({"key": research_key(c),
++                        "via": research_key(&seed.symbol)}));
++                }
++            }
++            tr.insert("structural_lost".into(), serde_json::json!(lost));
++        }
+         for c in output.candidates {
+             let role = if is_test_symbol(&c.symbol) {
+                 Role::Test
+@@ -280,6 +440,31 @@ pub fn build_context_with(
+     // every one (one bounded read) before anything can serialize or rank
+     // them — including `OXIDE_DEBUG_DUMP_KEPT` below.
+     engine.complete(candidates.values_mut().map(|c| &mut c.symbol))?;
++    if tracing {
++        let terms = query_terms(task);
++        let mut all: Vec<&Candidate> = candidates.values().collect();
++        all.sort_by(|a, b| {
++            b.score
++                .partial_cmp(&a.score)
++                .unwrap_or(std::cmp::Ordering::Equal)
++                .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
++        });
++        let pre: Vec<serde_json::Value> = all
++            .iter()
++            .map(|c| {
++                let (snip, lo, hi, trunc) =
++                    render_snippet_span(root, &c.symbol, &terms, CONTEXT_PER_ITEM_TOKEN_CAP);
++                serde_json::json!({"key": research_key(&c.symbol), "role": c.role,
++                    "score": c.score, "reasons": c.reasons, "kind": format!("{:?}", c.symbol.kind),
++                    "span": [c.symbol.start_line, c.symbol.end_line],
++                    "cap_tok": estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS,
++                    "cap_span": [lo, hi], "truncated": trunc,
++                    "test_local": is_test_symbol_local(&c.symbol),
++                    "test_canon": alloc_research::canon_is_test(&c.symbol)})
++            })
++            .collect();
++        tr.insert("pre_dedup".into(), serde_json::json!(pre));
++    }
+ 
+     // ---- dedup / subsumption -------------------------------------------
+     // Highest score wins first so "kept" items always dominate dropped ones.
+@@ -363,6 +548,25 @@ pub fn build_context_with(
+             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+     });
+ 
++    if tracing {
++        let terms = query_terms(task);
++        let pool: Vec<serde_json::Value> = kept
++            .iter()
++            .map(|c| {
++                let (snip, lo, hi, trunc) =
++                    render_snippet_span(root, &c.symbol, &terms, CONTEXT_PER_ITEM_TOKEN_CAP);
++                let full = render_snippet_span(root, &c.symbol, &terms, usize::MAX / 8).0;
++                serde_json::json!({"key": research_key(&c.symbol), "role": c.role,
++                    "score": c.score, "reasons": c.reasons,
++                    "span": [c.symbol.start_line, c.symbol.end_line],
++                    "cap_tok": estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS,
++                    "cap_span": [lo, hi], "truncated": trunc,
++                    "full_tok": estimate_tokens(&full) + CONTEXT_ITEM_OVERHEAD_TOKENS})
++            })
++            .collect();
++        tr.insert("pool".into(), serde_json::json!(pool));
++    }
++
+     // ---- relevance floor ------------------------------------------------
+     // Weak tail candidates dilute the pack; drop them unless nothing survives.
+     if let Some(top_score) = seeds.first().map(|h| h.score) {
+@@ -389,9 +593,15 @@ pub fn build_context_with(
+     let mut primaries = 0usize;
+     let mut tests = 0usize;
+     let max_primaries = resolve_context_max_primaries();
++    let mut spans: HashMap<u64, (u32, u32, bool)> = HashMap::new();
+     for c in &kept {
+         let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
+-        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= CONTEXT_MAX_ITEMS_PER_FILE
++        let file_cap = if alloc_research::challenger() == 6 {
++            2 * CONTEXT_MAX_ITEMS_PER_FILE
++        } else {
++            CONTEXT_MAX_ITEMS_PER_FILE
++        };
++        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= file_cap
+             && top_id != Some(c.symbol.id())
+         {
+             dropped.push(Omitted {
+@@ -430,9 +640,10 @@ pub fn build_context_with(
+         // never displaces a large primary.
+         let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
+         let (snippet, est) = loop {
+-            let snip = render_snippet(root, &c.symbol, &terms, cap);
++            let (snip, lo, hi, trunc) = render_snippet_span(root, &c.symbol, &terms, cap);
+             let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
+             if used + e <= opts.budget_tokens || cap == 0 {
++                spans.insert(c.symbol.id(), (lo, hi, trunc));
+                 break (snip, e);
+             }
+             cap /= 2;
+@@ -461,6 +672,109 @@ pub fn build_context_with(
+             est_tokens: est,
+         });
+     }
++    // ---- RESEARCH challengers (default 0 = baseline: no-op) -------------
++    let ch = alloc_research::challenger();
++    let mut extra: Vec<ContextItem> = Vec::new();
++    if matches!(ch, 1 | 2 | 4 | 5 | 7) {
++        // Safe top-up: only candidates that passed dedup/subsumption and the
++        // relevance floor and were dropped by a count cap, in kept order.
++        let why_of: HashMap<&str, &str> = dropped
++            .iter()
++            .map(|o| (o.id.as_str(), o.why.as_str()))
++            .collect();
++        for c in &kept {
++            let cid = research_key(&c.symbol);
++            let Some(&why) = why_of.get(cid.as_str()) else {
++                continue;
++            };
++            let eligible = match ch {
++                1 => matches!(
++                    why,
++                    "per-file diversity cap" | "beyond primary cap" | "beyond test cap"
++                ),
++                2 => matches!(why, "beyond primary cap" | "beyond test cap"),
++                4 => why == "beyond primary cap",
++                _ => why == "per-file diversity cap" && (ch == 7 || c.role != Role::Test),
++            };
++            if !eligible {
++                continue;
++            }
++            if ch == 7
++                && ((c.role == Role::Primary && primaries >= max_primaries)
++                    || (c.role == Role::Test && tests >= CONTEXT_MAX_TESTS))
++            {
++                continue;
++            }
++            let file_cap = if matches!(ch, 5 | 7) {
++                2 * CONTEXT_MAX_ITEMS_PER_FILE
++            } else {
++                CONTEXT_MAX_ITEMS_PER_FILE
++            };
++            if ch != 1 && per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= file_cap {
++                continue;
++            }
++            let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
++            let (snippet, est) = loop {
++                let (snip, lo, hi, trunc) = render_snippet_span(root, &c.symbol, &terms, cap);
++                let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
++                if used + e <= opts.budget_tokens || cap == 0 {
++                    spans.insert(c.symbol.id(), (lo, hi, trunc));
++                    break (snip, e);
++                }
++                cap /= 2;
++            };
++            if used + est > opts.budget_tokens || snippet.is_empty() {
++                continue;
++            }
++            used += est;
++            *per_file.entry(c.symbol.file.as_str()).or_insert(0) += 1;
++            match c.role {
++                Role::Primary => primaries += 1,
++                Role::Test => tests += 1,
++                Role::Dependency => {}
++            }
++            let mut reasons = dedup_reasons(&c.reasons);
++            reasons.push(format!("alloc-topup({why})"));
++            extra.push(ContextItem {
++                symbol: c.symbol.clone(),
++                role: c.role,
++                score: c.score,
++                reasons,
++                snippet,
++                est_tokens: est,
++            });
++        }
++    } else if ch == 3 {
++        // Widen: spend leftover budget growing already-packed truncated
++        // snippets (same query-centered window, larger cap), in fill order.
++        for it in items.iter_mut() {
++            if !spans.get(&it.symbol.id()).is_some_and(|s| s.2) {
++                continue;
++            }
++            let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP * 2;
++            let mut best: Option<(String, usize, (u32, u32, bool))> = None;
++            loop {
++                let (snip, lo, hi, trunc) = render_snippet_span(root, &it.symbol, &terms, cap);
++                let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
++                if used - it.est_tokens + e > opts.budget_tokens {
++                    break;
++                }
++                best = Some((snip, e, (lo, hi, trunc)));
++                if !trunc {
++                    break;
++                }
++                cap *= 2;
++            }
++            if let Some((snip, e, span)) = best {
++                used = used - it.est_tokens + e;
++                it.snippet = snip;
++                it.est_tokens = e;
++                it.reasons.push("alloc-widened".into());
++                spans.insert(it.symbol.id(), span);
++            }
++        }
++    }
++
+     // Stable output: keep the ranked order we filled in.
+     items.sort_by(|a, b| {
+         rank(a.role)
+@@ -472,6 +786,36 @@ pub fn build_context_with(
+             )
+             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+     });
++    // Top-up items are appended after every baseline item, so the baseline
++    // pack is always an unchanged prefix; admitted items leave `omitted`.
++    if !extra.is_empty() {
++        let admitted: HashSet<String> = extra.iter().map(|i| research_key(&i.symbol)).collect();
++        dropped.retain(|o| !admitted.contains(&o.id));
++    }
++    items.extend(extra);
++    if tracing {
++        tr.insert(
++            "packed".into(),
++            serde_json::json!(items
++                .iter()
++                .map(|i| {
++                    let (lo, hi, trunc) = spans.get(&i.symbol.id()).copied().unwrap_or((0, 0, false));
++                    serde_json::json!({"key": research_key(&i.symbol), "role": i.role,
++                        "est": i.est_tokens, "span": [lo, hi], "truncated": trunc,
++                        "added": i.reasons.iter().any(|r| r.starts_with("alloc-"))})
++                })
++                .collect::<Vec<_>>()),
++        );
++        tr.insert("used".into(), serde_json::json!(used));
++        tr.insert(
++            "omitted".into(),
++            serde_json::json!(dropped
++                .iter()
++                .map(|o| serde_json::json!([o.id, o.why]))
++                .collect::<Vec<_>>()),
++        );
++        *alloc_research::TRACE.lock().unwrap() = Some(serde_json::Value::Object(tr));
++    }
+ 
+     Ok(ContextPack {
+         task: task.to_string(),
+@@ -518,20 +862,31 @@ fn split_below_floor(kept: Vec<Candidate>, floor: f32) -> (Vec<Candidate>, Vec<C
+ /// otherwise a window centered on the lines matching the most query terms
+ /// (head of the symbol as fallback when nothing matches).
+ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize) -> String {
++    render_snippet_span(root, s, terms, max_tokens).0
++}
++
++/// RESEARCH: `render_snippet` plus the 1-based inclusive line span it
++/// delivered (`(0, 0)` when empty) and whether the body was truncated.
++fn render_snippet_span(
++    root: &Path,
++    s: &Symbol,
++    terms: &[String],
++    max_tokens: usize,
++) -> (String, u32, u32, bool) {
+     let Ok(src) = std::fs::read_to_string(root.join(&s.file)) else {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     };
+     let lines: Vec<&str> = src.lines().collect();
+     let lo = s.start_line.saturating_sub(1) as usize;
+     let hi = (s.end_line as usize).min(lines.len());
+     if hi <= lo {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     }
+     let body = &lines[lo..hi];
+     let budget = (max_tokens as f32 * CHARS_PER_TOKEN) as usize;
+     let total: usize = body.iter().map(|l| l.len() + 1).sum();
+     if total <= budget {
+-        return body.join("\n");
++        return (body.join("\n"), lo as u32 + 1, hi as u32, false);
+     }
+     let hits = |line: &str| -> usize {
+         let low = line.to_lowercase();
+@@ -542,14 +897,17 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+     if best == 0 || budget == 0 {
+         // No query-term anchor: keep the head of the symbol.
+         let mut out = String::new();
++        let mut n = 0u32;
+         for l in body {
+             if out.len() + l.len() + 1 > budget {
+                 break;
+             }
+             out.push_str(l);
+             out.push('\n');
++            n += 1;
+         }
+-        return out.trim_end_matches('\n').to_string();
++        let span = if n == 0 { (0, 0) } else { (lo as u32 + 1, lo as u32 + n) };
++        return (out.trim_end_matches('\n').to_string(), span.0, span.1, true);
+     }
+     // Window around the first densest-match line, growing toward the shorter
+     // neighbor line until the character budget is spent.
+@@ -578,10 +936,28 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+         }
+         used += cost;
+     }
+-    body[lo_i..=hi_i].join("\n")
++    (
++        body[lo_i..=hi_i].join("\n"),
++        (lo + lo_i) as u32 + 1,
++        (lo + hi_i) as u32 + 1,
++        true,
++    )
+ }
+ 
+ fn is_test_symbol(s: &Symbol) -> bool {
++    if alloc_research::ROOT_TESTS.load(std::sync::atomic::Ordering::SeqCst) {
++        let f = s.file.to_lowercase();
++        if f.starts_with("tests/") || f.starts_with("test/") || f.starts_with("testing/") {
++            return true;
++        }
++    }
++    if alloc_research::CANON_TEST.load(std::sync::atomic::Ordering::SeqCst) {
++        return alloc_research::canon_is_test(s);
++    }
++    is_test_symbol_local(s)
++}
++
++fn is_test_symbol_local(s: &Symbol) -> bool {
+     let f = s.file.to_lowercase();
+     let n = s.name.to_lowercase();
+     f.starts_with("test_")
+diff --git a/src/retrieval/engine.rs b/src/retrieval/engine.rs
+index a0aee71..485ab18 100644
+--- a/src/retrieval/engine.rs
++++ b/src/retrieval/engine.rs
+@@ -36,6 +36,24 @@ fn resolve_term_coverage_alpha() -> f32 {
+ /// bounded top-K of each side is fused, and only those candidates are
+ /// hydrated into `Symbol`s. Nothing here loads the whole corpus unless the
+ /// request asks for structural expansion (see [`SymbolSnapshot`]).
++
++/// RESEARCH ONLY (failure-taxonomy track; /tmp worktree, never committed).
++/// Every hook is `None`/off by default, which leaves `search` byte-identical
++/// to production.
++pub mod taxonomy_research {
++    use std::collections::HashSet;
++    use std::sync::Mutex;
++    /// Replaces the semantic channel's top-200 (ids, scores) for the next
++    /// searches: the committed dumps' exact arctic-embed-xs-q lists.
++    pub static SEM_OVERRIDE: Mutex<Option<Vec<(u64, f32)>>> = Mutex::new(None);
++    /// When `Some`, the next search records (lexical top-200, semantic top-200).
++    pub static CHANNELS: Mutex<Option<Option<(Vec<(u64, f32)>, Vec<(u64, f32)>)>>> =
++        Mutex::new(None);
++    /// Oracle B: ids moved ahead of all others in the fused order (relative
++    /// order kept), fused scores reassigned from the original score ladder.
++    pub static ORACLE_B: Mutex<Option<HashSet<u64>>> = Mutex::new(None);
++}
++
+ pub struct RetrievalEngine<'a> {
+     store: &'a dyn IndexBackend,
+     embedder: &'a dyn EmbeddingProvider,
+@@ -331,8 +349,12 @@ impl<'a> RetrievalEngine<'a> {
+             (lex, qv)
+         });
+         let (lex_scores, lex_total_idf) = lex_result;
++        let sem_override = taxonomy_research::SEM_OVERRIDE.lock().unwrap().clone();
+         let vec_ranked: Vec<(u64, f32)> = if want_semantic {
+-            self.semantic_top_k(&qv, FUSION_CANDIDATE_LIMIT)
++            match sem_override {
++                Some(v) => v,
++                None => self.semantic_top_k(&qv, FUSION_CANDIDATE_LIMIT),
++            }
+         } else {
+             Vec::new()
+         };
+@@ -341,6 +363,12 @@ impl<'a> RetrievalEngine<'a> {
+             FUSION_CANDIDATE_LIMIT,
+         );
+ 
++        {
++            let mut ch = taxonomy_research::CHANNELS.lock().unwrap();
++            if ch.is_some() {
++                *ch = Some(Some((lex_ranked.clone(), vec_ranked.clone())));
++            }
++        }
+         // ---- fuse ----
+         let mut rrf: HashMap<u64, f32> = HashMap::new();
+         let mut reasons: HashMap<u64, Vec<String>> = HashMap::new();
+@@ -440,6 +468,20 @@ impl<'a> RetrievalEngine<'a> {
+             .map(|(id, score)| (*id, *score))
+             .collect();
+         direct.sort_by(cmp_score_id);
++        if let Some(gold) = taxonomy_research::ORACLE_B.lock().unwrap().as_ref() {
++            let ladder: Vec<f32> = direct.iter().map(|(_, s)| *s).collect();
++            let (mut g, o): (Vec<(u64, f32)>, Vec<(u64, f32)>) =
++                direct.iter().partition(|(id, _)| gold.contains(id));
++            g.extend(o);
++            direct = g
++                .into_iter()
++                .zip(ladder)
++                .map(|((id, _), s)| (id, s))
++                .collect();
++            for (id, s) in &direct {
++                rrf.insert(*id, *s);
++            }
++        }
+ 
+         // ---- structural expansion ----
+         // The only stage that needs the whole corpus (see `SymbolSnapshot`),
+diff --git a/src/retrieval/mod.rs b/src/retrieval/mod.rs
+index b86662b..eeb6f54 100644
+--- a/src/retrieval/mod.rs
++++ b/src/retrieval/mod.rs
+@@ -21,7 +21,7 @@ mod snippet;
+ mod test_support;
+ mod top_k;
+ 
+-pub use engine::RetrievalEngine;
++pub use engine::{taxonomy_research, RetrievalEngine};
+ pub use options::{RetrievalMode, SearchHit, SearchMode, SearchOptions};
+ pub use snapshot::{complete_symbols, lexical_persisted, SymbolSnapshot};
+ pub use snippet::read_snippet;
