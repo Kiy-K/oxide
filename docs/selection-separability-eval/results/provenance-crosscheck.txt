@@ -1,0 +1,18 @@
+rows 226 Counter({'dev': 70, 'masked': 70, 'heldout': 65, 'cb': 21})
+('fused', 'cb', True) 194
+('fused', 'dev', True) 60
+('fused', 'heldout', True) 120
+('fused', 'masked', True) 89
+('lex', 'cb', True) 194
+('lex', 'dev', True) 60
+('lex', 'heldout', True) 120
+('lex', 'masked', True) 89
+('sem', 'cb', True) 194
+('sem', 'dev', True) 60
+('sem', 'heldout', True) 120
+('sem', 'masked', True) 89
+('task', 'cb') 21
+('task', 'dev') 70
+('task', 'heldout') 65
+('task', 'masked') 70
+total checks 1389 mismatches 0

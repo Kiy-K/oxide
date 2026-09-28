@@ -1,0 +1,23 @@
+# issue #32 reproduction run, 2026-09-28T05:16:06Z, repo HEAD 4091adf2ad0cab1d4b42a96a92fa414f2da73744
+## python 3.11.15 numpy 2.4.6 scipy 1.17.1
+provenance_crosscheck.py: output identical (total checks 1389 mismatches 0)
+rows 25145 cb gold NOT available
+rows content sha256 new cf00a88c8ff1c1cf original cf00a88c8ff1c1cf
+eligible {'dev': 60, 'masked': 44} best_single rrf_lex best_fixed FX2_lexical_first
+converged {'LR-R': True, 'LR-S': True, 'LR-I': True, 'LR-C': True, 'LR-RS': True, 'LR-ALL': True, 'LR-R+reltype': True, 'LR-R+distance': True, 'LR-R+seedrank': True, 'LR-R+degree': True}
+sha256 dc6058794f63f5c09ca486cf0d1347467f5bd65edfffa48b6d13b34485fbec52
+fit.py: frozen_models.json byte-identical to the frozen original (dc605879...)
+verdict B
+heldout C* = fused_order
+  LR-R         dAUROC -0.015 [-0.036,+0.006] dPair -0.025 margin=False pair=False af=False PASS=False
+  LR-S         dAUROC -0.125 [-0.168,-0.086] dPair -0.102 margin=False pair=False af=False PASS=False
+  LR-I         dAUROC -0.072 [-0.127,-0.019] dPair -0.067 margin=False pair=False af=False PASS=False
+  LR-C         dAUROC -0.033 [-0.056,-0.012] dPair -0.024 margin=False pair=False af=False PASS=False
+  LR-RS        dAUROC -0.042 [-0.074,-0.014] dPair -0.045 margin=False pair=False af=False PASS=False
+  LR-ALL       dAUROC +0.013 [-0.014,+0.039] dPair +0.003 margin=False pair=True af=False PASS=False
+  best_single  dAUROC -0.028 [-0.058,+0.001] dPair -0.034 margin=False pair=False af=False PASS=False
+  best_fixed   dAUROC -0.024 [-0.054,+0.005] dPair -0.027 margin=False pair=False af=False PASS=False
+cb NOT evaluable: no labels available (ContextBench gold not obtainable in this environment)
+evaluate.py: results.json sha256 e4673e4a70b2b799737caeeb35e07f6534ba0ce3c2c04ac2d1919a27777927db (original e4673e4a70b2b799737caeeb35e07f6534ba0ce3c2c04ac2d1919a27777927db)
+report.py: tables.md identical
+diag_bands_artifact_free.py (NOT preregistered): output identical
