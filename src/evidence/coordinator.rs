@@ -8,8 +8,9 @@ use crate::config::{
     GIT_CHANGED_CONTEXT_ITEMS, GIT_CHANGED_SCORE_FRACTION, GIT_COCHANGE_SCORE_FRACTION,
     GIT_COCHANGE_SYMBOLS_PER_FILE, GIT_NEIGHBOR_HITS_PER_CHANGED, GIT_NEIGHBOR_SCORE_FRACTION,
 };
+use crate::evidence::candidate::{render, Candidate, Reason};
 use crate::evidence::contract::{DegradeReason, Degraded, EvidenceCandidate, EvidenceSource};
-use crate::evidence::scope::scope_files_from_seeds;
+use crate::evidence::scope::scope_files;
 use crate::gitctx;
 use crate::relations::RelationGraph;
 use crate::retrieval::{complete_symbols, SearchHit};
@@ -39,11 +40,72 @@ pub struct CollectOutput {
     pub git_evidence: Option<crate::gitctx::GitEvidence>,
 }
 
+/// [`CollectInput`] with the seeds as the crate's typed candidates — what
+/// `context.rs` hands the coordinator.
+pub(crate) struct Collect<'a> {
+    pub(crate) root: &'a Path,
+    pub(crate) store: &'a dyn IndexRead,
+    pub(crate) symbols: &'a [Symbol],
+    pub(crate) graph: &'a RelationGraph<'a>,
+    pub(crate) seeds: &'a [Candidate],
+    pub(crate) structural_max_seeds: usize,
+    pub(crate) structural_max_files: usize,
+    pub(crate) blast_radius: bool,
+    pub(crate) git: bool,
+}
+
+/// [`CollectOutput`] with typed candidates.
+pub(crate) struct Collected {
+    pub(crate) candidates: Vec<Candidate>,
+    pub(crate) degraded: Vec<Degraded>,
+    pub(crate) git_evidence: Option<crate::gitctx::GitEvidence>,
+}
+
 pub struct EvidenceCoordinator;
 
 impl EvidenceCoordinator {
+    /// The public entry, in its pre-#34-S3 shape: `SearchHit` seeds in,
+    /// rendered [`EvidenceCandidate`]s out. An adapter over
+    /// [`Self::collect_candidates`], which is what the crate itself calls;
+    /// the coordinator reads only each seed's symbol and score.
     pub fn collect(input: CollectInput<'_>) -> CollectOutput {
-        let CollectInput {
+        let seeds: Vec<Candidate> = input
+            .seeds
+            .iter()
+            .map(|h| Candidate {
+                symbol: h.symbol.clone(),
+                score: h.score,
+                reasons: Vec::new(),
+            })
+            .collect();
+        let out = Self::collect_candidates(Collect {
+            root: input.root,
+            store: input.store,
+            symbols: input.symbols,
+            graph: input.graph,
+            seeds: &seeds,
+            structural_max_seeds: input.structural_max_seeds,
+            structural_max_files: input.structural_max_files,
+            blast_radius: input.blast_radius,
+            git: input.git,
+        });
+        CollectOutput {
+            candidates: out
+                .candidates
+                .into_iter()
+                .map(|c| EvidenceCandidate {
+                    reasons: render(&c.reasons),
+                    symbol: c.symbol,
+                    score: c.score,
+                })
+                .collect(),
+            degraded: out.degraded,
+            git_evidence: out.git_evidence,
+        }
+    }
+
+    pub(crate) fn collect_candidates(input: Collect<'_>) -> Collected {
+        let Collect {
             root,
             store,
             symbols,
@@ -98,7 +160,7 @@ impl EvidenceCoordinator {
         let mut git_evidence = None;
         if let Some(ctx) = git_result {
             let top_seed_score = seeds.first().map(|h| h.score).unwrap_or(0.0);
-            let git_scope_files = scope_files_from_seeds(seeds, usize::MAX);
+            let git_scope_files = scope_files(seeds.iter().map(|h| &h.symbol), usize::MAX);
             candidates.extend(git_graph_enrichment(
                 graph,
                 &ctx,
@@ -110,7 +172,7 @@ impl EvidenceCoordinator {
         }
         candidates.extend(blast_out);
 
-        CollectOutput {
+        Collected {
             candidates,
             degraded,
             git_evidence,
@@ -120,12 +182,12 @@ impl EvidenceCoordinator {
 
 fn structural_evidence(
     graph: &RelationGraph<'_>,
-    seeds: &[SearchHit],
+    seeds: &[Candidate],
     max_seeds: usize,
     max_files: usize,
-) -> Vec<EvidenceCandidate> {
+) -> Vec<Candidate> {
     const STRUCTURAL_CALLER_HITS_PER_SEED: usize = 2;
-    let scope_files = scope_files_from_seeds(seeds, max_files);
+    let scope_files = scope_files(seeds.iter().map(|h| &h.symbol), max_files);
     let mut out = Vec::new();
     for seed in seeds.iter().take(max_seeds) {
         let callers = graph.callers_of(&seed.symbol.name);
@@ -135,17 +197,19 @@ fn structural_evidence(
             .filter(|c| c.id() != seed.symbol.id())
             .take(STRUCTURAL_CALLER_HITS_PER_SEED);
         for caller in scoped {
-            out.push(EvidenceCandidate {
+            out.push(Candidate {
                 symbol: caller.clone(),
                 score: seed.score * 0.4,
-                reasons: vec![format!("ast-grep-caller←{}", seed.symbol.qualified_name)],
+                reasons: vec![Reason::Caller {
+                    seed: seed.symbol.qualified_name.clone(),
+                }],
             });
         }
     }
     out
 }
 
-fn blast_radius_evidence(graph: &RelationGraph<'_>, seeds: &[SearchHit]) -> Vec<EvidenceCandidate> {
+fn blast_radius_evidence(graph: &RelationGraph<'_>, seeds: &[Candidate]) -> Vec<Candidate> {
     let anchors: Vec<&Symbol> = seeds
         .iter()
         .take(BLAST_RADIUS_MAX_SEEDS)
@@ -160,10 +224,13 @@ fn blast_radius_evidence(graph: &RelationGraph<'_>, seeds: &[SearchHit]) -> Vec<
         .take(BLAST_RADIUS_CONTEXT_ITEMS)
         .map(|(item, sym)| {
             let seed_score = by_qname.get(item.via.as_str()).copied().unwrap_or(0.0);
-            EvidenceCandidate {
+            Candidate {
                 symbol: sym.clone(),
                 score: seed_score * BLAST_RADIUS_SCORE_FRACTION,
-                reasons: vec![format!("blast-radius:{}←{}", item.relation, item.via)],
+                reasons: vec![Reason::BlastRadius {
+                    relation: item.relation,
+                    via: item.via,
+                }],
             }
         })
         .collect()
@@ -175,16 +242,16 @@ fn git_graph_enrichment(
     git_scope_files: &[String],
     symbols: &[Symbol],
     top_seed_score: f32,
-) -> Vec<EvidenceCandidate> {
+) -> Vec<Candidate> {
     let mut out = Vec::new();
     for cs in ctx.changed_symbols.iter().take(GIT_CHANGED_CONTEXT_ITEMS) {
-        out.push(EvidenceCandidate {
+        out.push(Candidate {
             symbol: cs.symbol.clone(),
             score: top_seed_score * GIT_CHANGED_SCORE_FRACTION,
-            reasons: vec![format!(
-                "git-changed(+{})←{}",
-                cs.added_lines, cs.symbol.file
-            )],
+            reasons: vec![Reason::GitChanged {
+                added_lines: cs.added_lines,
+                file: cs.symbol.file.clone(),
+            }],
         });
         let mut hits = 0usize;
         for (rel, n) in graph.neighbors(&cs.symbol) {
@@ -195,13 +262,12 @@ fn git_graph_enrichment(
                 continue;
             }
             hits += 1;
-            out.push(EvidenceCandidate {
+            out.push(Candidate {
                 symbol: n.clone(),
                 score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
-                reasons: vec![format!(
-                    "git-caller-of-changed←{}",
-                    cs.symbol.qualified_name
-                )],
+                reasons: vec![Reason::GitCallerOfChanged {
+                    changed: cs.symbol.qualified_name.clone(),
+                }],
             });
         }
         for caller in graph
@@ -211,13 +277,12 @@ fn git_graph_enrichment(
             .filter(|c| c.id() != cs.symbol.id())
             .take(GIT_NEIGHBOR_HITS_PER_CHANGED - hits.min(GIT_NEIGHBOR_HITS_PER_CHANGED))
         {
-            out.push(EvidenceCandidate {
+            out.push(Candidate {
                 symbol: caller.clone(),
                 score: top_seed_score * GIT_NEIGHBOR_SCORE_FRACTION,
-                reasons: vec![format!(
-                    "git-caller-of-changed←{}",
-                    cs.symbol.qualified_name
-                )],
+                reasons: vec![Reason::GitCallerOfChanged {
+                    changed: cs.symbol.qualified_name.clone(),
+                }],
             });
         }
     }
@@ -227,13 +292,13 @@ fn git_graph_enrichment(
             .filter(|s| s.file == entry.co_changed_with && s.kind != SymbolKind::Module)
             .take(GIT_COCHANGE_SYMBOLS_PER_FILE)
         {
-            out.push(EvidenceCandidate {
+            out.push(Candidate {
                 symbol: s.clone(),
                 score: top_seed_score * GIT_COCHANGE_SCORE_FRACTION * entry.strength.min(1.0),
-                reasons: vec![format!(
-                    "git-cochange({} commits)←{}",
-                    entry.count, entry.file
-                )],
+                reasons: vec![Reason::GitCoChange {
+                    commits: entry.count,
+                    file: entry.file.clone(),
+                }],
             });
         }
     }
@@ -243,7 +308,6 @@ fn git_graph_enrichment(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::retrieval::SearchHit;
     use crate::symbols::{Language, SymbolKind};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, calls: Vec<&str>) -> Symbol {
@@ -268,12 +332,11 @@ mod tests {
         }
     }
 
-    fn hit(symbol: Symbol, score: f32) -> SearchHit {
-        SearchHit {
+    fn hit(symbol: Symbol, score: f32) -> Candidate {
+        Candidate {
             symbol,
             score,
             reasons: vec![],
-            snippet: String::new(),
         }
     }
 
@@ -289,7 +352,10 @@ mod tests {
         assert_eq!(out.len(), 1, "{out:?}");
         assert_eq!(out[0].symbol.qualified_name, "caller");
         assert_eq!(out[0].score, 2.0 * 0.4);
-        assert_eq!(out[0].reasons, vec!["ast-grep-caller←foo".to_string()]);
+        assert_eq!(
+            crate::evidence::candidate::render(&out[0].reasons),
+            vec!["ast-grep-caller←foo".to_string()]
+        );
     }
 
     #[test]

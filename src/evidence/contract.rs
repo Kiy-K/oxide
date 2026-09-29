@@ -23,9 +23,11 @@ impl EvidenceSource {
     }
 }
 
-/// One piece of evidence, already in `context.rs`'s `Candidate` shape so the
-/// coordinator's output folds directly into the existing allocator with no
-/// extra conversion step.
+/// One piece of coordinator evidence as the public
+/// [`EvidenceCoordinator::collect`](super::EvidenceCoordinator::collect)
+/// returns it, `reasons` rendered. Inside the crate the coordinator works on
+/// the typed internal candidate (#34 S3); this pre-S3 public shape is kept
+/// as its adapter until #34 S6 decides the public surface.
 #[derive(Debug, Clone)]
 pub struct EvidenceCandidate {
     pub symbol: Symbol,

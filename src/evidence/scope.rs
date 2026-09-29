@@ -6,15 +6,25 @@
 //! documents why at its call site.
 
 use crate::retrieval::SearchHit;
+use crate::symbols::Symbol;
 
 pub fn scope_files_from_seeds(seeds: &[SearchHit], max_files: usize) -> Vec<String> {
+    scope_files(seeds.iter().map(|h| &h.symbol), max_files)
+}
+
+/// [`scope_files_from_seeds`] over any seed symbols, in order — what the
+/// coordinator's internal typed-candidate path calls.
+pub(crate) fn scope_files<'s>(
+    seeds: impl IntoIterator<Item = &'s Symbol>,
+    max_files: usize,
+) -> Vec<String> {
     let mut files = Vec::new();
-    for h in seeds {
+    for s in seeds {
         if files.len() >= max_files {
             break;
         }
-        if !files.contains(&h.symbol.file) {
-            files.push(h.symbol.file.clone());
+        if !files.contains(&s.file) {
+            files.push(s.file.clone());
         }
     }
     files

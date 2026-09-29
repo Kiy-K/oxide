@@ -4,7 +4,6 @@
 //! here re-scores or re-ranks search hits.
 
 use super::types::{ContextEvidence, Evidence};
-use crate::context::Role;
 use crate::symbols::Symbol;
 use std::cmp::Ordering;
 
@@ -39,17 +38,10 @@ fn compare_evidence(a: &Evidence, b: &Evidence) -> Ordering {
         .then_with(|| a.id.cmp(&b.id))
 }
 
-fn role_rank(role: Role) -> u8 {
-    match role {
-        Role::Primary => 0,
-        Role::Dependency => 1,
-        Role::Test => 2,
-    }
-}
-
 pub(super) fn compare_context_evidence(a: &ContextEvidence, b: &ContextEvidence) -> Ordering {
-    role_rank(a.role)
-        .cmp(&role_rank(b.role))
+    a.role
+        .rank()
+        .cmp(&b.role.rank())
         .then_with(|| compare_evidence(&a.evidence, &b.evidence))
 }
 

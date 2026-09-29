@@ -13,6 +13,7 @@ use crate::config::{
     FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
+use crate::evidence::{Candidate, Channel, Reason};
 use crate::lexical::LexicalIndex;
 use crate::relations::{RelationGraph, RelationIndex};
 use crate::storage::IndexRead;
@@ -288,6 +289,23 @@ impl<'a> RetrievalEngine<'a> {
     }
 
     pub fn search(&self, query: &str, opts: &SearchOptions) -> anyhow::Result<Vec<SearchHit>> {
+        Ok(self
+            .search_candidates(query, opts)?
+            .into_iter()
+            .map(Candidate::into_hit)
+            .collect())
+    }
+
+    /// [`Self::search`] before its `reasons` are rendered: the same hits,
+    /// scores and order, each with typed [`Reason`]s — per-channel rank and
+    /// raw score, expansion relation and seed. For in-crate consumers that
+    /// merge candidates (`context`, `review`) and for research that needs
+    /// channel provenance; nothing here ranks on it.
+    pub(crate) fn search_candidates(
+        &self,
+        query: &str,
+        opts: &SearchOptions,
+    ) -> anyhow::Result<Vec<Candidate>> {
         if self.symbol_count == 0 {
             return Ok(Vec::new());
         }
@@ -343,23 +361,24 @@ impl<'a> RetrievalEngine<'a> {
 
         // ---- fuse ----
         let mut rrf: HashMap<u64, f32> = HashMap::new();
-        let mut reasons: HashMap<u64, Vec<String>> = HashMap::new();
-        let mut note = |ranked: &[(u64, f32)], why: &str, weight: f32| {
+        let mut reasons: HashMap<u64, Vec<Reason>> = HashMap::new();
+        let mut note = |ranked: &[(u64, f32)], channel: Channel, weight: f32| {
             for (rank, (id, score)) in ranked.iter().enumerate() {
                 *rrf.entry(*id).or_insert(0.0) += weight / (FUSION_RRF_K + rank as f32 + 1.0);
-                reasons
-                    .entry(*id)
-                    .or_default()
-                    .push(format!("{why}={score:.3}"));
+                reasons.entry(*id).or_default().push(Reason::Channel {
+                    channel,
+                    rank,
+                    score: *score,
+                });
             }
         };
 
         match opts.mode {
-            SearchMode::LexicalOnly => note(&lex_ranked, "lexical", 1.0),
-            SearchMode::VectorOnly => note(&vec_ranked, "semantic", 1.0),
+            SearchMode::LexicalOnly => note(&lex_ranked, Channel::Lexical, 1.0),
+            SearchMode::VectorOnly => note(&vec_ranked, Channel::Semantic, 1.0),
             SearchMode::Hybrid => {
-                note(&lex_ranked, "lexical", FUSION_LEXICAL_WEIGHT);
-                note(&vec_ranked, "semantic", FUSION_SEMANTIC_WEIGHT);
+                note(&lex_ranked, Channel::Lexical, FUSION_LEXICAL_WEIGHT);
+                note(&vec_ranked, Channel::Semantic, FUSION_SEMANTIC_WEIGHT);
             }
         }
 
@@ -459,9 +478,17 @@ impl<'a> RetrievalEngine<'a> {
             let strong_ids: Vec<u64> = direct
                 .iter()
                 .filter(|(id, _)| {
-                    reasons
-                        .get(id)
-                        .is_some_and(|rs| rs.iter().any(|r| r.starts_with("lexical")))
+                    reasons.get(id).is_some_and(|rs| {
+                        rs.iter().any(|r| {
+                            matches!(
+                                r,
+                                Reason::Channel {
+                                    channel: Channel::Lexical,
+                                    ..
+                                }
+                            )
+                        })
+                    })
                 })
                 .filter(|(id, _)| {
                     lex_scores
@@ -486,7 +513,7 @@ impl<'a> RetrievalEngine<'a> {
             if !strong.is_empty() {
                 let snapshot = self.snapshot();
                 let graph = self.graph_over(snapshot);
-                let mut expansions: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
+                let mut expansions: HashMap<u64, (f32, Vec<Reason>)> = HashMap::new();
                 for seed in &strong {
                     let boost_base = rrf.get(&seed.id()).copied().unwrap_or(0.001);
                     for (rel, cand) in graph.neighbors(seed) {
@@ -496,7 +523,10 @@ impl<'a> RetrievalEngine<'a> {
                         }
                         let e = expansions.entry(cand_id).or_insert((0.0, Vec::new()));
                         e.0 += boost_base * 0.5;
-                        let why = format!("{}←{}", rel, seed.qualified_name);
+                        let why = Reason::Related {
+                            relation: rel,
+                            seed: seed.qualified_name.clone(),
+                        };
                         if !e.1.contains(&why) {
                             e.1.push(why);
                         }
@@ -513,7 +543,7 @@ impl<'a> RetrievalEngine<'a> {
             }
         }
 
-        let mut hits: Vec<SearchHit> = direct
+        let mut hits: Vec<Candidate> = direct
             .into_iter()
             .chain(expanded)
             .take(opts.limit)
@@ -522,11 +552,10 @@ impl<'a> RetrievalEngine<'a> {
                     Some(s) => s,
                     None => (*expansion_symbols.get(&id)?).clone(),
                 };
-                Some(SearchHit {
+                Some(Candidate {
                     symbol,
                     score,
                     reasons: reasons.remove(&id).unwrap_or_default(),
-                    snippet: String::new(),
                 })
             })
             .collect();
@@ -1879,6 +1908,74 @@ mod tests {
             }
             assert!(seen_expansion, "{fixture}: queries must expand");
             assert!(seen_test, "{fixture}: queries must reach related_tests");
+        }
+    }
+
+    /// The research seam (#34 S3): `search_candidates` is `search` before
+    /// rendering — same hits, scores and rendered reasons — and its typed
+    /// channel evidence carries each channel's real rank, so per-channel
+    /// provenance is observable without patching the fusion code.
+    #[test]
+    fn search_candidates_expose_channel_ranks_behind_the_same_hits() {
+        let emb = HashedEmbedder::default();
+        let repo = fixture_repo("py_repo", "oxidepy/retry.py");
+        let mut store = SqliteStore::open(&repo.path().join(".oxide/index.db")).unwrap();
+        crate::index::update_index(repo.path(), &mut store, &emb).unwrap();
+        let engine = RetrievalEngine::new(&store, &emb);
+        let q = "retry with exponential backoff";
+        for mode in [
+            SearchMode::Hybrid,
+            SearchMode::LexicalOnly,
+            SearchMode::VectorOnly,
+        ] {
+            let opts = SearchOptions {
+                limit: 400,
+                mode,
+                expand: true,
+                retrieval_mode: RetrievalMode::Balanced,
+            };
+            let hits = engine.search(q, &opts).unwrap();
+            let cands = engine.search_candidates(q, &opts).unwrap();
+            let rendered: Vec<SearchHit> =
+                cands.clone().into_iter().map(Candidate::into_hit).collect();
+            assert_eq!(json(&hits), json(&rendered), "{mode:?}");
+
+            // Each channel's ranks, read back from the typed evidence, are
+            // exactly 0..n with no gaps: the full channel top-K is visible.
+            for channel in [Channel::Lexical, Channel::Semantic] {
+                let mut ranks: Vec<usize> = cands
+                    .iter()
+                    .flat_map(|c| &c.reasons)
+                    .filter_map(|r| match r {
+                        Reason::Channel {
+                            channel: ch, rank, ..
+                        } if *ch == channel => Some(*rank),
+                        _ => None,
+                    })
+                    .collect();
+                ranks.sort_unstable();
+                assert!(
+                    ranks.iter().enumerate().all(|(i, r)| i == *r),
+                    "{mode:?} {channel:?}"
+                );
+            }
+            // A single channel's fused order is its own rank order.
+            if mode != SearchMode::Hybrid {
+                let direct: Vec<usize> = cands
+                    .iter()
+                    .filter_map(|c| {
+                        c.reasons.iter().find_map(|r| match r {
+                            Reason::Channel { rank, .. } => Some(*rank),
+                            _ => None,
+                        })
+                    })
+                    .collect();
+                assert!(!direct.is_empty());
+                assert!(
+                    direct.windows(2).all(|w| w[0] < w[1]),
+                    "{mode:?}: {direct:?}"
+                );
+            }
         }
     }
 }

@@ -389,6 +389,18 @@ hits are serde-**flattened**: fields like `file`, `qualified_name`,
 `start_line` sit at the top level — there is no nested `"symbol"` key. Symbol
 identity everywhere is `path#QualifiedName`.
 
+`reasons` strings are a wire contract (their spelling, number formatting and
+order are consumed by agents and by `cli/render/search.rs::describe_reasons`).
+Inside the pipeline they exist only as typed `evidence::Reason`s on
+`evidence::Candidate` (fusion channel with rank and raw score, relation and
+seed, coordinator/git/blast-radius sources) and are rendered at the output
+edge; `fixtures/candidate_output/golden.txt` pins the rendered bytes. The
+typed reasons are observational: nothing ranks, caps, admits, breaks ties
+or assigns a role on them. They are crate-internal: research reads
+per-channel provenance through `RetrievalEngine::search_candidates` from
+in-crate code instead of patching fusion, and the public Rust API keeps its
+pre-S3 shapes (`SearchHit`, `EvidenceCandidate`, `CollectInput`/`CollectOutput`).
+
 ## Repo layout facts
 
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.

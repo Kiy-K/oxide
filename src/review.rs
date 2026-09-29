@@ -2,6 +2,7 @@
 //! a compact, explainable context pack for a downstream model or human.
 
 use crate::embeddings::EmbeddingProvider;
+use crate::evidence::candidate::{Candidate, Reason};
 use crate::gitctx::{self, ChangedSymbol, CoChangeEntry};
 use crate::gitutil::CommitMeta;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
@@ -56,7 +57,7 @@ pub fn build_review_context(
         .collect();
 
     // Structural expansion around the seeds, in corpus order.
-    let mut related_ids: HashMap<u64, (f32, Vec<String>)> = HashMap::new();
+    let mut related_ids: HashMap<u64, (f32, Vec<Reason>)> = HashMap::new();
     for s in symbols
         .iter()
         .filter_map(|s| completed.get(&s.id()).copied())
@@ -67,7 +68,10 @@ pub fn build_review_context(
             }
             let e = related_ids.entry(n.id()).or_insert((0.0, Vec::new()));
             e.0 += 1.0;
-            let why = format!("{}←{}", rel, s.qualified_name);
+            let why = Reason::Related {
+                relation: rel,
+                seed: s.qualified_name.clone(),
+            };
             if !e.1.contains(&why) {
                 e.1.push(why);
             }
@@ -89,14 +93,14 @@ pub fn build_review_context(
             expand: false,
             retrieval_mode: RetrievalMode::default(),
         };
-        if let Ok(hits) = engine.search(&query, &opts) {
+        if let Ok(hits) = engine.search_candidates(&query, &opts) {
             for h in hits {
                 if !seen_seeds.contains(&h.symbol.id()) {
                     let e = related_ids
                         .entry(h.symbol.id())
                         .or_insert((0.0, Vec::new()));
                     e.0 += h.score;
-                    let why = "semantic-neighbor".to_string();
+                    let why = Reason::SemanticNeighbor;
                     if !e.1.contains(&why) {
                         e.1.push(why);
                     }
@@ -117,7 +121,7 @@ pub fn build_review_context(
     // set) on every run. `snapshot.get` is the by-id index; the linear
     // `symbols.iter().find(..)` it replaces hashed every symbol's id once
     // per related item.
-    let mut related: Vec<(u64, f32, Vec<String>)> = related_ids
+    let mut related: Vec<(u64, f32, Vec<Reason>)> = related_ids
         .into_iter()
         .map(|(id, (score, reasons))| (id, score, reasons))
         .collect();
@@ -129,12 +133,15 @@ pub fn build_review_context(
     let mut related: Vec<SearchHit> = related
         .into_iter()
         .filter_map(|(id, score, reasons)| {
-            Some(SearchHit {
-                symbol: snapshot.get(id)?.clone(),
-                score,
-                reasons,
-                snippet: String::new(),
-            })
+            let symbol = snapshot.get(id)?.clone();
+            Some(
+                Candidate {
+                    symbol,
+                    score,
+                    reasons,
+                }
+                .into_hit(),
+            )
         })
         .take(15)
         .collect();

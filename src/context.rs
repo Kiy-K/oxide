@@ -14,6 +14,7 @@ use crate::config::{
     CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
+use crate::evidence::candidate::{render, Candidate, Reason};
 use crate::gitctx::GitEvidence;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexRead;
@@ -123,9 +124,57 @@ impl Default for ContextOptions {
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
-struct Candidate {
-    symbol: Symbol,
+impl Role {
+    /// The one role decision for a pooled candidate. Three rules, each
+    /// exactly as before #34 S3 gave them one owner: a direct hit is
+    /// `Primary` unless [`is_allocator_test`] holds; a structural neighbor
+    /// is `Test` only when reached over the `test` relation; coordinator
+    /// evidence is `Dependency` unless [`is_allocator_test`] holds. Never
+    /// derived from a candidate's typed reasons.
+    fn assign(origin: Origin<'_>, symbol: &Symbol) -> Self {
+        match origin {
+            Origin::Seed if is_allocator_test(symbol) => Role::Test,
+            Origin::Seed => Role::Primary,
+            Origin::Expansion { relation: "test" } => Role::Test,
+            Origin::Expansion { .. } => Role::Dependency,
+            Origin::Evidence if is_allocator_test(symbol) => Role::Test,
+            Origin::Evidence => Role::Dependency,
+        }
+    }
+
+    /// Allocation and output order: primaries, dependencies, tests. The
+    /// one definition, shared by the allocator here and the service's
+    /// result order.
+    pub(crate) fn rank(self) -> u8 {
+        match self {
+            Role::Primary => 0,
+            Role::Dependency => 1,
+            Role::Test => 2,
+        }
+    }
+}
+
+/// Where a pooled candidate came from — with the symbol, the only input to
+/// [`Role::assign`].
+enum Origin<'r> {
+    Seed,
+    Expansion { relation: &'r str },
+    Evidence,
+}
+
+/// A candidate in the context pool: the shared evidence candidate plus the
+/// role the allocator packs it under.
+#[derive(Debug, Clone)]
+struct Pooled {
+    candidate: Candidate,
+    role: Role,
+}
+
+/// `OXIDE_DEBUG_DUMP_KEPT`'s record: the pool entry with its reasons
+/// rendered, in the field order the dump has always had.
+#[derive(Serialize)]
+struct KeptDump<'a> {
+    symbol: &'a Symbol,
     score: f32,
     reasons: Vec<String>,
     role: Role,
@@ -164,35 +213,27 @@ pub fn build_context_with(
         expand: false,
         retrieval_mode: opts.retrieval_mode,
     };
-    let seeds = engine.search(query, &seed_opts)?;
+    let seeds = engine.search_candidates(query, &seed_opts)?;
 
-    let mut candidates: HashMap<u64, Candidate> = HashMap::new();
-    let mut order_note = |c: Candidate| {
-        candidates
-            .entry(c.symbol.id())
-            .and_modify(|existing| {
-                existing.score += c.score;
-                for r in &c.reasons {
-                    if !existing.reasons.contains(r) {
-                        existing.reasons.push(r.clone());
-                    }
+    let mut candidates: HashMap<u64, Pooled> = HashMap::new();
+    let mut order_note = |c: Candidate, origin: Origin<'_>| match candidates.entry(c.symbol.id()) {
+        std::collections::hash_map::Entry::Occupied(mut e) => {
+            let existing = &mut e.get_mut().candidate;
+            existing.score += c.score;
+            for r in c.reasons {
+                if !existing.reasons.contains(&r) {
+                    existing.reasons.push(r);
                 }
-            })
-            .or_insert(c);
+            }
+        }
+        std::collections::hash_map::Entry::Vacant(e) => {
+            let role = Role::assign(origin, &c.symbol);
+            e.insert(Pooled { candidate: c, role });
+        }
     };
 
     for h in &seeds {
-        let role = if is_test_symbol(&h.symbol) {
-            Role::Test
-        } else {
-            Role::Primary
-        };
-        order_note(Candidate {
-            symbol: h.symbol.clone(),
-            score: h.score,
-            reasons: h.reasons.clone(),
-            role,
-        });
+        order_note(h.clone(), Origin::Seed);
     }
 
     let mut git_evidence: Option<GitEvidence> = None;
@@ -227,23 +268,23 @@ pub fn build_context_with(
                 seen_seeds.insert(n.id());
                 from_seed += 1;
                 expansion_total += 1;
-                let role = match rel.as_str() {
-                    "test" => Role::Test,
-                    _ => Role::Dependency,
-                };
-                order_note(Candidate {
+                let origin = Origin::Expansion { relation: &rel };
+                let candidate = Candidate {
                     symbol: n.clone(),
                     score: seed.score * 0.4,
-                    reasons: vec![format!("{rel}←{}", seed.symbol.qualified_name)],
-                    role,
-                });
+                    reasons: vec![Reason::Related {
+                        relation: rel.clone(),
+                        seed: seed.symbol.qualified_name.clone(),
+                    }],
+                };
+                order_note(candidate, origin);
             }
         }
 
         let (structural_max_seeds, structural_max_files) =
             opts.retrieval_mode.structural_budget().unwrap_or((0, 0));
-        let output = crate::evidence::EvidenceCoordinator::collect(
-            crate::evidence::coordinator::CollectInput {
+        let output = crate::evidence::EvidenceCoordinator::collect_candidates(
+            crate::evidence::coordinator::Collect {
                 root,
                 store: engine.store(),
                 symbols,
@@ -256,17 +297,7 @@ pub fn build_context_with(
             },
         );
         for c in output.candidates {
-            let role = if is_test_symbol(&c.symbol) {
-                Role::Test
-            } else {
-                Role::Dependency
-            };
-            order_note(Candidate {
-                symbol: c.symbol,
-                score: c.score,
-                reasons: c.reasons,
-                role,
-            });
+            order_note(c, Origin::Evidence);
         }
         git_evidence = output.git_evidence;
         diagnostics = output
@@ -279,38 +310,44 @@ pub fn build_context_with(
     // Expansion and evidence candidates are lean-snapshot symbols: complete
     // every one (one bounded read) before anything can serialize or rank
     // them — including `OXIDE_DEBUG_DUMP_KEPT` below.
-    engine.complete(candidates.values_mut().map(|c| &mut c.symbol))?;
+    engine.complete(candidates.values_mut().map(|c| &mut c.candidate.symbol))?;
 
     // ---- dedup / subsumption -------------------------------------------
     // Highest score wins first so "kept" items always dominate dropped ones.
-    let mut ranked: Vec<Candidate> = candidates.into_values().collect();
+    let mut ranked: Vec<Pooled> = candidates.into_values().collect();
     ranked.sort_by(|a, b| {
-        b.score
-            .partial_cmp(&a.score)
+        b.candidate
+            .score
+            .partial_cmp(&a.candidate.score)
             .unwrap_or(std::cmp::Ordering::Equal)
-            .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+            .then_with(|| a.candidate.symbol.id().cmp(&b.candidate.symbol.id()))
     });
 
     let files_with_concrete: HashSet<String> = ranked
         .iter()
-        .filter(|c| c.symbol.kind != SymbolKind::Module)
-        .map(|c| c.symbol.file.clone())
+        .filter(|c| c.candidate.symbol.kind != SymbolKind::Module)
+        .map(|c| c.candidate.symbol.file.clone())
         .collect();
     let mut dropped: Vec<Omitted> = Vec::new();
-    let mut kept: Vec<Candidate> = Vec::new();
+    let mut kept: Vec<Pooled> = Vec::new();
     for c in ranked {
-        let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
-        if c.symbol.kind == SymbolKind::Module && files_with_concrete.contains(&c.symbol.file) {
+        let cid = format!(
+            "{}#{}",
+            c.candidate.symbol.file, c.candidate.symbol.qualified_name
+        );
+        if c.candidate.symbol.kind == SymbolKind::Module
+            && files_with_concrete.contains(&c.candidate.symbol.file)
+        {
             dropped.push(Omitted {
                 id: cid,
                 why: "module subsumed by concrete symbols".into(),
             });
             continue;
         }
-        if kept
-            .iter()
-            .any(|k| k.symbol.file == c.symbol.file && overlap_ratio(&k.symbol, &c.symbol) > 0.8)
-        {
+        if kept.iter().any(|k| {
+            k.candidate.symbol.file == c.candidate.symbol.file
+                && overlap_ratio(&k.candidate.symbol, &c.candidate.symbol) > 0.8
+        }) {
             dropped.push(Omitted {
                 id: cid,
                 why: "subsumed by overlapping symbol".into(),
@@ -336,7 +373,16 @@ pub fn build_context_with(
     // and role diversity caps below are independent of the token budget
     // and still drop `kept` members regardless of how large it is.
     if let Ok(path) = std::env::var("OXIDE_DEBUG_DUMP_KEPT") {
-        if let Ok(json) = serde_json::to_string(&kept) {
+        let dump: Vec<KeptDump<'_>> = kept
+            .iter()
+            .map(|c| KeptDump {
+                symbol: &c.candidate.symbol,
+                score: c.candidate.score,
+                reasons: render(&c.candidate.reasons),
+                role: c.role,
+            })
+            .collect();
+        if let Ok(json) = serde_json::to_string(&dump) {
             let _ = std::fs::write(&path, json);
         }
     }
@@ -345,22 +391,17 @@ pub fn build_context_with(
     }
 
     // ---- ordering: primaries → dependencies → tests, score-desc within role
-    fn rank(role: Role) -> u8 {
-        match role {
-            Role::Primary => 0,
-            Role::Dependency => 1,
-            Role::Test => 2,
-        }
-    }
     kept.sort_by(|a, b| {
-        rank(a.role)
-            .cmp(&rank(b.role))
+        a.role
+            .rank()
+            .cmp(&b.role.rank())
             .then(
-                b.score
-                    .partial_cmp(&a.score)
+                b.candidate
+                    .score
+                    .partial_cmp(&a.candidate.score)
                     .unwrap_or(std::cmp::Ordering::Equal),
             )
-            .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+            .then_with(|| a.candidate.symbol.id().cmp(&b.candidate.symbol.id()))
     });
 
     // ---- relevance floor ------------------------------------------------
@@ -372,7 +413,10 @@ pub fn build_context_with(
         } else {
             for c in &weak {
                 dropped.push(Omitted {
-                    id: format!("{}#{}", c.symbol.file, c.symbol.qualified_name),
+                    id: format!(
+                        "{}#{}",
+                        c.candidate.symbol.file, c.candidate.symbol.qualified_name
+                    ),
                     why: "below relevance floor".into(),
                 });
             }
@@ -384,15 +428,22 @@ pub fn build_context_with(
     let mut items: Vec<ContextItem> = Vec::new();
     let mut used = 0usize;
     let terms = query_terms(task);
-    let top_id = kept.first().map(|c| c.symbol.id());
+    let top_id = kept.first().map(|c| c.candidate.symbol.id());
     let mut per_file: HashMap<&str, usize> = HashMap::new();
     let mut primaries = 0usize;
     let mut tests = 0usize;
     let max_primaries = resolve_context_max_primaries();
     for c in &kept {
-        let cid = format!("{}#{}", c.symbol.file, c.symbol.qualified_name);
-        if per_file.get(c.symbol.file.as_str()).copied().unwrap_or(0) >= CONTEXT_MAX_ITEMS_PER_FILE
-            && top_id != Some(c.symbol.id())
+        let cid = format!(
+            "{}#{}",
+            c.candidate.symbol.file, c.candidate.symbol.qualified_name
+        );
+        if per_file
+            .get(c.candidate.symbol.file.as_str())
+            .copied()
+            .unwrap_or(0)
+            >= CONTEXT_MAX_ITEMS_PER_FILE
+            && top_id != Some(c.candidate.symbol.id())
         {
             dropped.push(Omitted {
                 id: cid,
@@ -430,7 +481,7 @@ pub fn build_context_with(
         // never displaces a large primary.
         let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
         let (snippet, est) = loop {
-            let snip = render_snippet(root, &c.symbol, &terms, cap);
+            let snip = render_snippet(root, &c.candidate.symbol, &terms, cap);
             let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
             if used + e <= opts.budget_tokens || cap == 0 {
                 break (snip, e);
@@ -451,20 +502,23 @@ pub fn build_context_with(
             continue;
         }
         used += est;
-        *per_file.entry(c.symbol.file.as_str()).or_insert(0) += 1;
+        *per_file
+            .entry(c.candidate.symbol.file.as_str())
+            .or_insert(0) += 1;
         items.push(ContextItem {
-            symbol: c.symbol.clone(),
+            symbol: c.candidate.symbol.clone(),
             role: c.role,
-            score: c.score,
-            reasons: dedup_reasons(&c.reasons),
+            score: c.candidate.score,
+            reasons: dedup_reasons(&render(&c.candidate.reasons)),
             snippet,
             est_tokens: est,
         });
     }
     // Stable output: keep the ranked order we filled in.
     items.sort_by(|a, b| {
-        rank(a.role)
-            .cmp(&rank(b.role))
+        a.role
+            .rank()
+            .cmp(&b.role.rank())
             .then(
                 b.score
                     .partial_cmp(&a.score)
@@ -510,8 +564,8 @@ fn query_terms(task: &str) -> Vec<String> {
 }
 
 /// Partition candidates into those at/above `floor` and below it.
-fn split_below_floor(kept: Vec<Candidate>, floor: f32) -> (Vec<Candidate>, Vec<Candidate>) {
-    kept.into_iter().partition(|c| c.score >= floor)
+fn split_below_floor(kept: Vec<Pooled>, floor: f32) -> (Vec<Pooled>, Vec<Pooled>) {
+    kept.into_iter().partition(|c| c.candidate.score >= floor)
 }
 
 /// Snippet for a symbol capped at `max_tokens`: whole body when it fits,
@@ -581,7 +635,12 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize) 
     body[lo_i..=hi_i].join("\n")
 }
 
-fn is_test_symbol(s: &Symbol) -> bool {
+/// The context allocator's own test predicate, used only by
+/// [`Role::assign`]. Deliberately not [`crate::symbols::is_test_symbol`]
+/// (the one `RelationGraph` and the lean loader use): the two disagree on,
+/// e.g., helpers under a repo-root `tests/` directory, and switching the
+/// allocator to the canonical one is a measured behavior change (#25).
+fn is_allocator_test(s: &Symbol) -> bool {
     let f = s.file.to_lowercase();
     let n = s.name.to_lowercase();
     f.starts_with("test_")
@@ -609,7 +668,7 @@ fn is_test_symbol(s: &Symbol) -> bool {
 /// reranker's own score against it directly reproduced a prior evidence-
 /// loss regression (empirically confirmed in that experiment). See RET-005
 /// in `docs/review/retrieval-and-config.md`.
-fn rerank_candidates(_query: &str, _candidates: &mut [Candidate]) {}
+fn rerank_candidates(_query: &str, _candidates: &mut [Pooled]) {}
 
 fn overlap_ratio(a: &Symbol, b: &Symbol) -> f32 {
     let lo = a.start_line.max(b.start_line);
@@ -1177,10 +1236,12 @@ mod tests {
 
     #[test]
     fn relevance_floor_drops_weak_but_keeps_everything_when_all_weak() {
-        let mk = |score: f32| Candidate {
-            symbol: sym("src/a.py", "f", SymbolKind::Function, "def f(): pass"),
-            score,
-            reasons: vec![],
+        let mk = |score: f32| Pooled {
+            candidate: Candidate {
+                symbol: sym("src/a.py", "f", SymbolKind::Function, "def f(): pass"),
+                score,
+                reasons: vec![],
+            },
             role: Role::Primary,
         };
         let kept = vec![mk(1.0), mk(0.5), mk(0.1)];
