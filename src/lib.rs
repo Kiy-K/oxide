@@ -18,6 +18,7 @@ pub mod mcp;
 pub mod parser;
 pub mod relations;
 pub mod remote_embed;
+mod research;
 pub mod retrieval;
 pub mod review;
 pub mod scanner;

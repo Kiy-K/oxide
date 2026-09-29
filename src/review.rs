@@ -5,6 +5,7 @@ use crate::embeddings::EmbeddingProvider;
 use crate::evidence::candidate::{Candidate, Reason};
 use crate::gitctx::{self, ChangedSymbol, CoChangeEntry};
 use crate::gitutil::CommitMeta;
+use crate::research::ResearchOverrides;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
 use crate::storage::IndexRead;
 use serde::Serialize;
@@ -93,7 +94,7 @@ pub fn build_review_context(
             expand: false,
             retrieval_mode: RetrievalMode::default(),
         };
-        if let Ok(hits) = engine.search_candidates(&query, &opts) {
+        if let Ok(hits) = engine.search_candidates(&query, &opts, &ResearchOverrides::from_env()) {
             for h in hits {
                 if !seen_seeds.contains(&h.symbol.id()) {
                     let e = related_ids

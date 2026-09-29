@@ -10,27 +10,16 @@ use super::snapshot::{complete_symbols, lexical_persisted, SymbolSnapshot};
 use super::top_k::{cmp_score_id, top_k_by_score, TopK};
 use crate::config::{
     EXPANSION_STRONG_SEED_FRACTION, FUSION_CANDIDATE_LIMIT, FUSION_LEXICAL_WEIGHT, FUSION_RRF_K,
-    FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_ALPHA_DEFAULT, TERM_COVERAGE_MAX_BONUS_FRACTION,
+    FUSION_SEMANTIC_WEIGHT, TERM_COVERAGE_MAX_BONUS_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::evidence::{Candidate, Channel, Reason};
 use crate::lexical::LexicalIndex;
 use crate::relations::{RelationGraph, RelationIndex};
+use crate::research::ResearchOverrides;
 use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
-
-/// `$OXIDE_TERM_COVERAGE_ALPHA` overrides `TERM_COVERAGE_ALPHA_DEFAULT` for
-/// the term-coverage corroboration experiment only (docs/term-coverage-eval/) —
-/// mirrors `RetrievalMode::resolve`'s env-override precedence. Any parse
-/// failure, including unset, falls back to the frozen `0.0` default, which
-/// is a no-op.
-fn resolve_term_coverage_alpha() -> f32 {
-    std::env::var("OXIDE_TERM_COVERAGE_ALPHA")
-        .ok()
-        .and_then(|v| v.parse::<f32>().ok())
-        .unwrap_or(TERM_COVERAGE_ALPHA_DEFAULT)
-}
 
 /// Hybrid retrieval engine over a store snapshot. Candidate-first: a query
 /// is scored against the persisted postings and the embedding rows, the
@@ -290,7 +279,7 @@ impl<'a> RetrievalEngine<'a> {
 
     pub fn search(&self, query: &str, opts: &SearchOptions) -> anyhow::Result<Vec<SearchHit>> {
         Ok(self
-            .search_candidates(query, opts)?
+            .search_candidates(query, opts, &ResearchOverrides::from_env())?
             .into_iter()
             .map(Candidate::into_hit)
             .collect())
@@ -305,6 +294,7 @@ impl<'a> RetrievalEngine<'a> {
         &self,
         query: &str,
         opts: &SearchOptions,
+        research: &ResearchOverrides,
     ) -> anyhow::Result<Vec<Candidate>> {
         if self.symbol_count == 0 {
             return Ok(Vec::new());
@@ -421,7 +411,7 @@ impl<'a> RetrievalEngine<'a> {
         // BM25 map (every posting-matched doc, not just the fused top-K),
         // so a semantic-only candidate with a weak lexical score still
         // receives its coverage share exactly as before.
-        let term_coverage_alpha = resolve_term_coverage_alpha();
+        let term_coverage_alpha = research.term_coverage_alpha;
         if term_coverage_alpha > 0.0
             && matches!(opts.mode, SearchMode::Hybrid | SearchMode::LexicalOnly)
             && lex_total_idf > 0.0
@@ -1935,7 +1925,9 @@ mod tests {
                 retrieval_mode: RetrievalMode::Balanced,
             };
             let hits = engine.search(q, &opts).unwrap();
-            let cands = engine.search_candidates(q, &opts).unwrap();
+            let cands = engine
+                .search_candidates(q, &opts, &ResearchOverrides::from_env())
+                .unwrap();
             let rendered: Vec<SearchHit> =
                 cands.clone().into_iter().map(Candidate::into_hit).collect();
             assert_eq!(json(&hits), json(&rendered), "{mode:?}");

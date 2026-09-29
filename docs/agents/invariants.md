@@ -302,6 +302,15 @@ invariant mean this file.
   `HashedEmbedder`; so does building `--no-default-features`. The benchmark
   gate is unaffected either way — `src/eval.rs` constructs `HashedEmbedder`
   directly and never calls `open_embedder`.
+- The embedding stage's batching path is chosen by the environment, not the
+  provider: `index/embed.rs` sends texts through `embed_documents` in chunks
+  of 64 when fewer than 8 need embedding or `$OXIDE_EMBED_URL` is set (to
+  any value), and one `embed_document` call per text on a thread pool
+  otherwise — so an explicit `--embedder`/configured remote provider without
+  the variable takes the per-text path, and a local provider with it set is
+  batched. Questionable ownership, recorded in #34 D4 and pinned as-is by
+  `tests/embed_batching_rule.rs`; changing it is a deliberate behavior
+  change, not a cleanup.
 - `open_embedder` and `configured_provider_name` must resolve the SAME
   provider for the same environment, which is why both go through
   `resolve_native_profile`. If they diverge, `oxide status` reports
@@ -495,6 +504,14 @@ pre-S3 shapes (`SearchHit`, `EvidenceCandidate`, `CollectInput`/`CollectOutput`)
   that preceded it, and `docs/astgrep-structural-search/`/
   `docs/astgrep-hardening/` for the original (now superseded) ast-grep
   spike and hardening pass.
+- The research/debug overrides `$OXIDE_TERM_COVERAGE_ALPHA`,
+  `$OXIDE_CONTEXT_MAX_PRIMARIES` and `$OXIDE_DEBUG_DUMP_KEPT` have one owner,
+  `src/research.rs`, resolved once per request at the request boundary
+  (`RetrievalEngine::search`, `build_context_with`, `build_review_context`)
+  and passed in; fusion and allocator bodies never read the environment.
+  Per request, not per process: tests change them between requests. Unset
+  is the shipped behavior; `tests/research_overrides.rs` pins the parsing
+  edges. Production configuration does not belong there.
 - Storage is SQLite behind two capability traits split by caller, not by
   table (`src/storage/backend.rs`): `IndexRead` is every read and the only
   storage type the request path holds (`RetrievalEngine`, `SymbolSnapshot`,

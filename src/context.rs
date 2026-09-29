@@ -10,12 +10,13 @@
 use crate::config::{
     CONTEXT_CHARS_PER_TOKEN, CONTEXT_DEFAULT_BUDGET_TOKENS, CONTEXT_EXPANSION_PER_SEED,
     CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS, CONTEXT_MAX_CANDIDATES,
-    CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_PRIMARIES, CONTEXT_MAX_TESTS,
-    CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
+    CONTEXT_MAX_ITEMS_PER_FILE, CONTEXT_MAX_TESTS, CONTEXT_PER_ITEM_TOKEN_CAP,
+    CONTEXT_RELEVANCE_FLOOR_FRACTION,
 };
 use crate::embeddings::EmbeddingProvider;
 use crate::evidence::candidate::{render, Candidate, Reason};
 use crate::gitctx::GitEvidence;
+use crate::research::ResearchOverrides;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
@@ -33,24 +34,6 @@ pub enum Role {
     Dependency,
     /// Related tests.
     Test,
-}
-
-/// `$OXIDE_CONTEXT_MAX_PRIMARIES` overrides `CONTEXT_MAX_PRIMARIES` for the
-/// primary-cap sensitivity experiment only
-/// (docs/cpu-embedding-survey/phase2-arctic-quality-gate.md found every
-/// pool-to-pack loss under a tiny embedder carried the reason
-/// `beyond primary cap`, which the aggregate numbers alone cannot tell apart
-/// from a semantic loss). Mirrors `resolve_term_coverage_alpha`'s
-/// env-override precedence: any parse failure, including unset, falls back to
-/// the frozen shipped default, so an unset environment is byte-identical to
-/// the pre-experiment allocator. Promoting a different value to the shipped
-/// default requires the same fresh canonical-benchmark re-baseline as any
-/// other constant in `config.rs`.
-fn resolve_context_max_primaries() -> usize {
-    std::env::var("OXIDE_CONTEXT_MAX_PRIMARIES")
-        .ok()
-        .and_then(|v| v.parse::<usize>().ok())
-        .unwrap_or(CONTEXT_MAX_PRIMARIES)
 }
 
 pub const CHARS_PER_TOKEN: f32 = CONTEXT_CHARS_PER_TOKEN;
@@ -207,13 +190,14 @@ pub fn build_context_with(
     // provider's `embed_query`, not here — see `embeddings::qwen3_query_text`.
     // `task` reaches both the lexical scorer and the embedder unmodified.
     let query = task;
+    let research = ResearchOverrides::from_env();
     let seed_opts = SearchOptions {
         limit: opts.max_candidates,
         mode: SearchMode::Hybrid,
         expand: false,
         retrieval_mode: opts.retrieval_mode,
     };
-    let seeds = engine.search_candidates(query, &seed_opts)?;
+    let seeds = engine.search_candidates(query, &seed_opts, &research)?;
 
     let mut candidates: HashMap<u64, Pooled> = HashMap::new();
     let mut order_note = |c: Candidate, origin: Origin<'_>| match candidates.entry(c.symbol.id()) {
@@ -357,22 +341,13 @@ pub fn build_context_with(
         kept.push(c);
     }
 
-    // ---- optional reranker (Quality mode only) ---------------------------
-    // Downstream stage over the merged, deduped candidate pool — deliberately
-    // not part of indexing, and not wired to a real model. `rerank`
-    // only ever adjusts `Candidate.score`; role ordering, the relevance
-    // floor, and budgeted packing below already consume `score` as-is, so a
-    // future cross-encoder/LLM reranker slots in here with no other changes.
-    // See `rerank_candidates`'s doc comment: a real implementation was
-    // already tried here and rejected (docs/reranker-eval/README.md).
-    //
     // `OXIDE_DEBUG_DUMP_KEPT`, if set, writes this exact pre-allocation
     // `kept` pool to a file as JSON — a general candidate-pool diagnostic
     // (not reranker-specific): neither a huge token budget nor `items ∪
     // omitted` in the final pack is faithful to it, since the per-file
     // and role diversity caps below are independent of the token budget
     // and still drop `kept` members regardless of how large it is.
-    if let Ok(path) = std::env::var("OXIDE_DEBUG_DUMP_KEPT") {
+    if let Some(path) = &research.debug_dump_kept {
         let dump: Vec<KeptDump<'_>> = kept
             .iter()
             .map(|c| KeptDump {
@@ -383,11 +358,8 @@ pub fn build_context_with(
             })
             .collect();
         if let Ok(json) = serde_json::to_string(&dump) {
-            let _ = std::fs::write(&path, json);
+            let _ = std::fs::write(path, json);
         }
-    }
-    if opts.retrieval_mode.rerank() {
-        rerank_candidates(query, &mut kept);
     }
 
     // ---- ordering: primaries → dependencies → tests, score-desc within role
@@ -432,7 +404,7 @@ pub fn build_context_with(
     let mut per_file: HashMap<&str, usize> = HashMap::new();
     let mut primaries = 0usize;
     let mut tests = 0usize;
-    let max_primaries = resolve_context_max_primaries();
+    let max_primaries = research.context_max_primaries;
     for c in &kept {
         let cid = format!(
             "{}#{}",
@@ -651,25 +623,6 @@ fn is_allocator_test(s: &Symbol) -> bool {
         || n.starts_with("test_")
 }
 
-/// Reranker-ready hook (Quality mode): a pass-through today. Kept as a real
-/// function with the exact signature a scoring reranker needs — `query`
-/// plus mutable access to each candidate's `score` — so wiring one in later
-/// is a body change here, not a new call site or a change to any
-/// downstream ordering/packing logic.
-///
-/// A local-reranker experiment (BGE-reranker-v2-m3, MS MARCO MiniLM-L6-v2)
-/// already ran against this exact hook and was rejected for v0.1: no
-/// quality improvement over this no-op on the pinned Tier A set, and
-/// BGE-v2-m3's CPU latency (~36s/query) was independently disqualifying
-/// for a synchronous CLI. See `docs/reranker-eval/README.md` for the full
-/// methodology and raw evidence. Re-implementing this must not overwrite
-/// `Candidate.score` with an unrecalibrated reranker score — the relevance
-/// floor below is anchored to the fused BM25/cosine scale, and comparing a
-/// reranker's own score against it directly reproduced a prior evidence-
-/// loss regression (empirically confirmed in that experiment). See RET-005
-/// in `docs/review/retrieval-and-config.md`.
-fn rerank_candidates(_query: &str, _candidates: &mut [Pooled]) {}
-
 fn overlap_ratio(a: &Symbol, b: &Symbol) -> f32 {
     let lo = a.start_line.max(b.start_line);
     let hi = a.end_line.min(b.end_line);
@@ -705,6 +658,7 @@ impl ContextPack {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config::CONTEXT_MAX_PRIMARIES;
     use crate::embeddings::HashedEmbedder;
     use crate::storage::{IndexWrite, SqliteStore};
     use crate::symbols::{content_hash, Language};
@@ -1109,11 +1063,11 @@ mod tests {
     }
 
     #[test]
-    fn bounded_ast_grep_expansion_is_mode_gated() {
+    fn bounded_structural_caller_expansion_is_mode_gated() {
         // `caller` calls `should_retry` via a real AST call site
         // (`policy.should_retry(x)`), but its `references` deliberately do
         // NOT list "should_retry" — RelationGraph's identifier-based `uses`
-        // relation can't find this pairing at all, isolating ast-grep
+        // relation can't find this pairing at all, isolating the structural-caller stage
         // expansion as the only mechanism that can surface it.
         let tmp = tempfile::tempdir().unwrap();
         std::fs::create_dir_all(tmp.path().join("src")).unwrap();
@@ -1152,7 +1106,7 @@ mod tests {
             .put_symbol_relations_batch(&[(caller.id(), vec!["should_retry".to_string()], vec![])])
             .unwrap();
 
-        let has_ast_grep_evidence = |mode: RetrievalMode| {
+        let has_structural_caller_evidence = |mode: RetrievalMode| {
             build_context(
                 tmp.path(),
                 &store,
@@ -1170,12 +1124,12 @@ mod tests {
         };
 
         assert!(
-            has_ast_grep_evidence(RetrievalMode::Balanced),
+            has_structural_caller_evidence(RetrievalMode::Balanced),
             "balanced mode should surface the AST-precise caller RelationGraph cannot find"
         );
         assert!(
-            !has_ast_grep_evidence(RetrievalMode::Fast),
-            "fast mode must skip the bounded ast-grep expansion stage entirely"
+            !has_structural_caller_evidence(RetrievalMode::Fast),
+            "fast mode must skip the bounded structural-caller expansion stage entirely"
         );
     }
 

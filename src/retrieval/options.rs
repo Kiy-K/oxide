@@ -13,7 +13,7 @@ pub enum SearchMode {
 }
 
 /// Relevance/latency tradeoff for a request. Controls how much *expensive*
-/// evidence (bounded ast-grep expansion, in `context.rs`) gets collected on
+/// evidence (bounded structural-caller expansion, in `context.rs`) gets collected on
 /// top of the always-on lexical+semantic stage — it does not gate lexical or
 /// semantic scoring themselves, which run unconditionally and concurrently.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -48,7 +48,7 @@ impl RetrievalMode {
             .unwrap_or_default()
     }
 
-    /// Bounded ast-grep expansion budget: `(max anchored seeds, max files per
+    /// Bounded structural-caller expansion budget: `(max anchored seeds, max files per
     /// seed)`. `None` means skip the stage entirely (`Fast`) — never a
     /// whole-repo scan regardless of mode.
     pub fn structural_budget(self) -> Option<(usize, usize)> {
@@ -59,7 +59,10 @@ impl RetrievalMode {
         }
     }
 
-    /// Whether the (currently no-op) downstream reranker stage runs.
+    /// Whether `Quality` would run a downstream reranker stage. Nothing
+    /// consults this any more: the only stage it gated was a no-op hook,
+    /// removed in #34 S4 with output unchanged (docs/reranker-eval/ rejected
+    /// a real one). Kept because it is public API, whose fate is #34 S6's.
     pub fn rerank(self) -> bool {
         matches!(self, Self::Quality)
     }

@@ -103,10 +103,11 @@ refactor").
 **Invariant:** `Fast`/`Balanced`/`Quality` control only: (a) whether
 `context.rs`'s bounded structural-relation expansion (`RelationGraph::callers_of`,
 scoped to the seed pool's files — see LANG-001 in
-`structural-and-language.md`) runs and its seed/file budget, and (b) whether
-`context.rs::rerank_candidates`'s (currently no-op) hook runs (`Quality`
-only). `Fast` additionally skips `RetrievalEngine::search`'s own
-`RelationGraph` expansion (`opts.expand`). The mode must never gate the
+`structural-and-language.md`) runs and its seed/file budget. (It also
+gated a no-op `context.rs::rerank_candidates` hook on `Quality`; that dead
+research residue was removed in #34 S4 with output unchanged, and
+`RetrievalMode::rerank()` is no longer consulted.) `Fast` additionally
+skips `RetrievalEngine::search`'s own `RelationGraph` expansion (`opts.expand`). The mode must never gate the
 always-on lexical+semantic stage — that stage is unconditional in every
 mode, by design. (Historical note: this stage used to be a live
 `AstGrepProvider` AST scan; migrated to a precomputed `RelationGraph` lookup
@@ -128,9 +129,9 @@ diverges from the table those methods define.
 ---
 
 ### RET-005 — A reranker score must never overwrite a fused score without recalibrating every downstream threshold
-**Severity:** BLOCKER · **Scope:** any future `rerank_candidates`
-implementation in `context.rs`, and any other code that assigns an
-externally-produced score onto `Candidate.score` or `SearchHit.score`.
+**Severity:** BLOCKER · **Scope:** any future reranker stage in
+`context.rs` (the no-op `rerank_candidates` hook was removed in #34 S4),
+and any other code that assigns an externally-produced score onto `Candidate.score` or `SearchHit.score`.
 
 **Invariant:** `Candidate.score` is fused-scale (BM25/cosine fusion,
 `retrieval/engine.rs`), and `build_context`'s relevance floor compares candidate

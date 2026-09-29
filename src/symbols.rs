@@ -170,13 +170,15 @@ pub struct Symbol {
     /// Resolved references to other known symbols (filled by the indexer).
     #[serde(default)]
     pub references: Vec<String>,
-    /// AST-precise call-target bare names found in this symbol's body —
-    /// experimental, populated only by `structural_relations`'s opt-in
-    /// second pass (`docs/precomputed-structural-relations/README.md`),
-    /// never by the default `update_index` path. Deliberately excluded
+    /// AST-precise call-target bare names found in this symbol's body,
+    /// computed by the default indexing path (in the parse workers, #29)
+    /// and stored in the `symbol_relations` side table, not on the
+    /// `symbols` row: loaders leave this empty and only the corpus snapshot
+    /// merges it in (`retrieval::snapshot`). Deliberately excluded
     /// from `embeddings::symbol_embed_text` — unlike `references`, these do not affect
-    /// `content_hash` or the embedding, keeping embeddings frozen per that
-    /// experiment's brief. Bare names only, same heuristic tier as
+    /// `content_hash` or the embedding, keeping embeddings frozen as the
+    /// precomputed-relations experiment required
+    /// (`docs/precomputed-structural-relations/README.md`). Bare names only, same heuristic tier as
     /// `references`/`uses` (no scope analysis) — not a resolved call graph.
     #[serde(default)]
     pub calls: Vec<String>,
