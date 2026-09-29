@@ -193,7 +193,24 @@ impl RepositoryService {
             .get_meta(EMBEDDING_MIGRATION_KEY)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
             .is_some_and(|s| !s.is_empty());
+        // The network-free part of the fingerprint check (#33): a stored
+        // fingerprint that is missing, unreadable, from an older fingerprint
+        // schema or for another text recipe means `oxide index` will
+        // re-embed everything, whatever the provider name says. Only
+        // metadata and local constants; the rest of the fingerprint needs a
+        // live provider, which status deliberately never builds.
+        let fingerprint_current = store
+            .get_meta("embedding_fingerprint")
+            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
+            .and_then(|s| {
+                serde_json::from_str::<crate::embeddings::EmbeddingSpaceFingerprint>(&s).ok()
+            })
+            .is_some_and(|fp| {
+                fp.schema_version == crate::embeddings::EMBEDDING_FINGERPRINT_SCHEMA_VERSION
+                    && fp.document_text_recipe == crate::embeddings::SYMBOL_TEXT_RECIPE
+            });
         let embedder_current = !migrating
+            && fingerprint_current
             && embedder.as_deref()
                 == Some(crate::embeddings::configured_provider_name(None).as_str());
         let files_current = !current.is_empty()
@@ -201,7 +218,7 @@ impl RepositoryService {
             && current
                 .iter()
                 .all(|(file, hash)| indexed.get(file).copied() == Some(*hash));
-        // Network-free: reuses the name-based `embedder_current` check
+        // Network-free: reuses the metadata-only `embedder_current` check
         // already computed above instead of constructing a live provider
         // (which for `HttpEmbedder` would mean a network round trip just to
         // report status) — see `content_stale_embedding_count`'s doc.
@@ -453,11 +470,11 @@ impl RepositoryService {
         Ok(context)
     }
 
-    /// `expected_embedder` is `(provider name, provider dimension)`: both must
-    /// match what is stored, not just the name — a server that changes
-    /// dimension while keeping the same name/URL would otherwise silently
-    /// drop every semantic hit (vectors of mismatched length are skipped by
-    /// the retrieval engine) instead of failing explicitly.
+    /// `expected_embedder`'s full fingerprint must match the stored one, not
+    /// just its name — a server that changes dimension while keeping the
+    /// same name/URL would otherwise silently drop every semantic hit
+    /// (vectors of mismatched length are skipped by the retrieval engine)
+    /// instead of failing explicitly.
     fn validate_index(
         &self,
         store: &SqliteStore,
@@ -523,10 +540,8 @@ impl RepositoryService {
             ));
         }
         if let Some(expected) = expected_embedder {
-            // Fingerprint (Phase 3.3 item 3) is the real contract when the
-            // index has one; name+dim is the fallback for indices that
-            // predate it, so upgrading OXIDE doesn't strand every existing
-            // index behind a spurious ProviderMismatch.
+            // Fingerprint (Phase 3.3 item 3) is the contract; an index without
+            // one holds vectors of unrecorded space and is refused (#33).
             // An unfinished provider migration outranks every identity key
             // below: those describe the provider that *published* the index,
             // and the interrupted run never got that far. Its vectors may
@@ -545,10 +560,9 @@ impl RepositoryService {
                     "index embeddings were left mid-migration by an interrupted `oxide index`; run `oxide index PATH` to finish it (or `--mode lexical` meanwhile)",
                 ));
             }
-            // Present-but-unparseable must not fail open into the weaker
-            // name+dim fallback below: a corrupt fingerprint would then be
-            // waved through by a provider whose *name* still matches, which
-            // is precisely the comparison the fingerprint exists to replace.
+            // Present-but-unparseable is incompatible, never waved through by
+            // a provider whose *name* still matches, which is precisely the
+            // comparison the fingerprint exists to replace.
             // `update_embeddings` has always treated it as incompatible;
             // this is the read side agreeing.
             let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
@@ -556,19 +570,13 @@ impl RepositoryService {
                 .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
                 .filter(|s| !s.is_empty())
                 .map(|s| serde_json::from_str(&s).ok());
+            // No stored fingerprint means vectors of unrecorded space and
+            // text recipe (#33): `embedder`+`dim` cannot vouch for them, so
+            // they are refused until `oxide index` re-embeds them, exactly as
+            // `incompatible_stored_space` decides on the write side.
             let compatible = match stored_fp {
                 Some(Some(prev)) => prev == expected.fingerprint(),
-                Some(None) => false,
-                None => {
-                    let indexed_embedder = store
-                        .get_meta("embedder")
-                        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-                    let indexed_dim = store
-                        .get_meta("dim")
-                        .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-                    indexed_embedder.as_deref() == Some(expected.name())
-                        && indexed_dim.as_deref() == Some(expected.dim().to_string().as_str())
-                }
+                Some(None) | None => false,
             };
             if !compatible {
                 return Err(ServiceError::new(
@@ -711,6 +719,7 @@ mod tests {
             dimension: 4,
             query_profile: query_profile.into(),
             document_profile: "raw".into(),
+            document_text_recipe: crate::embeddings::SYMBOL_TEXT_RECIPE.into(),
             pooling: "mean".into(),
             normalization: "l2".into(),
             similarity: "cosine".into(),
@@ -766,7 +775,7 @@ mod tests {
     }
 
     #[test]
-    fn legacy_index_without_a_stored_fingerprint_falls_back_to_name_and_dim() {
+    fn index_with_vectors_but_no_stored_fingerprint_is_refused_even_for_a_matching_name_and_dim() {
         let tmp = tempfile::tempdir().unwrap();
         let root = tmp.path().canonicalize().unwrap();
         seed_repo(&root);
@@ -793,26 +802,11 @@ mod tests {
             use_process_cache: false,
         };
         let store = service.open_index_for_read().unwrap();
-        // A provider with the same name+dim but a different fingerprint
-        // still validates: no stored fingerprint means the fallback (name+dim
-        // only) decides, exactly as it did before this field existed.
-        let different_profile = FingerprintOnlyProvider {
-            name: "same-name".into(),
-            dim: 4,
-            fp: base_fingerprint("gemma-code-retrieval"),
-        };
-        service
-            .validate_index(&store, Some(&different_profile), &store.stats().unwrap())
-            .unwrap();
-
-        // A name/dim mismatch still fails, as it always has.
-        let different_dim = FingerprintOnlyProvider {
-            name: "same-name".into(),
-            dim: 8,
-            fp: base_fingerprint("bare"),
-        };
+        // `embedder` and `dim` still match exactly, but they cannot vouch for
+        // the text recipe the vectors were embedded under (#33): the
+        // unversioned space is refused, not assumed current.
         let err = service
-            .validate_index(&store, Some(&different_dim), &store.stats().unwrap())
+            .validate_index(&store, Some(&provider), &store.stats().unwrap())
             .unwrap_err();
         assert_eq!(err.code(), "provider_mismatch");
     }

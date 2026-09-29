@@ -1,6 +1,18 @@
 use crate::symbols::Symbol;
 
+/// Identity of the document text [`symbol_embed_text`] produces, recorded in
+/// every provider's `EmbeddingSpaceFingerprint::document_text_recipe`.
+///
+/// Any semantic change to `symbol_embed_text` requires bumping this recipe
+/// id. Vectors are valid only for the recipe they were embedded under, and
+/// the per-symbol `content_hash` cannot protect files that are not reparsed:
+/// the fingerprint mismatch this bump causes is what makes `update_index`
+/// clear and re-embed the whole space instead of leaving unchanged files on
+/// the old recipe (see `docs/agents/invariants.md`).
+pub const SYMBOL_TEXT_RECIPE: &str = "symbol-text:v1";
+
 /// Convenience: embedding text for a symbol (kept next to the provider).
+/// Versioned by [`SYMBOL_TEXT_RECIPE`].
 pub fn symbol_embed_text(s: &Symbol) -> String {
     format!(
         "{} {} {} {} {} {}",

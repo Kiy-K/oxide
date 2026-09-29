@@ -171,6 +171,28 @@ invariant mean this file.
   (`tests/embedding_staleness.rs` pins all of these). Existing indexes are
   not force-migrated: rows for files not reparsed since keep their old keys
   and vectors until those files change or `oxide index -a` runs.
+- Vectors are valid only for the full `EmbeddingSpaceFingerprint` they were
+  embedded under, and the symbol document-text recipe is part of it:
+  `document_text_recipe`, set by every provider from the one constant
+  `embeddings::SYMBOL_TEXT_RECIPE` next to `symbol_embed_text`. Any semantic
+  change to `symbol_embed_text` requires bumping that id. Per-symbol
+  `content_hash`es are not enough: they move only for reparsed files, so
+  unchanged files would keep old-recipe vectors next to new ones in one
+  index. The recipe mismatch instead takes `incompatible_stored_space`'s
+  whole-space migration (clear and re-embed every symbol), like a provider
+  switch. Fingerprints stored before the field existed (schema 1) parse with
+  an empty recipe, never the current one, and so migrate once. An index with
+  vectors but no stored fingerprint at all is unversioned: `embedder`+`dim`
+  cannot vouch for its recipe, so it also migrates once and `validate_index`
+  refuses it until then. Only an index with no vectors (new or base-only)
+  embeds without a migration; its first run still sets the migration marker
+  on the empty table before writing, so an interrupted first run resumes
+  rather than leaving unversioned vectors. `status` stays network-free: its
+  `embedder_current` also requires a stored fingerprint with the current
+  schema and `SYMBOL_TEXT_RECIPE`, but the rest of the fingerprint needs a
+  live provider, so only `search` and `oxide index` see those fields.
+  Don't use `EXTRACTION_VERSION` for this; it versions parsing, not the
+  embedding text (`tests/embedding_text_recipe.rs`).
 - Cross-file, same-run reference staleness is a known, accepted gap: if file A
   adds a name that a symbol in unrelated, already-reparsed file B's body
   happens to textually match, B's `references` can lag until B itself is next
@@ -211,9 +233,9 @@ invariant mean this file.
   runtime rules out. `incompatible_stored_space` is the single
   decision point for both `update_embeddings` and `pending_embedding_count`
   (which AGENTS-era comments only *asked* not to diverge), and treats the
-  marker as outranking `embedding_fingerprint`, which in turn outranks the
-  legacy `embedder`+`dim` pair; a present-but-unparseable value at any tier
-  is incompatible and must never fail open into the weaker tier below.
+  marker as outranking `embedding_fingerprint`; with neither, any stored
+  vector is incompatible. A present-but-unparseable value at any tier is
+  incompatible and must never fail open into the weaker tier below.
   `validate_index` refuses semantic — never lexical — reads while the marker
   is set (`tests/provider_migration_recovery.rs`).
 - Foreign keys ARE enforced, and OXIDE depends on it. `replace_file` and

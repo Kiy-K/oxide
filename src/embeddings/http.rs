@@ -2,6 +2,7 @@ use super::provider::{
     EmbeddingProvider, EmbeddingSpaceFingerprint, EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
 };
 use super::text::qwen3_query_text;
+use crate::embeddings::SYMBOL_TEXT_RECIPE;
 
 /// Prompt protocol for an [`HttpEmbedder`] instance: how query/document text
 /// is formatted before being sent to the endpoint. Query/document asymmetry
@@ -299,6 +300,7 @@ impl EmbeddingProvider for HttpEmbedder {
             dimension: self.dim,
             query_profile,
             document_profile,
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: "unspecified".to_string(),
             normalization: "unspecified".to_string(),
             similarity: "cosine".to_string(),
@@ -337,6 +339,39 @@ mod tests {
     fn truncate_and_renormalize_is_noop_when_already_short_enough() {
         let v = vec![0.6f32, 0.8f32];
         assert_eq!(truncate_and_renormalize(&v, 8), v);
+    }
+
+    /// #33: the HTTP provider records the canonical symbol-text recipe for
+    /// both prompt protocols, and its serialized fingerprint is pinned.
+    /// Built directly (no endpoint probe) since only `fingerprint` is under test.
+    #[test]
+    fn http_fingerprint_pins_serialized_json_with_the_text_recipe() {
+        let build = |protocol| HttpEmbedder {
+            endpoint: "http://127.0.0.1:8191/v1/embeddings".to_string(),
+            model: "qwen3-Q8_0".to_string(),
+            dim: 4,
+            name: "unused".to_string(),
+            healthy: std::sync::atomic::AtomicBool::new(true),
+            protocol,
+            truncate_dim: None,
+        };
+        let qwen = build(HttpPromptProtocol::Qwen3Instruct).fingerprint();
+        assert_eq!(qwen.document_text_recipe, SYMBOL_TEXT_RECIPE);
+        assert_eq!(
+            serde_json::to_string(&qwen).unwrap(),
+            r#"{"schema_version":2,"model":"qwen3-Q8_0","artifact_revision":"","quantization":"","representation":"dense","dimension":4,"query_profile":"qwen3-instruct","document_profile":"none","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#
+        );
+        let nomic = build(HttpPromptProtocol::Prefixed {
+            query_prefix: "search_query: ",
+            document_prefix: "search_document: ",
+            label: "nomic-v2",
+        })
+        .fingerprint();
+        assert_eq!(nomic.document_text_recipe, SYMBOL_TEXT_RECIPE);
+        assert_eq!(
+            serde_json::to_string(&nomic).unwrap(),
+            r#"{"schema_version":2,"model":"qwen3-Q8_0","artifact_revision":"","quantization":"","representation":"dense","dimension":4,"query_profile":"nomic-v2:prefix","document_profile":"nomic-v2:prefix","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#
+        );
     }
 
     #[test]

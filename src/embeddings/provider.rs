@@ -4,7 +4,9 @@ use serde::{Deserialize, Serialize};
 /// stored fingerprint's meaning ambiguous — an old fingerprint (missing the
 /// new field, or from before this schema existed) must never silently
 /// compare equal to a new one just because the fields it does have match.
-pub const EMBEDDING_FINGERPRINT_SCHEMA_VERSION: u32 = 1;
+///
+/// 2: added `document_text_recipe` (#33).
+pub const EMBEDDING_FINGERPRINT_SCHEMA_VERSION: u32 = 2;
 
 /// Structured description of a provider's effective vector-space semantics —
 /// the real index-compatibility contract (Phase 3.3 item 3), as opposed to
@@ -35,6 +37,16 @@ pub struct EmbeddingSpaceFingerprint {
     pub query_profile: String,
     /// How document text is transformed before embedding.
     pub document_profile: String,
+    /// Which recipe built the document text itself, before any
+    /// provider-side prefix: [`crate::embeddings::SYMBOL_TEXT_RECIPE`] for
+    /// every provider that embeds OXIDE symbols. Orthogonal to
+    /// `document_profile`.
+    ///
+    /// Fingerprints stored before this field existed (schema 1) deserialize
+    /// with it empty, never as the current recipe. They stay readable, compare
+    /// unequal, and so take the ordinary incompatible-space migration.
+    #[serde(default)]
+    pub document_text_recipe: String,
     /// `"mean"` | `"cls"` | `"graph-baked"` (model's own ONNX graph already
     /// pools, e.g. EmbeddingGemma's `sentence_embedding` output) | `"n/a"`.
     pub pooling: String,
@@ -111,9 +123,40 @@ pub trait EmbeddingProvider: Sync {
             dimension: self.dim(),
             query_profile: "unspecified".to_string(),
             document_profile: "unspecified".to_string(),
+            document_text_recipe: crate::embeddings::SYMBOL_TEXT_RECIPE.to_string(),
             pooling: "unspecified".to_string(),
             normalization: "unspecified".to_string(),
             similarity: "cosine".to_string(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::embeddings::{HashedEmbedder, SYMBOL_TEXT_RECIPE};
+
+    /// #33: the trait default (used by `HashedEmbedder`) records the
+    /// canonical recipe too, pinned as persisted.
+    #[test]
+    fn default_fingerprint_pins_serialized_json_with_the_text_recipe() {
+        let fp = HashedEmbedder::default().fingerprint();
+        assert_eq!(fp.document_text_recipe, SYMBOL_TEXT_RECIPE);
+        assert_eq!(
+            serde_json::to_string(&fp).unwrap(),
+            r#"{"schema_version":2,"model":"hashed-bow-256","artifact_revision":"","quantization":"","representation":"dense","dimension":256,"query_profile":"unspecified","document_profile":"unspecified","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#
+        );
+    }
+
+    /// #33: a fingerprint persisted before `document_text_recipe` existed
+    /// stays readable, but reads back as schema 1 with an empty recipe:
+    /// never as the current recipe, and never equal to today's fingerprint.
+    #[test]
+    fn legacy_fingerprint_without_a_recipe_parses_but_never_as_the_current_recipe() {
+        let legacy = r#"{"schema_version":1,"model":"hashed-bow-256","artifact_revision":"","quantization":"","representation":"dense","dimension":256,"query_profile":"unspecified","document_profile":"unspecified","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#;
+        let parsed: EmbeddingSpaceFingerprint = serde_json::from_str(legacy).unwrap();
+        assert_eq!(parsed.schema_version, 1);
+        assert_eq!(parsed.document_text_recipe, "");
+        assert_ne!(parsed, HashedEmbedder::default().fingerprint());
     }
 }

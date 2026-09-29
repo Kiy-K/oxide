@@ -314,12 +314,13 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
 
     let service = service_for(root);
     let status = service.status().unwrap();
-    // status() is purely descriptive (no validate_index gate) and reports
-    // this state as fully current under today's SCHEMA_VERSION/
-    // EXTRACTION_VERSION == 1 constants — documented, not asserted as
-    // desirable, since `update_index` can no longer produce it.
+    // status() is purely descriptive (no validate_index gate). Its
+    // version keys are not what makes this state non-current any more:
+    // the vectors carry no `embedding_fingerprint`, so their space and text
+    // recipe are unrecorded and never current (#33) — documented, since
+    // `update_index` can no longer produce this state.
     assert!(status.index_exists);
-    assert!(status.embedder_current);
+    assert!(!status.embedder_current);
 }
 
 /// A real `kill -9` mid-run, with the bulk WAL checkpoint policy in force

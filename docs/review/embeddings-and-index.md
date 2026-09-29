@@ -19,6 +19,9 @@ detects the change and wipes stale vectors instead of silently comparing
 old and new vectors as if they lived in the same space. A field added to
 `EmbeddingSpaceFingerprint` that would make an old stored value's meaning
 ambiguous must bump `EMBEDDING_FINGERPRINT_SCHEMA_VERSION`.
+The same applies to the document text itself: a semantic change to
+`symbol_embed_text` must bump `SYMBOL_TEXT_RECIPE`, which every provider
+records as `document_text_recipe`.
 
 **What constitutes a violation:** a provider whose `embed`/`embed_query`/
 `embed_document` behavior changes (new prefix, different pooling, swapped

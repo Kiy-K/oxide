@@ -415,9 +415,10 @@ fn legacy_index_dimension_change_under_one_provider_name_clears_vectors() {
     update_index(root, &mut store, &HashedEmbedder::new(128)).unwrap();
     drop(store);
 
-    // Pre-fingerprint index shape: identity is the `embedder` name alone.
-    // `HashedEmbedder` reports "hashed-bow-256" at every width, so the name
-    // is unchanged across a 128 -> 256 switch and only `dim` gives it away.
+    // Pre-fingerprint index shape: `HashedEmbedder` reports "hashed-bow-256"
+    // at every width, so the name is unchanged across a 128 -> 256 switch.
+    // Vectors without a stored fingerprint are never reused (#33), so no
+    // 128-wide row may survive whatever the name says.
     delete_meta_directly(root, "embedding_fingerprint");
 
     let mut store = SqliteStore::open(&index_path(root)).unwrap();

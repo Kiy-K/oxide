@@ -22,7 +22,7 @@ pub use provider::{
 };
 #[allow(unused_imports)]
 pub(crate) use text::qwen3_query_text;
-pub use text::symbol_embed_text;
+pub use text::{symbol_embed_text, SYMBOL_TEXT_RECIPE};
 pub use tokenize::{tokenize, tokenize_into};
 
 pub(crate) mod cache;

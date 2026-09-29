@@ -60,6 +60,17 @@ pub fn update_embeddings_reporting(
         // with this run's canonical serialization so the guard below can
         // compare it as bytes rather than re-parsing it on every write.
         store.set_meta(EMBEDDING_MIGRATION_KEY, &fingerprint_json)?;
+    } else if store
+        .get_meta("embedding_fingerprint")?
+        .is_none_or(|s| s.is_empty())
+    {
+        // First embedding run: nothing published and (per the check above)
+        // no vectors. Mark this run's space in flight before writing any, as
+        // a migration does, so the rows it commits are provably its own: an
+        // interrupted first run then resumes instead of re-embedding
+        // everything, and a concurrent first run of the same provider
+        // shares the space instead of wiping it (#33).
+        store.begin_embedding_migration(&fingerprint_json)?;
     }
 
     // The value every write below asserts the marker still holds. Empty for
@@ -236,13 +247,14 @@ pub fn pending_embedding_count(
 ///    reached), describes the surviving rows.
 /// 2. `embedding_fingerprint` — the real compatibility contract when
 ///    present (Phase 3.3 item 3).
-/// 3. `embedder` + `dim` — the legacy fallback for indices written before
-///    fingerprints existed, so upgrading OXIDE doesn't force a reindex.
+/// 3. No stored fingerprint: the vectors' space was never recorded, not even
+///    their text recipe, so any stored vector is incompatible (#33). The
+///    legacy `embedder` + `dim` pair cannot vouch for the recipe. Only an
+///    index with no vectors to reuse (new, or base-only) is compatible.
 ///
 /// A stored value at any tier that is present but unparseable is treated as
 /// incompatible, never guessed at and never ignored: "unreadable" must not
-/// fail open into the weaker tier below it, or a corrupt fingerprint would
-/// be waved through by a matching legacy name.
+/// fail open into the weaker tier below it.
 fn incompatible_stored_space(
     store: &dyn IndexBackend,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
@@ -273,6 +285,17 @@ fn incompatible_stored_space(
     {
         return Ok(match parse(&raw) {
             Ok(prev) if prev == current_fp => None,
+            Ok(prev) if prev.document_text_recipe != current_fp.document_text_recipe => {
+                Some(format!(
+                    "embedding text recipe changed ({} -> {}); re-embedding all symbols",
+                    if prev.document_text_recipe.is_empty() {
+                        "unrecorded"
+                    } else {
+                        &prev.document_text_recipe
+                    },
+                    current_fp.document_text_recipe
+                ))
+            }
             Ok(prev) => Some(format!(
                 "embedding space changed ({} -> {}); re-embedding all symbols",
                 prev.model, current_fp.model
@@ -283,26 +306,13 @@ fn incompatible_stored_space(
         });
     }
 
-    // Legacy index. The name check this codebase has always used, plus the
-    // dimension: the name does not imply the width. `HashedEmbedder` reports
-    // one fixed name at every `dim`, and a served model can change output
-    // width without changing its label, so a name-only comparison happily
-    // reuses rows of the wrong shape.
-    let prev_name = store.get_meta("embedder")?.filter(|s| !s.is_empty());
-    let prev_dim = store.get_meta("dim")?.filter(|s| !s.is_empty());
-    if let Some(prev) = prev_name.filter(|p| p != embedder.name()) {
-        return Ok(Some(format!(
-            "embedder changed ({} -> {}); re-embedding all symbols",
-            prev,
-            embedder.name()
-        )));
-    }
-    if let Some(prev) = prev_dim.filter(|d| *d != embedder.dim().to_string()) {
-        return Ok(Some(format!(
-            "embedding dimension changed ({} -> {}); re-embedding all symbols",
-            prev,
-            embedder.dim()
-        )));
+    // Unversioned vectors: published before fingerprints existed, or left
+    // by an interrupted first run. Nothing records which space or text
+    // recipe produced them, so none may be reused.
+    if !store.all_embeddings()?.is_empty() {
+        return Ok(Some(
+            "stored vectors have no embedding fingerprint; re-embedding all symbols".to_string(),
+        ));
     }
     Ok(None)
 }
@@ -311,7 +321,7 @@ fn incompatible_stored_space(
 /// changed since it was computed — the embedding-space-agnostic half of
 /// [`pending_embedding_count`]'s check, split out so a caller that has
 /// already established embedder compatibility some other way (e.g.
-/// `RepositoryService::status`'s existing name-based `embedder_current`
+/// `RepositoryService::status`'s existing metadata-only `embedder_current`
 /// check, which is deliberately network-free) doesn't need a live
 /// `EmbeddingProvider` just to ask "how many symbols are stale."
 pub fn content_stale_embedding_count(store: &dyn IndexBackend) -> Result<usize> {
@@ -324,4 +334,35 @@ pub fn content_stale_embedding_count(store: &dyn IndexBackend) -> Result<usize> 
             None => true,
         })
         .count())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::embeddings::HashedEmbedder;
+    use crate::index::{update_base, update_index, SqliteStore};
+
+    /// #33: with no stored fingerprint, stored vectors are of unrecorded
+    /// space and must be re-embedded, but an index with no vectors has
+    /// nothing to migrate and must not be judged incompatible.
+    #[test]
+    fn no_stored_fingerprint_is_incompatible_only_when_vectors_exist() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path().canonicalize().unwrap();
+        std::fs::write(root.join("thing.py"), "def thing():\n    return 1\n").unwrap();
+        let mut store = SqliteStore::open(&root.join(".oxide").join("index.db")).unwrap();
+        let embedder = HashedEmbedder::default();
+
+        update_base(&root, &mut store, &IndexOptions::default()).unwrap();
+        assert!(store.get_meta("embedding_fingerprint").unwrap().is_none());
+        assert!(store.all_embeddings().unwrap().is_empty());
+        assert_eq!(incompatible_stored_space(&store, &embedder).unwrap(), None);
+
+        update_index(&root, &mut store, &embedder).unwrap();
+        assert_eq!(incompatible_stored_space(&store, &embedder).unwrap(), None);
+        store.set_meta("embedding_fingerprint", "").unwrap();
+        assert!(incompatible_stored_space(&store, &embedder)
+            .unwrap()
+            .is_some());
+    }
 }

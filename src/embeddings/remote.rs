@@ -18,6 +18,7 @@
 
 use crate::embeddings::{
     EmbeddingProvider, EmbeddingSpaceFingerprint, EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
+    SYMBOL_TEXT_RECIPE,
 };
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -275,6 +276,7 @@ impl EmbeddingProvider for OpenAiCompatibleEmbedder {
             dimension: self.dim,
             query_profile: "none".to_string(),
             document_profile: "none".to_string(),
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: "unspecified".to_string(),
             normalization: "unspecified".to_string(),
             similarity: "cosine".to_string(),
@@ -425,6 +427,7 @@ impl EmbeddingProvider for VoyageEmbedder {
             dimension: self.dim,
             query_profile: "voyage:query".to_string(),
             document_profile: "voyage:document".to_string(),
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: "unspecified".to_string(),
             normalization: "unspecified".to_string(),
             similarity: "cosine".to_string(),
@@ -564,6 +567,7 @@ impl EmbeddingProvider for JinaEmbedder {
             dimension: self.dim,
             query_profile: "jina:retrieval.query".to_string(),
             document_profile: "jina:retrieval.passage".to_string(),
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: "unspecified".to_string(),
             normalization: "unspecified".to_string(),
             similarity: "cosine".to_string(),
@@ -798,6 +802,53 @@ mod tests {
             name: "voyage:voyage-3-large".to_string(),
         };
         assert_ne!(a.fingerprint(), b.fingerprint());
+    }
+
+    /// #33: every remote provider records the canonical symbol-text recipe,
+    /// and the serialized form (the persisted `embedding_fingerprint` and the
+    /// embedding-cache namespace) is pinned byte for byte.
+    #[test]
+    fn remote_fingerprints_pin_serialized_json_with_the_text_recipe() {
+        let openai = OpenAiCompatibleEmbedder {
+            client: RemoteHttpClient::new("http://unused", "key"),
+            model: "text-embedding-3-small".to_string(),
+            base_url: "https://api.example.com/v1".to_string(),
+            dim: 4,
+            name: "openai:text-embedding-3-small".to_string(),
+        };
+        let voyage = VoyageEmbedder {
+            client: RemoteHttpClient::new("http://unused", "key"),
+            model: "voyage-code-3".to_string(),
+            output_dimension: None,
+            dim: 4,
+            name: "voyage:voyage-code-3".to_string(),
+        };
+        let jina = JinaEmbedder {
+            client: RemoteHttpClient::new("http://unused", "key"),
+            model: "jina-embeddings-v3".to_string(),
+            dimensions: None,
+            dim: 4,
+            name: "jina:jina-embeddings-v3".to_string(),
+        };
+        let cases: [(&dyn EmbeddingProvider, &str); 3] = [
+            (
+                &openai,
+                r#"{"schema_version":2,"model":"text-embedding-3-small","artifact_revision":"https://api.example.com/v1","quantization":"","representation":"dense","dimension":4,"query_profile":"none","document_profile":"none","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#,
+            ),
+            (
+                &voyage,
+                r#"{"schema_version":2,"model":"voyage-code-3","artifact_revision":"","quantization":"","representation":"dense","dimension":4,"query_profile":"voyage:query","document_profile":"voyage:document","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#,
+            ),
+            (
+                &jina,
+                r#"{"schema_version":2,"model":"jina-embeddings-v3","artifact_revision":"","quantization":"","representation":"dense","dimension":4,"query_profile":"jina:retrieval.query","document_profile":"jina:retrieval.passage","document_text_recipe":"symbol-text:v1","pooling":"unspecified","normalization":"unspecified","similarity":"cosine"}"#,
+            ),
+        ];
+        for (provider, expected) in cases {
+            let fp = provider.fingerprint();
+            assert_eq!(fp.document_text_recipe, SYMBOL_TEXT_RECIPE);
+            assert_eq!(serde_json::to_string(&fp).unwrap(), expected);
+        }
     }
 
     #[test]

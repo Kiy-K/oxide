@@ -141,25 +141,15 @@ fn main() -> anyhow::Result<()> {
 
     // Provenance gate: refuse to mix embedding spaces rather than silently
     // scoring a query vector from provider A against document vectors from
-    // provider B. Same fingerprint-first, name+dim-fallback contract as
-    // `RepositoryService::validate_index` (service/repository.rs) — comparing only the
-    // provider *name* would pass a provider that kept the same URL/model
-    // label but started returning a different dimension, silently
-    // degrading every result to lexical-only once every stored vector
-    // fails `RetrievalEngine::search`'s length check.
+    // provider B. Same fingerprint contract as
+    // `RepositoryService::validate_index` (service/repository.rs): a missing
+    // or unreadable fingerprint means vectors of unrecorded space and text
+    // recipe (#33), which no provider name or dimension can vouch for.
     let stored_fp: Option<EmbeddingSpaceFingerprint> = store
         .get_meta("embedding_fingerprint")?
         .filter(|s| !s.is_empty())
         .and_then(|s| serde_json::from_str(&s).ok());
-    let compatible = match &stored_fp {
-        Some(prev) => *prev == inner.fingerprint(),
-        None => {
-            let stored_embedder = store.get_meta("embedder")?;
-            let stored_dim = store.get_meta("dim")?;
-            stored_embedder.as_deref() == Some(inner.name())
-                && stored_dim.as_deref() == Some(inner.dim().to_string().as_str())
-        }
-    };
+    let compatible = stored_fp.is_some_and(|prev| prev == inner.fingerprint());
     if !compatible {
         anyhow::bail!(
             "embedder mismatch: index was built with a different embedding provider or \

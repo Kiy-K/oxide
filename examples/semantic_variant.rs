@@ -26,7 +26,7 @@ use oxide::context::{build_context_with, ContextOptions};
 use oxide::embedding_cache::SharedEmbeddingCache;
 use oxide::embeddings::{
     symbol_embed_text, EmbeddingProvider, EmbeddingSpaceFingerprint, GemmaQueryPrompt,
-    NativeEmbedder,
+    NativeEmbedder, EMBEDDING_FINGERPRINT_SCHEMA_VERSION, SYMBOL_TEXT_RECIPE,
 };
 use oxide::index::{update_embeddings, IndexOptions, IndexReport};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
@@ -374,7 +374,7 @@ impl EmbeddingProvider for LocalOnnxEmbedder {
     }
     fn fingerprint(&self) -> EmbeddingSpaceFingerprint {
         EmbeddingSpaceFingerprint {
-            schema_version: 1,
+            schema_version: EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
             model: self.label.clone(),
             artifact_revision: self.onnx.clone(),
             quantization: String::new(),
@@ -382,6 +382,7 @@ impl EmbeddingProvider for LocalOnnxEmbedder {
             dimension: self.dim,
             query_profile: "bare".to_string(),
             document_profile: "bare".to_string(),
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: self.pooling.clone(),
             normalization: "l2".to_string(),
             similarity: "cosine".to_string(),

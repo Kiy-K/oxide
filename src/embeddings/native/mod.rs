@@ -1,6 +1,7 @@
 use super::provider::{
     EmbeddingProvider, EmbeddingSpaceFingerprint, EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
 };
+use crate::embeddings::SYMBOL_TEXT_RECIPE;
 mod profiles;
 use super::sessions::{
     auto_embed_sessions, available_memory_mb, embed_sessions_from_env, session_mb, EmbedSessions,
@@ -466,7 +467,7 @@ impl EmbeddingProvider for NativeEmbedder {
         EmbeddingSpaceFingerprint {
             schema_version: EMBEDDING_FINGERPRINT_SCHEMA_VERSION,
             // Profile key, not `self.name` (which already folds the query
-            // variant in for the legacy name-based fallback check) — the
+            // variant in for the name-based `status` check) — the
             // variant has its own field below instead of being smuggled
             // into the model identity.
             model: self.model_id.clone(),
@@ -479,6 +480,7 @@ impl EmbeddingProvider for NativeEmbedder {
             dimension: self.dim,
             query_profile,
             document_profile,
+            document_text_recipe: SYMBOL_TEXT_RECIPE.to_string(),
             pooling: self.pooling.clone(),
             normalization: "l2".to_string(),
             similarity: "cosine".to_string(),
@@ -703,6 +705,26 @@ mod tests {
             bare.embed_query(text),
             with_leftover_prompt.embed_query(text),
             "the ignored query_prompt must not affect embedding output either"
+        );
+    }
+
+    /// #33: the shipped default's fingerprint records the canonical
+    /// symbol-text recipe, pinned byte for byte as persisted.
+    ///
+    /// Ignored by default: needs the Arctic XS Q model cached locally. Run
+    /// with `cargo test --features native-embed -- --ignored
+    /// default_native_fingerprint_pins_serialized_json_with_the_text_recipe`.
+    #[cfg(feature = "native-embed")]
+    #[test]
+    #[ignore]
+    fn default_native_fingerprint_pins_serialized_json_with_the_text_recipe() {
+        let fp = NativeEmbedder::new("arctic-embed-xs-q", GemmaQueryPrompt::Bare)
+            .unwrap()
+            .fingerprint();
+        assert_eq!(fp.document_text_recipe, SYMBOL_TEXT_RECIPE);
+        assert_eq!(
+            serde_json::to_string(&fp).unwrap(),
+            r#"{"schema_version":2,"model":"snowflake-arctic-embed-xs","artifact_revision":"","quantization":"int8","representation":"dense","dimension":384,"query_profile":"prefix:Represent this sentence for searching relevant passages: ","document_profile":"none","document_text_recipe":"symbol-text:v1","pooling":"cls","normalization":"l2","similarity":"cosine"}"#
         );
     }
 
