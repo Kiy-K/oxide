@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /absolute/path/to/oxide/contrib/agent-hooks/claude-code/oxide_suggest.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

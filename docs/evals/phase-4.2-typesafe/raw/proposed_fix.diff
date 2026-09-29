@@ -1,0 +1,83 @@
+diff --git i/src/gitctx.rs w/src/gitctx.rs
+index 28f286d..d1bffd3 100644
+--- i/src/gitctx.rs
++++ w/src/gitctx.rs
+@@ -69,24 +69,41 @@ pub struct GitContext {
+ pub fn changed_symbols_for(deltas: &[FileDelta], symbols: &[Symbol]) -> Vec<ChangedSymbol> {
+     let mut out = Vec::new();
+     for d in deltas {
+-        for s in symbols
++        // Overlap for every candidate first: a class's span necessarily
++        // contains its own methods' spans, so an edit inside one method
++        // overlaps both -- attributing the change to every containing
++        // symbol independently double-counts one edit as two unrelated
++        // "changed" seeds (EXPERIMENT: docs/evals/phase-4.2-typesafe).
++        let hits: Vec<(&Symbol, u32)> = symbols
+             .iter()
+             .filter(|s| s.file == d.file && s.kind != SymbolKind::Module)
+-        {
+-            if let Some(overlap) = d
+-                .added
+-                .iter()
+-                .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
+-                .max()
+-            {
+-                if overlap > 0 {
+-                    out.push(ChangedSymbol {
+-                        symbol: s.clone(),
+-                        added_lines: overlap,
+-                        reason: format!("changed in diff (+{overlap} lines)"),
+-                    });
+-                }
++            .filter_map(|s| {
++                let overlap = d
++                    .added
++                    .iter()
++                    .map(|(a, b)| overlap_len(*a, *b, s.start_line, s.end_line))
++                    .max()?;
++                (overlap > 0).then_some((s, overlap))
++            })
++            .collect();
++        for (s, overlap) in &hits {
++            // Drop a container when a more specific symbol nested strictly
++            // inside its span also overlaps this same delta -- attribute the
++            // change to the innermost overlapping symbol only.
++            let has_nested_hit = hits.iter().any(|(t, _)| {
++                t.qualified_name != s.qualified_name
++                    && t.start_line >= s.start_line
++                    && t.end_line <= s.end_line
++                    && (t.start_line, t.end_line) != (s.start_line, s.end_line)
++            });
++            if has_nested_hit {
++                continue;
+             }
++            out.push(ChangedSymbol {
++                symbol: (*s).clone(),
++                added_lines: *overlap,
++                reason: format!("changed in diff (+{overlap} lines)"),
++            });
+         }
+     }
+     out
+diff --git i/src/relations.rs w/src/relations.rs
+index 9f2918d..373907b 100644
+--- i/src/relations.rs
++++ w/src/relations.rs
+@@ -213,10 +213,15 @@ impl<'a> RelationGraph<'a> {
+                 out.push(("uses".into(), *d));
+             }
+         }
+-        // Definitions imported by this file.
++        // Definitions imported by this file, narrowed to ones the seed
++        // actually references by name -- otherwise importing a single name
++        // from a file pulled in that file's entire unrelated symbol list
++        // (EXPERIMENT: docs/evals/phase-4.2-typesafe).
+         for m in &seed.imports {
+             for d in self.resolve_import(&seed.file, m) {
+-                out.push(("imported-definition".into(), d));
++                if seed.references.contains(&d.name) {
++                    out.push(("imported-definition".into(), d));
++                }
+             }
+         }
+         // Related tests.

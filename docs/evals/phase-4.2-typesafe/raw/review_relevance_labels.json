@@ -1,0 +1,65 @@
+{
+  "_note": "Manually labeled by reading the actual fixture source (eval-agent/tasks/py_bug_retry, ts_bug_store) and the real `oxide review --json` output in review_fixture_output.json. `relevant`=true means: a competent reviewer would want to see this symbol to verify the diff is correct and complete. Each label carries its own reasoning so it can be checked independently rather than taken on faith.",
+  "py_retry_bug": {
+    "diff": "fix: grow retry backoff exponentially instead of shrinking it (RetryPolicy.backoff_ms)",
+    "labels": [
+      {"symbol": "RetryPolicy.wait", "relevant": true, "reason": "direct caller of backoff_ms; must confirm sleep() still uses the new value correctly"},
+      {"symbol": "TestBackoff.test_backoff_grows_with_attempts", "relevant": true, "reason": "the exact test asserting 100/200/400 -- validates this specific fix"},
+      {"symbol": "RetryPolicy.should_retry", "relevant": false, "reason": "different concern (whether to retry at all), doesn't call or get called by backoff_ms"},
+      {"symbol": "RetryPolicy.__init__", "relevant": true, "reason": "defines base_delay_ms, the value the fixed formula multiplies"},
+      {"symbol": "TestBackoff.test_gives_up_after_max_attempts", "relevant": false, "reason": "tests should_retry, unrelated to backoff_ms"},
+      {"symbol": "TestBackoff", "relevant": false, "reason": "bare test class container, no information beyond its two test methods already judged separately"},
+      {"symbol": "app/retry.py:__module__", "relevant": false, "reason": "module-level symbol, redundant with RetryPolicy itself"},
+      {"symbol": "tests/test_retry.py:__module__", "relevant": false, "reason": "module-level symbol, redundant with the test methods already judged"},
+      {"symbol": "HttpClient.__init__", "relevant": false, "reason": "different class, no relation to retry backoff"},
+      {"symbol": "HttpClient", "relevant": false, "reason": "different class, no relation to retry backoff"}
+    ]
+  },
+  "py_retry_clean": {
+    "diff": "docs: document HttpClient.request_json (docstring only, no behavior change)",
+    "labels": [
+      {"symbol": "HttpClient._fetch", "relevant": false, "reason": "sibling method, but a docstring addition needs no verification against it"},
+      {"symbol": "HttpClient.__init__", "relevant": false, "reason": "sibling method, unaffected by a docstring"},
+      {"symbol": "app/http.py:__module__", "relevant": false, "reason": "module-level, no information beyond the docstring itself"},
+      {"symbol": "RetryPolicy", "relevant": false, "reason": "unrelated class, different file"},
+      {"symbol": "TestBackoff", "relevant": false, "reason": "unrelated class, different file"},
+      {"symbol": "tests/test_retry.py:__module__", "relevant": false, "reason": "unrelated file"},
+      {"symbol": "TestBackoff.test_backoff_grows_with_attempts", "relevant": false, "reason": "unrelated to a docstring change"},
+      {"symbol": "RetryPolicy.should_retry", "relevant": false, "reason": "unrelated to a docstring change"},
+      {"symbol": "RetryPolicy.backoff_ms", "relevant": false, "reason": "unrelated to a docstring change"},
+      {"symbol": "TestBackoff.test_gives_up_after_max_attempts", "relevant": false, "reason": "unrelated to a docstring change"}
+    ],
+    "ground_truth_note": "This is the clean/no-genuine-bug control: nothing here should be labeled relevant, by design, mirroring phase-4.1's Bucket-C false-positive test."
+  },
+  "ts_store_bug": {
+    "diff": "fix: advance version on every set() for an existing key (VersionedStore.set)",
+    "labels": [
+      {"symbol": "VersionedStore.get", "relevant": false, "reason": "reads only .value, never touches the version field the fix changes"},
+      {"symbol": "VersionedStore.versionOf", "relevant": true, "reason": "the read-side counterpart of the exact field set() fixes; a reviewer checks these together"},
+      {"symbol": "VersionedStore.constructor", "relevant": true, "reason": "defines initialVersion, which the fixed fallback branch (previous ? ... : this.initialVersion) uses"},
+      {"symbol": "tests/versioned_store.test.ts:__module__", "relevant": true, "reason": "contains the actual test asserting set() increments version correctly"},
+      {"symbol": "AuditLog", "relevant": true, "reason": "AuditLog.record calls store.set() directly; its returned version numbers change behavior with this fix"},
+      {"symbol": "src/versioned_store.ts:__module__", "relevant": false, "reason": "module-level, redundant with VersionedStore itself"},
+      {"symbol": "src/audit.ts:__module__", "relevant": false, "reason": "module-level, redundant with AuditLog itself"},
+      {"symbol": "StoreEntry", "relevant": true, "reason": "the {value, version} shape set() constructs; understanding the version field's type is part of reviewing a version-increment fix"},
+      {"symbol": "AuditLog.record", "relevant": true, "reason": "the actual call site whose returned version changes as a direct consequence of this fix"}
+    ],
+    "ground_truth_note": "AuditLog/AuditLog.record/StoreEntry are real cross-file downstream consumers oxide review's structural expansion is expected to under-reach on, per AGENTS.md's own documented scope-to-seed-files limitation -- a predicted, not surprising, gap."
+  },
+  "ts_store_clean": {
+    "diff": "docs: document AuditLog.record (docstring only, no behavior change)",
+    "labels": [
+      {"symbol": "VersionedStore", "relevant": false, "reason": "unrelated to a docstring on a different class's method"},
+      {"symbol": "AuditLog.record", "relevant": true, "reason": "borderline but included: this is the literal method the docstring documents, oxide attributed the diff to the enclosing class (AuditLog) rather than this method, so a reviewer would still open this method to check the docstring's accuracy"},
+      {"symbol": "tests/versioned_store.test.ts:__module__", "relevant": false, "reason": "unrelated to a docstring"},
+      {"symbol": "StoreEntry", "relevant": false, "reason": "unrelated to a docstring on AuditLog"},
+      {"symbol": "VersionedStore.constructor", "relevant": false, "reason": "unrelated to a docstring on AuditLog"},
+      {"symbol": "VersionedStore.get", "relevant": false, "reason": "unrelated to a docstring on AuditLog"},
+      {"symbol": "VersionedStore.versionOf", "relevant": false, "reason": "unrelated to a docstring on AuditLog"},
+      {"symbol": "VersionedStore.set", "relevant": false, "reason": "unrelated to a docstring on AuditLog"},
+      {"symbol": "src/audit.ts:__module__", "relevant": false, "reason": "module-level, redundant with AuditLog.record itself"},
+      {"symbol": "src/versioned_store.ts:__module__", "relevant": false, "reason": "unrelated file"}
+    ],
+    "ground_truth_note": "Clean control: only the documented method itself is relevant; everything VersionedStore-related is pulled in purely because audit.ts imports from it, not because the docstring touches it."
+  }
+}

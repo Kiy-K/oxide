@@ -1,0 +1,34 @@
+{"id": "A1", "bucket": "A", "expect_fire": true, "prompt": "Users are seeing duplicate email notifications for the same event sometimes. Find where notification dedup is supposed to happen and tell me why it might be failing."}
+{"id": "A2", "bucket": "A", "expect_fire": true, "prompt": "There's a report that pagination sometimes skips a row when items are inserted between page loads. Find where page offsets are computed and identify the exact logic involved."}
+{"id": "A3", "bucket": "A", "expect_fire": true, "prompt": "Nobody remembers where the rate limiter actually enforces its window reset. Find it and report the file, the function, and what calls it."}
+{"id": "A4", "bucket": "A", "expect_fire": true, "prompt": "The export job doesn't seem to close its temp files the way engineers expect, and disk usage creeps up over time. Find where temp files are created and cleaned up."}
+{"id": "A5", "bucket": "A", "expect_fire": true, "prompt": "Some users report that their session gets logged out randomly even with 'remember me' checked. Find where session expiry is decided in this repo."}
+{"id": "A6", "bucket": "A", "expect_fire": true, "prompt": "Where is the retry backoff for the webhook delivery worker implemented? I need to understand the current algorithm before changing it."}
+{"id": "A7", "bucket": "A", "expect_fire": true, "prompt": "What calls the function that validates uploaded file types? I want to trace all the entry points before touching anything."}
+{"id": "A8", "bucket": "A", "expect_fire": true, "prompt": "Figure out where the currency conversion rate gets cached and how staleness is checked, we're seeing outdated rates in production."}
+{"id": "A9", "bucket": "A", "expect_fire": true, "prompt": "There's a report that concurrent writes to the same record occasionally lose an update. Find where optimistic locking or versioning is handled, if at all."}
+{"id": "A10", "bucket": "A", "expect_fire": true, "prompt": "Localize the code path that decides whether a coupon code can stack with an existing discount. Behavior seems inconsistent between checkout and cart preview."}
+{"id": "A11", "bucket": "A", "expect_fire": true, "prompt": "Identify where the search index is refreshed after a bulk import, since new items aren't showing up in search results for several minutes."}
+{"id": "A12", "bucket": "A", "expect_fire": true, "prompt": "Which module handles converting user-uploaded images to thumbnails? Quality looks degraded compared to what the spec describes."}
+{"id": "A13", "bucket": "A", "expect_fire": true, "prompt": "Some users complain that undo doesn't restore attachments, only the text body. Find where undo/redo state is captured."}
+{"id": "A14", "bucket": "A", "expect_fire": true, "prompt": "There's a report that the background sync worker sometimes double-processes a queue item after a crash. Find where idempotency for queue processing is (or isn't) enforced."}
+{"id": "B1", "bucket": "B", "expect_fire": true, "prompt": "This repo has a RateLimiter class somewhere. Find every other file that imports or constructs it and report which ones."}
+{"id": "B2", "bucket": "B", "expect_fire": true, "prompt": "Somewhere in the billing module there's a test that checks proration math on a mid-cycle plan change. Find that test and tell me which file it's in."}
+{"id": "B3", "bucket": "B", "expect_fire": true, "prompt": "Find every place that reads the FEATURE_FLAGS config, I want a list before I add a new flag."}
+{"id": "B4", "bucket": "B", "expect_fire": true, "prompt": "There's a CacheEntry struct used for the response cache. Find all the files that construct one directly."}
+{"id": "B5", "bucket": "B", "expect_fire": true, "prompt": "What touches the OrderStatus enum across the codebase? I want to know the blast radius before adding a new status value."}
+{"id": "B6", "bucket": "B", "expect_fire": true, "prompt": "Find every other file in the repo that uses the SessionStore class, or report none if there aren't any."}
+{"id": "C1", "bucket": "C", "expect_fire": false, "prompt": "In `oxidepy/cache.py`, rename the `TTLCache` class to `TimedCache`. Only touch that one file."}
+{"id": "C2", "bucket": "C", "expect_fire": false, "prompt": "In `src/ui/Button.tsx`, add a one-line comment directly above the component saying `// TODO: memoize`. Only touch that one file."}
+{"id": "C3", "bucket": "C", "expect_fire": false, "prompt": "In `oxidepy/http_client.py`, add a module-level docstring line at the very top if one is not already present."}
+{"id": "C4", "bucket": "C", "expect_fire": false, "prompt": "In `src/net/retry.ts`, rename the exported const `defaultRetryPolicy` to `DEFAULT_RETRY_POLICY`."}
+{"id": "C5", "bucket": "C", "expect_fire": false, "prompt": "Open `config/settings.py` and add a new line setting `DEBUG = False` right after the imports."}
+{"id": "C6", "bucket": "C", "expect_fire": false, "prompt": "In `README.md`, fix the typo 'recieve' to 'receive' in the second paragraph."}
+{"id": "C7", "bucket": "C", "expect_fire": false, "prompt": "Bump the version string in `package.json` from 1.2.3 to 1.2.4."}
+{"id": "C8", "bucket": "C", "expect_fire": false, "prompt": "In `src/utils/date.ts`, change the default timezone parameter from 'UTC' to 'America/New_York'."}
+{"id": "C9", "bucket": "C", "expect_fire": false, "prompt": "Add a `.gitignore` entry for `*.tmp` files at the end of the existing `.gitignore`."}
+{"id": "C10", "bucket": "C", "expect_fire": false, "prompt": "In `tests/test_auth.py`, delete the `test_legacy_token_format` test function, only that function."}
+{"id": "C11", "bucket": "C", "expect_fire": false, "prompt": "Rename the variable `usr` to `user` on line 42 of `src/models/user.py`. Only touch that file."}
+{"id": "C12", "bucket": "C", "expect_fire": false, "prompt": "In `Cargo.toml`, add `serde_json = \"1\"` as a dependency."}
+{"id": "C13", "bucket": "C", "expect_fire": false, "prompt": "Find the line in `src/main.rs` that prints the banner and change the text to say 'v2'. Only touch that one file."}
+{"id": "C14", "bucket": "C", "expect_fire": false, "prompt": "In `docs/CHANGELOG.md`, add a one-line entry under Unreleased noting the version bump."}

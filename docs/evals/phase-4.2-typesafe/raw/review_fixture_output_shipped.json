@@ -1,0 +1,1445 @@
+{
+  "py_retry": {
+    "repo": "/tmp/oxide-typesafe-axis2/py_retry",
+    "bug_diff": "de806b07c8537b0f019097d00cc873bfd051090e..4680bf47638b8c73f3af31ea23050b91b5704f4c",
+    "clean_diff": "4680bf47638b8c73f3af31ea23050b91b5704f4c..87c64e34bdc70c7f5c7f31df7a32a5b92599dcb9",
+    "bug_review": {
+      "range": "de806b07c8537b0f019097d00cc873bfd051090e..4680bf47638b8c73f3af31ea23050b91b5704f4c",
+      "changed_files": [
+        "app/retry.py"
+      ],
+      "changed_symbols": [
+        {
+          "qualified_name": "RetryPolicy.backoff_ms",
+          "name": "backoff_ms",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 17,
+          "end_line": 18,
+          "content_hash": 14549295690497324010,
+          "signature": "def backoff_ms(self, attempt):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "added_lines": 1,
+          "reason": "changed in diff (+1 lines)"
+        }
+      ],
+      "related": [
+        {
+          "qualified_name": "TestBackoff.test_backoff_grows_with_attempts",
+          "name": "test_backoff_grows_with_attempts",
+          "kind": "method",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 7,
+          "end_line": 16,
+          "content_hash": 4032397261468816105,
+          "signature": "def test_backoff_grows_with_attempts(self):",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": true,
+          "parent": "TestBackoff",
+          "references": [
+            "RetryPolicy",
+            "backoff_ms"
+          ],
+          "calls": [
+            "RetryPolicy",
+            "assertEqual",
+            "assertLess",
+            "backoff_ms"
+          ],
+          "bases": [],
+          "score": 1.016129,
+          "reasons": [
+            "test\u2190RetryPolicy.backoff_ms",
+            "semantic-neighbor",
+            "semantic=0.667"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.wait",
+          "name": "wait",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 20,
+          "end_line": 22,
+          "content_hash": 1579367513911394457,
+          "signature": "def wait(self, attempt):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [
+            "backoff_ms"
+          ],
+          "calls": [
+            "backoff_ms",
+            "sleep"
+          ],
+          "bases": [],
+          "score": 1.0158731,
+          "reasons": [
+            "sibling\u2190RetryPolicy.backoff_ms",
+            "semantic-neighbor",
+            "semantic=0.646"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy",
+          "name": "RetryPolicy",
+          "kind": "class",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 4,
+          "end_line": 22,
+          "content_hash": 11495913113125378386,
+          "signature": "class RetryPolicy:",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "__init__",
+            "backoff_ms",
+            "should_retry",
+            "wait"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 1.0153847,
+          "reasons": [
+            "parent\u2190RetryPolicy.backoff_ms",
+            "semantic-neighbor",
+            "semantic=0.573"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.__init__",
+          "name": "__init__",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 7,
+          "end_line": 9,
+          "content_hash": 18134108330468059808,
+          "signature": "def __init__(self, max_attempts=3, base_delay_ms=100):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 1.0147059,
+          "reasons": [
+            "sibling\u2190RetryPolicy.backoff_ms",
+            "semantic-neighbor",
+            "semantic=0.446"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.should_retry",
+          "name": "should_retry",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 11,
+          "end_line": 15,
+          "content_hash": 5626617104768395596,
+          "signature": "def should_retry(self, attempt, error):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [
+            "getattr",
+            "isinstance"
+          ],
+          "bases": [],
+          "score": 1.0142857,
+          "reasons": [
+            "sibling\u2190RetryPolicy.backoff_ms",
+            "semantic-neighbor",
+            "semantic=0.376"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "TestBackoff",
+          "name": "TestBackoff",
+          "kind": "class",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 6,
+          "end_line": 22,
+          "content_hash": 3065504212309358183,
+          "signature": "class TestBackoff(unittest.TestCase):",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "RetryPolicy",
+            "backoff_ms",
+            "should_retry",
+            "test_backoff_grows_with_attempts",
+            "test_gives_up_after_max_attempts"
+          ],
+          "calls": [],
+          "bases": [
+            "TestCase"
+          ],
+          "score": 0.015625,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.580"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "tests/test_retry.py:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 1,
+          "end_line": 26,
+          "content_hash": 6649718532362818822,
+          "signature": "import unittest",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "RetryPolicy",
+            "TestBackoff",
+            "backoff_ms",
+            "should_retry",
+            "test_backoff_grows_with_attempts",
+            "test_gives_up_after_max_attempts"
+          ],
+          "calls": [
+            "main"
+          ],
+          "bases": [],
+          "score": 0.015151516,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.555"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "app/retry.py:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 1,
+          "end_line": 22,
+          "content_hash": 6600430393779878329,
+          "signature": "\"\"\"Retry policy for flaky network operations.\"\"\"",
+          "imports": [
+            "time"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "RetryPolicy",
+            "__init__",
+            "backoff_ms",
+            "should_retry",
+            "wait"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.014925373,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.498"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "TestBackoff.test_gives_up_after_max_attempts",
+          "name": "test_gives_up_after_max_attempts",
+          "kind": "method",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 18,
+          "end_line": 22,
+          "content_hash": 17430057271075275961,
+          "signature": "def test_gives_up_after_max_attempts(self):",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": true,
+          "parent": "TestBackoff",
+          "references": [
+            "RetryPolicy",
+            "should_retry"
+          ],
+          "calls": [
+            "RetryPolicy",
+            "TimeoutError",
+            "assertFalse",
+            "assertTrue",
+            "should_retry"
+          ],
+          "bases": [],
+          "score": 0.014492754,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.395"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "HttpClient.__init__",
+          "name": "__init__",
+          "kind": "method",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 7,
+          "end_line": 8,
+          "content_hash": 12275329316729102300,
+          "signature": "def __init__(self, policy):",
+          "imports": [
+            "json"
+          ],
+          "exported": true,
+          "parent": "HttpClient",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.014084507,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.099"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "app/http.py:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 1,
+          "end_line": 16,
+          "content_hash": 2168401027443287857,
+          "signature": "\"\"\"Thin HTTP wrapper used by the dashboard client.\"\"\"",
+          "imports": [
+            "json"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "HttpClient",
+            "__init__",
+            "_fetch",
+            "request_json"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.013888889,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        }
+      ],
+      "recent_commits": [
+        {
+          "sha": "4680bf47638b8c73f3af31ea23050b91b5704f4c",
+          "short_sha": "4680bf4",
+          "message": "fix: grow retry backoff exponentially instead of shrinking it",
+          "author": "eval",
+          "committed_at": "2026-09-20T03:04:17Z"
+        }
+      ],
+      "co_change": []
+    },
+    "clean_review": {
+      "range": "4680bf47638b8c73f3af31ea23050b91b5704f4c..87c64e34bdc70c7f5c7f31df7a32a5b92599dcb9",
+      "changed_files": [
+        "app/http.py"
+      ],
+      "changed_symbols": [
+        {
+          "qualified_name": "HttpClient.request_json",
+          "name": "request_json",
+          "kind": "method",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 10,
+          "end_line": 13,
+          "content_hash": 4504392826727172431,
+          "signature": "def request_json(self, path):",
+          "imports": [
+            "json"
+          ],
+          "exported": true,
+          "parent": "HttpClient",
+          "references": [
+            "_fetch"
+          ],
+          "calls": [
+            "_fetch",
+            "loads"
+          ],
+          "bases": [],
+          "added_lines": 1,
+          "reason": "changed in diff (+1 lines)"
+        }
+      ],
+      "related": [
+        {
+          "qualified_name": "HttpClient",
+          "name": "HttpClient",
+          "kind": "class",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 6,
+          "end_line": 16,
+          "content_hash": 3853604132372443719,
+          "signature": "class HttpClient:",
+          "imports": [
+            "json"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "__init__",
+            "_fetch",
+            "request_json"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 1.016129,
+          "reasons": [
+            "parent\u2190HttpClient.request_json",
+            "semantic-neighbor",
+            "semantic=0.666"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "HttpClient._fetch",
+          "name": "_fetch",
+          "kind": "method",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 15,
+          "end_line": 16,
+          "content_hash": 2488427131866142666,
+          "signature": "def _fetch(self, path):",
+          "imports": [
+            "json"
+          ],
+          "exported": true,
+          "parent": "HttpClient",
+          "references": [],
+          "calls": [
+            "NotImplementedError"
+          ],
+          "bases": [],
+          "score": 1.015625,
+          "reasons": [
+            "sibling\u2190HttpClient.request_json",
+            "semantic-neighbor",
+            "semantic=0.532"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "HttpClient.__init__",
+          "name": "__init__",
+          "kind": "method",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 7,
+          "end_line": 8,
+          "content_hash": 12275329316729102300,
+          "signature": "def __init__(self, policy):",
+          "imports": [
+            "json"
+          ],
+          "exported": true,
+          "parent": "HttpClient",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 1.0153847,
+          "reasons": [
+            "sibling\u2190HttpClient.request_json",
+            "semantic-neighbor",
+            "semantic=0.433"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "app/http.py:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "python",
+          "file": "app/http.py",
+          "start_line": 1,
+          "end_line": 16,
+          "content_hash": 2168401027443287857,
+          "signature": "\"\"\"Thin HTTP wrapper used by the dashboard client.\"\"\"",
+          "imports": [
+            "json"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "HttpClient",
+            "__init__",
+            "_fetch",
+            "request_json"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.015873017,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.552"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "tests/test_retry.py:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 1,
+          "end_line": 26,
+          "content_hash": 6649718532362818822,
+          "signature": "import unittest",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "RetryPolicy",
+            "TestBackoff",
+            "backoff_ms",
+            "should_retry",
+            "test_backoff_grows_with_attempts",
+            "test_gives_up_after_max_attempts"
+          ],
+          "calls": [
+            "main"
+          ],
+          "bases": [],
+          "score": 0.015151516,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "TestBackoff.test_backoff_grows_with_attempts",
+          "name": "test_backoff_grows_with_attempts",
+          "kind": "method",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 7,
+          "end_line": 16,
+          "content_hash": 4032397261468816105,
+          "signature": "def test_backoff_grows_with_attempts(self):",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": true,
+          "parent": "TestBackoff",
+          "references": [
+            "RetryPolicy",
+            "backoff_ms"
+          ],
+          "calls": [
+            "RetryPolicy",
+            "assertEqual",
+            "assertLess",
+            "backoff_ms"
+          ],
+          "bases": [],
+          "score": 0.014925373,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.should_retry",
+          "name": "should_retry",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 11,
+          "end_line": 15,
+          "content_hash": 5626617104768395596,
+          "signature": "def should_retry(self, attempt, error):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [
+            "getattr",
+            "isinstance"
+          ],
+          "bases": [],
+          "score": 0.014705882,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.backoff_ms",
+          "name": "backoff_ms",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 17,
+          "end_line": 18,
+          "content_hash": 14549295690497324010,
+          "signature": "def backoff_ms(self, attempt):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.014492754,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "TestBackoff.test_gives_up_after_max_attempts",
+          "name": "test_gives_up_after_max_attempts",
+          "kind": "method",
+          "language": "python",
+          "file": "tests/test_retry.py",
+          "start_line": 18,
+          "end_line": 22,
+          "content_hash": 17430057271075275961,
+          "signature": "def test_gives_up_after_max_attempts(self):",
+          "imports": [
+            "app.retry",
+            "unittest"
+          ],
+          "exported": true,
+          "parent": "TestBackoff",
+          "references": [
+            "RetryPolicy",
+            "should_retry"
+          ],
+          "calls": [
+            "RetryPolicy",
+            "TimeoutError",
+            "assertFalse",
+            "assertTrue",
+            "should_retry"
+          ],
+          "bases": [],
+          "score": 0.014285714,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy",
+          "name": "RetryPolicy",
+          "kind": "class",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 4,
+          "end_line": 22,
+          "content_hash": 11495913113125378386,
+          "signature": "class RetryPolicy:",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "__init__",
+            "backoff_ms",
+            "should_retry",
+            "wait"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.014084507,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "RetryPolicy.__init__",
+          "name": "__init__",
+          "kind": "method",
+          "language": "python",
+          "file": "app/retry.py",
+          "start_line": 7,
+          "end_line": 9,
+          "content_hash": 18134108330468059808,
+          "signature": "def __init__(self, max_attempts=3, base_delay_ms=100):",
+          "imports": [
+            "time"
+          ],
+          "exported": true,
+          "parent": "RetryPolicy",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.013888889,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        }
+      ],
+      "recent_commits": [
+        {
+          "sha": "87c64e34bdc70c7f5c7f31df7a32a5b92599dcb9",
+          "short_sha": "87c64e3",
+          "message": "docs: document HttpClient.request_json",
+          "author": "eval",
+          "committed_at": "2026-09-20T03:04:17Z"
+        }
+      ],
+      "co_change": []
+    }
+  },
+  "ts_store": {
+    "repo": "/tmp/oxide-typesafe-axis2/ts_store",
+    "bug_diff": "b91545f01cad4173e3d87efa4609b77fa85a28cd..51936a2a7f5d51f74de1002c70d469a0d0d09d5b",
+    "clean_diff": "51936a2a7f5d51f74de1002c70d469a0d0d09d5b..2bb4a6b39845aba3b7b1bb1081a4e815b6881238",
+    "bug_review": {
+      "range": "b91545f01cad4173e3d87efa4609b77fa85a28cd..51936a2a7f5d51f74de1002c70d469a0d0d09d5b",
+      "changed_files": [
+        "src/versioned_store.ts"
+      ],
+      "changed_symbols": [
+        {
+          "qualified_name": "VersionedStore",
+          "name": "VersionedStore",
+          "kind": "class",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 6,
+          "end_line": 25,
+          "content_hash": 4042125663596681677,
+          "signature": "export class VersionedStore<T> {",
+          "imports": [],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "StoreEntry",
+            "constructor",
+            "get",
+            "set",
+            "versionOf"
+          ],
+          "calls": [],
+          "bases": [],
+          "added_lines": 3,
+          "reason": "changed in diff (+3 lines)"
+        },
+        {
+          "qualified_name": "VersionedStore.set",
+          "name": "set",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 15,
+          "end_line": 20,
+          "content_hash": 9688746172470717193,
+          "signature": "set(key: string, value: T): number {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [
+            "get"
+          ],
+          "calls": [
+            "get",
+            "set"
+          ],
+          "bases": [],
+          "added_lines": 2,
+          "reason": "changed in diff (+2 lines)"
+        }
+      ],
+      "related": [
+        {
+          "qualified_name": "VersionedStore.get",
+          "name": "get",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 11,
+          "end_line": 13,
+          "content_hash": 3560484547781643815,
+          "signature": "get(key: string): T | undefined {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [],
+          "calls": [
+            "get"
+          ],
+          "bases": [],
+          "score": 2.015873,
+          "reasons": [
+            "child\u2190VersionedStore",
+            "sibling\u2190VersionedStore.set",
+            "semantic-neighbor",
+            "semantic=0.587"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.versionOf",
+          "name": "versionOf",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 22,
+          "end_line": 24,
+          "content_hash": 5810858998350340065,
+          "signature": "versionOf(key: string): number | undefined {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [
+            "get"
+          ],
+          "calls": [
+            "get"
+          ],
+          "bases": [],
+          "score": 2.0153847,
+          "reasons": [
+            "child\u2190VersionedStore",
+            "sibling\u2190VersionedStore.set",
+            "semantic-neighbor",
+            "semantic=0.559"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.constructor",
+          "name": "constructor",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 9,
+          "end_line": 9,
+          "content_hash": 3594928901529709373,
+          "signature": "constructor(private initialVersion = 1) {}",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 2.014706,
+          "reasons": [
+            "child\u2190VersionedStore",
+            "sibling\u2190VersionedStore.set",
+            "semantic-neighbor",
+            "semantic=0.486"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "tests/versioned_store.test.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "tests/versioned_store.test.ts",
+          "start_line": 1,
+          "end_line": 24,
+          "content_hash": 6371887891447424265,
+          "signature": "import { test } from 'node:test';",
+          "imports": [
+            "../src/audit.ts",
+            "../src/versioned_store.ts",
+            "node:assert",
+            "node:test"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "AuditLog",
+            "VersionedStore",
+            "record",
+            "set",
+            "versionOf"
+          ],
+          "calls": [
+            "equal",
+            "notEqual",
+            "record",
+            "set",
+            "test",
+            "versionOf"
+          ],
+          "bases": [],
+          "score": 2.0140846,
+          "reasons": [
+            "test\u2190VersionedStore",
+            "test\u2190VersionedStore.set",
+            "semantic-neighbor",
+            "semantic=0.412"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "AuditLog",
+          "name": "AuditLog",
+          "kind": "class",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 4,
+          "end_line": 13,
+          "content_hash": 800395202002659221,
+          "signature": "export class AuditLog {",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "VersionedStore",
+            "get",
+            "record",
+            "set"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.015625,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.585"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "src/versioned_store.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 1,
+          "end_line": 25,
+          "content_hash": 15167702947937880205,
+          "signature": "export interface StoreEntry<T> {",
+          "imports": [],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "StoreEntry",
+            "VersionedStore",
+            "constructor",
+            "get",
+            "set",
+            "versionOf"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.015151516,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.549"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "src/audit.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "content_hash": 1455989091781353459,
+          "signature": "import { VersionedStore } from './versioned_store';",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "AuditLog",
+            "VersionedStore",
+            "get",
+            "record",
+            "set"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.014925373,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.523"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "StoreEntry",
+          "name": "StoreEntry",
+          "kind": "interface",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "content_hash": 1016933459651750982,
+          "signature": "export interface StoreEntry<T> {",
+          "imports": [],
+          "exported": true,
+          "parent": null,
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.014492754,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.475"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "AuditLog.record",
+          "name": "record",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 8,
+          "end_line": 12,
+          "content_hash": 13783639516191799394,
+          "signature": "record(eventId: string, line: string): number {",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": false,
+          "parent": "AuditLog",
+          "references": [
+            "get",
+            "set"
+          ],
+          "calls": [
+            "get",
+            "set"
+          ],
+          "bases": [],
+          "score": 0.014285714,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.450"
+          ],
+          "snippet": ""
+        }
+      ],
+      "recent_commits": [
+        {
+          "sha": "51936a2a7f5d51f74de1002c70d469a0d0d09d5b",
+          "short_sha": "51936a2",
+          "message": "fix: advance version on every set() for an existing key",
+          "author": "eval",
+          "committed_at": "2026-09-20T03:04:18Z"
+        }
+      ],
+      "co_change": []
+    },
+    "clean_review": {
+      "range": "51936a2a7f5d51f74de1002c70d469a0d0d09d5b..2bb4a6b39845aba3b7b1bb1081a4e815b6881238",
+      "changed_files": [
+        "src/audit.ts"
+      ],
+      "changed_symbols": [
+        {
+          "qualified_name": "AuditLog",
+          "name": "AuditLog",
+          "kind": "class",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 4,
+          "end_line": 13,
+          "content_hash": 800395202002659221,
+          "signature": "export class AuditLog {",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "VersionedStore",
+            "get",
+            "record",
+            "set"
+          ],
+          "calls": [],
+          "bases": [],
+          "added_lines": 1,
+          "reason": "changed in diff (+1 lines)"
+        }
+      ],
+      "related": [
+        {
+          "qualified_name": "VersionedStore",
+          "name": "VersionedStore",
+          "kind": "class",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 6,
+          "end_line": 25,
+          "content_hash": 4042125663596681677,
+          "signature": "export class VersionedStore<T> {",
+          "imports": [],
+          "exported": true,
+          "parent": null,
+          "references": [
+            "StoreEntry",
+            "constructor",
+            "get",
+            "set",
+            "versionOf"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 2.0153847,
+          "reasons": [
+            "uses\u2190AuditLog",
+            "imported-definition\u2190AuditLog",
+            "semantic-neighbor",
+            "semantic=0.207"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "AuditLog.record",
+          "name": "record",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 8,
+          "end_line": 12,
+          "content_hash": 13783639516191799394,
+          "signature": "record(eventId: string, line: string): number {",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": false,
+          "parent": "AuditLog",
+          "references": [
+            "get",
+            "set"
+          ],
+          "calls": [
+            "get",
+            "set"
+          ],
+          "bases": [],
+          "score": 1.016129,
+          "reasons": [
+            "child\u2190AuditLog",
+            "semantic-neighbor",
+            "semantic=0.361"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "tests/versioned_store.test.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "tests/versioned_store.test.ts",
+          "start_line": 1,
+          "end_line": 24,
+          "content_hash": 6371887891447424265,
+          "signature": "import { test } from 'node:test';",
+          "imports": [
+            "../src/audit.ts",
+            "../src/versioned_store.ts",
+            "node:assert",
+            "node:test"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "AuditLog",
+            "VersionedStore",
+            "record",
+            "set",
+            "versionOf"
+          ],
+          "calls": [
+            "equal",
+            "notEqual",
+            "record",
+            "set",
+            "test",
+            "versionOf"
+          ],
+          "bases": [],
+          "score": 1.015625,
+          "reasons": [
+            "test\u2190AuditLog",
+            "semantic-neighbor",
+            "semantic=0.242"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.get",
+          "name": "get",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 11,
+          "end_line": 13,
+          "content_hash": 3560484547781643815,
+          "signature": "get(key: string): T | undefined {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [],
+          "calls": [
+            "get"
+          ],
+          "bases": [],
+          "score": 1.0144928,
+          "reasons": [
+            "imported-definition\u2190AuditLog",
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.set",
+          "name": "set",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 15,
+          "end_line": 20,
+          "content_hash": 9688746172470717193,
+          "signature": "set(key: string, value: T): number {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [
+            "get"
+          ],
+          "calls": [
+            "get",
+            "set"
+          ],
+          "bases": [],
+          "score": 1.0140845,
+          "reasons": [
+            "imported-definition\u2190AuditLog",
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "src/audit.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "src/audit.ts",
+          "start_line": 1,
+          "end_line": 13,
+          "content_hash": 1455989091781353459,
+          "signature": "import { VersionedStore } from './versioned_store';",
+          "imports": [
+            "./versioned_store"
+          ],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "AuditLog",
+            "VersionedStore",
+            "get",
+            "record",
+            "set"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.015873017,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.354"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "StoreEntry",
+          "name": "StoreEntry",
+          "kind": "interface",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 1,
+          "end_line": 4,
+          "content_hash": 1016933459651750982,
+          "signature": "export interface StoreEntry<T> {",
+          "imports": [],
+          "exported": true,
+          "parent": null,
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.015151516,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.096"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "src/versioned_store.ts:__module__",
+          "name": "__module__",
+          "kind": "module",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 1,
+          "end_line": 25,
+          "content_hash": 15167702947937880205,
+          "signature": "export interface StoreEntry<T> {",
+          "imports": [],
+          "exported": false,
+          "parent": null,
+          "references": [
+            "StoreEntry",
+            "VersionedStore",
+            "constructor",
+            "get",
+            "set",
+            "versionOf"
+          ],
+          "calls": [],
+          "bases": [],
+          "score": 0.014925373,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.066"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.constructor",
+          "name": "constructor",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 9,
+          "end_line": 9,
+          "content_hash": 3594928901529709373,
+          "signature": "constructor(private initialVersion = 1) {}",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [],
+          "calls": [],
+          "bases": [],
+          "score": 0.014705882,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        },
+        {
+          "qualified_name": "VersionedStore.versionOf",
+          "name": "versionOf",
+          "kind": "method",
+          "language": "typescript",
+          "file": "src/versioned_store.ts",
+          "start_line": 22,
+          "end_line": 24,
+          "content_hash": 5810858998350340065,
+          "signature": "versionOf(key: string): number | undefined {",
+          "imports": [],
+          "exported": false,
+          "parent": "VersionedStore",
+          "references": [
+            "get"
+          ],
+          "calls": [
+            "get"
+          ],
+          "bases": [],
+          "score": 0.014285714,
+          "reasons": [
+            "semantic-neighbor",
+            "semantic=0.000"
+          ],
+          "snippet": ""
+        }
+      ],
+      "recent_commits": [
+        {
+          "sha": "2bb4a6b39845aba3b7b1bb1081a4e815b6881238",
+          "short_sha": "2bb4a6b",
+          "message": "docs: document AuditLog.record",
+          "author": "eval",
+          "committed_at": "2026-09-20T03:04:18Z"
+        }
+      ],
+      "co_change": []
+    }
+  }
+}
