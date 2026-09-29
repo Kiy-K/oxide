@@ -7,8 +7,16 @@
 //! regression, not a new baseline. On a mismatch the actual output is
 //! written next to the build's temp dir for diffing.
 //!
-//! One test in this binary on purpose: it sets `OXIDE_EMBED_NATIVE` and
-//! `OXIDE_DEBUG_DUMP_KEPT`, which are process-global.
+//! One test in this binary on purpose: it sets `OXIDE_EMBED_NATIVE`,
+//! `OXIDE_DEBUG_DUMP_KEPT` and the git configuration below, which are
+//! process-global.
+//!
+//! Git is pinned because `review`/`--git` read `git diff`, whose hunks follow
+//! the host's `diff.algorithm`: the golden was captured with
+//! `diff.algorithm=histogram`, and git's default (myers) splits one
+//! `oxidepy/retry.py` hunk differently, which changes review's changed
+//! symbols. Every git process this test starts — its own, the service's and
+//! the CLI's — ignores system/global config and sees exactly that setting.
 
 use oxide::index::IndexOptions;
 use oxide::retrieval::{RetrievalMode, SearchMode};
@@ -142,7 +150,14 @@ type Case<'a> = (
 fn candidate_output_matches_the_pre_s3_golden() {
     // This binary holds a single test, so nothing else reads the
     // environment concurrently.
-    unsafe { std::env::set_var("OXIDE_EMBED_NATIVE", "hashed") };
+    unsafe {
+        std::env::set_var("OXIDE_EMBED_NATIVE", "hashed");
+        std::env::set_var("GIT_CONFIG_NOSYSTEM", "1");
+        std::env::set_var("GIT_CONFIG_GLOBAL", "/dev/null");
+        std::env::set_var("GIT_CONFIG_COUNT", "1");
+        std::env::set_var("GIT_CONFIG_KEY_0", "diff.algorithm");
+        std::env::set_var("GIT_CONFIG_VALUE_0", "histogram");
+    }
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures");
     let cases: [Case<'_>; 3] = [
         (
