@@ -45,7 +45,7 @@ fn main() -> anyhow::Result<()> {
     let store = SqliteStore::open_read_only(&dbpath)?;
     let symbols = store.all_symbols()?;
     let root = store
-        .get_meta("root")?
+        .get_meta(oxide::storage::ROOT_KEY)?
         .map(PathBuf::from)
         .unwrap_or_else(|| repo.clone());
     println!("repo={} symbols={}", repo.display(), symbols.len());

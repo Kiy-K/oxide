@@ -103,7 +103,7 @@ fn check(repo: &Path, workdir: &Path) -> anyhow::Result<Option<Outcome>> {
 
     let root = {
         let store = SqliteStore::open_read_only(&snapshot)?;
-        store.get_meta("root")?.map(PathBuf::from)
+        store.get_meta(oxide::storage::ROOT_KEY)?.map(PathBuf::from)
     };
     let Some(root) = root else {
         println!("  {name}: no root in meta, skipped");

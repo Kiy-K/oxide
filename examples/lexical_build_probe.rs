@@ -24,7 +24,7 @@ fn main() -> anyhow::Result<()> {
     let symbols = store.all_symbols()?;
     let load_ms = t.elapsed().as_secs_f64() * 1000.0;
 
-    let root = store.get_meta("root")?.map(PathBuf::from);
+    let root = store.get_meta(oxide::storage::ROOT_KEY)?.map(PathBuf::from);
     let root = root.as_deref().unwrap_or(Path::new("."));
 
     // Body reading alone, same per-file caching `LexicalIndex::build` uses.

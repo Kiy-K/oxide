@@ -19,8 +19,13 @@ mod sqlite;
 
 pub use backend::{IndexBackend, IndexStats, ParsedFile, SymbolRelations};
 pub use row::{CORPUS_SQL, LEAN_CORPUS_SQL};
+// The identity keys stay crate-internal: outside the crate the stored
+// embedding space is read only through `index::EmbeddingSpace`.
+pub(crate) use schema::{
+    DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY, EXTRACTION_VERSION_KEY, SCHEMA_VERSION_KEY,
+};
 pub use schema::{
     EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION, INDEX_GENERATION_KEY, INDEX_ID_KEY,
-    LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION, SCHEMA_VERSION,
+    LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION, ROOT_KEY, SCHEMA_VERSION,
 };
 pub use sqlite::{is_locked_error, SqliteStore, BULK_WAL_AUTOCHECKPOINT_PAGES};

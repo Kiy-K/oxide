@@ -6,8 +6,11 @@
 //! - `pipeline`: the per-file path both base entry points share — parse →
 //!   references → embedding-input hash → relations + postings → one
 //!   `replace_file` transaction per file.
-//! - `embed`: the embedding stage — embedding-space compatibility, the
-//!   provider-migration marker, (re)embedding, and the closing
+//! - `space`: the embedding-space authority — the one interpretation of
+//!   the stored fingerprint and migration marker, for the indexer,
+//!   `validate_index`, `status` and research harnesses.
+//! - `embed`: the embedding stage — acting on `space`'s verdict (the
+//!   provider-migration marker, clearing), (re)embedding, and the closing
 //!   `set_meta_all` publish.
 
 pub use crate::storage::{
@@ -18,12 +21,16 @@ pub use crate::storage::{
 mod base;
 mod embed;
 mod pipeline;
+mod space;
 
 pub use base::{update_base, update_base_for_files, update_base_reporting};
+#[cfg(test)]
+pub(crate) use embed::incompatible_stored_space;
 pub use embed::{
     content_stale_embedding_count, pending_embedding_count, update_embeddings,
     update_embeddings_reporting,
 };
+pub use space::{EmbeddingSpace, SpaceRead};
 
 use anyhow::Result;
 use serde::Serialize;

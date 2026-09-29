@@ -33,7 +33,7 @@
 
 use oxide::context::{build_context, ContextOptions};
 use oxide::embeddings::{open_embedder, EmbeddingProvider, EmbeddingSpaceFingerprint};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{EmbeddingSpace, SpaceRead, SqliteStore};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -141,23 +141,21 @@ fn main() -> anyhow::Result<()> {
 
     // Provenance gate: refuse to mix embedding spaces rather than silently
     // scoring a query vector from provider A against document vectors from
-    // provider B. Same fingerprint contract as
-    // `RepositoryService::validate_index` (service/repository.rs): a missing
-    // or unreadable fingerprint means vectors of unrecorded space and text
-    // recipe (#33), which no provider name or dimension can vouch for.
-    let stored_fp: Option<EmbeddingSpaceFingerprint> = store
-        .get_meta("embedding_fingerprint")?
-        .filter(|s| !s.is_empty())
-        .and_then(|s| serde_json::from_str(&s).ok());
-    let compatible = stored_fp.is_some_and(|prev| prev == inner.fingerprint());
-    if !compatible {
-        anyhow::bail!(
+    // provider B. The same `EmbeddingSpace` verdict production search gets
+    // from `RepositoryService::validate_index`, migration marker included.
+    match EmbeddingSpace::read(&store)?.readable_by(&inner.fingerprint()) {
+        SpaceRead::Compatible => {}
+        SpaceRead::Migrating => anyhow::bail!(
+            "index embeddings were left mid-migration by an interrupted `oxide index` — \
+             refusing to run (would silently mix embedding spaces); finish the reindex first"
+        ),
+        SpaceRead::Mismatch => anyhow::bail!(
             "embedder mismatch: index was built with a different embedding provider or \
              dimension than the configured provider {:?} (dim {}) — refusing to run (would \
              silently mix embedding spaces); reindex with the intended embedder first",
             inner.name(),
             inner.dim()
-        );
+        ),
     }
     let embedder = CachingEmbedder::new(inner);
 

@@ -1,10 +1,14 @@
-//! Embedding stage: embedding-space compatibility (`incompatible_stored_space`,
-//! the single decision point), the provider-migration marker, (re)embedding,
-//! and the closing `set_meta_all` that publishes the index identity.
+//! Embedding stage: acting on `space::EmbeddingSpace`'s verdict (the
+//! provider-migration marker, clearing), (re)embedding, and the closing
+//! `set_meta_all` that publishes the index identity.
 
+use super::space::{EmbeddingSpace, SpaceWrite};
 use super::{count_summary, IndexOptions, IndexReport, NoProgress, ProgressSink, Stage};
 use crate::embeddings::symbol_embed_text;
-use crate::storage::{IndexBackend, EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION, SCHEMA_VERSION};
+use crate::storage::{
+    IndexBackend, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY, EMBEDDING_MIGRATION_KEY,
+    EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, ROOT_KEY, SCHEMA_VERSION, SCHEMA_VERSION_KEY,
+};
 use crate::symbols::Symbol;
 use anyhow::Result;
 use std::path::Path;
@@ -46,31 +50,24 @@ pub fn update_embeddings_reporting(
     // and marking the migration in flight is one transaction, so from here
     // on "marker present" implies "every surviving vector is the marker's"
     // — see `IndexBackend::begin_embedding_migration`.
-    let current_fp = embedder.fingerprint();
-    let fingerprint_json = serde_json::to_string(&current_fp)?;
-    let resuming = store
-        .get_meta(EMBEDDING_MIGRATION_KEY)?
-        .is_some_and(|s| !s.is_empty());
-    if let Some(reason) = incompatible_stored_space(store, embedder)? {
-        eprintln!("oxide: {reason}");
-        store.begin_embedding_migration(&fingerprint_json)?;
-    } else if resuming {
-        // Compatible *and* marked means an earlier run of this same provider
-        // was interrupted: its rows are ours to finish. Rewrite the marker
-        // with this run's canonical serialization so the guard below can
-        // compare it as bytes rather than re-parsing it on every write.
-        store.set_meta(EMBEDDING_MIGRATION_KEY, &fingerprint_json)?;
-    } else if store
-        .get_meta("embedding_fingerprint")?
-        .is_none_or(|s| s.is_empty())
-    {
-        // First embedding run: nothing published and (per the check above)
-        // no vectors. Mark this run's space in flight before writing any, as
-        // a migration does, so the rows it commits are provably its own: an
-        // interrupted first run then resumes instead of re-embedding
-        // everything, and a concurrent first run of the same provider
-        // shares the space instead of wiping it (#33).
-        store.begin_embedding_migration(&fingerprint_json)?;
+    let fingerprint_json = serde_json::to_string(&embedder.fingerprint())?;
+    match write_plan(store, embedder)? {
+        SpaceWrite::Migrate(reason) => {
+            eprintln!("oxide: {reason}");
+            store.begin_embedding_migration(&fingerprint_json)?;
+        }
+        // An earlier run of this same provider was interrupted: its rows
+        // are ours to finish. Rewrite the marker with this run's canonical
+        // serialization so the guard below can compare it as bytes rather
+        // than re-parsing it on every write.
+        SpaceWrite::Resume => store.set_meta(EMBEDDING_MIGRATION_KEY, &fingerprint_json)?,
+        // Nothing published and no vectors. Mark this run's space in flight
+        // before writing any, as a migration does, so the rows it commits
+        // are provably its own: an interrupted first run then resumes
+        // instead of re-embedding everything, and a concurrent first run of
+        // the same provider shares the space instead of wiping it (#33).
+        SpaceWrite::FirstRun => store.begin_embedding_migration(&fingerprint_json)?,
+        SpaceWrite::Reuse => {}
     }
 
     // The value every write below asserts the marker still holds. Empty for
@@ -190,12 +187,12 @@ pub fn update_embeddings_reporting(
     store.set_meta_all(
         &expected_space,
         &[
-            ("root", root_str.as_str()),
-            ("embedder", embedder.name()),
-            ("dim", dim_str.as_str()),
-            ("schema_version", schema_str.as_str()),
-            ("extraction_version", extraction_str.as_str()),
-            ("embedding_fingerprint", fingerprint_json.as_str()),
+            (ROOT_KEY, root_str.as_str()),
+            (EMBEDDER_KEY, embedder.name()),
+            (DIM_KEY, dim_str.as_str()),
+            (SCHEMA_VERSION_KEY, schema_str.as_str()),
+            (EXTRACTION_VERSION_KEY, extraction_str.as_str()),
+            (EMBEDDING_FINGERPRINT_KEY, fingerprint_json.as_str()),
             (EMBEDDING_MIGRATION_KEY, ""),
         ],
     )?;
@@ -230,91 +227,29 @@ pub fn pending_embedding_count(
     content_stale_embedding_count(store)
 }
 
-/// Whether the index's stored vectors are usable under `embedder`, and why
-/// not when they aren't: `Some(reason)` means "these vectors belong to a
-/// different embedding space, clear them", `None` means "reuse is safe".
-///
-/// The single decision point for [`update_embeddings`] (which clears on
-/// `Some`) and [`pending_embedding_count`] (which reports every symbol
-/// pending on `Some`). They used to duplicate this comparison, with a
-/// comment on each warning that they must never diverge; sharing it is how
-/// that guarantee stops depending on the comment.
-///
-/// Precedence, strongest evidence first:
-/// 1. [`EMBEDDING_MIGRATION_KEY`] — an unfinished migration. Only ever
-///    written in the same transaction that empties the embeddings table, so
-///    it, not the published metadata (which the interrupted run never
-///    reached), describes the surviving rows.
-/// 2. `embedding_fingerprint` — the real compatibility contract when
-///    present (Phase 3.3 item 3).
-/// 3. No stored fingerprint: the vectors' space was never recorded, not even
-///    their text recipe, so any stored vector is incompatible (#33). The
-///    legacy `embedder` + `dim` pair cannot vouch for the recipe. Only an
-///    index with no vectors to reuse (new, or base-only) is compatible.
-///
-/// A stored value at any tier that is present but unparseable is treated as
-/// incompatible, never guessed at and never ignored: "unreadable" must not
-/// fail open into the weaker tier below it.
-fn incompatible_stored_space(
+/// [`EmbeddingSpace::plan_write`] for `embedder` against `store`'s vectors.
+fn write_plan(
+    store: &dyn IndexBackend,
+    embedder: &dyn crate::embeddings::EmbeddingProvider,
+) -> Result<SpaceWrite> {
+    EmbeddingSpace::read(store)?.plan_write(&embedder.fingerprint(), || {
+        Ok(!store.all_embeddings()?.is_empty())
+    })
+}
+
+/// `Some(reason)` when the stored vectors belong to a different embedding
+/// space than `embedder`'s and must be cleared, `None` when reuse, resuming
+/// or a first run is safe. [`pending_embedding_count`] uses this and
+/// [`update_embeddings`] uses the [`write_plan`] it wraps, so the two can
+/// never diverge.
+pub(crate) fn incompatible_stored_space(
     store: &dyn IndexBackend,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<Option<String>> {
-    let current_fp = embedder.fingerprint();
-    let parse =
-        |raw: &str| serde_json::from_str::<crate::embeddings::EmbeddingSpaceFingerprint>(raw);
-
-    if let Some(raw) = store
-        .get_meta(EMBEDDING_MIGRATION_KEY)?
-        .filter(|s| !s.is_empty())
-    {
-        return Ok(match parse(&raw) {
-            Ok(prev) if prev == current_fp => None,
-            Ok(prev) => Some(format!(
-                "an interrupted migration to {} left this index's vectors mid-flight; re-embedding all symbols under {}",
-                prev.model, current_fp.model
-            )),
-            Err(_) => Some(
-                "an interrupted embedding migration left an unreadable fingerprint; re-embedding all symbols".to_string(),
-            ),
-        });
-    }
-
-    if let Some(raw) = store
-        .get_meta("embedding_fingerprint")?
-        .filter(|s| !s.is_empty())
-    {
-        return Ok(match parse(&raw) {
-            Ok(prev) if prev == current_fp => None,
-            Ok(prev) if prev.document_text_recipe != current_fp.document_text_recipe => {
-                Some(format!(
-                    "embedding text recipe changed ({} -> {}); re-embedding all symbols",
-                    if prev.document_text_recipe.is_empty() {
-                        "unrecorded"
-                    } else {
-                        &prev.document_text_recipe
-                    },
-                    current_fp.document_text_recipe
-                ))
-            }
-            Ok(prev) => Some(format!(
-                "embedding space changed ({} -> {}); re-embedding all symbols",
-                prev.model, current_fp.model
-            )),
-            Err(_) => Some(
-                "stored embedding fingerprint is unreadable; re-embedding all symbols".to_string(),
-            ),
-        });
-    }
-
-    // Unversioned vectors: published before fingerprints existed, or left
-    // by an interrupted first run. Nothing records which space or text
-    // recipe produced them, so none may be reused.
-    if !store.all_embeddings()?.is_empty() {
-        return Ok(Some(
-            "stored vectors have no embedding fingerprint; re-embedding all symbols".to_string(),
-        ));
-    }
-    Ok(None)
+    Ok(match write_plan(store, embedder)? {
+        SpaceWrite::Migrate(reason) => Some(reason),
+        SpaceWrite::Resume | SpaceWrite::FirstRun | SpaceWrite::Reuse => None,
+    })
 }
 
 /// Count of symbols whose stored embedding is missing or whose content
@@ -354,13 +289,13 @@ mod tests {
         let embedder = HashedEmbedder::default();
 
         update_base(&root, &mut store, &IndexOptions::default()).unwrap();
-        assert!(store.get_meta("embedding_fingerprint").unwrap().is_none());
+        assert!(store.get_meta(EMBEDDING_FINGERPRINT_KEY).unwrap().is_none());
         assert!(store.all_embeddings().unwrap().is_empty());
         assert_eq!(incompatible_stored_space(&store, &embedder).unwrap(), None);
 
         update_index(&root, &mut store, &embedder).unwrap();
         assert_eq!(incompatible_stored_space(&store, &embedder).unwrap(), None);
-        store.set_meta("embedding_fingerprint", "").unwrap();
+        store.set_meta(EMBEDDING_FINGERPRINT_KEY, "").unwrap();
         assert!(incompatible_stored_space(&store, &embedder)
             .unwrap()
             .is_some());

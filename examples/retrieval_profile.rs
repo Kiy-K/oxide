@@ -45,6 +45,7 @@ mod probe_graph;
 
 use oxide::context::{build_context_with, ContextOptions};
 use oxide::embeddings::open_embedder;
+use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::relations::{RelationGraph, RelationIndex};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use oxide::storage::{IndexBackend, SqliteStore};
@@ -137,6 +138,16 @@ fn main() -> anyhow::Result<()> {
     let s = begin();
     let embedder = open_embedder(None)?;
     end(s, "open_embedder", embedder.name());
+    // Untimed, on its own connection, so round 0 stays cold.
+    {
+        let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
+        let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+        anyhow::ensure!(
+            space == SpaceRead::Compatible,
+            "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+            embedder.name()
+        );
+    }
 
     for round in 0..repeat {
         println!(
@@ -460,6 +471,14 @@ fn run_stage(
     } else {
         None
     };
+    if let Some(embedder) = &embedder {
+        let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+        anyhow::ensure!(
+            space == SpaceRead::Compatible,
+            "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+            embedder.name()
+        );
+    }
     // Untimed prerequisite for the stages that operate on a loaded corpus.
     let snapshot = if matches!(
         stage,
@@ -652,7 +671,7 @@ fn payload_diagnostic(db: &std::path::Path, json: bool) -> anyhow::Result<()> {
         let rows = stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?;
         for row in rows {
             let (k, v) = row?;
-            if k != "root" {
+            if k != oxide::storage::ROOT_KEY {
                 meta.insert(k, serde_json::Value::String(v));
             }
         }
@@ -912,6 +931,12 @@ fn structural_probe_stage(
         return Ok(());
     }
     let embedder = open_embedder(None)?;
+    let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+    anyhow::ensure!(
+        space == SpaceRead::Compatible,
+        "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+        embedder.name()
+    );
     if stage == "context_probe_check" {
         let got = context_probe(root, &store, embedder.as_ref(), &probe, &conn, query)?;
         let want = build_context_with(

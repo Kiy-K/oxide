@@ -4,6 +4,7 @@
 //! process RSS afterwards. This is the number sqlite-vec / Zvec must beat.
 //! Usage: scan_probe <repo_root> "<query>" [iterations]
 use oxide::embeddings::open_embedder;
+use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use oxide::storage::{IndexBackend, SqliteStore};
 use std::time::Instant;
@@ -29,6 +30,8 @@ fn main() -> anyhow::Result<()> {
     // Raw mode: `<root> <query> <iters> <dim>` scans with a synthetic query
     // vector of `dim`, for indexes whose vectors no local embedder can
     // query (e.g. a 1024-dim copy) — read + decode + dot, no hydration.
+    // It reports only scan timing and row counts, never which vectors
+    // matched, and uses no provider, so there is no embedding space to check.
     if let Some(dim) = std::env::args()
         .nth(4)
         .and_then(|s| s.parse::<usize>().ok())
@@ -72,6 +75,15 @@ fn main() -> anyhow::Result<()> {
         expand: false,
         retrieval_mode: RetrievalMode::default(),
     };
+    {
+        let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
+        let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+        anyhow::ensure!(
+            space == SpaceRead::Compatible,
+            "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+            embedder.name()
+        );
+    }
     let mut fresh = Vec::new();
     let mut warm = Vec::new();
     let mut rows = 0usize;

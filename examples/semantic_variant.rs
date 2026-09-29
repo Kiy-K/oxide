@@ -28,7 +28,7 @@ use oxide::embeddings::{
     symbol_embed_text, EmbeddingProvider, EmbeddingSpaceFingerprint, GemmaQueryPrompt,
     NativeEmbedder, EMBEDDING_FINGERPRINT_SCHEMA_VERSION, SYMBOL_TEXT_RECIPE,
 };
-use oxide::index::{update_embeddings, IndexOptions, IndexReport};
+use oxide::index::{update_embeddings, EmbeddingSpace, IndexOptions, IndexReport, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use oxide::storage::{IndexBackend, SqliteStore};
 use oxide::symbols::{Language, Symbol, SymbolKind};
@@ -738,6 +738,13 @@ fn main() -> anyhow::Result<()> {
     );
 
     // ---- dump loop: mirrors examples/fusion_dump.rs with timings added ----
+    // `--no-embed` searches the vectors already in `--db` as they are.
+    let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+    anyhow::ensure!(
+        space == SpaceRead::Compatible,
+        "refusing to search: stored embedding space is {space:?} for provider {:?}; rerun without `--no-embed` to embed this variant",
+        embedder.name()
+    );
     let n = store.symbol_count()?;
     let snapshot = SymbolSnapshot::load(&store)?;
     let engine = RetrievalEngine::with_snapshot(&store, &embedder, &snapshot);

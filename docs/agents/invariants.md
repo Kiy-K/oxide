@@ -178,7 +178,7 @@ invariant mean this file.
   change to `symbol_embed_text` requires bumping that id. Per-symbol
   `content_hash`es are not enough: they move only for reparsed files, so
   unchanged files would keep old-recipe vectors next to new ones in one
-  index. The recipe mismatch instead takes `incompatible_stored_space`'s
+  index. The recipe mismatch instead takes `EmbeddingSpace::plan_write`'s
   whole-space migration (clear and re-embed every symbol), like a provider
   switch. Fingerprints stored before the field existed (schema 1) parse with
   an empty recipe, never the current one, and so migrate once. An index with
@@ -188,8 +188,9 @@ invariant mean this file.
   embeds without a migration; its first run still sets the migration marker
   on the empty table before writing, so an interrupted first run resumes
   rather than leaving unversioned vectors. `status` stays network-free: its
-  `embedder_current` also requires a stored fingerprint with the current
-  schema and `SYMBOL_TEXT_RECIPE`, but the rest of the fingerprint needs a
+  `embedder_current` also requires `EmbeddingSpace::locally_current` (no
+  marker, and a stored fingerprint with the current schema and
+  `SYMBOL_TEXT_RECIPE`), but the rest of the fingerprint needs a
   live provider, so only `search` and `oxide index` see those fields.
   Don't use `EXTRACTION_VERSION` for this; it versions parsing, not the
   embedding text (`tests/embedding_text_recipe.rs`).
@@ -230,11 +231,20 @@ invariant mean this file.
   compatibility check ran before another run's migration finished, and whose
   first write lands after it, sees an empty marker at both moments; closing
   that needs run-level writer serialization, which embedding's minutes-long
-  runtime rules out. `incompatible_stored_space` is the single
-  decision point for both `update_embeddings` and `pending_embedding_count`
-  (which AGENTS-era comments only *asked* not to diverge), and treats the
-  marker as outranking `embedding_fingerprint`; with neither, any stored
-  vector is incompatible. A present-but-unparseable value at any tier is
+  runtime rules out. `index::EmbeddingSpace` (`src/index/space.rs`) is the
+  only interpreter of the stored fingerprint and marker, and no production
+  or research caller may score persisted vectors without asking it: the
+  write side (`update_embeddings`, `pending_embedding_count`) through
+  `plan_write`; `validate_index`, and every example that searches an
+  existing on-disk index, through `readable_by` (refusing `Migrating` and
+  `Mismatch`); `status` through `locally_current`. Callers never parse the
+  meta themselves (`src/service/repository/embedding_space_equivalence.rs`
+  pins every caller's verdict per stored state). Exempt: indexes a caller
+  builds itself through `update_index` (`eval`, in-memory examples), and
+  `scan_probe`'s raw mode, which times a synthetic-vector scan and reports
+  no matches. `EmbeddingSpace` treats the marker as outranking
+  `embedding_fingerprint`; with neither, any stored vector is
+  incompatible. A present-but-unparseable value at any tier is
   incompatible and must never fail open into the weaker tier below.
   `validate_index` refuses semantic — never lexical — reads while the marker
   is set (`tests/provider_migration_recovery.rs`).

@@ -11,6 +11,7 @@
 //! echoes `id` and adds `lexical`, `semantic`, `fused`, `neighbors`, `pack`.
 use oxide::context::{build_context_with, ContextOptions};
 use oxide::embeddings::open_embedder;
+use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use oxide::storage::{IndexBackend, SqliteStore};
 use serde_json::{json, Value};
@@ -30,6 +31,12 @@ fn main() -> anyhow::Result<()> {
     let tasks = std::io::BufReader::new(std::fs::File::open(&args[2])?);
     let embedder = open_embedder(None)?;
     let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
+    let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+    anyhow::ensure!(
+        space == SpaceRead::Compatible,
+        "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+        embedder.name()
+    );
     // The dump reads the persisted postings directly; the engine does the
     // same only when `lexical_index_version` is exactly current and falls
     // back to an in-memory index otherwise. Refuse anything else so the

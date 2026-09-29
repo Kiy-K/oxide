@@ -9,7 +9,8 @@ use crate::embeddings::{open_embedder, EmbeddingProvider};
 use crate::relations::RelationIndex;
 use crate::retrieval::SymbolSnapshot;
 use crate::storage::{
-    IndexBackend, IndexStats, SqliteStore, EMBEDDING_MIGRATION_KEY, LEXICAL_INDEX_KEY,
+    IndexBackend, IndexStats, SqliteStore, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY,
+    EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION_KEY, LEXICAL_INDEX_KEY, SCHEMA_VERSION_KEY,
 };
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -66,11 +67,11 @@ fn snapshot_key(store: &SqliteStore) -> Result<Option<Vec<String>>, ServiceError
     };
     let mut key = vec![id, generation.to_string()];
     for k in [
-        "schema_version",
-        "extraction_version",
-        "embedding_fingerprint",
-        "embedder",
-        "dim",
+        SCHEMA_VERSION_KEY,
+        EXTRACTION_VERSION_KEY,
+        EMBEDDING_FINGERPRINT_KEY,
+        EMBEDDER_KEY,
+        DIM_KEY,
         LEXICAL_INDEX_KEY,
         EMBEDDING_MIGRATION_KEY,
     ] {

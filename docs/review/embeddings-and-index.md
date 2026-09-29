@@ -1,8 +1,9 @@
 # Embeddings and index review rules
 
 Scope: `src/embeddings/provider.rs` (`EmbeddingProvider`, `EmbeddingSpaceFingerprint`),
-`src/embeddings/selection.rs` (`open_embedder`), `src/index/embed.rs`'s `incompatible_stored_space` staleness
-check and the migration marker around it.
+`src/embeddings/selection.rs` (`open_embedder`), `src/index/space.rs`'s `EmbeddingSpace`
+(the one interpretation of the stored fingerprint and migration marker) and
+`src/index/embed.rs`, which acts on its verdict.
 
 ---
 
@@ -14,7 +15,7 @@ check and the migration marker around it.
 checkpoint, quantization, dimension, query/document prompt formatting,
 pooling, normalization, similarity function — must change that provider's
 `fingerprint()` (or, for providers relying on the default trait impl that
-don't override it, `name()`), so `incompatible_stored_space`'s compatibility check
+don't override it, `name()`), so `EmbeddingSpace`'s compatibility check
 detects the change and wipes stale vectors instead of silently comparing
 old and new vectors as if they lived in the same space. A field added to
 `EmbeddingSpaceFingerprint` that would make an old stored value's meaning
@@ -32,7 +33,7 @@ providers or new variants must follow the same pattern, not skip it.
 
 **Evidence required:** the behavior-changing diff, plus the (unchanged)
 `fingerprint()`/`name()` output for the same provider. Cite
-`incompatible_stored_space`'s tier comparison (`index/embed.rs`) to show what
+`EmbeddingSpace::plan_write`'s tier comparison (`index/space.rs`) to show what
 compatibility signal the reviewer expects to change and doesn't.
 
 **Exceptions:** a change provably incapable of affecting the vector space
@@ -135,8 +136,8 @@ violation of this rule.
 
 ### EMB-004 — An embedding migration must be atomic or detectably unfinished
 **Severity:** BLOCKER · **Scope:** `IndexBackend::begin_embedding_migration`,
-`update_embeddings`'s closing `set_meta_all`, `incompatible_stored_space`,
-`validate_index`'s `EMBEDDING_MIGRATION_KEY` check.
+`update_embeddings`'s closing `set_meta_all`, `EmbeddingSpace`
+(`index/space.rs`), `validate_index`'s `SpaceRead::Migrating` refusal.
 
 **Invariant:** an `oxide index` killed at any point during a provider switch
 must leave the index either fully migrated or *visibly* mid-migration —

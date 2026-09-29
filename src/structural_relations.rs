@@ -567,7 +567,7 @@ class Outer {
         // forces a full reparse and the backfill path under test never runs.
         store
             .set_meta(
-                "extraction_version",
+                crate::storage::EXTRACTION_VERSION_KEY,
                 &crate::storage::EXTRACTION_VERSION.to_string(),
             )
             .unwrap();

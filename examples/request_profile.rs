@@ -3,6 +3,7 @@
 //! Usage: request_profile <repo_root> "<query>"
 use oxide::context::{build_context_with, ContextOptions};
 use oxide::embeddings::open_embedder;
+use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::relations::RelationGraph;
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use oxide::storage::{IndexBackend, SqliteStore};
@@ -17,6 +18,17 @@ fn main() -> anyhow::Result<()> {
         "open_embedder            {:>8.2} ms",
         t.elapsed().as_secs_f64() * 1e3
     );
+    // Untimed, on its own connection, so the cold rows below keep their
+    // first-read cost.
+    {
+        let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
+        let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+        anyhow::ensure!(
+            space == SpaceRead::Compatible,
+            "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+            embedder.name()
+        );
+    }
     let t = Instant::now();
     let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
     println!(

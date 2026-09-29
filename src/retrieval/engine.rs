@@ -130,7 +130,7 @@ impl<'a> RetrievalEngine<'a> {
             )
         } else {
             let root = store
-                .get_meta("root")
+                .get_meta(crate::storage::ROOT_KEY)
                 .ok()
                 .flatten()
                 .map(std::path::PathBuf::from);

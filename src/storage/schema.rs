@@ -22,6 +22,24 @@ pub const SCHEMA_VERSION: u32 = 1;
 /// their members.
 pub const EXTRACTION_VERSION: u32 = 3;
 
+// Meta keys of the published index identity, written together by the
+// closing `set_meta_all` in `index::update_embeddings`. The strings are the
+// on-disk format: never rename one.
+
+/// Meta key: the repository root the index was built for.
+pub const ROOT_KEY: &str = "root";
+/// Meta key: the publishing embedding provider's `name()`.
+pub const EMBEDDER_KEY: &str = "embedder";
+/// Meta key: the publishing embedding provider's vector dimension.
+pub const DIM_KEY: &str = "dim";
+/// Meta key carrying [`SCHEMA_VERSION`].
+pub const SCHEMA_VERSION_KEY: &str = "schema_version";
+/// Meta key carrying [`EXTRACTION_VERSION`].
+pub const EXTRACTION_VERSION_KEY: &str = "extraction_version";
+/// Meta key: the serialized `EmbeddingSpaceFingerprint` of the published
+/// vectors. Interpreted only by `index::EmbeddingSpace`.
+pub const EMBEDDING_FINGERPRINT_KEY: &str = "embedding_fingerprint";
+
 /// Meta key holding the in-flight embedding-space fingerprint while a
 /// provider migration is running. Non-empty means "the vectors in this index
 /// belong to *this* fingerprint, and the published identity metadata has not

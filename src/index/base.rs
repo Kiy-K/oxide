@@ -5,7 +5,10 @@
 use super::pipeline::parse_and_persist_changed_files;
 use super::{count_summary, IndexOptions, IndexReport, NoProgress, ProgressSink, Stage};
 use crate::scanner;
-use crate::storage::{IndexBackend, EXTRACTION_VERSION, LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION};
+use crate::storage::{
+    IndexBackend, EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, LEXICAL_INDEX_KEY,
+    LEXICAL_INDEX_VERSION,
+};
 use crate::symbols::Symbol;
 use anyhow::Result;
 use std::collections::{HashMap, HashSet};
@@ -20,7 +23,7 @@ use std::path::Path;
 /// by `validate_index`, so it can never be silently served either way.
 fn stale_extraction(store: &dyn IndexBackend) -> Result<bool> {
     Ok(store
-        .get_meta("extraction_version")?
+        .get_meta(EXTRACTION_VERSION_KEY)?
         .filter(|s| !s.is_empty())
         .is_some_and(|v| v != EXTRACTION_VERSION.to_string()))
 }

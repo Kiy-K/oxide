@@ -11,15 +11,15 @@ use crate::blast_radius::BlastItem;
 use crate::context::{build_context_with, ContextOptions};
 use crate::embeddings::{open_embedder, EmbeddingProvider, HashedEmbedder};
 use crate::index::{
-    update_base_reporting, update_embeddings_reporting, IndexOptions, IndexReport, NoProgress,
-    ProgressSink, Stage,
+    update_base_reporting, update_embeddings_reporting, EmbeddingSpace, IndexOptions, IndexReport,
+    NoProgress, ProgressSink, SpaceRead, Stage,
 };
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
 use crate::storage::{
-    IndexBackend, IndexStats, SqliteStore, EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION,
-    SCHEMA_VERSION,
+    IndexBackend, IndexStats, SqliteStore, EMBEDDER_KEY, EXTRACTION_VERSION,
+    EXTRACTION_VERSION_KEY, ROOT_KEY, SCHEMA_VERSION, SCHEMA_VERSION_KEY,
 };
 use crate::symbols::{Language, Symbol};
 use std::collections::HashMap;
@@ -184,33 +184,19 @@ impl RepositoryService {
         let current = current_file_hashes(&self.root)
             .map_err(|e| ServiceError::from_error(ErrorCode::StatusFailed, e))?;
         let embedder = store
-            .get_meta("embedder")
+            .get_meta(EMBEDDER_KEY)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
-        // An interrupted provider migration means the vectors and the
-        // `embedder` name above describe different providers, so the name
-        // match proves nothing until the next `oxide index` republishes it.
-        let migrating = store
-            .get_meta(EMBEDDING_MIGRATION_KEY)
+        // The network-free part of the fingerprint check (#33): an
+        // interrupted migration (the vectors and the `embedder` name above
+        // then describe different providers), or a stored fingerprint that
+        // is missing, unreadable, from an older fingerprint schema or for
+        // another text recipe, means `oxide index` will re-embed, whatever
+        // the provider name says. The rest of the fingerprint needs a live
+        // provider, which status deliberately never builds.
+        let space_current = EmbeddingSpace::read(&store)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-            .is_some_and(|s| !s.is_empty());
-        // The network-free part of the fingerprint check (#33): a stored
-        // fingerprint that is missing, unreadable, from an older fingerprint
-        // schema or for another text recipe means `oxide index` will
-        // re-embed everything, whatever the provider name says. Only
-        // metadata and local constants; the rest of the fingerprint needs a
-        // live provider, which status deliberately never builds.
-        let fingerprint_current = store
-            .get_meta("embedding_fingerprint")
-            .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-            .and_then(|s| {
-                serde_json::from_str::<crate::embeddings::EmbeddingSpaceFingerprint>(&s).ok()
-            })
-            .is_some_and(|fp| {
-                fp.schema_version == crate::embeddings::EMBEDDING_FINGERPRINT_SCHEMA_VERSION
-                    && fp.document_text_recipe == crate::embeddings::SYMBOL_TEXT_RECIPE
-            });
-        let embedder_current = !migrating
-            && fingerprint_current
+            .locally_current();
+        let embedder_current = space_current
             && embedder.as_deref()
                 == Some(crate::embeddings::configured_provider_name(None).as_str());
         let files_current = !current.is_empty()
@@ -482,7 +468,7 @@ impl RepositoryService {
         stats: &IndexStats,
     ) -> Result<(), ServiceError> {
         let indexed_root = store
-            .get_meta("root")
+            .get_meta(ROOT_KEY)
             .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
         if indexed_root.as_deref() != Some(self.root.to_string_lossy().as_ref()) {
             // A missing `root` key means every closing meta write in
@@ -507,8 +493,8 @@ impl RepositoryService {
         // not guess how to read the index: reindex is the unambiguous fix
         // in either case.
         for (key, current) in [
-            ("schema_version", SCHEMA_VERSION),
-            ("extraction_version", EXTRACTION_VERSION),
+            (SCHEMA_VERSION_KEY, SCHEMA_VERSION),
+            (EXTRACTION_VERSION_KEY, EXTRACTION_VERSION),
         ] {
             let stored = store
                 .get_meta(key)
@@ -540,49 +526,37 @@ impl RepositoryService {
             ));
         }
         if let Some(expected) = expected_embedder {
-            // Fingerprint (Phase 3.3 item 3) is the contract; an index without
-            // one holds vectors of unrecorded space and is refused (#33).
-            // An unfinished provider migration outranks every identity key
-            // below: those describe the provider that *published* the index,
-            // and the interrupted run never got that far. Its vectors may
-            // belong to a different space entirely while row counts and
-            // metadata both look healthy — the exact state that made a
-            // same-dimension switch score against the wrong vector space
-            // instead of failing. Lexical-only search is untouched: it
-            // passes `expected_embedder: None` and never reaches here.
-            if store
-                .get_meta(EMBEDDING_MIGRATION_KEY)
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-                .is_some_and(|s| !s.is_empty())
-            {
-                return Err(ServiceError::new(
-                    ErrorCode::IndexStale,
-                    "index embeddings were left mid-migration by an interrupted `oxide index`; run `oxide index PATH` to finish it (or `--mode lexical` meanwhile)",
-                ));
-            }
-            // Present-but-unparseable is incompatible, never waved through by
-            // a provider whose *name* still matches, which is precisely the
-            // comparison the fingerprint exists to replace.
-            // `update_embeddings` has always treated it as incompatible;
-            // this is the read side agreeing.
-            let stored_fp: Option<Option<crate::embeddings::EmbeddingSpaceFingerprint>> = store
-                .get_meta("embedding_fingerprint")
-                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?
-                .filter(|s| !s.is_empty())
-                .map(|s| serde_json::from_str(&s).ok());
-            // No stored fingerprint means vectors of unrecorded space and
-            // text recipe (#33): `embedder`+`dim` cannot vouch for them, so
-            // they are refused until `oxide index` re-embeds them, exactly as
-            // `incompatible_stored_space` decides on the write side.
-            let compatible = match stored_fp {
-                Some(Some(prev)) => prev == expected.fingerprint(),
-                Some(None) | None => false,
-            };
-            if !compatible {
-                return Err(ServiceError::new(
-                    ErrorCode::ProviderMismatch,
-                    "index embeddings were built with a different embedding provider or dimension; run `oxide index PATH`",
-                ));
+            // Fingerprint (Phase 3.3 item 3) is the contract, interpreted by
+            // `EmbeddingSpace` exactly as the write side interprets it.
+            // Lexical-only search is untouched: it passes
+            // `expected_embedder: None` and never reaches here.
+            let space = EmbeddingSpace::read(store)
+                .map_err(|e| ServiceError::from_error(ErrorCode::IndexCorrupt, e))?;
+            match space.readable_by(&expected.fingerprint()) {
+                SpaceRead::Compatible => {}
+                // An unfinished provider migration outranks every identity
+                // key: those describe the provider that *published* the
+                // index, and the interrupted run never got that far. Its
+                // vectors may belong to a different space entirely while
+                // row counts and metadata both look healthy — the exact
+                // state that made a same-dimension switch score against the
+                // wrong vector space instead of failing.
+                SpaceRead::Migrating => {
+                    return Err(ServiceError::new(
+                        ErrorCode::IndexStale,
+                        "index embeddings were left mid-migration by an interrupted `oxide index`; run `oxide index PATH` to finish it (or `--mode lexical` meanwhile)",
+                    ));
+                }
+                // Includes an unreadable fingerprint, never waved through by
+                // a provider whose *name* still matches, and no fingerprint
+                // at all: vectors of unrecorded space and text recipe (#33)
+                // that `embedder`+`dim` cannot vouch for.
+                SpaceRead::Mismatch => {
+                    return Err(ServiceError::new(
+                        ErrorCode::ProviderMismatch,
+                        "index embeddings were built with a different embedding provider or dimension; run `oxide index PATH`",
+                    ));
+                }
             }
             if stats.embeddings != stats.symbols {
                 return Err(ServiceError::new(
@@ -673,6 +647,9 @@ fn current_file_hashes(root: &Path) -> Result<HashMap<String, u64>, std::io::Err
     }
     Ok(hashes)
 }
+
+#[cfg(test)]
+mod embedding_space_equivalence;
 
 #[cfg(test)]
 mod tests {

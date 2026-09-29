@@ -26,6 +26,7 @@ use oxide::embedding_cache::SharedEmbeddingCache;
 use oxide::embeddings::{
     tokenize, EmbeddingProvider, EmbeddingSpaceFingerprint, GemmaQueryPrompt, NativeEmbedder,
 };
+use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
 use oxide::storage::{IndexBackend, SqliteStore};
 use serde_json::{json, Value};
@@ -174,6 +175,17 @@ fn main() -> anyhow::Result<()> {
         }
         None => (native, None),
     };
+
+    // Before the (slow) evidence embedding, so a bad index fails fast.
+    {
+        let store = SqliteStore::open_read_only(&db)?;
+        let space = EmbeddingSpace::read(&store)?.readable_by(&embedder.fingerprint());
+        anyhow::ensure!(
+            space == SpaceRead::Compatible,
+            "refusing to search: stored embedding space is {space:?} for provider {:?}; run `oxide index` with it first",
+            embedder.name()
+        );
+    }
 
     // ---- evidence: load kept records, BM25, embed ----
     let mut ev_ids: Vec<String> = Vec::new();
