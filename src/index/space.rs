@@ -9,7 +9,7 @@
 use crate::embeddings::{
     EmbeddingSpaceFingerprint, EMBEDDING_FINGERPRINT_SCHEMA_VERSION, SYMBOL_TEXT_RECIPE,
 };
-use crate::storage::{IndexBackend, EMBEDDING_FINGERPRINT_KEY, EMBEDDING_MIGRATION_KEY};
+use crate::storage::{IndexRead, EMBEDDING_FINGERPRINT_KEY, EMBEDDING_MIGRATION_KEY};
 use anyhow::Result;
 
 /// The stored embedding space, strongest evidence first:
@@ -75,7 +75,7 @@ pub(crate) enum SpaceWrite {
 
 impl EmbeddingSpace {
     /// Read the stored space. Meta reads only; never scans vectors.
-    pub fn read(store: &dyn IndexBackend) -> Result<Self> {
+    pub fn read(store: &dyn IndexRead) -> Result<Self> {
         let stored = |key| -> Result<Option<Stored>> {
             Ok(store
                 .get_meta(key)?

@@ -7,7 +7,7 @@
 
 use oxide::context::{build_context, ContextOptions};
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexRead, SqliteStore};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use serde::Deserialize;
 use std::collections::{HashMap, HashSet};
@@ -55,7 +55,7 @@ impl EmbeddingProvider for SlowEmbedder {
     }
 }
 
-fn latency_evidence(store: &dyn IndexBackend) {
+fn latency_evidence(store: &dyn IndexRead) {
     println!("== concurrency: does a slow embedder serialize with lexical scoring? ==");
     let delay = Duration::from_millis(150);
     let slow = SlowEmbedder {

@@ -30,7 +30,7 @@ use oxide::embeddings::{
 };
 use oxide::index::{update_embeddings, EmbeddingSpace, IndexOptions, IndexReport, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::{Language, Symbol, SymbolKind};
 use serde_json::{json, Value};
 use std::collections::HashMap;

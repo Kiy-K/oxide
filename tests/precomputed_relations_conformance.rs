@@ -32,7 +32,7 @@
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::update_index;
 use oxide::relations::RelationGraph;
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::structural_relations::load_symbols_with_relations;
 use oxide::symbols::Symbol;
 use std::fs;
@@ -51,7 +51,7 @@ fn indexed_with_relations(files: &[(&str, &str)]) -> Vec<Symbol> {
     let mut store = SqliteStore::open(&tmp.path().join(".oxide/index.db")).unwrap();
     let embedder = HashedEmbedder::default();
     update_index(tmp.path(), &mut store, &embedder).unwrap();
-    load_symbols_with_relations(&store as &dyn IndexBackend).unwrap()
+    load_symbols_with_relations(&store as &dyn IndexRead).unwrap()
 }
 
 fn names<'a>(symbols: &'a [&'a Symbol]) -> Vec<&'a str> {

@@ -5,7 +5,7 @@
 //! Storage-agnostic by design: every function here takes a `symbols: &[Symbol]`
 //! slice the caller already loaded (`context.rs` and `review.rs` both reuse
 //! the sanctioned lazy full-corpus snapshot they load for `RelationGraph`
-//! anyway) rather than touching `IndexBackend` itself — see AGENTS.md's
+//! anyway) rather than touching `IndexRead` itself — see AGENTS.md's
 //! request-path invariant.
 
 use crate::config::{

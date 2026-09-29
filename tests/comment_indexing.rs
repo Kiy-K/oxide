@@ -19,7 +19,7 @@
 use oxide::embeddings::{symbol_embed_text, HashedEmbedder};
 use oxide::index::update_index;
 use oxide::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::SymbolKind;
 use std::path::Path;
 

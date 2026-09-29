@@ -41,7 +41,7 @@
 
 use anyhow::Context;
 use oxide::embeddings::symbol_embed_text;
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::content_hash;
 use std::io::Write;
 

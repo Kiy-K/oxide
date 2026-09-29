@@ -15,7 +15,7 @@ use crate::config::{
 use crate::embeddings::EmbeddingProvider;
 use crate::lexical::LexicalIndex;
 use crate::relations::{RelationGraph, RelationIndex};
-use crate::storage::IndexBackend;
+use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
 
@@ -37,7 +37,7 @@ fn resolve_term_coverage_alpha() -> f32 {
 /// hydrated into `Symbol`s. Nothing here loads the whole corpus unless the
 /// request asks for structural expansion (see [`SymbolSnapshot`]).
 pub struct RetrievalEngine<'a> {
-    store: &'a dyn IndexBackend,
+    store: &'a dyn IndexRead,
     embedder: &'a dyn EmbeddingProvider,
     symbol_count: usize,
     lexical: LexicalSource,
@@ -70,14 +70,14 @@ enum LexicalSource {
 }
 
 impl<'a> RetrievalEngine<'a> {
-    pub fn new(store: &'a dyn IndexBackend, embedder: &'a dyn EmbeddingProvider) -> Self {
+    pub fn new(store: &'a dyn IndexRead, embedder: &'a dyn EmbeddingProvider) -> Self {
         Self::build(store, embedder, None, None)
     }
 
     /// Like [`Self::new`], but reuse an already-loaded snapshot instead of
     /// loading one on demand — the long-running-process path.
     pub fn with_snapshot(
-        store: &'a dyn IndexBackend,
+        store: &'a dyn IndexRead,
         embedder: &'a dyn EmbeddingProvider,
         snapshot: &'a SymbolSnapshot,
     ) -> Self {
@@ -89,7 +89,7 @@ impl<'a> RetrievalEngine<'a> {
     /// search's own expansion, blast radius) reuses it instead of
     /// rebuilding the graph's maps on every request.
     pub fn with_snapshot_and_index(
-        store: &'a dyn IndexBackend,
+        store: &'a dyn IndexRead,
         embedder: &'a dyn EmbeddingProvider,
         snapshot: &'a SymbolSnapshot,
         index: &'a RelationIndex,
@@ -98,7 +98,7 @@ impl<'a> RetrievalEngine<'a> {
     }
 
     fn build(
-        store: &'a dyn IndexBackend,
+        store: &'a dyn IndexRead,
         embedder: &'a dyn EmbeddingProvider,
         snapshot: Option<&'a SymbolSnapshot>,
         index: Option<&'a RelationIndex>,
@@ -150,7 +150,7 @@ impl<'a> RetrievalEngine<'a> {
         }
     }
 
-    pub fn store(&self) -> &'a dyn IndexBackend {
+    pub fn store(&self) -> &'a dyn IndexRead {
         self.store
     }
 
@@ -542,7 +542,7 @@ mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
     use crate::retrieval::test_support::{fixture_repo, json, lcg, seed_store, sym};
-    use crate::storage::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexRead, IndexWrite, SqliteStore};
 
     /// Records which method the semantic stage actually calls, so the
     /// migration from `embed` to `embed_query` in `RetrievalEngine::search`
@@ -1483,39 +1483,12 @@ mod tests {
         }
     }
 
-    impl IndexBackend for CountingStore<'_> {
+    impl IndexRead for CountingStore<'_> {
         fn get_meta(&self, key: &str) -> anyhow::Result<Option<String>> {
             self.inner.get_meta(key)
         }
-        fn set_meta(&mut self, _: &str, _: &str) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn set_meta_all(&mut self, _: &str, _: &[(&str, &str)]) -> anyhow::Result<()> {
-            unreachable!()
-        }
         fn file_hashes(&self) -> anyhow::Result<HashMap<String, u64>> {
             self.inner.file_hashes()
-        }
-        fn replace_file(
-            &mut self,
-            _: &str,
-            _: u64,
-            _: &[Symbol],
-            _: &[(u64, Vec<String>, Vec<String>)],
-            _: &[crate::lexical::DocPostings],
-        ) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn remove_files(&mut self, _: &[String]) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn put_file_lexical(
-            &mut self,
-            _: &str,
-            _: u64,
-            _: &[crate::lexical::DocPostings],
-        ) -> anyhow::Result<bool> {
-            unreachable!()
         }
         fn lexical_totals(&self) -> anyhow::Result<(usize, i64)> {
             self.inner.lexical_totals()
@@ -1542,18 +1515,6 @@ mod tests {
             self.by_ids.borrow_mut().push(ids.len());
             self.inner.symbols_by_ids(ids)
         }
-        fn symbol_hash(&self, id: u64) -> anyhow::Result<Option<u64>> {
-            self.inner.symbol_hash(id)
-        }
-        fn put_embedding(&mut self, _: u64, _: &[f32]) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn put_embeddings_batch(&mut self, _: &str, _: &[(u64, Vec<f32>)]) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn embedding_with_hash(&self, id: u64) -> anyhow::Result<Option<(u64, Vec<f32>)>> {
-            self.inner.embedding_with_hash(id)
-        }
         fn all_embeddings(&self) -> anyhow::Result<HashMap<u64, (u64, Vec<f32>)>> {
             self.full_loads.set(self.full_loads.get() + 1);
             self.inner.all_embeddings()
@@ -1573,15 +1534,6 @@ mod tests {
                 seen += 1;
             })?;
             anyhow::bail!("simulated unreadable embedding row after {limit} rows")
-        }
-        fn begin_embedding_migration(&mut self, _: &str) -> anyhow::Result<()> {
-            unreachable!()
-        }
-        fn put_symbol_relations_batch(
-            &mut self,
-            _: &[(u64, Vec<String>, Vec<String>)],
-        ) -> anyhow::Result<()> {
-            unreachable!()
         }
         fn all_symbol_relations(&self) -> anyhow::Result<crate::storage::SymbolRelations> {
             if self.fail_relations {
@@ -1841,8 +1793,8 @@ mod tests {
                 let lean = CountingStore::new(&store);
                 let mut oracle = CountingStore::new(&store);
                 oracle.complete_corpus = true;
-                let lean: &dyn IndexBackend = &lean;
-                let oracle: &dyn IndexBackend = &oracle;
+                let lean: &dyn IndexRead = &lean;
+                let oracle: &dyn IndexRead = &oracle;
                 assert_eq!(lexical_persisted(lean), !fallback);
 
                 // The shape each path runs on: lean unless BM25 falls back.

@@ -28,7 +28,7 @@ use oxide::embeddings::{
 };
 use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::io::{BufRead, Write};

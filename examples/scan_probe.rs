@@ -6,7 +6,7 @@
 use oxide::embeddings::open_embedder;
 use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use std::time::Instant;
 
 fn rss_kb() -> u64 {

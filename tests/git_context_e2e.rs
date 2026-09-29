@@ -53,7 +53,7 @@ fn git_ok(dir: &Path, args: &[&str]) -> bool {
 fn indexed_symbols(root: &Path) -> Vec<oxide::symbols::Symbol> {
     let mut store = SqliteStore::open(Path::new(":memory:")).unwrap();
     update_index(root, &mut store, &HashedEmbedder::default()).unwrap();
-    oxide::storage::IndexBackend::all_symbols(&store).unwrap()
+    oxide::storage::IndexRead::all_symbols(&store).unwrap()
 }
 
 fn run(root: &Path, args: &[&str]) -> Output {

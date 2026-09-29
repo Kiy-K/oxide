@@ -23,7 +23,7 @@
 
 use oxide::context::{build_context, ContextOptions};
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexWrite, SqliteStore};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 
 fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str) -> Symbol {

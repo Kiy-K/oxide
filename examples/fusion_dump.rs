@@ -13,7 +13,7 @@ use oxide::context::{build_context_with, ContextOptions};
 use oxide::embeddings::open_embedder;
 use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use serde_json::{json, Value};
 use std::io::{BufRead, Write};
 

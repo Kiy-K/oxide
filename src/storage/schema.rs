@@ -43,12 +43,12 @@ pub const EMBEDDING_FINGERPRINT_KEY: &str = "embedding_fingerprint";
 /// Meta key holding the in-flight embedding-space fingerprint while a
 /// provider migration is running. Non-empty means "the vectors in this index
 /// belong to *this* fingerprint, and the published identity metadata has not
-/// caught up yet" — see [`IndexBackend::begin_embedding_migration`]. Cleared
+/// caught up yet" — see [`IndexWrite::begin_embedding_migration`]. Cleared
 /// (set to the empty string, matching the `filter(|s| !s.is_empty())` idiom
 /// used for every other optional meta value) in the same atomic
 /// `set_meta_all` that publishes the completed identity.
 ///
-/// [`IndexBackend::begin_embedding_migration`]: crate::storage::IndexBackend::begin_embedding_migration
+/// [`IndexWrite::begin_embedding_migration`]: crate::storage::IndexWrite::begin_embedding_migration
 pub const EMBEDDING_MIGRATION_KEY: &str = "embedding_migration";
 
 /// Meta key holding a per-database random identity, written once by

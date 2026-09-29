@@ -9,7 +9,7 @@ use crate::embeddings::{open_embedder, EmbeddingProvider};
 use crate::relations::RelationIndex;
 use crate::retrieval::SymbolSnapshot;
 use crate::storage::{
-    IndexBackend, IndexStats, SqliteStore, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY,
+    IndexRead, IndexStats, SqliteStore, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY,
     EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION_KEY, LEXICAL_INDEX_KEY, SCHEMA_VERSION_KEY,
 };
 use std::collections::HashMap;

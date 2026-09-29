@@ -6,11 +6,11 @@
 //! `Query` pass per file (`tree_sitter_structural::all_calls_in_file`/
 //! `all_bases_in_file`) instead of a second file read. Results are written
 //! atomically alongside that file's symbols via
-//! `IndexBackend::replace_file`'s `relations` parameter — not a separate
+//! `IndexWrite::replace_file`'s `relations` parameter — not a separate
 //! call, so an interrupted process can't strand `symbol_relations` out of
 //! sync with a `content_hash` that already moved on (see `replace_file`'s
 //! doc comment). `update_index` also runs a one-time backfill
-//! (`IndexBackend::put_symbol_relations_batch`, the standalone form) for
+//! (`IndexWrite::put_symbol_relations_batch`, the standalone form) for
 //! files that predate this feature — see `update_index`'s own comment for
 //! why an index with symbols but an empty `symbol_relations` table needs
 //! one.
@@ -23,10 +23,8 @@
 //! a live AST scan; the old query-time `structural.rs`/ast-grep backend is
 //! gone.
 
-use crate::storage::IndexBackend;
 use crate::symbols::{Language, Symbol, SymbolKind};
 use crate::tree_sitter_structural::{all_calls_and_bases_in_file, StructuralSites};
-use anyhow::Result;
 use std::collections::HashMap;
 
 /// Smallest non-Module symbol (by span, then by deepest nesting) in
@@ -208,37 +206,20 @@ pub fn relations_from_sites(
     out
 }
 
-/// Loads symbols with `calls`/`bases` merged in from `symbol_relations` —
-/// the read-side counterpart of [`compute_file_relations`]/`update_index`.
-/// Complete symbols; the request path's corpus snapshot uses
-/// [`load_lean_symbols_with_relations`] instead.
-pub fn load_symbols_with_relations(store: &dyn IndexBackend) -> Result<Vec<Symbol>> {
-    merge_relations(store, store.all_symbols()?)
-}
-
-/// [`load_symbols_with_relations`] over [`IndexBackend::all_symbols_lean`]:
-/// what `retrieval::SymbolSnapshot::load` holds.
-pub fn load_lean_symbols_with_relations(store: &dyn IndexBackend) -> Result<Vec<Symbol>> {
-    merge_relations(store, store.all_symbols_lean()?)
-}
-
-fn merge_relations(store: &dyn IndexBackend, mut symbols: Vec<Symbol>) -> Result<Vec<Symbol>> {
-    let mut relations = store.all_symbol_relations()?;
-    for s in &mut symbols {
-        if let Some((calls, bases)) = relations.remove(&s.id()) {
-            s.calls = calls;
-            s.bases = bases;
-        }
-    }
-    Ok(symbols)
-}
+/// Compatibility paths: corpus loading with relations merged moved to its
+/// one owner, `retrieval::snapshot` (#34 S2). These re-exports keep the
+/// pre-S2 public paths until #34 S6 decides them; they add no loading
+/// logic of their own.
+pub use crate::retrieval::snapshot::{
+    load_lean_symbols_with_relations, load_symbols_with_relations,
+};
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
     use crate::index::update_index;
-    use crate::storage::SqliteStore;
+    use crate::storage::{IndexRead, IndexWrite, SqliteStore};
     use std::fs;
 
     /// The parse workers' path (one shared parse, then attribution) against

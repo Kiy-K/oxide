@@ -5,7 +5,9 @@
 //! mere absence from that set. A file the caller doesn't mention is
 //! untouched, full stop.
 
-use oxide::index::{update_base, update_base_for_files, IndexBackend, IndexOptions, SqliteStore};
+use oxide::index::{
+    update_base, update_base_for_files, IndexOptions, IndexRead, IndexWrite, SqliteStore,
+};
 use std::path::Path;
 
 fn write(path: &Path, content: &str) {

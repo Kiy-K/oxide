@@ -32,7 +32,7 @@ use std::sync::atomic::{AtomicU64, Ordering::Relaxed};
 use std::time::Instant;
 
 use oxide::relations::RelationGraph;
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::{Language, Symbol, SymbolKind};
 use rusqlite::{Connection, OpenFlags};
 

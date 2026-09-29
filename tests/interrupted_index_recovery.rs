@@ -19,7 +19,7 @@
 //! `oxide index` must recover cleanly.
 
 use oxide::embeddings::{configured_provider_name, EmbeddingProvider, HashedEmbedder};
-use oxide::index::{update_index, IndexBackend, IndexOptions, SqliteStore};
+use oxide::index::{update_index, IndexOptions, IndexRead, IndexWrite, SqliteStore};
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{ErrorAction, RepositoryService, SearchRequest};
 use std::path::Path;
@@ -324,7 +324,7 @@ fn torn_meta_missing_only_version_keys_is_the_gap_set_meta_all_closes() {
 }
 
 /// A real `kill -9` mid-run, with the bulk WAL checkpoint policy in force
-/// (`IndexBackend::begin_bulk_writes` raises `wal_autocheckpoint` for the
+/// (`IndexWrite::begin_bulk_writes` raises `wal_autocheckpoint` for the
 /// base pass, so an interrupted run can leave a multi-megabyte WAL that
 /// was never checkpointed). SQLite must replay that WAL on the next open,
 /// the torn index must still be refused by read commands (nothing was

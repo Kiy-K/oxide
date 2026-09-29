@@ -635,7 +635,7 @@ impl<'c> ProbeGraph<'c> {
     /// `all_symbol_relations`' table scan yields per symbol).
     pub fn hydrate(
         &self,
-        store: &dyn oxide::storage::IndexBackend,
+        store: &dyn oxide::storage::IndexRead,
         ids: &[u64],
         with_relations: bool,
     ) -> anyhow::Result<HashMap<u64, Symbol>> {

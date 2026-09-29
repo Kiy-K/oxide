@@ -26,7 +26,7 @@
 //! With no arguments, sweeps every repo under
 //! `~/.cache/oxide-contextbench/repos` that has an `.oxide/index.db`.
 
-use oxide::index::{update_base, IndexBackend, IndexOptions, SqliteStore, LEXICAL_INDEX_KEY};
+use oxide::index::{update_base, IndexOptions, IndexRead, SqliteStore, LEXICAL_INDEX_KEY};
 use oxide::lexical::LexicalIndex;
 use std::path::{Path, PathBuf};
 use std::time::Instant;

@@ -9,7 +9,7 @@ use oxide::embeddings::HashedEmbedder;
 use oxide::index::update_index;
 use oxide::relations::RelationGraph;
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::structural_relations::load_symbols_with_relations;
 use serde::Deserialize;
 use std::collections::{HashMap, HashSet};
@@ -77,7 +77,7 @@ fn fixture_recall() {
                 .map(|h| format!("{}#{}", h.symbol.file, h.symbol.qualified_name))
                 .collect();
 
-            let symbols = load_symbols_with_relations(&store as &dyn IndexBackend).unwrap();
+            let symbols = load_symbols_with_relations(&store as &dyn IndexRead).unwrap();
             let graph = RelationGraph::build(&symbols);
             let precomputed = match task.structural_intent.as_str() {
                 "implementors" => graph.implementors_of(&task.anchor_symbol),
@@ -118,7 +118,7 @@ fn scale_evidence(repo: &Path) {
         db_bytes as f64 / 1_048_576.0
     );
 
-    let symbols = load_symbols_with_relations(&store as &dyn IndexBackend).unwrap();
+    let symbols = load_symbols_with_relations(&store as &dyn IndexRead).unwrap();
     let t1 = Instant::now();
     let graph = RelationGraph::build(&symbols);
     let build_ms = t1.elapsed().as_secs_f64() * 1000.0;

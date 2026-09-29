@@ -4,7 +4,7 @@
 //! that calls `RepositoryService` without going through `cli.rs`.
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexWrite, SqliteStore};
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{RepositoryService, SearchRequest};
 use std::path::Path;

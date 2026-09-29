@@ -10,7 +10,7 @@
 //! Usage: `cargo run --release --example lexical_build_probe -- <repo-path>`
 //! (the repo must already have a `.oxide/index.db`).
 
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexRead, SqliteStore};
 use oxide::lexical::LexicalIndex;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};

@@ -2,14 +2,14 @@
 //! the generation/completeness invariant that keeps a partially built or
 //! upgraded index from ever being scored as if it were current.
 //!
-//! The crash simulations here reach past `IndexBackend` and edit `index.db`
+//! The crash simulations here reach past `IndexRead`/`IndexWrite` and edit `index.db`
 //! with raw SQL on purpose. A backfill killed halfway leaves exactly this
 //! shape — some files covered, some not, every covered file's `content_hash`
 //! already matching — and there is no public API that can produce it,
 //! because no correct code path ever should.
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore, LEXICAL_INDEX_KEY};
+use oxide::index::{update_index, IndexRead, SqliteStore, LEXICAL_INDEX_KEY};
 use oxide::lexical::LexicalIndex;
 use oxide::retrieval::{RetrievalEngine, SearchMode, SearchOptions};
 use std::collections::HashMap;

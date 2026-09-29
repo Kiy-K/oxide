@@ -6,7 +6,7 @@
 //! from a future pragma, a rusqlite bump, or a hand-run `ANALYZE` — cannot
 //! silently turn a rowid probe into a table scan.
 
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, IndexWrite, SqliteStore};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 
 fn sym(file: &str, name: &str) -> Symbol {

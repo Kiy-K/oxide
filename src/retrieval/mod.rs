@@ -4,8 +4,9 @@
 //!
 //! Responsibilities, one module each: `options` holds the request and
 //! hit contracts callers build and read; `snapshot` owns the whole-corpus
-//! snapshot, its lean-vs-complete loading policy and the completion every
-//! partial symbol goes through before it can be a seed or leave as output;
+//! snapshot's assembly (lean-vs-complete rows, the relations merge) and the
+//! completion every partial symbol goes through before it can be a seed or
+//! leave as output;
 //! `top_k` is the bounded score/id ranking both channels share;
 //! `engine` is `RetrievalEngine` and the candidate-first request path
 //! (concurrent lexical + query embedding, exact streaming vector scan, RRF
@@ -15,7 +16,9 @@
 
 mod engine;
 mod options;
-mod snapshot;
+// `pub(crate)` only so `structural_relations` can keep its pre-S2 public
+// loader paths as re-exports (#34 S6 decides them).
+pub(crate) mod snapshot;
 mod snippet;
 #[cfg(test)]
 mod test_support;

@@ -48,7 +48,7 @@ use oxide::embeddings::open_embedder;
 use oxide::index::{EmbeddingSpace, SpaceRead};
 use oxide::relations::{RelationGraph, RelationIndex};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::Symbol;
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};

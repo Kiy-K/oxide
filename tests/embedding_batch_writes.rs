@@ -1,10 +1,10 @@
-//! `IndexBackend::put_embeddings_batch` must be observationally identical
+//! `IndexWrite::put_embeddings_batch` must be observationally identical
 //! to calling `put_embedding` once per item — it's a write-path
 //! optimization (one transaction per chunk instead of one autocommit per
 //! row; docs/indexing-rebuild-scopes/README.md), not a behavior change.
 
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexRead, IndexWrite, SqliteStore};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 use std::path::Path;
 

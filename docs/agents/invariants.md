@@ -59,7 +59,7 @@ invariant mean this file.
   (`streaming_semantic_scan_matches_materialized_scan_exactly`).
   `FUSION_CANDIDATE_LIMIT` is a ranking input, not a tuning knob: a
   different depth changes RRF's inputs.
-- `SymbolSnapshot` is **lean** (`IndexBackend::all_symbols_lean`,
+- `SymbolSnapshot` is **lean** (`IndexRead::all_symbols_lean`,
   docs/retrieval-profile/corpus-load-baseline/lean-snapshot/): every
   symbol is `Completeness::Partial` — `imports` empty, `references` only
   on test symbols (`symbols::is_test_symbol`, the one predicate
@@ -84,7 +84,7 @@ invariant mean this file.
   plain `std::thread::scope` — not a tokio task — while BM25 runs on the
   calling thread, then the vector scan follows on the calling thread once
   the query vector is back (both stages read through `store: &dyn
-  IndexBackend`, and `SqliteStore` is not `Sync`). This is deliberate:
+  IndexRead`, and `SqliteStore` is not `Sync`). This is deliberate:
   `oxide context`/`oxide search` from the CLI run fully synchronously with
   no tokio runtime at all (`cli/commands/mcp.rs::run_mcp`'s own comment says so), while
   MCP already runs the whole service call inside `spawn_blocking`.
@@ -113,7 +113,7 @@ invariant mean this file.
   (docs/retrieval-profile/README.md §6.1).
   `PRAGMA data_version` was deliberately not used: it is only comparable
   between reads on the same connection, and every request opens its own.
-- `update_base` runs inside `IndexBackend::begin/end_bulk_writes`, which
+- `update_base` runs inside `IndexWrite::begin/end_bulk_writes`, which
   raises `wal_autocheckpoint` to `BULK_WAL_AUTOCHECKPOINT_PAGES` (16 MB)
   for the full-corpus pass and restores SQLite's 4 MB default on every
   exit path. Disabling checkpoints outright let the WAL reach 1.16 GB for
@@ -210,14 +210,14 @@ invariant mean this file.
   like any WAL reader (`tests/cli_e2e.rs::read_only_commands_never_modify_index_db_content`).
 - `update_index`'s closing meta writes (root/embedder/dim/schema_version/
   extraction_version) must land as one atomic transaction
-  (`IndexBackend::set_meta_all`), never as separate statements. A process
+  (`IndexWrite::set_meta_all`), never as separate statements. A process
   killed between separate writes could leave `root` set without
   `schema_version`, and `validate_index`'s "missing schema_version means a
   pre-versioning legacy index" fallback would then wave a torn, incomplete
   index through as healthy (`tests/interrupted_index_recovery.rs`).
 - A provider switch clears vectors and writes the in-flight fingerprint to
   `embedding_migration` as ONE transaction
-  (`IndexBackend::begin_embedding_migration`), and retires that key inside
+  (`IndexWrite::begin_embedding_migration`), and retires that key inside
   the same `set_meta_all` that publishes the new identity. The atomicity only
   works in that order: because the marker cannot exist unless the table was
   emptied in the same transaction, "marker == the provider I am about to
@@ -444,7 +444,7 @@ identity everywhere is `path#QualifiedName`.
   already-parsed symbols, adding one extra `tree_sitter::Query` pass per
   reparsed file via `tree_sitter_structural.rs`'s `all_calls_in_file`/
   `all_bases_in_file`), writes `(symbol_id, calls, bases)` to a
-  `symbol_relations` SQLite side table (`IndexBackend::put_symbol_relations_batch`,
+  `symbol_relations` SQLite side table (`IndexWrite::put_symbol_relations_batch`,
   one transaction per reparsed file — **every** symbol in that file gets an
   entry, even an empty one, which is what clears a stale relation after an
   edit removes a symbol's last call/base), and `context.rs`'s bounded
@@ -483,8 +483,15 @@ identity everywhere is `path#QualifiedName`.
   that preceded it, and `docs/astgrep-structural-search/`/
   `docs/astgrep-hardening/` for the original (now superseded) ast-grep
   spike and hardening pass.
-- Storage is SQLite behind the small `IndexBackend` trait (`src/storage/backend.rs`);
-  DB lives at `<repo>/.oxide/index.db`. The backend question is **closed**:
+- Storage is SQLite behind two capability traits split by caller, not by
+  table (`src/storage/backend.rs`): `IndexRead` is every read and the only
+  storage type the request path holds (`RetrievalEngine`, `SymbolSnapshot`,
+  `complete_symbols`, persisted BM25, the vector scan), and
+  `IndexWrite: IndexRead` is every mutation, for the indexer only, with
+  each crash-safety contract stated on the method that enforces it.
+  Corpus-snapshot assembly (lean vs complete rows via `lexical_persisted`,
+  the `calls`/`bases` merge) has one owner, `retrieval/snapshot.rs`; it
+  is retrieval policy and stays out of `storage`. DB lives at `<repo>/.oxide/index.db`. The backend question is **closed**:
   SurrealDB and Turso were evaluated and rejected, and Enhanced SQLite was
   built and measured (`docs/storage-backend-eval/`). Enhancements are
   limited to features already bundled with the pinned `rusqlite 0.32`;

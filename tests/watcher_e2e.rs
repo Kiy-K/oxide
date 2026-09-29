@@ -5,7 +5,7 @@
 //! deterministic rather than flaky under load.
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{content_stale_embedding_count, update_index, IndexBackend, SqliteStore};
+use oxide::index::{content_stale_embedding_count, update_index, IndexRead, SqliteStore};
 use oxide::symbols::content_hash;
 use oxide::watcher::{run, WatchLock};
 use std::path::{Path, PathBuf};

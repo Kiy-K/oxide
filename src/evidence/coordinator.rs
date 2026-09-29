@@ -13,7 +13,7 @@ use crate::evidence::scope::scope_files_from_seeds;
 use crate::gitctx;
 use crate::relations::RelationGraph;
 use crate::retrieval::{complete_symbols, SearchHit};
-use crate::storage::IndexBackend;
+use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
 use std::collections::HashMap;
 use std::path::Path;
@@ -23,7 +23,7 @@ pub struct CollectInput<'a> {
     pub root: &'a Path,
     /// The request's store, for completing snapshot symbols that become
     /// seeds here (git-changed symbols, `retrieval::complete_symbols`).
-    pub store: &'a dyn IndexBackend,
+    pub store: &'a dyn IndexRead,
     pub symbols: &'a [Symbol],
     pub graph: &'a RelationGraph<'a>,
     pub seeds: &'a [SearchHit],

@@ -5,7 +5,7 @@
 //! the content it was built from.
 
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::storage::{IndexBackend, SqliteStore, INDEX_GENERATION_KEY, INDEX_ID_KEY};
+use oxide::storage::{IndexRead, IndexWrite, SqliteStore, INDEX_GENERATION_KEY, INDEX_ID_KEY};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 use std::path::Path;
 

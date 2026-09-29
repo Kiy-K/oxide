@@ -15,7 +15,7 @@
 //! rebuild of the same repository state").
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexRead, SqliteStore};
 use oxide::symbols::SymbolKind;
 use std::path::Path;
 

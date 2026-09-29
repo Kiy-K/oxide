@@ -8,7 +8,7 @@
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::update_index;
 use oxide::relations::RelationGraph;
-use oxide::storage::{IndexBackend, SqliteStore};
+use oxide::storage::{IndexRead, SqliteStore};
 use oxide::symbols::Symbol;
 use std::fs;
 use std::path::Path;
@@ -46,7 +46,7 @@ fn python_relative_import_resolves_cross_file_and_survives_incremental_reindex()
     let embedder = HashedEmbedder::default();
     update_index(root, &mut store, &embedder).unwrap();
 
-    let symbols = (&store as &dyn IndexBackend).all_symbols().unwrap();
+    let symbols = (&store as &dyn IndexRead).all_symbols().unwrap();
     let graph = RelationGraph::build(&symbols);
     let handle = symbols
         .iter()
@@ -73,7 +73,7 @@ fn python_relative_import_resolves_cross_file_and_survives_incremental_reindex()
     let r = update_index(root, &mut store, &embedder).unwrap();
     assert_eq!(r.reparsed_files, 1, "only handler.py changed");
 
-    let symbols = (&store as &dyn IndexBackend).all_symbols().unwrap();
+    let symbols = (&store as &dyn IndexRead).all_symbols().unwrap();
     let graph = RelationGraph::build(&symbols);
     let handle = symbols
         .iter()

@@ -6,8 +6,9 @@ use super::space::{EmbeddingSpace, SpaceWrite};
 use super::{count_summary, IndexOptions, IndexReport, NoProgress, ProgressSink, Stage};
 use crate::embeddings::symbol_embed_text;
 use crate::storage::{
-    IndexBackend, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY, EMBEDDING_MIGRATION_KEY,
-    EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, ROOT_KEY, SCHEMA_VERSION, SCHEMA_VERSION_KEY,
+    IndexRead, IndexWrite, DIM_KEY, EMBEDDER_KEY, EMBEDDING_FINGERPRINT_KEY,
+    EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, ROOT_KEY, SCHEMA_VERSION,
+    SCHEMA_VERSION_KEY,
 };
 use crate::symbols::Symbol;
 use anyhow::Result;
@@ -22,7 +23,7 @@ use std::path::Path;
 /// both stages back to back ends up with their sum.
 pub fn update_embeddings(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
     opts: &IndexOptions,
     report: &mut IndexReport,
@@ -33,7 +34,7 @@ pub fn update_embeddings(
 /// [`update_embeddings`] with stage/progress reporting; identical work.
 pub fn update_embeddings_reporting(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
     opts: &IndexOptions,
     report: &mut IndexReport,
@@ -49,7 +50,7 @@ pub fn update_embeddings_reporting(
     // once so everything below re-embeds under the current model. Clearing
     // and marking the migration in flight is one transaction, so from here
     // on "marker present" implies "every surviving vector is the marker's"
-    // — see `IndexBackend::begin_embedding_migration`.
+    // — see `IndexWrite::begin_embedding_migration`.
     let fingerprint_json = serde_json::to_string(&embedder.fingerprint())?;
     match write_plan(store, embedder)? {
         SpaceWrite::Migrate(reason) => {
@@ -73,7 +74,7 @@ pub fn update_embeddings_reporting(
     // The value every write below asserts the marker still holds. Empty for
     // an ordinary incremental run (no migration is in flight, and none may
     // start under us); this run's fingerprint while one is. See
-    // `IndexBackend::put_embeddings_batch` for the concurrency this closes.
+    // `IndexWrite::put_embeddings_batch` for the concurrency this closes.
     // After the branch above this is either "" or this run's
     // `fingerprint_json`; read it back rather than reconstructing it.
     let expected_space = store.get_meta(EMBEDDING_MIGRATION_KEY)?.unwrap_or_default();
@@ -106,7 +107,7 @@ pub fn update_embeddings_reporting(
             let texts: Vec<String> = chunk.iter().map(|s| symbol_embed_text(s)).collect();
             let vectors = embedder.embed_documents(&texts);
             // One transaction per chunk instead of one autocommit per
-            // symbol — see `IndexBackend::put_embeddings_batch`'s doc
+            // symbol — see `IndexWrite::put_embeddings_batch`'s doc
             // comment for why this was worth doing and the batch/thread
             // chunking around it wasn't.
             let mut batch: Vec<(u64, Vec<f32>)> = Vec::with_capacity(chunk.len());
@@ -218,7 +219,7 @@ pub fn update_embeddings_reporting(
 /// exactly — the two must never diverge, or a watcher could report "0
 /// pending" while a real `update_embeddings` run would still find work.
 pub fn pending_embedding_count(
-    store: &dyn IndexBackend,
+    store: &dyn IndexRead,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<usize> {
     if incompatible_stored_space(store, embedder)?.is_some() {
@@ -229,7 +230,7 @@ pub fn pending_embedding_count(
 
 /// [`EmbeddingSpace::plan_write`] for `embedder` against `store`'s vectors.
 fn write_plan(
-    store: &dyn IndexBackend,
+    store: &dyn IndexRead,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<SpaceWrite> {
     EmbeddingSpace::read(store)?.plan_write(&embedder.fingerprint(), || {
@@ -243,7 +244,7 @@ fn write_plan(
 /// [`update_embeddings`] uses the [`write_plan`] it wraps, so the two can
 /// never diverge.
 pub(crate) fn incompatible_stored_space(
-    store: &dyn IndexBackend,
+    store: &dyn IndexRead,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<Option<String>> {
     Ok(match write_plan(store, embedder)? {
@@ -259,7 +260,7 @@ pub(crate) fn incompatible_stored_space(
 /// `RepositoryService::status`'s existing metadata-only `embedder_current`
 /// check, which is deliberately network-free) doesn't need a live
 /// `EmbeddingProvider` just to ask "how many symbols are stale."
-pub fn content_stale_embedding_count(store: &dyn IndexBackend) -> Result<usize> {
+pub fn content_stale_embedding_count(store: &dyn IndexRead) -> Result<usize> {
     let all = store.all_symbols()?;
     let embeddings = store.all_embeddings()?;
     Ok(all

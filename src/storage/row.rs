@@ -46,9 +46,9 @@ fn row_to_symbol_without_imports(
         exported: r.get::<_, i64>(10)? != 0,
         parent: r.get(11)?,
         references: Vec::new(),
-        // Not columns on `symbols` — populated separately by
-        // `structural_relations::load_symbols_with_relations` from the
-        // side table `symbol_relations`, never by this loader.
+        // Not columns on `symbols` — merged in separately by the corpus
+        // snapshot assembly (`retrieval::snapshot`) from the side table
+        // `symbol_relations`, never by this loader.
         calls: Vec::new(),
         bases: Vec::new(),
         completeness: Completeness::Complete,
@@ -68,27 +68,27 @@ fn row_to_symbol_without_imports(
     Ok(s)
 }
 
-/// The corpus load's statement ([`IndexBackend::all_symbols`]).
+/// The corpus load's statement ([`IndexRead::all_symbols`]).
 ///
-/// [`IndexBackend::all_symbols`]: crate::storage::IndexBackend::all_symbols
+/// [`IndexRead::all_symbols`]: crate::storage::IndexRead::all_symbols
 pub const CORPUS_SQL: &str =
     "SELECT file, qualified_name, name, kind, language, start_line, end_line,
             content_hash, signature, imports_json, exported, parent, references_json
      FROM symbols ORDER BY file, start_line";
-/// [`CORPUS_SQL`] without `imports_json` ([`IndexBackend::all_symbols_lean`]).
+/// [`CORPUS_SQL`] without `imports_json` ([`IndexRead::all_symbols_lean`]).
 ///
-/// [`IndexBackend::all_symbols_lean`]: crate::storage::IndexBackend::all_symbols_lean
+/// [`IndexRead::all_symbols_lean`]: crate::storage::IndexRead::all_symbols_lean
 pub const LEAN_CORPUS_SQL: &str =
     "SELECT file, qualified_name, name, kind, language, start_line, end_line,
             content_hash, signature, NULL, exported, parent, references_json
      FROM symbols ORDER BY file, start_line";
 
 impl SqliteStore {
-    /// [`IndexBackend::all_symbols`] (`lean = false`) and
-    /// [`IndexBackend::all_symbols_lean`]: one statement shape, one decoder.
+    /// [`IndexRead::all_symbols`] (`lean = false`) and
+    /// [`IndexRead::all_symbols_lean`]: one statement shape, one decoder.
     ///
-    /// [`IndexBackend::all_symbols`]: crate::storage::IndexBackend::all_symbols
-    /// [`IndexBackend::all_symbols_lean`]: crate::storage::IndexBackend::all_symbols_lean
+    /// [`IndexRead::all_symbols`]: crate::storage::IndexRead::all_symbols
+    /// [`IndexRead::all_symbols_lean`]: crate::storage::IndexRead::all_symbols_lean
     pub(super) fn load_corpus(&self, lean: bool) -> Result<Vec<Symbol>> {
         // The `ORDER BY` stays in SQL. Measured on a 7.8k-symbol index
         // (docs/retrieval-profile/README.md): the ordered scan is no slower

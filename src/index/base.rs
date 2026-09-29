@@ -6,7 +6,7 @@ use super::pipeline::parse_and_persist_changed_files;
 use super::{count_summary, IndexOptions, IndexReport, NoProgress, ProgressSink, Stage};
 use crate::scanner;
 use crate::storage::{
-    IndexBackend, EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, LEXICAL_INDEX_KEY,
+    IndexRead, IndexWrite, EXTRACTION_VERSION, EXTRACTION_VERSION_KEY, LEXICAL_INDEX_KEY,
     LEXICAL_INDEX_VERSION,
 };
 use crate::symbols::Symbol;
@@ -21,7 +21,7 @@ use std::path::Path;
 /// that as stale would make every such run reparse the whole corpus
 /// forever. An index that is genuinely missing the key is refused outright
 /// by `validate_index`, so it can never be silently served either way.
-fn stale_extraction(store: &dyn IndexBackend) -> Result<bool> {
+fn stale_extraction(store: &dyn IndexRead) -> Result<bool> {
     Ok(store
         .get_meta(EXTRACTION_VERSION_KEY)?
         .filter(|s| !s.is_empty())
@@ -34,7 +34,7 @@ fn stale_extraction(store: &dyn IndexBackend) -> Result<bool> {
 /// the grand total (see `update_index_scoped`).
 pub fn update_base(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     opts: &IndexOptions,
 ) -> Result<IndexReport> {
     update_base_reporting(root, store, opts, &NoProgress)
@@ -43,7 +43,7 @@ pub fn update_base(
 /// [`update_base`] with stage/progress reporting; identical work.
 pub fn update_base_reporting(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     opts: &IndexOptions,
     progress: &dyn ProgressSink,
 ) -> Result<IndexReport> {
@@ -57,7 +57,7 @@ pub fn update_base_reporting(
 
 fn update_base_inner(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     opts: &IndexOptions,
     progress: &dyn ProgressSink,
 ) -> Result<IndexReport> {
@@ -315,7 +315,7 @@ fn read_capped(path: &Path, cap: u64) -> std::io::Result<Option<Vec<u8>>> {
 /// should guess at.
 pub fn update_base_for_files(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     opts: &IndexOptions,
     changed_paths: &[String],
 ) -> Result<IndexReport> {

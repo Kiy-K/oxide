@@ -40,7 +40,7 @@ use crate::index::{
     update_base, update_base_for_files, update_embeddings, update_index, IndexOptions, IndexReport,
 };
 use crate::scanner;
-use crate::storage::IndexBackend;
+use crate::storage::IndexWrite;
 use anyhow::{Context, Result};
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::collections::HashSet;
@@ -179,7 +179,7 @@ fn scan_set(root: &Path) -> Result<HashSet<String>> {
 /// events.
 pub fn process_batch(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn EmbeddingProvider,
     ignore_cache: &mut IgnoreCache,
     changed: &HashSet<PathBuf>,
@@ -353,7 +353,7 @@ fn refresh_lock(path: &Path, token: &str) -> Result<()> {
 /// instead, which this loop doesn't need to know about.
 pub fn run(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn EmbeddingProvider,
     lock: &WatchLock,
     stop: &std::sync::atomic::AtomicBool,
@@ -460,7 +460,7 @@ mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
     use crate::index::{content_stale_embedding_count, update_index};
-    use crate::storage::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexRead, SqliteStore};
 
     fn write(path: &Path, content: &str) {
         std::fs::create_dir_all(path.parent().unwrap()).unwrap();

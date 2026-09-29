@@ -192,7 +192,7 @@ impl LexicalQuery {
 /// in-memory index uses (`symbols.len()`) even in the instant between a
 /// symbol write and a reader's snapshot.
 pub fn prepare_from_store(
-    store: &dyn crate::storage::IndexBackend,
+    store: &dyn crate::storage::IndexRead,
     doc_count: usize,
     query: &str,
 ) -> anyhow::Result<LexicalQuery> {
@@ -235,7 +235,7 @@ impl LexicalIndex {
         // would silently shrink them (`Symbol::completeness`).
         assert!(
             symbols.iter().all(Symbol::is_complete),
-            "LexicalIndex::build needs complete symbols (IndexBackend::all_symbols)"
+            "LexicalIndex::build needs complete symbols (IndexRead::all_symbols)"
         );
         // Capacity heuristic: ~20 weighted postings per symbol keeps the
         // posting maps from rehashing during the build.

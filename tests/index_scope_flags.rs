@@ -4,7 +4,7 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_base, update_embeddings, update_index_scoped, IndexOptions};
-use oxide::index::{IndexBackend, SqliteStore, EXTRACTION_VERSION};
+use oxide::index::{IndexRead, IndexWrite, SqliteStore, EXTRACTION_VERSION};
 use std::path::Path;
 
 fn write(path: &Path, content: &str) {

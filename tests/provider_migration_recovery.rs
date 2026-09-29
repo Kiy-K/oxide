@@ -17,7 +17,7 @@ use oxide::embeddings::{
     symbol_embed_text, EmbeddingProvider, EmbeddingSpaceFingerprint, HashedEmbedder,
 };
 use oxide::index::{
-    update_embeddings, update_index, IndexBackend, IndexOptions, IndexReport, SqliteStore,
+    update_embeddings, update_index, IndexOptions, IndexRead, IndexReport, IndexWrite, SqliteStore,
     EMBEDDING_MIGRATION_KEY,
 };
 use oxide::retrieval::{RetrievalMode, SearchMode};

@@ -14,7 +14,7 @@
 //! layout, which carries no logical meaning.
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexRead, SqliteStore};
 use std::collections::HashMap;
 use std::path::Path;
 

@@ -16,7 +16,7 @@ use crate::config::{
 use crate::embeddings::EmbeddingProvider;
 use crate::gitctx::GitEvidence;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
-use crate::storage::IndexBackend;
+use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
 use anyhow::Result;
 use serde::Serialize;
@@ -135,7 +135,7 @@ struct Candidate {
 /// from `root`.
 pub fn build_context(
     root: &Path,
-    store: &dyn IndexBackend,
+    store: &dyn IndexRead,
     embedder: &dyn EmbeddingProvider,
     task: &str,
     opts: &ContextOptions,
@@ -647,7 +647,7 @@ impl ContextPack {
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::storage::{IndexBackend, SqliteStore};
+    use crate::storage::{IndexWrite, SqliteStore};
     use crate::symbols::{content_hash, Language};
 
     fn sym(file: &str, qname: &str, kind: SymbolKind, sig: &str) -> Symbol {

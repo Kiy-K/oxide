@@ -1,13 +1,16 @@
-//! The storage contract: [`IndexBackend`] and the data it exchanges with
-//! callers. Nothing here depends on SQLite; `sqlite.rs` implements it.
+//! The storage contract, split by what a caller may do: [`IndexRead`] for
+//! every read (the whole request path, and the indexer's own reads) and
+//! [`IndexWrite`] for every mutation, each of which carries its own
+//! crash-safety contract. Nothing here depends on SQLite; `sqlite.rs`
+//! implements both, and SQLite stays the only backend
+//! (docs/storage-backend-eval/). The split exists so request-path code,
+//! which only ever holds `&dyn IndexRead`, cannot name a write.
 
 use crate::symbols::Symbol;
 use anyhow::Result;
 use serde::Serialize;
 use std::collections::HashMap;
 
-/// Storage abstraction. Small by design: swap SQLite for something else by
-/// implementing this trait.
 /// One parsed file: (repo-relative path, content hash, source text, symbols).
 pub struct ParsedFile {
     pub file: String,
@@ -17,81 +20,23 @@ pub struct ParsedFile {
 }
 
 /// Per symbol id: `(calls, bases)`, the precomputed-relations side-table
-/// shape (`IndexBackend::all_symbol_relations`).
+/// shape (`IndexRead::all_symbol_relations`).
 pub type SymbolRelations = HashMap<u64, (Vec<String>, Vec<String>)>;
 
-pub trait IndexBackend {
+/// Every read the index supports, and the only storage capability the
+/// request path is given: `RetrievalEngine`, the corpus snapshot and
+/// [`complete_symbols`](crate::retrieval::complete_symbols), persisted-BM25
+/// scoring and the exact vector scan all take `&dyn IndexRead`. The
+/// indexer reads through the same methods ([`IndexWrite`] extends this).
+pub trait IndexRead {
     fn get_meta(&self, key: &str) -> Result<Option<String>>;
-    fn set_meta(&mut self, key: &str, value: &str) -> Result<()>;
-    /// Set several meta keys as one atomic transaction: either all of them
-    /// land or none do. `update_index` uses this for its closing
-    /// root/embedder/dim/schema_version/extraction_version writes so a
-    /// process interrupted mid-write can never leave a torn subset behind —
-    /// `validate_index`'s "index predates version tracking" fallback for a
-    /// missing `schema_version` key would otherwise treat that torn state
-    /// as a compatible legacy index instead of an incomplete one.
-    ///
-    /// `expected_space` is the value [`EMBEDDING_MIGRATION_KEY`] must still
-    /// hold for this publication to be honest — see
-    /// [`IndexBackend::put_embeddings_batch`] for what that guard buys and
-    /// what it does not.
-    ///
-    /// [`EMBEDDING_MIGRATION_KEY`]: crate::storage::EMBEDDING_MIGRATION_KEY
-    fn set_meta_all(&mut self, expected_space: &str, pairs: &[(&str, &str)]) -> Result<()>;
     fn file_hashes(&self) -> Result<HashMap<String, u64>>;
-    /// Replaces `file`'s symbols (and, since a symbol whose body didn't
-    /// change keeps its embedding across the rewrite, its embeddings) and
-    /// its precomputed relations, as **one** transaction. Relations were
-    /// briefly a separate `put_symbol_relations_batch` call issued right
-    /// after this one from `update_index` — a process interrupted between
-    /// the two left `symbols`/`files.content_hash` already updated to the
-    /// new content while `symbol_relations` still held the old, wrong
-    /// values, and because content_hash already matched, no future run
-    /// would ever reparse that file to fix it (`tests/interrupted_index_recovery.rs`
-    /// pins the general class of bug this pattern already guards against
-    /// for symbols+embeddings; this closes the same class for relations).
-    /// `relations` is typically `structural_relations::compute_file_relations`'s
-    /// output for `symbols`; pass `&[]` when the caller has no relations to
-    /// write (every non-`update_index` test call site).
-    fn replace_file(
-        &mut self,
-        file: &str,
-        hash: u64,
-        symbols: &[Symbol],
-        relations: &[(u64, Vec<String>, Vec<String>)],
-        postings: &[crate::lexical::DocPostings],
-    ) -> Result<()>;
-    fn remove_files(&mut self, files: &[String]) -> Result<()>;
     /// `(document count, summed document length)` over the persisted lexical
     /// index — BM25's `avg_len` denominator and numerator. Summed in SQL as
     /// an integer rather than by folding `f32` document lengths in hash-map
     /// order, which is what the in-memory index does; the two agree exactly
     /// while the total stays under `f32`'s 2^24 integer limit, and past it
     /// the SQL sum is the one that stays deterministic across processes.
-    /// Rewrite lexical postings for symbols whose rows are missing or stale
-    /// while the symbols themselves are unchanged — the backfill path for an
-    /// index that predates the persisted lexical tables, or whose earlier
-    /// backfill was interrupted.
-    ///
-    /// Separate from [`Self::replace_file`] because it must not touch
-    /// `symbols`: reparsing an unchanged file to repair a derived table
-    /// would be wasted work and would misreport `reparsed_files`. Safe
-    /// outside `replace_file`'s transaction only because the symbols are not
-    /// moving underneath it, and because an interrupted backfill leaves
-    /// [`LEXICAL_INDEX_KEY`] unpublished, which makes the whole persisted
-    /// lexical index unreadable rather than partially trusted.
-    /// Returns `false` without writing if `file`'s stored `content_hash` no
-    /// longer equals `expected_hash` — another process replaced that file
-    /// between this run's scan and this write, and the caller's postings
-    /// describe the older revision.
-    ///
-    /// [`LEXICAL_INDEX_KEY`]: crate::storage::LEXICAL_INDEX_KEY
-    fn put_file_lexical(
-        &mut self,
-        file: &str,
-        expected_hash: u64,
-        postings: &[crate::lexical::DocPostings],
-    ) -> Result<bool>;
     fn lexical_totals(&self) -> Result<(usize, i64)>;
     /// Postings for one query term: `(symbol_id, weighted tf, document
     /// length)`, one row per matching document.
@@ -124,9 +69,101 @@ pub trait IndexBackend {
     /// retrieval: scoring runs over postings and vector rows alone, and
     /// only the bounded candidate set is ever turned into `Symbol`s.
     fn symbols_by_ids(&self, ids: &[u64]) -> Result<Vec<Symbol>>;
-    fn symbol_hash(&self, id: u64) -> Result<Option<u64>>;
-    fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()>;
-    /// Same effect as calling [`Self::put_embedding`] once per item, but as
+    /// All embeddings in one shot. The indexer's staleness pass and tests
+    /// use it; retrieval no longer does (see [`Self::for_each_embedding`]).
+    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
+    /// Visit every stored embedding as `(symbol_id, stored dim, raw
+    /// little-endian f32 bytes)` without materializing the table: one row
+    /// is decoded, scored and dropped before the next is read, so an
+    /// exhaustive scan holds O(1) vectors in memory instead of O(N). The
+    /// blob is the same bytes [`Self::all_embeddings`] decodes; callers
+    /// apply the same `take(dim)` rule.
+    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()>;
+    /// All precomputed relations, keyed by symbol id, as `(calls, bases)`.
+    /// Empty/absent for any symbol with no calls/bases at all. Merged into
+    /// `calls`/`bases` only by the corpus-snapshot assembly
+    /// (`retrieval::SymbolSnapshot`), whenever `RelationGraph::callers_of`/
+    /// `implementors_of` are needed; `update_base` also reads it to decide
+    /// the one-time relations backfill.
+    fn all_symbol_relations(&self) -> Result<SymbolRelations>;
+}
+
+/// Every mutation, for the indexer (`update_base`, `update_embeddings`, the
+/// watcher) and nothing else. Each data write is one transaction that bumps
+/// the index generation, and each crash-safety contract is stated on the
+/// method that enforces it: [`Self::replace_file`] (a file's symbols,
+/// embeddings, relations and postings move together),
+/// [`Self::put_file_lexical`] (a backfill that refuses a raced file),
+/// [`Self::begin_embedding_migration`] (clear and mark as one),
+/// [`Self::put_embeddings_batch`] / [`Self::set_meta_all`] (the
+/// `expected_space` marker guard) and [`Self::begin_bulk_writes`] (the WAL
+/// policy of one full pass). Transactions themselves never leave the
+/// implementation.
+pub trait IndexWrite: IndexRead {
+    fn set_meta(&mut self, key: &str, value: &str) -> Result<()>;
+    /// Set several meta keys as one atomic transaction: either all of them
+    /// land or none do. `update_index` uses this for its closing
+    /// root/embedder/dim/schema_version/extraction_version writes so a
+    /// process interrupted mid-write can never leave a torn subset behind —
+    /// `validate_index`'s "index predates version tracking" fallback for a
+    /// missing `schema_version` key would otherwise treat that torn state
+    /// as a compatible legacy index instead of an incomplete one.
+    ///
+    /// `expected_space` is the value [`EMBEDDING_MIGRATION_KEY`] must still
+    /// hold for this publication to be honest — see
+    /// [`IndexWrite::put_embeddings_batch`] for what that guard buys and
+    /// what it does not.
+    ///
+    /// [`EMBEDDING_MIGRATION_KEY`]: crate::storage::EMBEDDING_MIGRATION_KEY
+    fn set_meta_all(&mut self, expected_space: &str, pairs: &[(&str, &str)]) -> Result<()>;
+    /// Replaces `file`'s symbols (and, since a symbol whose body didn't
+    /// change keeps its embedding across the rewrite, its embeddings) and
+    /// its precomputed relations, as **one** transaction. Relations were
+    /// briefly a separate `put_symbol_relations_batch` call issued right
+    /// after this one from `update_index` — a process interrupted between
+    /// the two left `symbols`/`files.content_hash` already updated to the
+    /// new content while `symbol_relations` still held the old, wrong
+    /// values, and because content_hash already matched, no future run
+    /// would ever reparse that file to fix it (`tests/interrupted_index_recovery.rs`
+    /// pins the general class of bug this pattern already guards against
+    /// for symbols+embeddings; this closes the same class for relations).
+    /// `relations` is typically `structural_relations::compute_file_relations`'s
+    /// output for `symbols`; pass `&[]` when the caller has no relations to
+    /// write (every non-`update_index` test call site).
+    fn replace_file(
+        &mut self,
+        file: &str,
+        hash: u64,
+        symbols: &[Symbol],
+        relations: &[(u64, Vec<String>, Vec<String>)],
+        postings: &[crate::lexical::DocPostings],
+    ) -> Result<()>;
+    fn remove_files(&mut self, files: &[String]) -> Result<()>;
+    /// Rewrite lexical postings for symbols whose rows are missing or stale
+    /// while the symbols themselves are unchanged — the backfill path for an
+    /// index that predates the persisted lexical tables, or whose earlier
+    /// backfill was interrupted.
+    ///
+    /// Separate from [`Self::replace_file`] because it must not touch
+    /// `symbols`: reparsing an unchanged file to repair a derived table
+    /// would be wasted work and would misreport `reparsed_files`. Safe
+    /// outside `replace_file`'s transaction only because the symbols are not
+    /// moving underneath it, and because an interrupted backfill leaves
+    /// [`LEXICAL_INDEX_KEY`] unpublished, which makes the whole persisted
+    /// lexical index unreadable rather than partially trusted.
+    /// Returns `false` without writing if `file`'s stored `content_hash` no
+    /// longer equals `expected_hash` — another process replaced that file
+    /// between this run's scan and this write, and the caller's postings
+    /// describe the older revision.
+    ///
+    /// [`LEXICAL_INDEX_KEY`]: crate::storage::LEXICAL_INDEX_KEY
+    fn put_file_lexical(
+        &mut self,
+        file: &str,
+        expected_hash: u64,
+        postings: &[crate::lexical::DocPostings],
+    ) -> Result<bool>;
+    /// Same effect as writing each item as its own single-row transaction, but as
     /// one transaction instead of one autocommit per row — profiling the
     /// embedding stage found the per-symbol `execute()` calls (each an
     /// implicit transaction under SQLite's default autocommit behavior,
@@ -134,7 +171,7 @@ pub trait IndexBackend {
     /// of embedder latency, unlike the batch/thread-chunking around it
     /// (already near the empirically-measured optimum — see
     /// docs/indexing-rebuild-scopes/README.md). A symbol id with no
-    /// matching row in `symbols` is skipped, same as `put_embedding`.
+    /// matching row in `symbols` is skipped.
     ///
     /// Fails, in the same transaction, unless [`EMBEDDING_MIGRATION_KEY`]
     /// still holds `expected_space` — the writer's own fingerprint while a
@@ -161,17 +198,6 @@ pub trait IndexBackend {
         expected_space: &str,
         items: &[(u64, Vec<f32>)],
     ) -> Result<()>;
-    fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>>;
-    /// All embeddings in one shot. The indexer's staleness pass and tests
-    /// use it; retrieval no longer does (see [`Self::for_each_embedding`]).
-    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>>;
-    /// Visit every stored embedding as `(symbol_id, stored dim, raw
-    /// little-endian f32 bytes)` without materializing the table: one row
-    /// is decoded, scored and dropped before the next is read, so an
-    /// exhaustive scan holds O(1) vectors in memory instead of O(N). The
-    /// blob is the same bytes [`Self::all_embeddings`] decodes; callers
-    /// apply the same `take(dim)` rule.
-    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()>;
     /// Clear every vector AND record `fingerprint_json` under
     /// [`EMBEDDING_MIGRATION_KEY`] as **one** transaction — the crash-safety
     /// primitive for a provider switch, and deliberately the *only* way to
@@ -197,8 +223,8 @@ pub trait IndexBackend {
     /// extra steps.
     ///
     /// This alone only proves it within one process. Extending it across
-    /// concurrent `oxide index` runs is [`IndexBackend::put_embeddings_batch`]'s
-    /// and [`IndexBackend::set_meta_all`]'s `expected_space` guard, which
+    /// concurrent `oxide index` runs is [`IndexWrite::put_embeddings_batch`]'s
+    /// and [`IndexWrite::set_meta_all`]'s `expected_space` guard, which
     /// re-reads the marker inside each write's own transaction; read that
     /// method's doc for the interleaving it closes and the one it does not.
     ///
@@ -220,13 +246,6 @@ pub trait IndexBackend {
         &mut self,
         relations: &[(u64, Vec<String>, Vec<String>)],
     ) -> Result<()>;
-    /// All precomputed relations, keyed by symbol id, as `(calls, bases)`.
-    /// Empty/absent for any symbol with no calls/bases at all. Read by
-    /// `structural_relations::load_symbols_with_relations`, which
-    /// `context.rs::build_context` uses instead of calling this crate's
-    /// `all_symbols` directly whenever `RelationGraph::callers_of`/
-    /// `implementors_of` are needed.
-    fn all_symbol_relations(&self) -> Result<SymbolRelations>;
     /// Bracket a full-corpus write pass (`update_base`). The SQLite backend
     /// raises its WAL auto-checkpoint threshold for the duration — see
     /// [`BULK_WAL_AUTOCHECKPOINT_PAGES`] — and restores the default after,

@@ -5,7 +5,7 @@ use crate::embeddings::EmbeddingProvider;
 use crate::gitctx::{self, ChangedSymbol, CoChangeEntry};
 use crate::gitutil::CommitMeta;
 use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchHit, SearchMode, SearchOptions};
-use crate::storage::IndexBackend;
+use crate::storage::IndexRead;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
@@ -32,7 +32,7 @@ pub struct ReviewContext {
 /// top-up from the union of seed signatures.
 pub fn build_review_context(
     repo_root: &Path,
-    store: &dyn IndexBackend,
+    store: &dyn IndexRead,
     embedder: &dyn EmbeddingProvider,
     range: &str,
 ) -> anyhow::Result<ReviewContext> {

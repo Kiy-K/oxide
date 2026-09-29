@@ -7,7 +7,7 @@
 //! Usage: `cargo run --release --example sqlite_enhancements_probe -- <repo>`
 //! (the repo must already have a `.oxide/index.db`).
 
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexRead, SqliteStore};
 use rusqlite::Connection;
 use std::path::{Path, PathBuf};
 use std::time::Instant;

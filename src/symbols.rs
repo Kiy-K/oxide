@@ -185,7 +185,7 @@ pub struct Symbol {
     #[serde(default)]
     pub bases: Vec<String>,
     /// Whether `imports`/`references` are loaded. Only the corpus snapshot
-    /// loader ([`crate::storage::IndexBackend::all_symbols_lean`]) produces
+    /// loader ([`crate::storage::IndexRead::all_symbols_lean`]) produces
     /// [`Completeness::Partial`] symbols; every symbol that leaves the
     /// snapshot as a `neighbors()` seed or as output goes through
     /// `retrieval::complete_symbols` first. Never serialized for a complete

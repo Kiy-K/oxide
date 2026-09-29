@@ -14,8 +14,9 @@
 //!   `set_meta_all` publish.
 
 pub use crate::storage::{
-    IndexBackend, IndexStats, ParsedFile, SqliteStore, SymbolRelations, EMBEDDING_MIGRATION_KEY,
-    EXTRACTION_VERSION, LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION, SCHEMA_VERSION,
+    IndexBackend, IndexRead, IndexStats, IndexWrite, ParsedFile, SqliteStore, SymbolRelations,
+    EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION, LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION,
+    SCHEMA_VERSION,
 };
 
 mod base;
@@ -167,7 +168,7 @@ fn count_summary(done: usize, total: usize) -> String {
 /// getting unchanged.
 pub fn update_index(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
 ) -> Result<IndexReport> {
     update_index_scoped(root, store, embedder, &IndexOptions::default())
@@ -181,7 +182,7 @@ pub fn update_index(
 /// should call `update_base`/`update_embeddings` directly instead.
 pub fn update_index_scoped(
     root: &Path,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     embedder: &dyn crate::embeddings::EmbeddingProvider,
     opts: &IndexOptions,
 ) -> Result<IndexReport> {

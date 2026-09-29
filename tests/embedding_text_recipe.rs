@@ -18,8 +18,8 @@ use oxide::embeddings::{
     SYMBOL_TEXT_RECIPE,
 };
 use oxide::index::{
-    pending_embedding_count, update_base, update_embeddings, update_index, IndexBackend,
-    IndexOptions, IndexReport, SqliteStore, EMBEDDING_MIGRATION_KEY,
+    pending_embedding_count, update_base, update_embeddings, update_index, IndexOptions, IndexRead,
+    IndexReport, IndexWrite, SqliteStore, EMBEDDING_MIGRATION_KEY,
 };
 use oxide::retrieval::{RetrievalMode, SearchMode};
 use oxide::service::{RepositoryService, SearchRequest};

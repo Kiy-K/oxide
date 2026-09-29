@@ -5,8 +5,8 @@
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{
-    pending_embedding_count, update_base, update_embeddings, IndexBackend, IndexOptions,
-    IndexReport, SqliteStore,
+    pending_embedding_count, update_base, update_embeddings, IndexOptions, IndexRead, IndexReport,
+    SqliteStore,
 };
 use std::path::Path;
 

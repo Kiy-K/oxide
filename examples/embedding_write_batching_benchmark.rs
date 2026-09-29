@@ -8,7 +8,7 @@
 //! `cargo run --example embedding_write_batching_benchmark --release`
 
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexWrite, SqliteStore};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 use std::path::Path;
 use std::time::Instant;

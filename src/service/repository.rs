@@ -18,8 +18,8 @@ use crate::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions
 use crate::review::{build_review_context, ReviewContext};
 use crate::scanner;
 use crate::storage::{
-    IndexBackend, IndexStats, SqliteStore, EMBEDDER_KEY, EXTRACTION_VERSION,
-    EXTRACTION_VERSION_KEY, ROOT_KEY, SCHEMA_VERSION, SCHEMA_VERSION_KEY,
+    IndexRead, IndexStats, SqliteStore, EMBEDDER_KEY, EXTRACTION_VERSION, EXTRACTION_VERSION_KEY,
+    ROOT_KEY, SCHEMA_VERSION, SCHEMA_VERSION_KEY,
 };
 use crate::symbols::{Language, Symbol};
 use std::collections::HashMap;

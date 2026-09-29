@@ -2,10 +2,10 @@
 //! and bounded schema-init retry; the read-only snapshot connection), every
 //! write transaction (each bumps the generation; the identity-publishing and
 //! batch-embedding writes also re-check the migration marker), and the
-//! complete `IndexBackend` implementation. Transactions are kept whole here
+//! complete `IndexRead`/`IndexWrite` implementation. Transactions are kept whole here
 //! on purpose: each one's atomicity is auditable in one place.
 
-use super::backend::{IndexBackend, IndexStats, SymbolRelations};
+use super::backend::{IndexRead, IndexStats, IndexWrite, SymbolRelations};
 use super::row::row_to_symbol;
 use super::schema::{EMBEDDING_MIGRATION_KEY, INDEX_GENERATION_KEY, INDEX_ID_KEY, SCHEMA_SQL};
 use crate::symbols::Symbol;
@@ -23,7 +23,7 @@ use std::path::Path;
 /// let the WAL reach 1.16 GB for a 46 MB database, and 16000 pages bought
 /// only noise-level time for a 71 MB WAL; this is the bounded point.
 pub const BULK_WAL_AUTOCHECKPOINT_PAGES: u32 = 4000;
-/// SQLite's own default, restored by [`IndexBackend::end_bulk_writes`].
+/// SQLite's own default, restored by [`IndexWrite::end_bulk_writes`].
 const DEFAULT_WAL_AUTOCHECKPOINT_PAGES: u32 = 1000;
 
 pub struct SqliteStore {
@@ -286,13 +286,140 @@ impl SqliteStore {
     }
 }
 
-impl IndexBackend for SqliteStore {
+impl IndexRead for SqliteStore {
     fn get_meta(&self, key: &str) -> Result<Option<String>> {
         let mut stmt = self.conn.prepare("SELECT value FROM meta WHERE key = ?1")?;
         let mut rows = stmt.query([key])?;
         Ok(rows.next()?.map(|r| r.get(0)).transpose()?)
     }
 
+    fn file_hashes(&self) -> Result<HashMap<String, u64>> {
+        let mut stmt = self.conn.prepare("SELECT path, content_hash FROM files")?;
+        let rows = stmt.query_map([], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as u64))
+        })?;
+        Ok(rows.collect::<std::result::Result<HashMap<_, _>, _>>()?)
+    }
+
+    fn lexical_totals(&self) -> Result<(usize, i64)> {
+        let (count, total): (i64, Option<i64>) =
+            self.conn
+                .query_row("SELECT COUNT(*), SUM(len) FROM lexical_docs", [], |r| {
+                    Ok((r.get(0)?, r.get(1)?))
+                })?;
+        Ok((count as usize, total.unwrap_or(0)))
+    }
+
+    fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>> {
+        let mut stmt = self.conn.prepare_cached(
+            "SELECT p.symbol_id, p.tf, d.len
+             FROM lexical_postings p JOIN lexical_docs d ON d.symbol_id = p.symbol_id
+             WHERE p.term = ?1",
+        )?;
+        let rows = stmt.query_map([term], |r| {
+            Ok((r.get::<_, i64>(0)? as u64, r.get(1)?, r.get(2)?))
+        })?;
+        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
+    }
+
+    fn all_symbols(&self) -> Result<Vec<Symbol>> {
+        self.load_corpus(false)
+    }
+
+    fn all_symbols_lean(&self) -> Result<Vec<Symbol>> {
+        self.load_corpus(true)
+    }
+
+    fn symbol_count(&self) -> Result<usize> {
+        Ok(self
+            .conn
+            .query_row("SELECT COUNT(*) FROM symbols", [], |r| r.get::<_, i64>(0))?
+            as usize)
+    }
+
+    fn symbols_by_ids(&self, ids: &[u64]) -> Result<Vec<Symbol>> {
+        if ids.is_empty() {
+            return Ok(Vec::new());
+        }
+        // One prepared statement for any candidate count: the id list
+        // travels as a JSON array and `json_each` turns it into an
+        // ephemeral table the planner probes `symbols` by rowid from
+        // (`tests/query_plans.rs` pins that this stays a rowid lookup and
+        // never a scan). ids cross as the same `as i64` bit-cast every
+        // other statement uses.
+        let json = serde_json::to_string(&ids.iter().map(|&id| id as i64).collect::<Vec<_>>())?;
+        let mut stmt = self.conn.prepare_cached(
+            "SELECT file, qualified_name, name, kind, language, start_line, end_line,
+                    content_hash, signature, imports_json, exported, parent, references_json
+             FROM symbols WHERE id IN (SELECT value FROM json_each(?1))",
+        )?;
+        let rows = stmt.query_map([json], row_to_symbol)?;
+        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
+    }
+
+    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT symbol_id, content_hash, dim, vec FROM embeddings")?;
+        let rows = stmt.query_map([], |r| {
+            Ok((
+                r.get::<_, i64>(0)? as u64,
+                r.get::<_, i64>(1)? as u64,
+                r.get::<_, i32>(2)?,
+                r.get::<_, Vec<u8>>(3)?,
+            ))
+        })?;
+        let mut out = HashMap::new();
+        for row in rows {
+            let (id, chash, dim, bytes) = row?;
+            let floats: Vec<f32> = bytes
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .map(|c| f32::from_le_bytes(*c))
+                .take(dim as usize)
+                .collect();
+            out.insert(id, (chash, floats));
+        }
+        Ok(out)
+    }
+
+    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()> {
+        let mut stmt = self
+            .conn
+            .prepare_cached("SELECT symbol_id, dim, vec FROM embeddings")?;
+        let mut rows = stmt.query([])?;
+        while let Some(row) = rows.next()? {
+            let id = row.get::<_, i64>(0)? as u64;
+            let dim = row.get::<_, i32>(1)?.max(0) as usize;
+            // `as_blob` borrows the row buffer; nothing is copied per row.
+            let bytes = row.get_ref(2)?.as_blob()?;
+            visit(id, dim, bytes);
+        }
+        Ok(())
+    }
+
+    fn all_symbol_relations(&self) -> Result<SymbolRelations> {
+        let mut stmt = self
+            .conn
+            .prepare("SELECT symbol_id, kind, target FROM symbol_relations")?;
+        let mut rows = stmt.query([])?;
+        let mut out: HashMap<u64, (Vec<String>, Vec<String>)> = HashMap::new();
+        while let Some(r) = rows.next()? {
+            let id = r.get::<_, i64>(0)? as u64;
+            // `kind` is only matched on, never kept: borrow it off the row.
+            let entry = out.entry(id).or_default();
+            match r.get_ref(1)?.as_str()? {
+                "calls" => entry.0.push(r.get(2)?),
+                "bases" => entry.1.push(r.get(2)?),
+                _ => {}
+            }
+        }
+        Ok(out)
+    }
+}
+
+impl IndexWrite for SqliteStore {
     fn set_meta(&mut self, key: &str, value: &str) -> Result<()> {
         let tx = self
             .conn
@@ -320,14 +447,6 @@ impl IndexBackend for SqliteStore {
         bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
-    }
-
-    fn file_hashes(&self) -> Result<HashMap<String, u64>> {
-        let mut stmt = self.conn.prepare("SELECT path, content_hash FROM files")?;
-        let rows = stmt.query_map([], |r| {
-            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)? as u64))
-        })?;
-        Ok(rows.collect::<std::result::Result<HashMap<_, _>, _>>()?)
     }
 
     fn replace_file(
@@ -495,27 +614,6 @@ impl IndexBackend for SqliteStore {
         Ok(true)
     }
 
-    fn lexical_totals(&self) -> Result<(usize, i64)> {
-        let (count, total): (i64, Option<i64>) =
-            self.conn
-                .query_row("SELECT COUNT(*), SUM(len) FROM lexical_docs", [], |r| {
-                    Ok((r.get(0)?, r.get(1)?))
-                })?;
-        Ok((count as usize, total.unwrap_or(0)))
-    }
-
-    fn lexical_postings(&self, term: &str) -> Result<Vec<(u64, u32, u32)>> {
-        let mut stmt = self.conn.prepare_cached(
-            "SELECT p.symbol_id, p.tf, d.len
-             FROM lexical_postings p JOIN lexical_docs d ON d.symbol_id = p.symbol_id
-             WHERE p.term = ?1",
-        )?;
-        let rows = stmt.query_map([term], |r| {
-            Ok((r.get::<_, i64>(0)? as u64, r.get(1)?, r.get(2)?))
-        })?;
-        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
-    }
-
     fn remove_files(&mut self, files: &[String]) -> Result<()> {
         // IMMEDIATE: acquire the write lock up front. A deferred
         // transaction that reads before it writes can hit SQLITE_BUSY on
@@ -533,70 +631,6 @@ impl IndexBackend for SqliteStore {
             tx.execute("DELETE FROM symbols WHERE file = ?1", [f])?;
             tx.execute("DELETE FROM files WHERE path = ?1", [f])?;
         }
-        bump_generation(&tx)?;
-        tx.commit()?;
-        Ok(())
-    }
-
-    fn all_symbols(&self) -> Result<Vec<Symbol>> {
-        self.load_corpus(false)
-    }
-
-    fn all_symbols_lean(&self) -> Result<Vec<Symbol>> {
-        self.load_corpus(true)
-    }
-
-    fn symbol_count(&self) -> Result<usize> {
-        Ok(self
-            .conn
-            .query_row("SELECT COUNT(*) FROM symbols", [], |r| r.get::<_, i64>(0))?
-            as usize)
-    }
-
-    fn symbols_by_ids(&self, ids: &[u64]) -> Result<Vec<Symbol>> {
-        if ids.is_empty() {
-            return Ok(Vec::new());
-        }
-        // One prepared statement for any candidate count: the id list
-        // travels as a JSON array and `json_each` turns it into an
-        // ephemeral table the planner probes `symbols` by rowid from
-        // (`tests/query_plans.rs` pins that this stays a rowid lookup and
-        // never a scan). ids cross as the same `as i64` bit-cast every
-        // other statement uses.
-        let json = serde_json::to_string(&ids.iter().map(|&id| id as i64).collect::<Vec<_>>())?;
-        let mut stmt = self.conn.prepare_cached(
-            "SELECT file, qualified_name, name, kind, language, start_line, end_line,
-                    content_hash, signature, imports_json, exported, parent, references_json
-             FROM symbols WHERE id IN (SELECT value FROM json_each(?1))",
-        )?;
-        let rows = stmt.query_map([json], row_to_symbol)?;
-        Ok(rows.collect::<std::result::Result<Vec<_>, _>>()?)
-    }
-
-    fn symbol_hash(&self, id: u64) -> Result<Option<u64>> {
-        let mut stmt = self
-            .conn
-            .prepare("SELECT content_hash FROM symbols WHERE id = ?1")?;
-        let mut rows = stmt.query([id as i64])?;
-        Ok(rows
-            .next()?
-            .map(|r| r.get::<_, i64>(0).map(|v| v as u64))
-            .transpose()?)
-    }
-
-    fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()> {
-        let Some(chash) = self.symbol_hash(symbol_id)? else {
-            return Ok(());
-        };
-        let bytes: Vec<u8> = vec.iter().flat_map(|f| f.to_le_bytes()).collect();
-        let tx = self
-            .conn
-            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
-        tx.execute(
-            "INSERT OR REPLACE INTO embeddings(symbol_id, content_hash, dim, vec)
-             VALUES(?1,?2,?3,?4)",
-            rusqlite::params![symbol_id as i64, chash as i64, vec.len() as i32, bytes],
-        )?;
         bump_generation(&tx)?;
         tx.commit()?;
         Ok(())
@@ -633,69 +667,6 @@ impl IndexBackend for SqliteStore {
         }
         bump_generation(&tx)?;
         tx.commit()?;
-        Ok(())
-    }
-
-    fn embedding_with_hash(&self, symbol_id: u64) -> Result<Option<(u64, Vec<f32>)>> {
-        let mut stmt = self
-            .conn
-            .prepare("SELECT content_hash, dim, vec FROM embeddings WHERE symbol_id = ?1")?;
-        let mut rows = stmt.query([symbol_id as i64])?;
-        let Some(row) = rows.next()? else {
-            return Ok(None);
-        };
-        let chash: u64 = row.get::<_, i64>(0)? as u64;
-        let dim: i32 = row.get(1)?;
-        let bytes: Vec<u8> = row.get(2)?;
-        let floats: Vec<f32> = bytes
-            .as_chunks::<4>()
-            .0
-            .iter()
-            .map(|c| f32::from_le_bytes(*c))
-            .take(dim as usize)
-            .collect();
-        Ok(Some((chash, floats)))
-    }
-
-    fn all_embeddings(&self) -> Result<HashMap<u64, (u64, Vec<f32>)>> {
-        let mut stmt = self
-            .conn
-            .prepare("SELECT symbol_id, content_hash, dim, vec FROM embeddings")?;
-        let rows = stmt.query_map([], |r| {
-            Ok((
-                r.get::<_, i64>(0)? as u64,
-                r.get::<_, i64>(1)? as u64,
-                r.get::<_, i32>(2)?,
-                r.get::<_, Vec<u8>>(3)?,
-            ))
-        })?;
-        let mut out = HashMap::new();
-        for row in rows {
-            let (id, chash, dim, bytes) = row?;
-            let floats: Vec<f32> = bytes
-                .as_chunks::<4>()
-                .0
-                .iter()
-                .map(|c| f32::from_le_bytes(*c))
-                .take(dim as usize)
-                .collect();
-            out.insert(id, (chash, floats));
-        }
-        Ok(out)
-    }
-
-    fn for_each_embedding(&self, visit: &mut dyn FnMut(u64, usize, &[u8])) -> Result<()> {
-        let mut stmt = self
-            .conn
-            .prepare_cached("SELECT symbol_id, dim, vec FROM embeddings")?;
-        let mut rows = stmt.query([])?;
-        while let Some(row) = rows.next()? {
-            let id = row.get::<_, i64>(0)? as u64;
-            let dim = row.get::<_, i32>(1)?.max(0) as usize;
-            // `as_blob` borrows the row buffer; nothing is copied per row.
-            let bytes = row.get_ref(2)?.as_blob()?;
-            visit(id, dim, bytes);
-        }
         Ok(())
     }
 
@@ -751,24 +722,42 @@ impl IndexBackend for SqliteStore {
         ))?;
         Ok(())
     }
+}
 
-    fn all_symbol_relations(&self) -> Result<SymbolRelations> {
+impl SqliteStore {
+    /// One embedding row in its own transaction: test and benchmark support
+    /// only (`examples/embedding_write_batching_benchmark.rs` measures it
+    /// against the batch). Every production write goes through
+    /// [`IndexWrite::put_embeddings_batch`], which also asserts the
+    /// migration marker; this does not, which is why it is not part of the
+    /// indexer's write capability. A symbol id with no row is skipped.
+    pub fn put_embedding(&mut self, symbol_id: u64, vec: &[f32]) -> Result<()> {
+        let Some(chash) = self.symbol_hash(symbol_id)? else {
+            return Ok(());
+        };
+        let bytes: Vec<u8> = vec.iter().flat_map(|f| f.to_le_bytes()).collect();
+        let tx = self
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tx.execute(
+            "INSERT OR REPLACE INTO embeddings(symbol_id, content_hash, dim, vec)
+             VALUES(?1,?2,?3,?4)",
+            rusqlite::params![symbol_id as i64, chash as i64, vec.len() as i32, bytes],
+        )?;
+        bump_generation(&tx)?;
+        tx.commit()?;
+        Ok(())
+    }
+
+    fn symbol_hash(&self, id: u64) -> Result<Option<u64>> {
         let mut stmt = self
             .conn
-            .prepare("SELECT symbol_id, kind, target FROM symbol_relations")?;
-        let mut rows = stmt.query([])?;
-        let mut out: HashMap<u64, (Vec<String>, Vec<String>)> = HashMap::new();
-        while let Some(r) = rows.next()? {
-            let id = r.get::<_, i64>(0)? as u64;
-            // `kind` is only matched on, never kept: borrow it off the row.
-            let entry = out.entry(id).or_default();
-            match r.get_ref(1)?.as_str()? {
-                "calls" => entry.0.push(r.get(2)?),
-                "bases" => entry.1.push(r.get(2)?),
-                _ => {}
-            }
-        }
-        Ok(out)
+            .prepare("SELECT content_hash FROM symbols WHERE id = ?1")?;
+        let mut rows = stmt.query([id as i64])?;
+        Ok(rows
+            .next()?
+            .map(|r| r.get::<_, i64>(0).map(|v| v as u64))
+            .transpose()?)
     }
 }
 

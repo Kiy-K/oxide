@@ -9,7 +9,7 @@
 //! `cargo run --example term_coverage_overhead --release -- [repo_path]`
 
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexRead, SqliteStore};
 use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions};
 use std::path::Path;
 use std::time::Instant;

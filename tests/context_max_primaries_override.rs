@@ -17,7 +17,7 @@
 
 use oxide::context::{build_context, ContextOptions, Role};
 use oxide::embeddings::{EmbeddingProvider, HashedEmbedder};
-use oxide::index::{IndexBackend, SqliteStore};
+use oxide::index::{IndexWrite, SqliteStore};
 use oxide::symbols::{content_hash, Language, Symbol, SymbolKind};
 
 /// The frozen `config::CONTEXT_MAX_PRIMARIES`. Restated here because that

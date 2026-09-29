@@ -5,7 +5,7 @@
 use super::{count_summary, IndexReport, ProgressSink, Stage};
 use crate::embeddings::symbol_embed_text;
 use crate::scanner;
-use crate::storage::{IndexBackend, ParsedFile};
+use crate::storage::{IndexWrite, ParsedFile};
 use crate::symbols::Symbol;
 use anyhow::Result;
 use std::collections::{HashMap, HashSet};
@@ -28,7 +28,7 @@ pub(super) fn parse_and_persist_changed_files(
     current: &HashMap<String, String>,
     existing: &[Symbol],
     unreadable_files: usize,
-    store: &mut dyn IndexBackend,
+    store: &mut dyn IndexWrite,
     report: &mut IndexReport,
     progress: &dyn ProgressSink,
 ) -> Result<()> {

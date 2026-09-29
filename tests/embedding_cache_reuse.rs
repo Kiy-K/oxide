@@ -13,7 +13,7 @@
 
 use oxide::embedding_cache::SharedEmbeddingCache;
 use oxide::embeddings::HashedEmbedder;
-use oxide::index::{update_index, IndexBackend, SqliteStore};
+use oxide::index::{update_index, IndexRead, SqliteStore};
 use std::path::Path;
 
 fn write(path: &Path, content: &str) {
