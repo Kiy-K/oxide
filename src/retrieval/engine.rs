@@ -15,7 +15,7 @@ use crate::config::{
 use crate::embeddings::EmbeddingProvider;
 use crate::evidence::{Candidate, Channel, Reason};
 use crate::lexical::LexicalIndex;
-use crate::relations::{RelationGraph, RelationIndex};
+use crate::relations::{RelationGraph, RelationIndex, RelationState};
 use crate::research::ResearchOverrides;
 use crate::storage::IndexRead;
 use crate::symbols::{Symbol, SymbolKind};
@@ -174,7 +174,7 @@ impl<'a> RetrievalEngine<'a> {
             let _ = self.snapshot.set(std::borrow::Cow::Owned(loaded));
         }
         let loaded = self.snapshot.get().expect("set above");
-        if loaded.with_relations {
+        if loaded.relation_state() == RelationState::Loaded {
             return Ok(loaded);
         }
         if self.snapshot_with_relations.get().is_none() {
@@ -193,13 +193,15 @@ impl<'a> RetrievalEngine<'a> {
         Ok(self.graph_over(snapshot))
     }
 
+    /// The graph over `snapshot`, carrying its relation state, so
+    /// `callers_of`/`implementors_of` refuse a snapshot assembled without
+    /// the relations merge.
     fn graph_over<'s>(&'s self, snapshot: &'s SymbolSnapshot) -> RelationGraph<'s> {
-        match self.index {
-            Some((cached, index)) if std::ptr::eq(cached, snapshot) => {
-                RelationGraph::with_index(&snapshot.symbols, index)
-            }
-            _ => RelationGraph::build(&snapshot.symbols),
-        }
+        let index = match self.index {
+            Some((cached, index)) if std::ptr::eq(cached, snapshot) => Some(index),
+            _ => None,
+        };
+        RelationGraph::over(&snapshot.symbols, index, snapshot.relation_state())
     }
 
     /// [`complete_symbols`] against this engine's store.
@@ -1969,5 +1971,25 @@ mod tests {
                 );
             }
         }
+    }
+
+    /// #34 S5: a graph over a snapshot assembled without the relations
+    /// merge refuses relation queries instead of answering "none", while
+    /// `neighbors()` (all search's own expansion uses) still works on it.
+    #[test]
+    #[should_panic(expected = "relations merge not run")]
+    fn relation_queries_refuse_a_snapshot_without_relations() {
+        let emb = HashedEmbedder::default();
+        let repo = fixture_repo("py_repo", "oxidepy/retry.py");
+        let mut store = SqliteStore::open(&repo.path().join(".oxide/index.db")).unwrap();
+        crate::index::update_index(repo.path(), &mut store, &emb).unwrap();
+        let engine = RetrievalEngine::new(&store, &emb);
+        let bare = engine.snapshot();
+        assert!(!bare.with_relations);
+        let graph = engine.graph_over(bare);
+        let mut seed = bare.symbols[0].clone();
+        engine.complete(std::iter::once(&mut seed)).unwrap();
+        let _ = graph.neighbors(&seed);
+        let _ = graph.callers_of("should_retry");
     }
 }

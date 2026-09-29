@@ -504,6 +504,15 @@ pre-S3 shapes (`SearchHit`, `EvidenceCandidate`, `CollectInput`/`CollectOutput`)
   that preceded it, and `docs/astgrep-structural-search/`/
   `docs/astgrep-hardening/` for the original (now superseded) ast-grep
   spike and hardening pass.
+- `calls`/`bases` loading is a second state axis, independent of
+  `Completeness` (#34 S5). Default indexing computes relations and stores them
+  in `symbol_relations`; row loads (`all_symbols`, `symbols_by_ids`) never read
+  them, so an empty `calls` means "none" only after the snapshot's relations
+  merge. `SymbolSnapshot::relation_state()` reports it (inside the crate only
+  the snapshot's own assembly sets it, with the merge), graphs over a snapshot
+  inherit it (`RelationGraph::over`), and `callers_of`/`implementors_of` assert
+  it. The public `RelationGraph::build`/`with_index` keep their contract: the
+  caller vouches for merged relations.
 - The research/debug overrides `$OXIDE_TERM_COVERAGE_ALPHA`,
   `$OXIDE_CONTEXT_MAX_PRIMARIES` and `$OXIDE_DEBUG_DUMP_KEPT` have one owner,
   `src/research.rs`, resolved once per request at the request boundary

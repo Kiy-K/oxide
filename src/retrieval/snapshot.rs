@@ -7,6 +7,7 @@
 //! it becomes a seed or leaves as output. Storage only supplies the typed
 //! reads ([`IndexRead`]); this policy stays out of it.
 
+use crate::relations::RelationState;
 use crate::storage::IndexRead;
 use crate::symbols::{Completeness, Symbol};
 use std::collections::HashMap;
@@ -32,7 +33,11 @@ pub struct SymbolSnapshot {
     by_id: rustc_hash::FxHashMap<u64, usize>,
     /// Whether `calls`/`bases` were merged in. Search's own expansion
     /// (`RelationGraph::neighbors`) never reads them, so it loads without;
-    /// `context.rs` (`callers_of`) needs them.
+    /// `context.rs` (`callers_of`) needs them. Inside the crate only
+    /// [`SymbolSnapshot`]'s own assembly sets it, in the same step as the
+    /// merge; it stays a public field for callers that merge relations
+    /// themselves (#34 S6 decides that surface). Read it as
+    /// [`Self::relation_state`], which graphs over this snapshot inherit.
     pub with_relations: bool,
 }
 
@@ -80,6 +85,15 @@ impl SymbolSnapshot {
             symbols,
             by_id,
             with_relations: false,
+        }
+    }
+
+    /// Whether this snapshot's `calls`/`bases` are authoritative (#34 S5).
+    pub(crate) fn relation_state(&self) -> RelationState {
+        if self.with_relations {
+            RelationState::Loaded
+        } else {
+            RelationState::NotLoaded
         }
     }
 
@@ -344,6 +358,92 @@ mod tests {
             ts_repo lexical=Some(\"stale\") persisted=false completed: n=41 partial=0 rel=false calls=9 bases=3 refs=29 imports=23 order=2b76e800cd0fe354 body=bac26b2795d77ad2\n\
             missing row: cannot complete src/ghost.py#ghost: no such row in the index";
         assert_eq!(actual, expected, "\n{actual}\n");
+    }
+
+    /// The relation-loading axis, pinned before #34 S5 made it explicit:
+    /// a snapshot assembled with the relations merge says so, and a symbol
+    /// with no stored relations is then "loaded, none found"; one assembled
+    /// without it has no `calls`/`bases` anywhere, whatever the lexical
+    /// state (so complete rows are not relation-loaded by themselves);
+    /// completion touches only `imports`/`references`, never relation data
+    /// or state; and the engine's relation graph answers from merged data
+    /// even after it first loaded a bare snapshot.
+    #[test]
+    fn relation_loading_state_is_independent_of_completeness() {
+        use crate::relations::RelationGraph;
+        let emb = HashedEmbedder::default();
+        let repo = fixture_repo("py_repo", "oxidepy/retry.py");
+        let mut store = SqliteStore::open(&repo.path().join(".oxide/index.db")).unwrap();
+        crate::index::update_index(repo.path(), &mut store, &emb).unwrap();
+        let stored = store.all_symbol_relations().unwrap();
+        for lexical in [None, Some("stale")] {
+            if let Some(v) = lexical {
+                store
+                    .set_meta(crate::storage::LEXICAL_INDEX_KEY, v)
+                    .unwrap();
+            }
+            let lean_rows = lexical.is_none();
+            let with = SymbolSnapshot::load(&store).unwrap();
+            let bare = SymbolSnapshot::load_without_relations(&store).unwrap();
+            assert!(with.with_relations && !bare.with_relations);
+            for (w, b) in with.symbols.iter().zip(&bare.symbols) {
+                assert_eq!(w.is_complete(), !lean_rows);
+                assert_eq!(b.is_complete(), !lean_rows);
+                assert!(b.calls.is_empty() && b.bases.is_empty());
+                let (calls, bases) = stored.get(&w.id()).cloned().unwrap_or_default();
+                assert_eq!((&w.calls, &w.bases), (&calls, &bases));
+            }
+            assert!(with
+                .symbols
+                .iter()
+                .any(|s| s.calls.is_empty() && s.bases.is_empty()));
+            assert!(with.symbols.iter().any(|s| !s.calls.is_empty()));
+
+            for mut snap in [with, bare] {
+                let before: Vec<_> = snap
+                    .symbols
+                    .iter()
+                    .map(|s| (s.calls.clone(), s.bases.clone()))
+                    .collect();
+                let state = snap.with_relations;
+                complete_symbols(&store, snap.symbols.iter_mut()).unwrap();
+                assert!(snap.symbols.iter().all(Symbol::is_complete));
+                let after: Vec<_> = snap
+                    .symbols
+                    .iter()
+                    .map(|s| (s.calls.clone(), s.bases.clone()))
+                    .collect();
+                assert_eq!(before, after);
+                assert_eq!(snap.with_relations, state);
+            }
+
+            // Graph answers over merged relations, pinned per queried name.
+            let engine = crate::retrieval::RetrievalEngine::new(&store, &emb);
+            let _ = engine.snapshot();
+            let graph = engine.relation_graph().unwrap();
+            let oracle_symbols = super::load_symbols_with_relations(&store).unwrap();
+            let oracle = RelationGraph::build(&oracle_symbols);
+            let mut names: Vec<&String> = oracle_symbols
+                .iter()
+                .flat_map(|s| s.calls.iter().chain(&s.bases))
+                .collect();
+            names.sort();
+            names.dedup();
+            assert!(names.len() > 5);
+            let ids = |v: Vec<&Symbol>| v.into_iter().map(Symbol::id).collect::<Vec<_>>();
+            for n in names {
+                assert_eq!(
+                    ids(graph.callers_of(n)),
+                    ids(oracle.callers_of(n)),
+                    "callers_of({n})"
+                );
+                assert_eq!(
+                    ids(graph.implementors_of(n)),
+                    ids(oracle.implementors_of(n)),
+                    "implementors_of({n})"
+                );
+            }
+        }
     }
 
     #[test]

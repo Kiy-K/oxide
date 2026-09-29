@@ -47,8 +47,9 @@ pub struct RelationIndex {
     /// `is_test_symbol` filtered once, in corpus order — `related_tests`
     /// used to lowercase every symbol's file and name per seed.
     test_symbols: Vec<u32>,
-    /// Reverse indexes over `Symbol::calls`/`bases` (`structural_relations`
-    /// — empty on every symbol unless that pass ran). Built lazily, not in
+    /// Reverse indexes over `Symbol::calls`/`bases` — empty on every symbol
+    /// unless the corpus went through the relations merge (see
+    /// [`RelationState`]). Built lazily, not in
     /// `build()`, so the frozen path (`neighbors()`) pays nothing for
     /// these; `OnceLock` rather than `OnceCell` so a cached index can be
     /// shared across `oxide mcp`'s request threads.
@@ -72,6 +73,23 @@ fn key(s: &str) -> u64 {
 pub struct RelationGraph<'a> {
     symbols: &'a [Symbol],
     index: Cow<'a, RelationIndex>,
+    relations: RelationState,
+}
+
+/// Whether a corpus carries the precomputed `calls`/`bases` (#34 S5): they
+/// are stored in the `symbol_relations` side table, which ordinary row loads
+/// (`all_symbols`, `symbols_by_ids`) never read, so an empty `calls` means
+/// "no calls" only after the relations merge (`retrieval::snapshot`) ran.
+/// Independent of [`crate::symbols::Completeness`], the `imports`/
+/// `references` axis: all four combinations occur.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum RelationState {
+    /// Merged by the snapshot owner, or vouched for by a caller of the
+    /// public constructors (their contract before this state existed).
+    Loaded,
+    /// Assembled without the merge: `calls`/`bases` are empty because they
+    /// were never read, not because there are none.
+    NotLoaded,
 }
 
 /// `symbols::is_test_symbol` over a symbol — the one classification the
@@ -129,22 +147,51 @@ impl RelationIndex {
 }
 
 impl<'a> RelationGraph<'a> {
+    /// A graph over `symbols`. For [`Self::callers_of`]/
+    /// [`Self::implementors_of`] the caller vouches that `symbols` carry
+    /// merged `calls`/`bases` (e.g. from `load_symbols_with_relations` or
+    /// `SymbolSnapshot::load`); inside the crate, graphs over a snapshot are
+    /// built by [`Self::over`] instead, which knows.
     pub fn build(symbols: &'a [Symbol]) -> Self {
-        Self {
-            symbols,
-            index: Cow::Owned(RelationIndex::build(symbols)),
-        }
+        Self::over(symbols, None, RelationState::Loaded)
     }
 
     /// A graph over `symbols` using an index built earlier from **that same
     /// corpus** — the cached path. The caller owns the pairing: `service/cache.rs`
     /// builds the index inside the cache entry that holds the snapshot, so
-    /// the two can only ever be read together at one generation.
+    /// the two can only ever be read together at one generation. Same
+    /// relations contract as [`Self::build`].
     pub fn with_index(symbols: &'a [Symbol], index: &'a RelationIndex) -> Self {
+        Self::over(symbols, Some(index), RelationState::Loaded)
+    }
+
+    /// The crate's constructor for a graph over a corpus whose relation
+    /// state is known (`RetrievalEngine` passes its snapshot's): building
+    /// the index here unless a cached one is given.
+    pub(crate) fn over(
+        symbols: &'a [Symbol],
+        index: Option<&'a RelationIndex>,
+        relations: RelationState,
+    ) -> Self {
         Self {
             symbols,
-            index: Cow::Borrowed(index),
+            index: match index {
+                Some(index) => Cow::Borrowed(index),
+                None => Cow::Owned(RelationIndex::build(symbols)),
+            },
+            relations,
         }
+    }
+
+    /// Backstop for [`Self::callers_of`]/[`Self::implementors_of`]: over a
+    /// corpus assembled without the relations merge they would silently
+    /// answer "none" for every name. The request path never builds such a
+    /// graph for them (search's own expansion uses only `neighbors()`).
+    fn require_relations(&self, query: &str) {
+        assert!(
+            self.relations == RelationState::Loaded,
+            "{query} over a corpus without calls/bases loaded (relations merge not run)"
+        );
     }
 
     /// The symbols behind `positions` whose `field` equals `want` — the
@@ -189,8 +236,8 @@ impl<'a> RelationGraph<'a> {
             .is_empty()
     }
 
-    /// AST-precise callers of `name` (experimental, see `structural_relations`):
-    /// symbols whose precomputed `calls` contains `name`, sorted `(file,
+    /// AST-precise callers of `name`: symbols whose precomputed `calls`
+    /// (default indexing, `structural_relations`) contains `name`, sorted `(file,
     /// start_line)` for the same reason `tree_sitter_structural.rs::finish`
     /// sorts its hits — a caller like `context.rs` truncating to the first N
     /// must see a deterministic order, not `HashMap` iteration order
@@ -199,6 +246,7 @@ impl<'a> RelationGraph<'a> {
     /// contract — see docs/precomputed-structural-relations/README.md for
     /// why that's the actual axis this experiment had to measure.
     pub fn callers_of(&self, name: &str) -> Vec<&'a Symbol> {
+        self.require_relations("callers_of");
         let index = self.index.callers_of_index.get_or_init(|| {
             let mut idx: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
             for (i, s) in self.symbols.iter().enumerate() {
@@ -219,10 +267,11 @@ impl<'a> RelationGraph<'a> {
         out
     }
 
-    /// AST-precise implementors of `base_name` (experimental) — symbols
+    /// AST-precise implementors of `base_name` — symbols
     /// whose precomputed `bases` contains `base_name`. Same sort/repo-wide
     /// contract as `callers_of`.
     pub fn implementors_of(&self, base_name: &str) -> Vec<&'a Symbol> {
+        self.require_relations("implementors_of");
         let index = self.index.implementors_of_index.get_or_init(|| {
             let mut idx: FxHashMap<u64, Vec<u32>> = FxHashMap::default();
             for (i, s) in self.symbols.iter().enumerate() {
