@@ -62,7 +62,8 @@ impl RetrievalMode {
     /// Whether `Quality` would run a downstream reranker stage. Nothing
     /// consults this any more: the only stage it gated was a no-op hook,
     /// removed in #34 S4 with output unchanged (docs/reranker-eval/ rejected
-    /// a real one). Kept because it is public API, whose fate is #34 S6's.
+    /// a real one). Kept as a compatibility method: it is public API, and
+    /// removing it would break callers for no behavioral gain (#34 S6).
     pub fn rerank(self) -> bool {
         matches!(self, Self::Quality)
     }

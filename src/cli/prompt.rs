@@ -162,7 +162,7 @@ pub(in crate::cli) fn normalize_provider_arg(
     s: &str,
     json: bool,
 ) -> Result<&'static str, CliError> {
-    crate::remote_embed::normalize_provider(s).ok_or_else(|| {
+    crate::embeddings::remote::normalize_provider(s).ok_or_else(|| {
         CliError::new(
             "invalid_configuration",
             ErrorAction::Stop,

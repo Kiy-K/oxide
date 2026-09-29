@@ -13,6 +13,10 @@
 //!   provider-migration marker, clearing), (re)embedding, and the closing
 //!   `set_meta_all` publish.
 
+// Compatibility re-exports of the storage API at its historical
+// `oxide::index::*` paths, used by tests, examples and research harnesses.
+// The canonical home is `crate::storage`; the crate's own code imports from
+// there (#34 S6).
 pub use crate::storage::{
     IndexBackend, IndexRead, IndexStats, IndexWrite, ParsedFile, SqliteStore, SymbolRelations,
     EMBEDDING_MIGRATION_KEY, EXTRACTION_VERSION, LEXICAL_INDEX_KEY, LEXICAL_INDEX_VERSION,

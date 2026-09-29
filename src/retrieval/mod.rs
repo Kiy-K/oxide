@@ -17,7 +17,7 @@
 mod engine;
 mod options;
 // `pub(crate)` only so `structural_relations` can keep its pre-S2 public
-// loader paths as re-exports (#34 S6 decides them).
+// loader paths as re-exports (kept by #34 S6).
 pub(crate) mod snapshot;
 mod snippet;
 #[cfg(test)]

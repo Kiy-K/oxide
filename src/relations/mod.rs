@@ -1,4 +1,7 @@
-//! OXIDE structural-relation traversal over indexed symbols.
+//! OXIDE structural-relation traversal over indexed symbols: the query-time
+//! graph over an already-loaded corpus. Relations are computed at index time
+//! by `structural_relations` (on the `tree_sitter_structural` query
+//! substrate) and merged into a corpus by `retrieval::snapshot`.
 
 mod imports;
 

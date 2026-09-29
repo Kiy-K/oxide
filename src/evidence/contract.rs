@@ -27,7 +27,7 @@ impl EvidenceSource {
 /// [`EvidenceCoordinator::collect`](super::EvidenceCoordinator::collect)
 /// returns it, `reasons` rendered. Inside the crate the coordinator works on
 /// the typed internal candidate (#34 S3); this pre-S3 public shape is kept
-/// as its adapter until #34 S6 decides the public surface.
+/// as its adapter (#34 S6: kept for compatibility).
 #[derive(Debug, Clone)]
 pub struct EvidenceCandidate {
     pub symbol: Symbol,

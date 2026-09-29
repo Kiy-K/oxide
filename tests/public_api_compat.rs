@@ -1,11 +1,28 @@
 //! Pre-#34-S2 public paths that S2 kept as compatibility surface. S2 moved
 //! the storage contract to `IndexRead`/`IndexWrite` and snapshot assembly
 //! to `retrieval::snapshot`; whether these old names stay, are deprecated
-//! or go is #34 S6's decision, so S2 must not drop them by accident.
+//! or go was #34 S6's decision: all are kept, and this test pins them.
 
 use oxide::embeddings::HashedEmbedder;
 use oxide::index::{update_index, IndexRead, SqliteStore};
 use oxide::structural_relations::{load_lean_symbols_with_relations, load_symbols_with_relations};
+
+/// The compatibility and facade paths #34 kept (S2-S6), resolved at compile
+/// time: storage types at their historical `oxide::index::*` paths, the
+/// public embedding facades, the coordinator's pre-S3 public shapes and the
+/// no-longer-consulted `RetrievalMode::rerank`.
+#[allow(dead_code)]
+fn kept_paths() {
+    let _: Option<(oxide::index::SqliteStore, oxide::index::IndexStats)> = None;
+    let _: fn(&dyn oxide::index::IndexRead) = |_| {};
+    let _: fn(&mut dyn oxide::index::IndexWrite) = |_| {};
+    let _: Option<oxide::embedding_cache::SharedEmbeddingCache> = None;
+    let _ = oxide::remote_embed::normalize_provider;
+    let _: Option<oxide::evidence::EvidenceCandidate> = None;
+    let _: Option<oxide::evidence::coordinator::CollectOutput> = None;
+    let _ = oxide::evidence::scope::scope_files_from_seeds;
+    let _ = oxide::retrieval::RetrievalMode::rerank;
+}
 
 /// Both old import paths still name the combined capability.
 fn takes_index_backend(_: &mut dyn oxide::index::IndexBackend) {}

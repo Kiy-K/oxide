@@ -44,7 +44,7 @@ pub(super) fn cmd_setup(
     } else if base_url_arg.is_some() {
         // Voyage/Jina have one fixed public endpoint each — a configured
         // override would otherwise be saved and then silently ignored by
-        // `remote_embed::build`, sending the key/excerpts to the real
+        // `embeddings::remote::build`, sending the key/excerpts to the real
         // endpoint anyway with no indication anything was dropped.
         return Err(CliError::new(
             "invalid_configuration",
@@ -58,7 +58,7 @@ pub(super) fn cmd_setup(
         None
     };
 
-    let default_model = crate::remote_embed::default_model_hint(provider);
+    let default_model = crate::embeddings::remote::default_model_hint(provider);
     let model = match model_arg {
         Some(m) => m.to_string(),
         None => {
@@ -82,7 +82,7 @@ pub(super) fn cmd_setup(
         })?,
         None => crate::term::prompt_password(&format!(
             "{} API key",
-            crate::remote_embed::provider_display(provider)
+            crate::embeddings::remote::provider_display(provider)
         ))
         .map_err(|e| CliError::generic(e, json))?,
     };
@@ -101,19 +101,25 @@ pub(super) fn cmd_setup(
         return Ok(());
     }
 
-    let candidate =
-        crate::remote_embed::build(provider, &model, base_url.as_deref(), None, None, &api_key)
-            .map_err(|e| {
-                CliError::new(
-                    "invalid_configuration",
-                    ErrorAction::Stop,
-                    format!(
-                        "could not reach {} with the given key/endpoint: {e}\n\nnothing was saved",
-                        crate::remote_embed::provider_display(provider)
-                    ),
-                    json,
-                )
-            })?;
+    let candidate = crate::embeddings::remote::build(
+        provider,
+        &model,
+        base_url.as_deref(),
+        None,
+        None,
+        &api_key,
+    )
+    .map_err(|e| {
+        CliError::new(
+            "invalid_configuration",
+            ErrorAction::Stop,
+            format!(
+                "could not reach {} with the given key/endpoint: {e}\n\nnothing was saved",
+                crate::embeddings::remote::provider_display(provider)
+            ),
+            json,
+        )
+    })?;
     let dim = candidate.dim();
 
     crate::credentials::set_key(&config_dir, provider, &api_key)

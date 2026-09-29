@@ -45,7 +45,7 @@ pub(in crate::cli) fn render_setup_warning(provider: &str, p: &Paint) {
     println!("\n{}", p.warn("⚠ Remote embeddings enabled"));
     println!(
         "\nSource-code excerpts and queries will be sent to {}.",
-        crate::remote_embed::provider_display(provider)
+        crate::embeddings::remote::provider_display(provider)
     );
     println!("Local embedding keeps repository data on this machine.\n");
 }

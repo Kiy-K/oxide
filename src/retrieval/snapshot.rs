@@ -36,7 +36,7 @@ pub struct SymbolSnapshot {
     /// `context.rs` (`callers_of`) needs them. Inside the crate only
     /// [`SymbolSnapshot`]'s own assembly sets it, in the same step as the
     /// merge; it stays a public field for callers that merge relations
-    /// themselves (#34 S6 decides that surface). Read it as
+    /// themselves (kept by #34 S6). Read it as
     /// [`Self::relation_state`], which graphs over this snapshot inherit.
     pub with_relations: bool,
 }

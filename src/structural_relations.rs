@@ -1,6 +1,8 @@
-//! Precomputes AST-precise call/implementor relations as part of the
-//! normal indexing pipeline. [`compute_file_relations`] is called from
-//! `index::update_index`'s existing per-file loop (the same place
+//! Index-time attribution of AST-precise call/implementor relations to
+//! symbols, as part of the normal indexing pipeline (query-time traversal is
+//! `relations`; loading them into a corpus is `retrieval::snapshot`).
+//! [`compute_file_relations`] is called from `index::update_index`'s
+//! existing per-file loop (the same place
 //! `extract_references` already runs) — it reuses that loop's already-open
 //! `pf.src` and already-parsed `pf.symbols`, adding one extra tree-sitter
 //! `Query` pass per file (`tree_sitter_structural::all_calls_in_file`/
@@ -206,10 +208,11 @@ pub fn relations_from_sites(
     out
 }
 
-/// Compatibility paths: corpus loading with relations merged moved to its
-/// one owner, `retrieval::snapshot` (#34 S2). These re-exports keep the
-/// pre-S2 public paths until #34 S6 decides them; they add no loading
-/// logic of their own.
+/// Compatibility paths: corpus loading with relations merged is owned by
+/// `retrieval::snapshot` (#34 S2). These re-exports keep the pre-S2 public
+/// paths, which tests, examples and research harnesses use; kept as-is by
+/// #34 S6. They add no loading logic of their own, and the crate's own code
+/// does not use them.
 pub use crate::retrieval::snapshot::{
     load_lean_symbols_with_relations, load_symbols_with_relations,
 };

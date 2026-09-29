@@ -276,7 +276,8 @@ pub fn content_stale_embedding_count(store: &dyn IndexRead) -> Result<usize> {
 mod tests {
     use super::*;
     use crate::embeddings::HashedEmbedder;
-    use crate::index::{update_base, update_index, SqliteStore};
+    use crate::index::{update_base, update_index};
+    use crate::storage::SqliteStore;
 
     /// #33: with no stored fingerprint, stored vectors are of unrecorded
     /// space and must be re-embedded, but an index with no vectors has

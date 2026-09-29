@@ -423,6 +423,18 @@ pre-S3 shapes (`SearchHit`, `EvidenceCandidate`, `CollectInput`/`CollectOutput`)
   `fixtures/conformance/`; regenerate with `UPDATE_GOLDEN=1` and read the
   diff — a golden that changes without an intended cause is the alarm.
   Java was evaluated and deliberately not added: `docs/java-feasibility/`.
+- Structural relations are split by when they run (#34 S6): `tree_sitter_structural`
+  is the tree-sitter query substrate that finds call/extends sites;
+  `structural_relations` attributes them to symbols at index time
+  (`compute_file_relations`, written by `replace_file`); `retrieval::snapshot`
+  merges them into a corpus; `relations` is the query-time graph over it.
+- Canonical internal paths (#34 S6): storage types from `crate::storage`, not
+  their `oxide::index::*` compatibility re-exports; relation-merged loads from
+  `retrieval::snapshot`, not the `structural_relations` re-exports; the
+  embedding cache and remote providers from `crate::embeddings::{cache,remote}`
+  (`oxide::embedding_cache` and `oxide::remote_embed` are their public
+  facades). `IndexBackend` is a compatibility alias of `IndexWrite` that the
+  crate never uses. `tests/public_api_compat.rs` pins every kept path.
 - `parser.rs::extractor_for()` (the default) routes through
   `src/languages/tags.rs`'s generic `TagsExtractor`: a `LanguageProfile`
   (grammar + `queries/*_tags.scm` + `queries/*_locals.scm`) feeds the official

@@ -24,8 +24,10 @@ mod sqlite;
 /// it; code states the capability it needs. Known limits versus the old
 /// trait: with only this name imported, read methods on a concrete store
 /// need [`IndexRead`] in scope too, and an `impl IndexBackend` must now
-/// also implement [`IndexRead`]. Whether it stays, is deprecated or goes is
-/// #34 S6's decision.
+/// also implement [`IndexRead`]. Kept by #34 S6 as a compatibility alias:
+/// `oxide::index::IndexBackend` and `oxide::storage::IndexBackend` were
+/// public import paths, and removing them would break sources for no
+/// behavioral gain.
 pub use backend::IndexWrite as IndexBackend;
 pub use backend::{IndexRead, IndexStats, IndexWrite, ParsedFile, SymbolRelations};
 pub use row::{CORPUS_SQL, LEAN_CORPUS_SQL};
