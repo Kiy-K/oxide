@@ -40,7 +40,7 @@ for name, files, changed, partner, queries in cases:
         git(root, "commit", "-qam", f"rev {rev}")
     open(os.path.join(root, changed), "w", newline="").write(full)
     for a in ("myers", "histogram", "patience", "myers_noindent"):
-        t = subprocess.run(diff_argv(""), cwd=root, env=env_for(a), capture_output=True, text=True).stdout
+        t = subprocess.run(diff_argv(""), cwd=root, env=env_for(a), capture_output=True, text=True, check=True).stdout
         open(os.path.join(OUT, f"{name}.{a}.diff"), "w").write(t)
         print(name, a, parse_unified(t))
     subprocess.run([stage_b.OXIDE, "index", "."], cwd=root, env={**env_for("default"), "OXIDE_EMBED_NATIVE": "hashed"}, check=True, capture_output=True)

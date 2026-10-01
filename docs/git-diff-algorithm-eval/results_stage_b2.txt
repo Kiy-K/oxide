@@ -13,7 +13,9 @@ myers_noindent:related_differs 0
 myers_noindent:review_differs 0
 myers_noindent:symbol_set_differs 0
 states 50
-('b2/out/flask/54ff9b297276', [('tests/test_views.py', 'test_view_patching.Index')], [])
-('b2/out/zod/31384464cabf', [], [('packages/zod/src/v4/core/schemas.ts', '$ZodObjectJIT')])
-('b2/out/zod/6f0483671e62', [], [('packages/zod/src/v4/classic/schemas.ts', 'ZodBigInt.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', 'ZodNumber.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', '_ZodString.processJSONSchema')])
-('b2/out/zod/cafbee4772ef', [], [('packages/zod/src/v4/core/schemas.ts', 'handleCatchall')])
+ihc3 symbol-set-differing states (all):
+('b2/out/flask/54ff9b297276', 'extra:', [('tests/test_views.py', 'test_view_patching.Index')], 'missing:', [])
+('b2/out/zod/31384464cabf', 'extra:', [], 'missing:', [('packages/zod/src/v4/core/schemas.ts', '$ZodObjectJIT')])
+('b2/out/zod/6f0483671e62', 'extra:', [], 'missing:', [('packages/zod/src/v4/classic/schemas.ts', 'ZodBigInt.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', 'ZodNumber.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', '_ZodString.processJSONSchema')])
+('b2/out/zod/cafbee4772ef', 'extra:', [], 'missing:', [('packages/zod/src/v4/core/schemas.ts', 'handleCatchall')])
+('b2/out/zod/fb3af01f76d9', 'extra:', [('packages/zod/src/v4/core/schemas.ts', '$ZodMemoizer')], 'missing:', [])

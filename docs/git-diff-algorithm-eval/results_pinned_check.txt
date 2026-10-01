@@ -1,5 +1,6 @@
-flask {'current_argv_hostile_differs': 100, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
-pylint {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
-cobra {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
-zod {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
-oxide {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
+legend: first 100 `rev-list --no-merges` commits per repo (range C^..C). current_argv_hostile_parsed_differs = parse_unified ranges differ, hostile vs isolated default, pre-pin argv; pinned_argv_hostile_raw_differs = raw bytes differ, hostile vs isolated default, pinned argv; pinned_vs_unpinned_default_raw_differs = raw bytes differ, pinned vs pre-pin argv, both isolated default.
+flask {'current_argv_hostile_parsed_differs': 100, 'pinned_argv_hostile_raw_differs': 0, 'pinned_vs_unpinned_default_raw_differs': 0, 'n': 100}
+pylint {'current_argv_hostile_parsed_differs': 99, 'pinned_argv_hostile_raw_differs': 0, 'pinned_vs_unpinned_default_raw_differs': 0, 'n': 100}
+cobra {'current_argv_hostile_parsed_differs': 99, 'pinned_argv_hostile_raw_differs': 0, 'pinned_vs_unpinned_default_raw_differs': 0, 'n': 100}
+zod {'current_argv_hostile_parsed_differs': 99, 'pinned_argv_hostile_raw_differs': 0, 'pinned_vs_unpinned_default_raw_differs': 0, 'n': 100}
+oxide {'current_argv_hostile_parsed_differs': 99, 'pinned_argv_hostile_raw_differs': 0, 'pinned_vs_unpinned_default_raw_differs': 0, 'n': 100}

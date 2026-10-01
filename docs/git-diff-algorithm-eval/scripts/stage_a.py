@@ -1,5 +1,7 @@
-"""Stage A: raw `git diff --unified=0` (exact gitutil::diff_text argv) per algorithm,
-per non-merge commit C (range C^..C), isolated from host git config."""
+"""Stage A: raw `git diff --unified=0` per algorithm, per non-merge commit C
+(range C^..C), isolated from host git config. The argv is the pre-pin
+baseline (gitutil::diff_text at a573a59, before #35); the pinned argv would
+override the algorithm variants being compared."""
 import json, os, subprocess, sys, time, hashlib
 sys.path.insert(0, os.path.dirname(__file__))
 from gitenv import ALGOS, env_for, diff_argv, parse_unified
@@ -27,5 +29,7 @@ for c in commits:
         rec["algos"][a] = {"sha": hashlib.sha1(r.stdout).hexdigest(), "bytes": len(r.stdout), "secs": dt,
                            "parsed": parsed, "code_parsed": {k:v for k,v in parsed.items() if code(k)}}
     out.append(rec)
+if len(out) < n:  # shallow clone: the boundary commit has no parent to diff against
+    print(f"WARNING: {repo}: only {len(out)} of {n} commits have a parent", file=sys.stderr)
 json.dump(out, open(sys.argv[3],"w"))
 print(repo, len(out))

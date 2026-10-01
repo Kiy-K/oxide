@@ -21,7 +21,7 @@ def env_for(algo):
     for i, (k, v) in enumerate(kv):
         e[f"GIT_CONFIG_KEY_{i}"] = k; e[f"GIT_CONFIG_VALUE_{i}"] = v
     return e
-# exact argv of gitutil::diff_text (range form / worktree form)
+# argv of gitutil::diff_text before #35 pinned it (range form / worktree form)
 def diff_argv(rng):
     a = ["git", "diff", "--unified=0", "--no-color", "--src-prefix=a/", "--dst-prefix=b/"]
     return a + ([rng] if rng else ["HEAD"])

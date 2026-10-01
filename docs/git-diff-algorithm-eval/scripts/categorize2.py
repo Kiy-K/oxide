@@ -15,6 +15,7 @@ for d in sorted(glob.glob("b2/out/*/*")):
         c[k+":related_differs"]+=R[k]["related"]!=R["myers"]["related"]
         c[k+":ctx_json_differs"]+=F[k]["ctx0_bal_json"]!=F["myers"]["ctx0_bal_json"]
         c[k+":ctx_items_differ"]+=I[k]!=I["myers"]
-        if k=="ihc3" and S[k]!=S["myers"] and len(ex)<4: ex.append((d, sorted(S[k]-S["myers"])[:4], sorted(S["myers"]-S[k])[:4]))
+        if k=="ihc3" and S[k]!=S["myers"]: ex.append((d, "extra:", sorted(S[k]-S["myers"]), "missing:", sorted(S["myers"]-S[k])))
 for k in sorted(c): print(k, c[k])
+print("ihc3 symbol-set-differing states (all):")
 for e in ex: print(e)

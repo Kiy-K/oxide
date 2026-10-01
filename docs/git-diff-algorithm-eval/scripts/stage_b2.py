@@ -16,6 +16,10 @@ for x in d:
     t = subprocess.run(gitenv.diff_argv(f"{c}^..{c}"), cwd=f"{S}/repos/{r}", env=gitenv.env_for("ihc3"), capture_output=True).stdout.decode("utf-8","replace")
     if norm(code_only(gitenv.parse_unified(t))) != norm(code_only(x["algos"]["myers"]["parsed"])) or x["algos"]["myers"]["code_parsed"] != x["algos"]["myers_noindent"]["code_parsed"]:
         cands.append(c)
+# Known limits (README, Retained limitations): the sample is drawn from the
+# union of both knobs' candidates, so it does not guarantee coverage of
+# either knob; the ihc3 side uses this narrower CODE_EXT while the noindent
+# side uses Stage A's `code_parsed`. The published selection is selection/sel2_*.json.
 pick = random.sample(cands, min(10, len(cands)))
 json.dump(pick, open(f"{S}/sel2_{r}.json", "w"))
 print(r, len(cands), "candidates; running", len(pick), flush=True)

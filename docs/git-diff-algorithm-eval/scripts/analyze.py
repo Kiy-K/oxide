@@ -8,7 +8,7 @@ def feats(o):
      "changed_files": tuple(r["changed_files"]),
      "cs_set": frozenset((c["file"], c["qualified_name"]) for c in r["changed_symbols"]),
      "cs_lines": tuple((c["file"], c["qualified_name"], c["added_lines"]) for c in r["changed_symbols"]),
-     "review_related": tuple((c["file"], c["qualified_name"]) for c in r["related"]),
+     "review_related": json.dumps(r["related"]),  # full entries, as categorize.py compares them
      "review_json": o["review_json"], "review_human": o["review_human"],
     }
     for k in sorted(o):
@@ -44,9 +44,8 @@ def main(root, label):
         details.append(rec)
     print(f"#### {label}: {len(states)} states")
     keys = list(F["myers"].keys())
-    print("pair".ljust(22) + " ".join(k[:14].rjust(14) for k in keys))
     for p in PAIRS:
-        print(f"{p[0]}~{p[1]}".ljust(22) + " ".join(str(agg[p][k]).rjust(14) for k in keys))
+        print(f"{p[0]}~{p[1]}: " + ", ".join(f"{k}={agg[p][k]}" for k in keys))
     print("review wall ms median:", {a: round(st.median(times[a])*1000,1) for a in ALG})
     return details
 if __name__ == "__main__":

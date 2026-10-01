@@ -10,23 +10,30 @@ HOSTILE=[("diff.algorithm","patience"),("diff.indentHeuristic","false"),("diff.i
 gitenv.ALGOS["hostile"]=HOSTILE
 BASE=["git","diff","--unified=0","--no-color","--src-prefix=a/","--dst-prefix=b/"]
 PIN=["--diff-algorithm=myers","--indent-heuristic","--inter-hunk-context=0","--find-renames","--no-ext-diff","--no-textconv"]
+# full production argv of gitutil::diff_text: BINARY_ARGS before `diff`, HUNK_ARGS after
+PINNED=["git","-c","core.attributesFile=","-c","core.bigFileThreshold=512m"]+BASE[1:]+PIN
+def pinned_env(algo): return dict(env_for(algo), GIT_ATTR_NOSYSTEM="1")
 def ok(p):
     # the baseline and pinned runs must succeed; empty stdout from a failed
     # git would otherwise count as a valid (empty) diff
     assert p.returncode == 0, p.stderr.decode()
     return p.stdout
+print("legend: first 100 `rev-list --no-merges` commits per repo (range C^..C).",
+      "current_argv_hostile_parsed_differs = parse_unified ranges differ, hostile vs isolated default, pre-pin argv;",
+      "pinned_argv_hostile_raw_differs = raw bytes differ, hostile vs isolated default, pinned argv;",
+      "pinned_vs_unpinned_default_raw_differs = raw bytes differ, pinned vs pre-pin argv, both isolated default.")
 res={}
 for r in ["flask","pylint","cobra","zod","oxide"]:
     d=json.load(open(f"stage_a_{r}.json"))[:100]
-    c={"current_argv_hostile_differs":0,"pinned_argv_hostile_differs":0,"pinned_vs_isolated_default_raw_differs":0,"n":0}
+    c={"current_argv_hostile_parsed_differs":0,"pinned_argv_hostile_raw_differs":0,"pinned_vs_unpinned_default_raw_differs":0,"n":0}
     for x in d:
         rng=f"{x['commit']}^..{x['commit']}"; c["n"]+=1
         iso=ok(subprocess.run(BASE+[rng],cwd=f"repos/{r}",env=env_for("default"),capture_output=True))
         cur=subprocess.run(BASE+[rng],cwd=f"repos/{r}",env=env_for("hostile"),capture_output=True).stdout
-        pin_h=ok(subprocess.run(BASE+PIN+[rng],cwd=f"repos/{r}",env=env_for("hostile"),capture_output=True))
-        pin_i=ok(subprocess.run(BASE+PIN+[rng],cwd=f"repos/{r}",env=env_for("default"),capture_output=True))
+        pin_h=ok(subprocess.run(PINNED+[rng],cwd=f"repos/{r}",env=pinned_env("hostile"),capture_output=True))
+        pin_i=ok(subprocess.run(PINNED+[rng],cwd=f"repos/{r}",env=pinned_env("default"),capture_output=True))
         p=lambda b: parse_unified(b.decode("utf-8","replace"))
-        c["current_argv_hostile_differs"]+= p(cur)!=p(iso)
-        c["pinned_argv_hostile_differs"]+= pin_h!=pin_i
-        c["pinned_vs_isolated_default_raw_differs"]+= pin_i!=iso
+        c["current_argv_hostile_parsed_differs"]+= p(cur)!=p(iso)
+        c["pinned_argv_hostile_raw_differs"]+= pin_h!=pin_i
+        c["pinned_vs_unpinned_default_raw_differs"]+= pin_i!=iso
     res[r]=c; print(r,c,flush=True)

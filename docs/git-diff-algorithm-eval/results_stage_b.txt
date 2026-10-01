@@ -24,42 +24,37 @@ SYMBOL-SET CASES:
 ('b/out/pylint/9f08fc7bbc0f', 'histogram', 'patience', [('tests/functional/a/abstract/abstract_method.py', 'ConcreteB.aaaa'), ('tests/functional/a/abstract/abstract_method.py', 'ConcreteC.aaaa')])
 
 #### flask: 16 states
-pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
-default~myers                      0              0              0              0              0              0              0              0              0
-myers~myers_2                      0              0              0              0              0              0              0              0              0
-myers~histogram                    0              1             10              1             10             10              0              5              5
-myers~patience                     0              1              7              1              7              7              0              5              5
-histogram~patience                 0              0              6              0              6              6              0              2              2
+default~myers: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~myers_2: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~histogram: changed_files=0, cs_set=1, cs_lines=10, review_related=1, review_json=10, review_human=10, ctx0_bal_items=0, ctx0_bal_json=5, ctx0_bal_human=5
+myers~patience: changed_files=0, cs_set=1, cs_lines=7, review_related=1, review_json=7, review_human=7, ctx0_bal_items=0, ctx0_bal_json=5, ctx0_bal_human=5
+histogram~patience: changed_files=0, cs_set=0, cs_lines=6, review_related=0, review_json=6, review_human=6, ctx0_bal_items=0, ctx0_bal_json=2, ctx0_bal_human=2
 review wall ms median: {'default': 117.8, 'myers': 111.0, 'histogram': 108.9, 'patience': 113.7, 'myers_2': 104.5}
 #### pylint: 18 states
-pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
-default~myers                      0              0              0              0              0              0              0              0              0
-myers~myers_2                      0              0              0              0              0              0              0              0              0
-myers~histogram                    0              1             11              1             11             11              0              8              8
-myers~patience                     0              0              9              0              9              9              0              5              5
-histogram~patience                 0              1              9              1              9              9              0              6              6
+default~myers: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~myers_2: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~histogram: changed_files=0, cs_set=1, cs_lines=11, review_related=1, review_json=11, review_human=11, ctx0_bal_items=0, ctx0_bal_json=8, ctx0_bal_human=8
+myers~patience: changed_files=0, cs_set=0, cs_lines=9, review_related=0, review_json=9, review_human=9, ctx0_bal_items=0, ctx0_bal_json=5, ctx0_bal_human=5
+histogram~patience: changed_files=0, cs_set=1, cs_lines=9, review_related=1, review_json=9, review_human=9, ctx0_bal_items=0, ctx0_bal_json=6, ctx0_bal_human=6
 review wall ms median: {'default': 211.5, 'myers': 197.7, 'histogram': 199.3, 'patience': 197.3, 'myers_2': 212.0}
 #### cobra: 17 states
-pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
-default~myers                      0              0              0              0              0              0              0              0              0
-myers~myers_2                      0              0              0              0              0              0              0              0              0
-myers~histogram                    0              0              9              0              9              9              0              7              7
-myers~patience                     0              0              8              0              8              8              0              6              6
-histogram~patience                 0              0              5              0              5              5              0              4              4
+default~myers: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~myers_2: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~histogram: changed_files=0, cs_set=0, cs_lines=9, review_related=0, review_json=9, review_human=9, ctx0_bal_items=0, ctx0_bal_json=7, ctx0_bal_human=7
+myers~patience: changed_files=0, cs_set=0, cs_lines=8, review_related=0, review_json=8, review_human=8, ctx0_bal_items=0, ctx0_bal_json=6, ctx0_bal_human=6
+histogram~patience: changed_files=0, cs_set=0, cs_lines=5, review_related=0, review_json=5, review_human=5, ctx0_bal_items=0, ctx0_bal_json=4, ctx0_bal_human=4
 review wall ms median: {'default': 52.0, 'myers': 68.5, 'histogram': 48.2, 'patience': 62.5, 'myers_2': 49.7}
 #### zod: 33 states
-pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
-default~myers                      0              0              0              0              0              0              0              0              0
-myers~myers_2                      0              0              0              0              0              0              0              0              0
-myers~histogram                    0              0             12              0             12             12              0              4              4
-myers~patience                     0              0             13              0             13             13              0              4              4
-histogram~patience                 0              0              9              0              9              9              0              4              4
+default~myers: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~myers_2: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~histogram: changed_files=0, cs_set=0, cs_lines=12, review_related=0, review_json=12, review_human=12, ctx0_bal_items=0, ctx0_bal_json=4, ctx0_bal_human=4
+myers~patience: changed_files=0, cs_set=0, cs_lines=13, review_related=0, review_json=13, review_human=13, ctx0_bal_items=0, ctx0_bal_json=4, ctx0_bal_human=4
+histogram~patience: changed_files=0, cs_set=0, cs_lines=9, review_related=0, review_json=9, review_human=9, ctx0_bal_items=0, ctx0_bal_json=4, ctx0_bal_human=4
 review wall ms median: {'default': 121.3, 'myers': 118.0, 'histogram': 113.3, 'patience': 121.5, 'myers_2': 125.9}
 #### oxide: 35 states
-pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
-default~myers                      0              0              0              0              0              0              0              0              0
-myers~myers_2                      0              0              0              0              0              0              0              0              0
-myers~histogram                    0              1             13              1             13             13              0              5              5
-myers~patience                     0              1             16              0             16             16              0              7              7
-histogram~patience                 0              1              8              1              8              8              0              5              5
+default~myers: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~myers_2: changed_files=0, cs_set=0, cs_lines=0, review_related=0, review_json=0, review_human=0, ctx0_bal_items=0, ctx0_bal_json=0, ctx0_bal_human=0
+myers~histogram: changed_files=0, cs_set=1, cs_lines=13, review_related=1, review_json=13, review_human=13, ctx0_bal_items=0, ctx0_bal_json=5, ctx0_bal_human=5
+myers~patience: changed_files=0, cs_set=1, cs_lines=16, review_related=1, review_json=16, review_human=16, ctx0_bal_items=0, ctx0_bal_json=7, ctx0_bal_human=7
+histogram~patience: changed_files=0, cs_set=1, cs_lines=8, review_related=1, review_json=8, review_human=8, ctx0_bal_items=0, ctx0_bal_json=5, ctx0_bal_human=5
 review wall ms median: {'default': 101.7, 'myers': 100.6, 'histogram': 104.9, 'patience': 105.5, 'myers_2': 99.7}

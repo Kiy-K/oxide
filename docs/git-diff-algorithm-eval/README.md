@@ -221,13 +221,12 @@ setting moves more output, and less correctly, than the algorithm does.
   who set `diff.algorithm` themselves see a change. Histogram has no measured
   advantage. That the golden happens to pin it is a test-harness artifact.
 
-**Golden implication (intended change, not a re-baseline).**
+**Golden implication (intended change, not a re-baseline; done in this PR).**
 - A `--diff-algorithm=myers` argument overrides the `GIT_CONFIG_*` histogram
-  pin in `tests/candidate_output_golden.rs`.
-- The `py_repo` review section of `fixtures/candidate_output/golden.txt`
-  would then change: `RetryPolicy` goes from +19 to +23 and moves first.
-- The env pin would become dead, and should be removed or switched in the
-  same change.
+  pin in `tests/candidate_output_golden.rs`, so that pin was removed.
+- The `py_repo` review section of `fixtures/candidate_output/golden.txt` was
+  re-captured: `RetryPolicy` goes from +19 to +23 and moves first. Nothing
+  else in the golden changed.
 
 ## Retained limitations
 
@@ -238,6 +237,19 @@ setting moves more output, and less correctly, than the algorithm does.
 - Clean/smudge filters and `core.autocrlf` were not tested.
 - Correctness of the three set-level cases was judged by hand.
 - The interHunkContext and noindent end-to-end sample is small (10 per repo).
+  It was drawn from the union of both settings' candidates, so it does not
+  guarantee coverage of either one (only 4 of 50 states had noindent
+  differences). The interHunkContext side used a narrower extension set
+  than Stage A's `code_parsed`. The published selection is
+  `selection/sel2_*.json`.
+- After review, the scripts gained exit-status checks, a script-relative
+  path for the hostile drivers, an isolated clone, and corrected labels.
+  `pinned_check.py` now runs the full production argv, including
+  `BINARY_ARGS`. Regenerating every `results_*.txt` from the same raw data
+  changed no measured number. The only corrections are the oxide
+  `myers~patience` `related` count, which now uses the same full-entry
+  comparison in both tables (0 became 1, still among the same three
+  states), and previously truncated table labels.
 - No Java or C/C++ repos were tested, and only the newest commits were used.
   `md` counts as indexed.
 - Settings that remain unpinned. All predate #35, and the independent review
