@@ -1,0 +1,10 @@
+# TS workspace (#36). Only these globs are workspace packages, so committed
+# fixtures such as fixtures/ts_repo are never picked up.
+packages:
+  - "packages/*"
+  - "apps/*"
+
+# mise.toml owns the pnpm version; package.json's `packageManager` repeats it
+# only because Turbo requires the field. Fail on a mismatch instead of the
+# default `download`, which would silently run a different pnpm.
+pmOnFail: error

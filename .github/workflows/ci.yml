@@ -119,6 +119,27 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  # Independent of every Rust job (no `needs` either way): the TS workspace
+  # neither builds nor calls the Rust binary yet. Node and pnpm come from
+  # mise.toml and Turbo from pnpm-lock.yaml, so nothing is pinned twice here.
+  typescript:
+    name: TypeScript / Workspace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Node and pnpm
+        uses: jdx/mise-action@v5
+        with:
+          version: 2026.9.14
+          install_args: node pnpm
+      # MISE_AUTO_INSTALL=false: `mise run` would otherwise also install every
+      # other tool in mise.toml (python, uv, cargo-llvm-cov, ...), none of
+      # which the TS tasks use.
+      - name: Frozen-lockfile install, then lint/typecheck/test/build
+        run: mise run verify:ts
+        env:
+          MISE_AUTO_INSTALL: "false"
+
   coverage:
     name: Rust / Coverage
     needs: quality

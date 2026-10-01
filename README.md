@@ -540,24 +540,26 @@ and only wires the already-installed binary into coding-agent MCP configs.
 ### Running the checks
 
 Prerequisites beyond Rust are pinned in [`mise.toml`](mise.toml) (Python
-3.11, uv, shellcheck, jq, cargo-llvm-cov). Install
+3.11, uv, shellcheck, jq, cargo-llvm-cov, and Node + pnpm for the TypeScript
+workspace). Install
 [mise](https://mise.jdx.dev/installing-mise.html) — a system package
 (`pacman -S mise`, `brew install mise`, `apt install mise`) is preferred over
 piping an installer script — then:
 
 ```bash
-mise run bootstrap  # pinned Rust toolchain/components + every mise-managed tool
-mise run verify     # everything below, in commit order, default + --no-default-features
+mise run bootstrap  # pinned Rust toolchain/components + every mise-managed tool + TS deps
+mise run verify     # verify:rust (everything below, in commit order) then verify:ts
 ```
 
-Each mise task's command matches what CI currently runs step-for-step (see
-`.github/workflows/ci.yml`) — CI itself does not yet invoke `mise run`
-directly, pending verification of that migration on a real runner. A green
-`mise run verify` covers the same checks as CI's `quality`, `test`,
-`no-default-features`, and `retrieval-gate` jobs (fmt, clippy, both feature
-configurations, the benchmark, and the installer's shellcheck + lifecycle
-tests) — it does not run the separate, optional coverage job. Without
-mise, run the underlying commands directly:
+Each Rust mise task's command matches what CI currently runs step-for-step
+(see `.github/workflows/ci.yml`) — the Rust jobs do not yet invoke `mise run`
+directly, pending verification of that migration on a real runner; CI's
+`typescript` job already runs `mise run verify:ts`. A green `mise run verify`
+covers the same checks as CI's `quality`, `test`, `no-default-features`,
+`retrieval-gate` and `typescript` jobs (fmt, clippy, both feature
+configurations, the benchmark, the installer's shellcheck + lifecycle tests,
+and the TS workspace) — it does not run the separate, optional coverage job.
+Without mise, run the underlying Rust commands directly:
 
 ```bash
 cargo fmt --check
@@ -575,8 +577,10 @@ deterministic hashed embedder regardless of environment
 [Privacy and offline use](#privacy-and-offline-use) only happens the first
 time you run a real `oxide index`/`oxide query`/`oxide watch` against a
 repository without `OXIDE_EMBED_NATIVE=hashed` set. `mise install` itself
-needs network access once, to fetch the pinned tool versions above; after
-that, `mise run bootstrap` is offline unless a tool version changes.
+needs network access once, to fetch the pinned tool versions above, and so
+does the first `pnpm install` behind `mise run bootstrap`/`verify:ts`, to
+fill the pnpm store from `pnpm-lock.yaml`; after that, both are offline
+unless a tool version or the lockfile changes.
 
 Language behavior is pinned by golden files under `fixtures/conformance/`.
 Retrieval changes must pass the committed benchmark gate; changing the

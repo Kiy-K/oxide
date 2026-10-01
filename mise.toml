@@ -21,9 +21,18 @@ shellcheck = "0.11.0"
 jq = "1.8.2"
 # Matches the exact version CI's coverage job installs inline.
 "cargo:cargo-llvm-cov" = "0.6.19"
+# TypeScript workspace (#36). Node 24 is the Active LTS line (Node 26 only
+# reaches LTS on 2026-10-28); pnpm 11 supports Node 22/24/26 and is the
+# mature line (pnpm 12, a Rust port, shipped 2026-08-26). Turbo is NOT
+# here: it is a root devDependency, so `pnpm-lock.yaml` owns its version.
+# The pnpm pin is repeated as `packageManager` in package.json because
+# Turbo requires that field; `pmOnFail: error` in pnpm-workspace.yaml makes
+# any drift between the two fail instead of silently downloading another pnpm.
+node = "24.21.0"
+pnpm = "11.28.2"
 
 [tasks.bootstrap]
-description = "Install the pinned Rust toolchain/components and every mise-managed tool"
+description = "Install the pinned Rust toolchain/components, every mise-managed tool, and the TS workspace dependencies"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -32,7 +41,12 @@ set -euo pipefail
 # that install to happen now instead of lazily on the first real command.
 rustup show active-toolchain || rustup show
 echo "Rust toolchain ready."
+mise run ts:install
 '''
+
+[tasks."ts:install"]
+description = "Install the TS workspace from the committed lockfile (fails if package.json and pnpm-lock.yaml disagree)"
+run = "pnpm install --frozen-lockfile"
 
 [tasks.lint]
 description = "cargo fmt --check + clippy -D warnings (matches CI's Quality job, default features)"
@@ -79,7 +93,44 @@ shellcheck -s sh install.sh tests/install_sh_test.sh
 ./tests/install_sh_test.sh
 '''
 
+[tasks."ts:lint"]
+description = "Turbo: lint every TS workspace package"
+run = "pnpm exec turbo run lint"
+
+[tasks."ts:typecheck"]
+description = "Turbo: typecheck every TS workspace package"
+run = "pnpm exec turbo run typecheck"
+
+[tasks."ts:test"]
+description = "Turbo: test every TS workspace package"
+run = "pnpm exec turbo run test"
+
+[tasks."ts:build"]
+description = "Turbo: build every TS workspace package"
+run = "pnpm exec turbo run build"
+
+[tasks."verify:ts"]
+description = "Everything CI's TypeScript job checks: frozen-lockfile install, then lint/typecheck/test/build through Turbo"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+mise run ts:install
+# One Turbo invocation, so Turbo (not mise) schedules the TS task graph.
+pnpm exec turbo run lint typecheck test build
+'''
+
 [tasks.verify]
+description = "Full-repo verification: verify:rust, then verify:ts"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+# Sequential, not a `depends` list: Rust runs first exactly as before, and a
+# failure stops before the next half starts.
+mise run verify:rust
+mise run verify:ts
+'''
+
+[tasks."verify:rust"]
 description = "Everything CI's quality/test/no-default-features/retrieval-gate jobs check, in commit order (excludes the separate, optional coverage job)"
 run = '''
 #!/usr/bin/env bash

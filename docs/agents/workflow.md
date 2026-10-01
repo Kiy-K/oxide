@@ -7,10 +7,11 @@ root `AGENTS.md` routing table. Older docs and code comments that cite
 ## Commands
 
 `mise.toml` pins every non-Rust dev tool (Python 3.11, uv, shellcheck, jq,
-cargo-llvm-cov) and wraps the checks below in tasks matching CI's current
-commands step-for-step, so there is one place either can drift from once CI
-itself is migrated to call `mise run` directly (not done yet — pending
-verification on a real runner; CI still runs the raw commands below). See
+cargo-llvm-cov, Node, pnpm) and wraps the checks below in tasks matching CI's
+current commands step-for-step, so there is one place either can drift from
+once CI itself is migrated to call `mise run` directly (not done yet for the
+Rust jobs — pending verification on a real runner; they still run the raw
+commands below). See
 `mise.toml`'s own comments for why Rust itself stays pinned only in
 `rust-toolchain.toml`. With
 [mise](https://mise.jdx.dev/installing-mise.html) installed (prefer a system
@@ -18,12 +19,23 @@ package, e.g. `pacman -S mise`/`brew install mise`, over piping an installer
 script):
 
 ```bash
-mise run bootstrap  # installs the pinned Rust toolchain/components + mise tools
-mise run lint       # cargo fmt --check + clippy -D warnings
-mise run test       # full unit + integration suite
-mise run bench      # release build + the canonical fixture benchmark
-mise run verify     # lint, lint/test --no-default-features, test, bench, installer checks, in order
+mise run bootstrap    # pinned Rust toolchain/components + mise tools + TS workspace install
+mise run lint         # cargo fmt --check + clippy -D warnings
+mise run test         # full unit + integration suite
+mise run bench        # release build + the canonical fixture benchmark
+mise run verify:rust  # lint, lint/test --no-default-features, test, bench, installer checks, in order
+mise run verify:ts    # frozen-lockfile pnpm install, then Turbo lint/typecheck/test/build
+mise run verify       # verify:rust, then verify:ts — the single full-repo entrypoint
 ```
+
+TypeScript workspace (#36): pnpm owns dependencies (`pnpm-workspace.yaml`,
+committed `pnpm-lock.yaml`), Turbo owns the TS task graph (`turbo.json`) and is
+a root devDependency, not a mise tool. `ts:install`/`ts:lint`/`ts:typecheck`/
+`ts:test`/`ts:build` wrap single steps; root `package.json` has no scripts, so
+mise stays the one entrypoint. Turbo never wraps Cargo. Until the first package
+lands under `packages/` or `apps/`, the Turbo run executes zero tasks. CI's
+`typescript` job runs `mise run verify:ts` (it is the one job that calls mise)
+and has no `needs` link with the Rust jobs.
 
 Without mise, the same checks run directly — this is what CI's `quality`/
 `test`/`no-default-features`/`retrieval-gate` jobs currently run:

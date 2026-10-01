@@ -22,3 +22,9 @@ CLAUDE.local.md
 .worktrees/
 .env
 eval-agent/agentbench/.run_tmp/
+# TS workspace (#36): anchored to the workspace globs, because
+# eval-agent/tasks/tsx_feat_button/node_modules is committed fixture content.
+/node_modules/
+/packages/*/node_modules/
+/apps/*/node_modules/
+.turbo/
