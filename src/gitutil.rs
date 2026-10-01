@@ -596,6 +596,7 @@ new file mode 100644
             .env("XDG_CONFIG_HOME", root.join(".no-xdg"))
             .env("HOME", root.join(".no-home"))
             .env_remove("GIT_DIFF_OPTS")
+            .env_remove("GIT_EXTERNAL_DIFF")
             .current_dir(root)
             .output()
             .unwrap();
