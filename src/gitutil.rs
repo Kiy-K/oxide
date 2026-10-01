@@ -51,34 +51,44 @@ fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
 /// either a real, commonly recommended git setting — silently breaks that
 /// match, and every changed file in the diff evidence goes missing with no
 /// error. This flag overrides both config settings unconditionally.
+///
+/// [`HUNK_ARGS`] pins everything else that shapes the hunks, for the same
+/// reason: changed symbols, `added_lines` and review/context output must not
+/// depend on the host's git config (#35, `docs/git-diff-algorithm-eval/`).
 pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
-    const PREFIX_ARGS: [&str; 2] = ["--src-prefix=a/", "--dst-prefix=b/"];
-    if range.is_empty() {
-        run_git(
-            repo,
-            &[
-                "diff",
-                "--unified=0",
-                "--no-color",
-                PREFIX_ARGS[0],
-                PREFIX_ARGS[1],
-                "HEAD",
-            ],
-        )
-    } else {
-        run_git(
-            repo,
-            &[
-                "diff",
-                "--unified=0",
-                "--no-color",
-                PREFIX_ARGS[0],
-                PREFIX_ARGS[1],
-                range,
-            ],
-        )
-    }
+    let mut args = vec![
+        "diff",
+        "--unified=0",
+        "--no-color",
+        "--src-prefix=a/",
+        "--dst-prefix=b/",
+    ];
+    args.extend(HUNK_ARGS);
+    args.push(if range.is_empty() { "HEAD" } else { range });
+    run_git(repo, &args)
 }
+
+/// Overrides for every `git diff` config setting measured to move
+/// [`parse_unified`]'s added ranges (`docs/git-diff-algorithm-eval/`). Each
+/// value is git's own default, so a default-config host's output is
+/// byte-identical with or without these flags:
+/// - `diff.algorithm`: myers. No algorithm attributes changed symbols more
+///   accurately; myers is what default-config hosts already produce.
+/// - `diff.indentHeuristic`: on.
+/// - `diff.interHunkContext`: 0. Anything else fuses `-U0` hunks, and the
+///   unchanged lines between them would be counted as added.
+/// - `diff.renames`: plain rename detection; `false` turns a renamed file
+///   into an all-added file, `copies` re-attributes copied lines.
+/// - `diff.external` / textconv drivers: replace the unified diff with
+///   arbitrary output (or stall on a slow converter).
+const HUNK_ARGS: [&str; 6] = [
+    "--diff-algorithm=myers",
+    "--indent-heuristic",
+    "--inter-hunk-context=0",
+    "--find-renames",
+    "--no-ext-diff",
+    "--no-textconv",
+];
 
 /// Parse `git diff --unified=0` into per-file deltas of added lines
 /// (new-file coordinates). `range` empty = worktree vs HEAD; `A..B` explicit;
@@ -479,6 +489,53 @@ new file mode 100644
             deleted_files(&diff_text(root, "").unwrap()),
             Vec::<String>::new()
         );
+    }
+
+    /// #35: the hunks must not follow the host's diff config. The repo is the
+    /// `candidate_output_golden` `retry.py` state, where git's default
+    /// (myers) yields one hunk and `diff.algorithm=histogram` keeps blank
+    /// line 26 as context; `interHunkContext` and `diff.external` would also
+    /// reshape or replace the diff if they were honoured.
+    #[test]
+    fn diff_hunks_ignore_host_diff_config() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        let full = std::fs::read_to_string(
+            Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/py_repo/oxidepy/retry.py"),
+        )
+        .unwrap();
+        let lines: Vec<&str> = full.lines().collect();
+        let half = lines[..lines.len() / 2].join("\n");
+        std::fs::write(
+            root.join("retry.py"),
+            format!("{half}\n# rev 1\n\n# rev 2\n"),
+        )
+        .unwrap();
+        git(root, &["init", "-q"]);
+        git(root, &["add", "."]);
+        commit(root, "base");
+        std::fs::write(root.join("retry.py"), &full).unwrap();
+        for (key, value) in [
+            ("diff.algorithm", "histogram"),
+            ("diff.indentHeuristic", "false"),
+            ("diff.interHunkContext", "3"),
+            ("diff.renames", "false"),
+            ("diff.external", "false"),
+        ] {
+            git(root, &["config", key, value]);
+        }
+        // The config does bite an unpinned `git diff`.
+        let raw = Command::new("git")
+            .args(["diff", "--unified=0", "HEAD"])
+            .current_dir(root)
+            .output()
+            .unwrap();
+        assert!(!String::from_utf8_lossy(&raw.stdout).contains("@@ -23,3 +23,23 @@"));
+
+        let deltas = diff_files(root, "").unwrap();
+        assert_eq!(deltas.len(), 1);
+        assert_eq!(deltas[0].file, "retry.py");
+        assert_eq!(deltas[0].added, vec![(23, 45)]);
     }
 
     #[test]

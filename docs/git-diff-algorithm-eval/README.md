@@ -1,7 +1,13 @@
 # Git diff algorithm and host diff config: effect on Git-derived context (#35)
 
-Benchmark-only. Production `gitutil`, `gitctx`, scoring and CLI/MCP/JSON are
-unchanged. Baseline: `origin/main` at `a573a59`.
+Baseline: `origin/main` at `a573a59`. The evaluation itself was
+benchmark-only.
+
+**Outcome:** adopted. `gitutil::diff_text` now passes `HUNK_ARGS` (the pinned
+flags below, without `--no-relative`). The `candidate_output_golden` histogram
+pin was removed, and its `py_repo` review line was deliberately re-captured:
+`RetryPolicy` moves first and goes from +19 to +23. Nothing else in the golden
+changed. The quoted non-ASCII path bug is tracked separately.
 
 Question (#35): `gitutil::diff_text` runs `git diff --unified=0` without a
 pinned algorithm, so `oxide review` and `oxide context --git` follow the host's

@@ -3,20 +3,22 @@
 //! tools serialize them (`serde_json::to_string` of the service result), the
 //! CLI's `--json` and human renderings, and the `OXIDE_DEBUG_DUMP_KEPT`
 //! pool. Captured from the code before #34 S3 introduced the typed
-//! candidate/evidence boundary, and never regenerated: any difference is a
-//! regression, not a new baseline. On a mismatch the actual output is
-//! written next to the build's temp dir for diffing.
+//! candidate/evidence boundary, and never regenerated (one deliberate
+//! re-capture, below): any difference is a regression, not a new baseline.
+//! On a mismatch the actual output is written next to the build's temp dir
+//! for diffing.
 //!
 //! One test in this binary on purpose: it sets `OXIDE_EMBED_NATIVE`,
 //! `OXIDE_DEBUG_DUMP_KEPT` and the git configuration below, which are
 //! process-global.
 //!
-//! Git is pinned because `review`/`--git` read `git diff`, whose hunks follow
-//! the host's `diff.algorithm`: the golden was captured with
-//! `diff.algorithm=histogram`, and git's default (myers) splits one
-//! `oxidepy/retry.py` hunk differently, which changes review's changed
-//! symbols. Every git process this test starts — its own, the service's and
-//! the CLI's — ignores system/global config and sees exactly that setting.
+//! Git is isolated from system/global config. `review`/`--git` pin their
+//! own hunk-shaping flags (`gitutil::diff_text`, #35), so the remaining
+//! isolation only keeps this test's own git calls (init/commit) independent
+//! of the host. The py_repo review section was re-captured when #35 pinned
+//! myers: the golden had been captured on a `diff.algorithm=histogram` host,
+//! which split one `oxidepy/retry.py` hunk differently (changed-symbol order
+//! and `RetryPolicy`'s `+19` vs `+23` lines). Nothing else changed.
 
 use oxide::index::IndexOptions;
 use oxide::retrieval::{RetrievalMode, SearchMode};
@@ -154,9 +156,6 @@ fn candidate_output_matches_the_pre_s3_golden() {
         std::env::set_var("OXIDE_EMBED_NATIVE", "hashed");
         std::env::set_var("GIT_CONFIG_NOSYSTEM", "1");
         std::env::set_var("GIT_CONFIG_GLOBAL", "/dev/null");
-        std::env::set_var("GIT_CONFIG_COUNT", "1");
-        std::env::set_var("GIT_CONFIG_KEY_0", "diff.algorithm");
-        std::env::set_var("GIT_CONFIG_VALUE_0", "histogram");
     }
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures");
     let cases: [Case<'_>; 3] = [

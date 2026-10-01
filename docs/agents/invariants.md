@@ -285,6 +285,15 @@ invariant mean this file.
   the old identity and then score the new rows. Safe only because every
   reader is request-scoped — a long-lived one would pin the WAL against
   checkpointing.
+- `gitutil::diff_text` passes every flag that shapes `-U0` hunks
+  (`HUNK_ARGS`: myers, indent heuristic, `--inter-hunk-context=0`,
+  `--find-renames`, `--no-ext-diff`, `--no-textconv`, plus the `a/`/`b/`
+  prefixes), so `review`/`--git` changed symbols never follow the host's git
+  config (#35). Each value is git's default, so default-config output is
+  byte-identical. A new option belongs there only if it is measured not to
+  move default output (`docs/git-diff-algorithm-eval/`); a new `git diff`
+  call that feeds `parse_unified` uses `diff_text`.
+  `gitutil::tests::diff_hunks_ignore_host_diff_config` pins it.
 
 ## Embeddings / providers
 
