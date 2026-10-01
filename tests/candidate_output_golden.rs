@@ -13,7 +13,9 @@
 //! process-global.
 //!
 //! Git is isolated from system/global config, from `GIT_CONFIG_*` exported
-//! by the runner (`GIT_CONFIG_COUNT=0`) and from `GIT_DIFF_OPTS`.
+//! by the runner (`GIT_CONFIG_COUNT=0`), from `GIT_DIFF_OPTS`, and from
+//! system and user-level attribute files (`GIT_ATTR_NOSYSTEM`, an empty
+//! `HOME`/`XDG_CONFIG_HOME`).
 //! `review`/`--git` pin the diff settings measured to reshape hunks
 //! (`gitutil::diff_text`, #35); the isolation keeps this test's own git calls
 //! (init/commit, e.g. `commit.gpgsign`) and the settings `diff_text` does not
@@ -155,12 +157,18 @@ type Case<'a> = (
 #[test]
 fn candidate_output_matches_the_pre_s3_golden() {
     // This binary holds a single test, so nothing else reads the
-    // environment concurrently.
+    // environment concurrently. An empty HOME/XDG_CONFIG_HOME also hides
+    // user-level git attributes (`~/.config/git/attributes`), which
+    // `diff_text` deliberately honours, and any user-level OXIDE config.
+    let empty_home = tempfile::tempdir().unwrap();
     unsafe {
         std::env::set_var("OXIDE_EMBED_NATIVE", "hashed");
         std::env::set_var("GIT_CONFIG_NOSYSTEM", "1");
         std::env::set_var("GIT_CONFIG_GLOBAL", "/dev/null");
         std::env::set_var("GIT_CONFIG_COUNT", "0");
+        std::env::set_var("GIT_ATTR_NOSYSTEM", "1");
+        std::env::set_var("HOME", empty_home.path());
+        std::env::set_var("XDG_CONFIG_HOME", empty_home.path());
         std::env::remove_var("GIT_DIFF_OPTS");
     }
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures");
