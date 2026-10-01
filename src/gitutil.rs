@@ -88,7 +88,8 @@ pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
 /// Not pinned, and measured to still reshape or empty the diff:
 /// `GIT_DIFF_OPTS` (overrides `--unified=0`), `diff.renameLimit`,
 /// `diff.submodule`, binary handling (`-diff`/`binary` attributes from
-/// `core.attributesFile` or `.git/info/attributes`, `diff.<driver>.binary`,
+/// `core.attributesFile`, `$XDG_CONFIG_HOME/git/attributes`, the system
+/// attributes file or `.git/info/attributes`; `diff.<driver>.binary`;
 /// `core.bigFileThreshold`), clean filters and `core.autocrlf` on CRLF files,
 /// `diff.relative` when the OXIDE root is a subdirectory of the git repo, and
 /// `core.quotePath` (#37).

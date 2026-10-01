@@ -21,8 +21,11 @@ pinned algorithm, so `oxide review` and `oxide context --git` follow the host's
 - `OXIDE_EMBED_NATIVE=hashed` (offline, deterministic), `NO_COLOR=1`, `OXIDE_TELEMETRY=0`.
 - **Host-config isolation** (`scripts/gitenv.py`): every git process,
   including the ones `oxide` spawns, runs with `GIT_CONFIG_NOSYSTEM=1`,
-  `GIT_CONFIG_GLOBAL=/dev/null`, an empty `HOME`/`XDG_CONFIG_HOME`, all
-  inherited `GIT_*` variables removed, `LC_ALL=C` and `TZ=UTC`. The variant
+  `GIT_CONFIG_GLOBAL=/dev/null`, `GIT_ATTR_NOSYSTEM=1`, an empty
+  `HOME`/`XDG_CONFIG_HOME` (which also hides user-level attribute files), all
+  inherited `GIT_*` variables removed, `LC_ALL=C` and `TZ=UTC`.
+  `GIT_ATTR_NOSYSTEM` was added after the published runs; the host had no
+  system attributes file, so they are unaffected. The variant
   under test is injected only through `GIT_CONFIG_COUNT/KEY/VALUE`. The cloned
   repos carry no `diff.*` in their `.git/config`. The host itself has no
   `diff.*` config either.
