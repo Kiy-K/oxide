@@ -1,0 +1,21 @@
+ihc3:ctx_items_differ 1
+ihc3:ctx_json_differs 27
+ihc3:extra_symbols 2
+ihc3:missing_symbols 5
+ihc3:related_differs 3
+ihc3:review_differs 38
+ihc3:symbol_set_differs 5
+myers_noindent:ctx_items_differ 0
+myers_noindent:ctx_json_differs 0
+myers_noindent:extra_symbols 0
+myers_noindent:missing_symbols 0
+myers_noindent:related_differs 0
+myers_noindent:review_differs 0
+myers_noindent:symbol_set_differs 0
+states 50
+ihc3 symbol-set-differing states (all):
+('b2/out/flask/54ff9b297276', 'extra:', [('tests/test_views.py', 'test_view_patching.Index')], 'missing:', [])
+('b2/out/zod/31384464cabf', 'extra:', [], 'missing:', [('packages/zod/src/v4/core/schemas.ts', '$ZodObjectJIT')])
+('b2/out/zod/6f0483671e62', 'extra:', [], 'missing:', [('packages/zod/src/v4/classic/schemas.ts', 'ZodBigInt.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', 'ZodNumber.processJSONSchema'), ('packages/zod/src/v4/classic/schemas.ts', '_ZodString.processJSONSchema')])
+('b2/out/zod/cafbee4772ef', 'extra:', [], 'missing:', [('packages/zod/src/v4/core/schemas.ts', 'handleCatchall')])
+('b2/out/zod/fb3af01f76d9', 'extra:', [('packages/zod/src/v4/core/schemas.ts', '$ZodMemoizer')], 'missing:', [])
