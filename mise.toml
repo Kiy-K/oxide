@@ -31,6 +31,12 @@ jq = "1.8.2"
 node = "24.21.0"
 pnpm = "11.28.2"
 
+[env]
+# Turbo (a dev dependency) collects anonymous usage telemetry by default.
+# OXIDE does no usage analytics (TELEMETRY.md), so the repo opts out once
+# here; every `mise run` task, CI's included, inherits it.
+TURBO_TELEMETRY_DISABLED = "1"
+
 [tasks.bootstrap]
 description = "Install the pinned Rust toolchain/components, every mise-managed tool, and the TS workspace dependencies"
 run = '''
@@ -92,6 +98,10 @@ set -euo pipefail
 shellcheck -s sh install.sh tests/install_sh_test.sh
 ./tests/install_sh_test.sh
 '''
+
+[tasks."protocol:fixtures"]
+description = "Regenerate fixtures/protocol/ from the real binary (tests/protocol_fixtures.rs); review the diff, then run verify:ts"
+run = "env OXIDE_PROTOCOL_FIXTURES=update cargo test -j 2 --test protocol_fixtures"
 
 [tasks."ts:lint"]
 description = "Turbo: lint every TS workspace package"

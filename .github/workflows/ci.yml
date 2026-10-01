@@ -120,7 +120,8 @@ jobs:
           retention-days: 14
 
   # Independent of every Rust job (no `needs` either way): the TS workspace
-  # neither builds nor calls the Rust binary yet. Node and pnpm come from
+  # neither builds nor calls the Rust binary; it validates the committed
+  # fixtures/protocol/ files the Rust tests keep current. Node and pnpm come from
   # mise.toml and Turbo from pnpm-lock.yaml, so nothing is pinned twice here.
   typescript:
     name: TypeScript / Workspace

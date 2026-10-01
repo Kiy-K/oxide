@@ -28,3 +28,4 @@ eval-agent/agentbench/.run_tmp/
 /packages/*/node_modules/
 /apps/*/node_modules/
 .turbo/
+/packages/*/dist/

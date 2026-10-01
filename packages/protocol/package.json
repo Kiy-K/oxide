@@ -1,0 +1,30 @@
+{
+  "name": "@oxide/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "description": "TypeScript types and runtime validation for OXIDE's machine-readable JSON contracts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "biome check .",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.14",
+    "@types/node": "24.9.2",
+    "typescript": "7.0.2"
+  }
+}

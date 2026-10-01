@@ -439,6 +439,13 @@ per-channel provenance through `RetrievalEngine::search_candidates` from
 in-crate code instead of patching fusion, and the public Rust API keeps its
 pre-S3 shapes (`SearchHit`, `EvidenceCandidate`, `CollectInput`/`CollectOutput`).
 
+`fixtures/protocol/` pins the `--json` output of `status`, `search`, `query`
+and the error envelope byte for byte (`tests/protocol_fixtures.rs`), and
+`@oxide/protocol` validates those files in TS CI. An intended shape change
+means running `mise run protocol:fixtures` and keeping the schemas accepting
+the result (`packages/protocol/README.md`); a test failure is never fixed by
+regenerating alone.
+
 ## Repo layout facts
 
 - Single crate: bin `src/main.rs` + lib; modules wired in `src/lib.rs`.

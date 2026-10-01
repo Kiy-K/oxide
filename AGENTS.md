@@ -29,7 +29,7 @@ Docs and code comments that cite "`AGENTS.md`" for an invariant, command or harn
 | `src/retrieval/`, `src/context.rs`, `src/config.rs` weights, `RetrievalMode` | invariants § Load-bearing invariants, then `docs/review/retrieval-and-config.md` |
 | Embedding providers, fingerprints, native session pool | invariants § Embeddings / providers, then `docs/review/embeddings-and-index.md` |
 | Languages, tags extraction, structural relations, `blast_radius.rs`, storage backend | invariants § Repo layout facts, then `docs/review/structural-and-language.md` |
-| Terminal output, telemetry, `--json`/MCP output | invariants § Terminal output and telemetry and § JSON output contracts, then `docs/review/api-surface.md` |
+| Terminal output, telemetry, `--json`/MCP output, `packages/protocol` | invariants § Terminal output and telemetry and § JSON output contracts, then `docs/review/api-surface.md` |
 | Reviewing any change | `docs/review/README.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
 

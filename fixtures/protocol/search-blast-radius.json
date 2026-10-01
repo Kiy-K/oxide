@@ -1,0 +1,73 @@
+[
+  {
+    "id": "oxidepy/retry.py#oxidepy/retry.py:__module__",
+    "file": "oxidepy/retry.py",
+    "qualified_name": "oxidepy/retry.py:__module__",
+    "name": "__module__",
+    "kind": "module",
+    "language": "python",
+    "start_line": 1,
+    "end_line": 45,
+    "score": 0.016393442,
+    "reasons": [
+      "lexical=8.860",
+      "semantic=0.516"
+    ],
+    "snippet": "\"\"\"Retry policy with exponential backoff for flaky operations.\"\"\"\n\nimport random\nimport time\n\n\nclass TooManyAttemptsError(RuntimeError):\n    \"\"\"Raised when every retry attempt has been exhausted.\"\"\"\n\n    def __init__(self, attempts: int):\n        super().__init__(f\"gave up after {attempts} attempts\")\n        self.attempts = attempts\n\n\nclass RetryPolicy:\n    \"\"\"Decides whether a failed operation should be attempted again.\n\n    The policy grows the delay exponentially between attempts and adds a\n    small jitter so many callers do not synchronize their retries.\n    \"\"\"\n\n    def __init__(self, max_attempts: int = 3, base_delay_ms: int = 100, jitter: float = 0.1):\n        self.max_attempts = max_attempts\n        self.base_delay_ms = base_delay_ms\n        self.jitter = jitter\n\n    @property\n    def exhausted(self) -> bool:\n        return self.attempts_left <= 0\n\n    def should_retry(self, attempt: int, error: Exception) -> bool:\n        \"\"\"Return True when `error` seen on `attempt` deserves another try.\"\"\"\n        if attempt >= self.max_attempts:\n            return False\n        # Connection errors and 5xx responses are transient; 4xx are not.\n        transient = isinstance(error, (ConnectionError, TimeoutError))\n        return transient or getattr(error, \"status_code\", 500) >= 500\n\n    def backoff_ms(self, attempt: int) -> int:\n        delay = self.base_delay_ms * (2 ** attempt)"
+  },
+  {
+    "id": "oxidepy/retry.py#RetryPolicy.backoff_ms",
+    "file": "oxidepy/retry.py",
+    "qualified_name": "RetryPolicy.backoff_ms",
+    "name": "backoff_ms",
+    "kind": "method",
+    "language": "python",
+    "start_line": 39,
+    "end_line": 42,
+    "score": 0.016129032,
+    "reasons": [
+      "lexical=5.987",
+      "semantic=0.455",
+      "imported-definition←test_backoff_delay_increases_with_attempts"
+    ],
+    "snippet": "    def backoff_ms(self, attempt: int) -> int:\n        delay = self.base_delay_ms * (2 ** attempt)\n        noise = 1.0 + random.uniform(-self.jitter, self.jitter)\n        return int(delay * noise)",
+    "blast_radius": [
+      {
+        "id": "oxidepy/retry.py#RetryPolicy.wait",
+        "file": "oxidepy/retry.py",
+        "qualified_name": "RetryPolicy.wait",
+        "kind": "method",
+        "start_line": 44,
+        "end_line": 45,
+        "relation": "caller",
+        "distance": 1,
+        "via": "RetryPolicy.backoff_ms",
+        "via_id": "oxidepy/retry.py#RetryPolicy.backoff_ms"
+      },
+      {
+        "id": "tests/test_retry.py#test_backoff_delay_increases_with_attempts",
+        "file": "tests/test_retry.py",
+        "qualified_name": "test_backoff_delay_increases_with_attempts",
+        "kind": "function",
+        "start_line": 14,
+        "end_line": 16,
+        "relation": "caller",
+        "distance": 1,
+        "via": "RetryPolicy.backoff_ms",
+        "via_id": "oxidepy/retry.py#RetryPolicy.backoff_ms"
+      },
+      {
+        "id": "oxidepy/http_client.py#HttpClient.fetch",
+        "file": "oxidepy/http_client.py",
+        "qualified_name": "HttpClient.fetch",
+        "kind": "method",
+        "start_line": 22,
+        "end_line": 34,
+        "relation": "transitive-caller",
+        "distance": 2,
+        "via": "RetryPolicy.backoff_ms",
+        "via_id": "oxidepy/retry.py#RetryPolicy.backoff_ms"
+      }
+    ]
+  }
+]

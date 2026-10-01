@@ -1,0 +1,27 @@
+{
+  "root": "<repo>",
+  "index_exists": false,
+  "is_current": false,
+  "embedder_current": false,
+  "base_fresh": false,
+  "pending_embeddings": 0,
+  "files": 0,
+  "symbols": 0,
+  "embeddings": 0,
+  "embedder": null,
+  "supported_languages": [
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "rust",
+    "go",
+    "java",
+    "ruby",
+    "php",
+    "c",
+    "cpp",
+    "markdown"
+  ],
+  "schema_version": 1
+}

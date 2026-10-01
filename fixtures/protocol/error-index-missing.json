@@ -1,0 +1,1 @@
+{"error":{"code":"index_missing","action":"index","message":"index missing at <repo>/.oxide/index.db; run `oxide index <repo>`"}}

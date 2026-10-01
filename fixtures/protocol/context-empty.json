@@ -1,0 +1,80 @@
+{
+  "task": "where is retry logic",
+  "budget_tokens": 0,
+  "used_tokens": 0,
+  "items": [],
+  "omitted": [
+    {
+      "id": "oxidepy/retry.py#RetryPolicy",
+      "why": "subsumed by overlapping symbol"
+    },
+    {
+      "id": "tests/test_retry.py#tests/test_retry.py:__module__",
+      "why": "module subsumed by concrete symbols"
+    },
+    {
+      "id": "oxidepy/retry.py#oxidepy/retry.py:__module__",
+      "why": "module subsumed by concrete symbols"
+    },
+    {
+      "id": "oxidepy/cache.py#TTLCache",
+      "why": "subsumed by overlapping symbol"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy.should_retry",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy.exhausted",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy.wait",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy.backoff_ms",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/http_client.py#HttpClient.__init__",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/cache.py#TTLCache.get_or_set",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/retry.py#RetryPolicy.__init__",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/notifiers.py#notify_after_final_attempt",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/__init__.py#__all__",
+      "why": "over token budget"
+    },
+    {
+      "id": "oxidepy/http_client.py#HttpClient.fetch",
+      "why": "over token budget"
+    },
+    {
+      "id": "tests/test_retry.py#test_retry_policy_gives_up_after_max_attempts",
+      "why": "over token budget"
+    },
+    {
+      "id": "tests/test_retry.py#test_client_errors_are_not_retried",
+      "why": "over token budget"
+    },
+    {
+      "id": "tests/test_retry.py#test_backoff_delay_increases_with_attempts",
+      "why": "over token budget"
+    },
+    {
+      "id": "tests/test_retry.py#test_exhausted_policy_raises",
+      "why": "over token budget"
+    }
+  ]
+}

@@ -88,6 +88,11 @@ Whether telemetry is on or off, OXIDE never sends:
 - coding-agent configuration files that `oxide install` reads or edits;
 - usage counts, command frequency, timings, or any analytics.
 
+This covers the `oxide` binary, governed by `OXIDE_TELEMETRY`. Turborepo, a
+development-only dependency of the TypeScript workspace, has its own
+anonymous telemetry; the repository disables it for every `mise run` task
+(`TURBO_TELEMETRY_DISABLED=1` in `mise.toml`).
+
 ## Sentry's role
 
 Sentry (sentry.io) is the crash-reporting service the opt-in reports go to.

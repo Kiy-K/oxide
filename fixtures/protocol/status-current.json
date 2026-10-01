@@ -1,0 +1,27 @@
+{
+  "root": "<repo>",
+  "index_exists": true,
+  "is_current": true,
+  "embedder_current": true,
+  "base_fresh": true,
+  "pending_embeddings": 0,
+  "files": 9,
+  "symbols": 55,
+  "embeddings": 55,
+  "embedder": "hashed-bow-256",
+  "supported_languages": [
+    "python",
+    "typescript",
+    "tsx",
+    "javascript",
+    "rust",
+    "go",
+    "java",
+    "ruby",
+    "php",
+    "c",
+    "cpp",
+    "markdown"
+  ],
+  "schema_version": 1
+}

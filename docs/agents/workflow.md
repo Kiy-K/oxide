@@ -32,10 +32,15 @@ TypeScript workspace (#36): pnpm owns dependencies (`pnpm-workspace.yaml`,
 committed `pnpm-lock.yaml`), Turbo owns the TS task graph (`turbo.json`) and is
 a root devDependency, not a mise tool. `ts:install`/`ts:lint`/`ts:typecheck`/
 `ts:test`/`ts:build` wrap single steps; root `package.json` has no scripts, so
-mise stays the one entrypoint. Turbo never wraps Cargo. Until the first package
-lands under `packages/` or `apps/`, the Turbo run executes zero tasks. CI's
-`typescript` job runs `mise run verify:ts` (it is the one job that calls mise)
-and has no `needs` link with the Rust jobs.
+mise stays the one entrypoint. Turbo never wraps Cargo. The one package is
+`packages/protocol` (`@oxide/protocol`). CI's `typescript` job runs
+`mise run verify:ts` (it is the one job that calls mise) and has no `needs`
+link with the Rust jobs.
+
+`mise run protocol:fixtures` rewrites `fixtures/protocol/` from the real
+binary (`tests/protocol_fixtures.rs` with `OXIDE_PROTOCOL_FIXTURES=update`).
+Run it only after an intended JSON change, review the diff, then run
+`verify:ts`. See `packages/protocol/README.md`.
 
 Without mise, the same checks run directly — this is what CI's `quality`/
 `test`/`no-default-features`/`retrieval-gate` jobs currently run:
