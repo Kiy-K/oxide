@@ -12,12 +12,12 @@
 //! `OXIDE_DEBUG_DUMP_KEPT` and the git configuration below, which are
 //! process-global.
 //!
-//! Git is isolated from system/global config. `review`/`--git` pin the
-//! diff settings measured to reshape hunks (`gitutil::diff_text`, #35); the
-//! isolation keeps this test's own git calls (init/commit) and the settings
-//! `diff_text` does not pin (listed on `gitutil::HUNK_ARGS`) away from the
-//! host. `GIT_DIFF_OPTS` is an environment variable, not config, so a host
-//! that sets it can still fail this test.
+//! Git is isolated from system/global config, from `GIT_CONFIG_*` exported
+//! by the runner (`GIT_CONFIG_COUNT=0`) and from `GIT_DIFF_OPTS`.
+//! `review`/`--git` pin the diff settings measured to reshape hunks
+//! (`gitutil::diff_text`, #35); the isolation keeps this test's own git calls
+//! (init/commit, e.g. `commit.gpgsign`) and the settings `diff_text` does not
+//! pin (listed on `gitutil::HUNK_ARGS`) away from the host.
 //!
 //! The py_repo review section was re-captured when #35 pinned myers: the
 //! golden had been captured on a `diff.algorithm=histogram` host, which split
@@ -160,6 +160,8 @@ fn candidate_output_matches_the_pre_s3_golden() {
         std::env::set_var("OXIDE_EMBED_NATIVE", "hashed");
         std::env::set_var("GIT_CONFIG_NOSYSTEM", "1");
         std::env::set_var("GIT_CONFIG_GLOBAL", "/dev/null");
+        std::env::set_var("GIT_CONFIG_COUNT", "0");
+        std::env::remove_var("GIT_DIFF_OPTS");
     }
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures");
     let cases: [Case<'_>; 3] = [

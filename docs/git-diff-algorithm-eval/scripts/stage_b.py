@@ -40,7 +40,7 @@ def real_repo(src, commits_file, outroot):
     name = os.path.basename(src.rstrip("/"))
     wd = os.path.join(outroot, "work", name)
     if not os.path.exists(wd):
-        subprocess.run(["git", "clone", "-q", src, wd], check=True)
+        subprocess.run(["git", "clone", "-q", src, wd], env=env_for("default"), check=True)
     sel = json.load(open(commits_file))
     times = {}
     for c in sel:

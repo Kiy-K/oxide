@@ -528,7 +528,8 @@ new file mode 100644
     /// can fail); and `diff_files` still gives `expected`. Dropping any
     /// override fails its case. `GIT_ATTR_NOSYSTEM` is not covered (it needs
     /// a system-wide attributes file), nor are the settings `HUNK_ARGS` lists
-    /// as unpinned. `{root}` in a value is the repo's path.
+    /// as unpinned; a runner that exports `GIT_DIFF_OPTS` fails the pinned
+    /// check. `{root}` in a value is the repo's path.
     #[test]
     fn each_hunk_arg_neutralizes_its_config_key() {
         type Setup = fn(&Path) -> (&'static str, Vec<(u32, u32)>);
@@ -555,37 +556,44 @@ new file mode 100644
             let root = tmp.path();
             git(root, &["init", "-q"]);
             let (range, expected) = setup(root);
-            let file = |d: Vec<FileDelta>| d.into_iter().map(|d| d.added).collect::<Vec<_>>();
+            let expected = vec![expected];
             assert_eq!(
-                file(unpinned(root, range)),
-                vec![expected.clone()],
+                unpinned(root, range),
+                Some(expected.clone()),
                 "{key}: default"
             );
             let value = value.replace("{root}", root.to_str().unwrap());
             git(root, &["config", key, &value]);
             assert_ne!(
-                file(unpinned(root, range)),
-                vec![expected.clone()],
+                unpinned(root, range),
+                Some(expected.clone()),
                 "{key}: no bite"
             );
-            assert_eq!(
-                file(diff_files(root, range).unwrap()),
-                vec![expected],
-                "{key}: pinned"
-            );
+            let pinned = diff_files(root, range).unwrap();
+            let pinned: Vec<_> = pinned.into_iter().map(|d| d.added).collect();
+            assert_eq!(pinned, expected, "{key}: pinned");
         }
     }
 
-    /// `diff_text` without its overrides; empty when git fails (`diff.external`).
-    fn unpinned(root: &Path, range: &str) -> Vec<FileDelta> {
+    /// `diff_text` without its overrides, isolated from the host's git config
+    /// so only the repo-local key under test can change it; `None` when git
+    /// fails (`diff.external=false`).
+    fn unpinned(root: &Path, range: &str) -> Option<Vec<Vec<(u32, u32)>>> {
         let rev = if range.is_empty() { "HEAD" } else { range };
         let out = Command::new("git")
             .args(["diff", "--unified=0", "--no-color", "--src-prefix=a/"])
             .args(["--dst-prefix=b/", rev])
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env("GIT_CONFIG_GLOBAL", "/dev/null")
+            .env("GIT_CONFIG_COUNT", "0")
+            .env_remove("GIT_DIFF_OPTS")
             .current_dir(root)
             .output()
             .unwrap();
-        parse_unified(&String::from_utf8_lossy(&out.stdout))
+        out.status.success().then(|| {
+            let deltas = parse_unified(&String::from_utf8_lossy(&out.stdout));
+            deltas.into_iter().map(|d| d.added).collect()
+        })
     }
 
     fn write_and_commit(root: &Path, file: &str, text: &str) {
