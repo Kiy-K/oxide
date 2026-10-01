@@ -1,17 +1,18 @@
 // Client behaviour without Rust: a fake `oxide` replays the committed
 // protocol fixtures (real binary output) and records the argv it was given.
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { Oxide, OxideClientError, OxideError } from "../src/index.ts";
+import { Oxide, OxideClientError, OxideError } from "../dist/index.js";
 
 const fake = fileURLToPath(new URL("./fake-oxide.mjs", import.meta.url));
 const fixtures = fileURLToPath(new URL("../../../fixtures/protocol/", import.meta.url));
 
 interface Reply {
+  discover?: boolean;
   fixture?: string;
   stdout?: string;
   exit?: number;
@@ -31,6 +32,7 @@ function client(reply: Reply) {
   }
   const oxide = new Oxide({
     cwd: dir,
+    discover: reply.discover,
     binary: fake,
     env: {
       FAKE_ARGV_FILE: argvFile,
@@ -40,26 +42,27 @@ function client(reply: Reply) {
       FAKE_SIGNAL: reply.signal,
     },
   });
-  const argv = (): string[] => JSON.parse(readFileSync(argvFile, "utf8"));
-  return { oxide, argv };
+  const recorded = (): { argv: string[]; cwd: string } =>
+    JSON.parse(readFileSync(argvFile, "utf8"));
+  return { oxide, argv: () => recorded().argv, cwd: () => recorded().cwd, dir };
 }
 
 test("status returns the validated result", async () => {
-  const { oxide, argv } = client({ fixture: "status-current" });
+  const { oxide, argv, dir } = client({ fixture: "status-current" });
   const status = await oxide.status();
   assert.equal(status.is_current, true);
-  assert.deepEqual(argv(), ["status", "--json", "."]);
+  assert.deepEqual(argv(), ["status", "--json", "--", dir]);
 });
 
 test("index maps options to flags", async () => {
-  const { oxide, argv } = client({ fixture: "index-fresh" });
+  const { oxide, argv, dir } = client({ fixture: "index-fresh" });
   const result = await oxide.index({ rebuild: true });
   assert.ok(result.new_symbols > 0);
-  assert.deepEqual(argv(), ["index", "--json", ".", "--rebuild"]);
+  assert.deepEqual(argv(), ["index", "--json", "--rebuild", "--", dir]);
 });
 
 test("search maps every option and keeps the query a positional", async () => {
-  const { oxide, argv } = client({ fixture: "search-blast-radius" });
+  const { oxide, argv, dir } = client({ fixture: "search-blast-radius" });
   const hits = await oxide.search("--looks-like-a-flag", {
     limit: 2,
     mode: "lexical",
@@ -71,8 +74,7 @@ test("search maps every option and keeps the query a positional", async () => {
   assert.deepEqual(argv(), [
     "search",
     "--json",
-    "--path",
-    ".",
+    `--path=${dir}`,
     "--limit",
     "2",
     "--mode",
@@ -87,25 +89,63 @@ test("search maps every option and keeps the query a positional", async () => {
 });
 
 test("search with defaults passes no optional flags", async () => {
-  const { oxide, argv } = client({ fixture: "search-empty" });
+  const { oxide, argv, dir } = client({ fixture: "search-empty" });
   assert.deepEqual(await oxide.search("x"), []);
-  assert.deepEqual(argv(), ["search", "--json", "--path", ".", "--", "x"]);
+  assert.deepEqual(argv(), ["search", "--json", `--path=${dir}`, "--", "x"]);
 });
 
 test("query maps options to `oxide query`", async () => {
-  const { oxide, argv } = client({ fixture: "context" });
+  const { oxide, argv, dir } = client({ fixture: "context" });
   const pack = await oxide.query("where is retry logic", { budgetTokens: 600 });
   assert.ok(pack.items.length > 0);
   assert.deepEqual(argv(), [
     "query",
     "--json",
-    "--path",
-    ".",
+    `--path=${dir}`,
     "--budget-tokens",
     "600",
     "--",
     "where is retry logic",
   ]);
+});
+
+test("searchLiteral runs literal mode and validates its own shape", async () => {
+  const { oxide, argv, dir } = client({ fixture: "literal-search" });
+  const result = await oxide.searchLiteral("RetryPolicy", { limit: 2 });
+  assert.equal(result.truncated, true);
+  assert.deepEqual(argv(), [
+    "search",
+    "--json",
+    `--path=${dir}`,
+    "--mode",
+    "literal",
+    "--limit",
+    "2",
+    "--",
+    "RetryPolicy",
+  ]);
+});
+
+test("query passes --git and keeps the unmodeled git field", async () => {
+  const pack = JSON.parse(readFileSync(join(fixtures, "context.json"), "utf8"));
+  pack.git = { range: "HEAD", changed_files: ["a.py"], recent_commits: [], co_change: [] };
+  const { oxide, argv, dir } = client({ stdout: JSON.stringify(pack) });
+  const result = await oxide.query("task", { git: true });
+  assert.deepEqual(result.git, pack.git);
+  assert.deepEqual(argv(), ["query", "--json", `--path=${dir}`, "--git", "--", "task"]);
+});
+
+test("discover leaves the repository path to oxide and runs it in cwd", async () => {
+  const { oxide, argv, cwd, dir } = client({ fixture: "status-current", discover: true });
+  await oxide.status();
+  assert.deepEqual(argv(), ["status", "--json"]);
+  assert.equal(cwd(), realpathSync(dir));
+});
+
+test("an explicit repository is an argument; oxide runs in the caller's cwd", async () => {
+  const { oxide, cwd } = client({ fixture: "status-current" });
+  await oxide.status();
+  assert.equal(cwd(), process.cwd());
 });
 
 test("an OXIDE error envelope becomes OxideError with its code and action", async () => {

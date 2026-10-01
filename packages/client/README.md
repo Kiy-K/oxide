@@ -10,6 +10,7 @@ const oxide = new Oxide({ cwd: "/path/to/repo" }); // binary defaults to `oxide`
 await oxide.index();                                 // IndexResult
 await oxide.status();                                // StatusResult
 await oxide.search("refresh token", { limit: 5 });   // SearchResult (Evidence[])
+await oxide.searchLiteral("TODO(", { limit: 20 });    // LiteralSearchResult
 await oxide.query("fix the retry bug", { budgetTokens: 4000 }); // ContextResult
 ```
 
@@ -39,8 +40,11 @@ The client never parses CLI prose.
   backend would implement it without changing `Oxide`. Nothing like that
   exists yet; see the spawn-overhead numbers in
   `docs/ts-client-spawn-overhead/README.md`.
-- Not offered yet: `search --mode literal` (different shape), `query --git`
-  (unmodeled output), `review`, `watch`, `setup`.
+- `searchLiteral` runs `search --mode literal`. `query({ git: true })` passes
+  `--git`; its extra `git` object is not modeled and passes through.
+  `new Oxide({ cwd, discover: true })` lets oxide find the repository from
+  `cwd` instead of targeting `cwd` exactly.
+- Not offered yet: `review`, `watch`, `setup`.
 - No SQLite access, no daemon, and no native bindings.
 
 ## Tests

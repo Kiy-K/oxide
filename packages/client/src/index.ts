@@ -7,19 +7,38 @@ import {
   ContextResult,
   ErrorEnvelope,
   IndexResult,
+  LiteralSearchResult,
   SearchResult,
   StatusResult,
 } from "@oxide/protocol";
-import type { Backend, IndexOptions, Outcome, QueryOptions, SearchOptions } from "./backend.ts";
-import { OxideClientError, OxideError } from "./errors.ts";
-import { ProcessBackend } from "./process.ts";
+import type {
+  Backend,
+  IndexOptions,
+  LiteralOptions,
+  Outcome,
+  QueryOptions,
+  SearchOptions,
+} from "./backend.js";
+import { OxideClientError, OxideError } from "./errors.js";
+import { ProcessBackend } from "./process.js";
 
-export type { IndexOptions, Profile, QueryOptions, SearchOptions } from "./backend.ts";
-export { OxideClientError, OxideError } from "./errors.ts";
+export type {
+  IndexOptions,
+  LiteralOptions,
+  Profile,
+  QueryOptions,
+  SearchOptions,
+} from "./backend.js";
+export { OxideClientError, OxideError } from "./errors.js";
 
 export interface OxideOptions {
   /** The repository to operate on; every command targets it explicitly. */
   cwd: string;
+  /**
+   * Let oxide discover the repository by walking up from `cwd` for
+   * `.git`/`.oxide`, as when it runs inside one, instead of targeting `cwd`.
+   */
+  discover?: boolean;
   /** The `oxide` executable; defaults to `oxide` on `PATH`. */
   binary?: string;
   /** Overrides merged over `process.env`; `undefined` removes a variable. */
@@ -33,7 +52,8 @@ export class Oxide {
     this.#backend = new ProcessBackend(
       options.binary ?? "oxide",
       options.cwd,
-      mergeEnv(process.env, options.env),
+      options.env === undefined ? undefined : mergeEnv(process.env, options.env),
+      options.discover ?? false,
     );
   }
 
@@ -50,6 +70,11 @@ export class Oxide {
   /** `oxide search`: ranked symbol evidence for a name, identifier or phrase. */
   async search(query: string, options: SearchOptions = {}): Promise<SearchResult> {
     return answer(SearchResult, await this.#backend.search(query, options));
+  }
+
+  /** `oxide search --mode literal`: exact substring matches over repository text; no index needed. */
+  async searchLiteral(pattern: string, options: LiteralOptions = {}): Promise<LiteralSearchResult> {
+    return answer(LiteralSearchResult, await this.#backend.searchLiteral(pattern, options));
   }
 
   /** `oxide query`: a token-budgeted context pack for a task or question. */
@@ -86,6 +111,7 @@ function answer<T>(schema: Schema<T>, outcome: Outcome): T {
   return parsed.data;
 }
 
+/** Only built when there are overrides; otherwise `oxide` simply inherits the environment. */
 function mergeEnv(
   base: NodeJS.ProcessEnv,
   overrides: Record<string, string | undefined> = {},

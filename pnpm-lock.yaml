@@ -8,41 +8,42 @@ importers:
 
   .:
     devDependencies:
+      '@biomejs/biome':
+        specifier: 2.5.14
+        version: 2.5.14
+      '@types/node':
+        specifier: 24.9.2
+        version: 24.9.2
       turbo:
         specifier: 2.11.5
         version: 2.11.5
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
 
   packages/client:
     dependencies:
       '@oxide/protocol':
         specifier: workspace:*
         version: link:../protocol
-    devDependencies:
-      '@biomejs/biome':
-        specifier: 2.5.14
-        version: 2.5.14
-      '@types/node':
-        specifier: 24.9.2
-        version: 24.9.2
-      typescript:
-        specifier: 7.0.2
-        version: 7.0.2
+
+  packages/mcp:
+    dependencies:
+      '@modelcontextprotocol/core':
+        specifier: 2.2.0
+        version: 2.2.0
+      '@modelcontextprotocol/server':
+        specifier: 2.2.0
+        version: 2.2.0
+      '@oxide/client':
+        specifier: workspace:*
+        version: link:../client
 
   packages/protocol:
     dependencies:
       zod:
         specifier: 4.6.5
         version: 4.6.5
-    devDependencies:
-      '@biomejs/biome':
-        specifier: 2.5.14
-        version: 2.5.14
-      '@types/node':
-        specifier: 24.9.2
-        version: 24.9.2
-      typescript:
-        specifier: 7.0.2
-        version: 7.0.2
 
 packages:
 
@@ -102,6 +103,14 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@modelcontextprotocol/core@2.2.0':
+    resolution: {integrity: sha512-iLhmprRmWI8EcosOA3wVvww22z02NkgqhV4fBH6f/odQBsi7xnJc0HGmi21yWO+/iKw2yzqVE127Zhna5/+JXw==}
+    engines: {node: '>=20'}
+
+  '@modelcontextprotocol/server@2.2.0':
+    resolution: {integrity: sha512-qFnltjus6Gk8Lx6J1w2RXmr3YPN22MNT6qD6zjAkaiWIlFIFxWClz0rXHNuJF/KSUyn5YGhkSvXkWDbQHVLFEQ==}
+    engines: {node: '>=20'}
 
   '@turbo/darwin-64@2.11.5':
     resolution: {integrity: sha512-KdY4y7BBjIisl+jAkb3FFaRjClGqHyaeHCcVcCT8LBzFFwUu6thgfxyRZAx0uL4KoxLmH+iOan8UhVf/aDDcaA==}
@@ -307,6 +316,15 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.5.14':
     optional: true
+
+  '@modelcontextprotocol/core@2.2.0':
+    dependencies:
+      zod: 4.6.5
+
+  '@modelcontextprotocol/server@2.2.0':
+    dependencies:
+      '@modelcontextprotocol/core': 2.2.0
+      zod: 4.6.5
 
   '@turbo/darwin-64@2.11.5':
     optional: true

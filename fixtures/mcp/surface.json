@@ -1,0 +1,92 @@
+{
+  "serverName": "oxide",
+  "instructions": "Use query for unfamiliar multi-file work; use search for focused follow-up discovery; use search with mode: \"literal\" for an exact known string (a path, error message, or identifier) rather than a name or phrase to rank. Read source before editing. If evidence is incomplete, use normal repository tools. OXIDE output is a non-exhaustive lead, not authoritative; skip it for trivial known-file edits.",
+  "tools": [
+    {
+      "name": "query",
+      "description": "Find the code relevant to a question or a coding task: a bounded, ranked working set (same as `oxide query`).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "Repository root containing the OXIDE index. Omit this to use the current repository -- that's correct for almost every call. Only pass it to target a different repository than the one you're running in. Never pass a file, an empty string, or a subdirectory that isn't itself an indexed repository root."
+          },
+          "budget_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "profile": {
+            "type": "string",
+            "enum": [
+              "fast",
+              "balanced",
+              "quality"
+            ],
+            "description": "Relevance/latency tradeoff. Omit for balanced (the default for an unconfigured agent)."
+          },
+          "blast_radius": {
+            "type": "boolean",
+            "description": "Also report the bounded impact neighborhood of the top matches: direct callers, implementors and related tests. Off by default; never changes which results are returned or how they rank."
+          },
+          "git": {
+            "type": "boolean",
+            "description": "Also pull in the current diff's changed symbols, their callers/tests, and bounded co-change history as evidence, plus a `git` field with changed files and recent commits. Off by default; lower priority than direct/structural evidence, and a no-op outside a git repository."
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search",
+      "description": "Search for code by name, identifier, or phrase (same as `oxide search`).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "Repository root containing the OXIDE index. Omit this to use the current repository -- that's correct for almost every call. Only pass it to target a different repository than the one you're running in. Never pass a file, an empty string, or a subdirectory that isn't itself an indexed repository root."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 200
+          },
+          "profile": {
+            "type": "string",
+            "enum": [
+              "fast",
+              "balanced",
+              "quality"
+            ],
+            "description": "Relevance/latency tradeoff. Omit for balanced (the default for an unconfigured agent)."
+          },
+          "blast_radius": {
+            "type": "boolean",
+            "description": "Also report the bounded impact neighborhood of the top matches: direct callers, implementors and related tests. Off by default; never changes which results are returned or how they rank."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "literal"
+            ],
+            "description": "Omit for the default ranked hybrid search (returns scored symbol evidence). Set to \"literal\" for a deterministic exact-substring scan across all repository text, not just indexed source files -- needs no index, and returns {hits, truncated} instead of ranked evidence. Use \"literal\" for a known-exact string (a path, error message, config value, identifier); omit it for a name or phrase you want ranked by relevance. Lexical/semantic/hybrid aren't separately selectable here (unlike the CLI's --mode) because they only change internal scoring weights and all return the same evidence shape -- \"literal\" is the one mode that changes capability (no index needed) and output shape, which is what earns it a place in this schema."
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

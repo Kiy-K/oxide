@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { Oxide, OxideError } from "../../src/index.ts";
+import { Oxide, OxideError } from "../../dist/index.js";
 
 const binary = process.env.OXIDE_BIN;
 if (!binary) {
@@ -84,4 +84,16 @@ test("indexing a directory with no source files is a structured error", async ()
     assert.equal(error.action, "stop");
     return true;
   });
+});
+
+test("a repository path that does not exist is OXIDE's own structured error", async () => {
+  const oxide = new Oxide({ cwd: join(tmp, "no-such-repo"), binary, env });
+  await assert.rejects(oxide.search("retry"), { name: "OxideError", code: "repository_not_found" });
+});
+
+test("a repository path that starts with a dash is a path, not a flag", async () => {
+  const oxide = new Oxide({ cwd: "-not-a-flag", binary, env });
+  await assert.rejects(oxide.status(), { name: "OxideError", code: "repository_not_found" });
+  await assert.rejects(oxide.index(), { name: "OxideError", code: "repository_not_found" });
+  await assert.rejects(oxide.search("x"), { name: "OxideError", code: "repository_not_found" });
 });

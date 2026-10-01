@@ -9,6 +9,7 @@ import {
   ContextResult,
   ErrorEnvelope,
   IndexResult,
+  LiteralSearchResult,
   SearchResult,
   StatusResult,
 } from "../src/index.ts";
@@ -19,6 +20,7 @@ const schemas: Record<string, z.ZodType> = {
   status: StatusResult,
   index: IndexResult,
   search: SearchResult,
+  literal: LiteralSearchResult,
   context: ContextResult,
   error: ErrorEnvelope,
 };
@@ -72,6 +74,10 @@ test("fixtures cover the intended edge cases", () => {
   assert.ok(blast.some((hit) => (hit.blast_radius?.length ?? 0) > 0));
 
   assert.deepEqual(SearchResult.parse(fixture("search-empty")), []);
+
+  const literal = LiteralSearchResult.parse(fixture("literal-search"));
+  assert.equal(literal.hits.length, 2);
+  assert.equal(literal.truncated, true);
 
   const pack = ContextResult.parse(fixture("context"));
   assert.ok(new Set(pack.items.map((item) => item.role)).size > 1);

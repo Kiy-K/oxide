@@ -22,10 +22,5 @@
   },
   "dependencies": {
     "@oxide/protocol": "workspace:*"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.5.14",
-    "@types/node": "24.9.2",
-    "typescript": "7.0.2"
   }
 }

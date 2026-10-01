@@ -1,0 +1,17 @@
+{
+  "hits": [
+    {
+      "file": "oxidepy/__init__.py",
+      "line": 4,
+      "column": 20,
+      "snippet": "from .retry import RetryPolicy"
+    },
+    {
+      "file": "oxidepy/__init__.py",
+      "line": 6,
+      "column": 68,
+      "snippet": "__all__ = [\"AuthService\", \"TokenStore\", \"TTLCache\", \"HttpClient\", \"RetryPolicy\"]"
+    }
+  ],
+  "truncated": true
+}

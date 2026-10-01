@@ -30,6 +30,9 @@ jq = "1.8.2"
 # any drift between the two fail instead of silently downloading another pnpm.
 node = "24.21.0"
 pnpm = "11.28.2"
+# Packages @oxide/mcp as a standalone executable (`deno compile`, #36 T3).
+# Only that task needs it; Node stays the runtime for every other TS task.
+deno = "2.9.7"
 
 [env]
 # Turbo (a dev dependency) collects anonymous usage telemetry by default.
@@ -130,7 +133,7 @@ pnpm exec turbo run lint typecheck test build
 '''
 
 [tasks."ts:integration"]
-description = "@oxide/client against the real oxide binary: $OXIDE_BIN, default the release build (matches CI's client-integration job)"
+description = "@oxide/client and @oxide/mcp (incl. the deno-compiled binary) against the real oxide binary: $OXIDE_BIN, default the release build (matches CI's client-integration job)"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -144,6 +147,15 @@ OXIDE_BIN="$(realpath "$bin")"
 export OXIDE_BIN
 mise run ts:install
 pnpm exec turbo run test:integration
+'''
+
+[tasks."mcp:compile"]
+description = "Package @oxide/mcp as a standalone executable with deno compile (packages/mcp/dist/oxide-mcp)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+mise run ts:install
+pnpm exec turbo run compile --filter=@oxide/mcp
 '''
 
 [tasks.verify]

@@ -3,10 +3,11 @@
   "extends": ["//"],
   "tasks": {
     "test": {
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/fixtures/protocol/**"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/fixtures/protocol/**"],
+      "dependsOn": ["build"]
     },
     "test:integration": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["build"],
       "cache": false,
       "passThroughEnv": ["OXIDE_BIN"]
     }

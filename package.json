@@ -3,6 +3,10 @@
   "private": true,
   "packageManager": "pnpm@11.28.2",
   "devDependencies": {
-    "turbo": "2.11.5"
-  }
+    "@biomejs/biome": "2.5.14",
+    "@types/node": "24.9.2",
+    "turbo": "2.11.5",
+    "typescript": "7.0.2"
+  },
+  "workspaces": ["packages/*", "apps/*"]
 }

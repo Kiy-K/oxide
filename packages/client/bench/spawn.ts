@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 import { ContextResult, SearchResult } from "@oxide/protocol";
-import { Oxide } from "../src/index.ts";
+import { Oxide } from "../dist/index.js";
 
 const binary = process.env.OXIDE_BIN;
 if (!binary) throw new Error("set OXIDE_BIN to an oxide binary");

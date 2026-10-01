@@ -1,5 +1,7 @@
 # TS workspace (#36). Only these globs are workspace packages, so committed
-# fixtures such as fixtures/ts_repo are never picked up.
+# fixtures such as fixtures/ts_repo are never picked up. The root
+# package.json "workspaces" repeats these globs for Deno (`deno compile` of
+# @oxide/mcp); keep the two lists the same.
 packages:
   - "packages/*"
   - "apps/*"

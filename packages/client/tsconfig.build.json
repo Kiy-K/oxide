@@ -3,7 +3,6 @@
   "compilerOptions": {
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "rewriteRelativeImportExtensions": true,
     "declaration": true,
     "rootDir": "src",
     "outDir": "dist"

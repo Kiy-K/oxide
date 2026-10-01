@@ -1,0 +1,19 @@
+{
+  "name": "@oxide/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reference TypeScript MCP adapter over @oxide/client; the Rust `oxide mcp` stays canonical",
+  "type": "module",
+  "scripts": {
+    "compile": "deno compile --node-modules-dir=none --exclude-unused-npm --frozen-lockfile --allow-env --allow-run=oxide --output dist/oxide-mcp src/main.ts",
+    "lint": "biome check .",
+    "test": "node --test \"test/*.test.ts\"",
+    "test:integration": "node --test \"test/integration/*.test.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/core": "2.2.0",
+    "@modelcontextprotocol/server": "2.2.0",
+    "@oxide/client": "workspace:*"
+  }
+}

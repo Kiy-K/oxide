@@ -25,7 +25,8 @@ mise run test         # full unit + integration suite
 mise run bench        # release build + the canonical fixture benchmark
 mise run verify:rust  # lint, lint/test --no-default-features, test, bench, installer checks, in order
 mise run verify:ts    # frozen-lockfile pnpm install, then Turbo lint/typecheck/test/build
-mise run ts:integration  # @oxide/client against the real binary ($OXIDE_BIN, default target/release/oxide)
+mise run ts:integration  # @oxide/client + @oxide/mcp parity against the real binary ($OXIDE_BIN, default target/release/oxide)
+mise run mcp:compile  # deno compile @oxide/mcp into packages/mcp/dist/oxide-mcp
 mise run verify       # verify:rust, verify:ts, then ts:integration — the single full-repo entrypoint
 ```
 
@@ -34,8 +35,15 @@ committed `pnpm-lock.yaml`), Turbo owns the TS task graph (`turbo.json`) and is
 a root devDependency, not a mise tool. `ts:install`/`ts:lint`/`ts:typecheck`/
 `ts:test`/`ts:build` wrap single steps; root `package.json` has no scripts, so
 mise stays the one entrypoint. Turbo never wraps Cargo. Packages:
-`packages/protocol` (`@oxide/protocol`) and `packages/client`
-(`@oxide/client`). CI's `typescript` job runs `mise run verify:ts`; its
+`packages/protocol` (`@oxide/protocol`), `packages/client`
+(`@oxide/client`) and `packages/mcp` (`@oxide/mcp`, a reference TS MCP server;
+the Rust `oxide mcp` stays canonical). Shared dev tooling (TypeScript, Biome,
+`@types/node`) is declared once in the root `package.json`. Deno (pinned in
+`mise.toml`) is used only to `deno compile` `@oxide/mcp`; the root
+`package.json` `"workspaces"` exists for Deno and must mirror
+`pnpm-workspace.yaml`. `deno.lock` pins Deno's npm resolution for that compile
+(`--frozen-lockfile`); after any dependency change run
+`deno install --lockfile-only` at the root. CI's `typescript` job runs `mise run verify:ts`; its
 `client-integration` job, the only one needing both toolchains, builds the
 release binary and runs `mise run ts:integration`. Neither has a `needs` link
 with the Rust jobs, and Turbo never caches the integration task.

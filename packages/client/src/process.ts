@@ -2,32 +2,50 @@
 // answer on stdout: the result with exit 0, or the error envelope with exit 1
 // (`src/main.rs`). Anything else (a usage error, a signal) has no JSON answer.
 import { spawn } from "node:child_process";
-import type { Backend, IndexOptions, Outcome, QueryOptions, SearchOptions } from "./backend.ts";
-import { OxideClientError } from "./errors.ts";
+import type {
+  Backend,
+  IndexOptions,
+  LiteralOptions,
+  Outcome,
+  QueryOptions,
+  SearchOptions,
+} from "./backend.js";
+import { OxideClientError } from "./errors.js";
 
 export class ProcessBackend implements Backend {
   readonly #binary: string;
-  readonly #cwd: string;
-  readonly #env: NodeJS.ProcessEnv;
+  readonly #env: NodeJS.ProcessEnv | undefined;
+  /** Where oxide runs: inherited when the repository is passed explicitly. */
+  readonly #spawnCwd: string | undefined;
+  /**
+   * The repository as an explicit argument, or nothing so oxide discovers it
+   * from `cwd`. Written so a path starting with `-` is never read as a flag:
+   * `--path=<repo>`, and the positional form goes after `--`.
+   */
+  readonly #positional: string[];
+  readonly #pathFlag: string[];
 
-  constructor(binary: string, cwd: string, env: NodeJS.ProcessEnv) {
+  constructor(binary: string, cwd: string, env: NodeJS.ProcessEnv | undefined, discover: boolean) {
     this.#binary = binary;
-    this.#cwd = cwd;
     this.#env = env;
+    // Explicit: a missing repository is oxide's own `repository_not_found`,
+    // not a failure to spawn inside a directory that does not exist.
+    this.#spawnCwd = discover ? cwd : undefined;
+    this.#positional = discover ? [] : ["--", cwd];
+    this.#pathFlag = discover ? [] : [`--path=${cwd}`];
   }
 
   status(): Promise<Outcome> {
-    return this.run("status", ["."]);
+    return this.run("status", this.#positional);
   }
 
   index(options: IndexOptions): Promise<Outcome> {
-    return this.run("index", [".", ...flag("--rebuild", options.rebuild)]);
+    return this.run("index", [...flag("--rebuild", options.rebuild), ...this.#positional]);
   }
 
   search(query: string, options: SearchOptions): Promise<Outcome> {
     return this.run("search", [
-      "--path",
-      ".",
+      ...this.#pathFlag,
       ...value("--limit", options.limit),
       ...value("--mode", options.mode),
       ...value("--profile", options.profile),
@@ -38,13 +56,24 @@ export class ProcessBackend implements Backend {
     ]);
   }
 
+  searchLiteral(pattern: string, options: LiteralOptions): Promise<Outcome> {
+    return this.run("search", [
+      ...this.#pathFlag,
+      "--mode",
+      "literal",
+      ...value("--limit", options.limit),
+      "--",
+      pattern,
+    ]);
+  }
+
   query(task: string, options: QueryOptions): Promise<Outcome> {
     return this.run("query", [
-      "--path",
-      ".",
+      ...this.#pathFlag,
       ...value("--budget-tokens", options.budgetTokens),
       ...value("--profile", options.profile),
       ...flag("--blast-radius", options.blastRadius),
+      ...flag("--git", options.git),
       "--",
       task,
     ]);
@@ -53,7 +82,7 @@ export class ProcessBackend implements Backend {
   private run(command: string, args: string[]): Promise<Outcome> {
     return new Promise((resolve, reject) => {
       const child = spawn(this.#binary, [command, "--json", ...args], {
-        cwd: this.#cwd,
+        cwd: this.#spawnCwd,
         env: this.#env,
         stdio: ["ignore", "pipe", "pipe"],
       });

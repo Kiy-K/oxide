@@ -121,6 +121,23 @@ export type Evidence = z.infer<typeof Evidence>;
 export const SearchResult = z.array(Evidence);
 export type SearchResult = z.infer<typeof SearchResult>;
 
+/** One `oxide search --mode literal` match: `literal::LiteralHit` (1-based line/column). */
+export const LiteralHit = z.looseObject({
+  file: z.string(),
+  line: count,
+  column: count,
+  snippet: z.string(),
+});
+export type LiteralHit = z.infer<typeof LiteralHit>;
+
+/** `oxide search --mode literal --json`: `literal::LiteralSearchResult`. */
+export const LiteralSearchResult = z.looseObject({
+  hits: z.array(LiteralHit),
+  /** More matches existed than were returned. */
+  truncated: z.boolean(),
+});
+export type LiteralSearchResult = z.infer<typeof LiteralSearchResult>;
+
 /** `context::Role`. */
 export const Role = z.enum(["primary", "dependency", "test"]);
 export type Role = z.infer<typeof Role>;
