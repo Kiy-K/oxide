@@ -1,0 +1,65 @@
+('cobra', 'histogram', 'patience') {'states': 17, 'review_added_lines_only': 5, 'ctx_differs:reasons': 4, 'review_identical': 12, 'ctx_identical': 13}
+('cobra', 'myers', 'histogram') {'states': 17, 'review_added_lines_only': 9, 'ctx_differs:reasons': 7, 'review_identical': 8, 'ctx_identical': 10}
+('cobra', 'myers', 'patience') {'states': 17, 'review_added_lines_only': 8, 'ctx_differs:reasons': 6, 'review_identical': 9, 'ctx_identical': 11}
+('flask', 'histogram', 'patience') {'states': 16, 'review_added_lines_only': 6, 'ctx_identical': 14, 'review_identical': 10, 'ctx_differs:reasons': 2}
+('flask', 'myers', 'histogram') {'states': 16, 'review_added_lines_only': 9, 'ctx_identical': 11, 'review_identical': 6, 'review_symbol_set': 1, 'review_related_differs': 1, 'ctx_differs:reasons,score,top.omitted': 1, 'ctx_differs:reasons': 4}
+('flask', 'myers', 'patience') {'states': 16, 'review_identical': 9, 'ctx_identical': 11, 'review_symbol_set': 1, 'review_related_differs': 1, 'ctx_differs:reasons,score,top.omitted': 1, 'review_added_lines_only': 6, 'ctx_differs:reasons': 4}
+('oxide', 'histogram', 'patience') {'states': 35, 'review_identical': 27, 'ctx_identical': 30, 'review_added_lines_only': 7, 'ctx_differs:reasons': 5, 'review_symbol_set': 1, 'review_related_differs': 1}
+('oxide', 'myers', 'histogram') {'states': 35, 'review_identical': 22, 'ctx_identical': 30, 'review_added_lines_only': 12, 'ctx_differs:reasons': 5, 'review_symbol_set': 1, 'review_related_differs': 1}
+('oxide', 'myers', 'patience') {'states': 35, 'review_identical': 19, 'ctx_identical': 28, 'review_added_lines_only': 15, 'ctx_differs:reasons': 7, 'review_symbol_set': 1, 'review_related_differs': 1}
+('pylint', 'histogram', 'patience') {'states': 18, 'review_added_lines_only': 6, 'ctx_differs:reasons': 5, 'review_order+added_lines': 2, 'ctx_identical': 12, 'review_identical': 9, 'review_symbol_set': 1, 'review_related_differs': 1, 'ctx_differs:reasons,top.omitted': 1}
+('pylint', 'myers', 'histogram') {'states': 18, 'review_added_lines_only': 9, 'ctx_differs:reasons': 7, 'review_identical': 7, 'ctx_identical': 10, 'review_symbol_set': 1, 'review_related_differs': 1, 'ctx_differs:reasons,top.omitted': 1, 'review_order+added_lines': 1}
+('pylint', 'myers', 'patience') {'states': 18, 'review_identical': 9, 'ctx_identical': 13, 'review_order+added_lines': 1, 'ctx_differs:reasons': 5, 'review_added_lines_only': 8}
+('zod', 'histogram', 'patience') {'states': 33, 'review_identical': 24, 'ctx_identical': 29, 'review_added_lines_only': 9, 'ctx_differs:reasons': 4}
+('zod', 'myers', 'histogram') {'states': 33, 'review_added_lines_only': 12, 'ctx_identical': 29, 'review_identical': 21, 'ctx_differs:reasons': 4}
+('zod', 'myers', 'patience') {'states': 33, 'review_added_lines_only': 13, 'ctx_identical': 29, 'ctx_differs:reasons': 4, 'review_identical': 20}
+
+SYMBOL-SET CASES:
+('b/out/flask/28d5a4d71824', 'myers', 'histogram', [('src/flask/app.py', 'Flask')])
+('b/out/flask/28d5a4d71824', 'myers', 'patience', [('src/flask/app.py', 'Flask')])
+('b/out/oxide/d785ede293c0', 'myers', 'histogram', [('src/storage/backend.rs', 'IndexRead.all_symbols'), ('src/storage/backend.rs', 'IndexRead.all_symbols_lean'), ('src/storage/backend.rs', 'IndexRead.get_meta'), ('src/storage/backend.rs', 'IndexRead.lexical_postings'), ('src/storage/backend.rs', 'IndexRead.symbol_count'), ('src/storage/backend.rs', 'IndexRead.symbols_by_ids'), ('src/storage/backend.rs', 'IndexWrite.put_file_lexical'), ('src/storage/backend.rs', 'IndexWrite.set_meta')])
+('b/out/oxide/d785ede293c0', 'myers', 'patience', [('src/retrieval/snapshot.rs', 'SymbolSnapshot.from_symbols')])
+('b/out/oxide/d785ede293c0', 'histogram', 'patience', [('src/retrieval/snapshot.rs', 'SymbolSnapshot.from_symbols'), ('src/storage/backend.rs', 'IndexRead.all_symbols'), ('src/storage/backend.rs', 'IndexRead.all_symbols_lean'), ('src/storage/backend.rs', 'IndexRead.get_meta'), ('src/storage/backend.rs', 'IndexRead.lexical_postings'), ('src/storage/backend.rs', 'IndexRead.symbol_count'), ('src/storage/backend.rs', 'IndexRead.symbols_by_ids'), ('src/storage/backend.rs', 'IndexWrite.put_file_lexical'), ('src/storage/backend.rs', 'IndexWrite.set_meta')])
+('b/out/pylint/9f08fc7bbc0f', 'myers', 'histogram', [('tests/functional/a/abstract/abstract_method.py', 'ConcreteB.aaaa'), ('tests/functional/a/abstract/abstract_method.py', 'ConcreteC.aaaa')])
+('b/out/pylint/9f08fc7bbc0f', 'histogram', 'patience', [('tests/functional/a/abstract/abstract_method.py', 'ConcreteB.aaaa'), ('tests/functional/a/abstract/abstract_method.py', 'ConcreteC.aaaa')])
+
+#### flask: 16 states
+pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
+default~myers                      0              0              0              0              0              0              0              0              0
+myers~myers_2                      0              0              0              0              0              0              0              0              0
+myers~histogram                    0              1             10              1             10             10              0              5              5
+myers~patience                     0              1              7              1              7              7              0              5              5
+histogram~patience                 0              0              6              0              6              6              0              2              2
+review wall ms median: {'default': 117.8, 'myers': 111.0, 'histogram': 108.9, 'patience': 113.7, 'myers_2': 104.5}
+#### pylint: 18 states
+pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
+default~myers                      0              0              0              0              0              0              0              0              0
+myers~myers_2                      0              0              0              0              0              0              0              0              0
+myers~histogram                    0              1             11              1             11             11              0              8              8
+myers~patience                     0              0              9              0              9              9              0              5              5
+histogram~patience                 0              1              9              1              9              9              0              6              6
+review wall ms median: {'default': 211.5, 'myers': 197.7, 'histogram': 199.3, 'patience': 197.3, 'myers_2': 212.0}
+#### cobra: 17 states
+pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
+default~myers                      0              0              0              0              0              0              0              0              0
+myers~myers_2                      0              0              0              0              0              0              0              0              0
+myers~histogram                    0              0              9              0              9              9              0              7              7
+myers~patience                     0              0              8              0              8              8              0              6              6
+histogram~patience                 0              0              5              0              5              5              0              4              4
+review wall ms median: {'default': 52.0, 'myers': 68.5, 'histogram': 48.2, 'patience': 62.5, 'myers_2': 49.7}
+#### zod: 33 states
+pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
+default~myers                      0              0              0              0              0              0              0              0              0
+myers~myers_2                      0              0              0              0              0              0              0              0              0
+myers~histogram                    0              0             12              0             12             12              0              4              4
+myers~patience                     0              0             13              0             13             13              0              4              4
+histogram~patience                 0              0              9              0              9              9              0              4              4
+review wall ms median: {'default': 121.3, 'myers': 118.0, 'histogram': 113.3, 'patience': 121.5, 'myers_2': 125.9}
+#### oxide: 35 states
+pair                   changed_files         cs_set       cs_lines review_related    review_json   review_human ctx0_bal_items  ctx0_bal_json ctx0_bal_human
+default~myers                      0              0              0              0              0              0              0              0              0
+myers~myers_2                      0              0              0              0              0              0              0              0              0
+myers~histogram                    0              1             13              1             13             13              0              5              5
+myers~patience                     0              1             16              0             16             16              0              7              7
+histogram~patience                 0              1              8              1              8              8              0              5              5
+review wall ms median: {'default': 101.7, 'myers': 100.6, 'histogram': 104.9, 'patience': 105.5, 'myers_2': 99.7}

@@ -1,0 +1,5 @@
+flask {'current_argv_hostile_differs': 100, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
+pylint {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
+cobra {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
+zod {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}
+oxide {'current_argv_hostile_differs': 99, 'pinned_argv_hostile_differs': 0, 'pinned_vs_isolated_default_raw_differs': 0, 'n': 100}

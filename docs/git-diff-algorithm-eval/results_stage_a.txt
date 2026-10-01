@@ -1,0 +1,56 @@
+== flask: 300 commits
+  default==myers raw: 300
+      myers vs histogram      raw-differs  25  parsed-differs  24  code-parsed-differs  11  (code files 13/318)
+      myers vs patience       raw-differs  22  parsed-differs  21  code-parsed-differs   8  (code files 9/318)
+  histogram vs patience       raw-differs  12  parsed-differs  12  code-parsed-differs   6  (code files 6/318)
+      myers vs minimal        raw-differs   0  parsed-differs   0  code-parsed-differs   0  (code files 0/318)
+      myers vs myers_noindent raw-differs  14  parsed-differs  14  code-parsed-differs   2  (code files 2/318)
+  time     myers: median 3.24 ms  p95 10.59  max 23.4  total 1347
+  time histogram: median 3.26 ms  p95 11.32  max 24.3  total 1391
+  time  patience: median 3.24 ms  p95 11.50  max 21.9  total 1375
+== pylint: 300 commits
+  default==myers raw: 300
+      myers vs histogram      raw-differs  14  parsed-differs  14  code-parsed-differs  11  (code files 12/575)
+      myers vs patience       raw-differs   9  parsed-differs   9  code-parsed-differs   9  (code files 10/575)
+  histogram vs patience       raw-differs  11  parsed-differs  11  code-parsed-differs   9  (code files 9/575)
+      myers vs minimal        raw-differs   0  parsed-differs   0  code-parsed-differs   0  (code files 0/575)
+      myers vs myers_noindent raw-differs   6  parsed-differs   6  code-parsed-differs   4  (code files 4/575)
+  time     myers: median 3.78 ms  p95 9.21  max 14.2  total 1371
+  time histogram: median 3.67 ms  p95 8.81  max 14.4  total 1364
+  time  patience: median 3.71 ms  p95 8.98  max 19.7  total 1382
+== cobra: 300 commits
+  default==myers raw: 300
+      myers vs histogram      raw-differs  14  parsed-differs  13  code-parsed-differs  12  (code files 13/507)
+      myers vs patience       raw-differs  13  parsed-differs  12  code-parsed-differs  10  (code files 11/507)
+  histogram vs patience       raw-differs  10  parsed-differs  10  code-parsed-differs   9  (code files 9/507)
+      myers vs minimal        raw-differs   0  parsed-differs   0  code-parsed-differs   0  (code files 0/507)
+      myers vs myers_noindent raw-differs   1  parsed-differs   1  code-parsed-differs   1  (code files 1/507)
+  time     myers: median 3.02 ms  p95 8.20  max 16.6  total 1169
+  time histogram: median 2.97 ms  p95 7.52  max 17.9  total 1109
+  time  patience: median 3.02 ms  p95 7.82  max 13.4  total 1155
+== zod: 300 commits
+  default==myers raw: 300
+      myers vs histogram      raw-differs  30  parsed-differs  27  code-parsed-differs  24  (code files 28/1346)
+      myers vs patience       raw-differs  34  parsed-differs  31  code-parsed-differs  25  (code files 30/1346)
+  histogram vs patience       raw-differs  23  parsed-differs  22  code-parsed-differs  19  (code files 20/1346)
+      myers vs minimal        raw-differs   0  parsed-differs   0  code-parsed-differs   0  (code files 0/1346)
+      myers vs myers_noindent raw-differs   7  parsed-differs   7  code-parsed-differs   7  (code files 11/1346)
+  time     myers: median 4.51 ms  p95 13.24  max 28.3  total 1679
+  time histogram: median 4.25 ms  p95 13.32  max 29.1  total 1704
+  time  patience: median 4.49 ms  p95 14.04  max 31.3  total 1732
+== oxide: 300 commits
+  default==myers raw: 300
+      myers vs histogram      raw-differs  46  parsed-differs  45  code-parsed-differs  43  (code files 48/1649)
+      myers vs patience       raw-differs  44  parsed-differs  44  code-parsed-differs  42  (code files 45/1649)
+  histogram vs patience       raw-differs  21  parsed-differs  20  code-parsed-differs  20  (code files 23/1649)
+      myers vs minimal        raw-differs   1  parsed-differs   1  code-parsed-differs   0  (code files 0/1649)
+      myers vs myers_noindent raw-differs  55  parsed-differs  55  code-parsed-differs  42  (code files 62/1649)
+  time     myers: median 4.26 ms  p95 17.24  max 96.9  total 2149
+  time histogram: median 4.21 ms  p95 18.66  max 90.5  total 2116
+  time  patience: median 4.33 ms  p95 18.91  max 98.8  total 2114
+
+flask 300 parsed-differs vs isolated default: {'ihc3': 117, 'norenames': 8, 'copies': 1}
+pylint 300 parsed-differs vs isolated default: {'ihc3': 86, 'norenames': 2, 'copies': 2}
+cobra 300 parsed-differs vs isolated default: {'ihc3': 73, 'norenames': 4, 'copies': 1}
+zod 300 parsed-differs vs isolated default: {'ihc3': 138, 'norenames': 1, 'copies': 1}
+oxide 300 parsed-differs vs isolated default: {'ihc3': 149, 'norenames': 4, 'copies': 4}
