@@ -140,6 +140,35 @@ fn rename_attributes_to_the_new_path() {
     assert!(names.contains(&"Widget.render"), "{names:?}");
 }
 
+// ------------------------------------------------------- quoted paths (#37)
+
+/// git C-quotes a non-ASCII header path (`"b/caf\303\251.py"`). The decoded
+/// diff path must be the same string the index stores as `Symbol::file`, or
+/// the changed file and symbol drop out of the evidence.
+#[test]
+fn non_ascii_path_maps_to_the_indexed_symbol() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    write(root.join("café.py"), "def brew():\n    return 1\n");
+    git(root, &["init", "-q"]);
+    git(root, &["config", "core.quotePath", "true"]);
+    git(root, &["add", "."]);
+    git(root, &["commit", "-qm", "base"]);
+    write(root.join("café.py"), "def brew():\n    return 2\n");
+
+    let symbols = indexed_symbols(root);
+    let brew = symbols.iter().find(|s| s.name == "brew").expect("indexed");
+    assert_eq!(brew.file, "café.py");
+    let ctx = build_git_context(root, &symbols, "").unwrap();
+    assert_eq!(ctx.evidence.changed_files, vec![brew.file.clone()]);
+    let changed: Vec<(&str, &str)> = ctx
+        .changed_symbols
+        .iter()
+        .map(|c| (c.symbol.file.as_str(), c.symbol.name.as_str()))
+        .collect();
+    assert_eq!(changed, vec![(brew.file.as_str(), "brew")]);
+}
+
 // --------------------------------------------------------------- deletions
 
 #[test]

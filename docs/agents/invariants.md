@@ -300,6 +300,20 @@ invariant mean this file.
   (`docs/git-diff-algorithm-eval/`); a new `git diff` call that feeds
   `parse_unified` uses `diff_text`.
   `gitutil::tests::each_hunk_arg_neutralizes_its_config_key` pins each flag.
+- `gitutil::parse_unified` and `gitutil::deleted_files` read `---`/`+++`
+  header paths only through `gitutil::header_path`, which decodes git's C
+  quoting (`quote.c`) before removing the `a/`/`b/` prefix (#37). Quoting is
+  handled in the parser, not by passing `-c core.quotePath=false`: git still
+  quotes `"`, `\` and control characters. A quoted label that is malformed or
+  decodes to non-UTF-8 bytes names no file, so its hunks are dropped rather
+  than attributed to the previous file or matched through a lossy path. The
+  scanner indexes only UTF-8 paths. An unquoted label (host
+  `core.quotePath=false`) still passes through `run_git`'s lossy UTF-8
+  conversion, so a non-UTF-8 name arrives with U+FFFD and can match only a
+  file literally named with U+FFFD (pre-existing, not changed by #37).
+  Both parsers skip `---`/`+++` lines inside a hunk body
+  (`gitutil::header_line`): under `-U0` a removed `-- x` or added `++ x`
+  line prints as `--- x`/`+++ x`.
 
 ## Embeddings / providers
 

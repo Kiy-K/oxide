@@ -91,8 +91,8 @@ pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
 /// `core.attributesFile`, `$XDG_CONFIG_HOME/git/attributes`, the system
 /// attributes file or `.git/info/attributes`; `diff.<driver>.binary`;
 /// `core.bigFileThreshold`), clean filters and `core.autocrlf` on CRLF files,
-/// `diff.relative` when the OXIDE root is a subdirectory of the git repo, and
-/// `core.quotePath` (#37).
+/// and `diff.relative` when the OXIDE root is a subdirectory of the git repo.
+/// `core.quotePath` needs no pin: [`header_path`] decodes quoted paths (#37).
 ///
 /// Host attribute files are deliberately honoured: they also carry
 /// conversion attributes (clean filters, `text`/`eol`) that git applies when
@@ -118,16 +118,21 @@ pub fn diff_files(repo: &Path, range: &str) -> Result<Vec<FileDelta>> {
 pub fn parse_unified(text: &str) -> Vec<FileDelta> {
     let mut files: HashMap<String, FileDelta> = HashMap::new();
     let mut cur: Option<String> = None;
+    let mut in_hunk = false;
     for line in text.lines() {
+        let header = header_line(line, &mut in_hunk);
         // A deleted file's diff section has no `+++ b/...` line at all, so
-        // without this arm `cur` kept whatever the *previous* file section
-        // set it to — every hunk inside a deleted file's section was
+        // without resetting `cur` it kept whatever the *previous* file
+        // section set it to — every hunk inside a deleted file's section was
         // silently attributed to the prior file once zero-count hunks
-        // stopped being filtered out below.
-        if line.starts_with("+++ /dev/null") {
-            cur = None;
-        } else if let Some(rest) = line.strip_prefix("+++ b/") {
-            cur = Some(rest.trim().to_string());
+        // stopped being filtered out below. A quoted path that does not
+        // decode resets it for the same reason.
+        if let Some(label) = header.and_then(|l| l.strip_prefix("+++ ")) {
+            match header_path(label, "b/") {
+                Some(Header::File(path)) => cur = Some(path),
+                Some(Header::DevNull | Header::Unreadable) => cur = None,
+                None => {}
+            }
         } else if line.starts_with("@@") {
             let Some(target) = cur.clone() else { continue };
             if let Some((_, new_start, new_count)) = parse_hunk_header(line) {
@@ -167,20 +172,114 @@ pub fn parse_unified(text: &str) -> Vec<FileDelta> {
 pub fn deleted_files(text: &str) -> Vec<String> {
     let mut out = Vec::new();
     let mut pending: Option<String> = None;
+    let mut in_hunk = false;
     for line in text.lines() {
-        if let Some(rest) = line.strip_prefix("--- a/") {
-            pending = Some(rest.trim().to_string());
-        } else if line.starts_with("+++ /dev/null") {
-            if let Some(p) = pending.take() {
-                out.push(p);
+        let Some(line) = header_line(line, &mut in_hunk) else {
+            continue;
+        };
+        if let Some(label) = line.strip_prefix("--- ") {
+            pending = match header_path(label, "a/") {
+                Some(Header::File(path)) => Some(path),
+                _ => None,
+            };
+        } else if let Some(label) = line.strip_prefix("+++ ") {
+            match header_path(label, "b/") {
+                Some(Header::DevNull) => out.extend(pending.take()),
+                _ => pending = None,
             }
-        } else if line.starts_with("--- ") || line.starts_with("+++ ") {
-            pending = None;
         }
     }
     out.sort();
     out.dedup();
     out
+}
+
+/// `line` if it can be a file header line, `None` inside a hunk body. Under
+/// `-U0` a removed line `-- x` or an added line `++ x` prints as `--- x` or
+/// `+++ x`, so only the lines between a `diff ` line and the file's first
+/// `@@` are headers. No body line starts with `diff ` (body lines start with
+/// ` `, `+`, `-` or `\`) and no header line starts with `@@`.
+fn header_line<'a>(line: &'a str, in_hunk: &mut bool) -> Option<&'a str> {
+    if line.starts_with("diff ") {
+        *in_hunk = false;
+    } else if line.starts_with("@@") {
+        *in_hunk = true;
+    }
+    (!*in_hunk).then_some(line)
+}
+
+/// What a `--- `/`+++ ` diff header names.
+enum Header {
+    DevNull,
+    /// Repo-relative path, the same string the index stores as `Symbol::file`.
+    File(String),
+    /// A quoted label that is malformed or does not decode to a UTF-8 path
+    /// under the expected prefix. OXIDE indexes only UTF-8 paths
+    /// (`scanner::is_denied`), so no indexed file can be meant; a lossy path
+    /// could match the wrong one.
+    Unreadable,
+}
+
+/// The one reading of a header label (the text after `--- `/`+++ `) shared
+/// by [`parse_unified`] and [`deleted_files`]. `prefix` is `a/` or `b/`,
+/// which `diff_text` forces. Git C-quotes the whole label, prefix included,
+/// when the path holds `"`, `\`, a control character, or (with the default
+/// `core.quotePath`) a byte >= 0x80 (#37); the label is decoded before the
+/// prefix is removed. `None` is a line no header form matches, which leaves
+/// the caller's state unchanged as before.
+fn header_path(label: &str, prefix: &str) -> Option<Header> {
+    if label.starts_with("/dev/null") {
+        return Some(Header::DevNull);
+    }
+    if let Some(path) = label.strip_prefix(prefix) {
+        return Some(Header::File(path.trim().to_string()));
+    }
+    if !label.starts_with('"') {
+        return None;
+    }
+    let path = unquote_c_style(label)
+        .and_then(|bytes| String::from_utf8(bytes).ok())
+        .and_then(|path| Some(Header::File(path.strip_prefix(prefix)?.to_string())));
+    Some(path.unwrap_or(Header::Unreadable))
+}
+
+/// Git's `unquote_c_style` (`quote.c`): the escapes `\a \b \f \n \r \t \v
+/// \\ \"` and three-digit octal `\[0-3][0-7][0-7]`, decoded to bytes; any
+/// other escape is an error, as in git. Only whitespace may follow the
+/// closing quote: git appends a tab to a header label containing a space.
+fn unquote_c_style(label: &str) -> Option<Vec<u8>> {
+    let mut bytes = label.strip_prefix('"')?.bytes();
+    let mut out = Vec::new();
+    loop {
+        match bytes.next()? {
+            b'"' => break,
+            b'\\' => {}
+            byte => {
+                out.push(byte);
+                continue;
+            }
+        }
+        out.push(match bytes.next()? {
+            b'a' => 0x07,
+            b'b' => 0x08,
+            b'f' => 0x0c,
+            b'n' => b'\n',
+            b'r' => b'\r',
+            b't' => b'\t',
+            b'v' => 0x0b,
+            byte @ (b'\\' | b'"') => byte,
+            first @ b'0'..=b'3' => {
+                let mut value = first - b'0';
+                for _ in 0..2 {
+                    let digit = bytes.next().filter(|d| (b'0'..=b'7').contains(d))?;
+                    value = value << 3 | (digit - b'0');
+                }
+                value
+            }
+            _ => return None,
+        });
+    }
+    bytes.all(|b| b.is_ascii_whitespace()).then_some(out)
 }
 
 /// One commit's metadata: subject line only (never the body — commit
@@ -700,6 +799,211 @@ diff --git a/src/c.py b/src/c.py
             "deleted.py's hunk must not leak in here"
         );
         assert_eq!(deleted_files(diff), vec!["deleted.py".to_string()]);
+    }
+
+    /// One modified file per header label, each followed by one hunk.
+    fn modified(labels: &[&str]) -> String {
+        labels
+            .iter()
+            .enumerate()
+            .map(|(i, l)| {
+                let n = i + 1;
+                format!("diff --git a/x b/x\n--- a/x\n+++ {l}\n@@ -{i},0 +{n},1 @@\n+x\n")
+            })
+            .collect()
+    }
+
+    fn files(text: &str) -> Vec<(String, Vec<(u32, u32)>)> {
+        parse_unified(text)
+            .into_iter()
+            .map(|d| (d.file, d.added))
+            .collect()
+    }
+
+    /// #37: git C-quotes a header path holding bytes >= 0x80 (with the
+    /// default `core.quotePath`), `"`, `\` or control characters. The quoted
+    /// form used to be skipped, so its hunks fell to the previous file.
+    #[test]
+    fn quoted_header_paths_are_decoded() {
+        let text = modified(&[
+            "b/plain.py",
+            r#""b/caf\303\251.py""#,
+            r#""b/q\"uote.py""#,
+            r#""b/back\\slash.py""#,
+            r#""b/c\a\b\t\n\v\f\r\001\177.py""#,
+            "\"b/caf\\303\\251 space.py\"\t",
+        ]);
+        let want = [
+            ("b/back\\slash.py", 4),
+            ("b/c\x07\x08\t\n\x0b\x0c\r\x01\x7f.py", 5),
+            ("b/caf\u{e9} space.py", 6),
+            ("b/caf\u{e9}.py", 2),
+            ("b/plain.py", 1),
+            ("b/q\"uote.py", 3),
+        ];
+        let want: Vec<_> = want
+            .iter()
+            .map(|(f, n)| (f[2..].to_string(), vec![(*n, *n)]))
+            .collect();
+        assert_eq!(files(&text), want);
+    }
+
+    /// A quoted header that does not decode, or decodes to bytes that are
+    /// not UTF-8, names no file: its hunks are dropped, never attributed to
+    /// the previous file and never matched through a lossy path. OXIDE only
+    /// indexes UTF-8 paths (`scanner::is_denied`), so nothing is lost.
+    #[test]
+    fn unreadable_quoted_header_paths_name_no_file() {
+        for bad in [
+            r#""b/caf\303\251.py"#,
+            r#""b/x\q.py""#,
+            r#""b/x\4001.py""#,
+            r#""b/x\30""#,
+            r#""b/x\""#,
+            r#""b/x.py" junk"#,
+            r#""a/x.py""#,
+            r#""b/\377.py""#,
+            r#""b/caf\303.py""#,
+            "\"",
+            "\"\\",
+        ] {
+            let text = modified(&["b/prev.py", bad]);
+            let want = vec![("prev.py".to_string(), vec![(1, 1)])];
+            assert_eq!(files(&text), want, "{bad}");
+            // The same label on the `---` side, with the other prefix swapped in.
+            let old = match bad.strip_prefix("\"a/") {
+                Some(rest) => format!("\"b/{rest}"),
+                None => bad.replacen("b/", "a/", 1),
+            };
+            let deleted = format!("--- {old}\n+++ /dev/null\n");
+            assert!(deleted_files(&deleted).is_empty(), "{old}");
+        }
+    }
+
+    #[test]
+    fn quoted_header_paths_keep_add_delete_and_rename_semantics() {
+        let text = r#"diff --git "a/caf\303\251.py" "a/caf\303\251.py"
+deleted file mode 100644
+--- "a/caf\303\251.py"
++++ /dev/null
+@@ -1,2 +0,0 @@
+-x
+-y
+diff --git a/old.py "b/n\303\251w.py"
+similarity index 90%
+rename from old.py
+rename to "n\303\251w.py"
+--- a/old.py
++++ "b/n\303\251w.py"
+@@ -3,0 +4,1 @@
++z
+diff --git "b/\303\251.py" "b/\303\251.py"
+new file mode 100644
+--- /dev/null
++++ "b/\303\251.py"
+@@ -0,0 +1,2 @@
++a
++b
+"#;
+        let want = vec![
+            ("n\u{e9}w.py".to_string(), vec![(4, 4)]),
+            ("\u{e9}.py".to_string(), vec![(1, 2)]),
+        ];
+        assert_eq!(files(text), want);
+        assert_eq!(deleted_files(text), vec!["caf\u{e9}.py".to_string()]);
+    }
+
+    /// Under `-U0` an added line `++ ...` prints as `+++ ...` and a removed
+    /// line `-- ...` as `--- ...`. Inside a hunk these are content, not
+    /// headers: they must not re-point or drop the file's later hunks, nor
+    /// report a deletion.
+    #[test]
+    fn hunk_body_lines_that_look_like_headers_are_content() {
+        let text = r#"diff --git a/doc.md b/doc.md
+--- a/doc.md
++++ b/doc.md
+@@ -1,0 +2,4 @@
++++ "b/other.py"
++++ "foo"
++++ b/other.py
++++ /dev/null
+@@ -9,0 +13,1 @@
++tail
+diff --git a/notes.sql b/notes.sql
+--- a/notes.sql
++++ b/notes.sql
+@@ -1,2 +1,1 @@
+--- a/gone.py
++++ /dev/null
+"#;
+        let want = vec![
+            ("doc.md".to_string(), vec![(2, 5), (13, 13)]),
+            ("notes.sql".to_string(), vec![(1, 1)]),
+        ];
+        assert_eq!(files(text), want);
+        assert!(deleted_files(text).is_empty());
+    }
+
+    /// Unquoted headers keep their old reading, including the trimmed tab git
+    /// appends to a label with a space, and the `/dev/null` sides.
+    #[test]
+    fn unquoted_header_paths_are_unchanged() {
+        let text = modified(&["b/a b.py\t", "b/c.py"]);
+        let want = vec![
+            ("a b.py".to_string(), vec![(1, 1)]),
+            ("c.py".to_string(), vec![(2, 2)]),
+        ];
+        assert_eq!(files(&text), want);
+        let text = "--- a/a b.py\t\n+++ /dev/null\n--- /dev/null\n+++ b/n.py\n";
+        assert_eq!(deleted_files(text), vec!["a b.py".to_string()]);
+    }
+
+    /// #37 against real git: with `core.quotePath` on (git's default, set
+    /// repo-locally in case the host turns it off), a non-ASCII path's hunks
+    /// and its deletion both come back under the UTF-8 path.
+    #[test]
+    fn real_git_non_ascii_paths_roundtrip() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        git(root, &["config", "core.quotePath", "true"]);
+        std::fs::write(root.join("gone\u{e9}.py"), "g = 1\n").unwrap();
+        write_and_commit(root, "caf\u{e9}.py", "x = 1\ny = 2\n");
+        std::fs::write(root.join("caf\u{e9}.py"), "x = 1\nz = 0\ny = 2\nw = 3\n").unwrap();
+        std::fs::remove_file(root.join("gone\u{e9}.py")).unwrap();
+        let text = diff_text(root, "").unwrap();
+        assert!(text.contains(r#"+++ "b/caf\303\251.py""#), "{text}");
+        assert_eq!(
+            files(&text),
+            vec![("caf\u{e9}.py".to_string(), vec![(2, 2), (4, 4)])]
+        );
+        assert_eq!(deleted_files(&text), vec!["gone\u{e9}.py".to_string()]);
+    }
+
+    /// Names Windows cannot hold: `"`, `\` and a tab, each quoted by git
+    /// whatever `core.quotePath` says.
+    #[cfg(unix)]
+    #[test]
+    fn real_git_special_character_paths_roundtrip() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        git(root, &["config", "core.quotePath", "false"]);
+        let names = ["q\"uote.py", "back\\slash.py", "t\tab.py"];
+        for name in names {
+            std::fs::write(root.join(name), "x = 1\n").unwrap();
+        }
+        git(root, &["add", "."]);
+        commit(root, "base");
+        for name in names {
+            std::fs::write(root.join(name), "x = 1\ny = 2\n").unwrap();
+        }
+        let mut want: Vec<_> = names
+            .iter()
+            .map(|n| (n.to_string(), vec![(2, 2)]))
+            .collect();
+        want.sort();
+        assert_eq!(files(&diff_text(root, "").unwrap()), want);
     }
 
     #[test]

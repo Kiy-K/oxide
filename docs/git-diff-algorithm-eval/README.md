@@ -287,7 +287,7 @@ setting moves more output, and less correctly, than the algorithm does.
     against the raw bytes OXIDE indexes.
   - `diff.relative` changes the paths when the OXIDE root is a subdirectory
     of the git repo.
-  - `core.quotePath` (#37).
+  - `core.quotePath` (#37; since fixed in the parser, see below).
 - Git versions: `--indent-heuristic` needs git >= 2.11. Default-config
   output is unchanged by the pin only from git 2.14, when the indent
   heuristic became the default; renames became the default in 2.9. This is
@@ -297,4 +297,5 @@ setting moves more output, and less correctly, than the algorithm does.
   comparisons above are within one index state. Comparisons across runs must
   compare only the git-derived fields.
 - Separate, algorithm-independent bug: non-ASCII paths are quoted
-  (`+++ "b/…"`), so `parse_unified` drops them.
+  (`+++ "b/…"`), so `parse_unified` drops them. Fixed in #37:
+  `gitutil::header_path` decodes the quoted label.
