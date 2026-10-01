@@ -25,17 +25,20 @@ mise run test         # full unit + integration suite
 mise run bench        # release build + the canonical fixture benchmark
 mise run verify:rust  # lint, lint/test --no-default-features, test, bench, installer checks, in order
 mise run verify:ts    # frozen-lockfile pnpm install, then Turbo lint/typecheck/test/build
-mise run verify       # verify:rust, then verify:ts — the single full-repo entrypoint
+mise run ts:integration  # @oxide/client against the real binary ($OXIDE_BIN, default target/release/oxide)
+mise run verify       # verify:rust, verify:ts, then ts:integration — the single full-repo entrypoint
 ```
 
 TypeScript workspace (#36): pnpm owns dependencies (`pnpm-workspace.yaml`,
 committed `pnpm-lock.yaml`), Turbo owns the TS task graph (`turbo.json`) and is
 a root devDependency, not a mise tool. `ts:install`/`ts:lint`/`ts:typecheck`/
 `ts:test`/`ts:build` wrap single steps; root `package.json` has no scripts, so
-mise stays the one entrypoint. Turbo never wraps Cargo. The one package is
-`packages/protocol` (`@oxide/protocol`). CI's `typescript` job runs
-`mise run verify:ts` (it is the one job that calls mise) and has no `needs`
-link with the Rust jobs.
+mise stays the one entrypoint. Turbo never wraps Cargo. Packages:
+`packages/protocol` (`@oxide/protocol`) and `packages/client`
+(`@oxide/client`). CI's `typescript` job runs `mise run verify:ts`; its
+`client-integration` job, the only one needing both toolchains, builds the
+release binary and runs `mise run ts:integration`. Neither has a `needs` link
+with the Rust jobs, and Turbo never caches the integration task.
 
 `mise run protocol:fixtures` rewrites `fixtures/protocol/` from the real
 binary (`tests/protocol_fixtures.rs` with `OXIDE_PROTOCOL_FIXTURES=update`).

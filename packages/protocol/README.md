@@ -22,6 +22,7 @@ accepts any Standard Schema library, which zod 4 implements.
 | Schema | Command | Rust type |
 |---|---|---|
 | `StatusResult` | `oxide status --json` | `service::StatusResult` |
+| `IndexResult` | `oxide index --json` | `service::IndexResult` |
 | `SearchResult` / `Evidence` / `BlastItem` | `oxide search --json` (not `--mode literal`) | `Vec<service::Evidence>`, `blast_radius::BlastItem` |
 | `ContextResult` / `ContextItem` / `Omitted` | `oxide query --json` | `service::ContextResult`, `service::ContextEvidence`, `context::Omitted` |
 | `ErrorEnvelope` / `ErrorAction` | any failing `--json` command (exit 1), MCP `isError` results | `cli::render_json_error`, `service::ErrorAction` |
@@ -29,7 +30,7 @@ accepts any Standard Schema library, which zod 4 implements.
 The MCP `search` and `query` tools return the same shapes, serialized compactly.
 
 Not modeled yet, and passed through unvalidated: `ContextResult.git` (`--git`).
-Not covered at all yet: `index`, `review`, `search --mode literal`, `setup` and
+Not covered at all yet: `review`, `search --mode literal`, `setup` and
 the agent commands.
 
 ## Fixtures and the drift gate

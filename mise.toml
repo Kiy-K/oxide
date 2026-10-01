@@ -129,15 +129,34 @@ mise run ts:install
 pnpm exec turbo run lint typecheck test build
 '''
 
+[tasks."ts:integration"]
+description = "@oxide/client against the real oxide binary: $OXIDE_BIN, default the release build (matches CI's client-integration job)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+bin="${OXIDE_BIN:-${CARGO_TARGET_DIR:-target}/release/oxide}"
+if [ ! -x "$bin" ]; then
+  echo "no oxide binary at $bin: run cargo build --release or set OXIDE_BIN" >&2
+  exit 1
+fi
+# Absolute: the tests run the binary from temporary repositories.
+OXIDE_BIN="$(realpath "$bin")"
+export OXIDE_BIN
+mise run ts:install
+pnpm exec turbo run test:integration
+'''
+
 [tasks.verify]
-description = "Full-repo verification: verify:rust, then verify:ts"
+description = "Full-repo verification: verify:rust, then verify:ts, then ts:integration"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 # Sequential, not a `depends` list: Rust runs first exactly as before, and a
-# failure stops before the next half starts.
+# failure stops before the next half starts. ts:integration reuses the
+# release binary verify:rust's bench step just built.
 mise run verify:rust
 mise run verify:ts
+mise run ts:integration
 '''
 
 [tasks."verify:rust"]

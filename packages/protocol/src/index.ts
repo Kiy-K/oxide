@@ -63,6 +63,23 @@ export const StatusResult = z.looseObject({
 });
 export type StatusResult = z.infer<typeof StatusResult>;
 
+/** `oxide index --json`: `service::IndexResult` (counts for this run). */
+export const IndexResult = z.looseObject({
+  scanned_files: count,
+  changed_files: count,
+  reused_files: count,
+  removed_files: count,
+  new_symbols: count,
+  changed_symbols: count,
+  deleted_symbols: count,
+  embedded_symbols: count,
+  reused_embeddings: count,
+  embed_failures: count,
+  errored_files: count,
+  relations_refreshed_symbols: count,
+});
+export type IndexResult = z.infer<typeof IndexResult>;
+
 /** `blast_radius::BlastItem`; `relation` values are the ones it emits. */
 export const BlastItem = z.looseObject({
   id: z.string(),

@@ -117,8 +117,10 @@ fn protocol_fixtures_match_the_binary() {
     let run = oxide(r, home, &["search", "retry", "--path", ".", "--json"]);
     fixtures.check("error-index-missing", r, run, 1);
 
-    let indexed = oxide(r, home, &["index", ".", "--json"]);
-    assert_eq!(indexed.code, Some(0), "index: {}", indexed.stdout);
+    let run = oxide(r, home, &["index", ".", "--json"]);
+    fixtures.check("index-fresh", r, run, 0);
+    let run = oxide(r, home, &["index", ".", "--json"]);
+    fixtures.check("index-unchanged", r, run, 0);
 
     let run = oxide(r, home, &["status", "--json"]);
     fixtures.check("status-current", r, run, 0);

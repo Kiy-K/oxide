@@ -548,7 +548,7 @@ piping an installer script — then:
 
 ```bash
 mise run bootstrap  # pinned Rust toolchain/components + every mise-managed tool + TS deps
-mise run verify     # verify:rust (everything below, in commit order) then verify:ts
+mise run verify     # verify:rust (everything below, in commit order), verify:ts, ts:integration
 ```
 
 Each Rust mise task's command matches what CI currently runs step-for-step
@@ -556,10 +556,11 @@ Each Rust mise task's command matches what CI currently runs step-for-step
 directly, pending verification of that migration on a real runner; CI's
 `typescript` job already runs `mise run verify:ts`. A green `mise run verify`
 covers the same checks as CI's `quality`, `test`, `no-default-features`,
-`retrieval-gate` and `typescript` jobs (fmt, clippy, both feature
-configurations, the benchmark, the installer's shellcheck + lifecycle tests,
-and the TS workspace) — it does not run the separate, optional coverage job.
-Without mise, run the underlying Rust commands directly:
+`retrieval-gate`, `typescript` and `client-integration` jobs (fmt, clippy,
+both feature configurations, the benchmark, the installer's shellcheck +
+lifecycle tests, the TS workspace, and the TS client against the binary) —
+it does not run the separate, optional coverage job. Without mise, run the
+underlying Rust commands directly:
 
 ```bash
 cargo fmt --check

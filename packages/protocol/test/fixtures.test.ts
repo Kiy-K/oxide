@@ -5,12 +5,19 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { z } from "zod";
-import { ContextResult, ErrorEnvelope, SearchResult, StatusResult } from "../src/index.ts";
+import {
+  ContextResult,
+  ErrorEnvelope,
+  IndexResult,
+  SearchResult,
+  StatusResult,
+} from "../src/index.ts";
 import { fixture, fixtureNames } from "./helpers.ts";
 
 // Fixture name prefix -> the schema for the command that produced it.
 const schemas: Record<string, z.ZodType> = {
   status: StatusResult,
+  index: IndexResult,
   search: SearchResult,
   context: ContextResult,
   error: ErrorEnvelope,
@@ -50,6 +57,12 @@ test("fixtures cover the intended edge cases", () => {
   const stale = StatusResult.parse(fixture("status-stale"));
   assert.equal(stale.base_fresh, false);
   assert.equal(stale.is_current, false);
+
+  const fresh = IndexResult.parse(fixture("index-fresh"));
+  assert.ok(fresh.new_symbols > 0);
+  const unchanged = IndexResult.parse(fixture("index-unchanged"));
+  assert.equal(unchanged.changed_files, 0);
+  assert.equal(unchanged.reused_files, fresh.scanned_files);
 
   const hits = SearchResult.parse(fixture("search-hybrid"));
   assert.ok(hits.some((hit) => hit.reasons.length > 1));

@@ -141,6 +141,36 @@ jobs:
         env:
           MISE_AUTO_INSTALL: "false"
 
+  # The one job that needs both toolchains, on purpose: @oxide/client's
+  # integration tests drive the real binary. Still no `needs` link, so the
+  # Rust and TypeScript jobs above stay independent of it and of each other.
+  client-integration:
+    name: TypeScript / Client integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
+      - name: Restore Cargo cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
+      - name: Build release binary
+        run: cargo build --release -j 2
+      - name: Install pinned Node and pnpm
+        uses: jdx/mise-action@v5
+        with:
+          version: 2026.9.14
+          install_args: node pnpm
+      - name: Client integration tests
+        run: mise run ts:integration
+        env:
+          MISE_AUTO_INSTALL: "false"
+
   coverage:
     name: Rust / Coverage
     needs: quality

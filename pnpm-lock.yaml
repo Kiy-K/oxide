@@ -12,6 +12,22 @@ importers:
         specifier: 2.11.5
         version: 2.11.5
 
+  packages/client:
+    dependencies:
+      '@oxide/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.5.14
+        version: 2.5.14
+      '@types/node':
+        specifier: 24.9.2
+        version: 24.9.2
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
+
   packages/protocol:
     dependencies:
       zod:
