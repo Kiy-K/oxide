@@ -18,7 +18,7 @@ def roles(root):
      "tests/test_core.py": "from pkg.core import compute, normalize\n\n\ndef test_compute():\n    assert compute(\" A \") == \"a!\"\n\n\ndef test_normalize():\n    assert normalize(\" B \") == \"b\"\n",
      "pkg/core_test.py": "from pkg.core import compute\n\n\ndef check_compute():\n    assert compute(\"x\") == \"x!\"\n"}
     for p, s in files.items():
-        os.makedirs(os.path.join(root, os.path.dirname(p)), exist_ok=True); open(os.path.join(root, p), "w").write(s)
+        os.makedirs(os.path.join(root, os.path.dirname(p)), exist_ok=True); open(os.path.join(root, p), "w", newline="").write(s)
 cases = [
  ("py_repo", lambda r: shutil.copytree(f"{FIX}/py_repo", r, dirs_exist_ok=True), "oxidepy/retry.py", "oxidepy/http_client.py",
   ["retry with exponential backoff", "refresh auth token", "cache"]),

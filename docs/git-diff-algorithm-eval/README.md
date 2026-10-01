@@ -4,9 +4,9 @@ Baseline: `origin/main` at `a573a59`. The evaluation itself was
 benchmark-only.
 
 **Outcome:** adopted. `gitutil::diff_text` now passes `HUNK_ARGS` (the pinned
-flags below, without `--no-relative`) and, after review, `BINARY_ARGS` for
-host-level binary attributes and thresholds (see Retained limitations).
-The `candidate_output_golden` histogram pin was removed, and its `py_repo`
+flags below, without `--no-relative`). Host-level binary overrides were tried
+during review and reverted (see Retained limitations). The
+`candidate_output_golden` histogram pin was removed, and its `py_repo`
 review line was deliberately re-captured: `RetryPolicy` moves first and goes
 from +19 to +23. Nothing else in the golden changed. The quoted non-ASCII
 path bug is tracked separately (#37).
@@ -116,7 +116,7 @@ Commits whose parsed added ranges differ, counting only files OXIDE indexes:
 | oxide | 43 | 42 | 20 | 42 | 149 |
 
 \* The interHunkContext column counts all files, not just indexed ones.
-`diff.renames=false` changes 1–8 commits per repo.
+`diff.renames=false` changes 1–8 commits per repo (all files, like the interHunkContext column).
 
 That is 2–14 % of commits per algorithm pair. `diff.indentHeuristic=false`
 reaches the same order of magnitude (14 % on oxide). `diff.interHunkContext`
@@ -244,14 +244,19 @@ setting moves more output, and less correctly, than the algorithm does.
   `selection/sel2_*.json`.
 - After review, the scripts gained exit-status checks, a script-relative
   path for the hostile drivers, an isolated clone, and corrected labels.
-  `pinned_check.py` now runs the full production argv, including
-  `BINARY_ARGS`. Regenerating every `results_*.txt` from the same raw data
+  `pinned_check.py` now runs the full production argv. Regenerating every `results_*.txt` from the same raw data
   changed no measured number. The only corrections are the oxide
   `myers~patience` `related` count, which now uses the same full-entry
   comparison in both tables (0 became 1, still among the same three
   states), and previously truncated table labels.
 - No Java or C/C++ repos were tested, and only the newest commits were used.
   `md` counts as indexed.
+- Commit selection approximates "files OXIDE indexes" by extension
+  (`stage_a.py::code`). It does not apply the scanner's directory, hidden,
+  generated or size exclusions, so a few selected commits may differ only on
+  files the scanner skips. That affects which commits were selected, not
+  any measurement. The `diff.renames` counts in `results_stage_a.txt` (from
+  `knobs.py`) cover all files, like the interHunkContext column.
 - Settings that remain unpinned. All predate #35, and the independent review
   measured each one reshaping or emptying the diff under the pinned argv
   (git 2.43):
@@ -261,21 +266,25 @@ setting moves more output, and less correctly, than the algorithm does.
     become delete plus all-added. Its default also changed in git 2.33.
   - `diff.submodule=diff` inlines the submodule's own files with context
     lines; `=log` drops the submodule entry.
-  - Binary handling empties the evidence, including `changed_files`.
-    Host-level sources are now pinned (`BINARY_ARGS`: `-c
-    core.attributesFile=`, `-c core.bigFileThreshold=512m`, and
-    `GIT_ATTR_NOSYSTEM=1`; measured to leave default output byte-identical
-    on 445 commits and 50 dirty worktrees). Still unpinned: a `-diff`/`binary`
-    attribute in `.git/info/attributes` and `diff.<driver>.binary`. A
-    committed `.gitattributes` is repo content, the same on every host.
-    `--text` was rejected: it turns real binaries into hunks, which changes
-    default output.
+  - Binary handling empties the evidence, including `changed_files`: a
+    `-diff`/`binary` attribute from `core.attributesFile`, the system
+    attributes or `.git/info/attributes`, `diff.<driver>.binary`, or a
+    lowered `core.bigFileThreshold`. A committed `.gitattributes` is repo
+    content, the same on every host.
+  - Pinning the host-level sources was tried and reverted after review.
+    `-c core.attributesFile=` with `GIT_ATTR_NOSYSTEM=1` also hid conversion
+    attributes declared there (clean filters, `text`/`eol`). Git applies
+    those to the worktree side of the diff, so hiding them reported false
+    changes (measured: a global `*.py filter=...` turned "no logical change"
+    into a hunk). Resetting `core.bigFileThreshold` would undo a repo's own
+    size limit and make git emit full patches for large files OXIDE cannot
+    index. `--text` was rejected: it turns real binaries into hunks, which
+    changes default output.
   - Clean filters, and `core.autocrlf` on CRLF files, shift the ranges
     against the raw bytes OXIDE indexes.
   - `diff.relative` changes the paths when the OXIDE root is a subdirectory
     of the git repo.
   - `core.quotePath` (#37).
-  - `GIT_ATTR_NOSYSTEM` was not tested.
 - Git versions: `--indent-heuristic` needs git >= 2.11. Default-config
   output is unchanged by the pin only from git 2.14, when the indent
   heuristic became the default; renames became the default in 2.9. This is

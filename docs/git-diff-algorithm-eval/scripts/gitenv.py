@@ -15,7 +15,7 @@ def env_for(algo):
     e = {k: v for k, v in os.environ.items()
          if not k.startswith("GIT_") and k not in ("HOME", "XDG_CONFIG_HOME")}
     e.update(HOME=EMPTY, XDG_CONFIG_HOME=EMPTY, GIT_CONFIG_NOSYSTEM="1",
-             GIT_CONFIG_GLOBAL="/dev/null", LC_ALL="C", TZ="UTC")
+             GIT_CONFIG_GLOBAL="/dev/null", GIT_ATTR_NOSYSTEM="1", LC_ALL="C", TZ="UTC")
     kv = ALGOS[algo]
     e["GIT_CONFIG_COUNT"] = str(len(kv))
     for i, (k, v) in enumerate(kv):

@@ -1,5 +1,5 @@
 import json, os, subprocess, sys
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gitenv
 from gitenv import env_for, parse_unified
 S=os.path.dirname(os.path.abspath(__file__))  # hostile_ext.sh / hostile_attrs live next to this script
@@ -10,9 +10,9 @@ HOSTILE=[("diff.algorithm","patience"),("diff.indentHeuristic","false"),("diff.i
 gitenv.ALGOS["hostile"]=HOSTILE
 BASE=["git","diff","--unified=0","--no-color","--src-prefix=a/","--dst-prefix=b/"]
 PIN=["--diff-algorithm=myers","--indent-heuristic","--inter-hunk-context=0","--find-renames","--no-ext-diff","--no-textconv"]
-# full production argv of gitutil::diff_text: BINARY_ARGS before `diff`, HUNK_ARGS after
-PINNED=["git","-c","core.attributesFile=","-c","core.bigFileThreshold=512m"]+BASE[1:]+PIN
-def pinned_env(algo): return dict(env_for(algo), GIT_ATTR_NOSYSTEM="1")
+# full production argv of gitutil::diff_text
+PINNED=BASE+PIN
+def pinned_env(algo): return env_for(algo)
 def ok(p):
     # the baseline and pinned runs must succeed; empty stdout from a failed
     # git would otherwise count as a valid (empty) diff

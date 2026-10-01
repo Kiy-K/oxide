@@ -23,10 +23,9 @@ pub struct FileDelta {
     pub added: Vec<(u32, u32)>,
 }
 
-fn run_git(repo: &Path, args: &[&str], envs: &[(&str, &str)]) -> Result<String> {
+fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
     let out = Command::new("git")
         .args(args)
-        .envs(envs.iter().copied())
         .current_dir(repo)
         .output()
         .with_context(|| format!("git {}", args.join(" ")))?;
@@ -56,38 +55,20 @@ fn run_git(repo: &Path, args: &[&str], envs: &[(&str, &str)]) -> Result<String> 
 /// [`HUNK_ARGS`] pins the diff config settings measured to reshape the
 /// hunks, for the same reason: changed symbols, `added_lines` and
 /// review/context output should not depend on the host's git config (#35,
-/// `docs/git-diff-algorithm-eval/`). [`BINARY_ARGS`] keeps host-level
-/// attributes and thresholds from turning a source file into "Binary files
-/// differ". Some host settings still reshape the diff; see [`HUNK_ARGS`].
+/// `docs/git-diff-algorithm-eval/`). Some host settings still reshape the
+/// diff; see [`HUNK_ARGS`].
 pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
-    let mut args = BINARY_ARGS.to_vec();
-    args.extend([
+    let mut args = vec![
         "diff",
         "--unified=0",
         "--no-color",
         "--src-prefix=a/",
         "--dst-prefix=b/",
-    ]);
+    ];
     args.extend(HUNK_ARGS);
     args.push(if range.is_empty() { "HEAD" } else { range });
-    run_git(repo, &args, &[("GIT_ATTR_NOSYSTEM", "1")])
+    run_git(repo, &args)
 }
-
-/// Host-level sources that make git print "Binary files ... differ" for a
-/// source file, which [`parse_unified`] cannot see at all (the file drops out
-/// of `changed_files` and changed symbols). Each value is git's default, so
-/// default-config output is unchanged; `GIT_ATTR_NOSYSTEM` covers the system
-/// attributes file. `--text` would also do it, but turns real binaries into
-/// hunks, which changes default output.
-/// - `core.attributesFile`: a user's global `*.rs -diff`/`binary`.
-/// - `core.bigFileThreshold`: 512 MiB; lowered, it marks large source files
-///   binary.
-const BINARY_ARGS: [&str; 4] = [
-    "-c",
-    "core.attributesFile=",
-    "-c",
-    "core.bigFileThreshold=512m",
-];
 
 /// Overrides for the `git diff` config settings measured to move
 /// [`parse_unified`]'s added ranges (`docs/git-diff-algorithm-eval/`). Each
@@ -106,11 +87,17 @@ const BINARY_ARGS: [&str; 4] = [
 ///
 /// Not pinned, and measured to still reshape or empty the diff:
 /// `GIT_DIFF_OPTS` (overrides `--unified=0`), `diff.renameLimit`,
-/// `diff.submodule`, binary handling that [`BINARY_ARGS`] does not cover
-/// (`-diff`/`binary` in `.git/info/attributes`, `diff.<driver>.binary`),
-/// clean filters and `core.autocrlf` on CRLF files,
+/// `diff.submodule`, binary handling (`-diff`/`binary` attributes from
+/// `core.attributesFile` or `.git/info/attributes`, `diff.<driver>.binary`,
+/// `core.bigFileThreshold`), clean filters and `core.autocrlf` on CRLF files,
 /// `diff.relative` when the OXIDE root is a subdirectory of the git repo, and
 /// `core.quotePath` (#37).
+///
+/// Host attribute files are deliberately honoured: they also carry
+/// conversion attributes (clean filters, `text`/`eol`) that git applies when
+/// comparing the worktree, and hiding them reported false changes. Resetting
+/// `core.bigFileThreshold` would undo a repo's own size limit and make git
+/// emit full patches for large files OXIDE cannot index.
 const HUNK_ARGS: [&str; 6] = [
     "--diff-algorithm=myers",
     "--indent-heuristic",
@@ -521,19 +508,18 @@ new file mode 100644
         );
     }
 
-    /// #35: each `HUNK_ARGS`/`BINARY_ARGS` override neutralizes its config
-    /// key. One case per key, each with only that key set, checks three
-    /// things: before the key is set, an unpinned `git diff` gives `expected`
-    /// (git's default); the key makes the unpinned diff differ (so the case
-    /// can fail); and `diff_files` still gives `expected`. Dropping any
-    /// override fails its case. `GIT_ATTR_NOSYSTEM` is not covered (it needs
-    /// a system-wide attributes file), nor are the settings `HUNK_ARGS` lists
-    /// as unpinned; a runner that exports `GIT_DIFF_OPTS` fails the pinned
-    /// check. `{root}` in a value is the repo's path.
+    /// #35: each `HUNK_ARGS` flag neutralizes its config key. One case per
+    /// key, each with only that key set, checks three things: before the key
+    /// is set, an unpinned `git diff` gives `expected` (git's default); the
+    /// key makes the unpinned diff differ (so the case can fail); and
+    /// `diff_files` still gives `expected`. Dropping any flag fails its case.
+    /// The settings `HUNK_ARGS` lists as unpinned are not covered; a runner
+    /// that exports `GIT_DIFF_OPTS`, or whose attribute files mark `*.py`
+    /// binary, fails the pinned check.
     #[test]
     fn each_hunk_arg_neutralizes_its_config_key() {
         type Setup = fn(&Path) -> (&'static str, Vec<(u32, u32)>);
-        let cases: [(&str, &str, Setup); 8] = [
+        let cases: [(&str, &str, Setup); 6] = [
             ("diff.algorithm", "histogram", retry_case),
             ("diff.indentHeuristic", "false", indent_case),
             ("diff.interHunkContext", "3", nearby_hunks_case),
@@ -544,12 +530,6 @@ new file mode 100644
                 "awk 'NR==1{print \"x\"}1'",
                 textconv_case,
             ),
-            (
-                "core.attributesFile",
-                "{root}/host.attributes",
-                host_attributes_case,
-            ),
-            ("core.bigFileThreshold", "10", nearby_hunks_case),
         ];
         for (key, value, setup) in cases {
             let tmp = tempfile::tempdir().unwrap();
@@ -562,8 +542,7 @@ new file mode 100644
                 Some(expected.clone()),
                 "{key}: default"
             );
-            let value = value.replace("{root}", root.to_str().unwrap());
-            git(root, &["config", key, &value]);
+            git(root, &["config", key, value]);
             assert_ne!(
                 unpinned(root, range),
                 Some(expected.clone()),
@@ -575,8 +554,35 @@ new file mode 100644
         }
     }
 
+    /// Attribute files outside the repo carry conversion attributes git applies
+    /// to the worktree side of the diff; `diff_text` must keep honouring them.
+    /// Here `core.attributesFile` binds a clean filter that drops a local-only
+    /// line, so git sees no logical change and neither may `diff_text`.
+    #[test]
+    fn diff_text_honours_host_conversion_attributes() {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        git(root, &["init", "-q"]);
+        let attrs = root.join("host.attributes");
+        std::fs::write(&attrs, "*.py filter=strip\n").unwrap();
+        git(
+            root,
+            &["config", "core.attributesFile", attrs.to_str().unwrap()],
+        );
+        git(
+            root,
+            &["config", "filter.strip.clean", "grep -v LOCAL-ONLY"],
+        );
+        git(root, &["config", "filter.strip.smudge", "cat"]);
+        write_and_commit(root, "a.py", "def a():\n    return 1\n");
+        let edited = "def a():\n    return 1\nx = 1  # LOCAL-ONLY\n";
+        std::fs::write(root.join("a.py"), edited).unwrap();
+        assert!(diff_files(root, "").unwrap().is_empty());
+    }
+
     /// `diff_text` without its overrides, isolated from the host's git config
-    /// so only the repo-local key under test can change it; `None` when git
+    /// and attribute files (system, `$XDG_CONFIG_HOME/git/attributes`) so only
+    /// the repo-local key under test can change it; `None` when git
     /// fails (`diff.external=false`).
     fn unpinned(root: &Path, range: &str) -> Option<Vec<Vec<(u32, u32)>>> {
         let rev = if range.is_empty() { "HEAD" } else { range };
@@ -586,6 +592,9 @@ new file mode 100644
             .env("GIT_CONFIG_NOSYSTEM", "1")
             .env("GIT_CONFIG_GLOBAL", "/dev/null")
             .env("GIT_CONFIG_COUNT", "0")
+            .env("GIT_ATTR_NOSYSTEM", "1")
+            .env("XDG_CONFIG_HOME", root.join(".no-xdg"))
+            .env("HOME", root.join(".no-home"))
             .env_remove("GIT_DIFF_OPTS")
             .current_dir(root)
             .output()
@@ -641,14 +650,6 @@ new file mode 100644
         git(root, &["add", "."]);
         commit(root, "rename");
         ("HEAD~1..HEAD", vec![(21, 21)])
-    }
-
-    /// A host-level attributes file (untracked here, so outside the diff) that
-    /// marks `.py` files binary.
-    fn host_attributes_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
-        let case = nearby_hunks_case(root);
-        std::fs::write(root.join("host.attributes"), "*.py -diff\n").unwrap();
-        case
     }
 
     /// A textconv driver bound through `.git/info/attributes` (per-clone, not

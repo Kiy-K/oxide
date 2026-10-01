@@ -2,7 +2,10 @@ import gzip, json, glob, sys
 from collections import Counter
 def L(d,a): return json.load(gzip.open(f"{d}/{a}.json.gz","rt"))
 c=Counter(); ex=[]
-for d in sorted(glob.glob("b2/out/*/*")):
+root = sys.argv[1]  # e.g. b2/out
+states = sorted(glob.glob(f"{root}/*/*"))
+assert states, f"no states under {root}"
+for d in states:
     F={a:L(d,a) for a in ("myers","ihc3","myers_noindent")}
     R={a:json.loads(F[a]["review_json"]) for a in F}
     S={a:{(x["file"],x["qualified_name"]) for x in R[a]["changed_symbols"]} for a in F}
