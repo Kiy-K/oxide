@@ -285,15 +285,21 @@ invariant mean this file.
   the old identity and then score the new rows. Safe only because every
   reader is request-scoped — a long-lived one would pin the WAL against
   checkpointing.
-- `gitutil::diff_text` passes every flag that shapes `-U0` hunks
-  (`HUNK_ARGS`: myers, indent heuristic, `--inter-hunk-context=0`,
-  `--find-renames`, `--no-ext-diff`, `--no-textconv`, plus the `a/`/`b/`
-  prefixes), so `review`/`--git` changed symbols never follow the host's git
-  config (#35). Each value is git's default, so default-config output is
-  byte-identical. A new option belongs there only if it is measured not to
-  move default output (`docs/git-diff-algorithm-eval/`); a new `git diff`
-  call that feeds `parse_unified` uses `diff_text`.
-  `gitutil::tests::diff_hunks_ignore_host_diff_config` pins it.
+- `gitutil::diff_text` pins the diff config settings measured to reshape
+  `-U0` hunks (`HUNK_ARGS`: myers, indent heuristic,
+  `--inter-hunk-context=0`, `--find-renames`, `--no-ext-diff`,
+  `--no-textconv`, plus the `a/`/`b/` prefixes), and `BINARY_ARGS` plus
+  `GIT_ATTR_NOSYSTEM` keep host-level attributes and `core.bigFileThreshold`
+  from turning a source file into "Binary files differ". Those settings
+  cannot change `review`/`--git` changed symbols (#35). This is not full
+  host-independence: the settings still unpinned are listed on `HUNK_ARGS`.
+  Each value is git's default from git 2.14, so default-config output is
+  byte-identical; `--indent-heuristic` needs git >= 2.11. A new option
+  belongs there only if it is measured not to move default output
+  (`docs/git-diff-algorithm-eval/`); a new `git diff` call that feeds
+  `parse_unified` uses `diff_text`.
+  `gitutil::tests::each_hunk_arg_neutralizes_its_config_key` pins each
+  override except `GIT_ATTR_NOSYSTEM`.
 
 ## Embeddings / providers
 

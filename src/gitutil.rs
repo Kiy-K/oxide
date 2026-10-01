@@ -23,9 +23,10 @@ pub struct FileDelta {
     pub added: Vec<(u32, u32)>,
 }
 
-fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
+fn run_git(repo: &Path, args: &[&str], envs: &[(&str, &str)]) -> Result<String> {
     let out = Command::new("git")
         .args(args)
+        .envs(envs.iter().copied())
         .current_dir(repo)
         .output()
         .with_context(|| format!("git {}", args.join(" ")))?;
@@ -52,26 +53,47 @@ fn run_git(repo: &Path, args: &[&str]) -> Result<String> {
 /// match, and every changed file in the diff evidence goes missing with no
 /// error. This flag overrides both config settings unconditionally.
 ///
-/// [`HUNK_ARGS`] pins everything else that shapes the hunks, for the same
-/// reason: changed symbols, `added_lines` and review/context output must not
-/// depend on the host's git config (#35, `docs/git-diff-algorithm-eval/`).
+/// [`HUNK_ARGS`] pins the diff config settings measured to reshape the
+/// hunks, for the same reason: changed symbols, `added_lines` and
+/// review/context output should not depend on the host's git config (#35,
+/// `docs/git-diff-algorithm-eval/`). [`BINARY_ARGS`] keeps host-level
+/// attributes and thresholds from turning a source file into "Binary files
+/// differ". Some host settings still reshape the diff; see [`HUNK_ARGS`].
 pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
-    let mut args = vec![
+    let mut args = BINARY_ARGS.to_vec();
+    args.extend([
         "diff",
         "--unified=0",
         "--no-color",
         "--src-prefix=a/",
         "--dst-prefix=b/",
-    ];
+    ]);
     args.extend(HUNK_ARGS);
     args.push(if range.is_empty() { "HEAD" } else { range });
-    run_git(repo, &args)
+    run_git(repo, &args, &[("GIT_ATTR_NOSYSTEM", "1")])
 }
 
-/// Overrides for every `git diff` config setting measured to move
+/// Host-level sources that make git print "Binary files ... differ" for a
+/// source file, which [`parse_unified`] cannot see at all (the file drops out
+/// of `changed_files` and changed symbols). Each value is git's default, so
+/// default-config output is unchanged; `GIT_ATTR_NOSYSTEM` covers the system
+/// attributes file. `--text` would also do it, but turns real binaries into
+/// hunks, which changes default output.
+/// - `core.attributesFile`: a user's global `*.rs -diff`/`binary`.
+/// - `core.bigFileThreshold`: 512 MiB; lowered, it marks large source files
+///   binary.
+const BINARY_ARGS: [&str; 4] = [
+    "-c",
+    "core.attributesFile=",
+    "-c",
+    "core.bigFileThreshold=512m",
+];
+
+/// Overrides for the `git diff` config settings measured to move
 /// [`parse_unified`]'s added ranges (`docs/git-diff-algorithm-eval/`). Each
-/// value is git's own default, so a default-config host's output is
-/// byte-identical with or without these flags:
+/// value is git's own default (on git >= 2.14), so a default-config host's
+/// output is byte-identical with or without these flags. `--indent-heuristic`
+/// needs git >= 2.11; older git rejects it and the diff fails.
 /// - `diff.algorithm`: myers. No algorithm attributes changed symbols more
 ///   accurately; myers is what default-config hosts already produce.
 /// - `diff.indentHeuristic`: on.
@@ -81,6 +103,14 @@ pub fn diff_text(repo: &Path, range: &str) -> Result<String> {
 ///   into an all-added file, `copies` re-attributes copied lines.
 /// - `diff.external` / textconv drivers: replace the unified diff with
 ///   arbitrary output (or stall on a slow converter).
+///
+/// Not pinned, and measured to still reshape or empty the diff:
+/// `GIT_DIFF_OPTS` (overrides `--unified=0`), `diff.renameLimit`,
+/// `diff.submodule`, binary handling that [`BINARY_ARGS`] does not cover
+/// (`-diff`/`binary` in `.git/info/attributes`, `diff.<driver>.binary`),
+/// clean filters and `core.autocrlf` on CRLF files,
+/// `diff.relative` when the OXIDE root is a subdirectory of the git repo, and
+/// `core.quotePath` (#37).
 const HUNK_ARGS: [&str; 6] = [
     "--diff-algorithm=myers",
     "--indent-heuristic",
@@ -491,51 +521,133 @@ new file mode 100644
         );
     }
 
-    /// #35: the hunks must not follow the host's diff config. The repo is the
-    /// `candidate_output_golden` `retry.py` state, where git's default
-    /// (myers) yields one hunk and `diff.algorithm=histogram` keeps blank
-    /// line 26 as context; `interHunkContext` and `diff.external` would also
-    /// reshape or replace the diff if they were honoured.
+    /// #35: each `HUNK_ARGS`/`BINARY_ARGS` override neutralizes its config
+    /// key. One case per key, each with only that key set, checks three
+    /// things: before the key is set, an unpinned `git diff` gives `expected`
+    /// (git's default); the key makes the unpinned diff differ (so the case
+    /// can fail); and `diff_files` still gives `expected`. Dropping any
+    /// override fails its case. `GIT_ATTR_NOSYSTEM` is not covered (it needs
+    /// a system-wide attributes file), nor are the settings `HUNK_ARGS` lists
+    /// as unpinned. `{root}` in a value is the repo's path.
     #[test]
-    fn diff_hunks_ignore_host_diff_config() {
-        let tmp = tempfile::tempdir().unwrap();
-        let root = tmp.path();
+    fn each_hunk_arg_neutralizes_its_config_key() {
+        type Setup = fn(&Path) -> (&'static str, Vec<(u32, u32)>);
+        let cases: [(&str, &str, Setup); 8] = [
+            ("diff.algorithm", "histogram", retry_case),
+            ("diff.indentHeuristic", "false", indent_case),
+            ("diff.interHunkContext", "3", nearby_hunks_case),
+            ("diff.renames", "false", rename_case),
+            ("diff.external", "false", nearby_hunks_case),
+            (
+                "diff.up.textconv",
+                "awk 'NR==1{print \"x\"}1'",
+                textconv_case,
+            ),
+            (
+                "core.attributesFile",
+                "{root}/host.attributes",
+                host_attributes_case,
+            ),
+            ("core.bigFileThreshold", "10", nearby_hunks_case),
+        ];
+        for (key, value, setup) in cases {
+            let tmp = tempfile::tempdir().unwrap();
+            let root = tmp.path();
+            git(root, &["init", "-q"]);
+            let (range, expected) = setup(root);
+            let file = |d: Vec<FileDelta>| d.into_iter().map(|d| d.added).collect::<Vec<_>>();
+            assert_eq!(
+                file(unpinned(root, range)),
+                vec![expected.clone()],
+                "{key}: default"
+            );
+            let value = value.replace("{root}", root.to_str().unwrap());
+            git(root, &["config", key, &value]);
+            assert_ne!(
+                file(unpinned(root, range)),
+                vec![expected.clone()],
+                "{key}: no bite"
+            );
+            assert_eq!(
+                file(diff_files(root, range).unwrap()),
+                vec![expected],
+                "{key}: pinned"
+            );
+        }
+    }
+
+    /// `diff_text` without its overrides; empty when git fails (`diff.external`).
+    fn unpinned(root: &Path, range: &str) -> Vec<FileDelta> {
+        let rev = if range.is_empty() { "HEAD" } else { range };
+        let out = Command::new("git")
+            .args(["diff", "--unified=0", "--no-color", "--src-prefix=a/"])
+            .args(["--dst-prefix=b/", rev])
+            .current_dir(root)
+            .output()
+            .unwrap();
+        parse_unified(&String::from_utf8_lossy(&out.stdout))
+    }
+
+    fn write_and_commit(root: &Path, file: &str, text: &str) {
+        std::fs::write(root.join(file), text).unwrap();
+        git(root, &["add", "."]);
+        commit(root, "base");
+    }
+
+    /// The `candidate_output_golden` `retry.py` state: myers yields one hunk,
+    /// histogram keeps blank line 26 as context and splits it in two.
+    fn retry_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
         let full = std::fs::read_to_string(
             Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/py_repo/oxidepy/retry.py"),
         )
         .unwrap();
         let lines: Vec<&str> = full.lines().collect();
         let half = lines[..lines.len() / 2].join("\n");
-        std::fs::write(
-            root.join("retry.py"),
-            format!("{half}\n# rev 1\n\n# rev 2\n"),
-        )
-        .unwrap();
-        git(root, &["init", "-q"]);
-        git(root, &["add", "."]);
-        commit(root, "base");
+        write_and_commit(root, "retry.py", &format!("{half}\n# rev 1\n\n# rev 2\n"));
         std::fs::write(root.join("retry.py"), &full).unwrap();
-        for (key, value) in [
-            ("diff.algorithm", "histogram"),
-            ("diff.indentHeuristic", "false"),
-            ("diff.interHunkContext", "3"),
-            ("diff.renames", "false"),
-            ("diff.external", "false"),
-        ] {
-            git(root, &["config", key, value]);
-        }
-        // The config does bite an unpinned `git diff`.
-        let raw = Command::new("git")
-            .args(["diff", "--unified=0", "HEAD"])
-            .current_dir(root)
-            .output()
-            .unwrap();
-        assert!(!String::from_utf8_lossy(&raw.stdout).contains("@@ -23,3 +23,23 @@"));
+        ("", vec![(23, 45)])
+    }
 
-        let deltas = diff_files(root, "").unwrap();
-        assert_eq!(deltas.len(), 1);
-        assert_eq!(deltas[0].file, "retry.py");
-        assert_eq!(deltas[0].added, vec![(23, 45)]);
+    /// A repeated block: the indent heuristic slides the insertion up a line.
+    fn indent_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
+        let block = "    a = 1\n\n    b = 2\n";
+        write_and_commit(root, "a.py", &format!("def f():\n{block}    return a\n"));
+        let text = format!("def f():\n{block}{block}    return a\n");
+        std::fs::write(root.join("a.py"), text).unwrap();
+        ("", vec![(4, 6)])
+    }
+
+    /// Two edits two lines apart: separate `-U0` hunks unless fused.
+    fn nearby_hunks_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
+        write_and_commit(root, "n.py", "a = 1\nb = 2\nc = 3\nd = 4\n");
+        std::fs::write(root.join("n.py"), "a = 10\nb = 2\nc = 3\nd = 40\n").unwrap();
+        ("", vec![(1, 1), (4, 4)])
+    }
+
+    /// A renamed and edited file: only the edit is added when renames are found.
+    fn rename_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
+        let text: String = (1..=20).map(|i| format!("x{i} = {i}\n")).collect();
+        write_and_commit(root, "old.py", &text);
+        git(root, &["mv", "old.py", "new.py"]);
+        std::fs::write(root.join("new.py"), format!("{text}y = 1\n")).unwrap();
+        git(root, &["add", "."]);
+        commit(root, "rename");
+        ("HEAD~1..HEAD", vec![(21, 21)])
+    }
+
+    /// A host-level attributes file (untracked here, so outside the diff) that
+    /// marks `.py` files binary.
+    fn host_attributes_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
+        let case = nearby_hunks_case(root);
+        std::fs::write(root.join("host.attributes"), "*.py -diff\n").unwrap();
+        case
+    }
+
+    /// A textconv driver bound through `.git/info/attributes` (per-clone, not
+    /// repo content); the converter prepends a line.
+    fn textconv_case(root: &Path) -> (&'static str, Vec<(u32, u32)>) {
+        std::fs::write(root.join(".git/info/attributes"), "*.py diff=up\n").unwrap();
+        nearby_hunks_case(root)
     }
 
     #[test]

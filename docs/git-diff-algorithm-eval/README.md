@@ -4,10 +4,12 @@ Baseline: `origin/main` at `a573a59`. The evaluation itself was
 benchmark-only.
 
 **Outcome:** adopted. `gitutil::diff_text` now passes `HUNK_ARGS` (the pinned
-flags below, without `--no-relative`). The `candidate_output_golden` histogram
-pin was removed, and its `py_repo` review line was deliberately re-captured:
-`RetryPolicy` moves first and goes from +19 to +23. Nothing else in the golden
-changed. The quoted non-ASCII path bug is tracked separately.
+flags below, without `--no-relative`) and, after review, `BINARY_ARGS` for
+host-level binary attributes and thresholds (see Retained limitations).
+The `candidate_output_golden` histogram pin was removed, and its `py_repo`
+review line was deliberately re-captured: `RetryPolicy` moves first and goes
+from +19 to +23. Nothing else in the golden changed. The quoted non-ASCII
+path bug is tracked separately (#37).
 
 Question (#35): `gitutil::diff_text` runs `git diff --unified=0` without a
 pinned algorithm, so `oxide review` and `oxide context --git` follow the host's
@@ -238,7 +240,37 @@ setting moves more output, and less correctly, than the algorithm does.
 - The interHunkContext and noindent end-to-end sample is small (10 per repo).
 - No Java or C/C++ repos were tested, and only the newest commits were used.
   `md` counts as indexed.
-- Unpinned knobs that remain: `diff.renameLimit`, `diff.submodule`,
-  `GIT_DIFF_OPTS` and `GIT_ATTR_NOSYSTEM`.
+- Settings that remain unpinned. All predate #35, and the independent review
+  measured each one reshaping or emptying the diff under the pinned argv
+  (git 2.43):
+  - `GIT_DIFF_OPTS=--unified=N` overrides `--unified=0`, so context lines
+    count as added. End to end, `RetryPolicy` goes from +23 to +26.
+  - `diff.renameLimit`: when the limit is exceeded, renamed-and-edited files
+    become delete plus all-added. Its default also changed in git 2.33.
+  - `diff.submodule=diff` inlines the submodule's own files with context
+    lines; `=log` drops the submodule entry.
+  - Binary handling empties the evidence, including `changed_files`.
+    Host-level sources are now pinned (`BINARY_ARGS`: `-c
+    core.attributesFile=`, `-c core.bigFileThreshold=512m`, and
+    `GIT_ATTR_NOSYSTEM=1`; measured to leave default output byte-identical
+    on 445 commits and 50 dirty worktrees). Still unpinned: a `-diff`/`binary`
+    attribute in `.git/info/attributes` and `diff.<driver>.binary`. A
+    committed `.gitattributes` is repo content, the same on every host.
+    `--text` was rejected: it turns real binaries into hunks, which changes
+    default output.
+  - Clean filters, and `core.autocrlf` on CRLF files, shift the ranges
+    against the raw bytes OXIDE indexes.
+  - `diff.relative` changes the paths when the OXIDE root is a subdirectory
+    of the git repo.
+  - `core.quotePath` (#37).
+  - `GIT_ATTR_NOSYSTEM` was not tested.
+- Git versions: `--indent-heuristic` needs git >= 2.11. Default-config
+  output is unchanged by the pin only from git 2.14, when the indent
+  heuristic became the default; renames became the default in 2.9. This is
+  from git's release notes; only 2.43 was run.
+- The Stage B harness reuses one incremental index across checkouts, so a
+  state's index content depends on the order commits were visited. All
+  comparisons above are within one index state. Comparisons across runs must
+  compare only the git-derived fields.
 - Separate, algorithm-independent bug: non-ASCII paths are quoted
   (`+++ "b/…"`), so `parse_unified` drops them.

@@ -12,13 +12,17 @@
 //! `OXIDE_DEBUG_DUMP_KEPT` and the git configuration below, which are
 //! process-global.
 //!
-//! Git is isolated from system/global config. `review`/`--git` pin their
-//! own hunk-shaping flags (`gitutil::diff_text`, #35), so the remaining
-//! isolation only keeps this test's own git calls (init/commit) independent
-//! of the host. The py_repo review section was re-captured when #35 pinned
-//! myers: the golden had been captured on a `diff.algorithm=histogram` host,
-//! which split one `oxidepy/retry.py` hunk differently (changed-symbol order
-//! and `RetryPolicy`'s `+19` vs `+23` lines). Nothing else changed.
+//! Git is isolated from system/global config. `review`/`--git` pin the
+//! diff settings measured to reshape hunks (`gitutil::diff_text`, #35); the
+//! isolation keeps this test's own git calls (init/commit) and the settings
+//! `diff_text` does not pin (listed on `gitutil::HUNK_ARGS`) away from the
+//! host. `GIT_DIFF_OPTS` is an environment variable, not config, so a host
+//! that sets it can still fail this test.
+//!
+//! The py_repo review section was re-captured when #35 pinned myers: the
+//! golden had been captured on a `diff.algorithm=histogram` host, which split
+//! one `oxidepy/retry.py` hunk differently (changed-symbol order and
+//! `RetryPolicy`'s `+19` vs `+23` lines). Nothing else changed.
 
 use oxide::index::IndexOptions;
 use oxide::retrieval::{RetrievalMode, SearchMode};
