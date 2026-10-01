@@ -3,8 +3,8 @@
 OXIDE: local incremental code index and hybrid retrieval (Rust, single crate).
 Product docs are in `README.md`. `CLAUDE.md` is a symlink to this file, so Claude and Codex share one root policy.
 
-This file is always loaded; keep it short. Detail lives in the docs below. Read them when a task touches their area, and don't copy them here.
-Older docs and code comments that cite "`AGENTS.md`" for an invariant, command or harness detail now mean `docs/agents/invariants.md` or `docs/agents/workflow.md`.
+This file is always loaded; keep it short. Detail lives in the docs below. Read them when a task touches their area, and don't copy them here: new invariants go in `docs/agents/invariants.md`, new commands in `docs/agents/workflow.md`.
+Docs and code comments that cite "`AGENTS.md`" for an invariant, command or harness detail mean `docs/agents/invariants.md` or `docs/agents/workflow.md`.
 
 ## How to work
 
@@ -37,4 +37,3 @@ Older docs and code comments that cite "`AGENTS.md`" for an invariant, command o
 
 - Retrieval ranking is benchmark-gated. Before changing ranking, scoring, fusion weights or tie-breaks, compare against `docs/canonical-baseline.md`. Treat any difference in results as a regression to explain.
 - `docs/agent-usage-policy.md` is the only canonical guide for how agents consume OXIDE. The Skill, MCP instructions and consumer snippets restate it; they never fork it. `skills/oxide-code-context/` is the bundled skill for downstream users and is not the same as `.claude/skills/` or `.agents/skills/`, which are used to develop OXIDE.
-- New invariants go in `docs/agents/invariants.md`, new commands in `docs/agents/workflow.md`, not here.

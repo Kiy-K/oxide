@@ -58,7 +58,8 @@ change fails it, fix the ranking or honestly re-baseline both numbers.
 
 ## Commits
 
-Commit only when asked. Commits go straight to `main` (no PRs). Messages use a
+Commit only when asked. Local commits go straight to `main`; work from remote
+sessions lands through a PR from its own branch. Messages use a
 lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 `docs:`, `harden:`, `bench:`, `tierb:`.
 
