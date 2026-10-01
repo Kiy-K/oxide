@@ -515,8 +515,8 @@ new file mode 100644
     /// key makes the unpinned diff differ (so the case can fail); and
     /// `diff_files` still gives `expected`. Dropping any flag fails its case.
     /// The settings `HUNK_ARGS` lists as unpinned are not covered; a runner
-    /// that exports `GIT_DIFF_OPTS`, or whose attribute files mark `*.py`
-    /// binary, fails the pinned check.
+    /// that exports `GIT_DIFF_OPTS`, or whose system attributes file marks
+    /// `*.py` binary, fails the pinned check.
     #[test]
     fn each_hunk_arg_neutralizes_its_config_key() {
         type Setup = fn(&Path) -> (&'static str, Vec<(u32, u32)>);
@@ -536,6 +536,13 @@ new file mode 100644
             let tmp = tempfile::tempdir().unwrap();
             let root = tmp.path();
             git(root, &["init", "-q"]);
+            // A repo-local empty `core.attributesFile` hides the user-level
+            // attribute file from both the control and `diff_files`, which
+            // deliberately honours host attributes.
+            let no_attrs = root.join(".git/no-attributes");
+            std::fs::write(&no_attrs, "").unwrap();
+            let no_attrs = no_attrs.to_str().unwrap();
+            git(root, &["config", "core.attributesFile", no_attrs]);
             let (range, expected) = setup(root);
             let expected = vec![expected];
             assert_eq!(
