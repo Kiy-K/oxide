@@ -6,9 +6,10 @@
 //! installed on the machine running the suite.
 
 use serde_json::Value;
-use std::io::Write;
+use std::io::{ErrorKind, Write};
 use std::path::PathBuf;
-use std::process::{Command, Output, Stdio};
+use std::process::{Child, Command, Output, Stdio};
+use std::time::Duration;
 
 struct Home {
     dir: tempfile::TempDir,
@@ -73,7 +74,7 @@ impl Home {
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped());
-        let mut child = command.spawn().unwrap();
+        let mut child = spawn_retrying_busy(&mut command);
         if let Some(answer) = answer {
             child
                 .stdin
@@ -85,6 +86,22 @@ impl Home {
         drop(child.stdin.take());
         child.wait_with_output().unwrap()
     }
+}
+
+/// `with_spaced_binary` executes a file this process just wrote. If another
+/// test thread forks while the copy's write descriptor is open, the child
+/// holds it until its own exec, and executing the copy fails with ETXTBSY
+/// (rust-lang/rust#114554). The window is brief, so retry instead of failing.
+fn spawn_retrying_busy(command: &mut Command) -> Child {
+    for _ in 0..50 {
+        match command.spawn() {
+            Err(e) if e.kind() == ErrorKind::ExecutableFileBusy => {
+                std::thread::sleep(Duration::from_millis(20));
+            }
+            result => return result.unwrap(),
+        }
+    }
+    panic!("the binary stayed busy (ETXTBSY) for a second");
 }
 
 fn out(output: &Output) -> String {
