@@ -46,8 +46,9 @@ export interface OxideOptions {
   env?: Record<string, string | undefined>;
   /**
    * `process` (the default) runs one `oxide` process per call. `native`
-   * serves calls in this process through the @oxide/native addon (Linux x64,
-   * `mise run native:build`), keeping the index and model warm between calls.
+   * serves calls in this process through the @oxide/native addon (Linux x64
+   * and macOS arm64; `mise run native:build`), keeping the index and model
+   * warm between calls.
    * It reads this process's own environment, so `binary`, `env` and
    * `discover` are process-only and rejected with it.
    */

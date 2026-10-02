@@ -5,6 +5,7 @@
 
 const PLATFORMS = {
   "linux-x64-gnu": "oxide_native.linux-x64-gnu.node",
+  "darwin-arm64": "oxide_native.darwin-arm64.node",
 };
 
 function platform() {

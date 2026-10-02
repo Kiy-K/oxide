@@ -133,6 +133,8 @@ jobs:
           # in the job summary.
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-24.04
+            # Also builds and ships the @oxide/native Node addon (#36).
+            native: true
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-24.04-arm
           # No x86_64-apple-darwin: `ort-sys` publishes no prebuilt ONNX
@@ -144,6 +146,7 @@ jobs:
           # explicitly rather than 404ing on a missing asset.
           - target: aarch64-apple-darwin
             runner: macos-15
+            native: true
     steps:
       - uses: actions/checkout@v7
 
@@ -289,45 +292,47 @@ jobs:
           grep -q '"items"' "$work/native-pack.json"
           echo "native ONNX provider works on ${{ matrix.target }}"
 
-      # The @oxide/native Node addon (#36 P1): x86_64 Linux only for now.
-      # Built with the path-remapped `native:build` on this ubuntu-24.04
-      # runner (the glibc floor follows the build host), packed as an
+      # The @oxide/native Node addon (#36 P1/P2), on the `native: true`
+      # targets: x86_64 Linux and Apple Silicon macOS. Built with the
+      # path-remapped `native:build` on this runner (the glibc floor follows
+      # the ubuntu-24.04 build host; macOS records its minos), packed as an
       # npm-format tarball with the release version, and tested from a clean
       # install with no Rust on PATH before it can be uploaded. Nothing is
       # published to npm.
       - name: Install pinned Node and pnpm (native addon)
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: matrix.native
         uses: jdx/mise-action@v5
         with:
           version: 2026.9.14
           install_args: node pnpm
 
       - name: Build the native addon
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: matrix.native
         run: mise run native:build
         env:
           MISE_AUTO_INSTALL: "false"
 
       - name: Package the native addon
         id: native
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: matrix.native
         shell: bash
         run: |
           set -euo pipefail
           scripts/native_package.sh "${{ needs.gate.outputs.version }}" native-dist | tee native.out
           cat native.out >> "$GITHUB_OUTPUT"
-          . ./native.out
+          value() { sed -n "s/^$1=//p" native.out; }
+          asset="$(value asset)" requires="$(value requires)" deps="$(value deps)"
           {
             echo "### ${{ matrix.target }} native addon"
             echo "- \`$(basename "$asset")\`: $(du -h "$asset" | cut -f1) packed"
-            echo "- glibc >= \`$glibc\`"
-            echo "- libstdc++ GLIBCXX >= \`$glibcxx\`"
+            echo "- requires: $requires"
+            echo "- dynamic dependencies: \`$deps\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Against the packaged CLI, not target/release: the process backend is
       # the parity baseline, so it must be the binary that ships too.
       - name: Smoke-test the native addon from a clean install
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: matrix.native
         shell: bash
         run: |
           set -euo pipefail
@@ -370,7 +375,7 @@ jobs:
       # Its own artifact, so the `oxide-*` download pattern below picks it up:
       # publish then lists it in SHA256SUMS like every other archive.
       - name: Upload the native addon
-        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        if: matrix.native
         uses: actions/upload-artifact@v7
         with:
           name: oxide-native-${{ matrix.target }}
@@ -525,10 +530,10 @@ jobs:
 
           Every \`oxide-<version>-<target>\` archive contains a single \`oxide\`
           binary (ONNX Runtime is statically linked), plus the README and
-          LICENSE. \`oxide-native-<version>-x86_64-unknown-linux-gnu.tar.gz\`
-          is the Node-API addon behind \`@oxide/client\`'s native backend, in
-          npm-pack layout (install it with \`npm install <file>\`; it is not
-          on npm). \`SHA256SUMS\` covers
+          LICENSE. \`oxide-native-<version>-<target>.tar.gz\` (x86-64 Linux and
+          Apple Silicon macOS) is the Node-API addon behind \`@oxide/client\`'s
+          native backend, in npm-pack layout (install it with
+          \`npm install <file>\`; it is not on npm). \`SHA256SUMS\` covers
           every archive, and the release workflow runs the packaged binary before
           publishing it.
 

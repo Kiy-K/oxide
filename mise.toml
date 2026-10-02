@@ -151,7 +151,7 @@ pnpm exec turbo run test:integration
 '''
 
 [tasks."native:build"]
-description = "Build the @oxide/native Node-API addon (packages/native, Linux x64) into packages/native/oxide_native.linux-x64-gnu.node"
+description = "Build the @oxide/native Node-API addon (packages/native; Linux x64 or macOS arm64) into packages/native/oxide_native.<platform>.node"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -168,8 +168,15 @@ sysroot="$(rustc --print sysroot)"
 RUSTFLAGS="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$sysroot=/rustc/sysroot --remap-path-prefix=$PWD=/oxide"
 CFLAGS="-ffile-prefix-map=$cargo_home=/cargo -ffile-prefix-map=$PWD=/oxide"
 export RUSTFLAGS CFLAGS CXXFLAGS="$CFLAGS"
+# The platforms with a tested build, named as packages/native/index.cjs
+# loads them.
+case "$(uname -s)-$(uname -m)" in
+  Linux-x86_64) platform="linux-x64-gnu" so="liboxide_native.so" ;;
+  Darwin-arm64) platform="darwin-arm64" so="liboxide_native.dylib" ;;
+  *) echo "native:build: no @oxide/native build for $(uname -s)-$(uname -m)" >&2; exit 1 ;;
+esac
 cargo build --release --locked -j 2 --manifest-path packages/native/Cargo.toml --target-dir "$target"
-so="$target/release/liboxide_native.so"
+so="$target/release/$so"
 # Exactly the remapped prefixes, not all of $HOME: the prebuilt ONNX Runtime
 # (ort-sys) carries its own upstream build paths,
 # /home/runner/work/ort-artifacts/..., which match $HOME on a GitHub runner.
@@ -179,8 +186,7 @@ for path in "$cargo_home" "$sysroot" "$PWD"; do
     exit 1
   fi
 done
-# The platform name packages/native/index.cjs loads and a release ships.
-cp "$so" packages/native/oxide_native.linux-x64-gnu.node
+cp "$so" "packages/native/oxide_native.$platform.node"
 '''
 
 [tasks."lint:native"]

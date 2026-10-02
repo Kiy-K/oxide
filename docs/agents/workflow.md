@@ -27,7 +27,7 @@ mise run verify:rust  # lint, lint/test --no-default-features, test, bench, inst
 mise run verify:ts    # frozen-lockfile pnpm install, then Turbo lint/typecheck/test/build
 mise run ts:integration  # @oxide/client + @oxide/mcp parity against the real binary ($OXIDE_BIN, default target/release/oxide)
 mise run mcp:compile  # deno compile @oxide/mcp into packages/mcp/dist/oxide-mcp
-mise run native:build # build the @oxide/native addon (packages/native, Linux x64); ts:integration runs it
+mise run native:build # build the @oxide/native addon for this host (Linux x64, macOS arm64); ts:integration runs it
 mise run lint:native  # cargo fmt --check + clippy -D warnings for packages/native
 mise run verify       # verify:rust, verify:ts, then ts:integration — the single full-repo entrypoint
 ```
@@ -52,7 +52,7 @@ from the root lock; after a root dependency change, re-sync it (command in
 `packages/native/README.md`) so shared crates stay on the same versions. CI's `typescript` job runs `mise run verify:ts`; its
 `client-integration` job, the only one needing both toolchains, builds the
 release binary, runs `mise run lint:native`, then `mise run ts:integration`. The
-release workflow also ships the addon for x86_64 Linux; see
+release workflow also ships the addon for x86_64 Linux and Apple Silicon macOS; see
 `packages/native/README.md` for its packaging and smoke scripts. Neither has a `needs` link
 with the Rust jobs, and Turbo never caches the integration task.
 

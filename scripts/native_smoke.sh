@@ -10,7 +10,7 @@
 # and Node/npm/pnpm on PATH. Checks, in order:
 #   1. the committed client integration suite, unchanged, over the native
 #      and process backends (the binary is the process baseline);
-#   2. the addon mapped into the process is the installed file;
+#   2. the addon loaded into the process is the installed file;
 #   3. the shipped default embedder loads through the native backend;
 #   4. a process-only install (optional dependencies omitted) still works,
 #      and asking it for the native backend fails cleanly.
@@ -64,19 +64,18 @@ in_install "$full" node --test packages/client/test/integration/native.test.ts \
   packages/client/test/integration/binary.test.ts
 
 echo "== 2. the addon is loaded from the install"
-# shellcheck disable=SC2016 # `${...}` below is a JS template literal, not shell.
 in_install "$full" node --input-type=module -e '
-import { readFileSync } from "node:fs";
+import { realpathSync } from "node:fs";
 import { Oxide } from "@oxide/client";
 await new Oxide({ cwd: "/nonexistent", backend: "native" }).status().catch(() => {});
-const mapped = [...new Set(readFileSync("/proc/self/maps", "utf8").split("\n")
-  .map((line) => line.split(/\s+/).slice(5).join(" ")).filter((p) => p.endsWith(".node")))];
-const expected = `${process.cwd()}/node_modules/@oxide/native/oxide_native.linux-x64-gnu.node`;
-if (mapped.length !== 1 || mapped[0] !== expected) {
-  console.error("mapped addons:", mapped, "expected:", expected);
+// The diagnostic report lists loaded shared objects on Linux and macOS alike.
+const loaded = process.report.getReport().sharedObjects.filter((p) => p.endsWith(".node"));
+const dir = realpathSync("node_modules/@oxide/native");
+if (loaded.length !== 1 || !realpathSync(loaded[0]).startsWith(dir + "/")) {
+  console.error("loaded addons:", loaded, "expected one under", dir);
   process.exit(1);
 }
-console.log("loaded", mapped[0]);
+console.log("loaded", loaded[0]);
 '
 
 echo "== 3. the shipped default embedder through the native backend"
