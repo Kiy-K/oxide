@@ -74,7 +74,9 @@ if [ -n "${OXIDE_TEST_RELEASE_DIR:-}" ]; then
     unpack="$SANDBOX/from-release"
     mkdir -p "$unpack"
     found=""
-    for archive in "$OXIDE_TEST_RELEASE_DIR"/*"$TARGET".tar.gz; do
+    # `oxide-v*`, not `*`: the release also holds
+    # oxide-native-<version>-<target>.tar.gz (the Node addon), which sorts first.
+    for archive in "$OXIDE_TEST_RELEASE_DIR"/oxide-v*-"$TARGET".tar.gz; do
         [ -f "$archive" ] || continue
         tar -xzf "$archive" -C "$unpack"
         found="$archive"

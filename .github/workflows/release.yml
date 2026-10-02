@@ -157,7 +157,9 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ matrix.target }}-cargo-release-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml') }}
+          # The native lock too: the x86_64 Linux job also builds the Node
+          # addon, under target/native.
+          key: ${{ matrix.target }}-cargo-release-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', 'packages/native/Cargo.lock') }}
 
       - name: Build
         run: cargo build --release -j 2
@@ -287,16 +289,67 @@ jobs:
           grep -q '"items"' "$work/native-pack.json"
           echo "native ONNX provider works on ${{ matrix.target }}"
 
+      # The @oxide/native Node addon (#36 P1): x86_64 Linux only for now.
+      # Built with the path-remapped `native:build` on this ubuntu-24.04
+      # runner (the glibc floor follows the build host), packed as an
+      # npm-format tarball with the release version, and tested from a clean
+      # install with no Rust on PATH before it can be uploaded. Nothing is
+      # published to npm.
+      - name: Install pinned Node and pnpm (native addon)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        uses: jdx/mise-action@v5
+        with:
+          version: 2026.9.14
+          install_args: node pnpm
+
+      - name: Build the native addon
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: mise run native:build
+        env:
+          MISE_AUTO_INSTALL: "false"
+
+      - name: Package the native addon
+        id: native
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/native_package.sh "${{ needs.gate.outputs.version }}" native-dist | tee native.out
+          cat native.out >> "$GITHUB_OUTPUT"
+          . ./native.out
+          {
+            echo "### ${{ matrix.target }} native addon"
+            echo "- \`$(basename "$asset")\`: $(du -h "$asset" | cut -f1) packed"
+            echo "- glibc >= \`$glibc\`"
+            echo "- libstdc++ GLIBCXX >= \`$glibcxx\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Against the packaged CLI, not target/release: the process backend is
+      # the parity baseline, so it must be the binary that ships too.
+      - name: Smoke-test the native addon from a clean install
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mise run ts:install
+          mise run ts:build
+          work="$(mktemp -d)"
+          tar -xzf "${{ steps.package.outputs.archive }}" -C "$work"
+          scripts/native_smoke.sh "${{ steps.native.outputs.asset }}" "$work/oxide"
+        env:
+          MISE_AUTO_INSTALL: "false"
+
       - name: Checksum
         shell: bash
         run: |
-          archive="${{ steps.package.outputs.archive }}"
-          if command -v sha256sum >/dev/null; then
-            sha256sum "$archive" > "$archive.sha256"
-          else
-            shasum -a 256 "$archive" > "$archive.sha256"
-          fi
-          cat "$archive.sha256"
+          for archive in "${{ steps.package.outputs.archive }}" ${{ steps.native.outputs.asset }}; do
+            if command -v sha256sum >/dev/null; then
+              sha256sum "$archive" > "$archive.sha256"
+            else
+              shasum -a 256 "$archive" > "$archive.sha256"
+            fi
+            cat "$archive.sha256"
+          done
 
       - name: Upload
         uses: actions/upload-artifact@v7
@@ -305,6 +358,19 @@ jobs:
           path: |
             ${{ steps.package.outputs.archive }}
             ${{ steps.package.outputs.archive }}.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+      # Its own artifact, so the `oxide-*` download pattern below picks it up:
+      # publish then lists it in SHA256SUMS like every other archive.
+      - name: Upload the native addon
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        uses: actions/upload-artifact@v7
+        with:
+          name: oxide-native-${{ matrix.target }}
+          path: |
+            ${{ steps.native.outputs.asset }}
+            ${{ steps.native.outputs.asset }}.sha256
           if-no-files-found: error
           retention-days: 7
 
@@ -451,8 +517,12 @@ jobs:
 
           ## Release files 🔐
 
-          Every archive contains a single \`oxide\` binary (ONNX Runtime is
-          statically linked), plus the README and LICENSE. \`SHA256SUMS\` covers
+          Every \`oxide-<version>-<target>\` archive contains a single \`oxide\`
+          binary (ONNX Runtime is statically linked), plus the README and
+          LICENSE. \`oxide-native-<version>-x86_64-unknown-linux-gnu.tar.gz\`
+          is the Node-API addon behind \`@oxide/client\`'s native backend, in
+          npm-pack layout (install it with \`npm install <file>\`; it is not
+          on npm). \`SHA256SUMS\` covers
           every archive, and the release workflow runs the packaged binary before
           publishing it.
 

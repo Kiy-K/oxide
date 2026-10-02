@@ -23,3 +23,13 @@ not published.
   builds under `target/native/`.
 - `Cargo.lock` was seeded from the root lock. After a root dependency change,
   run `cp Cargo.lock packages/native/ && cargo metadata --format-version 1 --manifest-path packages/native/Cargo.toml >/dev/null`. It adds napi's entries and keeps every shared version.
+- Release asset (#36 P1, x86_64 Linux): `release.yml` builds the addon on
+  `ubuntu-24.04` with `native:build`, packs it with
+  `scripts/native_package.sh` as
+  `oxide-native-<version>-x86_64-unknown-linux-gnu.tar.gz` (npm-pack layout,
+  release version, dependency/RPATH guards), and gates the upload on
+  `scripts/native_smoke.sh`: the committed client suite from a clean install
+  with no Rust on PATH, the default embedder, and a process-only install.
+  Nothing is published to npm. Locally: `mise run native:build`, then
+  `scripts/native_package.sh v0.0.0-dev /tmp/out` and
+  `scripts/native_smoke.sh /tmp/out/oxide-native-*.tar.gz target/release/oxide`.

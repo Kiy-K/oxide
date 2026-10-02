@@ -51,7 +51,9 @@ Cargo project (not a root workspace member) with its own `Cargo.lock`, seeded
 from the root lock; after a root dependency change, re-sync it (command in
 `packages/native/README.md`) so shared crates stay on the same versions. CI's `typescript` job runs `mise run verify:ts`; its
 `client-integration` job, the only one needing both toolchains, builds the
-release binary, runs `mise run lint:native`, then `mise run ts:integration`. Neither has a `needs` link
+release binary, runs `mise run lint:native`, then `mise run ts:integration`. The
+release workflow also ships the addon for x86_64 Linux; see
+`packages/native/README.md` for its packaging and smoke scripts. Neither has a `needs` link
 with the Rust jobs, and Turbo never caches the integration task.
 
 `mise run protocol:fixtures` rewrites `fixtures/protocol/` from the real
