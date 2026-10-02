@@ -30,3 +30,6 @@ napi-build = "2"
 debug = false
 lto = "thin"
 codegen-units = 1
+# macOS's linker records the absolute paths of the objects it linked in
+# debug stabs, which --remap-path-prefix cannot reach; strip them.
+strip = "debuginfo"

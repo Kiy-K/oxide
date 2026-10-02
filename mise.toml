@@ -182,7 +182,8 @@ so="$target/release/$so"
 # /home/runner/work/ort-artifacts/..., which match $HOME on a GitHub runner.
 for path in "$cargo_home" "$sysroot" "$PWD"; do
   if grep -qaF "$path" "$so"; then
-    echo "native:build: $so still contains $path" >&2
+    echo "native:build: $so still contains $path:" >&2
+    grep -aoE "$path[^[:cntrl:]]{0,100}" "$so" | sort -u | head -10 >&2
     exit 1
   fi
 done
