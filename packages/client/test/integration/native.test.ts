@@ -3,7 +3,7 @@
 // the suite's environment is applied here, before the first call.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { Oxide } from "../../dist/index.js";
+import { Oxide } from "@oxide/client";
 import { env, suite, tmp } from "./suite.ts";
 
 for (const [key, value] of Object.entries(env)) {

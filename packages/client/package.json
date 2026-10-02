@@ -21,7 +21,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@oxide/native": "workspace:*",
     "@oxide/protocol": "workspace:*"
+  },
+  "optionalDependencies": {
+    "@oxide/native": "workspace:*"
   }
 }

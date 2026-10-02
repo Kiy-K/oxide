@@ -1,6 +1,6 @@
 // The integration suite over the process backend and the real `oxide` binary
 // ($OXIDE_BIN).
-import { Oxide } from "../../dist/index.js";
+import { Oxide } from "@oxide/client";
 import { env, suite } from "./suite.ts";
 
 const binary = process.env.OXIDE_BIN;

@@ -23,12 +23,13 @@ importers:
 
   packages/client:
     dependencies:
-      '@oxide/native':
-        specifier: workspace:*
-        version: link:../native
       '@oxide/protocol':
         specifier: workspace:*
         version: link:../protocol
+    optionalDependencies:
+      '@oxide/native':
+        specifier: workspace:*
+        version: link:../native
 
   packages/mcp:
     dependencies:

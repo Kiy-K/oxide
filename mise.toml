@@ -151,15 +151,33 @@ pnpm exec turbo run test:integration
 '''
 
 [tasks."native:build"]
-description = "Build the @oxide/native Node-API addon (packages/native, Linux x64) into packages/native/oxide_native.node"
+description = "Build the @oxide/native Node-API addon (packages/native, Linux x64) into packages/native/oxide_native.linux-x64-gnu.node"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-# Its own Cargo project (packages/native/Cargo.toml) sharing the root target
-# dir, so the release dependencies the root build compiled are reused.
-target="${CARGO_TARGET_DIR:-target}"
+# Its own Cargo project (packages/native/Cargo.toml). The addon ships, so its
+# panic and assert locations must not carry this machine's paths: remap the
+# Cargo home, the toolchain and the repo for Rust (`--remap-path-prefix`) and
+# for the C sources the cc crate compiles (`-ffile-prefix-map`); Cargo's
+# `trim-paths` is still unstable. Those flags change every unit's fingerprint,
+# so this builds under its own target subdirectory instead of thrashing the
+# root build's artifacts.
+target="${CARGO_TARGET_DIR:-target}/native"
+cargo_home="${CARGO_HOME:-$HOME/.cargo}"
+sysroot="$(rustc --print sysroot)"
+RUSTFLAGS="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$sysroot=/rustc/sysroot --remap-path-prefix=$PWD=/oxide"
+CFLAGS="-ffile-prefix-map=$cargo_home=/cargo -ffile-prefix-map=$PWD=/oxide"
+export RUSTFLAGS CFLAGS CXXFLAGS="$CFLAGS"
 cargo build --release --locked -j 2 --manifest-path packages/native/Cargo.toml --target-dir "$target"
-cp "$target/release/liboxide_native.so" packages/native/oxide_native.node
+so="$target/release/liboxide_native.so"
+for path in "$HOME" "$PWD"; do
+  if grep -qaF "$path" "$so"; then
+    echo "native:build: $so still contains $path" >&2
+    exit 1
+  fi
+done
+# The platform name packages/native/index.cjs loads and a release ships.
+cp "$so" packages/native/oxide_native.linux-x64-gnu.node
 '''
 
 [tasks."lint:native"]

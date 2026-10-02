@@ -11,9 +11,13 @@ not published.
   run on libuv's worker pool.
 - Defaults and flag validation mirror the CLI. `@oxide/client`'s integration
   suite runs over both backends to keep them in parity.
-- `mise run native:build` builds `oxide_native.node`, for Linux x64 only.
+- `mise run native:build` builds `oxide_native.linux-x64-gnu.node`, for Linux
+  x64 only. `index.cjs` loads the file named for the running platform and
+  throws on a platform with no build.
   `mise run lint:native` runs fmt and clippy.
-- This is its own Cargo project, not a member of the root crate. It builds
-  into the root `target/` so it reuses the root release artifacts.
+- This is its own Cargo project, not a member of the root crate. The build
+  remaps this machine's paths (Cargo home, toolchain, repo) out of the
+  artifact and fails if any remain. Those flags differ from the root build's,
+  so it builds under `target/native/`.
 - `Cargo.lock` was seeded from the root lock. After a root dependency change,
   run `cp Cargo.lock packages/native/ && cargo metadata --format-version 1 --manifest-path packages/native/Cargo.toml >/dev/null`. It adds napi's entries and keeps every shared version.

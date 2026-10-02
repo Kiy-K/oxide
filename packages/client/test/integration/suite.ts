@@ -1,14 +1,16 @@
 // The client against the real OXIDE, on a fresh copy of fixtures/py_repo with
 // the offline hashed embedder and no user config. One body, run once per
 // backend (binary.test.ts, native.test.ts) to hold their parity. Run by
-// `mise run ts:integration`; never part of the cached unit tests.
+// `mise run ts:integration`; never part of the cached unit tests. Imports the
+// client by package name (self-reference here), so the same files also run
+// against an installed, packed `@oxide/client`.
 import assert from "node:assert/strict";
 import { cpSync, mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { type Oxide, OxideError } from "../../dist/index.js";
+import { type Oxide, OxideError } from "@oxide/client";
 
 export const tmp = mkdtempSync(join(tmpdir(), "oxide-client-it-"));
 

@@ -43,8 +43,9 @@ The client never parses CLI prose.
   `@oxide/native` addon (`src/native.ts`, `packages/native`). It keeps the
   index snapshot and embedding model warm between calls, returns the same JSON
   and error envelopes, and is validated the same way.
-  - Linux x64 only, built with `mise run native:build`; the addon loads only
-    when this backend is chosen.
+  - Linux x64 only, built with `mise run native:build`. `@oxide/native` is an
+    optional dependency, loaded only when this backend is chosen, so a
+    process-only install can omit it.
   - It reads this process's environment, so `binary`, `env` and `discover`
     are rejected with it.
   - Numbers are in `docs/ts-client-spawn-overhead/README.md`.
