@@ -17,7 +17,9 @@ not published.
   `mise run lint:native` runs fmt and clippy.
 - This is its own Cargo project, not a member of the root crate. The build
   remaps this machine's paths (Cargo home, toolchain, repo) out of the
-  artifact and fails if any remain. Those flags differ from the root build's,
-  so it builds under `target/native/`.
+  artifact and fails if any remain. The prebuilt ONNX Runtime it links keeps
+  its own upstream build paths (`/home/runner/work/ort-artifacts/...`), as
+  the CLI binary does. The remap flags differ from the root build's, so it
+  builds under `target/native/`.
 - `Cargo.lock` was seeded from the root lock. After a root dependency change,
   run `cp Cargo.lock packages/native/ && cargo metadata --format-version 1 --manifest-path packages/native/Cargo.toml >/dev/null`. It adds napi's entries and keeps every shared version.

@@ -170,7 +170,10 @@ CFLAGS="-ffile-prefix-map=$cargo_home=/cargo -ffile-prefix-map=$PWD=/oxide"
 export RUSTFLAGS CFLAGS CXXFLAGS="$CFLAGS"
 cargo build --release --locked -j 2 --manifest-path packages/native/Cargo.toml --target-dir "$target"
 so="$target/release/liboxide_native.so"
-for path in "$HOME" "$PWD"; do
+# Exactly the remapped prefixes, not all of $HOME: the prebuilt ONNX Runtime
+# (ort-sys) carries its own upstream build paths,
+# /home/runner/work/ort-artifacts/..., which match $HOME on a GitHub runner.
+for path in "$cargo_home" "$sysroot" "$PWD"; do
   if grep -qaF "$path" "$so"; then
     echo "native:build: $so still contains $path" >&2
     exit 1
