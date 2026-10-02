@@ -23,6 +23,9 @@ importers:
 
   packages/client:
     dependencies:
+      '@oxide/native':
+        specifier: workspace:*
+        version: link:../native
       '@oxide/protocol':
         specifier: workspace:*
         version: link:../protocol
@@ -38,6 +41,8 @@ importers:
       '@oxide/client':
         specifier: workspace:*
         version: link:../client
+
+  packages/native: {}
 
   packages/protocol:
     dependencies:

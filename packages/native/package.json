@@ -1,0 +1,10 @@
+{
+  "name": "@oxide/native",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Node-API addon over OXIDE's RepositoryService, loaded by @oxide/client's native backend; built by `mise run native:build`",
+  "main": "oxide_native.node",
+  "files": [
+    "oxide_native.node"
+  ]
+}

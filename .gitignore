@@ -29,3 +29,5 @@ eval-agent/agentbench/.run_tmp/
 /apps/*/node_modules/
 .turbo/
 /packages/*/dist/
+# Built by `mise run native:build` (#36); never committed.
+/packages/native/oxide_native.node

@@ -1,12 +1,16 @@
-// Process-spawn overhead of @oxide/client (#36 T2). Not a test: run by hand,
+// Process-spawn overhead of @oxide/client (#36 T2) and the native backend that
+// removes it. Not a test: run by hand, after `mise run native:build`,
 //   OXIDE_BIN=$PWD/target/release/oxide node packages/client/bench/spawn.ts [hashed|native]
 // and record the output in docs/ts-client-spawn-overhead/README.md.
 //
 // For each repository it times, per call (median and p95 of N runs after
 // warm-up): the bare process floor (`oxide --version`), the client's status /
 // search / query, and the same search and query over one long-lived
-// `oxide mcp` process (what a persistent backend could save), and the
-// client-side JSON.parse + schema validation of the same output.
+// `oxide mcp` process (what a persistent backend could save), the same calls
+// through the native backend (`backend: "native"`, in this process), and the
+// client-side JSON.parse + schema validation of the same output. It also
+// reports the native backend's first call in a fresh process (repository load
+// plus, for the default embedder, the model load) and this process's RSS.
 import { execFileSync, spawn } from "node:child_process";
 import { cpSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -30,11 +34,12 @@ const env: Record<string, string | undefined> =
   embed === "native"
     ? { OXIDE_EMBED_NATIVE: undefined, OXIDE_EMBED_URL: undefined, OXIDE_EMBED_MODEL: undefined }
     : { OXIDE_EMBED_NATIVE: "hashed", HOME: tmp, XDG_CONFIG_HOME: tmp };
-const childEnv: NodeJS.ProcessEnv = { ...process.env };
+// Applied to this process too: the native backend reads its environment.
 for (const [key, value] of Object.entries(env)) {
-  if (value === undefined) delete childEnv[key];
-  else childEnv[key] = value;
+  if (value === undefined) delete process.env[key];
+  else process.env[key] = value;
 }
+const childEnv = process.env;
 
 async function time(fn: () => Promise<unknown> | unknown): Promise<string> {
   const samples: number[] = [];
@@ -106,6 +111,10 @@ async function bench(label: string, source: string) {
     cwd: repo,
     env: childEnv,
   }).toString();
+  const native = new Oxide({ cwd: repo, backend: "native" });
+  const firstCall = performance.now();
+  await native.search(QUERY);
+  const nativeFirst = performance.now() - firstCall;
   const mcp = await mcpSession(repo);
   const rows: [string, string][] = [
     ["process floor (`oxide --version`)", await time(() => run(["--version"], repo))],
@@ -114,6 +123,9 @@ async function bench(label: string, source: string) {
     ["client.query()", await time(() => oxide.query(TASK))],
     ["MCP search, warm process", await time(() => mcp.call("search", { query: QUERY }))],
     ["MCP query, warm process", await time(() => mcp.call("query", { task: TASK }))],
+    ["native.status()", await time(() => native.status())],
+    ["native.search()", await time(() => native.search(QUERY))],
+    ["native.query()", await time(() => native.query(TASK))],
     [
       "parse + validate search output",
       await time(() => SearchResult.parse(JSON.parse(searchJson))),
@@ -123,6 +135,10 @@ async function bench(label: string, source: string) {
   mcp.close();
   console.log(`\n${label}: ${indexed.scanned_files} files, ${indexed.new_symbols} symbols`);
   console.log(`(search output ${searchJson.length} B, query output ${queryJson.length} B)`);
+  console.log(
+    `native first search in this process: ${nativeFirst.toFixed(1)} ms; ` +
+      `RSS after the rows: ${(process.memoryUsage().rss / 2 ** 20).toFixed(0)} MiB`,
+  );
   console.log("| call | median / p95 ms |\n|---|---|");
   for (const [name, value] of rows) console.log(`| ${name} | ${value} |`);
 }

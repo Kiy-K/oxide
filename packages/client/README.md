@@ -28,6 +28,8 @@ against it before it is returned.
   - `exit`: it ended without a JSON answer, such as a usage error with exit
     status 2 or a signal.
   - `invalid-output`: it answered with JSON that `@oxide/protocol` rejects.
+  - `native`: the native backend's addon could not load, or it rejected a
+    call without an answer (for example, a negative `limit`).
 
   `stderr` and `exitCode` are kept for diagnostics only.
 
@@ -35,24 +37,32 @@ The client never parses CLI prose.
 
 ## Scope
 
-- One `oxide <command> --json` process per call (`src/process.ts`).
-- `src/backend.ts` is the internal seam: a future in-process or persistent
-  backend would implement it without changing `Oxide`. Nothing like that
-  exists yet; see the spawn-overhead numbers in
-  `docs/ts-client-spawn-overhead/README.md`.
+- By default, one `oxide <command> --json` process per call
+  (`src/process.ts`).
+- `backend: "native"` serves calls in this process through the
+  `@oxide/native` addon (`src/native.ts`, `packages/native`). It keeps the
+  index snapshot and embedding model warm between calls, returns the same JSON
+  and error envelopes, and is validated the same way.
+  - Linux x64 only, built with `mise run native:build`; the addon loads only
+    when this backend is chosen.
+  - It reads this process's environment, so `binary`, `env` and `discover`
+    are rejected with it.
+  - Numbers are in `docs/ts-client-spawn-overhead/README.md`.
+- `src/backend.ts` is the internal seam both backends implement.
 - `searchLiteral` runs `search --mode literal`. `query({ git: true })` passes
   `--git`; its extra `git` object is not modeled and passes through.
   `new Oxide({ cwd, discover: true })` lets oxide find the repository from
   `cwd` instead of targeting `cwd` exactly.
 - Not offered yet: `review`, `watch`, `setup`.
-- No SQLite access, no daemon, and no native bindings.
+- No SQLite access and no daemon.
 
 ## Tests
 
 - `test/`: unit tests against `test/fake-oxide.mjs`, which replays the
   committed `fixtures/protocol/` output. They run in `verify:ts`, with no Rust
   needed.
-- `test/integration/`: integration tests against the real binary. Run them
+- `test/integration/`: integration tests against the real binary and the
+  native addon, with one suite (`suite.ts`) run over each backend. Run them
   with `mise run ts:integration` (`$OXIDE_BIN`, default
   `target/release/oxide`); they are also part of `mise run verify` and CI's
   client-integration job.

@@ -20,12 +20,13 @@ export class OxideError extends Error {
 /**
  * The client could not get a valid OXIDE answer: the binary failed to start
  * (`spawn`), ended without a JSON answer (`exit`, e.g. a usage error or a
- * signal), or answered with something `@oxide/protocol` rejects
- * (`invalid-output`). `stderr` is kept for diagnostics only.
+ * signal), answered with something `@oxide/protocol` rejects
+ * (`invalid-output`), or the native backend's addon could not load or failed
+ * a call without an answer (`native`). `stderr` is kept for diagnostics only.
  */
 export class OxideClientError extends Error {
   override readonly name = "OxideClientError";
-  readonly reason: "spawn" | "exit" | "invalid-output";
+  readonly reason: "spawn" | "exit" | "invalid-output" | "native";
   readonly exitCode: number | null;
   readonly signal: NodeJS.Signals | null;
   readonly stderr: string;

@@ -142,7 +142,8 @@ jobs:
           MISE_AUTO_INSTALL: "false"
 
   # The one job that needs both toolchains, on purpose: @oxide/client's
-  # integration tests and @oxide/mcp's parity tests (Rust MCP vs the Node-run
+  # integration tests (over both the process and the native addon backends;
+  # the addon is built from packages/native) and @oxide/mcp's parity tests (Rust MCP vs the Node-run
   # and deno-compiled adapter) drive the real binary. Still no `needs` link, so the
   # Rust and TypeScript jobs above stay independent of it and of each other.
   client-integration:
@@ -167,7 +168,11 @@ jobs:
         with:
           version: 2026.9.14
           install_args: node pnpm deno
-      - name: Client and MCP integration tests
+      - name: Lint the native addon crate
+        run: mise run lint:native
+        env:
+          MISE_AUTO_INSTALL: "false"
+      - name: Client (process and native backends) and MCP integration tests
         run: mise run ts:integration
         env:
           MISE_AUTO_INSTALL: "false"

@@ -20,6 +20,7 @@ import type {
   SearchOptions,
 } from "./backend.js";
 import { OxideClientError, OxideError } from "./errors.js";
+import { NativeBackend } from "./native.js";
 import { ProcessBackend } from "./process.js";
 
 export type {
@@ -43,12 +44,30 @@ export interface OxideOptions {
   binary?: string;
   /** Overrides merged over `process.env`; `undefined` removes a variable. */
   env?: Record<string, string | undefined>;
+  /**
+   * `process` (the default) runs one `oxide` process per call. `native`
+   * serves calls in this process through the @oxide/native addon (Linux x64,
+   * `mise run native:build`), keeping the index and model warm between calls.
+   * It reads this process's own environment, so `binary`, `env` and
+   * `discover` are process-only and rejected with it.
+   */
+  backend?: "process" | "native";
 }
 
 export class Oxide {
   readonly #backend: Backend;
 
   constructor(options: OxideOptions) {
+    if (options.backend === "native") {
+      const unsupported = (["binary", "env", "discover"] as const).filter(
+        (key) => options[key] !== undefined,
+      );
+      if (unsupported.length > 0) {
+        throw new TypeError(`the native backend does not take ${unsupported.join(", ")}`);
+      }
+      this.#backend = new NativeBackend(options.cwd);
+      return;
+    }
     this.#backend = new ProcessBackend(
       options.binary ?? "oxide",
       options.cwd,

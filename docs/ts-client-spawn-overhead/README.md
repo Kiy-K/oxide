@@ -74,3 +74,60 @@ runs moved medians by a few ms (for example, py_repo `client.search()` went
   is material. That is the evidence a future persistent-backend proposal (T5,
   or a napi-rs backend behind the same `Oxide` API) would need. Neither is
   built here.
+
+## Native backend (#36 N-API slice)
+
+`new Oxide({ cwd, backend: "native" })` serves calls in the Node process
+through the `@oxide/native` addon (`packages/native`). The addon holds a
+`RepositoryService` with the process cache, the same warm path `oxide mcp`
+uses. Same script, now with `native.*` rows, run after `mise run native:build`.
+Measured at `a69a6c5` plus this change on the same machine, with a load average
+of about 3–4: the process floor rose from 3–6 ms to 6–11 ms, so compare rows
+within one run, not with the tables above.
+
+### Default native embedder (median / p95 ms)
+
+| call | py_repo | oxide `src/` |
+|---|---|---|
+| process floor | 10.7 / 12.2 | 9.0 / 12.7 |
+| client.search(), process | 139.4 / 162.6 | 158.2 / 180.9 |
+| client.query(), process | 149.1 / 176.9 | 163.2 / 182.3 |
+| MCP search, warm | 7.5 / 9.8 | 12.1 / 13.6 |
+| MCP query, warm | 7.3 / 9.0 | 13.6 / 15.2 |
+| native.search() | 8.0 / 9.0 | 12.7 / 14.4 |
+| native.query() | 6.6 / 7.7 | 12.7 / 14.0 |
+| client.status(), process | 10.9 / 14.7 | 36.2 / 40.7 |
+| native.status() | 4.7 / 5.4 | 23.3 / 25.3 |
+
+- First native search in a fresh process, including the model load:
+  153 ms. The first search on a second repository, with the model already
+  loaded: 35 ms.
+- Process RSS after all rows: 173 MiB, then 187 MiB with both repositories
+  loaded.
+
+### Hashed embedder (median / p95 ms)
+
+| call | py_repo | oxide `src/` |
+|---|---|---|
+| client.search(), process | 8.0 / 10.0 | 20.4 / 27.4 |
+| client.query(), process | 8.0 / 10.6 | 24.7 / 29.0 |
+| MCP search / query, warm | 1.6 / 1.8 | 5.4 / 5.8 |
+| native.search() | 1.4 / 1.9 | 5.1 / 7.8 |
+| native.query() | 1.5 / 1.7 | 5.4 / 6.9 |
+
+The first native search was 6 ms on py_repo and 17 ms on `src/`. RSS was
+112–140 MiB.
+
+### Reading
+
+- **The native backend matches the warm MCP process (measured).** Search and
+  query take 7–13 ms with the default embedder, against 139–163 ms per
+  spawned call in the same run: about 12–17×. The model load is paid once per
+  process (the 153 ms first call), not once per call.
+- **There's no parity gap in the client integration suite.** It runs the same
+  body against both backends, covering results, the `index_missing`,
+  `no_source_files`, `repository_not_found` and `invalid_configuration`
+  envelopes, and the dash-leading path.
+- **Process stays the default for now.** The addon is built locally for Linux
+  x64 only, so a native default would fail anywhere without the build.
+  Switching needs prebuilt addons, or a fallback rule, first.

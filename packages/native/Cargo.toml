@@ -1,0 +1,32 @@
+[package]
+name = "oxide-native"
+version = "0.0.0"
+edition = "2021"
+description = "Node-API binding of OXIDE's RepositoryService for @oxide/client's native backend (#36)"
+license = "MIT"
+publish = false
+
+# Its own Cargo project, not a member of the root crate (#36 T0: no Rust
+# workspace restructuring). Cargo.lock started as a copy of the root lock, so
+# the shared dependencies resolve to the same versions; `mise run
+# native:build` builds into the root `target/` with `--locked`.
+[workspace]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+oxide = { path = "../.." }
+napi = { version = "3", default-features = false, features = ["napi4"] }
+napi-derive = "3"
+serde = "1"
+serde_json = "1"
+
+[build-dependencies]
+napi-build = "2"
+
+# Same as the root crate, so the shared `target/` reuses its release artifacts.
+[profile.release]
+debug = false
+lto = "thin"
+codegen-units = 1

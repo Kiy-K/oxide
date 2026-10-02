@@ -145,8 +145,30 @@ fi
 # Absolute: the tests run the binary from temporary repositories.
 OXIDE_BIN="$(realpath "$bin")"
 export OXIDE_BIN
+mise run native:build
 mise run ts:install
 pnpm exec turbo run test:integration
+'''
+
+[tasks."native:build"]
+description = "Build the @oxide/native Node-API addon (packages/native, Linux x64) into packages/native/oxide_native.node"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+# Its own Cargo project (packages/native/Cargo.toml) sharing the root target
+# dir, so the release dependencies the root build compiled are reused.
+target="${CARGO_TARGET_DIR:-target}"
+cargo build --release --locked -j 2 --manifest-path packages/native/Cargo.toml --target-dir "$target"
+cp "$target/release/liboxide_native.so" packages/native/oxide_native.node
+'''
+
+[tasks."lint:native"]
+description = "cargo fmt --check + clippy -D warnings for packages/native (matches CI's client-integration job)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+cargo fmt --check --manifest-path packages/native/Cargo.toml
+cargo clippy -j 2 --locked --manifest-path packages/native/Cargo.toml --target-dir "${CARGO_TARGET_DIR:-target}" -- -D warnings
 '''
 
 [tasks."mcp:compile"]

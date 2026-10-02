@@ -1,6 +1,7 @@
 // The seam between the public `Oxide` API and how a request reaches the Rust
-// binary. Internal: only `ProcessBackend` exists today; a future in-process
-// backend would implement the same interface and leave `Oxide` unchanged.
+// binary. Internal: `ProcessBackend` spawns the binary per call and
+// `NativeBackend` calls the @oxide/native addon in-process; `Oxide` is the same
+// over both.
 
 export type Profile = "fast" | "balanced" | "quality";
 
