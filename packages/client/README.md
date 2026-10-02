@@ -1,12 +1,15 @@
 # @oxide/client
 
-A small typed client over the `oxide` binary's `--json` process boundary
-(#36 T2). Private; not published.
+A small typed client for OXIDE: the native addon in this process when it is
+installed, otherwise the `oxide` binary's `--json` process boundary (#36).
+Private; not published.
 
 ```ts
 import { Oxide, OxideError } from "@oxide/client";
 
-const oxide = new Oxide({ cwd: "/path/to/repo" }); // binary defaults to `oxide` on PATH
+const oxide = new Oxide({ cwd: "/path/to/repo" }); // native if available, else `oxide` on PATH
+oxide.backend;                                       // "native" | "process"
+oxide.fallbackReason;                                // why auto chose process, if it did
 await oxide.index();                                 // IndexResult
 await oxide.status();                                // StatusResult
 await oxide.search("refresh token", { limit: 5 });   // SearchResult (Evidence[])
@@ -37,15 +40,23 @@ The client never parses CLI prose.
 
 ## Scope
 
-- By default, one `oxide <command> --json` process per call
+- `backend` chooses where calls run, once, at construction:
+  - `"auto"` (the default) prefers native and falls back to process when the
+    addon cannot load or `binary`, `env` or `discover` is given. The fallback
+    is explicit: `oxide.backend` says which backend runs and
+    `oxide.fallbackReason` says why. A failing native call is never retried
+    on the process backend.
+  - `"native"` requires the addon and throws if it cannot load.
+  - `"process"` always spawns.
+- The process backend runs one `oxide <command> --json` process per call
   (`src/process.ts`).
-- `backend: "native"` serves calls in this process through the
+- The native backend serves calls in this process through the
   `@oxide/native` addon (`src/native.ts`, `packages/native`). It keeps the
   index snapshot and embedding model warm between calls, returns the same JSON
   and error envelopes, and is validated the same way.
   - Linux x64 and macOS arm64, built with `mise run native:build`.
-    `@oxide/native` is an optional dependency, loaded only when this backend
-    is chosen, so a process-only install can omit it.
+    `@oxide/native` is an optional dependency, so a process-only install can
+    omit it and `auto` then uses the process backend.
   - It reads this process's environment, so `binary`, `env` and `discover`
     are rejected with it.
   - Numbers are in `docs/ts-client-spawn-overhead/README.md`.

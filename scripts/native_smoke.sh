@@ -10,10 +10,12 @@
 # and Node/npm/pnpm on PATH. Checks, in order:
 #   1. the committed client integration suite, unchanged, over the native
 #      and process backends (the binary is the process baseline);
-#   2. the addon loaded into the process is the installed file;
+#   2. the addon loaded into the process is the installed file, and `auto`
+#      selects the native backend;
 #   3. the shipped default embedder loads through the native backend;
 #   4. a process-only install (optional dependencies omitted) still works,
-#      and asking it for the native backend fails cleanly.
+#      asking it for the native backend fails cleanly, and `auto` falls back
+#      to the process backend with its reason.
 set -euo pipefail
 
 asset="$(realpath "${1:?usage: native_smoke.sh <native-asset> <oxide-binary>}")"
@@ -76,6 +78,12 @@ if (loaded.length !== 1 || !realpathSync(loaded[0]).startsWith(dir + "/")) {
   process.exit(1);
 }
 console.log("loaded", loaded[0]);
+const auto = new Oxide({ cwd: "/nonexistent" });
+if (auto.backend !== "native" || auto.fallbackReason !== undefined) {
+  console.error("auto did not select the native backend:", auto.backend, auto.fallbackReason);
+  process.exit(1);
+}
+console.log("auto selects", auto.backend);
 '
 
 echo "== 3. the shipped default embedder through the native backend"
@@ -121,6 +129,15 @@ try {
 }
 console.error("the native backend loaded without the addon");
 process.exit(1);
+'
+in_install "$process_only" node --input-type=module -e '
+import { Oxide } from "@oxide/client";
+const auto = new Oxide({ cwd: "/tmp" });
+if (auto.backend !== "process" || !auto.fallbackReason?.startsWith("the native backend is unavailable")) {
+  console.error("auto did not fall back explicitly:", auto.backend, auto.fallbackReason);
+  process.exit(1);
+}
+console.log("auto falls back to", auto.backend);
 '
 
 rm -rf "$work"

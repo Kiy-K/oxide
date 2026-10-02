@@ -45,29 +45,52 @@ export interface OxideOptions {
   /** Overrides merged over `process.env`; `undefined` removes a variable. */
   env?: Record<string, string | undefined>;
   /**
-   * `process` (the default) runs one `oxide` process per call. `native`
-   * serves calls in this process through the @oxide/native addon (Linux x64
-   * and macOS arm64; `mise run native:build`), keeping the index and model
-   * warm between calls.
-   * It reads this process's own environment, so `binary`, `env` and
-   * `discover` are process-only and rejected with it.
+   * Where calls run. `native` serves them in this process through the
+   * @oxide/native addon (Linux x64 and macOS arm64), keeping the index and
+   * model warm between calls; it reads this process's own environment, so
+   * `binary`, `env` and `discover` are process-only and rejected with it.
+   * `process` runs one `oxide` process per call.
+   *
+   * `auto` (the default) prefers `native` and falls back to `process` when
+   * the addon cannot load or a process-only option is given. The choice is
+   * made once, here, and reported by `Oxide.backend` and
+   * `Oxide.fallbackReason`; a failing native call is never retried on the
+   * process backend.
    */
-  backend?: "process" | "native";
+  backend?: "auto" | "native" | "process";
 }
+
+const PROCESS_ONLY = ["binary", "env", "discover"] as const;
 
 export class Oxide {
   readonly #backend: Backend;
+  /** The backend serving this instance's calls. */
+  readonly backend: "native" | "process";
+  /** Why `backend: "auto"` chose `process`; `undefined` otherwise. */
+  readonly fallbackReason: string | undefined;
 
   constructor(options: OxideOptions) {
-    if (options.backend === "native") {
-      const unsupported = (["binary", "env", "discover"] as const).filter(
-        (key) => options[key] !== undefined,
-      );
-      if (unsupported.length > 0) {
-        throw new TypeError(`the native backend does not take ${unsupported.join(", ")}`);
+    const mode = options.backend ?? "auto";
+    const processOnly = PROCESS_ONLY.filter((key) => options[key] !== undefined);
+    if (mode === "native" && processOnly.length > 0) {
+      throw new TypeError(`the native backend does not take ${processOnly.join(", ")}`);
+    }
+    let fallbackReason: string | undefined;
+    if (mode !== "process") {
+      if (processOnly.length > 0) {
+        fallbackReason = `process-only options given: ${processOnly.join(", ")}`;
+      } else {
+        try {
+          this.#backend = new NativeBackend(options.cwd);
+          this.backend = "native";
+          this.fallbackReason = undefined;
+          return;
+        } catch (error) {
+          // Only an addon that cannot load falls back, and only under auto.
+          if (mode === "native" || !(error instanceof OxideClientError)) throw error;
+          fallbackReason = error.message;
+        }
       }
-      this.#backend = new NativeBackend(options.cwd);
-      return;
     }
     this.#backend = new ProcessBackend(
       options.binary ?? "oxide",
@@ -75,6 +98,8 @@ export class Oxide {
       options.env === undefined ? undefined : mergeEnv(process.env, options.env),
       options.discover ?? false,
     );
+    this.backend = "process";
+    this.fallbackReason = fallbackReason;
   }
 
   /** `oxide status`: index existence and freshness. Never builds an index. */

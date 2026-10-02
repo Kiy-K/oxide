@@ -13,6 +13,12 @@ for (const [key, value] of Object.entries(env)) {
 
 suite((cwd) => new Oxide({ cwd, backend: "native" }));
 
+test("auto selects the native backend when the addon loads", () => {
+  const oxide = new Oxide({ cwd: tmp });
+  assert.equal(oxide.backend, "native");
+  assert.equal(oxide.fallbackReason, undefined);
+});
+
 test("process-only options are rejected with the native backend", () => {
   assert.throws(() => new Oxide({ cwd: tmp, backend: "native", binary: "oxide" }), {
     name: "TypeError",

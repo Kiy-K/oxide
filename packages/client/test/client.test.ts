@@ -212,3 +212,28 @@ test("a missing binary is a spawn failure", async () => {
   const oxide = new Oxide({ cwd: tmpdir(), binary: join(tmpdir(), "no-such-oxide-binary") });
   await assert.rejects(oxide.status(), { name: "OxideClientError", reason: "spawn" });
 });
+
+test("process-only options make auto choose the process backend, and say so", () => {
+  const oxide = new Oxide({ cwd: tmpdir(), binary: fake });
+  assert.equal(oxide.backend, "process");
+  assert.equal(oxide.fallbackReason, "process-only options given: binary");
+  const discovering = new Oxide({ cwd: tmpdir(), env: {}, discover: true });
+  assert.equal(discovering.fallbackReason, "process-only options given: env, discover");
+});
+
+test("an explicit process backend is not a fallback", () => {
+  const oxide = new Oxide({ cwd: tmpdir(), backend: "process" });
+  assert.equal(oxide.backend, "process");
+  assert.equal(oxide.fallbackReason, undefined);
+});
+
+// This job may or may not have the addon built; either way auto must be
+// native with no reason, or process with the load failure as its reason.
+test("auto prefers native and reports any fallback", () => {
+  const oxide = new Oxide({ cwd: tmpdir() });
+  if (oxide.backend === "native") {
+    assert.equal(oxide.fallbackReason, undefined);
+  } else {
+    assert.match(oxide.fallbackReason ?? "", /^the native backend is unavailable/);
+  }
+});
