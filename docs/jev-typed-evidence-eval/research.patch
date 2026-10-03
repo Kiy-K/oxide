@@ -1,0 +1,264 @@
+diff --git a/examples/jev_pack.rs b/examples/jev_pack.rs
+new file mode 100644
+index 0000000..2ebb978
+--- /dev/null
++++ b/examples/jev_pack.rs
+@@ -0,0 +1,69 @@
++//! #40 G5 pack harness (RESEARCH ONLY; docs/jev-typed-evidence-eval/research.patch,
++//! never merged). Opens the corpus index read-only and runs the real
++//! `build_context_with` with default `ContextOptions` (balanced, 4096, no
++//! blast/git) per task, with `context::jev_research` tracing on:
++//!   arm A: no order override;
++//!   arm B: the task's `order` (view keys in S+F order) as the sort override.
++//! Output (one line per task and arm) carries ch5's `score_alloc.pack_metrics`
++//! inputs: {id, arm, budget, used, trace: {packed, used, omitted}, context_ms}.
++//!
++//! Usage: jev_pack <repo_root> <tasks.jsonl> [--arms a|b|ab] > packs.jsonl
++//! Each input line: {"id", "query", "order": ["file#qualified_name", ...] | null}.
++use oxide::context::{build_context_with, jev_research, ContextOptions};
++use oxide::embeddings::open_embedder;
++use oxide::retrieval::{RetrievalEngine, SymbolSnapshot};
++use oxide::storage::SqliteStore;
++use serde_json::{json, Value};
++use std::collections::HashMap;
++use std::io::{BufRead, Write};
++use std::time::Instant;
++
++fn main() -> anyhow::Result<()> {
++    let args: Vec<String> = std::env::args().collect();
++    let root = std::path::PathBuf::from(&args[1]).canonicalize()?;
++    let tasks = std::io::BufReader::new(std::fs::File::open(&args[2])?);
++    let arms = args
++        .iter()
++        .position(|a| a == "--arms")
++        .and_then(|i| args.get(i + 1).cloned())
++        .unwrap_or_else(|| "ab".into());
++    let embedder = open_embedder(None)?;
++    let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
++    let snapshot = SymbolSnapshot::load(&store)?;
++    let engine = RetrievalEngine::with_snapshot(&store, embedder.as_ref(), &snapshot);
++    let out = std::io::stdout();
++    let mut out = out.lock();
++    for line in tasks.lines() {
++        let line = line?;
++        if line.trim().is_empty() {
++            continue;
++        }
++        let task: Value = serde_json::from_str(&line)?;
++        let query = task["query"].as_str().unwrap_or_default().to_string();
++        for arm in arms.chars() {
++            let order: Option<HashMap<String, usize>> = match arm {
++                'a' => None,
++                _ => {
++                    let keys = task["order"].as_array();
++                    anyhow::ensure!(keys.is_some(), "arm b needs an order for {}", task["id"]);
++                    let mut m = HashMap::new();
++                    for (i, k) in keys.unwrap().iter().enumerate() {
++                        m.entry(k.as_str().unwrap_or_default().to_string()).or_insert(i);
++                    }
++                    Some(m)
++                }
++            };
++            jev_research::set(true, order);
++            let t = Instant::now();
++            let pack = build_context_with(&root, &engine, &query, &ContextOptions::default())?;
++            let ms = t.elapsed().as_secs_f64() * 1e3;
++            let trace = jev_research::take().unwrap_or(Value::Null);
++            jev_research::set(false, None);
++            let rec = json!({"id": task["id"], "arm": arm.to_string(),
++                "budget": pack.budget_tokens, "used": pack.used_tokens,
++                "trace": trace, "context_ms": [ms]});
++            writeln!(out, "{}", serde_json::to_string(&rec)?)?;
++        }
++    }
++    Ok(())
++}
+diff --git a/src/context.rs b/src/context.rs
+index ff81b53..6649caa 100644
+--- a/src/context.rs
++++ b/src/context.rs
+@@ -36,6 +36,41 @@ pub enum Role {
+     Test,
+ }
+ 
++/// RESEARCH ONLY (#40 G5, `docs/jev-typed-evidence-eval/research.patch`;
++/// never merged). Default state: tracing off and no order override, which
++/// leaves `build_context_with` byte-identical to production. It can do only
++/// two things: (a) record ch5-compatible `trace.packed` snippet spans, and
++/// (b) when an order is set (arm B), replace the score used in the `kept`
++/// sort key. The relevance floor still reads the original scores.
++pub mod jev_research {
++    use std::collections::HashMap;
++    use std::sync::atomic::{AtomicBool, Ordering};
++    use std::sync::Mutex;
++
++    pub static TRACE_ON: AtomicBool = AtomicBool::new(false);
++    pub static TRACE: Mutex<Option<serde_json::Value>> = Mutex::new(None);
++    /// Arm B: `file#qualified_name` -> position in the S+F view order.
++    pub static ORDER: Mutex<Option<HashMap<String, usize>>> = Mutex::new(None);
++
++    pub fn set(trace: bool, order: Option<HashMap<String, usize>>) {
++        TRACE_ON.store(trace, Ordering::SeqCst);
++        *ORDER.lock().unwrap() = order;
++    }
++    pub fn tracing() -> bool {
++        TRACE_ON.load(Ordering::SeqCst)
++    }
++    pub fn order() -> Option<HashMap<String, usize>> {
++        ORDER.lock().unwrap().clone()
++    }
++    pub fn take() -> Option<serde_json::Value> {
++        TRACE.lock().unwrap().take()
++    }
++}
++
++fn research_key(s: &Symbol) -> String {
++    format!("{}#{}", s.file, s.qualified_name)
++}
++
+ pub const CHARS_PER_TOKEN: f32 = CONTEXT_CHARS_PER_TOKEN;
+ 
+ #[derive(Debug, Serialize)]
+@@ -363,14 +398,24 @@ pub fn build_context_with(
+     }
+ 
+     // ---- ordering: primaries → dependencies → tests, score-desc within role
++    // RESEARCH (#40 arm B): view candidates get a strictly decreasing
++    // synthetic score above every original score; everything else keeps its
++    // original score. Unset order: `score as f64`, the same ordering.
++    let research_order = jev_research::order();
++    let sort_score = |c: &Pooled| -> f64 {
++        research_order
++            .as_ref()
++            .and_then(|o| o.get(&research_key(&c.candidate.symbol)))
++            .map(|pos| 1e6 - *pos as f64)
++            .unwrap_or(c.candidate.score as f64)
++    };
+     kept.sort_by(|a, b| {
+         a.role
+             .rank()
+             .cmp(&b.role.rank())
+             .then(
+-                b.candidate
+-                    .score
+-                    .partial_cmp(&a.candidate.score)
++                sort_score(b)
++                    .partial_cmp(&sort_score(a))
+                     .unwrap_or(std::cmp::Ordering::Equal),
+             )
+             .then_with(|| a.candidate.symbol.id().cmp(&b.candidate.symbol.id()))
+@@ -405,6 +450,7 @@ pub fn build_context_with(
+     let mut primaries = 0usize;
+     let mut tests = 0usize;
+     let max_primaries = research.context_max_primaries;
++    let mut spans: HashMap<u64, (u32, u32, bool)> = HashMap::new();
+     for c in &kept {
+         let cid = format!(
+             "{}#{}",
+@@ -453,9 +499,11 @@ pub fn build_context_with(
+         // never displaces a large primary.
+         let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
+         let (snippet, est) = loop {
+-            let snip = render_snippet(root, &c.candidate.symbol, &terms, cap);
++            let (snip, lo, hi, trunc) =
++                render_snippet_span(root, &c.candidate.symbol, &terms, cap);
+             let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
+             if used + e <= opts.budget_tokens || cap == 0 {
++                spans.insert(c.candidate.symbol.id(), (lo, hi, trunc));
+                 break (snip, e);
+             }
+             cap /= 2;
+@@ -499,6 +547,25 @@ pub fn build_context_with(
+             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+     });
+ 
++    if jev_research::tracing() {
++        let packed: Vec<serde_json::Value> = items
++            .iter()
++            .map(|i| {
++                let (lo, hi, trunc) = spans
++                    .get(&i.symbol.id())
++                    .copied()
++                    .unwrap_or((0, 0, false));
++                serde_json::json!({"key": research_key(&i.symbol), "role": i.role,
++                    "est": i.est_tokens, "span": [lo, hi], "truncated": trunc,
++                    "added": false})
++            })
++            .collect();
++        *jev_research::TRACE.lock().unwrap() = Some(serde_json::json!({
++            "packed": packed, "used": used,
++            "omitted": dropped.iter().map(|o| serde_json::json!([o.id, o.why])).collect::<Vec<_>>(),
++        }));
++    }
++
+     Ok(ContextPack {
+         task: task.to_string(),
+         // Query formatting is now internal to the provider (`embed_query`),
+@@ -544,20 +611,31 @@ fn split_below_floor(kept: Vec<Pooled>, floor: f32) -> (Vec<Pooled>, Vec<Pooled>
+ /// otherwise a window centered on the lines matching the most query terms
+ /// (head of the symbol as fallback when nothing matches).
+ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize) -> String {
++    render_snippet_span(root, s, terms, max_tokens).0
++}
++
++/// RESEARCH (ch5): `render_snippet` plus the 1-based inclusive line span it
++/// delivered (`(0, 0)` when empty) and whether the body was truncated.
++fn render_snippet_span(
++    root: &Path,
++    s: &Symbol,
++    terms: &[String],
++    max_tokens: usize,
++) -> (String, u32, u32, bool) {
+     let Ok(src) = std::fs::read_to_string(root.join(&s.file)) else {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     };
+     let lines: Vec<&str> = src.lines().collect();
+     let lo = s.start_line.saturating_sub(1) as usize;
+     let hi = (s.end_line as usize).min(lines.len());
+     if hi <= lo {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     }
+     let body = &lines[lo..hi];
+     let budget = (max_tokens as f32 * CHARS_PER_TOKEN) as usize;
+     let total: usize = body.iter().map(|l| l.len() + 1).sum();
+     if total <= budget {
+-        return body.join("\n");
++        return (body.join("\n"), lo as u32 + 1, hi as u32, false);
+     }
+     let hits = |line: &str| -> usize {
+         let low = line.to_lowercase();
+@@ -568,14 +646,17 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+     if best == 0 || budget == 0 {
+         // No query-term anchor: keep the head of the symbol.
+         let mut out = String::new();
++        let mut n = 0u32;
+         for l in body {
+             if out.len() + l.len() + 1 > budget {
+                 break;
+             }
+             out.push_str(l);
+             out.push('\n');
++            n += 1;
+         }
+-        return out.trim_end_matches('\n').to_string();
++        let span = if n == 0 { (0, 0) } else { (lo as u32 + 1, lo as u32 + n) };
++        return (out.trim_end_matches('\n').to_string(), span.0, span.1, true);
+     }
+     // Window around the first densest-match line, growing toward the shorter
+     // neighbor line until the character budget is spent.
+@@ -604,7 +685,12 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+         }
+         used += cost;
+     }
+-    body[lo_i..=hi_i].join("\n")
++    (
++        body[lo_i..=hi_i].join("\n"),
++        (lo + lo_i) as u32 + 1,
++        (lo + hi_i) as u32 + 1,
++        true,
++    )
+ }
+ 
+ /// The context allocator's own test predicate, used only by
