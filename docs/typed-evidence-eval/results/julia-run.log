@@ -1,0 +1,12 @@
+load 7.2s threads 2
+julia@a85b127321d5 cb SWE-Bench-Verified__python__maintenance__bugfix__36989b6d files 10 50.3s median/file 5004ms rss 1350MB
+julia@a85b127321d5 cb SWE-Bench-Verified__python__maintenance__bugfix__60068eb0 files 12 54.2s median/file 5044ms rss 1405MB
+julia@a85b127321d5 cb SWE-Bench-Verified__python__maintenance__bugfix__1409977d files 12 46.9s median/file 5022ms rss 1405MB
+julia@a85b127321d5 cb SWE-Bench-Verified__python__maintenance__bugfix__2e76c8cd files 12 41.1s median/file 3794ms rss 1405MB
+julia@a85b127321d5 cb SWE-PolyBench__typescript__maintenance__bugfix__42165c4e files 12 60.1s median/file 5018ms rss 1405MB
+julia@a85b127321d5 cb Multi-SWE-Bench__typescript__maintenance__bugfix__8d780f70 files 12 44.7s median/file 4150ms rss 1405MB
+julia@a85b127321d5 heldout flask-a411a243 files 11 28.8s median/file 3582ms rss 1405MB
+julia@a85b127321d5 heldout requests-d2f6bdec files 8 27.3s median/file 3757ms rss 1405MB
+julia@a85b127321d5 heldout zod-9446b5cc files 12 31.7s median/file 3655ms rss 1405MB
+julia@a85b127321d5 heldout httpx-d293374b files 9 32.4s median/file 3700ms rss 1405MB
+Oct 03 18:28:11 fedora systemd[4289]: typed-evidence-258941.scope: Consumed 14min 261ms CPU time over 7min 6.213s wall clock time, 1.1G memory peak.
