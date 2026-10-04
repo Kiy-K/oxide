@@ -71,7 +71,15 @@ The #40 frozen task set: **149 tasks** (80 held-out with edit-locus gold, 69 Con
 
 ## Metrics and gates
 
-Metric definitions come from `docs/alloc-utilization-eval/scripts/score_alloc.py`: gold-line coverage, relevant tokens / used tokens, gold-symbol coverage, items, files and tokens. The scripts adapt only the input loading. Every comparison is a paired bootstrap with 10,000 resamples and seed 0, pooled over the 149 tasks, and is also reported per stratum.
+Metric definitions come from `docs/alloc-utilization-eval/scripts/score_alloc.py`: gold-line coverage, relevant tokens / used tokens, gold-symbol coverage, items, files and tokens. The scripts adapt only the input loading. Comparisons are pooled over the 149 tasks and also reported per stratum.
+
+**Verdict-bearing CIs: repo-clustered paired bootstrap (the same procedure as #40, amended before any scored run).**
+- Each resample draws repos with replacement, then draws tasks with replacement within each drawn repo, keeping that repo's task count.
+- A repo is the lowercased upstream `owner/name`. The same upstream in held-out and ContextBench (psf/requests, BurntSushi/ripgrep) is one repo.
+- The statistic is the task-weighted mean of the per-task paired Δ over the resampled multiset. E1's relative efficiency is ch5's definition, (mean_task eff_X − mean_task eff_B) ÷ mean_task eff_B, computed within each resample, on the same resamples as coverage. Tasks where the baseline used 0 tokens are dropped from efficiency.
+- 10,000 resamples, 95 % percentile intervals. Every analysis (pooled, each stratum, each reported comparison) uses a fresh `numpy.random.default_rng(0)`, with repos in sorted order. Within a stratum, clustering is by repo within that stratum.
+- Every CI that decides a gate (Q1, E1) uses this bootstrap. Q2 is decided on per-stratum point estimates.
+- An ordinary task-level paired bootstrap (10,000 resamples, seed 0) is reported only as a descriptive sensitivity check. **It does not decide any gate.**
 
 | gate | rule |
 |---|---|
@@ -113,4 +121,5 @@ Runs go under a capped `systemd-run` (CPU and memory limits). The only model is 
 - Pool depth beyond 16 seeds: a deeper pool is a separate question, and its effect would be confounded with hierarchy.
 - Any change to retrieval, fusion, embeddings or the production allocator.
 - Any production integration, flag or CLI/MCP surface.
+
 
