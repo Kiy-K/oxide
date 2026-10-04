@@ -1,16 +1,21 @@
-# #43 cap removal at matched tokens — STOPPED (unvalidated lead)
+# #43 cap removal at matched tokens
 
-Status: **stopped before any task was scored; the lead stays unvalidated.** Production is unchanged.
+Status: **running** (fresh-task generation). Production is unchanged.
 
 - The protocol (`PROTOCOL.md`, sha256 `b8788652…`), the generation, run and score scripts, and
   `prereg.sha256` were frozen at `b400c13`, before any fresh task existed.
-- Fresh-task generation was stopped by decision on 2026-10-04, during the held-out stage: raw
-  candidates had been generated for httpx, requests, flask and ripgrep. No ContextBench draw, no arm
-  run and no score exists. The partial cache (`~/.cache/oxide-capremoval-eval`) is machine-local.
-- The lead itself is unchanged: on #42's 149 tasks (in-sample, not gated), B vs A gave +0.0527
-  [+0.0137, +0.0975] coverage and +13.5 % rel/used at matched tokens, held-out-driven
-  (`docs/treeselect-eval/README.md` §2).
-- Why stopped: work moves to an index-time repository tree (TreeIndex/TreeRouter,
-  `docs/treeselect-eval/pageindex-notes.md`). That may replace selection and allocation as they stand,
-  instead of tuning the current caps.
-- To resume, rerun `scripts/gen_all.sh b400c13`. It is idempotent per stage; the protocol is unchanged.
+- This is an independent allocator experiment: it is not TreeSelect, and it does not rerank the
+  shortlist. Its result is kept as input for the future index-time tree architecture
+  (TreeIndex/TreeRouter, `docs/treeselect-eval/pageindex-notes.md`).
+
+## Interruption and resume (2026-10-04), before any task was scored
+
+- Generation was stopped once by decision, during the held-out stage. At that point the raw
+  candidates for httpx, requests, flask and ripgrep were complete (`.done`), and clap was mid-run.
+- The decision was reversed, and generation resumed with the same frozen script and commit
+  (`gen_all.sh b400c13`).
+- `make_tasks.py` reuses an existing worktree without re-indexing it. So the two clap worktrees created
+  during the interrupted run (`clap-81dea3b6`, `clap-f5ba9c51`) were removed before resuming, and the
+  clap stage regenerated from an empty `raw-clap.jsonl`, as an uninterrupted run would.
+- Completed stages were left untouched. No ContextBench draw, arm run or score existed at the
+  interruption.
