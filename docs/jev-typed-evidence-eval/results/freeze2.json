@@ -1,0 +1,46 @@
+{
+ "frozen_commit": "84c4d4a4a2f98a3a8fcd9f4336384b701c0a20b1",
+ "src_frozen_head": "84c4d4a4a2f98a3a8fcd9f4336384b701c0a20b1",
+ "src_research_head": "84c4d4a4a2f98a3a8fcd9f4336384b701c0a20b1",
+ "research_patch_sha256": "123bfcb9717e37ce8709cb83c2dabe8dda152a622fd403924666e6d98b96d982",
+ "binaries_sha256": {
+  "frozen/oxide": "5b18d226e02058e05e36ab0252fd0deae4ca098e29e4e031dfd57cb901c94b5a",
+  "frozen/fusion_dump": "a612f4d02474c70bec37992996178f008522535ec347e1b0599994bc6ab61231",
+  "research/oxide": "93e0718fd6ed52a08d6cd48c9c67b1e02891ef0d36113e2f65f23dd379f7ee23",
+  "research/jev_pack": "87ab659f84f9ec8715fc5ea98acc3fb150bf0934e9df8d847f3a8700ff393f84"
+ },
+ "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+ "contextbench_parquet_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "julia1_tokenizer": {
+  "revision": "a85b127321d580d65176c89ced8273f305745d85",
+  "tokenizer.json_sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f"
+ },
+ "python": "3.11.17",
+ "packages": {
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "transformers": "5.0.0",
+  "tokenizers": "0.22.2",
+  "pyarrow": "25.0.1"
+ },
+ "heldout_clone_heads": [
+  "encode/httpx b5addb64f0161ff6bfe94c124ef76f6a1fba5254",
+  "psf/requests 611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+  "pallets/flask d73fa1cdcbd8b1465c151db8924ba58b1dd14e35",
+  "BurntSushi/ripgrep 3fce3b5bb0236da2df6d99672afb8a719642eca7",
+  "clap-rs/clap 4be56132cf7a5ef6e237409a13225a5829cb24e4",
+  "rayon-rs/rayon ee0a00bdb1ab039e178a215ad5712fb7fa58e58f",
+  "colinhacks/zod 0b216ef674e297ebe41d8bf902262e56f8755822",
+  "axios/axios c4303eeb601d3d5914a0f425cc7539616fdc7ea7"
+ ],
+ "jev": {
+  "model": "jev-1.13.0",
+  "endpoint": "https://api.typesafe.ai/v1/systemone",
+  "docs_checked": "2026-10-04 (docs.typesafe.ai/models.md: jev-1.13.0 current, jev-latest -> jev-1.13.0; $0.042 per Mtok input, output free; 80 req/s, 100K tok/s)"
+ },
+ "host": {
+  "cpu": "i7-13620H (16 threads)",
+  "ram_gb": 15,
+  "caps": "oxide index/dump under systemd-run MemoryMax 3-4G, CPUQuota 300-400%, nice 10"
+ }
+}

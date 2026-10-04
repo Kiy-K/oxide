@@ -12,7 +12,7 @@ G5 metrics: ch5 score_alloc.pack_metrics, called unchanged through its own modul
 
 usage: eval_40.py
 """
-import json, os, runpy, subprocess, sys, tempfile
+import contextlib, gzip, io, json, os, runpy, subprocess, sys, tempfile
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -131,7 +131,8 @@ def pack_metrics_for(ts, label):
         argv = sys.argv
         sys.argv = ['score_alloc.py', tp, dp, '--cb', gp]
         try:
-            mod = runpy.run_path(f'{REPO}/docs/alloc-utilization-eval/scripts/score_alloc.py', run_name='score_alloc')
+            with contextlib.redirect_stdout(io.StringIO()):  # its module-level main() prints empty tables
+                mod = runpy.run_path(f'{REPO}/docs/alloc-utilization-eval/scripts/score_alloc.py', run_name='score_alloc')
         finally:
             sys.argv = argv
     return [mod['pack_metrics'](packs[(t['id'], label)], {'id': t['id'], 'path': t['root']},
@@ -186,7 +187,13 @@ def validity(tasks, kept, excluded, calls):
                'pass': models == {MODEL} and can_ok and drift <= 0.02}
     chk = lambda f: subprocess.run(['sha256sum', '-c', os.path.basename(f)], cwd=os.path.dirname(f),
                                    capture_output=True).returncode == 0
-    v['V4'] = {'pass': chk(os.path.join(HERE, '..', 'PROTOCOL.sha256')) and chk(os.path.join(RES, 'prereg.sha256'))}
+    # the committed task files must also be byte-identical to the cache copies the run reads
+    tdir = os.path.join(HERE, '..', 'tasks')
+    same = all((gzip.open if f.endswith('.gz') else open)(os.path.join(tdir, f), 'rb').read()
+               == open(os.path.join(J, 'excl' if f == 'exclusions.json' else 'tasks', f.removesuffix('.gz')), 'rb').read()
+               for f in sorted(os.listdir(tdir)))
+    v['V4'] = {'cache_copies_identical': same,
+               'pass': same and chk(os.path.join(HERE, '..', 'PROTOCOL.sha256')) and chk(os.path.join(RES, 'prereg.sha256'))}
     par = [l.rstrip('\n').split('\t') for l in open(os.path.join(RES, 'parity_v5.tsv'))
            if l.strip() and not l.startswith('id\t')]
     v['V5'] = {'tasks': len(par), 'mismatch': sum(r[1] != 'identical' for r in par)}
@@ -195,6 +202,16 @@ def validity(tasks, kept, excluded, calls):
 
 
 # ---------------------------------------------------------------- gates
+def artifact_free(kept):
+    """§4: drop test and module-only files; ranks and X+F stay from the full view."""
+    af = []
+    for t in kept:
+        rows = [r for r in t['rows'] if not r['is_test'] and not r['module_only']]
+        if 0 < sum(r['y'] for r in rows) < len(rows):
+            af.append({**t, 'rows': rows})
+    return af
+
+
 def gates(kept):
     G, pt_fail, ci_fail = {}, [], []
 
@@ -208,12 +225,7 @@ def gates(kept):
 
     rec('G1', delta(kept, 'S', 'J1'), thr=0.10)
     rec('G2', delta(kept, 'S+F', 'fused'), thr=0.05)
-    af = []
-    for t in kept:  # ranks and X+F from the full view, not recomputed
-        rows = [r for r in t['rows'] if not r['is_test'] and not r['module_only']]
-        if 0 < sum(r['y'] for r in rows) < len(rows):
-            af.append({**t, 'rows': rows})
-    rec('G2_artifact_free', delta(af, 'S+F', 'fused'))
+    rec('G2_artifact_free', delta(artifact_free(kept), 'S+F', 'fused'))
     for s in ('heldout', 'cb'):
         rec(f'G3a_{s}', delta([t for t in kept if t['set'] == s], 'S+F', 'fused'))
     ceil = lambda t: auc(t['rows'], 'S+F') == 1.0 and auc(t['rows'], 'fused') == 1.0
@@ -289,15 +301,46 @@ def continuity(kept):
                   'task_boot_ci': [float(np.percentile(a[ti].mean(1), 2.5)), float(np.percentile(a[ti].mean(1), 97.5))],
                   'r_at3': float(np.mean([r_at3(t['rows'], n) for t in kept]))}
     out['random'] = {'auroc': float(np.mean([random_auc(t['rows']) for t in kept]))}
-    j1f, j1f_af = delta(kept, 'J1+F', 'fused'), None
+    j1f, j1f_af = delta(kept, 'J1+F', 'fused'), delta(artifact_free(kept), 'J1+F', 'fused')
     out['J1+F_vs_fused'] = {k: v for k, v in j1f.items() if k != 'per_task'}
+    out['J1+F_vs_fused_artifact_free'] = {k: v for k, v in j1f_af.items() if k != 'per_task'}
+    out['J1+F_meets_G2'] = (passes(j1f, 0.05) == (True, True) and passes(j1f_af) == (True, True))
+    return out
+
+
+def ops(scores):
+    """§7 operational record from the scoring run (reported; not part of the verdict)."""
+    calls = [c for s in scores for c in s['calls']]
+    ok = [c for c in calls if c['ok']]
+    ms = np.array([c['ms'] for c in calls])
+    wall = np.array([s['task_wall_ms'] for s in scores])
+    st = [str(a['status']) for c in calls for a in c['attempts']]
+    pct = lambda a, q: float(np.percentile(a, q)) if len(a) else float('nan')
+    out = {'requests': len(calls), 'ok': len(ok), 'attempts': len(st),
+           'retries': sum(len(c['attempts']) - 1 for c in calls),
+           'status_counts': {k: st.count(k) for k in sorted(set(st))},
+           'request_ms': {q: pct(ms, q) for q in (50, 95, 99)},
+           'task_wall_ms': {q: pct(wall, q) for q in (50, 95)}}
+    for arm in ('typed', 'meta'):
+        tok = [c['usage']['input_tokens'] for c in ok if c['arm'] == arm and c.get('usage')]
+        per_task = [sum(c['usage']['input_tokens'] for c in s['calls'] if c['ok'] and c['arm'] == arm and c.get('usage'))
+                    for s in scores]
+        out[arm] = {'input_tokens_per_file_mean': float(np.mean(tok)) if tok else float('nan'),
+                    'input_tokens_per_task_mean': float(np.mean(per_task)),
+                    'usd_per_1000_queries_at_0.042_per_Mtok': float(np.mean(per_task)) * 1000 * 0.042 / 1e6}
+    lat = os.path.join(RES, 'latency.jsonl')
+    if os.path.exists(lat):
+        L = [json.loads(l) for l in open(lat)]
+        seq = np.array([x['ms'] for x in L if x['ok']])
+        out['sequential_synthetic'] = {'n': len(L), 'ok': len(seq), 'p50': pct(seq, 50), 'p95': pct(seq, 95),
+                                       'cold_first_ms': L[0]['ms'], 'warm_p50': pct(seq[1:], 50)}
     return out
 
 
 def main():
     tasks, kept, excluded, calls = load()
     v = validity(tasks, kept, excluded, calls)
-    res = {'validity': v}
+    res = {'validity': v, 'ops': ops([json.loads(l) for l in open(os.path.join(RES, 'scores.jsonl'))])}
     if not all(x['pass'] for x in v.values()):
         res['verdict'] = 'INCONCLUSIVE (validity)'
     else:

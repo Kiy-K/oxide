@@ -1,0 +1,108 @@
+{"set": "heldout", "id": "httpx-2318fd82", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-1e110964", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-90538a3b", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-b471f01d", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-9751f761", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-e63b6594", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-7c9db49f", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-59df8190", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-88e84314", "repo": "encode/httpx", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "httpx-a54ecccd", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-adbcd0e0", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-e874351f", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "httpx-9415af64", "repo": "encode/httpx", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-9a40d127", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-555b870e", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-e45b4289", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-1604e20f", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-c0813a2d", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-60389df6", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-3fd309a5", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-b37878d3", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-c32b0462", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-dfe46c1b", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-2ecdb685", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-b639e66c", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-26bea1e4", "repo": "psf/requests", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "requests-7f694b79", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "requests-53a05623", "repo": "psf/requests", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-1d7281fe", "repo": "pallets/flask", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "flask-8646edca", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-84c007d3", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-b626a938", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-fc03d0df", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-cabda593", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-d7b6c1f6", "repo": "pallets/flask", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "flask-4bc0e494", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-79032ca5", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-0d8c8ba7", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-746455d1", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "flask-5d8e3565", "repo": "pallets/flask", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-f127579b", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-c10f151e", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-85edf4c7", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-b3dc4b09", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-de2567a4", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-91641585", "repo": "burntsushi/ripgrep", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "ripgrep-0407e104", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-fdea9723", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-c45ec163", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-1b07c661", "repo": "burntsushi/ripgrep", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "ripgrep-8b5d3d1c", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "ripgrep-64174b8e", "repo": "burntsushi/ripgrep", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-14d47fb7", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-1ca55413", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-943de735", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-8a93d4be", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-5967c173", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-49a05cdc", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-ac0d148f", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-34ef8a02", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-7ffe7399", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-dd1fcd3d", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-144e5cb4", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-578cd43a", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-3604b131", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-ce7dcce9", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-3a980a83", "repo": "clap-rs/clap", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "clap-76a016a0", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "clap-475cac90", "repo": "clap-rs/clap", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-70ae0f90", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-fade88f5", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-681c3c8f", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-383cc425", "repo": "rayon-rs/rayon", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "rayon-1f399d00", "repo": "rayon-rs/rayon", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "rayon-f2232697", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-4d2f0b62", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-03317c8a", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-5f97d07c", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-e3701d54", "repo": "rayon-rs/rayon", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "rayon-b56ae426", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-e7c74811", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "rayon-b5a9a0e2", "repo": "rayon-rs/rayon", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "rayon-a4da6414", "repo": "rayon-rs/rayon", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-0b216ef6", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-84e416fb", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-eab51ff3", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-7e24a242", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-212b9417", "repo": "colinhacks/zod", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "zod-2e1f2b41", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-24cdb7fd", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-8d896186", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-97edaf7d", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-21a6f0cb", "repo": "colinhacks/zod", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "zod-7ce3e77d", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "zod-7b612b53", "repo": "colinhacks/zod", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-c4303eeb", "repo": "axios/axios", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "axios-a93b1c90", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-ff60b432", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-e435384f", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-97131238", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-02c2c4f8", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-7b1825ff", "repo": "axios/axios", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "axios-78b5187e", "repo": "axios/axios", "eligible": false, "why": "not eligible"}
+{"set": "heldout", "id": "axios-9e5c894e", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-d45e7377", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-3243566a", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-44de1e48", "repo": "axios/axios", "eligible": true, "why": null}
+{"set": "heldout", "id": "axios-a446b39b", "repo": "axios/axios", "eligible": true, "why": null}

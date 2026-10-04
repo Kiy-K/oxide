@@ -1,0 +1,57 @@
+{
+ "frozen_commit": "84c4d4a4a2f98a3a8fcd9f4336384b701c0a20b1",
+ "files_scanned": 771,
+ "used_shas": 535,
+ "repos": {
+  "axios": {
+   "excluded_in_window": 22,
+   "first20": 20,
+   "post_date_in_first20": 1,
+   "contributes": 1
+  },
+  "clap": {
+   "excluded_in_window": 13,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "flask": {
+   "excluded_in_window": 38,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "httpx": {
+   "excluded_in_window": 50,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "rayon": {
+   "excluded_in_window": 17,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "requests": {
+   "excluded_in_window": 58,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "ripgrep": {
+   "excluded_in_window": 56,
+   "first20": 20,
+   "post_date_in_first20": 0,
+   "contributes": 0
+  },
+  "zod": {
+   "excluded_in_window": 64,
+   "first20": 20,
+   "post_date_in_first20": 1,
+   "contributes": 1
+  }
+ },
+ "expected_post_date_n": 2,
+ "date_rule": "committer date (UTC), day granularity, post iff > 2026-09-20"
+}

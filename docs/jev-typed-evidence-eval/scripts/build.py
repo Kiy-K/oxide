@@ -8,7 +8,7 @@ common.eligible(). Labels enter only `y` (and G5 gold lines); they never reach s
   build.py heldout      -> tasks/heldout-frozen.jsonl (first 10 eligible per repo, make_tasks order)
   build.py cb <parquet> -> tasks/cb-frozen.jsonl (seeded per-stratum round-robin draw)
 
-Every task line: {set, id, repo (owner/name), query, qclass, stratum, root, views, g5_gold,
+Every task line: {set, id, repo (owner/name), query, qclass, stratum, root, views, cand, g5_gold,
 commit_date (held-out, UTC day)}. Every drawn/attempted task and why it was ineligible
 goes to tasks/<set>-draws.jsonl.
 """
@@ -21,7 +21,7 @@ J = os.path.expanduser('~/.cache/oxide-jev-eval')
 OX = f'{J}/target-frozen/release/oxide'
 DUMP = f'{J}/target-frozen/release/examples/fusion_dump'
 CAP = ['systemd-run', '--user', '--scope', '-q', '-p', 'MemoryMax=4G', '-p', 'MemorySwapMax=512M',
-       '-p', 'CPUQuota=600%', 'nice', '-n', '10']
+       '-p', 'CPUQuota=400%', 'nice', '-n', '10']
 ENV = {k: v for k, v in os.environ.items() if k not in (
     'OXIDE_EMBED_NATIVE', 'OXIDE_EMBED_URL', 'OXIDE_EMBED_MODEL', 'OXIDE_RETRIEVAL_MODE',
     'OXIDE_CONTEXT_MAX_PRIMARIES', 'OXIDE_TERM_COVERAGE_ALPHA')}
@@ -57,7 +57,7 @@ def fused_dump(root, task):
     os.unlink(f.name)
     if p.returncode != 0 or not p.stdout.strip():
         return None, f'dump failed: {p.stderr[-200:]}'
-    return json.loads(p.stdout.strip().splitlines()[0]), None
+    return json.loads(p.stdout.split('\n', 1)[0]), None  # not splitlines(): serde_json leaves U+2028 etc. raw
 
 
 _lines = {}
@@ -89,6 +89,12 @@ def rows_for(d, root, label):
     return rows
 
 
+def cand(rows, views):
+    """Arm-B input (PROTOCOL §4): the fused top-50 rows of the view files, key and fr only."""
+    paths = {v['path'] for v in views}
+    return [{'key': r['key'], 'path': r['path'], 'fr': r['fr']} for r in rows if r['path'] in paths]
+
+
 def index(root, log):
     if os.path.exists(f'{root}/.oxide/.done'):
         return True
@@ -114,7 +120,8 @@ def heldout():
         if d is None:
             draws.append({**rec, 'eligible': False, 'why': err})
             continue
-        views = file_view(rows_for(d, t['path'], lambda k, f, sp, m: int(k in g)))
+        rows = rows_for(d, t['path'], lambda k, f, sp, m: int(k in g))
+        views = file_view(rows)
         ok = eligible(views)
         draws.append({**rec, 'eligible': ok, 'why': None if ok else 'not eligible'})
         if not ok:
@@ -126,7 +133,7 @@ def heldout():
         kept.append({**rec, 'query': t['query'], 'qclass': qc, 'stratum': st, 'root': t['path'],
                      'commit': t['commit'], 'gold': t['gold'],
                      'commit_date': datetime.fromisoformat(cdate).astimezone(timezone.utc).date().isoformat(),
-                     'views': views, 'g5_gold': gold[t['id']]['lines']})
+                     'views': views, 'cand': cand(rows, views), 'g5_gold': gold[t['id']]['lines']})
     write('heldout', kept, draws)
 
 
@@ -191,7 +198,8 @@ def cb(parquet):
                     draws.append({**rec, 'eligible': False, 'why': err})
                     continue
                 lab = lambda k, f, sp, m: int(not m and any(sp[0] <= b and a <= sp[1] for a, b in gl.get(f, [])))
-                views = file_view(rows_for(d, root, lab))
+                crows = rows_for(d, root, lab)
+                views = file_view(crows)
                 ok = eligible(views)
                 draws.append({**rec, 'eligible': ok, 'why': None if ok else 'not eligible'})
                 if not ok:
@@ -199,7 +207,8 @@ def cb(parquet):
                 got += 1
                 g5 = {f: sorted({x for a, b in v for x in range(a, b + 1)}) for f, v in gl.items()}
                 kept.append({**rec, 'query': r['problem_statement'], 'qclass': stratum(r['problem_statement'])[0],
-                             'root': root, 'base_commit': r['base_commit'], 'views': views, 'g5_gold': g5})
+                             'root': root, 'base_commit': r['base_commit'], 'views': views,
+                             'cand': cand(crows, views), 'g5_gold': g5})
                 print('cb', st, got, r['instance_id'], flush=True)
     write('cb', kept, draws)
 

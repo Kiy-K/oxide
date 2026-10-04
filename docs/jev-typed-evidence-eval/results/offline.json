@@ -1,0 +1,26 @@
+{
+ "ok": false,
+ "model": null,
+ "p": null,
+ "raw": null,
+ "why": "connection/timeout",
+ "attempts": [
+  {
+   "ms": 4.986047744750977,
+   "status": "conn: <urlopen error [Errno 101] Network is unreachable>"
+  },
+  {
+   "ms": 1.3663768768310547,
+   "status": "conn: <urlopen error [Errno 101] Network is unreachable>"
+  },
+  {
+   "ms": 1.5609264373779297,
+   "status": "conn: <urlopen error [Errno 101] Network is unreachable>"
+  },
+  {
+   "ms": 1.4793872833251953,
+   "status": "conn: <urlopen error [Errno 101] Network is unreachable>"
+  }
+ ],
+ "ms": 7009.8631381988525
+}

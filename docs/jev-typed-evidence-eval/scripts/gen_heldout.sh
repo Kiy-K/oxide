@@ -6,7 +6,7 @@
 set -u
 J=~/.cache/oxide-jev-eval; R=$(cd "$(dirname "$0")/../../.." && pwd)
 OX=$J/target-frozen/release/oxide
-CAP="systemd-run --user --scope -q -p MemoryMax=4G -p MemorySwapMax=512M -p CPUQuota=600% nice -n 10"
+CAP="systemd-run --user --scope -q -p MemoryMax=4G -p MemorySwapMax=512M -p CPUQuota=400% nice -n 10"
 unset OXIDE_EMBED_NATIVE OXIDE_EMBED_URL OXIDE_EMBED_MODEL OXIDE_RETRIEVAL_MODE OXIDE_CONTEXT_MAX_PRIMARIES OXIDE_TERM_COVERAGE_ALPHA
 mkdir -p $J/tasks $J/logs $J/wt $J/wt-parent
 

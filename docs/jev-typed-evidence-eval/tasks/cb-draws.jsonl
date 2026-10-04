@@ -1,0 +1,88 @@
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e", "repo": "django/django", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ad093510", "repo": "nodebb/nodebb", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__javascript__maintenance__bugfix__f9c6210a", "repo": "iamkun/dayjs", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__28dd806d", "repo": "future-architect/vuls", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__64aeac91", "repo": "simdjson/simdjson", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__javascript__maintenance__bugfix__a8655bb4", "repo": "expressjs/express", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__1ac60ce9", "repo": "ponylang/ponyc", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__69ca7457", "repo": "catchorg/catch2", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__90f9cbd7", "repo": "navidrome/navidrome", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__5e58ab80", "repo": "jqlang/jq", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__ec4f6157", "repo": "fasterxml/jackson", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__5a3de72a", "repo": "nlohmann/json", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__e23da35e", "repo": "sharkdp/fd", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__d9d9c3a6", "repo": "internetarchive/openlibrary", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__javascript__maintenance__bugfix__3db06908", "repo": "anuraghazra/github", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__b7828682", "repo": "clap-rs/clap", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__2aa6fa4c", "repo": "vuejs/core", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__747c7f60", "repo": "google/gson", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__1756507b", "repo": "sympy/sympy", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__23baddf7", "repo": "googlecontainertools/jib", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__71253eae", "repo": "qutebrowser/qutebrowser", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__1e99f2c7", "repo": "mui/material", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__go__maintenance__bugfix__2eedb5b8", "repo": "cli/cli", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__97604906", "repo": "tokio-rs/tokio", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__5f28b944", "repo": "mockito/mockito", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__0ee2775d", "repo": "fmtlib/fmt", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4", "repo": "django/django", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__99b38b09", "repo": "nodebb/nodebb", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__8f9042e3", "repo": "ponylang/ponyc", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__4df06349", "repo": "navidrome/navidrome", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__be0b5fff", "repo": "fasterxml/jackson", "stratum": "description", "eligible": false, "why": "checkout: Command '['git', '-C', '/home/khoi/.cache/oxide-jev-eval/cb-repos/fasterxml__jackson', 'fetch', '-q', 'origin', '035fba39559386e16a5017060a6047e733b18599']' returned non-zero exit status 128."}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__20af1351", "repo": "nlohmann/json", "stratum": "description", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__53ca6a30", "repo": "internetarchive/openlibrary", "stratum": "description", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__b970b964", "repo": "nlohmann/json", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__typescript__evolution__feature__c2e9e5ff", "repo": "mui/material-ui", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__7ae95c21", "repo": "simdjson/simdjson", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__python__maintenance__bugfix__31f7341a", "repo": "keras-team/keras", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__8ae98e43", "repo": "mui/material", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__2a939d7a", "repo": "navidrome/navidrome", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__39a9746b", "repo": "element-hq/element-web", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__ebeba2e0", "repo": "tokio-rs/tracing", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3c47d105", "repo": "clap-rs/clap", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-PolyBench__python__maintenance__bugfix__37455515", "repo": "yt-dlp/yt-dlp", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__09457b9b", "repo": "matplotlib/matplotlib", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__typescript__maintenance__bugfix__62f78810", "repo": "microsoft/vscode", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__7e1b8f0a", "repo": "tokio-rs/tokio", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-PolyBench__javascript__maintenance__bugfix__3b6e6f3a", "repo": "prettier/prettier", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192", "repo": "astropy/astropy", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__84a1749f", "repo": "django/django", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__go__maintenance__bugfix__b64d0325", "repo": "grpc/grpc", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27", "repo": "pydata/xarray", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__7b6185af", "repo": "nodebb/nodebb", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__python__maintenance__bugfix__6cfdf766", "repo": "huggingface/transformers", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37", "repo": "sphinx-doc/sphinx", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__python__maintenance__bugfix__52a91dd8", "repo": "langchain-ai/langchain", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__4c49a127", "repo": "future-architect/vuls", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__49f4a0f4", "repo": "jqlang/jq", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__javascript__maintenance__bugfix__60f4b11b", "repo": "sveltejs/svelte", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__abb9b8b0", "repo": "pytest-dev/pytest", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__javascript__maintenance__bugfix__0f1fd789", "repo": "serverless/serverless", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Pro__go__maintenance__bugfix__6efcf999", "repo": "flipt-io/flipt", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__66e05eaa", "repo": "qutebrowser/qutebrowser", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__64469377", "repo": "ansible/ansible", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__4ba7e9d3", "repo": "burntsushi/ripgrep", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5", "repo": "scikit-learn/scikit-learn", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d", "repo": "psf/requests", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Pro__python__maintenance__bugfix__7c2efe8a", "repo": "internetarchive/openlibrary", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__go__maintenance__bugfix__cedbb0cb", "repo": "cli/cli", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__2687f1e4", "repo": "facebook/zstd", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__1a9633de", "repo": "sympy/sympy", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__7b474035", "repo": "ponylang/ponyc", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__28e2c906", "repo": "fmtlib/fmt", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__0b6512c8", "repo": "fasterxml/jackson", "stratum": "quoted", "eligible": false, "why": "checkout: Command '['git', '-C', '/home/khoi/.cache/oxide-jev-eval/cb-repos/fasterxml__jackson', 'fetch', '-q', 'origin', '960b91c981fed3ea3ce9901e31954b76809ead2f']' returned non-zero exit status 128."}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__c6a81e91", "repo": "nlohmann/json", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__typescript__maintenance__bugfix__6da325be", "repo": "mui/material-ui", "stratum": "quoted", "eligible": false, "why": "not eligible"}
+{"set": "cb", "id": "Multi-SWE-Bench__cpp__maintenance__bugfix__0ebe9a19", "repo": "simdjson/simdjson", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-PolyBench__python__maintenance__bugfix__d492f44e", "repo": "keras-team/keras", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__9aef9350", "repo": "mui/material", "stratum": "quoted", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690", "repo": "scikit-learn/scikit-learn", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__681ea2b6", "repo": "django/django", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__25df8223", "repo": "tokio-rs/tracing", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0", "repo": "alibaba/fastjson2", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__rust__maintenance__bugfix__daf2bf65", "repo": "tokio-rs/bytes", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__java__maintenance__bugfix__5b0ee9d4", "repo": "elastic/logstash", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c", "repo": "pydata/xarray", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__c__maintenance__bugfix__3706785f", "repo": "jqlang/jq", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "Multi-SWE-Bench__typescript__maintenance__bugfix__6a14056a", "repo": "vuejs/core", "stratum": "other", "eligible": true, "why": null}
+{"set": "cb", "id": "SWE-Bench-Verified__python__maintenance__bugfix__9c4b27a6", "repo": "sphinx-doc/sphinx", "stratum": "other", "eligible": true, "why": null}

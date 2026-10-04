@@ -11,13 +11,14 @@ connection errors are retried (3 retries, 1/2/4 s or a larger Retry-After); a ma
 response or a missing question key is a failure. A request that fails after its retries is
 final. Every raw response is logged. Per task, requests go out with concurrency 12.
 
-usage: score_jev.py states                     # tasks -> results/states.jsonl (no network)
+usage: score_jev.py states                     # tasks -> results/states.jsonl.gz (no network)
        score_jev.py canary pre|post            # 5 synthetic canaries -> results/canary-<x>.jsonl
        score_jev.py run                        # all states -> results/scores.jsonl
        score_jev.py latency                    # 50 synthetic matched-size states, sequential
+       unshare -rn score_jev.py offline        # network off: one synthetic canary -> results/offline.json
 env:   JULIA_TOKENIZER (dir with tokenizer.json), TYPESAFE_API_KEY (or TYPSAFE_API_KEY in .env)
 """
-import json, os, sys, time, urllib.error, urllib.request
+import gzip, json, os, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -54,7 +55,7 @@ def states():
     tasks = [json.loads(l) for s in ('heldout', 'cb') for l in open(f'{J}/tasks/{s}-frozen.jsonl')]
     views = [{'set': t['set'], 'task': t['id'], 'query': t['query'], 'files': t['views']} for t in tasks]
     os.makedirs(RES, exist_ok=True)
-    with open(os.path.join(RES, 'states.jsonl'), 'w') as out:
+    with gzip.open(os.path.join(RES, 'states.jsonl.gz'), 'wt', compresslevel=9) as out:
         for t, s in zip(tasks, build_states(views, tok)):
             for f, v in zip(s['files'], t['views']):
                 assert f['path'] == v['path']
@@ -110,7 +111,7 @@ def run():
     if os.path.exists(out_p):  # an interrupted run continues with never-attempted tasks only
         done = {json.loads(l)['task'] for l in open(out_p)}
     with open(out_p, 'a') as out, ThreadPoolExecutor(CONCURRENCY) as pool:
-        for s in map(json.loads, open(os.path.join(RES, 'states.jsonl'))):
+        for s in map(json.loads, gzip.open(os.path.join(RES, 'states.jsonl.gz'), 'rt')):
             if s['task'] in done:
                 continue
             jobs = [(f['path'], arm, f['state'] if arm == 'typed' else f['meta_state'])
@@ -135,7 +136,7 @@ def canary(which):
 def latency():
     """50 synthetic states whose lengths match the frozen states' length quantiles."""
     key = api_key()
-    lens = sorted(len(f['state']) for s in map(json.loads, open(os.path.join(RES, 'states.jsonl')))
+    lens = sorted(len(f['state']) for s in map(json.loads, gzip.open(os.path.join(RES, 'states.jsonl.gz'), 'rt'))
                   for f in s['files'])
     filler = open(os.path.join(HERE, '..', 'canaries.jsonl')).read()
     with open(os.path.join(RES, 'latency.jsonl'), 'w') as out:
@@ -147,9 +148,15 @@ def latency():
             out.write(json.dumps({'i': i, 'chars': n, 'ok': r['ok'], 'ms': r['ms'], 'attempts': r['attempts']}) + '\n')
 
 
+def offline():
+    """§7 failure behavior with the network off (run inside `unshare -rn`)."""
+    c = json.loads(open(os.path.join(HERE, '..', 'canaries.jsonl')).readline())
+    json.dump(ask(c['state'], api_key()), open(os.path.join(RES, 'offline.json'), 'w'), indent=1)
+
+
 if __name__ == '__main__':
     mode = sys.argv[1]
     if mode == 'canary':
         canary(sys.argv[2])
     else:
-        {'states': states, 'run': run, 'latency': latency}[mode]()
+        {'states': states, 'run': run, 'latency': latency, 'offline': offline}[mode]()
