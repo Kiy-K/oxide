@@ -19,3 +19,19 @@ Status: **running** (fresh-task generation). Production is unchanged.
   clap stage regenerated from an empty `raw-clap.jsonl`, as an uninterrupted run would.
 - Completed stages were left untouched. No ContextBench draw, arm run or score existed at the
   interruption.
+
+## Phase split (2026-10-04, before any task was scored)
+
+Time-boxed by decision. The frozen protocol, arms, metrics and gates are unchanged, and the
+**verdict is still computed only on the full fresh set.**
+
+- **Phase 1, pilot (descriptive only).** The held-out tasks of httpx, requests and flask run through
+  the frozen pipeline: parent indexes, filters, edit-locus gold, eligibility, first 10 eligible per
+  repo, parity, A/B, scoring. This is an end-to-end harness check on fresh data. The pilot tasks
+  are the same tasks the full run will produce for those repos: the per-repo filters only look at
+  earlier tasks of the same repo. They stay in the final verdict. Nothing changes after the pilot
+  except a fix for a harness defect, which would be disclosed.
+- **Phases 2–3.** The remaining held-out repos (zod, axios), then the ContextBench draw, then the full
+  scored run, chained unattended.
+- **Second pause.** Generation was paused again during zod (0 tasks emitted, no `.done` marker). All
+  zod worktrees were removed so that stage regenerates as in an uninterrupted run.
