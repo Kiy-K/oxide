@@ -35,3 +35,20 @@ Time-boxed by decision. The frozen protocol, arms, metrics and gates are unchang
   scored run, chained unattended.
 - **Second pause.** Generation was paused again during zod (0 tasks emitted, no `.done` marker). All
   zod worktrees were removed so that stage regenerates as in an uninterrupted run.
+
+## Phase 1 pilot result (descriptive only, NOT the verdict)
+
+Scripts: `phases/`. Results: `results/phase1-pilot/` (`pilot.txt`, `packs.jsonl`, `parity_p1.tsv`,
+`heldout-draws.jsonl`).
+
+- Pipeline check, held-out httpx, requests and flask: 59 tasks at parent, 57 primary, 40 drawn,
+  **30 kept** (10 per repo).
+- P1: parity 30/30, B repeats 30/30.
+- B vs A: coverage 0.5315 → 0.5993, Δ +0.0677, 3 up / 0 down. rel/used +5.0 %; tokens 1630 → 1623;
+  items 7.10 → 7.87.
+- With 3 repos, the repo-clustered CI ([+0.0000, +0.1699]) is not decision-grade.
+- The pilot driver had a module-name bug: it imported #43's `run.py` as `run`, which shadowed #42's.
+  It crashed before any arm ran, was fixed in the driver only, and was rerun. The frozen scripts are
+  unaffected, because as `__main__` they resolve #42's `run` first.
+- To keep one model process at a time, the phase 2–3 chain was paused (SIGSTOP) while the pilot was
+  scored, then resumed.
