@@ -61,7 +61,8 @@ New tables in `index.db`:
   nodes. The symbol level of `repo → directory/module → file → symbol` is the existing `symbols`
   table, joined to its file node by path (`symbols.file = tree_nodes.path`). It is not duplicated in
   `tree_nodes`. Symbol-level evidence stays in `lexical_postings` and the symbol embeddings.
-- `tree_postings(term TEXT, node_id INTEGER, tf INTEGER, len INTEGER)`: **file** documents only.
+- `tree_postings(term TEXT, node_id INTEGER, tf INTEGER)` plus `tree_docs(node_id, len)` (mirroring
+  `lexical_postings`/`lexical_docs`): **file** documents only.
   Each is the union of the file's symbol documents under the same tokenizer and name/body weights as
   `lexical_postings`.
 - `tree_vectors(node_id INTEGER PRIMARY KEY, dim INTEGER, vec BLOB)`:
@@ -76,18 +77,21 @@ New tables in `index.db`:
 
 ### 3.2 Index-time flow
 
-- **Full build** (end of `update_base`, after symbols and lexical):
-  1. Derive directory and file nodes from `symbols.file` paths.
-  2. Write the file postings and `est_tokens`.
-  3. Embed the cards through `embed_documents`, which is cached by content hash.
-  4. Compute directory vectors bottom-up.
-  5. Publish the meta keys in one `set_meta_all` transaction.
-- **Incremental:** a changed file's node, postings and card vector are rewritten inside its
-  `replace_file` transaction. Removed files drop their node. Affected ancestor directories have their
-  vectors and counts recomputed in one write transaction. Every write bumps `index_generation`
-  (`tests/index_generation.rs` enumerates the paths).
-- **Embedding-space change:** a provider or recipe mismatch clears `tree_vectors` together with the
-  symbol vectors, through the existing `EmbeddingSpace::plan_write` path, and re-embeds the cards.
+- **Research-gated build.** The tree is built by `tree::index::update_tree`, which runs at the end
+  of `update_index` only when `OXIDE_TREE_INDEX=1`. The default index write path (`replace_file`,
+  `update_base`) stays byte-for-byte untouched.
+- **Incremental.** Changed files are those whose `files.content_hash` ≠ `tree_nodes.src_hash`;
+  removed files are file nodes with no `files` row. Their nodes and postings are rewritten in one
+  write transaction. File postings are SQL aggregates of the already-persisted per-symbol
+  `lexical_postings`, so no file is re-read for lexical evidence. Cards are re-embedded where their
+  hash changed, through `embed_documents` (cached by content hash). Directory nodes and vectors are
+  rebuilt bottom-up. Every write bumps `index_generation` (`tests/index_generation.rs` enumerates the
+  paths).
+- **Publish.** `tree_index_version`, `tree_card_recipe` and `tree_vectors_fingerprint` are written
+  together in one `set_meta_all` at the end. A build is skipped (the tree stays unusable) unless
+  `lexical_index_version` is current.
+- **Embedding-space change.** A fingerprint mismatch makes the tree unusable until `update_tree`
+  clears `tree_vectors` and re-embeds the cards.
 
 ## 4. Query-time flow
 
