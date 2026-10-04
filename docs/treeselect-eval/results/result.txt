@@ -1,0 +1,41 @@
+#42 TreeSelect v0 — n=149, verdict: REJECT (TreeSelect v0)
+
+T=−x vs B — hierarchy (gated)
+  pooled   n=149 repos=51 cov 0.282->0.281 Δ -0.0016 clu[-0.0048,+0.0001] task[-0.0038,-0.0000] up/down 2/6 | rel/used -2.5% clu[-7.4%,+0.2%] task[-6.0%,-0.1%] | tok 1601->1603 items 8.06->7.98 files 5.64->5.72
+  heldout  n= 80 repos= 8 cov 0.420->0.419 Δ -0.0011 clu[-0.0045,+0.0000] task[-0.0034,+0.0000] up/down 0/1 | rel/used -0.8% clu[-3.2%,+0.0%] task[-2.7%,+0.0%] | tok 1525->1525 items 8.24->8.14 files 5.14->5.26
+  cb       n= 69 repos=45 cov 0.122->0.120 Δ -0.0021 clu[-0.0076,+0.0005] task[-0.0060,+0.0002] up/down 2/5 | rel/used -2.7% clu[-8.2%,+0.4%] task[-6.8%,-0.0%] | tok 1690->1693 items 7.86->7.80 files 6.22->6.26
+
+T= vs B — full TreeSelect v0
+  pooled   n=149 repos=51 cov 0.282->0.281 Δ -0.0012 clu[-0.0044,+0.0008] task[-0.0034,+0.0005] up/down 4/6 | rel/used -2.4% clu[-7.4%,+0.5%] task[-6.0%,+0.2%] | tok 1601->1602 items 8.06->7.96 files 5.64->5.68
+  heldout  n= 80 repos= 8 cov 0.420->0.419 Δ -0.0011 clu[-0.0045,+0.0000] task[-0.0034,+0.0000] up/down 0/1 | rel/used -0.9% clu[-3.3%,+0.0%] task[-2.8%,+0.0%] | tok 1525->1523 items 8.24->8.10 files 5.14->5.19
+  cb       n= 69 repos=45 cov 0.122->0.121 Δ -0.0012 clu[-0.0069,+0.0021] task[-0.0054,+0.0017] up/down 4/5 | rel/used -2.6% clu[-8.1%,+0.7%] task[-6.7%,+0.3%] | tok 1690->1693 items 7.86->7.80 files 6.22->6.26
+
+T= vs T=−x — graph-expansion effect
+  pooled   n=149 repos=51 cov 0.281->0.281 Δ +0.0004 clu[+0.0000,+0.0012] task[+0.0000,+0.0010] up/down 2/0 | rel/used +0.1% clu[-0.3%,+0.8%] task[-0.2%,+0.6%] | tok 1603->1602 items 7.98->7.96 files 5.72->5.68
+  heldout  n= 80 repos= 8 cov 0.419->0.419 Δ +0.0000 clu[+0.0000,+0.0000] task[+0.0000,+0.0000] up/down 0/0 | rel/used -0.1% clu[-0.2%,+0.0%] task[-0.1%,+0.0%] | tok 1525->1523 items 8.14->8.10 files 5.26->5.19
+  cb       n= 69 repos=45 cov 0.120->0.121 Δ +0.0009 clu[+0.0000,+0.0024] task[+0.0000,+0.0022] up/down 2/0 | rel/used +0.1% clu[-0.3%,+0.9%] task[-0.3%,+0.7%] | tok 1693->1693 items 7.80->7.80 files 6.26->6.26
+
+T= vs A — total product effect
+  pooled   n=149 repos=51 cov 0.230->0.281 Δ +0.0515 clu[+0.0127,+0.0966] task[+0.0235,+0.0838] up/down 30/8 | rel/used +10.7% clu[+2.1%,+21.6%] task[+3.6%,+19.7%] | tok 1607->1602 items 7.02->7.96 files 5.93->5.68
+  heldout  n= 80 repos= 8 cov 0.327->0.419 Δ +0.0923 clu[+0.0286,+0.1733] task[+0.0399,+0.1508] up/down 14/2 | rel/used +32.3% clu[+6.8%,+84.9%] task[+10.4%,+69.0%] | tok 1529->1523 items 7.04->8.10 files 5.70->5.19
+  cb       n= 69 repos=45 cov 0.116->0.121 Δ +0.0043 clu[-0.0014,+0.0108] task[-0.0006,+0.0096] up/down 16/6 | rel/used +8.5% clu[-0.0%,+19.6%] task[+0.9%,+17.7%] | tok 1697->1693 items 7.00->7.80 files 6.19->6.26
+
+B vs A — cap-removal effect
+  pooled   n=149 repos=51 cov 0.230->0.282 Δ +0.0527 clu[+0.0137,+0.0975] task[+0.0245,+0.0851] up/down 30/7 | rel/used +13.5% clu[+3.2%,+28.6%] task[+4.8%,+25.3%] | tok 1607->1601 items 7.02->8.06 files 5.93->5.64
+  heldout  n= 80 repos= 8 cov 0.327->0.420 Δ +0.0934 clu[+0.0295,+0.1743] task[+0.0414,+0.1517] up/down 14/1 | rel/used +33.5% clu[+7.7%,+85.6%] task[+11.7%,+70.2%] | tok 1529->1525 items 7.04->8.24 files 5.70->5.14
+  cb       n= 69 repos=45 cov 0.116->0.122 Δ +0.0055 clu[-0.0023,+0.0164] task[-0.0013,+0.0138] up/down 16/6 | rel/used +11.4% clu[+0.9%,+28.2%] task[+2.1%,+23.9%] | tok 1697->1690 items 7.00->7.86 files 6.19->6.22
+
+T=−c vs T= — collapse ablation (T=−c vs T=)
+  pooled   n=149 repos=51 cov 0.281->0.281 Δ -0.0000 clu[-0.0002,+0.0000] task[-0.0001,+0.0000] up/down 0/1 | rel/used +0.5% clu[-0.0%,+1.7%] task[-0.0%,+1.6%] | tok 1602->1602 items 7.96->7.99 files 5.68->5.66
+  heldout  n= 80 repos= 8 cov 0.419->0.419 Δ +0.0000 clu[+0.0000,+0.0000] task[+0.0000,+0.0000] up/down 0/0 | rel/used -0.0% clu[-0.1%,+0.0%] task[-0.1%,+0.0%] | tok 1523->1524 items 8.10->8.15 files 5.19->5.16
+  cb       n= 69 repos=45 cov 0.121->0.121 Δ -0.0001 clu[-0.0003,+0.0000] task[-0.0003,+0.0000] up/down 0/1 | rel/used +0.6% clu[-0.0%,+1.9%] task[-0.0%,+1.9%] | tok 1693->1692 items 7.80->7.80 files 6.26->6.25
+
+T4096 vs A — T4096 vs A (descriptive)
+  pooled   n=149 repos=51 cov 0.230->0.367 Δ +0.1373 clu[+0.0685,+0.2051] task[+0.0922,+0.1848] up/down 55/1 | rel/used -13.0% clu[-24.4%,+1.6%] task[-22.7%,-1.4%] | tok 1607->2903 items 7.02->12.54 files 5.93->8.49
+  heldout  n= 80 repos= 8 cov 0.327->0.554 Δ +0.2273 clu[+0.1309,+0.3398] task[+0.1480,+0.3113] up/down 27/0 | rel/used -1.5% clu[-26.6%,+39.8%] task[-23.5%,+36.3%] | tok 1529->2766 items 7.04->12.85 files 5.70->7.60
+  cb       n= 69 repos=45 cov 0.116->0.149 Δ +0.0329 clu[+0.0166,+0.0525] task[+0.0197,+0.0473] up/down 28/1 | rel/used -14.2% clu[-26.4%,+2.0%] task[-24.4%,-1.6%] | tok 1697->3062 items 7.00->12.17 files 6.19->9.52
+
+O1 latency: median Δ(T=−A) +3.27 ms vs median search 19.3 ms (limit 0.97) -> False
+O1 RSS Δ (A,T vs A): Multi-SWE-Bench__java__maintenance__bugfix__8b7cc5e0 +0.12%, SWE-Bench-Verified__python__maintenance__bugfix__4cac510e +0.18%, SWE-Bench-Verified__python__maintenance__bugfix__1756507b +0.04%
+P1 parity identical 149/149; repeats identical A 149/149, B 149/149, T=−x 149/149, T= 149/149, T=−c 149/149, T4096 149/149
+gates: Q1=False, Q2=False, E1=False, R1_counts=False, O1=False, P1=True
