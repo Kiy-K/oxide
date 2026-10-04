@@ -57,7 +57,9 @@ tree-vs-flat gap stays at or below 0.
 
 ## Conclusion
 
-At this seam, hierarchy has **no lever** on the development set.
+At this seam (re-ordering an existing 16–50-seed shortlist), a post-retrieval tree has **no lever** on
+the development set. This says nothing about routing through an index-time tree before the shortlist
+exists (TreeIndex/TreeRouter, `../pageindex-notes.md`).
 
 - At matched tokens a pack holds about 8 of the 12–14 post-floor candidates. Order only decides which
   few tail items are dropped and which windows shrink.

@@ -2,7 +2,14 @@
 
 Status: **REJECT (TreeSelect v0)** on the amended run. The frozen run was INCONCLUSIVE (harness
 validity). Production is unchanged. Every number is **measured** by `scripts/` unless marked
-*post-hoc* or *inferred*. This verdict covers TreeSelect v0 only, not hierarchical selection in general.
+*post-hoc* or *inferred*.
+
+**Scope of the verdict.** #42 tested a tree built **after** flat retrieval: a re-ordering of the
+16-seed shortlist that hybrid retrieval had already produced. It is evidence only that
+**tree-after-retrieval reranking has no leverage** at this seam. It does **not** test hierarchical
+retrieval, meaning a repository tree built at index time and routed through before any shortlist
+exists (the TreeIndex/TreeRouter direction in `pageindex-notes.md`). No conclusion about that
+architecture follows from this study.
 
 - Protocol: `PROTOCOL.md` (sha256 `c09c8339…`, frozen at `887e497`, re-frozen with the repo-clustered
   bootstrap at `96abae8`).

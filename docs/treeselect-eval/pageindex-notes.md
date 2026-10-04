@@ -164,38 +164,36 @@ Possible evidence inputs:
 
 ---
 
-## Proposed OXIDE architecture
+## Proposed OXIDE architecture (revised 2026-10-04): TreeIndex / TreeRouter
+
+#42 tested **TreeSelect**: a tree built *after* flat retrieval that re-orders the existing
+shortlist. That is not the PageIndex-style architecture. It found that tree-after-retrieval reranking
+has no leverage (`README.md`, `v1-dev/README.md`). It did not test hierarchical retrieval. No
+further shortlist-reranking experiments are planned.
+
+The direction is a first-class tree built at **index time**, which retrieval routes through:
 
 ```text
-frozen local retrieval
-        ↓
-candidate hierarchy
-repo → module → file → symbol
-        ↓
-local semantic + structural evidence
-        ↓
-optional Jev typed/value evidence
-        ↓
-deterministic Rust TreeSelect
-        ↓
-structural/graph expansion
-        ↓
-budget packing
-        ↓
-final context
+index time:  TreeIndex   repo → directory/module → file → symbol
+             (persisted with the index; node summaries/evidence derived locally)
+
+query time:  TreeRouter  lexical + embedding evidence scores nodes top-down
+                         → descend / prune / flatten uninformative levels
+                         → the shortlist is produced by routing, not by flat top-k
+             graph        bounded lateral expansion (calls, imports, tests) from routed nodes
+             packing      budget packing of the routed set
 ```
 
-Rules:
-
-- Retrieval, RRF and embeddings remain frozen initially.
-- Jev supplies evidence, never authority.
-- Rust owns traversal, thresholds, pruning, expansion and budget.
-- Only compact candidate capsules may leave the machine.
-- A fully local deterministic selector remains available.
-- No PageIndex-style LLM reasoning loop is required.
-- Do not implement TreeSelect until Jev experiment #40 provides evidence that justifies it.
-
----
+- **TreeIndex**: the persisted repository hierarchy and its per-node evidence (for example lexical
+  postings and an embedding per directory, module and file). It is built incrementally with the index.
+- **TreeRouter**: query-time navigation over TreeIndex. It decides *where to look* before any
+  shortlist exists, which is the PageIndex idea, without an LLM in the loop.
+- Graph relations stay **bounded lateral expansion**, not a competing retrieval channel.
+- Rust owns traversal, thresholds, pruning and budget. Model evidence, if any, is input only.
+- Open design questions, not started:
+  - what per-node evidence is cheap to keep fresh incrementally;
+  - how routing interacts with the frozen RRF baseline (as a replacement or as a candidate source);
+  - how to evaluate routing recall separately from final packing.
 
 ## Main takeaway
 
@@ -213,10 +211,10 @@ Modern PageIndex increasingly separates learned proposals from deterministic pol
 
 - Value-based tree search (verified): PageIndex scores a node from its chunks' similarity scores as
   `NodeScore = Σ ChunkScore / √(N+1)`, so a node gains from more relevant chunks with diminishing
-  returns (https://docs.pageindex.ai/tutorials/tree-search/hybrid). TreeSelect v0 adapts it
+  returns (https://docs.pageindex.ai/tutorials/tree-search/hybrid). #42's TreeSelect v0 adapted it
   (frozen candidate scores in place of chunk similarities); it is not PageIndex's production policy.
 - PageIndex Flash (verified): local, layout-derived tree indexing; an LLM only summarizes located
   sections (https://pageindex.ai/blog/pageindex-flash, 2026-08-26).
 - The tree-cost / `key_items` details above were not re-verified against source.
-- The "wait for #40" rule above is superseded: #40 closed INCONCLUSIVE, and the TreeSelect
-  experiment is local-only with no Jev input.
+- #40 closed INCONCLUSIVE. #42 (TreeSelect, tree after retrieval) closed REJECT; see the revised
+  architecture section for the TreeIndex/TreeRouter direction.
