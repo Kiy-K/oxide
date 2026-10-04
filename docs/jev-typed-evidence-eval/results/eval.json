@@ -1,0 +1,76 @@
+{
+ "validity": {
+  "V2": {
+   "requests": 3420,
+   "failed": 0,
+   "failed_frac": 0.0,
+   "tasks_excluded": 0,
+   "excluded_frac": 0.0,
+   "pass": true
+  },
+  "V1": {
+   "total": 149,
+   "heldout": 80,
+   "cb": 69,
+   "repos": 51,
+   "max_repo_share": 0.0738255033557047,
+   "description": 45,
+   "quoted": 37,
+   "pass": true
+  },
+  "V3": {
+   "models": [
+    "jev-1.13.0"
+   ],
+   "canary_ok": true,
+   "max_canary_drift": 0.19,
+   "pass": false
+  },
+  "V4": {
+   "cache_copies_identical": true,
+   "pass": true
+  },
+  "V5": {
+   "tasks": 149,
+   "mismatch": 0,
+   "pass": true
+  }
+ },
+ "ops": {
+  "requests": 3420,
+  "ok": 3420,
+  "attempts": 3420,
+  "retries": 0,
+  "status_counts": {
+   "200": 3420
+  },
+  "request_ms": {
+   "50": 509.5425844192505,
+   "95": 610.9085917472839,
+   "99": 652.7474403381348
+  },
+  "task_wall_ms": {
+   "50": 1038.1317138671875,
+   "95": 1276.6505241394038
+  },
+  "typed": {
+   "input_tokens_per_file_mean": 1347.8105263157895,
+   "input_tokens_per_task_mean": 15468.161073825504,
+   "usd_per_1000_queries_at_0.042_per_Mtok": 0.6496627651006712
+  },
+  "meta": {
+   "input_tokens_per_file_mean": 930.387134502924,
+   "input_tokens_per_task_mean": 10677.597315436242,
+   "usd_per_1000_queries_at_0.042_per_Mtok": 0.44845908724832223
+  },
+  "sequential_synthetic": {
+   "n": 50,
+   "ok": 50,
+   "p50": 512.0161771774292,
+   "p95": 578.430902957916,
+   "cold_first_ms": 511.39211654663086,
+   "warm_p50": 512.0968818664551
+  }
+ },
+ "verdict": "INCONCLUSIVE (validity)"
+}
