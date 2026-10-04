@@ -117,7 +117,7 @@ index 0000000..2802ba8
 +    Ok(())
 +}
 diff --git a/src/context.rs b/src/context.rs
-index ff81b53..fa746a6 100644
+index ff81b53..496b5a8 100644
 --- a/src/context.rs
 +++ b/src/context.rs
 @@ -191,6 +191,8 @@ pub fn build_context_with(
@@ -273,7 +273,7 @@ index ff81b53..fa746a6 100644
  }
  
  /// The context allocator's own test predicate, used only by
-@@ -655,6 +704,554 @@ impl ContextPack {
+@@ -655,6 +704,556 @@ impl ContextPack {
      }
  }
  
@@ -632,12 +632,9 @@ index ff81b53..fa746a6 100644
 +            }
 +            v
 +        };
-+        let r = flat(0);
-+        let mut frontier: Vec<usize> = if nodes[r].is_leaf() {
-+            vec![r]
-+        } else {
-+            nodes[r].children.iter().map(|&c| flat(c)).collect()
-+        };
++        // The frontier starts with the root's children (the root itself is
++        // never flattened: #42 amendment 1).
++        let mut frontier: Vec<usize> = nodes[0].children.iter().map(|&c| flat(c)).collect();
 +        let mut slots: Vec<Option<Pooled>> = kept.into_iter().map(Some).collect();
 +        let mut out = Vec::new();
 +        while !frontier.is_empty() {
@@ -659,9 +656,14 @@ index ff81b53..fa746a6 100644
 +            }
 +            if collapse && nodes[v].n >= 2 {
 +                let container = match &nodes[v].kind {
++                    // The file-level Module symbol (`<file>:__module__`), not an
++                    // inner module/namespace of the same kind (#42 amendment 1).
 +                    Kind::File => by_file.get(nodes[v].path.as_str()).and_then(|ss| {
++                        let file_module = format!("{}:__module__", nodes[v].path);
 +                        ss.iter()
-+                            .filter(|s| s.kind == SymbolKind::Module)
++                            .filter(|s| {
++                                s.kind == SymbolKind::Module && s.qualified_name == file_module
++                            })
 +                            .min_by_key(|s| s.id())
 +                            .map(|s| (*s).clone())
 +                    }),

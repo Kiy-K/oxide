@@ -75,3 +75,26 @@ expansion also skip production's RelationGraph expansion loop.
 - Research `oxide context --json` with the switch off is byte-identical to the frozen binary on 11/11
   fixture queries.
 - Arm A's traced packs equal the frozen production packs.
+
+## Amendment 1 (2026-10-04, after the frozen run; spec-conformance fixes only)
+
+The frozen run (`results/run1-frozen/`, disposition INCONCLUSIVE, harness validity) showed two places
+where the code did not implement `PROTOCOL.md`. Both fixes follow the protocol's own wording. No
+threshold, constant, arm, metric or gate changed, and nothing was chosen by its effect on results.
+
+1. *File container (protocol step 4: "a file `Module` symbol").* The code took the lowest-id
+   `kind = module` symbol in the file. In these corpora that kind also covers inner modules and
+   namespaces (Rust `mod tests`, `mod test;`, C++ `internal.digits`), so leaves were "collapsed" into
+   inner modules that do not contain them (T=−x: 18 of 27 collapses, 13/149 tasks). The fix: a file
+   node's container is only the file-level symbol `<file>:__module__`.
+2. *Root flattening (protocol step 4: "the frontier starts with the root's children"; this file's
+   §3: flattening applies to nodes pushed onto the frontier).* The code also flattened the root. When
+   every pooled leaf sat in one file, the frontier then started at that file's children, so the file
+   node was never opened or checked for collapse. The fix: the frontier is the root's children, each
+   flattened.
+
+`scripts/tree_check.py` had copied both readings and was corrected the same way. A scratch Rust
+fixture (two functions plus `#[cfg(test)] mod tests` in `src/lib.rs`) now collapses into
+`src/lib.rs:__module__`. The py/ts/rs fixture checks pass: tree check 12/12, switch-off parity 12/12,
+deterministic repeats, no duplicate keys, `used ≤ budget`. The amended harness is hashed in
+`results/prereg-amendment1.sha256` and committed before the rerun.

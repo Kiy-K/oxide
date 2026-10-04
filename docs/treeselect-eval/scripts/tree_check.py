@@ -65,8 +65,7 @@ def order(root, syms, pool):
     def val(v):
         return nodes[v]['sum'] / math.sqrt(nodes[v]['n'] + 1)
 
-    r = flat(0)
-    frontier = [r] if nodes[r]['kind'] == 'leaf' else [flat(c) for c in nodes[r]['order']]
+    frontier = [flat(c) for c in nodes[0]['order']]
     out = []
     while frontier:
         v = min(frontier, key=lambda v: (-val(v), nodes[v]['path'], nodes[v]['id']))
@@ -78,7 +77,8 @@ def order(root, syms, pool):
         if nd['n'] >= 2:
             c = None
             if nd['kind'] == 'file':
-                mods = sorted((x for x in by_file[nd['path']] if x['kind'] == 'module'), key=lambda x: x['id'])
+                mods = sorted((x for x in by_file[nd['path']] if x['kind'] == 'module'
+                               and x['qn'] == nd['path'] + ':__module__'), key=lambda x: x['id'])
                 c = mods[0] if mods else None
             elif nd['kind'] == 'sym' and nd['ref']['kind'] == 'class':
                 c = nd['ref']

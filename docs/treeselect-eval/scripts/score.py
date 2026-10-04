@@ -30,11 +30,12 @@ def tasks():
     return [t for s in ('heldout', 'cb') for t in map(json.loads, open(f'{J}/tasks/{s}-frozen.jsonl'))]
 
 
-def score_alloc():
+def score_alloc(ts):
+    """score_alloc's module, loaded in --cb mode with every task's gold (as #40's eval_40.py)."""
     with tempfile.TemporaryDirectory() as d:
         tp, gp, dp = f'{d}/t.jsonl', f'{d}/g.json', f'{d}/d.jsonl'
         open(tp, 'w').close()
-        json.dump({}, open(gp, 'w'))
+        json.dump({t['id']: {'lines': t['g5_gold'], 'files': sorted(t['g5_gold'])} for t in ts}, open(gp, 'w'))
         open(dp, 'w').close()
         argv = sys.argv
         sys.argv = ['score_alloc.py', tp, dp, '--cb', gp]
@@ -98,7 +99,7 @@ def main():
         packs[(p['id'], p['arm'])] = p
     missing = [t['id'] for t in ts for a in ARMS if (t['id'], a) not in packs]
     assert not missing, f'missing packs: {missing[:5]} ({len(missing)})'
-    pm = score_alloc()['pack_metrics']
+    pm = score_alloc(ts)['pack_metrics']
     M = {a: [pm(packs[(t['id'], a)], {'id': t['id'], 'path': t['root']},
                 {f: set(v) for f, v in t['g5_gold'].items()}) for t in ts] for a in ARMS}
     repo = [t['repo'].lower() for t in ts]
