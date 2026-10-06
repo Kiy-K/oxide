@@ -1,0 +1,13 @@
+id	symbols	rep	arms	vmhwm_kb
+SWE-PolyBench__python__maintenance__bugfix__05ee156f	69719	0	A	276872
+SWE-PolyBench__python__maintenance__bugfix__05ee156f	69719	0	A,B	277836
+SWE-PolyBench__python__maintenance__bugfix__05ee156f	69719	1	A,B	278408
+SWE-PolyBench__python__maintenance__bugfix__05ee156f	69719	1	A	274980
+SWE-Bench-Verified__python__maintenance__bugfix__960705f5	45326	0	A	197772
+SWE-Bench-Verified__python__maintenance__bugfix__960705f5	45326	0	A,B	198196
+SWE-Bench-Verified__python__maintenance__bugfix__960705f5	45326	1	A,B	199104
+SWE-Bench-Verified__python__maintenance__bugfix__960705f5	45326	1	A	197976
+SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7	41487	0	A	249492
+SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7	41487	0	A,B	249568
+SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7	41487	1	A,B	249240
+SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7	41487	1	A	249184

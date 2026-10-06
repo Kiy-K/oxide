@@ -127,3 +127,15 @@ low-value primaries on these tasks.
   (18:02–18:05), so it did not overlap the timed stages. The O1 median search time (51.2 ms, vs 19.3 ms
   in #42's amended run) is reported as measured. Stopped processes still hold memory, but VmHWM is
   per-process.
+
+### Confirmation rerun (2026-10-06, after the index-root repair)
+
+The full frozen pipeline (`parity`, `arms`, `rss`, `score`) was rerun on the repaired indexes into
+`results/confirm-2026-10-06/`, with Phase 0 paused throughout (18:56–19:00). The verdict above stays
+the frozen run's. This rerun is a confirmation only.
+
+- P1 149/149, B repeats 149/149. Per-task coverage, Q1, Q2, E1 and R1 are identical (the packs are
+  deterministic). Verdict: REJECT.
+- O1 re-measured: latency median Δ +2.26 ms vs 2.89 ms allowed (5 % of 57.8 ms), which **passes** this
+  time (it failed in the frozen run: +2.97 ms vs 2.56 ms). RSS +0.55 %, +0.57 %, +0.03 %. The latency
+  gate sits near its threshold and flips between runs on this machine, so it is not evidence either way.
