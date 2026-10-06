@@ -1,0 +1,1020 @@
+diff --git a/examples/treeselect_pack.rs b/examples/treeselect_pack.rs
+new file mode 100644
+index 0000000..06d5fec
+--- /dev/null
++++ b/examples/treeselect_pack.rs
+@@ -0,0 +1,115 @@
++//! #42 TreeSelect v0 pack harness (RESEARCH ONLY; docs/treeselect-eval/research.patch,
++//! never merged). Opens the corpus index read-only and runs the real
++//! `build_context_with` (balanced, no blast/git) per task with
++//! `context::treeselect_research` tracing on:
++//!   A      production selector, budget 4096 (no arm);
++//!   B      allocator-only control, budget = A's used_tokens;
++//!   TX     T=−x (TreeSelect order + collapse, production expansion), budget = A's;
++//!   T      T= (full TreeSelect v0), budget = A's;
++//!   TC     T=−c (T= without collapse), budget = A's;
++//!   T4096  T= at budget 4096.
++//! Every arm runs twice; `repeat_identical` compares the full pack JSON.
++//! Output, one line per task and arm: {id, arm, budget, used, trace, repeat_identical,
++//! context_ms: [ms, ms], search_ms}. `search_ms` is one timed `engine.search`
++//! (limit 50, hybrid, balanced), as in ch5.
++//!
++//! Usage: treeselect_pack <repo_root> <tasks.jsonl> [--arms A,B,TX,T,TC,T4096] > packs.jsonl
++//! Each input line: {"id", "query"}.
++use oxide::context::{build_context_with, treeselect_research as ts, ContextOptions};
++use oxide::embeddings::open_embedder;
++use oxide::retrieval::{RetrievalEngine, RetrievalMode, SearchMode, SearchOptions, SymbolSnapshot};
++use oxide::storage::SqliteStore;
++use serde_json::{json, Value};
++use std::io::{BufRead, Write};
++use std::time::Instant;
++
++fn main() -> anyhow::Result<()> {
++    let args: Vec<String> = std::env::args().collect();
++    let root = std::path::PathBuf::from(&args[1]).canonicalize()?;
++    let tasks = std::io::BufReader::new(std::fs::File::open(&args[2])?);
++    let arms: Vec<String> = args
++        .iter()
++        .position(|a| a == "--arms")
++        .and_then(|i| args.get(i + 1).cloned())
++        .unwrap_or_else(|| "A,B,TX,T,TC,T4096".into())
++        .split(',')
++        .map(str::to_string)
++        .collect();
++    anyhow::ensure!(
++        arms.first().map(String::as_str) == Some("A"),
++        "arm A must run first"
++    );
++    let embedder = open_embedder(None)?;
++    let store = SqliteStore::open_read_only(&root.join(".oxide/index.db"))?;
++    let snapshot = SymbolSnapshot::load(&store)?;
++    let engine = RetrievalEngine::with_snapshot(&store, embedder.as_ref(), &snapshot);
++    let out = std::io::stdout();
++    let mut out = out.lock();
++    for line in tasks.lines() {
++        let line = line?;
++        if line.trim().is_empty() {
++            continue;
++        }
++        let task: Value = serde_json::from_str(&line)?;
++        let query = task["query"].as_str().unwrap_or_default().to_string();
++        let t = Instant::now();
++        engine.search(
++            &query,
++            &SearchOptions {
++                limit: 50,
++                mode: SearchMode::Hybrid,
++                expand: false,
++                retrieval_mode: RetrievalMode::Balanced,
++            },
++        )?;
++        let search_ms = t.elapsed().as_secs_f64() * 1e3;
++        let mut a_used = None;
++        for arm in &arms {
++            let (cfg, budget) = match arm.as_str() {
++                "A" => (None, 4096),
++                "T4096" => (Some(ts::T), 4096),
++                other => {
++                    let a = match other {
++                        "B" => ts::B,
++                        "TX" => ts::TX,
++                        "T" => ts::T,
++                        "TC" => ts::TC,
++                        "P" => ts::P,
++                        "PND" => ts::PND,
++                        "PKD" => ts::PKD,
++                        _ => anyhow::bail!("unknown arm {other}"),
++                    };
++                    (Some(a), a_used.expect("arm A ran first"))
++                }
++            };
++            let opts = ContextOptions {
++                budget_tokens: budget,
++                ..ContextOptions::default()
++            };
++            let mut runs = Vec::new();
++            for _ in 0..2 {
++                ts::set(true, cfg);
++                let t = Instant::now();
++                let pack = build_context_with(&root, &engine, &query, &opts)?;
++                let ms = t.elapsed().as_secs_f64() * 1e3;
++                let trace = ts::take().unwrap_or(Value::Null);
++                ts::set(false, None);
++                runs.push((serde_json::to_string(&pack)?, pack.used_tokens, trace, ms));
++            }
++            if arm == "A" {
++                a_used = Some(runs[0].1);
++            }
++            let rec = json!({"id": task["id"], "arm": arm, "budget": budget, "used": runs[0].1,
++                "trace": runs[0].2, "repeat_identical": runs[0].0 == runs[1].0 && runs[0].2 == runs[1].2,
++                "context_ms": [runs[0].3, runs[1].3], "search_ms": search_ms});
++            writeln!(out, "{}", serde_json::to_string(&rec)?)?;
++        }
++    }
++    // Peak RSS for O1 (ch5's VmHWM).
++    if let Ok(status) = std::fs::read_to_string("/proc/self/status") {
++        if let Some(l) = status.lines().find(|l| l.starts_with("VmHWM:")) {
++            eprintln!("{l}");
++        }
++    }
++    Ok(())
++}
+diff --git a/src/context.rs b/src/context.rs
+index ff81b53..602c5b9 100644
+--- a/src/context.rs
++++ b/src/context.rs
+@@ -191,6 +191,8 @@ pub fn build_context_with(
+     // `task` reaches both the lexical scorer and the embedder unmodified.
+     let query = task;
+     let research = ResearchOverrides::from_env();
++    let ts_arm = treeselect_research::arm();
++    let mut ts_graph = None;
+     let seed_opts = SearchOptions {
+         limit: opts.max_candidates,
+         mode: SearchMode::Hybrid,
+@@ -235,7 +237,9 @@ pub fn build_context_with(
+         let graph = engine.relation_graph()?;
+         let mut seen_seeds: HashSet<u64> = seeds.iter().map(|h| h.symbol.id()).collect();
+         let mut expansion_total = 0usize;
+-        for seed in seeds.iter().take(5) {
++        // RESEARCH (#42): step-5 arms expand after selection instead.
++        let production_expansion = !ts_arm.is_some_and(|a| a.post_expansion);
++        for seed in seeds.iter().take(5).filter(|_| production_expansion) {
+             if expansion_total >= CONTEXT_EXPANSION_TOTAL {
+                 break;
+             }
+@@ -284,6 +288,7 @@ pub fn build_context_with(
+             order_note(c, Origin::Evidence);
+         }
+         git_evidence = output.git_evidence;
++        ts_graph = Some(graph);
+         diagnostics = output
+             .degraded
+             .iter()
+@@ -396,6 +401,22 @@ pub fn build_context_with(
+         }
+     }
+ 
++    if let Some(arm) = ts_arm {
++        return treeselect_research::pack(
++            root,
++            engine,
++            task,
++            opts,
++            seeds.first().map(|h| h.score),
++            kept,
++            dropped,
++            ts_graph.as_ref(),
++            arm,
++            git_evidence,
++            diagnostics,
++        );
++    }
++
+     // ---- budgeted greedy fill ------------------------------------------
+     let mut items: Vec<ContextItem> = Vec::new();
+     let mut used = 0usize;
+@@ -405,6 +426,7 @@ pub fn build_context_with(
+     let mut primaries = 0usize;
+     let mut tests = 0usize;
+     let max_primaries = research.context_max_primaries;
++    let mut ts_spans = treeselect_research::Spans::new();
+     for c in &kept {
+         let cid = format!(
+             "{}#{}",
+@@ -453,9 +475,10 @@ pub fn build_context_with(
+         // never displaces a large primary.
+         let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(opts.budget_tokens);
+         let (snippet, est) = loop {
+-            let snip = render_snippet(root, &c.candidate.symbol, &terms, cap);
++            let (snip, lo, hi, t) = render_snippet_span(root, &c.candidate.symbol, &terms, cap);
+             let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
+             if used + e <= opts.budget_tokens || cap == 0 {
++                ts_spans.insert(c.candidate.symbol.id(), (lo, hi, t));
+                 break (snip, e);
+             }
+             cap /= 2;
+@@ -498,6 +521,9 @@ pub fn build_context_with(
+             )
+             .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
+     });
++    if treeselect_research::tracing() {
++        treeselect_research::trace(&items, &ts_spans, used, &dropped, None);
++    }
+ 
+     Ok(ContextPack {
+         task: task.to_string(),
+@@ -544,20 +570,31 @@ fn split_below_floor(kept: Vec<Pooled>, floor: f32) -> (Vec<Pooled>, Vec<Pooled>
+ /// otherwise a window centered on the lines matching the most query terms
+ /// (head of the symbol as fallback when nothing matches).
+ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize) -> String {
++    render_snippet_span(root, s, terms, max_tokens).0
++}
++
++/// RESEARCH (#42, as ch5/#40): `render_snippet` plus the 1-based inclusive
++/// line span it delivered (`(0, 0)` when empty) and whether it truncated.
++fn render_snippet_span(
++    root: &Path,
++    s: &Symbol,
++    terms: &[String],
++    max_tokens: usize,
++) -> (String, u32, u32, bool) {
+     let Ok(src) = std::fs::read_to_string(root.join(&s.file)) else {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     };
+     let lines: Vec<&str> = src.lines().collect();
+     let lo = s.start_line.saturating_sub(1) as usize;
+     let hi = (s.end_line as usize).min(lines.len());
+     if hi <= lo {
+-        return String::new();
++        return (String::new(), 0, 0, false);
+     }
+     let body = &lines[lo..hi];
+     let budget = (max_tokens as f32 * CHARS_PER_TOKEN) as usize;
+     let total: usize = body.iter().map(|l| l.len() + 1).sum();
+     if total <= budget {
+-        return body.join("\n");
++        return (body.join("\n"), lo as u32 + 1, hi as u32, false);
+     }
+     let hits = |line: &str| -> usize {
+         let low = line.to_lowercase();
+@@ -568,14 +605,21 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+     if best == 0 || budget == 0 {
+         // No query-term anchor: keep the head of the symbol.
+         let mut out = String::new();
++        let mut n = 0u32;
+         for l in body {
+             if out.len() + l.len() + 1 > budget {
+                 break;
+             }
+             out.push_str(l);
+             out.push('\n');
++            n += 1;
+         }
+-        return out.trim_end_matches('\n').to_string();
++        let span = if n == 0 {
++            (0, 0)
++        } else {
++            (lo as u32 + 1, lo as u32 + n)
++        };
++        return (out.trim_end_matches('\n').to_string(), span.0, span.1, true);
+     }
+     // Window around the first densest-match line, growing toward the shorter
+     // neighbor line until the character budget is spent.
+@@ -604,7 +648,12 @@ fn render_snippet(root: &Path, s: &Symbol, terms: &[String], max_tokens: usize)
+         }
+         used += cost;
+     }
+-    body[lo_i..=hi_i].join("\n")
++    (
++        body[lo_i..=hi_i].join("\n"),
++        (lo + lo_i) as u32 + 1,
++        (lo + hi_i) as u32 + 1,
++        true,
++    )
+ }
+ 
+ /// The context allocator's own test predicate, used only by
+@@ -655,6 +704,741 @@ impl ContextPack {
+     }
+ }
+ 
++/// RESEARCH ONLY (#42 TreeSelect v0; `docs/treeselect-eval/research.patch`,
++/// never merged). Default state (no arm, tracing off) leaves
++/// `build_context_with` byte-identical to production. Tracing with no arm
++/// (arm A) keeps the production pack and records its delivered snippet
++/// spans. An arm replaces only what follows the relevance floor; arms with
++/// `post_expansion` also skip production's RelationGraph expansion.
++pub mod treeselect_research {
++    use super::{
++        dedup_reasons, estimate_tokens, overlap_ratio, query_terms, render, render_snippet_span,
++        ContextItem, ContextOptions, ContextPack, Omitted, Origin, Pooled, Role,
++    };
++    use crate::config::{
++        CONTEXT_EXPANSION_PER_SEED, CONTEXT_EXPANSION_TOTAL, CONTEXT_ITEM_OVERHEAD_TOKENS,
++        CONTEXT_MAX_TESTS, CONTEXT_PER_ITEM_TOKEN_CAP, CONTEXT_RELEVANCE_FLOOR_FRACTION,
++    };
++    use crate::evidence::candidate::{Candidate, Reason};
++    use crate::gitctx::GitEvidence;
++    use crate::relations::RelationGraph;
++    use crate::retrieval::RetrievalEngine;
++    use crate::symbols::{Language, Symbol, SymbolKind};
++    use std::collections::{HashMap, HashSet};
++    use std::path::Path;
++    use std::sync::atomic::{AtomicBool, Ordering};
++    use std::sync::Mutex;
++
++    /// One research arm. Token matching is the harness's job (it sets
++    /// `ContextOptions::budget_tokens`), so T4096 is `T` at budget 4096.
++    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
++    pub struct Arm {
++        /// TreeSelect order (steps 2–4); `false` keeps production's
++        /// role-then-score order (arm B).
++        pub tree: bool,
++        /// Step 4 collapse.
++        pub collapse: bool,
++        /// Step 5: expand from the first 5 selected items after selection,
++        /// instead of production's expansion from the top-5 seeds.
++        pub post_expansion: bool,
++        /// Value-packer order (`value_order`) instead of production's or the tree's.
++        pub value: bool,
++        /// Value packer: offer dependencies right after the first 5 items.
++        pub protect_deps: bool,
++        /// Value packer: offer docs and example/vendor code last.
++        pub demote_docs: bool,
++    }
++    pub const B: Arm = Arm {
++        tree: false,
++        collapse: false,
++        post_expansion: false,
++        value: false,
++        protect_deps: false,
++        demote_docs: false,
++    };
++    pub const TX: Arm = Arm {
++        tree: true,
++        collapse: true,
++        post_expansion: false,
++        value: false,
++        protect_deps: false,
++        demote_docs: false,
++    };
++    pub const T: Arm = Arm {
++        tree: true,
++        collapse: true,
++        post_expansion: true,
++        value: false,
++        protect_deps: false,
++        demote_docs: false,
++    };
++    pub const TC: Arm = Arm {
++        tree: true,
++        collapse: false,
++        post_expansion: true,
++        value: false,
++        protect_deps: false,
++        demote_docs: false,
++    };
++
++    /// Value packer, full (docs/value-packer-eval).
++    pub const P: Arm = Arm {
++        tree: false,
++        collapse: false,
++        post_expansion: false,
++        value: true,
++        protect_deps: true,
++        demote_docs: true,
++    };
++    /// P without dependency protection.
++    pub const PND: Arm = Arm {
++        protect_deps: false,
++        ..P
++    };
++    /// P without doc demotion.
++    pub const PKD: Arm = Arm {
++        demote_docs: false,
++        ..P
++    };
++
++    static TRACE_ON: AtomicBool = AtomicBool::new(false);
++    static ARM: Mutex<Option<Arm>> = Mutex::new(None);
++    pub(super) static TRACE: Mutex<Option<serde_json::Value>> = Mutex::new(None);
++
++    pub fn set(trace: bool, arm: Option<Arm>) {
++        TRACE_ON.store(trace, Ordering::SeqCst);
++        *ARM.lock().unwrap() = arm;
++    }
++    pub fn tracing() -> bool {
++        TRACE_ON.load(Ordering::SeqCst)
++    }
++    pub fn arm() -> Option<Arm> {
++        *ARM.lock().unwrap()
++    }
++    pub fn take() -> Option<serde_json::Value> {
++        TRACE.lock().unwrap().take()
++    }
++
++    pub(super) fn key(s: &Symbol) -> String {
++        format!("{}#{}", s.file, s.qualified_name)
++    }
++
++    pub(super) type Spans = HashMap<u64, (u32, u32, bool)>;
++
++    pub(super) fn trace(
++        items: &[ContextItem],
++        spans: &Spans,
++        used: usize,
++        dropped: &[Omitted],
++        offers: Option<&[(Pooled, &'static str)]>,
++    ) {
++        let packed: Vec<serde_json::Value> = items
++            .iter()
++            .map(|i| {
++                let (lo, hi, t) = spans.get(&i.symbol.id()).copied().unwrap_or((0, 0, false));
++                serde_json::json!({"key": key(&i.symbol), "role": i.role, "est": i.est_tokens,
++                    "span": [lo, hi], "truncated": t, "added": false})
++            })
++            .collect();
++        let offers: Vec<serde_json::Value> = offers
++            .unwrap_or_default()
++            .iter()
++            .map(|(c, src)| serde_json::json!([key(&c.candidate.symbol), src, c.candidate.score]))
++            .collect();
++        *TRACE.lock().unwrap() = Some(serde_json::json!({
++            "packed": packed, "used": used, "offers": offers,
++            "omitted": dropped.iter().map(|o| serde_json::json!([o.id, o.why])).collect::<Vec<_>>(),
++        }));
++    }
++
++    /// Everything after the relevance floor, for one arm. `kept` is the
++    /// production pool after dedup and floor, in production role order.
++    #[allow(clippy::too_many_arguments)]
++    pub(super) fn pack(
++        root: &Path,
++        engine: &RetrievalEngine<'_>,
++        task: &str,
++        opts: &ContextOptions,
++        top_seed: Option<f32>,
++        kept: Vec<Pooled>,
++        mut dropped: Vec<Omitted>,
++        graph: Option<&RelationGraph<'_>>,
++        arm: Arm,
++        git: Option<GitEvidence>,
++        diagnostics: Vec<String>,
++    ) -> anyhow::Result<ContextPack> {
++        let terms = query_terms(task);
++        let pooled: HashSet<u64> = kept.iter().map(|c| c.candidate.symbol.id()).collect();
++        // The floor applied to `kept` iff something cleared it (production
++        // keeps the whole weak pool when nothing does).
++        let floor = top_seed
++            .map(|t| t * CONTEXT_RELEVANCE_FLOOR_FRACTION)
++            .filter(|f| kept.iter().any(|c| c.candidate.score >= *f));
++        let mut offers: Vec<(Pooled, &'static str)> = if arm.value {
++            value_order(root, &terms, kept, arm)
++        } else if arm.tree {
++            tree_order(root, engine, kept, arm.collapse)?
++        } else {
++            kept.into_iter().map(|c| (c, "flat")).collect()
++        };
++        if arm.post_expansion {
++            if let Some(g) = graph {
++                let ns = expand(engine, g, &offers, &pooled, floor, &mut dropped)?;
++                offers.extend(ns.into_iter().map(|c| (c, "expansion")));
++            }
++        }
++        let (mut items, used, spans) =
++            fill(root, &terms, opts.budget_tokens, &offers, &mut dropped);
++        items.sort_by(|a, b| {
++            a.role
++                .rank()
++                .cmp(&b.role.rank())
++                .then(
++                    b.score
++                        .partial_cmp(&a.score)
++                        .unwrap_or(std::cmp::Ordering::Equal),
++                )
++                .then_with(|| a.symbol.id().cmp(&b.symbol.id()))
++        });
++        if tracing() {
++            trace(&items, &spans, used, &dropped, Some(&offers));
++        }
++        Ok(ContextPack {
++            task: task.to_string(),
++            query_used: task.to_string(),
++            embedder: engine.embedder().name().to_string(),
++            budget_tokens: opts.budget_tokens,
++            used_tokens: used,
++            omitted: dropped,
++            items,
++            git,
++            diagnostics,
++        })
++    }
++
++    /// Step 6: production's fill loop (shrink-to-fit, item overhead, 1-test
++    /// cap) in `offers` order, without the primary and per-file caps.
++    fn fill(
++        root: &Path,
++        terms: &[String],
++        budget: usize,
++        offers: &[(Pooled, &'static str)],
++        dropped: &mut Vec<Omitted>,
++    ) -> (Vec<ContextItem>, usize, Spans) {
++        let mut items = Vec::new();
++        let mut used = 0usize;
++        let mut tests = 0usize;
++        let mut spans = Spans::new();
++        for (c, _) in offers {
++            let cid = key(&c.candidate.symbol);
++            if c.role == Role::Test {
++                if tests >= CONTEXT_MAX_TESTS {
++                    dropped.push(Omitted {
++                        id: cid,
++                        why: "beyond test cap".into(),
++                    });
++                    continue;
++                }
++                tests += 1;
++            }
++            let mut cap = CONTEXT_PER_ITEM_TOKEN_CAP.min(budget);
++            let (snippet, est, span) = loop {
++                let (snip, lo, hi, t) = render_snippet_span(root, &c.candidate.symbol, terms, cap);
++                let e = estimate_tokens(&snip) + CONTEXT_ITEM_OVERHEAD_TOKENS;
++                if used + e <= budget || cap == 0 {
++                    break (snip, e, (lo, hi, t));
++                }
++                cap /= 2;
++            };
++            if used + est > budget {
++                dropped.push(Omitted {
++                    id: cid,
++                    why: "over token budget".into(),
++                });
++                if c.role == Role::Test {
++                    tests -= 1;
++                }
++                continue;
++            }
++            used += est;
++            spans.insert(c.candidate.symbol.id(), span);
++            items.push(ContextItem {
++                symbol: c.candidate.symbol.clone(),
++                role: c.role,
++                score: c.candidate.score,
++                reasons: dedup_reasons(&render(&c.candidate.reasons)),
++                snippet,
++                est_tokens: est,
++            });
++        }
++        (items, used, spans)
++    }
++
++    /// Directories whose files are tests. Production's `is_allocator_test`
++    /// only matches `/tests/` with a leading slash (#43: 80 B "primaries" in
++    /// `tests/`, `test/` or `__tests__/`, 1.3 % gold-bearing).
++    const TEST_DIRS: [&str; 5] = ["test", "tests", "__tests__", "spec", "specs"];
++    /// Directories whose files are not the code under change (#43: 0 gold
++    /// lines in 120+ packed items).
++    const NON_SOURCE_DIRS: [&str; 8] = [
++        "examples",
++        "example",
++        "docs",
++        "doc",
++        "vendor",
++        "third_party",
++        "benches",
++        "benchmarks",
++    ];
++
++    fn dirs(s: &Symbol) -> impl Iterator<Item = &str> {
++        s.file
++            .rsplit_once('/')
++            .into_iter()
++            .flat_map(|(d, _)| d.split('/'))
++    }
++
++    fn in_test_dir(s: &Symbol) -> bool {
++        dirs(s).any(|d| TEST_DIRS.contains(&d.to_lowercase().as_str()))
++    }
++
++    /// Docs and example/vendor code. Edit-locus gold almost never lands here,
++    /// so demoting them is favoured by gold-line metrics by construction.
++    fn is_non_source(s: &Symbol) -> bool {
++        s.language == Language::Markdown
++            || [".rst", ".txt", ".adoc"]
++                .iter()
++                .any(|e| s.file.to_lowercase().ends_with(e))
++            || dirs(s).any(|d| NON_SOURCE_DIRS.contains(&d.to_lowercase().as_str()))
++    }
++
++    /// Greedy by marginal value per token: value = score × 1/√(k+1), k = items
++    /// already offered from that file; cost = rendered tokens at the full
++    /// per-item cap. Takes at most `limit` items from `pool`.
++    fn greedy(
++        pool: &mut Vec<Pooled>,
++        cost: &HashMap<u64, usize>,
++        per_file: &mut HashMap<String, usize>,
++        limit: usize,
++        out: &mut Vec<(Pooled, &'static str)>,
++        src: &'static str,
++    ) {
++        for _ in 0..limit {
++            let Some(i) = (0..pool.len()).max_by(|&i, &j| {
++                let v = |c: &Pooled| {
++                    let k = per_file.get(&c.candidate.symbol.file).copied().unwrap_or(0);
++                    f64::from(c.candidate.score)
++                        / ((k + 1) as f64).sqrt()
++                        / cost[&c.candidate.symbol.id()] as f64
++                };
++                v(&pool[i]).total_cmp(&v(&pool[j])).then(
++                    pool[j]
++                        .candidate
++                        .symbol
++                        .id()
++                        .cmp(&pool[i].candidate.symbol.id()),
++                )
++            }) else {
++                return;
++            };
++            let c = pool.swap_remove(i);
++            *per_file.entry(c.candidate.symbol.file.clone()).or_default() += 1;
++            out.push((c, src));
++        }
++    }
++
++    /// Value-packer offer order over the production pool (docs/value-packer-eval):
++    /// files under test directories count as tests; with `protect_deps`,
++    /// dependencies follow the first 5 items (score order); with `demote_docs`,
++    /// docs and example/vendor code come last.
++    fn value_order(
++        root: &Path,
++        terms: &[String],
++        kept: Vec<Pooled>,
++        arm: Arm,
++    ) -> Vec<(Pooled, &'static str)> {
++        let kept: Vec<Pooled> = kept
++            .into_iter()
++            .map(|mut c| {
++                if in_test_dir(&c.candidate.symbol) {
++                    c.role = Role::Test;
++                }
++                c
++            })
++            .collect();
++        let cost: HashMap<u64, usize> = kept
++            .iter()
++            .map(|c| {
++                let (s, ..) = render_snippet_span(
++                    root,
++                    &c.candidate.symbol,
++                    terms,
++                    CONTEXT_PER_ITEM_TOKEN_CAP,
++                );
++                (
++                    c.candidate.symbol.id(),
++                    estimate_tokens(&s) + CONTEXT_ITEM_OVERHEAD_TOKENS,
++                )
++            })
++            .collect();
++        let (mut tail, rest): (Vec<Pooled>, Vec<Pooled>) = kept
++            .into_iter()
++            .partition(|c| arm.demote_docs && is_non_source(&c.candidate.symbol));
++        let (mut deps, mut main): (Vec<Pooled>, Vec<Pooled>) = rest
++            .into_iter()
++            .partition(|c| arm.protect_deps && c.role == Role::Dependency);
++        deps.sort_by(|a, b| {
++            b.candidate
++                .score
++                .total_cmp(&a.candidate.score)
++                .then(a.candidate.symbol.id().cmp(&b.candidate.symbol.id()))
++        });
++        let mut per_file = HashMap::new();
++        let mut out = Vec::new();
++        greedy(&mut main, &cost, &mut per_file, 5, &mut out, "value");
++        for c in deps {
++            *per_file.entry(c.candidate.symbol.file.clone()).or_default() += 1;
++            out.push((c, "dependency"));
++        }
++        greedy(
++            &mut main,
++            &cost,
++            &mut per_file,
++            usize::MAX,
++            &mut out,
++            "value",
++        );
++        greedy(
++            &mut tail,
++            &cost,
++            &mut per_file,
++            usize::MAX,
++            &mut out,
++            "non-source",
++        );
++        out
++    }
++
++    enum Kind {
++        Root,
++        Dir,
++        File,
++        Sym(Symbol),
++        Leaf(usize),
++    }
++
++    struct Node {
++        kind: Kind,
++        /// Tie-break path: the directory for a directory node, else the file.
++        path: String,
++        /// Tie-break id: the symbol id for symbol and leaf nodes, else 0.
++        id: u64,
++        children: Vec<usize>,
++        by_key: HashMap<String, usize>,
++        sum: f64,
++        n: usize,
++    }
++
++    impl Node {
++        fn new(kind: Kind, path: String, id: u64) -> Self {
++            Self {
++                kind,
++                path,
++                id,
++                children: Vec::new(),
++                by_key: HashMap::new(),
++                sum: 0.0,
++                n: 0,
++            }
++        }
++        /// PageIndex-adapted NodeScore: Σ leaf scores / √(N + 1).
++        fn value(&self) -> f64 {
++            self.sum / ((self.n + 1) as f64).sqrt()
++        }
++        fn is_leaf(&self) -> bool {
++            matches!(self.kind, Kind::Leaf(_))
++        }
++    }
++
++    /// Steps 2–4: build root → parent directory → file → symbols (nested by
++    /// span containment among the file's indexed symbols) over `kept`, then
++    /// pop nodes best-first by NodeScore and return the offer order.
++    fn tree_order(
++        root: &Path,
++        engine: &RetrievalEngine<'_>,
++        kept: Vec<Pooled>,
++        collapse: bool,
++    ) -> anyhow::Result<Vec<(Pooled, &'static str)>> {
++        if kept.is_empty() {
++            return Ok(Vec::new());
++        }
++        let corpus = &engine.snapshot_with_relations()?.symbols;
++        let files: HashSet<&str> = kept
++            .iter()
++            .map(|c| c.candidate.symbol.file.as_str())
++            .collect();
++        let mut by_file: HashMap<&str, Vec<&Symbol>> = HashMap::new();
++        for s in corpus.iter().filter(|s| files.contains(s.file.as_str())) {
++            by_file.entry(s.file.as_str()).or_default().push(s);
++        }
++        let mut nodes = vec![Node::new(Kind::Root, String::new(), 0)];
++        for (i, c) in kept.iter().enumerate() {
++            let s = &c.candidate.symbol;
++            let dir = s.file.rsplit_once('/').map_or("", |(d, _)| d).to_string();
++            let mut containers: Vec<&Symbol> = by_file
++                .get(s.file.as_str())
++                .map(|v| {
++                    v.iter()
++                        .copied()
++                        .filter(|x| {
++                            !matches!(x.kind, SymbolKind::Module | SymbolKind::Import)
++                                && x.start_line <= s.start_line
++                                && s.end_line <= x.end_line
++                                && (x.start_line, x.end_line) != (s.start_line, s.end_line)
++                        })
++                        .collect()
++                })
++                .unwrap_or_default();
++            containers.sort_by(|a, b| {
++                (b.end_line.saturating_sub(b.start_line))
++                    .cmp(&a.end_line.saturating_sub(a.start_line))
++                    .then(a.id().cmp(&b.id()))
++            });
++            let mut path: Vec<(String, Kind, String, u64)> = vec![
++                (format!("d:{dir}"), Kind::Dir, dir.clone(), 0),
++                (format!("f:{}", s.file), Kind::File, s.file.clone(), 0),
++            ];
++            for x in containers {
++                path.push((
++                    format!("s:{}", x.id()),
++                    Kind::Sym(x.clone()),
++                    s.file.clone(),
++                    x.id(),
++                ));
++            }
++            path.push((format!("l:{i}"), Kind::Leaf(i), s.file.clone(), s.id()));
++            let score = c.candidate.score as f64;
++            let mut cur = 0usize;
++            nodes[0].sum += score;
++            nodes[0].n += 1;
++            for (k, kind, p, id) in path {
++                let next = match nodes[cur].by_key.get(&k) {
++                    Some(&n) => n,
++                    None => {
++                        nodes.push(Node::new(kind, p, id));
++                        let n = nodes.len() - 1;
++                        nodes[cur].by_key.insert(k, n);
++                        nodes[cur].children.push(n);
++                        n
++                    }
++                };
++                nodes[next].sum += score;
++                nodes[next].n += 1;
++                cur = next;
++            }
++        }
++        // Dynamic flattening: a node with a single child is replaced by it.
++        let flat = |mut v: usize| {
++            while !nodes[v].is_leaf() && nodes[v].children.len() == 1 {
++                v = nodes[v].children[0];
++            }
++            v
++        };
++        // The frontier starts with the root's children (the root itself is
++        // never flattened: #42 amendment 1).
++        let mut frontier: Vec<usize> = nodes[0].children.iter().map(|&c| flat(c)).collect();
++        let mut slots: Vec<Option<Pooled>> = kept.into_iter().map(Some).collect();
++        let mut out = Vec::new();
++        while !frontier.is_empty() {
++            // Highest NodeScore; ties: lower path, then lower symbol id.
++            let bi = (0..frontier.len())
++                .max_by(|&a, &b| {
++                    let (x, y) = (&nodes[frontier[a]], &nodes[frontier[b]]);
++                    x.value()
++                        .partial_cmp(&y.value())
++                        .unwrap_or(std::cmp::Ordering::Equal)
++                        .then_with(|| y.path.cmp(&x.path))
++                        .then_with(|| y.id.cmp(&x.id))
++                })
++                .unwrap();
++            let v = frontier.swap_remove(bi);
++            if let Kind::Leaf(i) = nodes[v].kind {
++                out.push((slots[i].take().expect("each leaf is offered once"), "tree"));
++                continue;
++            }
++            if collapse && nodes[v].n >= 2 {
++                let container = match &nodes[v].kind {
++                    // The file-level Module symbol (`<file>:__module__`), not an
++                    // inner module/namespace of the same kind (#42 amendment 1).
++                    Kind::File => by_file.get(nodes[v].path.as_str()).and_then(|ss| {
++                        let file_module = format!("{}:__module__", nodes[v].path);
++                        ss.iter()
++                            .filter(|s| {
++                                s.kind == SymbolKind::Module && s.qualified_name == file_module
++                            })
++                            .min_by_key(|s| s.id())
++                            .map(|s| (*s).clone())
++                    }),
++                    Kind::Sym(s) if s.kind == SymbolKind::Class => Some(s.clone()),
++                    _ => None,
++                };
++                if let Some(c) =
++                    container.filter(|c| body_tokens(root, c) <= CONTEXT_PER_ITEM_TOKEN_CAP)
++                {
++                    let mut leaves = Vec::new();
++                    let mut stack = vec![v];
++                    while let Some(u) = stack.pop() {
++                        match nodes[u].kind {
++                            Kind::Leaf(i) => leaves.push(slots[i].take().expect("unoffered leaf")),
++                            _ => stack.extend(nodes[u].children.iter().copied()),
++                        }
++                    }
++                    out.push((collapsed(engine, c, leaves)?, "collapse"));
++                    continue;
++                }
++            }
++            frontier.extend(nodes[v].children.iter().map(|&c| flat(c)));
++        }
++        Ok(out)
++    }
++
++    /// Estimated tokens of `s`'s full body (`usize::MAX` when unreadable).
++    fn body_tokens(root: &Path, s: &Symbol) -> usize {
++        let Ok(src) = std::fs::read_to_string(root.join(&s.file)) else {
++            return usize::MAX;
++        };
++        let lines: Vec<&str> = src.lines().collect();
++        let lo = s.start_line.saturating_sub(1) as usize;
++        let hi = (s.end_line as usize).min(lines.len());
++        if hi <= lo {
++            return usize::MAX;
++        }
++        estimate_tokens(&lines[lo..hi].join("\n"))
++    }
++
++    /// A collapsed container offered in place of its leaves: the highest leaf
++    /// score, the best leaf role (primary before dependency before test) and
++    /// the union of the leaves' reasons in score order.
++    fn collapsed(
++        engine: &RetrievalEngine<'_>,
++        mut container: Symbol,
++        mut leaves: Vec<Pooled>,
++    ) -> anyhow::Result<Pooled> {
++        engine.complete(std::iter::once(&mut container))?;
++        leaves.sort_by(|a, b| {
++            b.candidate
++                .score
++                .partial_cmp(&a.candidate.score)
++                .unwrap_or(std::cmp::Ordering::Equal)
++                .then_with(|| a.candidate.symbol.id().cmp(&b.candidate.symbol.id()))
++        });
++        let role = leaves
++            .iter()
++            .map(|l| l.role)
++            .min_by_key(|r| r.rank())
++            .unwrap_or(Role::Primary);
++        let mut reasons: Vec<Reason> = Vec::new();
++        for l in &leaves {
++            for r in &l.candidate.reasons {
++                if !reasons.contains(r) {
++                    reasons.push(r.clone());
++                }
++            }
++        }
++        Ok(Pooled {
++            candidate: Candidate {
++                symbol: container,
++                score: leaves.first().map_or(0.0, |l| l.candidate.score),
++                reasons,
++            },
++            role,
++        })
++    }
++
++    /// Step 5: one-hop neighbors of the first 5 selected items, production's
++    /// caps and score, skipping pooled ids; then production's dedup rules
++    /// (module subsumption, >80 % overlap) against the selected items and
++    /// earlier neighbors, and the relevance floor.
++    fn expand(
++        engine: &RetrievalEngine<'_>,
++        graph: &RelationGraph<'_>,
++        offers: &[(Pooled, &'static str)],
++        pooled: &HashSet<u64>,
++        floor: Option<f32>,
++        dropped: &mut Vec<Omitted>,
++    ) -> anyhow::Result<Vec<Pooled>> {
++        let mut seen: HashSet<u64> = pooled.clone();
++        seen.extend(offers.iter().map(|(c, _)| c.candidate.symbol.id()));
++        let mut admitted: Vec<Pooled> = Vec::new();
++        let mut total = 0usize;
++        for (anchor, _) in offers.iter().take(5) {
++            if total >= CONTEXT_EXPANSION_TOTAL {
++                break;
++            }
++            let mut from_anchor = 0usize;
++            for (rel, n) in graph.neighbors(&anchor.candidate.symbol) {
++                if total >= CONTEXT_EXPANSION_TOTAL || from_anchor >= CONTEXT_EXPANSION_PER_SEED {
++                    break;
++                }
++                if !seen.insert(n.id()) {
++                    continue;
++                }
++                from_anchor += 1;
++                total += 1;
++                let role = Role::assign(Origin::Expansion { relation: &rel }, n);
++                admitted.push(Pooled {
++                    candidate: Candidate {
++                        symbol: n.clone(),
++                        score: anchor.candidate.score * 0.4,
++                        reasons: vec![Reason::Related {
++                            relation: rel.clone(),
++                            seed: anchor.candidate.symbol.qualified_name.clone(),
++                        }],
++                    },
++                    role,
++                });
++            }
++        }
++        engine.complete(admitted.iter_mut().map(|c| &mut c.candidate.symbol))?;
++        let mut out: Vec<Pooled> = Vec::new();
++        for c in admitted {
++            let s = &c.candidate.symbol;
++            let cid = key(s);
++            let selected = offers.iter().map(|(o, _)| &o.candidate.symbol);
++            let concrete_in_file = selected
++                .clone()
++                .chain(out.iter().map(|o| &o.candidate.symbol))
++                .any(|o| o.file == s.file && o.kind != SymbolKind::Module);
++            if s.kind == SymbolKind::Module && concrete_in_file {
++                dropped.push(Omitted {
++                    id: cid,
++                    why: "module subsumed by concrete symbols".into(),
++                });
++                continue;
++            }
++            if selected
++                .chain(out.iter().map(|o| &o.candidate.symbol))
++                .any(|o| o.file == s.file && overlap_ratio(o, s) > 0.8)
++            {
++                dropped.push(Omitted {
++                    id: cid,
++                    why: "subsumed by overlapping symbol".into(),
++                });
++                continue;
++            }
++            if floor.is_some_and(|f| c.candidate.score < f) {
++                dropped.push(Omitted {
++                    id: cid,
++                    why: "below relevance floor".into(),
++                });
++                continue;
++            }
++            out.push(c);
++        }
++        Ok(out)
++    }
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
