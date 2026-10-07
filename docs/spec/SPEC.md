@@ -8,7 +8,7 @@
 - Top-level decision: [ADR-0001](../adr/0001-oxide-v2-rewrite.md), **Proposed**.
 - Future implementation instructions: [BOOTSTRAP.md](../BOOTSTRAP.md).
 
-This document specifies the intended architecture of a clean rewrite on a separate branch, tentatively `rewrite/v2`. It does not authorize implementation in the documentation session. The existing implementation is historical evidence and a source of benchmarks, fixtures, regressions, and proven behavior; its module layout and APIs are not the rewrite template.
+This document specifies the intended architecture of a clean rewrite on the separate branch `rewrite/v2`. It does not authorize implementation in the documentation session. The existing implementation is historical evidence and a source of benchmarks, fixtures, regressions, and proven behavior; its module layout and APIs are not the rewrite template.
 
 For rewrite work, follow this specification and Accepted ADRs when they conflict with legacy structure. Proposed ADRs are reviewable proposals, not silently Accepted decisions. Before implementation, resolve any conflict between this specification and an Accepted ADR through a documented amendment. Technology findings below are documentation observations, not OXIDE integration measurements.
 
@@ -18,13 +18,19 @@ For rewrite work, follow this specification and Accepted ADRs when they conflict
 
 > OXIDE transforms repository structure into task-specific context.
 
-Given repository state, a developer or agent query, and a context budget, OXIDE produces a small, structurally coherent, high-value context bundle for the task. The bundle provides evidence that a downstream developer or agent can inspect and use.
+Given repository state, a developer or agent query, and a context budget, OXIDE produces a small, structurally coherent, high-value context bundle for the task. Software agents consume that evidence; OXIDE remains agent-agnostic and is not itself an autonomous coding agent.
 
-Retrieval produces candidates. Selection produces context. Search asks, “What resembles this query?” OXIDE asks, “What information must the downstream agent see to solve this task?” Retrieval scores alone cannot answer the second question.
+Retrieval finds entry points; routing finds context. Retrieval produces candidates, never the final bundle. Search asks, “What resembles this query?” OXIDE asks, “What information must the downstream agent see to solve this task?” TreeRouter explores worthwhile structural regions; deterministic selection and packing turn the resulting evidence into context. Similarity scores alone cannot answer the second question.
 
 ## Product definition
 
-OXIDE is a **code context engine**. Its primary operation is conceptually:
+> OXIDE is an open-source context engine for agents.
+
+> OXIDE indexes repository knowledge into a structural TreeIndex and routes each task through that structure to construct a bounded, high-value ContextBundle for software agents.
+
+TreeIndex and TreeRouter are foundational architecture, including in offline/no-model operation. TreeIndex represents repository knowledge structurally; lexical/vector retrieval supplies useful entry points; TreeRouter evaluates which structural regions are worth exploring under deterministic Rust policy. ContextPacker constructs the final bounded output. These are architectural concepts, not commitments to a specific tree schema or routing algorithm.
+
+OXIDE is agent-agnostic: integrations adapt inputs and deliver output without changing repository intelligence for a particular agent. Its primary operation is conceptually:
 
 `build_context(repository_snapshot, query, query_context, context_budget) -> ContextBundle`
 
@@ -38,23 +44,25 @@ Ranked search MAY be exposed as a candidate inspection operation. It MUST remain
 
 OXIDE is not a coding LLM, autonomous coding agent, LSP replacement, vector database product, code generator, whole-repository RAG system, or general-purpose reasoning engine. It does not edit source or execute repository code to solve a query. Complete compiler-level resolution for every language is not a bootstrap requirement.
 
-The initial rewrite does not include old SQLite migration compatibility, preservation of accidental public APIs, immediate support for every historical integration, mandatory learned inference, unrestricted graph traversal, or a distributed database/service architecture.
+The initial rewrite does not include old SQLite migration compatibility, preservation of accidental public APIs, immediate support for every historical integration, mandatory learned inference/JEV/semantic embeddings, unrestricted graph traversal, a distributed database/service architecture, or a full model-serving stack.
 
 ## First principles
 
-1. **Code is a graph, not a bag of chunks.** Entities and typed relationships are the primary knowledge model; text is evidence attached to that model.
-2. **Retrieval produces candidates, never final context directly.** Every bundle passes through explicit selection and packing.
+1. **Structure before similarity. Code is a graph, not a bag of chunks.** TreeIndex represents structural regions over entities and typed relationships; a tree/forest projection preserves access to non-tree relationships.
+2. **Retrieval finds entry points; routing finds context.** Retrieval produces candidates, never final context directly. TreeRouter is foundational; every bundle passes through deterministic inclusion policy and packing.
 3. **Structure is first-class.** Definitions, containment, imports, references, calls, implementations, and tests retain identity and provenance.
-4. **Learned models make fuzzy judgments; deterministic Rust owns policy.** No model controls traversal rules, thresholds, inclusion guarantees, budget, or fallback.
+4. **Models judge; deterministic Rust decides.** Judges estimate value. No model controls traversal rules, thresholds, inclusion guarantees, budget, or fallback.
 5. **Uncertainty is useful output.** Unknown, abstained, unavailable, and rejected are different states.
 6. **Source-derived runtime state is reproducible.** Rebuild the knowledge model from captured source and versioned derivation inputs; caches are disposable.
 7. **The ML/runtime boundary is typed and narrow.** Models receive bounded capsules and return validated judgments, never database handles or executable plans.
 8. **Every stage is independently testable and measurable.** Stage artifacts support isolated replay and ablations.
-9. **The Rust kernel is integration-neutral.** It has no MCP, VS Code, CLI presentation, agent, or product-integration knowledge.
+9. **Agents consume context; OXIDE remains agent-agnostic.** The Rust kernel has no MCP, VS Code, CLI presentation, agent, or product-integration knowledge.
 10. **TypeScript does not reimplement repository intelligence.** Retrieval, graph construction, selection, source evidence shaping, and packing remain Rust responsibilities.
 11. **Every feature has an information/decision/metric hypothesis.** State what information it adds, which decision it improves, and which metric should move before admitting it.
 12. **Baselines are first-class.** Experimental paths do not erase simple controls or their measured results.
 13. **Learned components are optional.** Indexing and context construction work offline without embeddings or a learned decision model, using deterministic lexical/structural retrieval and heuristic decisions.
+14. **OXIDE owns context engineering, not model serving.** OXIDE owns provider contracts, identities, requests, caching, fallback, and context semantics; external runners execute inference.
+15. **Models and model runners are replaceable infrastructure.** Discovery does not change a configured provider/model; changes are explicit, persisted, and invalidate incompatible derived state.
 
 ## System architecture
 
@@ -80,7 +88,8 @@ flowchart TD
     RT --> AD[LadybugDB adapter and connections]
     AD -. implements .-> PORT
     AD --> DB[(LadybugDB)]
-    RT --> MODELS[Optional embedding and decision sessions]
+    RT --> CLIENTS[Optional embedding and decision provider clients]
+    CLIENTS --> RUNNERS[External runners and judge services]
 ```
 
 Begin as a **modular monolith**. Kernel and runtime responsibilities MUST be separable in dependencies and tests; that does not require many crates. A kernel library and runtime host are legitimate compilation/API boundaries. Additional crates or TS packages need a demonstrated compilation, reuse, runtime, or API reason. Neither giant undifferentiated modules nor a microcrate per concept is acceptable.
@@ -89,18 +98,19 @@ Begin as a **modular monolith**. Kernel and runtime responsibilities MUST be sep
 
 | Concern | Owner | Boundary rule |
 | --- | --- | --- |
-| Domain types, parsing semantics, relation resolution, retrieval fusion | Kernel | Operates on typed data and domain ports |
-| Candidate graphs/capsules, selector, expansion rules, budget/packing | Kernel | Same behavior across all integrations |
+| Domain types, parsing semantics, relation resolution, TreeIndex construction, entry-point fusion | Kernel | Operates on typed data and domain ports |
+| TreeRouter, candidate graphs/capsules, inclusion policy, expansion rules, ContextPacker | Kernel | Same behavior across all integrations; routing is not optional |
 | Filesystem capture, watchers, DB connections, provider calls | Runtime | I/O behind kernel-defined contracts |
-| Sessions, scheduling, concurrency, caches, cancellation, telemetry sinks | Runtime | Does not redefine selection policy |
+| Repository/provider client sessions, request batching, scheduling, caches, cancellation, telemetry | Runtime | Owns orchestration, not inference execution or selection policy |
 | MCP, editor/agent adapters, configuration UI, CLI/application presentation | TS control plane | Calls typed runtime operations |
 | Storage queries, row conversion, physical indexes, native IDs | Storage adapter | Private to runtime infrastructure |
+| Embedding/model execution, weights, inference hardware and serving lifecycle | External runners / judge services | Replaceable backends; not an OXIDE-owned model-serving stack |
 
 ## Kernel
 
-The kernel owns the repository domain model and correctness-critical behavior: parsing/indexing orchestration, language-independent knowledge construction, candidate retrieval, structural operations, candidate graph and capsule construction, deterministic selection, expansion, budgeting, and packing.
+The kernel owns the repository domain model and correctness-critical behavior: parsing/indexing orchestration, language-independent TreeIndex construction, entry-point retrieval, TreeRouter, structural operations, candidate graph and capsule construction, deterministic selection, expansion, budgeting, and ContextPacker.
 
-“Orchestration” here means deciding which domain work and invalidation are required. Runtime code performs file reads, persists batches, schedules jobs, and invokes models. The kernel consumes captured source and typed results; it does not open connections, spawn application processes, download weights, or interpret CLI/MCP options.
+“Orchestration” here means deciding which domain work and invalidation are required. Runtime code performs file reads, persists batches, schedules jobs, and invokes provider clients. External runners execute inference. The kernel consumes captured source and typed results; it does not open connections, spawn application processes, download weights, or interpret CLI/MCP options.
 
 Kernel invariants:
 
@@ -113,7 +123,7 @@ Kernel invariants:
 
 ## Runtime
 
-The Rust runtime hosts repository sessions and owns expensive resources: database instances/connections, embedding providers, decision-model sessions, caches, concurrency, scheduling, I/O, and telemetry. It executes kernel operations through typed ports and exposes a service boundary to TS.
+The Rust runtime hosts repository sessions and owns OXIDE resources: database instances/connections, embedding/decision provider clients, request batching, caches, concurrency, scheduling, I/O, and telemetry. Provider sessions mean client/request state, not resident model weights or an inference server. External runners own inference execution and its serving resources. Runtime executes kernel operations through typed ports and exposes a service boundary to TS.
 
 Conceptual service operations include opening/closing a repository session, capturing/indexing a snapshot, inspecting status/capabilities, retrieving candidates for diagnostics, building context, and cancelling an operation. No arbitrary SQL/Cypher service operation is required. Successful results and errors MUST be versioned typed contracts; consumers must not parse CLI prose.
 
@@ -122,6 +132,22 @@ Each request pins one published snapshot and one effective configuration. Runtim
 The initial runtime ownership plan is one read/write database owner per store, with connections created from that owner. Concurrent CLI/editor/MCP clients MUST attach through the runtime or receive a clear ownership conflict; TS must not independently open that database. Whether the service uses a persistent child process, native binding, or another local transport remains open. Do not freeze a native binding or daemon because the legacy implementation used one.
 
 Runtime MUST bound queued work and memory, support cancellation/deadlines, serialize publication, and invalidate snapshot-dependent caches. Cache keys include snapshot, query inputs, derivation versions, embedding/decision identity, and policy versions as applicable. Session limits and scheduler implementation require measurement.
+
+### Embedding providers and model-runner boundary
+
+> OXIDE owns context engineering, not model serving.
+
+OXIDE owns typed provider contracts, persisted provider/model and embedding-space identity, batching/request orchestration, caches, compatibility validation, fallback, and retrieval/routing/selection semantics. External runners own inference execution, model loading, weights, device scheduling, and model-serving lifecycle. The runtime does not aim to embed a full model-serving stack.
+
+Initial local embedding adapters SHOULD target **Ollama** and **llama.cpp**. These are preferred runner boundaries, not frozen endpoints, model choices, or guaranteed API compatibility. Adapter validation must establish model identity, supported embedding semantics, batch behavior, dimensions, normalization, timeouts, and error handling at pinned runner versions.
+
+At startup or configuration time, runtime MAY perform bounded discovery of configured/known local runner endpoints. TS presents available capabilities and setup choices. Detection is advisory: it does not select a model, install weights, start a serving stack, send repository source, or enable semantic inference automatically. Avoid unrestricted host/port scanning.
+
+If semantic embeddings are not configured, continue with lexical entry points and structural TreeRouter exploration, report semantic capability as **unavailable**, and optionally offer setup choices. Missing semantics is a supported mode, not an invalid repository state. No learned model or runner is required for indexing or context construction.
+
+Once a provider/model is configured, persist its explicit identity. A newly detected runner MUST NOT change that selection; an unavailable selected runner causes visible degradation, not an automatic switch to another provider/model. Explicit reconfiguration validates identity and invalidates/rebuilds incompatible vectors. Mutable runner model aliases require a digest/revision/compatibility check where supported; unresolved identity is reported rather than assumed stable. Endpoint discovery, configured identity, observed health, and snapshot vector readiness are distinct states.
+
+**Sentence Transformers** MAY serve as a research/reference implementation for training, validation, or compatibility tests; it is not assumed as the production Rust runtime. Native inference remains a future option only if benchmarks justify it and a focused decision defines the exception. No native execution dependency enters bootstrap by default.
 
 ### Failure contract
 
@@ -142,7 +168,7 @@ Fallback MUST NOT relabel old vectors as belonging to another provider. Failure 
 
 TS owns MCP, CLI/application UX where appropriate, VS Code/editor and agent integrations, workspace orchestration, process lifecycle, configuration UX, remote/service adapters, and SDKs. It translates integration inputs into typed service requests and renders returned bundles/errors.
 
-TS MAY collect an editor selection or user-selected roots. Rust validates scope and interprets their repository meaning. TS MUST NOT parse source for repository intelligence, implement graph traversal, fuse rankings, derive capsules, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector.
+TS MAY collect an editor selection or user-selected roots and offer provider/runner setup choices. Rust validates scope, persists configured identities, and interprets their repository meaning. TS MUST NOT parse source for repository intelligence, implement TreeIndex/TreeRouter or graph traversal, fuse rankings, derive capsules, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector.
 
 Remote integrations transport validated Rust results; they do not introduce a second repository engine. The kernel has no knowledge of the identity or workflow of the downstream agent.
 
@@ -158,6 +184,7 @@ Remote integrations transport validated Rust results; they do not introduce a se
 | `FileId` | Domain file identity within a repository; normalization and case rules are explicit |
 | `SymbolId` | Domain declaration identity supporting overloads, nesting, and duplicate names |
 | `EntityId` | Typed union for repository/module/file/symbol and any justified extra category |
+| Structural region identity | Domain reference to a TreeIndex region, scoped to snapshot/derivation and projection version; not a DB-native tree/node ID |
 | `RepositorySnapshot` | Immutable source manifest, derivation manifest, publication status, and capability/coverage information |
 | `Query` / `QueryContext` | Task text and explicit path/symbol/change hints; validated Rust domain inputs independent of an integration's objects |
 | `ContextBudget` | Nonnegative payload-token allowance plus the declared counting contract; separate from retrieval/traversal resource limits |
@@ -209,6 +236,35 @@ An edit invalidates source-dependent entities, relations, snippets, lexical feat
 
 An initial full-rebuild implementation is acceptable before incremental indexing. Incremental indexing is a required later validation milestone, not a reason to import old migrations.
 
+## TreeIndex
+
+TreeIndex is the structural representation of repository knowledge used by TreeRouter from the first implementation slice. It organizes repository/module/file/symbol scopes and useful structural regions with source identity, coverage, and relation provenance. It is derived from the same published snapshot as the underlying entities and graph, not a separate source of repository truth.
+
+Code remains a graph. A hierarchical tree/forest view provides navigation while imports, references, calls, implementations, and tests retain their typed cross-edges. Do not delete cycles/non-tree relationships or invent a single-parent ownership fact to fit a convenient schema. The exact hierarchy/projection, treatment of multiple ownership views, region granularity, and persisted/materialized representation remain open. “TreeIndex” does not mandate a particular tree database, schema, path encoding, or vendor library.
+
+TreeIndex invariants:
+
+- Region/entity/source references are domain-owned and scoped to repository, snapshot, derivation, and projection version.
+- Traversable hierarchy/projection is finite and cycle-safe; cross-edges remain typed and provenance-bearing.
+- Structural regions expose bounded identity, membership/adjacency, coverage, and source evidence. A heuristic directory grouping is not a compiler-proven module or call relation.
+- Parsing, scope exclusions, source digests, and unresolved references have the same meaning as in the knowledge model. Partial structure is explicit.
+- Rebuild/incremental publication updates TreeIndex consistently with entities/relations; no request uses an old projection with new source.
+- Lexical/vector accelerators point to domain entities/regions in TreeIndex, rather than defining its hierarchy. TreeIndex works without vectors or a judge.
+
+KnowledgeStore provides typed facts and bounded region/adjacency access; kernel owns projection semantics. Whether regions are physical nodes or a computed view is a follow-up design decision. Fake-store tests must exercise the same structural navigation contracts as the real adapter.
+
+## TreeRouter
+
+TreeRouter is kernel logic that determines which TreeIndex regions are worth exploring for a query. Lexical/vector retrieval and explicit structural hints provide entry points; they do not bypass routing or directly produce final context. A deterministic root/scope route remains available when similarity yields no useful entry point, under the same resource and query-scope limits.
+
+The router combines query context, structural evidence, and heuristic/optional learned value judgments to choose a bounded exploration plan. Deterministic Rust owns region ordering, eligibility, confidence handling, thresholds, visited sets, depth/fanout/work limits, and stopping rules. A judge may estimate that a branch or neighbor is useful; it cannot issue a traversal command. Routing relevance/value and final context inclusion are distinct decisions.
+
+Conceptual routing artifacts identify entry points, regions visited/pruned/deferred, node/edge/capsule counts, provenance, fallback/abstention, and which bound stopped exploration. Names such as `RoutingPlan`/`RoutingTrace` describe those contracts, not a frozen algorithm. The router produces query-local candidates/structure for CandidateGraph and CandidateCapsules; all candidates retain origin and route provenance.
+
+The router MUST work with a deterministic heuristic DecisionProvider, without JEV, semantic embeddings, or another learned judge. Learned branch judgment is an optional signal inside a foundational routing stage. If used, the router requests a bounded region-subject capsule through the same DecisionProvider abstraction, then applies Rust policy to the returned value/uncertainty. This may happen during exploration before final candidate judging; the high-level pipeline is not a restriction that a provider may only run after routing completes. All such requests share declared traversal, request-count, latency, and escalation allowances. No unbounded recursive judgment loop is permitted.
+
+The exact exploration strategy, region capsule fields, prioritization, and stopping algorithm remain open. Preserve a simple deterministic bounded traversal baseline from the start, and measure entry-point loss, region-pruning loss, routed candidate coverage, and cost separately. A no-routing similarity baseline is a diagnostic ablation, not the normal OXIDE architecture.
+
 ## Storage abstraction
 
 `KnowledgeStore` is the kernel-facing contract for authoritative **derived** repository knowledge. Source is the primary truth. The store contains validated entities/relations and their derivation provenance; accelerator indexes and caches can be rebuilt.
@@ -222,6 +278,7 @@ The contract MUST expose typed domain operations rather than a universal string-
 | Lexical candidate search | Snapshot scope, limit, score semantics, deterministic ordering contract |
 | Vector candidate search (optional) | Compatible embedding-space identity, metric, limit, channel status |
 | Fetch typed adjacency | Relation/direction filters, stable order, edge/node bounds, truncation metadata |
+| Access TreeIndex regions/navigation facts | Domain region references, snapshot/projection scope, bounded membership/hierarchy/cross-edge views; no native tree schema leakage |
 | Apply derived write batch and publish | Atomic visible publication; failed/incomplete generation stays unpublished |
 | Inspect derivation/capabilities | Domain readiness/errors, never raw DB result shapes |
 
@@ -255,27 +312,27 @@ Do not assume online vector/FTS mutation, multi-writer process access, distribut
 
 ## Retrieval
 
-Retrieval optimizes **candidate recall** within declared latency, memory, and candidate-count limits. Channels initially consider lexical evidence, optional semantic/vector evidence, and structural seeds from typed query context. Structural seeding is distinct from final expansion.
+Retrieval optimizes **entry-point candidate recall** within declared latency, memory, and candidate-count limits. Channels initially consider lexical evidence, optional semantic/vector evidence, and structural seeds from typed query context. Their results enter TreeRouter over TreeIndex; structure is not added only after a fused top-K list. Structural seeding is distinct from routing and from final expansion.
 
-Retrieval produces `CandidateSet`, never `ContextBundle`. It MUST retain per-channel ranks/scores, channel identities/availability, entity provenance, and truncation information. Merge duplicate entities by domain identity while preserving all channel evidence. Channel scores have separate names/scales; fused rank/utility is not a probability.
+Retrieval produces an entry-point `CandidateSet`, never `ContextBundle`. TreeRouter may discover additional candidates and produces a routed candidate set before CandidateGraph/capsules. Record the stage and pool boundary so “candidate coverage” has an unambiguous denominator. Both sets MUST retain per-channel ranks/scores where present, channel identities/availability, entity/route provenance, and truncation information. Routed-only candidates have no invented lexical/vector score. Merge duplicate entities by domain identity while preserving all channel evidence. Channel scores have separate names/scales; fused rank/utility is not a probability.
 
 Fusion remains benchmark-driven. Preserve lexical-only, semantic-only where available, structural-seed controls, and a frozen weighted RRF baseline. Historical K=60 and 0.6/0.4 weights are a baseline configuration worth reproducing, not immutable v2 policy. Compare alternatives on pinned candidate universes; changing channel depths changes fusion inputs and must be recorded.
 
-Kernel owns fusion/deduplication/tie-breaking; store adapters provide bounded search primitives; runtime schedules provider calls and I/O. Candidate limits protect runtime cost and do not constitute final context budgets. Every cutoff is recorded so route loss is distinguishable from fusion/selection/packing loss.
+Kernel owns fusion/deduplication/tie-breaking; store adapters provide bounded search primitives; runtime schedules provider calls and I/O. Candidate limits protect runtime cost and do not constitute final context budgets. Record every cutoff so entry-point retrieval/fusion loss, TreeRouter pruning, selection loss, and packing loss remain distinguishable.
 
-Without learned embeddings, deterministic lexical retrieval plus available structural seeds MUST still work. Optional hashed vectors may be a control but must not be called learned semantic evidence. Semantic failures MUST be visible and must not turn an unavailable channel into a genuine score of zero.
+Without configured semantic embeddings, lexical entry points and deterministic structural TreeRouter exploration MUST still work. Optional hashed vectors may be a control but must not be called learned semantic evidence. Semantic failures MUST be visible and must not turn an unavailable channel into a genuine score of zero. Discovery of another runner never silently changes the configured model/provider.
 
 ## Candidate model
 
 `Candidate` is the fundamental runtime unit after retrieval: a repository entity plus enough retrieval and structural metadata for downstream selection. Source ranges/snippets are views of an entity, not independent anonymous chunks.
 
-Minimum candidate information includes entity ID/type, snapshot/derivation, path and source reference, channel evidence, origin (retrieved or graph neighbor), hydration completeness, structural role hints, and diagnostic provenance. Query-specific scores/roles MUST NOT be persisted as intrinsic repository facts.
+Minimum candidate information includes entity ID/type, snapshot/derivation, path and source reference, channel evidence, origin (retrieved entry point, routed region member, or graph neighbor), TreeIndex region/route provenance, hydration completeness, structural role hints, and diagnostic provenance. Query-specific scores/roles MUST NOT be persisted as intrinsic repository facts.
 
 `CandidateSet` is a bounded, deduplicated collection tied to one query and snapshot, with stable enumeration, channel statuses, limits, and a derivation/configuration manifest. A candidate does not imply inclusion. Missing source and partial metadata are typed states, not empty strings with successful status.
 
 ## Candidate graph
 
-`CandidateGraph` is a bounded, query-local graph of retrieved candidates and useful neighboring repository entities. It retains which nodes were retrieved seeds and which were introduced as neighbors, edge provenance, traversal depth, and truncation diagnostics.
+`CandidateGraph` is a bounded, query-local graph of TreeRouter's routed candidates and useful neighboring repository entities. It retains retrieved entry points, explored regions, routed members and added neighbors, edge/route provenance, traversal depth, and truncation diagnostics. It is the task-local output of structural exploration, not the first point where OXIDE introduces structure.
 
 Kernel constructs it using typed adjacency operations. Bounds include seed count, relation families/direction, depth, total nodes/edges, and per-node fanout. Stable domain ordering breaks ties; visited sets prevent cycles. Record omitted neighbors and which limit fired.
 
@@ -283,21 +340,21 @@ Graph construction provides evidence for judgments; it does not automatically in
 
 ## Candidate capsule
 
-`CandidateCapsule` is the critical repository/query-to-decision boundary. It is a bounded, versioned, typed representation used unchanged in meaning for heuristic decisions, learned models, dataset generation, evaluations, and opt-in debugging. It exposes no storage internals.
+`CandidateCapsule` is the critical repository/query-to-decision boundary. It is a bounded, versioned, typed representation used unchanged in meaning for heuristic decisions, JEV, future local judges, dataset generation, evaluations, and opt-in debugging. It exposes no storage internals. The abstraction supports a candidate subject and conceptually a TreeIndex region/branch subject for routing-value judgments; this does not freeze whether the final schema uses one tagged type or coordinated capsule variants.
 
 The initial **semantic contract**, pending exact field/encoding decisions:
 
 | Field family | Content and bounds |
 | --- | --- |
-| Identity/version | Capsule schema, candidate ID, repository/snapshot/derivation, source digest; opaque identifiers used for correlation |
+| Identity/version | Capsule schema, subject kind and candidate/region domain reference, repository/snapshot/derivation, source digest; opaque identifiers used for correlation |
 | Task | User query and typed query context, with explicit query truncation and digest |
-| Entity | Kind, symbol name/signature, module/file path, test role, source range and completeness |
+| Subject evidence | Entity kind/name/signature, module/file path, test role, source range and completeness where applicable; region identity/coverage and bounded structural description for branch judgments |
 | Source evidence | Bounded source/snippet; any summary has method/version/provenance and does not replace authoritative source |
 | Retrieval evidence | Separately typed lexical/semantic scores/ranks, fused rank if used, channel identity/availability; missing differs from zero |
-| Structural evidence | Role hints, bounded relations and nearby definitions/tests/callers with resolution provenance |
+| Structural evidence | TreeIndex region/route provenance, role hints, bounded relations and nearby definitions/tests/callers with resolution provenance; bounded branch evidence when judging exploration value |
 | Limits/missingness | Size accounting, truncation flags, omitted neighbor counts, unresolved/unsupported features |
 
-The capsule builder is kernel logic. Runtime provides the captured bytes and optional model/tokenizer resources through ports. Bounds MUST cover total bytes/tokens, per-field source and query length, number of neighbors, and relations. A declared deterministic truncation rule is applied before inference; silent model-side truncation is unacceptable.
+The capsule builder is kernel logic. Runtime provides captured bytes and provider capabilities/token-counting resources through ports; inference execution stays with external runners. Bounds MUST cover total bytes/tokens, per-field source and query length, number of neighbors, and relations. A declared deterministic truncation rule is applied before inference; silent model-side truncation is unacceptable.
 
 Canonical capsule serialization/versioning is shared by runtime traces and DecisionBench records. Training wraps the capsule with labels/provenance/splits, rather than constructing a separate input representation. Model-specific rendering MAY encode the canonical fields differently, but has a versioned manifest and the same renderer is used in training and inference. Document any feature exclusion (for example removing ranks to test leakage).
 
@@ -305,9 +362,24 @@ Capsules MUST NOT include final inclusion decisions, gold labels, future edits, 
 
 ## Decision layer
 
-The learned component is a small specialized judgment model, not a miniature coding LLM. A removable `DecisionProvider` concept accepts bounded capsules and returns `CandidateDecision` judgments correlated to candidate ID, capsule version/digest, and model/heuristic version.
+`DecisionProvider` is a foundational, typed judgment boundary used by TreeRouter and candidate evaluation from the beginning. It accepts bounded capsules and returns validated relevance/value/uncertainty judgments correlated to candidate or region subject, capsule version/digest, and provider/model/heuristic identity. `CandidateDecision` remains the candidate-specific result; naming and representation of branch decisions are open. A learned component is a narrow specialized judge, not a miniature coding LLM or code-correctness reasoner.
 
-The runtime owns model loading, inference sessions, batching, provider lifecycle, and deadlines. Kernel owns input construction, result validation, interpretation, and fallback policy. A deterministic heuristic provider uses the same semantic capsule contract. Removing learned inference MUST leave the same selection/packing stages functional.
+Runtime owns provider clients, request batching, transport, caches, and deadlines; external runners/services execute inference. Kernel owns capsule construction, result validation/interpretation, heuristic judgments, and fallback policy. Removing learned inference MUST leave TreeIndex, TreeRouter, selection, expansion, and packing functional through the same typed boundary.
+
+### Provider candidates and JEV
+
+| Provider candidate | Architectural role | Availability / acceptance |
+| --- | --- | --- |
+| Deterministic heuristic judge | Required baseline for branch/candidate value and fallback | Offline, no runner/model/network required |
+| **JEV** | First-class optional DecisionProvider adapter for narrow fuzzy judgments | Explicit configuration; current repository evidence concerns a hosted service, so source disclosure, deadlines, repeatability and identity require validation |
+| Future local specialized judge | Replaceable local relevance/value model | External execution runner by default; requires domain data, calibration, quality/cost evidence |
+| Optional stronger judge | Bounded escalation on uncertainty | Same typed judgments and limits; configured explicitly, never unrestricted reasoning/control |
+
+Design JEV support into provider capabilities, typed request/result correlation, configuration, uncertainty handling, traces, and contract tests from Phase 1. Its adapter must not dictate the capsule/domain schema or become a default dependency. A real JEV call is not required for bootstrap, CI, or offline tests; use fake provider fixtures for the boundary. Detailed API/SDK, version, question templates, batching and calibration belong in a follow-up ADR.
+
+JEV may estimate candidate relevance, candidate necessity/value, whether a structural branch seems worth exploring, the value of additional neighboring context, and confidence/uncertainty. These are query-sensitive estimates over supplied evidence, not claims that code is correct, a patch is valid, or a task is solved. JEV MUST NOT supply traversal rules, executable plans, hard thresholds, budgets, fallback logic, or final inclusion.
+
+The [existing JEV typed-evidence study](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/jev-typed-evidence-eval/README.md) is **inconclusive on validity**, not a positive quality result. Identical inputs produced varying outputs; selection-quality gates were never read, and hosted requests had measurable network/latency costs. Treat JEV as an integration candidate from the start, while requiring fresh validity, calibration, routing/selection quality, privacy, and cost gates before promotion. No JEV effectiveness or code-correctness capability is assumed.
 
 The output schema is deliberately **not frozen**:
 
@@ -317,9 +389,9 @@ The output schema is deliberately **not frozen**:
 | Ordinal usefulness or multi-head relevance/necessity/expansion value | Separates potentially useful evidence from critical evidence and useful neighborhoods | More labels and unclear necessity targets; heads may disagree |
 | Relative/setwise preference | Can expose complementarity/redundancy among candidates | Order/position bias, variable pool size, harder confidence calibration and runtime/training alignment |
 
-The initial interface MUST support uncertainty/abstention regardless of chosen heads. “Expand” is a prediction of expansion value, not a traversal instruction; “reject” is evidence for policy, not an executable exclusion command. Head names, label scales, calibration methods, architecture, and model family need experimental evidence and a follow-up ADR.
+The initial interface MUST support uncertainty/abstention regardless of chosen heads. Branch-worth-exploring and “expand” are predictions of value, not traversal instructions; “reject” is evidence for policy, not an executable exclusion command. Provider-reported confidence and OXIDE-calibrated confidence are distinct. A provider lacking reliable confidence may be marked uncalibrated/uncertain; do not manufacture certainty to satisfy an interface. Head names, label scales, calibration methods, architecture, and model family need experimental evidence and a follow-up ADR.
 
-Result validation covers candidate membership, duplicates/missing outputs, schema/model compatibility, finite numeric values, declared ranges, capsule correlation, and uncertainty state. Invalid output uses fallback; no free-text instruction from a model becomes policy. Scores MUST NOT overwrite retrieval scores. Judgment reasons are optional diagnostics and are not factual repository relations.
+Result validation covers candidate/region subject membership, duplicates/missing outputs, schema/provider/model compatibility, finite numeric values, declared ranges, capsule correlation, and uncertainty state. Invalid output uses fallback; no free-text instruction from a model becomes policy. Scores MUST NOT overwrite retrieval scores. Judgment reasons are optional diagnostics and are not factual repository relations.
 
 ## Uncertainty and escalation
 
@@ -327,7 +399,7 @@ Distinguish predictive uncertainty, explicit abstention, unsupported/out-of-dist
 
 Rust owns confidence thresholds, routing, deadlines, and inclusion rules. Default handling is deterministic heuristic fallback for uncertain/unavailable decisions. Optional stronger judging is a bounded experiment configured explicitly, with candidate/query count, time, monetary cost, and privacy limits. It returns the same typed judgment contract and may also abstain. No recursive or unlimited escalation is permitted.
 
-Escalation is disabled in offline/local-only mode. It MUST NOT send source remotely because confidence is low unless remote inference is explicitly configured for the repository. A timeout consumes the declared escalation allowance and falls back; it does not stall indefinitely.
+Remote escalation and hosted JEV are disabled in offline/local-only mode. Local-only mode may use an explicitly configured local judge/stronger local runner, but the mandatory offline path needs neither. It MUST NOT send source remotely because confidence is low unless remote inference is explicitly configured for the repository. A timeout consumes the declared escalation allowance and falls back; it does not stall indefinitely. Routing judgments and final candidate judgments share end-to-end request limits; retries/backoff may not exceed the remaining deadline.
 
 Calibration is fitted on held-out calibration data separate from training, model selection, and final test sets. Publish risk-coverage curves and accuracy at declared coverage, plus actual routed fraction, fallback rate, latency, and cost. Thresholds are versioned Rust policy and are never hidden in a model prompt.
 
@@ -336,18 +408,22 @@ Calibration is fitted on held-out calibration data separate from training, model
 The conceptual pipeline is:
 
 ```text
-Query + snapshot + budget
-  → Candidate retrieval → CandidateSet
-  → CandidateGraph → CandidateCapsules
-  → Decision layer (heuristic or learned)
-  → Deterministic TreeSelect / selection policy → SelectionPlan
+Repository snapshot
+  → TreeIndex
+  → Query + query context + budget
+  → TreeRouter (lexical/vector entry points + structural routing)
+  → Routed CandidateSet → CandidateGraph / CandidateCapsules
+  → DecisionProvider (heuristic, optional JEV/local/stronger judge)
+  → Deterministic Rust inclusion policy → SelectionPlan
   → Structural expansion
-  → Context budget packing → ContextBundle
+  → ContextPacker → ContextBundle
 ```
+
+This separates offline index construction from request-time routing. DecisionProvider can also supply bounded branch-value judgments inside TreeRouter, as specified above; the diagram shows the main artifact flow rather than freezing inference-call order. Models judge; deterministic Rust decides throughout.
 
 `SelectionPlan` records chosen primary entities, support relationships, permitted expansion intents/bounds, preferred evidence views, priorities, omission reasons, and decision/policy provenance. It is an intermediate artifact, not a promise that all chosen items fit the final budget.
 
-**TreeSelect is a working name**, not a selected external library or a frozen algorithm. Code graphs are not trees. Any implementation must define its ownership hierarchy/forest or graph projection, treatment of non-tree edges/cycles, scoring objective, and complexity before adoption. Preserve a simple deterministic greedy selector as a first-class baseline. No unmeasured graph optimizer is required to bootstrap.
+TreeRouter's foundational job is exploration; downstream inclusion policy chooses coherent evidence to pack. **TreeSelect**, if retained as a working name for a selector experiment, is not TreeRouter, a selected external library, or a frozen algorithm. Any hierarchy-based selector must use a declared TreeIndex view and specify its objective, non-tree edges/cycles, prerequisites, and complexity before adoption. Preserve a simple deterministic greedy selector as a first-class baseline. No unmeasured graph optimizer is required to bootstrap, but the deterministic TreeIndex/TreeRouter path is required.
 
 Selection invariants:
 
@@ -364,6 +440,8 @@ Structural expansion follows selected seeds through allowed relations under inde
 New expansion evidence cannot silently replace a selected primary. Any replacement requires a declared deterministic policy and recorded reason. Expansion-only evidence retains its origin and seed relation. Cycles, ambiguous targets, and fanout truncation are explicit.
 
 ## Context packing
+
+`ContextPacker` is kernel logic that constructs the final bounded ContextBundle from the selection plan and expanded source evidence. It neither runs a judge nor initiates open-ended structural exploration; when a view does not fit, deterministic packing policy reduces or omits it with reasons.
 
 `ContextItem` is a source-backed view of an entity or a justified coherent evidence group, with range, role, reasons, snapshot/source digest, and token cost. It may be a signature, bounded body, or scope view. View reduction follows a declared deterministic rule, preserves provenance, and signals incomplete source. It must not cut arbitrary bytes or imply a truncated body is complete.
 
@@ -385,21 +463,21 @@ The bootstrap packer needs a pinned local tokenizer/counting implementation for 
 
 The current bottleneck for learned selection is domain-specific data. Design the boundary so runtime records can become DecisionBench examples:
 
-`query + candidate + canonical CandidateCapsule + label(s) + annotation provenance`
+`query + candidate or structural region + canonical capsule + label(s) + annotation provenance`
 
-Label candidates include relevance, necessity, expansion value/expand, reject, and uncertain. The taxonomy and whether labels are binary, ordinal, multi-head, or setwise remain experimental. A final policy decision is not automatically the correct judgment label.
+Label candidates include relevance, necessity, branch exploration value, neighboring expansion value/expand, reject, and uncertain. The taxonomy and whether labels are binary, ordinal, multi-head, or setwise remain experimental. Branch-value labels and candidate-relevance labels are distinct targets; a final traversal/inclusion policy decision is not automatically the correct judgment label.
 
 Constraints for the future pipeline:
 
-- Mine hard negatives from realistic retrieval results, including same-name symbols, misleading callers, nearby but irrelevant tests, and high-scoring wrong files. Random negatives are an easy control, not representative training data.
+- Mine hard negatives from realistic entry-point retrieval and TreeRouter results, including same-name symbols, misleading callers, nearby but irrelevant tests, high-scoring wrong files, and plausible irrelevant branches. Random negatives are an easy control, not representative training data.
 - Labels are conditioned on the query and supplied evidence; the same symbol can be necessary for one task and irrelevant to another.
-- Include lexical-only, semantic, structural, and fallback operating modes so runtime and training distributions match. Log candidate-pool/capsule manifests and sampling probabilities where relevant.
+- Include lexical-only, semantic, structural, heuristic routing, and fallback operating modes so runtime and training distributions match. Log entry-point/routed-pool/region/capsule manifests and sampling probabilities where relevant. Routing determines which regions are observed: never label unvisited regions irrelevant merely because the production policy pruned them.
 - Split by repository, with near-duplicate tasks, commits, forks, and related worktrees grouped to avoid leakage. Random row splits do not establish repo-level generalization.
 - Keep distinct training, development/model-selection, held-out calibration, and final repository-held-out test partitions. Historical within-repo studies are diagnostics, not a substitute for this protocol.
 - Teacher labels are noisy annotations, not ground truth. Retain teacher/version/prompt, rationale when available, uncertainty, human audit/adjudication, and disagreement. Edit-locus gold is incomplete for read-required context.
 - Test for query-name leakage, rank leakage, candidate position bias, and category artifacts (for example unlabeled module/test evidence being treated as false negatives).
-- Store candidate-level judgments separately from selector/packer outcomes. Rust role caps, thresholds, budgets, and traversal must not be accidentally learned as relevance labels.
-- Version schema, source snapshots, tokenizer/renderer, teacher, embedding space, retrieval/policy configuration, and corpus/split manifests. Record feature availability and truncation at annotation time.
+- Store candidate/branch judgments separately from router/selector/packer outcomes. Rust role caps, thresholds, budgets, and traversal must not be accidentally learned as relevance labels. JEV or another teacher supplies annotations, not policy ground truth.
+- Version schema, source snapshots, TreeIndex projection, tokenizer/renderer, teacher/provider/model/runner, embedding space, routing/retrieval/policy configuration, and corpus/split manifests. Record feature availability and truncation at annotation time. Sentence Transformers may be a reference/training tool without becoming a Rust runtime dependency.
 - Separate expansion-value targets from relevance to the current entity; useful neighbors need their own evidence and annotation.
 - Dataset collection and source-containing traces are opt-in, with repository permissions and retention controls. Do not generate labels or train a model during bootstrap merely to exercise the interface.
 
@@ -407,21 +485,24 @@ This spec constrains data architecture; it does not choose a teacher, training s
 
 ## Evaluation
 
-**Retrieval quality != context quality != downstream agent success.** Evaluate each stage against its own question and report the denominator and completeness of gold.
+**Entry-point retrieval quality != routing quality != context quality != downstream agent success.** Evaluate each stage against its own question and report the denominator and completeness of gold.
 
 | Stage | Metrics | Required controls and cautions |
 | --- | --- | --- |
 | Ingestion/knowledge | Entity/edge conformance, resolved/ambiguous coverage, full/incremental logical parity | Malformed/deep source, overloads, duplicate names, same-line attribution, deletes/renames; no silent symbol loss |
-| Retrieval | Recall@K, MRR, gold candidate coverage, channel contribution/route loss | Lexical-only, optional semantic-only, frozen RRF, structural-seed ablation, exact vector search vs ANN; same snapshot/candidate limits |
+| TreeIndex | Region membership/projection fidelity, coverage, scoped navigation, cross-edge preservation, build/update cost | Snapshot-consistent fake/real navigation and malformed/ambiguous structure; no mandatory tree-schema choice |
+| Entry-point retrieval | Recall@K, MRR, gold entry-point coverage, channel contribution/entry-point loss | Lexical-only, optional semantic-only, frozen RRF, structural-seed ablation, exact vector search vs ANN; same snapshot/candidate limits |
+| TreeRouter | Routed required-entity/region coverage, pruning loss, explored regions/nodes/edges, judgment calls, latency | Deterministic bounded traversal, heuristic judge, root/scope fallback, no-semantic mode; no-routing similarity as diagnostic ablation only |
 | Capsule | Size, truncation/missingness, runtime/training rendering parity, provenance fidelity | Deterministic fixture capsules; no model-side truncation; length/feature ablations |
-| Decision | Precision, recall, AUROC, Brier score, ECE, risk-coverage, accuracy at coverage | Heuristic/no-model, retrieval-order baseline, random/order-permutation controls; calibration and test partitions separate |
+| Decision | Precision, recall, AUROC, Brier score, ECE, risk-coverage, accuracy at coverage, repeatability | Heuristic/no-model, optional JEV/local/stronger-judge ablations, retrieval-order baseline, random/order-permutation controls; branch/candidate targets and calibration/test partitions separate |
+| Provider/runner boundary | Identity stability, batch/single compatibility, failures/timeouts, request cost, cache behavior | Ollama/llama.cpp adapter fixtures, runner unavailable/unconfigured/newly discovered cases, explicit reconfiguration; no live runner/JEV required for CI |
 | Selection/expansion | Required-symbol recall, context noise ratio, structural coherence, evidence loss by stage | Greedy baseline, no expansion, no learned decisions, bounded oracle where gold permits; fixed budgets |
 | Packing | Actual canonical token count, budget violations, duplicate-source ratio, prerequisite completeness | Small/zero budgets, oversized items, interval overlap, payload overhead; truncation/coherence diagnostics |
 | System | Downstream task success, latency distributions, peak memory, context size, indexing cost/disk size | Fixed agent/model/tools/task snapshots, native agent/no-OXIDE control, cold/warm and offline modes |
 
 Definitions:
 
-- Candidate coverage is gold entities reachable in the recorded candidate universe; it sets a selection ceiling. Report unsupported/missing gold separately.
+- Candidate coverage is gold entities reachable in a named recorded universe: retrieved entry points, routed pool, or expanded pool. Routed coverage sets an inclusion-policy ceiling; entry-point coverage alone does not. Separate entry-point, routing/pruning, selection, expansion, and packing loss. Historical “route loss” terminology may mean retrieval-channel loss and must not be silently reinterpreted as TreeRouter pruning. Report unsupported/missing gold separately.
 - Required-symbol recall is annotated required symbols with sufficient evidence in the packed bundle divided by annotated required symbols. A signature-only view may not satisfy a body-required label.
 - Noise ratio uses irrelevant context tokens / labeled context tokens. Report annotation coverage; incomplete gold does not make every non-gold token irrelevant.
 - Structural coherence can measure satisfied policy-declared prerequisites / all prerequisites and dangling source references. Report trivial empty-bundle behavior separately; it is not proof of task usefulness.
@@ -446,6 +527,7 @@ The root policy, development workflow, domain instructions, invariants, README, 
 | [Reranker evaluation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/reranker-eval/README.md) | BGE and MiniLM did not earn quality/cost promotion; raw MiniLM scores lost 8 gold-overlapping symbols across 6/21 tasks. Qwen3 CPU run produced no quality scores | Separate retrieval and judgment scales; retain operationally inconclusive vs quality-rejected distinctions |
 | [Laya evaluation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/laya-reranking-eval/README.md) | CPU cost gate and preregistered development-quality gate failed; incomplete-label checks were inconclusive | A resident model still needs quality and CPU cost evidence; specialization is a hypothesis |
 | [Julia judge evaluation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/julia-evidence-judge-eval/README.md) and [issue 31](https://github.com/Kiy-K/oxide/issues/31) | Rejected synchronous judge: tested quality often near chance, setwise position bias, and CPU latency gate failure; no fresh held-out evaluation | Confidence, size, and decision-model branding do not prove usable judgments; test order bias and calibration |
+| [JEV typed-evidence evaluation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/jev-typed-evidence-eval/README.md) | Inconclusive validity: canary drift and repeated-input nondeterminism; quality gates stayed sealed; hosted requests had measured latency/backoff costs | Design the optional provider boundary now; require fresh validity/calibration/cost evidence and hard deadlines before JEV promotion |
 | [Selection separability](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/selection-separability-eval/README.md) | No tested request-time feature family passed transferable-signal gate; structural features hurt held-out; ContextBench was not evaluated | Graph-first architecture is justified by domain semantics, not a claim that old structural features improve quality |
 | [ch5 held-out validation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/alloc-ch5-validation/RESULTS.md) | Coverage increased but efficiency interval failed preregistered gate; rejected | Budget utilization and gold recall cannot substitute for context efficiency |
 | [CodeGraph kernel evaluation](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/codegraph-kernel-eval/README.md) | Extraction replacement rejected despite speed advantage; strict deferral and TS-side preprocessing complicate Rust-only parity | Keep extraction/coverage conformance; do not import a foreign graph engine as the new kernel |
@@ -460,19 +542,19 @@ These studies constrain claims, not future possibilities. None proves that graph
 
 ## Observability and debuggability
 
-Each request has a trace identity and stage timings/counts: retrieved per channel, deduplicated candidates, graph nodes/edges, capsule sizes, decisions/abstentions/fallbacks, selected/expanded items, packed tokens, omissions, and cache hits. Record cold vs warm resource costs and capability status.
+Each request has a trace identity and stage timings/counts: TreeIndex/projection identity, entry points per channel, routed/pruned regions and stopping bounds, deduplicated routed candidates, graph nodes/edges, capsule sizes, candidate/branch decisions/abstentions/fallbacks, selected/expanded items, packed tokens, omissions, provider requests and cache hits. Record cold vs warm resource costs, configured provider/model/runner identity, observed health, semantic readiness and JEV availability separately.
 
 Kernel emits typed stage artifacts and reason codes; runtime records/spans them; TS renders explanations. Domain code MUST NOT depend on a telemetry vendor. Normal telemetry excludes source and full queries by default. Opt-in local trace export can retain canonical capsules/decisions and manifests for replay, with retention/redaction controls.
 
-Useful reason codes include duplicate, unresolved relation, graph bound, unsupported source, missing judgment, abstained/fallback, policy floor, prerequisite unavailable, redundant view, item too large, and budget exclusion. Debugging must identify the first loss stage rather than merely show final output. Policy/model/schema versions distinguish comparable traces.
+Useful reason codes include duplicate, unresolved relation, route pruned/deferred, traversal bound, graph bound, semantic unconfigured/unavailable, runner identity mismatch, unsupported source, missing judgment, abstained/fallback, policy floor, prerequisite unavailable, redundant view, item too large, and budget exclusion. Debugging must identify the first loss stage rather than merely show final output. Policy/provider/model/runner/schema versions distinguish comparable traces. Runner discovery alone is never logged as a configuration change.
 
 ## Determinism and reproducibility
 
-The reproducibility unit includes captured source bytes/manifest, scope and ignores, parser/grammar/extraction/resolver versions, domain-ID namespace, storage schema/adapter, embedding-space fingerprint, capsule schema/renderer, decision model/calibration, selector/expansion policy, tokenizer, and effective query configuration.
+The reproducibility unit includes captured source bytes/manifest, scope and ignores, parser/grammar/extraction/resolver versions, domain-ID namespace, storage schema/adapter, TreeIndex projection, embedding-space fingerprint and runner/provider/model identity, capsule schema/renderer, DecisionProvider identity/calibration, TreeRouter/inclusion/expansion policy, tokenizer, and effective query configuration.
 
-Deterministic derivation and policy MUST be independent of hash iteration, DB row order, native IDs, thread completion order, timestamps, and cache warming. Stable ordering uses domain keys; non-finite scores are rejected, and floating-point accumulation order is declared. Test separate processes and different scheduling where meaningful.
+Deterministic derivation and policy MUST be independent of hash iteration, DB row order, native IDs, thread completion order, timestamps, runner discovery order, and cache warming. Stable ordering uses domain keys; non-finite scores are rejected, and floating-point accumulation order is declared. Test separate processes and different scheduling where meaningful. Deterministic policy means the same captured judgments and inputs produce the same route/plan/bundle; it does not assert that a hosted judge always returns identical judgments.
 
-An embedding fingerprint includes checkpoint/content digest, quantization, dimension, query/document prompts, document recipe, tokenizer, pooling, normalization, and similarity metric. Incompatible spaces are never compared; changed recipes invalidate affected vectors. Learned summaries, if added, need their own derivation identity.
+An embedding fingerprint includes configured provider/runner API semantics, model checkpoint/content digest, quantization, dimension, query/document prompts, document recipe, tokenizer, pooling, normalization, and similarity metric. Record available provenance and mark unknown fields explicitly; a matching model alias/dimension alone does not prove two runners produce compatible spaces. Backend equivalence requires tests, not name matching. Incompatible spaces are never compared; changed recipes invalidate affected vectors. Learned summaries, if added, need their own derivation identity.
 
 Reproducible **logical** repository knowledge is required; byte-identical database files are not. External providers and approximate indexes can be nondeterministic. Record their versions/settings and actual candidates/judgments so deterministic stages can replay exactly. Pin seeds where supported, expose limitations, and retain exact-search/no-model controls. Do not promise cross-platform bitwise neural or ANN results without evidence.
 
@@ -492,7 +574,7 @@ Treat repository text and queries as untrusted data. Do not execute source, impo
 
 Remote embeddings, stronger judging, dataset export, and source-bearing telemetry require explicit repository configuration and bounded data disclosure. Secrets/excluded files should not enter capsules through neighboring entities. Reapply scope restrictions to every source hydration and relation expansion.
 
-Store/cache deletion and rebuild affect derived OXIDE state only. Do not delete user source. Database, extension, and model artifacts are version-pinned with integrity/license review in the future adapter implementation. Source-containing caches/traces need documented permissions, retention, and deletion. This document does not mandate a cloud service or automatic upload.
+Store/cache deletion and rebuild affect derived OXIDE state only. Do not delete user source. Database/extension artifacts are version-pinned; runner/model identity and integrity/license information are validated through the provider boundary rather than making OXIDE a weight-distribution/serving system. Configuring a local embedding runner does not authorize hosted JEV; provider credentials and source-bearing logs remain scoped and protected. Source-containing caches/traces need documented permissions, retention, and deletion. This document does not mandate a cloud service or automatic upload.
 
 ## Open questions and decision gates
 
@@ -501,15 +583,19 @@ These uncertainties require a written resolution; downstream agents must not sil
 | Question | Needed before | Evidence / expected decision |
 | --- | --- | --- |
 | Repo/file/symbol ID algorithm, overload/declaration-definition identity, rename semantics | Phase 1 ingestion contracts | Collision/nesting/overload/case fixtures; namespace versioning |
+| TreeIndex hierarchy/projection, structural regions, multiple ownership views and cross-edges | Phase 1 navigation contracts / Phase 2 ingestion | Domain projection proposal, scope/coverage fixtures, fake/real bounded navigation parity; no prematurely frozen physical tree schema |
+| TreeRouter entry-point/root fallback, exploration algorithm, region judgments and stopping policy | Phase 1 routing contracts / Phase 3 routing baseline | Deterministic traversal/heuristic controls, routing loss/coverage/cost, cycle/fanout/deadline tests |
 | Snapshot publication/retention and physical graph schema; test facets vs nodes; unresolved references | Phase 2 adapter | Atomic publish/read-view contract, scope tests, crash/update spike |
 | Pinned LadybugDB version, Rust/extension linking, vector/FTS mutation semantics, target platforms | Phase 2 completion / Phase 3 acceleration | Offline build/reopen/concurrency/extension and index mutation measurements |
 | Service transport and multi-client runtime ownership/discovery | Phase 0 minimal boundary; before real integrations | Typed-contract proposal, lifecycle/ownership tests, startup/warm-call costs |
+| Ollama/llama.cpp provider APIs, bounded discovery, persisted identity and backend equivalence | Phase 1 provider contract / Phase 3 optional semantic adapters | Runner-version capability/identity tests, mutable-alias handling, batch compatibility, no-auto-switch and unavailable-runner fallback |
+| DecisionProvider candidate/region capability contract and JEV adapter/API/question mappings | Phase 1 foundational contract / Phase 4 optional adapter | Typed fake-provider fixtures, subject correlation, explicit source permissions, deadlines, repeatability/validity and confidence calibration; no live JEV prerequisite |
 | Initial supported language slice and conservative relation resolution rules | Phase 2 ingestion | Conformance and coverage evidence; do not assume full compiler resolution |
 | Lexical tokenization, retrieval depths, fusion and ANN tuning | Phase 3 frozen v2 baseline | Paired candidate-recall/cost measurements against simple controls |
-| Canonical capsule fields/bounds/rendering and summary eligibility | Phase 4 schema | Runtime/dataset parity, missingness/truncation tests and information hypotheses |
+| Canonical candidate/branch capsule fields/bounds/rendering and summary eligibility | Phase 1 minimal judgment contract / Phase 4 refined schema | Runtime/dataset parity, subject/missingness/truncation tests and information hypotheses |
 | TreeSelect objective/projection, prerequisites and expansion replacement rules | Phase 4 selector beyond baseline | Greedy/no-expansion controls, coherent groups and cycle/fanout tests |
 | Canonical context payload and tokenizer, strict vs estimated export modes | Phase 4 packing acceptance | Exact payload token accounting and budget/coherence fixtures |
-| Decision heads/labels/model family, calibration and abstention thresholds | Phase 5 learned experiment | Repository-held-out quality, calibration, risk-coverage and CPU cost gates |
+| Decision heads/labels, JEV/local/stronger judge calibration and abstention thresholds | Before any learned routing/selection promotion; Phase 5 specialization | Repository-held-out branch/candidate quality, validity/repeatability, calibration, risk-coverage and end-to-end cost gates |
 | DecisionBench annotation/splits, lawful data scope, teacher audits | Phase 5 dataset collection | Label/provenance protocol and leakage controls |
 | Numerical quality/cost promotion gates and supported hardware SLOs | Before any experiment is promoted | Preregistered paired benchmark protocol; historical numbers are not universal thresholds |
 
@@ -520,21 +606,24 @@ These uncertainties require a written resolution; downstream agents must not sil
 - **ADR-0004:** CandidateCapsule as the learned-model boundary — canonical schema, bounded rendering, runtime/training alignment.
 - **ADR-0005:** Learned decisions with deterministic Rust policy — judgment schema, uncertainty, calibration, fallback and optional escalation.
 - **ADR-0006:** Rebuildable repository state and no legacy DB migration — snapshot/derivation publication and compatibility.
+- **ADR-0007:** TreeIndex / TreeRouter architecture — structural projections, region contracts, entry points, bounded exploration and routing baselines.
+- **ADR-0008:** Model runner / embedding provider boundary — Ollama/llama.cpp adapters, external inference ownership, discovery, persisted identity and explicit reconfiguration.
+- **ADR-0009:** DecisionProvider and optional JEV integration — provider/subject capabilities, JEV mappings, version/response validation, repeatability, privacy and operational gates; complements policy/calibration in ADR-0005.
 
-Additional ADRs for identity, transport, selection algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The five entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite.
+Additional ADRs for identity, transport, inclusion algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The eight entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite and product direction.
 
 ## Milestones
 
 Use the dependency order and exit gates in [BOOTSTRAP.md](../BOOTSTRAP.md):
 
 1. **Phase 0:** Minimal workspace, logical kernel/runtime separation, TS workspace, Mise and CI; specify the minimal typed boundary.
-2. **Phase 1:** Domain identities/snapshots, KnowledgeStore contract, fake store, conformance tests and deterministic artifact fixtures.
-3. **Phase 2:** LadybugDB feasibility/adapter/schema, source capture and repository/file/symbol ingestion; atomic publication and coverage diagnostics.
-4. **Phase 3:** Lexical and optional vector candidates, stage evaluation harness, provenance manifests, frozen baselines.
-5. **Phase 4:** CandidateGraph/capsules, heuristic decisions, deterministic selector, bounded expansion, coherent budget packing.
-6. **Phase 5:** Optional learned decision interface, confidence/abstention, DecisionBench collection/evaluation seam. A trained model is not required for architecture acceptance.
+2. **Phase 1:** Domain identities/snapshots, TreeIndex/TreeRouter navigation contracts, KnowledgeStore/fake store, initial DecisionProvider/heuristic and embedding-provider contracts including JEV capability planning, conformance fixtures.
+3. **Phase 2:** LadybugDB feasibility/adapter/schema, source capture and repository/file/symbol-to-TreeIndex ingestion; atomic publication and coverage diagnostics.
+4. **Phase 3:** Lexical entry points, deterministic TreeRouter baseline with minimal bounded region/candidate judgments, optional Ollama/llama.cpp vector adapters, evaluation harness and frozen retrieval/routing baselines.
+5. **Phase 4:** Refined CandidateGraph/capsules, optional JEV adapter against the existing contract, deterministic inclusion policy, bounded expansion, ContextPacker and coherent budget validation. JEV remains opt-in and is not required to exit the phase.
+6. **Phase 5:** Local specialized/stronger-judge experiments, calibration and selective routing, DecisionBench collection/evaluation. Confidence/abstention and the provider interface already exist in the earlier phases; a trained model is not required for architecture acceptance.
 
-Start evaluation and trace fixtures in Phase 1; do not defer observability to Phase 5. Implement minimal deterministic lexical retrieval/context before treating ANN or learned inference as prerequisites. Incremental/full parity and multi-client concurrency can be staged, but are required before those capabilities are advertised. Dependencies may justify moving a phase; document the change and retain exit gates.
+Start structural and provider contracts, uncertainty/fallback tests, evaluation and trace fixtures in Phase 1; do not defer TreeIndex/TreeRouter or DecisionProvider design to Phase 5. Grow canonical capsule schemas through explicit versions as routing/candidate data becomes concrete. Implement the deterministic lexical/structural routing/context path before treating ANN, JEV or learned inference as prerequisites. Incremental/full parity and multi-client concurrency can be staged, but are required before those capabilities are advertised. Dependencies may justify moving a phase; document the change and retain exit gates.
 
 ## Acceptance criteria for bootstrap
 
@@ -543,12 +632,15 @@ Bootstrap is reviewable when:
 - Dependency checks and tests prove TS cannot bypass Rust intelligence, and kernel APIs have no integrations or DB-native types.
 - Fake and real stores satisfy snapshot/identity/adjacency/search/publication contracts; extension and persistence limitations are explicit at the pinned release.
 - At least one documented language slice ingests repository/file/symbol evidence with conservative relations, coverage diagnostics, and no silent identity loss.
+- TreeIndex represents published repository knowledge and retains typed cross-edges; foundational TreeRouter uses bounded structural exploration even when entry points are lexical-only or semantic capability is unavailable.
+- Required heuristic DecisionProvider and optional JEV/local/stronger provider capabilities share validated candidate/region judgments; confidence, abstention and fallback are designed from the first boundary tests, not bolted on after model adoption.
+- External runners execute inference. Ollama/llama.cpp provider contracts support explicit persisted identity, batch/timeout/capability validation and no automatic provider/model switch when runners appear or disappear. No model-serving stack/native inference is a bootstrap dependency.
 - The deterministic offline path builds context without learned embeddings, a decision model, remote service, or network.
-- Retrieval, graph, capsule, decision, plan, expansion, and bundle artifacts can be inspected/replayed independently.
+- Entry-point retrieval, TreeIndex navigation, TreeRouter, graph, capsule, decision, plan, expansion, and bundle artifacts can be inspected/replayed independently.
 - Capsule inference and dataset rendering share one versioned semantic contract; malformed or abstained model outputs fall back observably.
 - Selection/expansion terminate within declared limits and retain provenance; packer satisfies canonical token budget and coherence invariants, including zero-budget and oversized-item cases.
 - Rebuilds converge logically; interrupted publication cannot expose mixed generations. Incremental capability, when enabled, passes full/incremental parity and embedding invalidation/recovery tests.
-- Frozen lexical/heuristic and RRF controls remain measurable; retrieval/context/system metrics and cost gates have pinned manifests and raw evidence.
+- Frozen lexical/heuristic, RRF and deterministic structural-routing controls remain measurable; entry-point/routing/context/system metrics and cost gates have pinned manifests and raw evidence. JEV integration is not evidence of improved context or code correctness.
 - ContextBench/gold mapping corrections, negative experiments, and performance knowledge are retained as reference evidence without importing legacy schemas/layout/APIs.
 - Every unresolved foundational choice has a tracked decision gate; no proposed model/schema/transport is presented as settled merely because an agent scaffolded it.
 
