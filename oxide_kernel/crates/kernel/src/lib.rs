@@ -1,0 +1,33 @@
+//! OXIDE v2 kernel: repository intelligence and deterministic policy.
+//!
+//! A pure library. It links no crates and performs no I/O, so database,
+//! transport, protocol and integration types cannot reach its API
+//! (`tests/boundary.rs` enforces both). The runtime calls it and maps its
+//! types onto the service contract.
+//!
+//! Phase 0 holds only a stub operation proving the runtime → kernel path;
+//! domain types start in Phase 1 (docs/BOOTSTRAP.md).
+#![forbid(unsafe_code)]
+
+/// Kernel version, reported through the runtime's `status` operation.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// Result of the Phase 0 stub domain operation.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Status {
+    pub kernel_version: &'static str,
+}
+
+pub fn status() -> Status {
+    Status {
+        kernel_version: VERSION,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn status_reports_the_crate_version() {
+        assert_eq!(super::status().kernel_version, env!("CARGO_PKG_VERSION"));
+    }
+}

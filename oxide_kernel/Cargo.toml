@@ -1,0 +1,11 @@
+# OXIDE v2 Rust workspace (README.md). All v2 Rust lives here; run cargo from
+# this directory so rust-toolchain.toml applies.
+[workspace]
+resolver = "3"
+members = ["crates/kernel", "crates/runtime"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MIT"
+publish = false

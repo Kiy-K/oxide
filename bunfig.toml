@@ -1,0 +1,7 @@
+# Don't auto-load a developer's local .env into the app or tests.
+env = false
+
+# Tests are the v2 control plane's own (src/); legacy fixtures and eval
+# material elsewhere in the tree hold unrelated *.test.ts files.
+[test]
+root = "src"

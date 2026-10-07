@@ -1,0 +1,9 @@
+[package]
+name = "oxide-kernel"
+description = "OXIDE v2 kernel: repository intelligence and deterministic policy, no I/O"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+# No dependency tables, on purpose: tests/boundary.rs fails if one appears.

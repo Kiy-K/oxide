@@ -1,3 +1,5 @@
+> **Legacy v1 reference.** This describes the retired v1 implementation (root Rust crate, SQLite index, legacy CLI/MCP/`packages/*`), removed from `rewrite/v2` and recoverable from `main` / `ac985b28`. It is historical evidence, not instructions for OXIDE v2: see `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md` and the root `AGENTS.md`.
+
 # OXIDE Agent Usage Policy
 
 This is the single source of truth for how a coding agent should use OXIDE.

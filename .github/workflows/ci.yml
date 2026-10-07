@@ -1,10 +1,12 @@
 name: CI
 
+# OXIDE v2: runs exactly `mise run verify` — the same command used locally
+# (Rust fmt/clippy/test in oxide_kernel/, then Bun install/lint/typecheck/test).
 on:
   pull_request:
-    branches: [main]
+    branches: [main, rewrite/v2]
   push:
-    branches: [main]
+    branches: [main, rewrite/v2]
 
 permissions:
   contents: read
@@ -13,201 +15,28 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  quality:
-    name: Rust / Quality
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      # Same pin as oxide_kernel/rust-toolchain.toml.
       - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy
       - name: Restore Cargo cache
         uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
-      - name: Check formatting
-        run: cargo fmt --check
-      - name: Lint
-        run: cargo clippy -j 2 --all-targets -- -D warnings
-
-  test:
-    name: Rust / Tests
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
-      - name: Full unit and integration suite
-        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2
-
-  no-default-features:
-    name: Rust / No default features
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-nodefault-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
-      # Without `native-embed` there is no ONNX runtime to load a model
-      # from, so this is the build an air-gapped or minimal-dependency
-      # consumer actually gets. It has to keep compiling, linting and
-      # passing tests on its own — the default-feature jobs above cannot
-      # catch a `#[cfg(feature = "native-embed")]` block that stops
-      # building once removed.
-      - name: Lint
-        run: cargo clippy -j 2 --no-default-features --all-targets -- -D warnings
-      - name: Full unit and integration suite
-        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features
-
-  retrieval-gate:
-    name: OXIDE / Retrieval Gate
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
-      - name: Build release binary
-        run: cargo build --release -j 2
-      - name: Run canonical fixture benchmark
-        run: env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL ./target/release/oxide eval --config fixtures/benchmark.json --json | tee benchmark.json
-      # The release build this job already produced is what install.sh
-      # packages, so the installer's own lifecycle tests ride along here
-      # rather than paying for a second release build.
-      - name: Shell-check the installer
-        run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
-          shellcheck -s sh install.sh tests/install_sh_test.sh
-
-      - name: Installer lifecycle tests
-        run: ./tests/install_sh_test.sh
-
-      - name: Upload benchmark result
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: retrieval-benchmark
-          path: benchmark.json
-          if-no-files-found: warn
-          retention-days: 14
-
-  # Independent of every Rust job (no `needs` either way): the TS workspace
-  # neither builds nor calls the Rust binary; it validates the committed
-  # fixtures/protocol/ files the Rust tests keep current. Node and pnpm come from
-  # mise.toml and Turbo from pnpm-lock.yaml, so nothing is pinned twice here.
-  typescript:
-    name: TypeScript / Workspace
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Node and pnpm
+            oxide_kernel/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('oxide_kernel/Cargo.lock', 'oxide_kernel/**/Cargo.toml', 'oxide_kernel/rust-toolchain.toml') }}
+      - name: Install pinned Bun
         uses: jdx/mise-action@v5
         with:
           version: 2026.9.14
-          install_args: node pnpm
-      # MISE_AUTO_INSTALL=false: `mise run` would otherwise also install every
-      # other tool in mise.toml (python, uv, cargo-llvm-cov, ...), none of
-      # which the TS tasks use.
-      - name: Frozen-lockfile install, then lint/typecheck/test/build
-        run: mise run verify:ts
+          install_args: bun
+      - name: mise run verify
+        run: mise run verify
         env:
           MISE_AUTO_INSTALL: "false"
-
-  # The one job that needs both toolchains, on purpose: @oxide/client's
-  # integration tests (over both the process and the native addon backends;
-  # the addon is built from packages/native) and @oxide/mcp's parity tests (Rust MCP vs the Node-run
-  # and deno-compiled adapter) drive the real binary. Still no `needs` link, so the
-  # Rust and TypeScript jobs above stay independent of it and of each other.
-  client-integration:
-    name: TypeScript / Client integration
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          # The native lock too: the addon builds under target/native.
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs', 'packages/native/Cargo.lock') }}
-      - name: Build release binary
-        run: cargo build --release -j 2
-      - name: Install pinned Node, pnpm and Deno
-        uses: jdx/mise-action@v5
-        with:
-          version: 2026.9.14
-          install_args: node pnpm deno
-      - name: Lint the native addon crate
-        run: mise run lint:native
-        env:
-          MISE_AUTO_INSTALL: "false"
-      - name: Client (process and native backends) and MCP integration tests
-        run: mise run ts:integration
-        env:
-          MISE_AUTO_INSTALL: "false"
-
-  coverage:
-    name: Rust / Coverage
-    needs: quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy --component llvm-tools-preview
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', '.cargo/config.toml', '**/build.rs') }}
-      - name: Install coverage tool
-        run: cargo install cargo-llvm-cov --version 0.6.19 --locked
-      - name: Generate coverage reports
-        run: |
-          mkdir -p coverage
-          env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo llvm-cov --workspace --all-targets --lcov --output-path coverage/lcov.info
-          cargo llvm-cov report --html --output-dir coverage/html
-          cargo llvm-cov report --json --summary-only --output-path coverage/summary.json
-          jq -r '.data[0].totals as $totals | "## Coverage\n\n| metric | covered | total | percent |\n|---|---:|---:|---:|\n" + (["lines", "functions", "regions"] | map(. as $metric | $totals[$metric] | "| \($metric) | \(.covered) | \(.count) | \(.percent | floor) |") | join("\n"))' coverage/summary.json >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: rust-coverage
-          path: coverage
-          if-no-files-found: warn
-          retention-days: 14

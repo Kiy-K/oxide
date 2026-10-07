@@ -1,5 +1,13 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
-  "files": { "includes": ["packages/**", "!**/dist", "!**/node_modules"] },
+  "files": {
+    "includes": [
+      "src/**",
+      "oxide_kernel/contract/**",
+      "package.json",
+      "tsconfig.json",
+      "biome.json"
+    ]
+  },
   "formatter": { "indentStyle": "space", "lineWidth": 100 }
 }

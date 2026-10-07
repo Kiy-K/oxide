@@ -1,239 +1,64 @@
-# Reproducible dev bootstrapping for OXIDE.
+# OXIDE v2 developer entrypoint. `mise run verify` is the one check, and CI
+# (.github/workflows/ci.yml) runs exactly it.
 #
-# Rust itself is NOT pinned here: `rust-toolchain.toml` already pins
-# 1.98.0 plus the rustfmt/clippy/llvm-tools-preview components, and rustup
-# honors that file automatically for every `cargo`/`rustc` invocation in
-# this directory. Pinning it a second time here would be a drift source —
-# the exact failure mode this file exists to eliminate. `rustup` itself
-# (not managed by mise) is assumed present, same as it always has been for
-# this repo and its CI.
+# Rust is pinned by oxide_kernel/rust-toolchain.toml (rustup honors it for
+# every cargo call run from oxide_kernel/, which is why the Rust tasks set
+# `dir`); `rustup` itself is assumed present. Bun is the only other tool: it
+# is the TS runtime, package manager and test runner (bun.lock pins the
+# TypeScript/Biome dev tooling).
 min_version = "2024.1.0"
 
 [tools]
-# eval-agent/.venv must be 3.11 (docs/agents/workflow.md: tree-sitter-languages has no
-# wheels for >=3.12) — previously an undeclared local dependency.
-python = "3.11"
-uv = "0.12.16"
-# CI apt-get-installs this unpinned for install.sh's shellcheck step; a
-# local run had no declared version at all until now.
-shellcheck = "0.11.0"
-# Used by the coverage job's summary step (`coverage.rs` job in CI).
-jq = "1.8.2"
-# Matches the exact version CI's coverage job installs inline.
-"cargo:cargo-llvm-cov" = "0.6.19"
-# TypeScript workspace (#36). Node 24 is the Active LTS line (Node 26 only
-# reaches LTS on 2026-10-28); pnpm 11 supports Node 22/24/26 and is the
-# mature line (pnpm 12, a Rust port, shipped 2026-08-26). Turbo is NOT
-# here: it is a root devDependency, so `pnpm-lock.yaml` owns its version.
-# The pnpm pin is repeated as `packageManager` in package.json because
-# Turbo requires that field; `pmOnFail: error` in pnpm-workspace.yaml makes
-# any drift between the two fail instead of silently downloading another pnpm.
-node = "24.21.0"
-pnpm = "11.28.2"
-# Packages @oxide/mcp as a standalone executable (`deno compile`, #36 T3).
-# Only that task needs it; Node stays the runtime for every other TS task.
-deno = "2.9.7"
-
-[env]
-# Turbo (a dev dependency) collects anonymous usage telemetry by default.
-# OXIDE does no usage analytics (TELEMETRY.md), so the repo opts out once
-# here; every `mise run` task, CI's included, inherits it.
-TURBO_TELEMETRY_DISABLED = "1"
+bun = "1.4.2"
 
 [tasks.bootstrap]
-description = "Install the pinned Rust toolchain/components, every mise-managed tool, and the TS workspace dependencies"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-# `rust-toolchain.toml`'s [toolchain] table (channel + components) is
-# honored by any rustup-wrapped cargo/rustc invocation; this just forces
-# that install to happen now instead of lazily on the first real command.
-rustup show active-toolchain || rustup show
-echo "Rust toolchain ready."
-mise run ts:install
-'''
+description = "Install the pinned Rust toolchain, Bun and the frozen TS dependencies"
+dir = "{{config_root}}/oxide_kernel"
+run = ["rustup show active-toolchain || rustup show", "cd .. && bun install --frozen-lockfile"]
+
+[tasks."rust:lint"]
+description = "cargo fmt --check + clippy -D warnings (oxide_kernel)"
+dir = "{{config_root}}/oxide_kernel"
+run = ["cargo fmt --check", "cargo clippy -j 2 --locked --all-targets -- -D warnings"]
+
+[tasks."rust:test"]
+description = "Kernel/runtime tests: kernel boundary checks and the Rust side of the contract cases"
+dir = "{{config_root}}/oxide_kernel"
+run = "cargo test -j 2 --locked"
 
 [tasks."ts:install"]
-description = "Install the TS workspace from the committed lockfile (fails if package.json and pnpm-lock.yaml disagree)"
-run = "pnpm install --frozen-lockfile"
-
-[tasks.lint]
-description = "cargo fmt --check + clippy -D warnings (matches CI's Quality job, default features)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-cargo fmt --check
-cargo clippy -j 2 --all-targets -- -D warnings
-'''
-
-[tasks."lint:no-default-features"]
-description = "clippy -D warnings with --no-default-features (matches CI's No-default-features job)"
-run = "cargo clippy -j 2 --no-default-features --all-targets -- -D warnings"
-
-[tasks.test]
-description = "Full unit + integration suite, deterministic env (matches CI's Tests job)"
-run = "env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2"
-
-[tasks."test:no-default-features"]
-description = "Full suite with --no-default-features (matches CI's No-default-features job)"
-run = "env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL cargo test -j 2 --no-default-features"
-
-[tasks.bench]
-description = "Release build + the canonical fixture benchmark (matches CI's Retrieval Gate job)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-cargo build --release -j 2
-# Not a hardcoded `./target/release/oxide`: cargo honors $CARGO_TARGET_DIR
-# when set (a common override for a shared build cache across projects),
-# and a hardcoded default-location path silently breaks for anyone using
-# it — caught by running this task with CARGO_TARGET_DIR set during a
-# clean-environment verification.
-bin="${CARGO_TARGET_DIR:-target}/release/oxide"
-env -u OXIDE_EMBED_URL -u OXIDE_EMBED_MODEL "$bin" eval --config fixtures/benchmark.json
-'''
-
-[tasks.installer-check]
-description = "Shellcheck + install.sh lifecycle tests (matches CI's Retrieval Gate job; no network needed, file:// release)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-shellcheck -s sh install.sh tests/install_sh_test.sh
-./tests/install_sh_test.sh
-'''
-
-[tasks."protocol:fixtures"]
-description = "Regenerate fixtures/protocol/ from the real binary (tests/protocol_fixtures.rs); review the diff, then run verify:ts"
-run = "env OXIDE_PROTOCOL_FIXTURES=update cargo test -j 2 --test protocol_fixtures"
+description = "bun install from the committed bun.lock (fails if package.json disagrees)"
+run = "bun install --frozen-lockfile"
 
 [tasks."ts:lint"]
-description = "Turbo: lint every TS workspace package"
-run = "pnpm exec turbo run lint"
+description = "Biome check of the control plane and contract cases"
+run = "bun run lint"
 
 [tasks."ts:typecheck"]
-description = "Turbo: typecheck every TS workspace package"
-run = "pnpm exec turbo run typecheck"
+description = "tsc --noEmit over src/"
+run = "bun run typecheck"
 
 [tasks."ts:test"]
-description = "Turbo: test every TS workspace package"
-run = "pnpm exec turbo run test"
-
-[tasks."ts:build"]
-description = "Turbo: build every TS workspace package"
-run = "pnpm exec turbo run build"
-
-[tasks."verify:ts"]
-description = "Everything CI's TypeScript job checks: frozen-lockfile install, then lint/typecheck/test/build through Turbo"
+description = "bun test: control-plane boundary, decoder, and every contract case through the real oxide-runtime"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-mise run ts:install
-# One Turbo invocation, so Turbo (not mise) schedules the TS task graph.
-pnpm exec turbo run lint typecheck test build
-'''
-
-[tasks."ts:integration"]
-description = "@oxide/client and @oxide/mcp (incl. the deno-compiled binary) against the real oxide binary: $OXIDE_BIN, default the release build (matches CI's client-integration job)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-bin="${OXIDE_BIN:-${CARGO_TARGET_DIR:-target}/release/oxide}"
-if [ ! -x "$bin" ]; then
-  echo "no oxide binary at $bin: run cargo build --release or set OXIDE_BIN" >&2
-  exit 1
-fi
-# Absolute: the tests run the binary from temporary repositories.
-OXIDE_BIN="$(realpath "$bin")"
-export OXIDE_BIN
-mise run native:build
-mise run ts:install
-pnpm exec turbo run test:integration
-'''
-
-[tasks."native:build"]
-description = "Build the @oxide/native Node-API addon (packages/native; Linux x64 or macOS arm64) into packages/native/oxide_native.<platform>.node"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-# Its own Cargo project (packages/native/Cargo.toml). The addon ships, so its
-# panic and assert locations must not carry this machine's paths: remap the
-# Cargo home, the toolchain and the repo for Rust (`--remap-path-prefix`) and
-# for the C sources the cc crate compiles (`-ffile-prefix-map`); Cargo's
-# `trim-paths` is still unstable. Those flags change every unit's fingerprint,
-# so this builds under its own target subdirectory instead of thrashing the
-# root build's artifacts.
-target="${CARGO_TARGET_DIR:-target}/native"
-cargo_home="${CARGO_HOME:-$HOME/.cargo}"
-sysroot="$(rustc --print sysroot)"
-RUSTFLAGS="--remap-path-prefix=$cargo_home=/cargo --remap-path-prefix=$sysroot=/rustc/sysroot --remap-path-prefix=$PWD=/oxide"
-CFLAGS="-ffile-prefix-map=$cargo_home=/cargo -ffile-prefix-map=$PWD=/oxide"
-export RUSTFLAGS CFLAGS CXXFLAGS="$CFLAGS"
-# The platforms with a tested build, named as packages/native/index.cjs
-# loads them.
-case "$(uname -s)-$(uname -m)" in
-  Linux-x86_64) platform="linux-x64-gnu" so="liboxide_native.so" ;;
-  Darwin-arm64) platform="darwin-arm64" so="liboxide_native.dylib" ;;
-  *) echo "native:build: no @oxide/native build for $(uname -s)-$(uname -m)" >&2; exit 1 ;;
-esac
-cargo build --release --locked -j 2 --manifest-path packages/native/Cargo.toml --target-dir "$target"
-so="$target/release/$so"
-# Exactly the remapped prefixes, not all of $HOME: the prebuilt ONNX Runtime
-# (ort-sys) carries its own upstream build paths,
-# /home/runner/work/ort-artifacts/..., which match $HOME on a GitHub runner.
-for path in "$cargo_home" "$sysroot" "$PWD"; do
-  if grep -qaF "$path" "$so"; then
-    echo "native:build: $so still contains $path:" >&2
-    grep -aoE "$path[^[:cntrl:]]{0,100}" "$so" | sort -u | head -10 >&2
-    exit 1
-  fi
-done
-cp "$so" "packages/native/oxide_native.$platform.node"
-'''
-
-[tasks."lint:native"]
-description = "cargo fmt --check + clippy -D warnings for packages/native (matches CI's client-integration job)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-cargo fmt --check --manifest-path packages/native/Cargo.toml
-cargo clippy -j 2 --locked --manifest-path packages/native/Cargo.toml --target-dir "${CARGO_TARGET_DIR:-target}" -- -D warnings
-'''
-
-[tasks."mcp:compile"]
-description = "Package @oxide/mcp as a standalone executable with deno compile (packages/mcp/dist/oxide-mcp)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-mise run ts:install
-pnpm exec turbo run compile --filter=@oxide/mcp
+(cd oxide_kernel && cargo build -j 2 --locked --bin oxide-runtime)
+OXIDE_RUNTIME_BIN="$(realpath "${CARGO_TARGET_DIR:-oxide_kernel/target}/debug/oxide-runtime")"
+export OXIDE_RUNTIME_BIN
+bun test
 '''
 
 [tasks.verify]
-description = "Full-repo verification: verify:rust, then verify:ts, then ts:integration"
+description = "Everything CI checks, in order: Rust fmt/clippy/test, then Bun install/lint/typecheck/test"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-# Sequential, not a `depends` list: Rust runs first exactly as before, and a
-# failure stops before the next half starts. ts:integration reuses the
-# release binary verify:rust's bench step just built.
-mise run verify:rust
-mise run verify:ts
-mise run ts:integration
-'''
-
-[tasks."verify:rust"]
-description = "Everything CI's quality/test/no-default-features/retrieval-gate jobs check, in commit order (excludes the separate, optional coverage job)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-# A `depends` list would let mise run these in parallel, which is wrong
-# here: docs/agents/workflow.md's fmt -> clippy -> test -> benchmark-gate order is a real
-# sequential contract (a later step's failure should stop before wasting
-# time on the next), so this is an explicit script instead.
-mise run lint
-mise run lint:no-default-features
-mise run test
-mise run test:no-default-features
-mise run bench
-mise run installer-check
+# Sequential on purpose: stop at the first failure.
+mise run rust:lint
+mise run rust:test
+mise run ts:install
+mise run ts:lint
+mise run ts:typecheck
+mise run ts:test
 '''

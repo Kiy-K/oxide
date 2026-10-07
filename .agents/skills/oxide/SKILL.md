@@ -1,6 +1,6 @@
 ---
 name: oxide-conventions
-description: Development conventions and patterns for oxide. Rust project with conventional commits.
+description: Development conventions and patterns for oxide. OXIDE v2 - Rust kernel/runtime (oxide_kernel/) plus Bun/TypeScript control plane (src/), conventional commits.
 ---
 
 # Oxide Conventions
@@ -13,9 +13,10 @@ This skill teaches Claude the development patterns and conventions used in oxide
 
 ## Tech Stack
 
-- **Primary Language**: Rust
-- **Architecture**: hybrid module organization
-- **Test Location**: separate
+- **Languages**: Rust (`oxide_kernel/`: `crates/kernel`, `crates/runtime`) and TypeScript on Bun (root `src/`)
+- **Architecture**: modular monolith per `docs/spec/SPEC.md`; boundaries in the root `AGENTS.md`
+- **Tests**: Rust unit tests in-crate plus `tests/` per crate; TS `*.test.ts` beside sources in `src/` (`bun:test`)
+- **Checks**: `mise run verify`
 
 ## When to Use This Skill
 

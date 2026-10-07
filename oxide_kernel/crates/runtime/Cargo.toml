@@ -1,0 +1,12 @@
+[package]
+name = "oxide-runtime"
+description = "OXIDE v2 runtime host: I/O, resources and the versioned service contract"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+oxide-kernel = { path = "../kernel" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

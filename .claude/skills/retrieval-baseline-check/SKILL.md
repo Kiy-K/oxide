@@ -1,7 +1,9 @@
 ---
 name: retrieval-baseline-check
-description: Captures or compares retrieval numbers before/after a change to src/retrieval/, src/config.rs, or embedding selection, and calls out any difference as a regression to explain. Use before and after touching ranking, scoring, RRF weights, or the embedding provider.
+description: LEGACY v1 only, not applicable to OXIDE v2 (no v2 retrieval exists yet; v2 baselines follow SPEC § Evaluation). Captures or compares retrieval numbers before/after a change to src/retrieval/, src/config.rs, or embedding selection, and calls out any difference as a regression to explain. Use before and after touching ranking, scoring, RRF weights, or the embedding provider.
 ---
+
+> **Legacy v1 reference.** This describes the retired v1 implementation (root Rust crate, SQLite index, legacy CLI/MCP/`packages/*`), removed from `rewrite/v2` and recoverable from `main` / `ac985b28`. It is historical evidence, not instructions for OXIDE v2: see `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md` and the root `AGENTS.md`.
 
 Any change to `src/retrieval/` (BM25 + cosine + RRF fusion + structural
 expansion) or `src/config.rs` (RRF weights, budget defaults) can silently

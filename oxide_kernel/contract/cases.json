@@ -1,0 +1,73 @@
+[
+  {
+    "name": "status reaches the kernel",
+    "request": "{\"version\":1,\"id\":\"a\",\"op\":\"status\"}",
+    "response": { "version": 1, "id": "a", "ok": true, "result": { "kernel_version": "0.0.0" } }
+  },
+  {
+    "name": "newer protocol version",
+    "request": "{\"version\":2,\"id\":\"b\",\"op\":\"status\",\"future\":true}",
+    "response": {
+      "version": 1,
+      "id": "b",
+      "ok": false,
+      "error": { "code": "unsupported_version", "message": "unsupported protocol version" }
+    }
+  },
+  {
+    "name": "unknown operation",
+    "request": "{\"version\":1,\"id\":\"c\",\"op\":\"index\"}",
+    "response": {
+      "version": 1,
+      "id": "c",
+      "ok": false,
+      "error": { "code": "unknown_operation", "message": "unknown operation" }
+    }
+  },
+  {
+    "name": "unknown envelope field",
+    "request": "{\"version\":1,\"id\":\"d\",\"op\":\"status\",\"extra\":true}",
+    "response": {
+      "version": 1,
+      "id": "d",
+      "ok": false,
+      "error": {
+        "code": "invalid_request",
+        "message": "request does not match the version 1 envelope"
+      }
+    }
+  },
+  {
+    "name": "missing id",
+    "request": "{\"version\":1,\"op\":\"status\"}",
+    "response": {
+      "version": 1,
+      "id": null,
+      "ok": false,
+      "error": {
+        "code": "invalid_request",
+        "message": "request does not match the version 1 envelope"
+      }
+    }
+  },
+  {
+    "name": "version is not an integer",
+    "request": "{\"version\":\"1\",\"id\":\"e\",\"op\":\"status\"}",
+    "response": {
+      "version": 1,
+      "id": "e",
+      "ok": false,
+      "error": { "code": "invalid_request", "message": "missing integer `version`" }
+    }
+  },
+  {
+    "name": "not JSON",
+    "request": "{\"version\":1,",
+    "response": {
+      "version": 1,
+      "id": null,
+      "ok": false,
+      "error": { "code": "invalid_request", "message": "request is not JSON" }
+    }
+  }
+]
