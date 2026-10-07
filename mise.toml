@@ -14,7 +14,11 @@ bun = "1.4.2"
 [tasks.bootstrap]
 description = "Install the pinned Rust toolchain, Bun and the frozen TS dependencies"
 dir = "{{config_root}}/oxide_kernel"
-run = ["rustup show active-toolchain || rustup show", "cd .. && bun install --frozen-lockfile"]
+run = ["rustup show active-toolchain || rustup show", "cd .. && mise run native:prepare", "cd .. && bun install --frozen-lockfile"]
+
+[tasks."native:prepare"]
+description = "Explicit pinned SHA-256 verified LadybugDB v0.21.2 preparation (Linux x86_64)"
+run = "bash oxide_kernel/native/prepare.sh"
 
 [tasks."rust:lint"]
 description = "cargo fmt --check + clippy -D warnings (oxide_kernel)"

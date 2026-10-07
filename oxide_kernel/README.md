@@ -6,8 +6,11 @@ All OXIDE v2 Rust lives here. Architecture: `docs/spec/SPEC.md`; phases:
 Bun/TypeScript control plane is root `src/`. Phase 0 is in place: workspace,
 boundaries and a minimal typed service seam. Phase 1 adds the kernel domain
 contracts and an in-memory store (§ Phase 1 domain contracts). Phase 2A adds
-source capture and the LadybugDB feasibility spike (§ Phase 2A); no parser,
-database adapter, real provider or routing algorithm yet.
+source capture and the LadybugDB feasibility spike (§ Phase 2A). The partial
+Phase 2B checkpoint adds the production adapter, capture/retention and external
+repository registry; Python ingestion remains unfinished. See
+[Phase 2B checkpoint](../docs/phase-2b.md). No routing algorithm or real model
+provider has been added.
 
 ## Layout and dependency map
 
@@ -96,7 +99,8 @@ mise run rust:test    # kernel/runtime tests, kernel boundary checks, Rust side 
 mise run ts:test      # builds oxide-runtime, then bun test (boundary, decoder, contract cases via the binary)
 ```
 
-No network or model is needed for any test.
+After explicit `mise run native:prepare`, no network or model is needed for Rust tests.
+Native preparation details are in `docs/agents/workflow.md`.
 
 ## Phase 1 domain contracts
 
@@ -117,7 +121,7 @@ logical containment, a partially parsed file and a heuristic test link.
 
 ### Identity policy
 
-Proposed in [ADR-0010](../docs/adr/0010-domain-identity-and-source-capture.md),
+Accepted in [ADR-0010](../docs/adr/0010-domain-identity-and-source-capture.md),
 which supersedes the Phase 1 proposal that stood here. In short: structural,
 snapshot-local `FileId`/`SymbolId`/`ModuleId` (equal exactly when their inputs
 are equal, no continuity across edits); content-addressed `sha256:` `Digest`,
@@ -173,8 +177,9 @@ in `id.rs` and bumps derivations, nothing else.
 Decisions: [ADR-0010](../docs/adr/0010-domain-identity-and-source-capture.md)
 (identity, source capture) and
 [ADR-0002](../docs/adr/0002-ladybugdb-knowledge-store.md) (pin, build,
-ownership, publication protocol, physical schema), both Proposed. The spike is
-evidence only: no adapter exists and the kernel/runtime do not link `lbug`.
+ownership, publication protocol, physical schema), both Accepted by explicit
+Phase 2B approval. The spike remains evidence only; the Phase 2B runtime
+adapter links the pinned native library through explicit preparation.
 
 ## Open questions
 
@@ -182,9 +187,8 @@ evidence only: no adapter exists and the kernel/runtime do not link `lbug`.
 | --- | --- |
 | Long-lived runtime framing, multi-client ownership/discovery, supervision | real integrations; ADR-0003 |
 | One schema generating both contract type sets | when the contract grows past a few operations |
-| Accept or replace ADR-0010 (identity, capture) and ADR-0002 (LadybugDB) | Phase 2B |
-| How `verify`/CI obtain the pinned native `liblbug` once the runtime links it | Phase 2B adapter |
-| `.gitignore` in capture scope, captured-byte retention, store location, default `RepoId` | Phase 2B (ADR-0010 open questions) |
+| Python language conventions and completed ingestion/rebuild pipeline | Phase 2B; checkpoint in `docs/phase-2b.md` |
+| First-publication interruption after seal, retained-generation footprint | Phase 2B; checkpoint in `docs/phase-2b.md` |
 | Everything in SPEC § Open questions (IDs, TreeIndex projection, LadybugDB pin, capsule schema, tokenizer, ...) | Phase 1+ as listed there |
 
 ## Evidence inventory (historical main `ac985b28`, the parent of this branch's docs)

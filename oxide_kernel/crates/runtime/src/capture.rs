@@ -3,15 +3,18 @@
 //!
 //! Capture only reads. It never runs git, hooks, filters or repository code,
 //! and it never follows symlinks. What is on disk in scope is the snapshot, so
-//! dirty and untracked files are captured like any other; `.gitignore` is not
-//! applied (open question, ADR-0010). A capture is consistent: every file is
-//! read once, then the whole tree is re-stat'ed, and any change retries the
+//! dirty and untracked files are captured like any other. Repository `.gitignore`
+//! rules are parsed by `ignore`, never by Git. Files are read twice and
+//! verified by bytes and metadata; any change retries the
 //! capture (up to [`MAX_ATTEMPTS`]) instead of publishing mixed states.
 
+use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::fs::{self, File, Metadata};
 use std::io::{self, Read};
+use std::os::fd::{AsRawFd, FromRawFd};
+use std::os::unix::ffi::OsStrExt;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
@@ -21,10 +24,10 @@ use sha2::{Digest as _, Sha256};
 
 /// Version of the snapshot-identity encoding in [`snapshot_id`]. Changing
 /// the encoding, or what counts toward it, bumps this.
-pub const CAPTURE_VERSION: &str = "oxide-capture-v1";
+pub const CAPTURE_VERSION: &str = "oxide-capture-v2-gitignore";
 
 /// VCS internals, skipped at any depth without a trace.
-const VCS_DIRS: &[&str] = &[".git", ".hg", ".jj", ".svn"];
+const VCS_DIRS: &[&str] = &[".git", ".hg", ".jj", ".svn", ".oxide"];
 
 pub const MAX_ATTEMPTS: u32 = 3;
 
@@ -52,6 +55,11 @@ impl Default for Scope {
 pub enum CaptureError {
     /// The root is missing, not a directory, or cannot be listed.
     Root(io::Error),
+    /// Ignore rules could not be read or parsed; fail closed for scope.
+    Ignore {
+        path: PathBuf,
+        error: String,
+    },
     /// The worktree kept changing: no consistent capture after `attempts`.
     Conflict {
         attempts: u32,
@@ -74,13 +82,25 @@ fn capture_with(
     between: &mut dyn FnMut(),
 ) -> Result<SourceCapture, CaptureError> {
     let root = fs::canonicalize(root).map_err(CaptureError::Root)?;
+    let root_handle = File::open(&root).map_err(CaptureError::Root)?;
+    if !root_handle.metadata().map_err(CaptureError::Root)?.is_dir() {
+        return Err(CaptureError::Root(io::Error::other(
+            "capture root is not a directory",
+        )));
+    }
     for _ in 0..MAX_ATTEMPTS {
-        let Some(pass) = walk(&root, scope, true)? else {
+        let Some(pass) = walk(&root, &root_handle, scope)? else {
             continue;
         };
         between();
-        let check = walk(&root, scope, false)?.expect("stat-only walks do not abort");
-        if pass.stamps == check.stamps {
+        let Some(check) = walk(&root, &root_handle, scope)? else {
+            continue;
+        };
+        if pass.stamps == check.stamps
+            && pass.files == check.files
+            && pass.skipped == check.skipped
+            && pass.ignore_rules == check.ignore_rules
+        {
             return Ok(finish(pass, scope));
         }
     }
@@ -89,10 +109,7 @@ fn capture_with(
     })
 }
 
-/// What identifies an entry's on-disk state between the read and the check.
-/// ponytail: stat-based, so a same-size rewrite within the filesystem's mtime
-/// granularity, or a swap that is undone before the check, goes unseen; walk
-/// with openat (cap-std) and re-hash if hostile concurrent writers matter.
+/// Metadata evidence supplements the two byte-verification passes.
 #[derive(Debug, PartialEq, Eq)]
 struct Stamp {
     kind: &'static str,
@@ -133,15 +150,91 @@ struct Pass {
     skipped: BTreeMap<String, Skip>,
     stamps: BTreeMap<PathBuf, Stamp>,
     total: u64,
+    ignore_rules: BTreeMap<PathBuf, Vec<u8>>,
 }
 
-/// One walk of the tree. With `read`, files are read and digested; `None`
-/// means a file changed while it was being read.
-fn walk(root: &Path, scope: &Scope, read: bool) -> Result<Option<Pass>, CaptureError> {
+/// One complete read pass; a changed file discards the attempt.
+fn walk(root: &Path, root_handle: &File, scope: &Scope) -> Result<Option<Pass>, CaptureError> {
     let mut pass = Pass::default();
-    let mut dirs = vec![(root.to_path_buf(), String::new())];
-    while let Some((dir, rel)) = dirs.pop() {
-        let listed = fs::read_dir(&dir).and_then(|entries| entries.collect::<io::Result<Vec<_>>>());
+    let mut dirs = vec![(root.to_path_buf(), String::new(), Vec::<Gitignore>::new())];
+    while let Some((dir, rel, mut rules)) = dirs.pop() {
+        let handle = if rel.is_empty() {
+            root_handle.try_clone()
+        } else {
+            secure_open(
+                root_handle,
+                Path::new(&rel),
+                libc::O_RDONLY | libc::O_DIRECTORY,
+            )
+        };
+        let handle = match handle {
+            Ok(handle) => handle,
+            Err(error) if rel.is_empty() => return Err(CaptureError::Root(error)),
+            Err(error) => {
+                pass.skipped
+                    .insert(rel, Skip::Unreadable(error.to_string()));
+                continue;
+            }
+        };
+        pass.stamps.insert(
+            dir.clone(),
+            stamp(&handle.metadata().map_err(CaptureError::Root)?),
+        );
+        let anchored = PathBuf::from(format!("/proc/self/fd/{}", handle.as_raw_fd()));
+        let ignore_path = dir.join(".gitignore");
+        match fs::symlink_metadata(anchored.join(".gitignore")) {
+            Ok(meta) if meta.is_file() => {
+                if meta.len() > scope.max_file_bytes {
+                    return Err(CaptureError::Ignore {
+                        path: ignore_path,
+                        error: "ignore file exceeds capture size limit".into(),
+                    });
+                }
+                let ignore_rel = if rel.is_empty() {
+                    ".gitignore".to_string()
+                } else {
+                    format!("{rel}/.gitignore")
+                };
+                let bytes = match read_file(root_handle, Path::new(&ignore_rel), &meta) {
+                    Ok(Some(bytes)) => bytes,
+                    Ok(None) => return Ok(None),
+                    Err(error) => {
+                        return Err(CaptureError::Ignore {
+                            path: ignore_path,
+                            error: error.to_string(),
+                        });
+                    }
+                };
+                let text = std::str::from_utf8(&bytes).map_err(|error| CaptureError::Ignore {
+                    path: ignore_path.clone(),
+                    error: error.to_string(),
+                })?;
+                let mut builder = GitignoreBuilder::new(&dir);
+                for line in text.lines() {
+                    builder
+                        .add_line(Some(ignore_path.clone()), line)
+                        .map_err(|error| CaptureError::Ignore {
+                            path: ignore_path.clone(),
+                            error: error.to_string(),
+                        })?;
+                }
+                rules.push(builder.build().map_err(|error| CaptureError::Ignore {
+                    path: ignore_path.clone(),
+                    error: error.to_string(),
+                })?);
+                pass.ignore_rules.insert(PathBuf::from(ignore_rel), bytes);
+            }
+            Ok(_) => {} // Symlink/special ignore files are explicit skips below.
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            Err(error) => {
+                return Err(CaptureError::Ignore {
+                    path: ignore_path,
+                    error: error.to_string(),
+                });
+            }
+        }
+        let listed =
+            fs::read_dir(&anchored).and_then(|entries| entries.collect::<io::Result<Vec<_>>>());
         let entries = match listed {
             Ok(entries) => entries,
             Err(error) if rel.is_empty() => return Err(CaptureError::Root(error)),
@@ -179,7 +272,16 @@ fn walk(root: &Path, scope: &Scope, read: bool) -> Result<Option<Pass>, CaptureE
                     continue;
                 }
             };
-            pass.stamps.insert(entry.path(), stamp(&meta));
+            let absolute = dir.join(&name);
+            let matching = rules
+                .iter()
+                .rev()
+                .map(|rule| rule.matched(&absolute, meta.is_dir()))
+                .find(|m| !m.is_none());
+            if matching.is_some_and(|m| m.is_ignore()) {
+                continue;
+            }
+            pass.stamps.insert(absolute, stamp(&meta));
             let Some(path) = path else {
                 pass.skipped.insert(rel_text, Skip::InvalidPath);
                 continue;
@@ -188,7 +290,7 @@ fn walk(root: &Path, scope: &Scope, read: bool) -> Result<Option<Pass>, CaptureE
             if ft.is_symlink() {
                 pass.skipped.insert(rel_text, Skip::Symlink);
             } else if ft.is_dir() {
-                dirs.push((entry.path(), rel_text));
+                dirs.push((dir.join(name), rel_text, rules.clone()));
             } else if !ft.is_file() {
                 pass.skipped.insert(rel_text, Skip::NotRegularFile);
             } else if meta.len() > scope.max_file_bytes {
@@ -197,8 +299,8 @@ fn walk(root: &Path, scope: &Scope, read: bool) -> Result<Option<Pass>, CaptureE
                     limit: scope.max_file_bytes,
                 };
                 pass.skipped.insert(rel_text, skip);
-            } else if read {
-                match read_file(&entry.path(), &meta) {
+            } else {
+                match read_file(root_handle, Path::new(&rel_text), &meta) {
                     Ok(Some(bytes)) => {
                         pass.total += bytes.len() as u64;
                         if pass.total > scope.max_total_bytes {
@@ -229,12 +331,32 @@ fn excluded(path: &RepoPath, scope: &Scope) -> bool {
     })
 }
 
-/// Reads a regular file whose lstat was `before`. `Ok(None)` when the opened
-/// file is not that entry (swapped, e.g. for a symlink) or changed during the
-/// read. ponytail: a regular file swapped for a FIFO between lstat and open
-/// blocks the open; use O_NONBLOCK/openat if that threat is in scope.
-fn read_file(path: &Path, before: &Metadata) -> io::Result<Option<Vec<u8>>> {
-    let mut file = File::open(path)?;
+/// Linux openat2 anchors every component to the captured root and refuses
+/// symlinks; O_NONBLOCK prevents a file swapped for a FIFO from blocking.
+fn secure_open(root: &File, path: &Path, flags: i32) -> io::Result<File> {
+    let path = std::ffi::CString::new(path.as_os_str().as_bytes())?;
+    let mut how: libc::open_how = unsafe { std::mem::zeroed() };
+    how.flags = (flags | libc::O_CLOEXEC | libc::O_NOFOLLOW | libc::O_NONBLOCK) as u64;
+    how.resolve = libc::RESOLVE_BENEATH | libc::RESOLVE_NO_SYMLINKS;
+    // SAFETY: root is live, path is NUL-terminated, how has the kernel ABI
+    // layout/size, and a successful descriptor is transferred exactly once.
+    let fd = unsafe {
+        libc::syscall(
+            libc::SYS_openat2,
+            root.as_raw_fd(),
+            path.as_ptr(),
+            &how,
+            std::mem::size_of::<libc::open_how>(),
+        )
+    };
+    if fd < 0 {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(unsafe { File::from_raw_fd(fd as i32) })
+}
+
+fn read_file(root: &File, path: &Path, before: &Metadata) -> io::Result<Option<Vec<u8>>> {
+    let mut file = secure_open(root, path, libc::O_RDONLY)?;
     if stamp(&file.metadata()?) != stamp(before) {
         return Ok(None);
     }
@@ -255,7 +377,7 @@ fn finish(pass: Pass, scope: &Scope) -> SourceCapture {
             .push(path.clone());
     }
     SourceCapture {
-        snapshot: snapshot_id(scope, &pass.files, &pass.skipped),
+        snapshot: snapshot_id(scope, &pass.files, &pass.skipped, &pass.ignore_rules),
         case_collisions: folded
             .into_values()
             .filter(|group| group.len() > 1)
@@ -273,6 +395,7 @@ fn snapshot_id(
     scope: &Scope,
     files: &BTreeMap<RepoPath, CapturedFile>,
     skipped: &BTreeMap<String, Skip>,
+    ignore_rules: &BTreeMap<PathBuf, Vec<u8>>,
 ) -> SnapshotId {
     fn field(hasher: &mut Sha256, value: &str) {
         hasher.update((value.len() as u64).to_le_bytes());
@@ -306,6 +429,11 @@ fn snapshot_id(
                 Skip::InvalidPath => "invalid_path",
             },
         );
+    }
+    field(&mut hasher, &ignore_rules.len().to_string());
+    for (path, bytes) in ignore_rules {
+        field(&mut hasher, path.to_str().expect("UTF-8 repository path"));
+        field(&mut hasher, digest(bytes).as_str());
     }
     SnapshotId::new(sha256_text(hasher.finalize().as_slice())).expect("hex is a valid id")
 }
@@ -346,6 +474,95 @@ mod tests {
 
     fn repo_path(path: &str) -> RepoPath {
         RepoPath::new(path).unwrap()
+    }
+
+    #[test]
+    fn ignored_rule_file_still_changes_scope_identity() {
+        let root = tempdir("ignored-rules");
+        write(&root, ".gitignore", ".gitignore\na.py\n");
+        write(&root, "b.py", "kept");
+        let before = capture(&root, &Scope::default()).unwrap();
+        write(&root, ".gitignore", ".gitignore\na.py\nc.py\n");
+        let after = capture(&root, &Scope::default()).unwrap();
+        assert_eq!(before.files, after.files);
+        assert_ne!(before.snapshot, after.snapshot);
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn undecodable_ignore_fails_closed() {
+        let root = tempdir("invalid-rules");
+        fs::write(root.join(".gitignore"), [0xff]).unwrap();
+        assert!(matches!(
+            capture(&root, &Scope::default()),
+            Err(CaptureError::Ignore { .. })
+        ));
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn anchored_open_refuses_symlinks_in_every_component() {
+        use std::os::unix::fs::symlink;
+        let root = tempdir("anchor");
+        let outside = tempdir("anchor-outside");
+        write(&outside, "secret", "outside");
+        symlink(&outside, root.join("link")).unwrap();
+        let handle = File::open(&root).unwrap();
+        assert!(secure_open(&handle, Path::new("link/secret"), libc::O_RDONLY).is_err());
+        assert!(
+            secure_open(
+                &handle,
+                Path::new("../anchor-outside/secret"),
+                libc::O_RDONLY
+            )
+            .is_err()
+        );
+        fs::remove_dir_all(root).unwrap();
+        fs::remove_dir_all(outside).unwrap();
+    }
+
+    #[test]
+    fn gitignore_scope_and_nested_overrides() {
+        let root = tempdir("gitignore");
+        write(&root, ".gitignore", "*.py\n!keep.py\nignored/\n");
+        write(&root, "hide.py", "hidden");
+        write(&root, "keep.py", "dirty");
+        write(&root, "nested/.gitignore", "!show.py\n");
+        write(&root, "nested/show.py", "untracked");
+        write(&root, "nested/hide.py", "hidden");
+        write(&root, "ignored/.gitignore", "!show.py\n");
+        write(&root, "ignored/show.py", "hidden parent");
+        write(&root, ".oxide/internal.py", "derived");
+        let captured = capture(&root, &Scope::default()).unwrap();
+        assert_eq!(
+            paths(&captured),
+            [
+                ".gitignore",
+                "keep.py",
+                "nested/.gitignore",
+                "nested/show.py"
+            ]
+        );
+        assert!(captured.skipped.is_empty());
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[test]
+    fn ignore_change_during_capture_retries() {
+        let root = tempdir("ignore-race");
+        write(&root, ".gitignore", "a.py\n");
+        write(&root, "a.py", "new");
+        let mut n = 0;
+        let captured = capture_with(&root, &Scope::default(), &mut || {
+            if n == 0 {
+                write(&root, ".gitignore", "b.py\n");
+            }
+            n += 1;
+        })
+        .unwrap();
+        assert_eq!(n, 2);
+        assert!(captured.files.contains_key(&repo_path("a.py")));
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

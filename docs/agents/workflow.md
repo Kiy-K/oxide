@@ -76,3 +76,17 @@ Phase 3).
   backgrounded shells die with the parent. When matching processes, prefer
   `pgrep -fa` + kill-by-PID; `pkill -f somepattern` matches your own command
   line and kills your own shell.
+
+## Phase 2B native preparation (Linux x86_64)
+
+Before the first build, run `mise run native:prepare` (also part of
+`mise run bootstrap`). This explicit task caches and SHA-256 verifies the
+approved LadybugDB v0.21.2 compat archive, then restores its library and
+headers into `oxide_kernel/native/.cache/liblbug-0.21.2`. CI restores this
+cache and runs the same preparation before `mise run verify`.
+
+Cargo uses controlled paths in `oxide_kernel/.cargo/config.toml`; normal
+builds do not fetch native artifacts. The runtime build checks the exact
+library/header digests. A modified cache fails verification; rerun the
+preparation task to restore it. No FTS/vector extension is loaded in Phase
+2B. Their implementation remains Phase 3 work.

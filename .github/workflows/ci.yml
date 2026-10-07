@@ -36,6 +36,13 @@ jobs:
         with:
           version: 2026.9.14
           install_args: bun
+      - name: Restore pinned native archive cache
+        uses: actions/cache@v6
+        with:
+          path: oxide_kernel/native/.cache
+          key: linux-x86_64-liblbug-0.21.2-${{ hashFiles('oxide_kernel/native/prepare.sh') }}
+      - name: Prepare and verify pinned native archive
+        run: mise run native:prepare
       - name: mise run verify
         run: mise run verify
         env:

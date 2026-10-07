@@ -18,6 +18,12 @@ pub const MAX_REQUEST_ITEMS: usize = 4096;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StoreError {
+    /// Another runtime owns the derived store.
+    OwnershipConflict,
+    /// Runtime filesystem operation failed.
+    Io(String),
+    /// A database batch failed atomically; none of that batch was retained.
+    Transaction(String),
     /// No published generation matches.
     MissingSnapshot,
     /// The snapshot is published, but only under these other derivations.

@@ -1,0 +1,4 @@
+# Normal Cargo builds use only explicitly prepared pinned native artifacts.
+[env]
+LBUG_LIBRARY_DIR = { value = "native/.cache/liblbug-0.21.2", relative = true, force = true }
+LBUG_INCLUDE_DIR = { value = "native/.cache/liblbug-0.21.2", relative = true, force = true }

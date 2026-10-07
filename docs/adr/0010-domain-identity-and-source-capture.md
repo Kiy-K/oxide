@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposed** — 2026-10-07. Phase 2A. Replaces the provisional identity policy in
+**Accepted** — 2026-10-07, explicitly approved for Phase 2B. Phase 2A. Replaces the provisional identity policy in
 `oxide_kernel/README.md` (Phase 1) once accepted; until then both are proposals.
 Changes one Phase 1 rule: case-fold path collisions are reported, not rejected
 (§ RepoPath). Does not depend on the storage choice ([ADR-0002](0002-ladybugdb-knowledge-store.md)).

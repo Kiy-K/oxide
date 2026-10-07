@@ -6,7 +6,9 @@
 //! code.
 
 pub mod capture;
+pub mod derivation;
 pub mod embedding;
+pub mod repository;
 
 use std::io::{self, Read, Write};
 
@@ -140,3 +142,5 @@ mod tests {
         assert_eq!(served(&[0xff, 0xfe])["error"]["code"], "invalid_request");
     }
 }
+
+pub mod storage;

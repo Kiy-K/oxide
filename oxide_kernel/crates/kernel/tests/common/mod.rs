@@ -79,6 +79,7 @@ pub fn manifest(key: SnapshotKey) -> RepositorySnapshot {
     let entry = |p: &str, coverage| {
         let manifest = FileManifest {
             digest: digest(p),
+            byte_length: 100,
             language: "rust".into(),
             coverage,
         };
@@ -224,3 +225,5 @@ pub fn publish<S: KnowledgeStore>(store: &mut S, key: &SnapshotKey, batch: Batch
     store.write(key, batch).unwrap();
     store.publish(key).unwrap();
 }
+
+pub mod store_cases;

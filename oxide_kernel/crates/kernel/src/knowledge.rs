@@ -36,6 +36,8 @@ pub enum Coverage {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FileManifest {
     pub digest: Digest,
+    /// Exact length of the captured bytes, for evidence-range validation.
+    pub byte_length: u64,
     pub language: String,
     pub coverage: Coverage,
 }
@@ -261,11 +263,44 @@ fn check_source(
     let digest_matches = manifest
         .files
         .get(&source.file)
-        .is_some_and(|file| file.digest == source.digest);
+        .is_some_and(|file| file.digest == source.digest && source.range.end <= file.byte_length);
     if !digest_matches || source.range.start > source.range.end {
         return Err(format!(
             "{owner:?} has source evidence outside the manifest"
         ));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod source_bounds_tests {
+    use super::*;
+    use crate::id::{DerivationId, RepoId, SnapshotId};
+    #[test]
+    fn evidence_cannot_extend_past_captured_file() {
+        let file = RepoPath::new("a.py").unwrap();
+        let digest = Digest::new("test:bytes").unwrap();
+        let manifest = RepositorySnapshot {
+            key: SnapshotKey {
+                repo: RepoId::new("r").unwrap(),
+                snapshot: SnapshotId::new("s").unwrap(),
+                derivation: DerivationId::new("d").unwrap(),
+            },
+            files: BTreeMap::from([(
+                file.clone(),
+                FileManifest {
+                    digest: digest.clone(),
+                    language: "python".into(),
+                    coverage: Coverage::Complete,
+                    byte_length: 3,
+                },
+            )]),
+        };
+        let source = SourceRef {
+            file,
+            digest,
+            range: ByteRange { start: 0, end: 4 },
+        };
+        assert!(check_source(&manifest, &source, &EntityId::Repository).is_err());
+    }
 }
