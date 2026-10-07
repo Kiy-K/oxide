@@ -5,6 +5,7 @@
 //! onto them, so the contract can change transport without touching domain
 //! code.
 
+pub mod capture;
 pub mod embedding;
 
 use std::io::{self, Read, Write};

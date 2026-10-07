@@ -189,7 +189,7 @@ Remote integrations transport validated Rust results; they do not introduce a se
 | `Query` / `QueryContext` | Task text and explicit path/symbol/change hints; validated Rust domain inputs independent of an integration's objects |
 | `ContextBudget` | Nonnegative payload-token allowance plus the declared counting contract; separate from retrieval/traversal resource limits |
 
-IDs MUST be deterministic for the same identity inputs and namespace version, collision-safe, and unrelated to database allocation order. They MUST NOT be LadybugDB `InternalID`, table offsets, SQLite row IDs, or legacy FNV IDs by default. File/symbol IDs are always interpreted with repository and snapshot scope. Cross-snapshot rename/move continuity is not guaranteed; the exact identity algorithm requires a follow-up decision before ingestion.
+IDs MUST be deterministic for the same identity inputs and namespace version, collision-safe, and unrelated to database allocation order. They MUST NOT be LadybugDB `InternalID`, table offsets, SQLite row IDs, or legacy FNV IDs by default. File/symbol IDs are always interpreted with repository and snapshot scope. Cross-snapshot rename/move continuity is not guaranteed; the identity algorithm and snapshot-identity inputs are proposed in [ADR-0010](../adr/0010-domain-identity-and-source-capture.md) (Proposed). Any future continuity is a separate derived key, never entity identity.
 
 Logical source-state identity is distinct from derivation identity. The same source snapshot may be re-derived with a different parser/model/schema. A manifest records both, and caches and publication keys include the derivation version. The adapter MUST reject ambiguous lookups of multiple derivations.
 
@@ -307,6 +307,8 @@ Official documentation inspected on **2026-10-07**:
 These are capabilities reported by current documentation, not adapter acceptance evidence. This session did not compile the crate or run a database spike. In particular, extension availability in a Rust binary is **not automatic**. LadybugDB's docs also warn that Explorer in Docker may not recognize host database ownership locks; no separate inspection process may open an active read/write store unsafely.
 
 The accessible `latest` API page and the 0.18.2 release page are separate observations; this specification does not claim the API/build instructions were verified against 0.18.2. A docs.rs failure alone does not prove the crate cannot compile for OXIDE. Resolve the release-specific build/API uncertainty in the adapter spike.
+
+**Phase 2A spike (lbug 0.21.2, Linux x86_64), recorded in [ADR-0002](../adr/0002-ladybugdb-knowledge-store.md) (Proposed) and `oxide_kernel/spikes/ladybug/README.md`:** the documented ownership model is weaker in practice. Another process can open a store read-only while a writer holds it, and a second in-process read-write open is not refused, so the runtime must enforce single ownership itself. A second write transaction fails rather than waiting. FTS/vector are runtime-downloaded native extensions: offline use requires loading sha256-pinned files into a binary linked with `-rdynamic`. The crate's default build links an unpinned "latest" native release, so builds must supply a pinned archive.
 
 Do not assume online vector/FTS mutation, multi-writer process access, distributed persistence, or bitwise deterministic ANN construction. Validate at the pinned version before relying on them. If an accelerator cannot support safe updates, rebuild it as part of an unpublished generation. A secondary lexical accelerator MAY be evaluated behind the port if native FTS fails code retrieval gates; it must be snapshot-derived and cannot become a competing source of knowledge truth.
 
@@ -582,11 +584,11 @@ These uncertainties require a written resolution; downstream agents must not sil
 
 | Question | Needed before | Evidence / expected decision |
 | --- | --- | --- |
-| Repo/file/symbol ID algorithm, overload/declaration-definition identity, rename semantics | Phase 1 ingestion contracts | Collision/nesting/overload/case fixtures; namespace versioning |
+| Repo/file/symbol ID algorithm, overload/declaration-definition identity, rename semantics | Phase 1 ingestion contracts | Collision/nesting/overload/case fixtures; namespace versioning. Proposed: ADR-0010 |
 | TreeIndex hierarchy/projection, structural regions, multiple ownership views and cross-edges | Phase 1 navigation contracts / Phase 2 ingestion | Domain projection proposal, scope/coverage fixtures, fake/real bounded navigation parity; no prematurely frozen physical tree schema |
 | TreeRouter entry-point/root fallback, exploration algorithm, region judgments and stopping policy | Phase 1 routing contracts / Phase 3 routing baseline | Deterministic traversal/heuristic controls, routing loss/coverage/cost, cycle/fanout/deadline tests |
-| Snapshot publication/retention and physical graph schema; test facets vs nodes; unresolved references | Phase 2 adapter | Atomic publish/read-view contract, scope tests, crash/update spike |
-| Pinned LadybugDB version, Rust/extension linking, vector/FTS mutation semantics, target platforms | Phase 2 completion / Phase 3 acceleration | Offline build/reopen/concurrency/extension and index mutation measurements |
+| Snapshot publication/retention and physical graph schema; test facets vs nodes; unresolved references | Phase 2 adapter | Atomic publish/read-view contract, scope tests, crash/update spike. Proposed: ADR-0002 (generation per database directory, atomic pointer; test facet; `Unresolved` nodes) |
+| Pinned LadybugDB version, Rust/extension linking, vector/FTS mutation semantics, target platforms | Phase 2 completion / Phase 3 acceleration | Offline build/reopen/concurrency/extension and index mutation measurements. Proposed pin and Linux results: ADR-0002; other platforms open |
 | Service transport and multi-client runtime ownership/discovery | Phase 0 minimal boundary; before real integrations | Typed-contract proposal, lifecycle/ownership tests, startup/warm-call costs |
 | Ollama/llama.cpp provider APIs, bounded discovery, persisted identity and backend equivalence | Phase 1 provider contract / Phase 3 optional semantic adapters | Runner-version capability/identity tests, mutable-alias handling, batch compatibility, no-auto-switch and unavailable-runner fallback |
 | DecisionProvider candidate/region capability contract and JEV adapter/API/question mappings | Phase 1 foundational contract / Phase 4 optional adapter | Typed fake-provider fixtures, subject correlation, explicit source permissions, deadlines, repeatability/validity and confidence calibration; no live JEV prerequisite |
@@ -610,7 +612,7 @@ These uncertainties require a written resolution; downstream agents must not sil
 - **ADR-0008:** Model runner / embedding provider boundary — Ollama/llama.cpp adapters, external inference ownership, discovery, persisted identity and explicit reconfiguration.
 - **ADR-0009:** DecisionProvider and optional JEV integration — provider/subject capabilities, JEV mappings, version/response validation, repeatability, privacy and operational gates; complements policy/calibration in ADR-0005.
 
-Additional ADRs for identity, transport, inclusion algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The eight entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite and product direction.
+[ADR-0002](../adr/0002-ladybugdb-knowledge-store.md) and an identity/source-capture record, [ADR-0010](../adr/0010-domain-identity-and-source-capture.md), now exist as Proposed. Additional ADRs for transport, inclusion algorithm, or token accounting may be warranted once concrete alternatives are evaluated. The eight entries above are candidates, not existing Accepted ADRs; ADR-0001 only establishes the top-level rewrite and product direction.
 
 ## Milestones
 

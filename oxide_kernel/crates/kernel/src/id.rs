@@ -1,4 +1,4 @@
-//! Domain identity. Proposed policy (README § Identity policy): every ID is a
+//! Domain identity. Proposed policy (ADR-0010): every ID is a
 //! structural value built from its identity inputs, so it is deterministic,
 //! equal exactly when the inputs are equal, and unrelated to storage
 //! allocation order. File, module and symbol IDs mean something only inside a
@@ -71,9 +71,9 @@ pub struct SnapshotKey {
 }
 
 /// Repository-relative file path: UTF-8, `/`-separated, case-sensitive,
-/// compared byte for byte. No empty, `.` or `..` segments, no leading or
-/// trailing `/`, no NUL. Platform separators and case folding are capture's
-/// job (it rejects case-fold collisions before they reach the domain).
+/// compared byte for byte, never folded or normalized (ADR-0010). No empty,
+/// `.` or `..` segments, no leading or trailing `/`, no NUL. Capture joins
+/// names with `/` and reports case-fold collisions as diagnostics.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RepoPath(String);
 

@@ -9,7 +9,7 @@
 //! ([`id`]), the knowledge model ([`knowledge`]), task inputs ([`query`]), the
 //! KnowledgeStore port and in-memory store ([`store`]), TreeIndex navigation
 //! ([`tree`]), TreeRouter contracts ([`route`]) and the DecisionProvider seam
-//! ([`decision`]).
+//! ([`decision`]). Phase 2A adds the captured-source input ([`source`]).
 #![forbid(unsafe_code)]
 
 pub mod decision;
@@ -17,6 +17,7 @@ pub mod id;
 pub mod knowledge;
 pub mod query;
 pub mod route;
+pub mod source;
 pub mod store;
 pub mod tree;
 

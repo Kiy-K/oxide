@@ -5,8 +5,9 @@ All OXIDE v2 Rust lives here. Architecture: `docs/spec/SPEC.md`; phases:
 `docs/adr/0003-kernel-runtime-control-plane-boundary.md` (Proposed). The
 Bun/TypeScript control plane is root `src/`. Phase 0 is in place: workspace,
 boundaries and a minimal typed service seam. Phase 1 adds the kernel domain
-contracts and an in-memory store (§ Phase 1 domain contracts); no parser,
-database, real provider or routing algorithm yet.
+contracts and an in-memory store (§ Phase 1 domain contracts). Phase 2A adds
+source capture and the LadybugDB feasibility spike (§ Phase 2A); no parser,
+database adapter, real provider or routing algorithm yet.
 
 ## Layout and dependency map
 
@@ -114,32 +115,16 @@ The fixture repository is built in code (`kernel/tests/common/mod.rs`): it has
 overloads, same-line nesting, a call cycle, ambiguous and unresolved targets,
 logical containment, a partially parsed file and a heuristic test link.
 
-### Identity policy (Proposed, not frozen)
+### Identity policy
 
-Phase 1 needs a written policy before Phase 2 ingestion relies on identity
-(BOOTSTRAP Phase 1). This is the proposal the code implements; changing it
-changes types in `id.rs` and bumps derivations, nothing else.
-
-- IDs are structural values, not hashes: equal exactly when their identity
-  inputs are equal, so they cannot collide and do not depend on DB allocation
-  order. A compact hashed encoding, if a store needs one, is an adapter detail.
-- `RepoId`, `SnapshotId`, `DerivationId`, `ModuleId` and `Digest` are opaque
-  non-empty strings. Their derivation (repository naming, manifest hashing,
-  digest algorithm) belongs to Phase 2 source capture.
-- `FileId` is `RepoPath`: repository-relative, UTF-8, `/`-separated,
-  case-sensitive and compared byte for byte. It has no empty, `.` or `..`
-  segments, no leading or trailing `/` and no NUL. Capture normalizes platform
-  separators and rejects case-fold collisions.
-- `SymbolId` is the file plus its declaration path `[(name, ordinal)]` from
-  the file scope down. `ordinal` is the 0-based index among same-named
-  siblings in source byte order. That separates overloads and duplicate
-  names, and nesting lives in the path. Byte ranges are attribution only.
-  Cross-snapshot continuity is not promised: inserting an earlier overload
-  renumbers later ones.
-- File, module and symbol IDs are only meaningful inside one `SnapshotKey`,
-  which every read pins. `DerivationId` covers the ID namespace version.
-- Duplicate IDs in a generation are rejected at write; dangling or ambiguous
-  endpoints are rejected at publish.
+Proposed in [ADR-0010](../docs/adr/0010-domain-identity-and-source-capture.md),
+which supersedes the Phase 1 proposal that stood here. In short: structural,
+snapshot-local `FileId`/`SymbolId`/`ModuleId` (equal exactly when their inputs
+are equal, no continuity across edits); content-addressed `sha256:` `Digest`,
+`SnapshotId` and `DerivationId`; an assigned `RepoId`. `RepoPath` is
+byte-exact and case-sensitive; case-fold collisions are reported by capture,
+not rejected (the one change from Phase 1). Changing the policy changes types
+in `id.rs` and bumps derivations, nothing else.
 
 ### Phase 1 decisions
 
@@ -177,14 +162,29 @@ changes types in `id.rs` and bumps derivations, nothing else.
   hydration (Phase 2/3), the router algorithm (Phase 3), and SelectionPlan,
   ContextBundle and packer types (Phase 4).
 
+## Phase 2A: feasibility and source capture
+
+| Contract / evidence | Where | Tests |
+| --- | --- | --- |
+| Captured-source kernel input (`SourceCapture`) | `kernel/src/source.rs` | (plain data) |
+| Runtime source capture: scope, skips, digests, `SnapshotId`, consistency retry | `runtime/src/capture.rs` | unit tests there |
+| LadybugDB feasibility at lbug 0.21.2 | `spikes/ladybug/` (own workspace, not in `verify`; `mise run spike:ladybug`) | `spikes/ladybug/tests/feasibility.rs` |
+
+Decisions: [ADR-0010](../docs/adr/0010-domain-identity-and-source-capture.md)
+(identity, source capture) and
+[ADR-0002](../docs/adr/0002-ladybugdb-knowledge-store.md) (pin, build,
+ownership, publication protocol, physical schema), both Proposed. The spike is
+evidence only: no adapter exists and the kernel/runtime do not link `lbug`.
+
 ## Open questions
 
 | Question | Needed before |
 | --- | --- |
 | Long-lived runtime framing, multi-client ownership/discovery, supervision | real integrations; ADR-0003 |
 | One schema generating both contract type sets | when the contract grows past a few operations |
-| Accept or replace the Proposed identity policy above | Phase 2 ingestion |
-| Snapshot/repo ID and digest derivation at capture | Phase 2 |
+| Accept or replace ADR-0010 (identity, capture) and ADR-0002 (LadybugDB) | Phase 2B |
+| How `verify`/CI obtain the pinned native `liblbug` once the runtime links it | Phase 2B adapter |
+| `.gitignore` in capture scope, captured-byte retention, store location, default `RepoId` | Phase 2B (ADR-0010 open questions) |
 | Everything in SPEC § Open questions (IDs, TreeIndex projection, LadybugDB pin, capsule schema, tokenizer, ...) | Phase 1+ as listed there |
 
 ## Evidence inventory (historical main `ac985b28`, the parent of this branch's docs)

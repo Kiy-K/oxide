@@ -22,6 +22,12 @@ mise run ts:typecheck  #   tsc --noEmit over src/
 mise run ts:test       #   builds oxide-runtime, then bun test (boundary, decoder, contract cases)
 ```
 
+```bash
+mise run spike:ladybug # LadybugDB feasibility evidence (ADR-0002); not part of verify.
+                       # Needs network once (pinned, sha256-checked native archive and
+                       # extensions), then runs offline. Small DB memory by design.
+```
+
 Rust runs from `oxide_kernel/` (its own Cargo workspace; keep `-j 2` on the
 laptop). Bun owns all JS/TS: dependencies (`package.json`, committed
 `bun.lock`), runtime and tests (`bun:test`, constrained to `src/` by

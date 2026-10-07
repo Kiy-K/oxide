@@ -49,6 +49,17 @@ export OXIDE_RUNTIME_BIN
 bun test
 '''
 
+[tasks."spike:ladybug"]
+description = "LadybugDB feasibility spike (not part of verify): fetches the pinned, sha256-checked liblbug and extensions once, then runs offline"
+dir = "{{config_root}}/oxide_kernel/spikes/ladybug"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+eval "$(./fetch-liblbug.sh)"
+export LBUG_LIBRARY_DIR LBUG_INCLUDE_DIR SPIKE_EXTENSION_DIR
+cargo test -j 2 --locked -- --test-threads=1
+'''
+
 [tasks.verify]
 description = "Everything CI checks, in order: Rust fmt/clippy/test, then Bun install/lint/typecheck/test"
 run = '''

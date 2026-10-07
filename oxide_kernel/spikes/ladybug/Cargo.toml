@@ -1,0 +1,15 @@
+# LadybugDB feasibility spike (README.md). Its own workspace on purpose: it is
+# not a member of oxide_kernel/, not built by `mise run verify`, and nothing in
+# kernel/ or runtime/ may depend on it.
+[workspace]
+
+[package]
+name = "ladybug-spike"
+version = "0.0.0"
+edition = "2024"
+license = "MIT"
+publish = false
+build = "build.rs"
+
+[dev-dependencies]
+lbug = "=0.21.2"
