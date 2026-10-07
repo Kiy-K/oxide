@@ -5,9 +5,20 @@
 //! (`tests/boundary.rs` enforces both). The runtime calls it and maps its
 //! types onto the service contract.
 //!
-//! Phase 0 holds only a stub operation proving the runtime → kernel path;
-//! domain types start in Phase 1 (docs/BOOTSTRAP.md).
+//! Phase 1 (docs/BOOTSTRAP.md) adds the domain contracts: identity
+//! ([`id`]), the knowledge model ([`knowledge`]), task inputs ([`query`]), the
+//! KnowledgeStore port and in-memory store ([`store`]), TreeIndex navigation
+//! ([`tree`]), TreeRouter contracts ([`route`]) and the DecisionProvider seam
+//! ([`decision`]).
 #![forbid(unsafe_code)]
+
+pub mod decision;
+pub mod id;
+pub mod knowledge;
+pub mod query;
+pub mod route;
+pub mod store;
+pub mod tree;
 
 /// Kernel version, reported through the runtime's `status` operation.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

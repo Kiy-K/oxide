@@ -4,7 +4,9 @@ All OXIDE v2 Rust lives here. Architecture: `docs/spec/SPEC.md`; phases:
 `docs/BOOTSTRAP.md`; boundary and runtime model:
 `docs/adr/0003-kernel-runtime-control-plane-boundary.md` (Proposed). The
 Bun/TypeScript control plane is root `src/`. Phase 0 is in place: workspace,
-boundaries and a minimal typed service seam; no domain logic yet.
+boundaries and a minimal typed service seam. Phase 1 adds the kernel domain
+contracts and an in-memory store (§ Phase 1 domain contracts); no parser,
+database, real provider or routing algorithm yet.
 
 ## Layout and dependency map
 
@@ -95,13 +97,94 @@ mise run ts:test      # builds oxide-runtime, then bun test (boundary, decoder, 
 
 No network or model is needed for any test.
 
-## Open questions (none decided by Phase 0)
+## Phase 1 domain contracts
+
+| Contract | Where | Tests |
+| --- | --- | --- |
+| IDs, `SnapshotKey` | `kernel/src/id.rs` | unit tests there |
+| Entities, typed relations, `SourceRef`, manifests, publication invariants | `kernel/src/knowledge.rs` | `kernel/tests/store_contract.rs` |
+| `Query`, `QueryContext`, `ContextBudget` | `kernel/src/query.rs` | (plain data) |
+| `KnowledgeStore` / `ReadView` port, `MemoryStore` | `kernel/src/store.rs` | `store_contract.rs`, generic over the store (`contract_suite!`) |
+| TreeIndex projection 1 and bounded region navigation | `kernel/src/tree.rs` | `kernel/tests/routing_boundary.rs` |
+| TreeRouter input/output/trace/limit types | `kernel/src/route.rs` | (types only; the algorithm is Phase 3) |
+| DecisionProvider, capsule v1, heuristic, validation/fallback, shared allowance | `kernel/src/decision.rs` | `routing_boundary.rs` |
+| Embedding space identity, runner client, batching, semantic status | `runtime/src/embedding.rs` | unit tests there (fake runner) |
+
+The fixture repository is built in code (`kernel/tests/common/mod.rs`): it has
+overloads, same-line nesting, a call cycle, ambiguous and unresolved targets,
+logical containment, a partially parsed file and a heuristic test link.
+
+### Identity policy (Proposed, not frozen)
+
+Phase 1 needs a written policy before Phase 2 ingestion relies on identity
+(BOOTSTRAP Phase 1). This is the proposal the code implements; changing it
+changes types in `id.rs` and bumps derivations, nothing else.
+
+- IDs are structural values, not hashes: equal exactly when their identity
+  inputs are equal, so they cannot collide and do not depend on DB allocation
+  order. A compact hashed encoding, if a store needs one, is an adapter detail.
+- `RepoId`, `SnapshotId`, `DerivationId`, `ModuleId` and `Digest` are opaque
+  non-empty strings. Their derivation (repository naming, manifest hashing,
+  digest algorithm) belongs to Phase 2 source capture.
+- `FileId` is `RepoPath`: repository-relative, UTF-8, `/`-separated,
+  case-sensitive and compared byte for byte. It has no empty, `.` or `..`
+  segments, no leading or trailing `/` and no NUL. Capture normalizes platform
+  separators and rejects case-fold collisions.
+- `SymbolId` is the file plus its declaration path `[(name, ordinal)]` from
+  the file scope down. `ordinal` is the 0-based index among same-named
+  siblings in source byte order. That separates overloads and duplicate
+  names, and nesting lives in the path. Byte ranges are attribution only.
+  Cross-snapshot continuity is not promised: inserting an earlier overload
+  renumbers later ones.
+- File, module and symbol IDs are only meaningful inside one `SnapshotKey`,
+  which every read pins. `DerivationId` covers the ID namespace version.
+- Duplicate IDs in a generation are rejected at write; dangling or ambiguous
+  endpoints are rejected at publish.
+
+### Phase 1 decisions
+
+- **Sync store port.** `KnowledgeStore` is synchronous with owned read views.
+  The runtime can move calls off an executor; revisit if the pinned LadybugDB
+  API needs async (Phase 2).
+- **Stage/write/publish/discard.** Publication validates the whole generation
+  (`knowledge::validate`, shared by every store). A failed publish stays
+  staged and invisible. There is no "any derivation" lookup: `open` takes an
+  exact key and reports `IncompatibleDerivation` with the derivations that do
+  exist.
+- **TreeIndex projection 1.** This is the minimal test hierarchy: one region
+  per entity, organized by physical containment (repository ⊃ module/file,
+  file ⊃ symbol ⊃ symbol). Publication requires each entity's single
+  physical parent to be the one its ID implies (and its source to be in its
+  own file), so the tree cannot contradict identity. Every other relation,
+  logical containment included, is a typed cross-edge. Regions are computed
+  in the kernel from typed adjacency, so fake and real stores share the
+  navigation code. Materialized regions and richer groupings stay open.
+- **Decisions.** Judgments correlate by subject, question and capsule
+  version (no capsule digest yet). Missing, duplicate, out-of-range or
+  non-finite values, wrong versions, abstentions, unsupported questions,
+  provider errors, exhausted allowances and (when a floor is set) low or
+  unreported confidence all fall back per subject to the heuristic, with a
+  reason. Phase 1's heuristic is a neutral constant. The questions
+  (`Relevance`, `NeighborValue`, `BranchValue`) are the candidate, neighbor
+  and branch capabilities a JEV adapter maps to; nothing JEV-specific is in
+  the kernel.
+- **Embedding identity lives in the runtime** for now, since no kernel code
+  consumes vectors before Phase 3. Space compatibility is `Same`, `Different`
+  or `Unverified`; unknown fields never count as a match. Only the configured
+  runner is probed. Discovered runners are listed as offers (unconfigured) or
+  alternatives (configured) and are never substituted.
+- **Deferred to their phases:** lexical/vector search operations and source
+  hydration (Phase 2/3), the router algorithm (Phase 3), and SelectionPlan,
+  ContextBundle and packer types (Phase 4).
+
+## Open questions
 
 | Question | Needed before |
 | --- | --- |
 | Long-lived runtime framing, multi-client ownership/discovery, supervision | real integrations; ADR-0003 |
 | One schema generating both contract type sets | when the contract grows past a few operations |
-| Async vs sync kernel ports; whether the runtime needs an async executor | Phase 1 KnowledgeStore port |
+| Accept or replace the Proposed identity policy above | Phase 2 ingestion |
+| Snapshot/repo ID and digest derivation at capture | Phase 2 |
 | Everything in SPEC § Open questions (IDs, TreeIndex projection, LadybugDB pin, capsule schema, tokenizer, ...) | Phase 1+ as listed there |
 
 ## Evidence inventory (historical main `ac985b28`, the parent of this branch's docs)

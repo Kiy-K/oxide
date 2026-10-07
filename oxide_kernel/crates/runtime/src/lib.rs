@@ -5,6 +5,8 @@
 //! onto them, so the contract can change transport without touching domain
 //! code.
 
+pub mod embedding;
+
 use std::io::{self, Read, Write};
 
 use serde::{Deserialize, Serialize};
