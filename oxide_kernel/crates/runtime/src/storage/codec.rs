@@ -163,7 +163,7 @@ pub fn de_relation(v: &V) -> R<Relation> {
 }
 pub fn manifest(m: &RepositorySnapshot) -> V {
     json!([
-        47,
+        super::STORAGE_FORMAT,
         key(&m.key),
         m.files
             .iter()
@@ -179,7 +179,7 @@ pub fn manifest(m: &RepositorySnapshot) -> V {
     ])
 }
 pub fn de_manifest(v: &V) -> R<RepositorySnapshot> {
-    if num(&v[0])? != 47 {
+    if num(&v[0])? != super::STORAGE_FORMAT {
         return Err(StoreError::Corrupt(
             "storage format mismatch; rebuild required".into(),
         ));

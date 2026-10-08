@@ -1,8 +1,12 @@
-//! Linux repository discovery and external derived-store ownership.
+//! Linux repository discovery, external derived-store ownership and the
+//! full-rebuild pipeline: capture → derive → stage → publish.
+use crate::capture::{self, CaptureError, Scope};
 use crate::storage::LadybugStore;
-use oxide_kernel::id::RepoId;
-use oxide_kernel::store::StoreError;
+use oxide_kernel::id::{RepoId, RepoPath, SnapshotKey};
+use oxide_kernel::source::Skip;
+use oxide_kernel::store::{KnowledgeStore, StoreError};
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 use std::fs::{self, DirBuilder, File, OpenOptions};
 use std::io::{Read, Write};
 use std::os::unix::fs::DirBuilderExt;
@@ -215,6 +219,79 @@ impl RepositorySession {
 
     pub fn root(&self) -> &Path {
         &self.root
+    }
+
+    /// Full rebuild from a fresh capture, published atomically. A capture
+    /// that matches the current generation publishes nothing; one matching
+    /// an earlier generation of this session is re-pointed, not rebuilt.
+    /// Any failure leaves the previous generation current.
+    pub fn rebuild(&mut self, scope: &Scope) -> Result<BuildReport, BuildError> {
+        let capture = capture::capture(&self.root, scope).map_err(BuildError::Capture)?;
+        let (manifest, batch, components) = crate::derivation::derive(&self.repo_id, &capture)?;
+        let key = manifest.key.clone();
+        let report = |outcome| BuildReport {
+            key: key.clone(),
+            outcome,
+            skipped: capture.skipped.clone(),
+            case_collisions: capture.case_collisions.clone(),
+        };
+        match self.store.current(&self.repo_id) {
+            Ok(current) if current == key => return Ok(report(Outcome::Unchanged)),
+            Ok(_) | Err(StoreError::MissingSnapshot) => {}
+            Err(error) => return Err(error.into()),
+        }
+        match self.store.begin(manifest) {
+            Ok(()) => {}
+            Err(StoreError::Conflict) => {
+                self.store.activate(&key)?;
+                return Ok(report(Outcome::Reactivated));
+            }
+            Err(error) => return Err(error.into()),
+        }
+        let staged = self
+            .store
+            .retain_derivation(&key, &components)
+            .and_then(|()| self.store.retain_source(&capture))
+            .and_then(|()| self.store.write(&key, batch))
+            .and_then(|()| self.store.publish(&key));
+        if let Err(error) = staged {
+            // The generation was never published; discarding it is cleanup,
+            // and startup removes it anyway if this fails too.
+            let _ = self.store.discard(&key);
+            return Err(error.into());
+        }
+        Ok(report(Outcome::Published))
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Outcome {
+    Published,
+    /// The capture matched the current generation.
+    Unchanged,
+    /// The capture matched an earlier generation still held by this store.
+    Reactivated,
+}
+
+/// What a rebuild captured and published, with capture diagnostics that are
+/// not file evidence: skipped entries and case-fold path collisions.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BuildReport {
+    pub key: SnapshotKey,
+    pub outcome: Outcome,
+    pub skipped: BTreeMap<String, Skip>,
+    pub case_collisions: Vec<Vec<RepoPath>>,
+}
+
+#[derive(Debug)]
+pub enum BuildError {
+    Capture(CaptureError),
+    Store(StoreError),
+}
+
+impl From<StoreError> for BuildError {
+    fn from(error: StoreError) -> Self {
+        Self::Store(error)
     }
 }
 

@@ -6,10 +6,10 @@ All OXIDE v2 Rust lives here. Architecture: `docs/spec/SPEC.md`; phases:
 Bun/TypeScript control plane is root `src/`. Phase 0 is in place: workspace,
 boundaries and a minimal typed service seam. Phase 1 adds the kernel domain
 contracts and an in-memory store (§ Phase 1 domain contracts). Phase 2A adds
-source capture and the LadybugDB feasibility spike (§ Phase 2A). The partial
-Phase 2B checkpoint adds the production adapter, capture/retention and external
-repository registry; Python ingestion remains unfinished. See
-[Phase 2B checkpoint](../docs/phase-2b.md). No routing algorithm or real model
+source capture and the LadybugDB feasibility spike (§ Phase 2A). Phase 2B
+adds the production LadybugDB adapter, generation publication, captured-source
+retention, the external repository registry and one language slice (Python),
+with full rebuild and reopen (§ Phase 2B). No routing algorithm or real model
 provider has been added.
 
 ## Layout and dependency map
@@ -181,14 +181,27 @@ ownership, publication protocol, physical schema), both Accepted by explicit
 Phase 2B approval. The spike remains evidence only; the Phase 2B runtime
 adapter links the pinned native library through explicit preparation.
 
+## Phase 2B: adapter, publication and the Python slice
+
+| Contract / evidence | Where | Tests |
+| --- | --- | --- |
+| LadybugDB `KnowledgeStore` adapter, lock, writer queue, generations, hydration | `runtime/src/storage/` | `runtime/tests/ladybug_contract.rs` (shared cases + adapter cases) |
+| Ingestion: language ownership, coverage, entity assembly | `kernel/src/ingest.rs` | `runtime/tests/ingestion.rs` |
+| Python identity, scoping, conservative resolution | `kernel/src/python.rs` | `runtime/tests/ingestion.rs`, unit tests there |
+| Python syntax facts (tree-sitter 0.27.0, tree-sitter-python 0.25.0) | `runtime/src/python.rs` | `runtime/tests/ingestion.rs` |
+| Derivation components, full-rebuild derivation | `runtime/src/derivation.rs` | unit tests there |
+| XDG registry, random `RepoId`, rebuild pipeline | `runtime/src/repository.rs` | unit tests there, `runtime/tests/ingestion.rs` |
+
+Conventions, retention, derivation components, measurements and limits:
+[docs/phase-2b.md](../docs/phase-2b.md). Linux x86_64 only.
+
 ## Open questions
 
 | Question | Needed before |
 | --- | --- |
 | Long-lived runtime framing, multi-client ownership/discovery, supervision | real integrations; ADR-0003 |
 | One schema generating both contract type sets | when the contract grows past a few operations |
-| Python language conventions and completed ingestion/rebuild pipeline | Phase 2B; checkpoint in `docs/phase-2b.md` |
-| First-publication interruption after seal, retained-generation footprint | Phase 2B; checkpoint in `docs/phase-2b.md` |
+| Store write/publish throughput, in-process GC, incremental indexing | before mid-size repositories; `docs/phase-2b.md` § Open |
 | Everything in SPEC § Open questions (IDs, TreeIndex projection, LadybugDB pin, capsule schema, tokenizer, ...) | Phase 1+ as listed there |
 
 ## Evidence inventory (historical main `ac985b28`, the parent of this branch's docs)

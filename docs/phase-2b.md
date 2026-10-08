@@ -1,99 +1,136 @@
-# Phase 2B checkpoint — 2026-10-07
+# Phase 2B — LadybugDB adapter, capture and the Python slice
 
-Status: **incomplete; stopped at the user's request for a checkpoint commit**.
-Resume Phase 2B only. Do not start Phase 3. Branch: `rewrite/v2`.
+Status: **complete** (2026-10-08) on `rewrite/v2`. Phase 3 has not started.
+Decisions: [ADR-0002](adr/0002-ladybugdb-knowledge-store.md) and
+[ADR-0010](adr/0010-domain-identity-and-source-capture.md), Accepted by
+explicit approval with their substance unchanged. This file records the
+implementation details those ADRs left to Phase 2B.
 
-ADR-0002 and ADR-0010 were accepted by explicit user approval; their decision
-substance was preserved. Linux x86_64 is the only production target. macOS,
-Windows and network-filesystem behavior remain unverified.
+Production target: **Linux x86_64 only**. macOS, Windows and network
+filesystems are unverified, not inferred.
 
-## Implemented and checked
+## What exists
 
-- Production LadybugDB adapter behind the kernel-owned KnowledgeStore port,
-  with private native types and domain codecs, typed graph edge tables,
-  unresolved nodes, ambiguity preservation and the test facet.
-- Exclusive OXIDE store lock, retained by pinned views; bounded single writer
-  queue; explicit transaction rollback and immutable concurrent read views.
-- Per-generation staging, shared kernel validation and graph readback,
-  checkpoint/close/fsync/seal, atomic CURRENT publication and reopen.
-- Content-addressed captured-source blobs named by validated SHA-256 digest;
-  source retention and historical hydration verify exact bytes and range.
-- Explicit native preparation at the validated v0.21.2 archive/crate pin,
-  storage format 47, archive and extracted-library/header SHA-256 checks,
-  controlled Cargo paths, CI preparation/cache. No native runtime downloads.
-- Capture uses the ignore crate for repository .gitignore rules, including
-  nested overrides; ignored files remain outside the manifest. Capture
-  excludes .git and .oxide, reports unreadable/special/symlink entries and
-  verifies two byte/metadata passes with bounded retries. Linux openat2
-  refuses symlinks in every path component and avoids FIFO open blocking.
-  This requires Linux kernel 5.6+ and mounted /proc; no portability fallback.
-- FileManifest.byte_length bounds source evidence. Canonical versioned
-  derivation-component hashing is in runtime/derivation.rs.
-- Linux XDG application-data/configuration seam; random 128-bit RepoId is
-  persisted in REPO.json. Checkout path is discovery metadata, not identity.
-  Registry metadata is staged/sealed; configured storage inside source is
-  rejected without writes.
+| Piece | Where |
+| --- | --- |
+| LadybugDB `KnowledgeStore` adapter, ownership lock, writer queue, generations | `runtime/src/storage/` |
+| Source capture (`.gitignore` via the `ignore` crate, no Git) | `runtime/src/capture.rs` |
+| Python syntax facts (tree-sitter) | `runtime/src/python.rs` |
+| Language ownership, coverage, entity/relation assembly | `kernel/src/ingest.rs` |
+| Python identity, scoping and conservative resolution | `kernel/src/python.rs` |
+| Derivation components and full-rebuild derivation | `runtime/src/derivation.rs` |
+| XDG data location, random `RepoId` registry, rebuild pipeline | `runtime/src/repository.rs` |
+| Native preparation (pinned, SHA-256 checked) | `mise run native:prepare`, `oxide_kernel/native/prepare.sh`, `runtime/build.rs` |
 
-Capture encoding is now `oxide-capture-v2-gitignore`: ordered repository
-ignore-rule paths/digests participate even when the rule file itself is
-ignored. Invalid/undecodable/unreadable ignore configuration fails closed.
-No global Git configuration, Git process, repository scripts or hooks run.
+Pipeline (`RepositorySession::rebuild`): capture → derive → `begin` (staging
+directory) → retain derivation manifest and content-addressed source bytes →
+write → validate (kernel `validate` plus graph readback) → checkpoint, close,
+fsync, seal/rename → atomic `CURRENT`. A capture equal to the current
+generation publishes nothing. One equal to an earlier generation still sealed
+in this process is re-pointed: identical snapshot and derivation means
+identical knowledge. Any failure discards the staged generation and leaves
+the previous one current. Skipped entries and case-fold collisions are
+returned in `BuildReport`; they are capture diagnostics, not file evidence.
 
-## Verification at checkpoint
+## Decisions made inside the ADRs
 
-The unchanged eight shared KnowledgeStore cases run against MemoryStore and
-LadybugStore. All pass. The adapter has 21 passing tests total, including
-reopen, transaction failure, serialized writers, concurrent immutable views,
-process ownership, source fidelity/corruption, derivation/storage mismatch,
-staging recovery and process exit before seal.
+- **Retention.** Only `CURRENT` is loaded at startup. No view can be pinned
+  before startup, so every other generation directory is removed: incomplete
+  staging, a seal that never reached `CURRENT`, and superseded generations.
+  Within one process, every published generation stays open for pinned views
+  (no in-process GC yet). This resolves the checkpoint's first-seal finding:
+  a first build killed after sealing but before `CURRENT` now reopens empty
+  and rebuilds. It is never promoted to current. A malformed `CURRENT`, or one
+  naming a missing or unverifiable generation, still fails closed before
+  anything is removed.
+- **Storage format.** `STORAGE_FORMAT = 47` is checked against
+  `lbug::get_storage_version()` at store creation. A current generation in
+  an older format is discarded at startup and rebuilt, never migrated. A
+  newer format belongs to a newer OXIDE: startup refuses it with
+  `Unsupported` and deletes nothing.
+- **Derivation components** (`derivation::components`): `id-namespace`
+  (`oxide-id-v1`), `python` (`oxide-python-v1`), `python-parser`
+  (tree-sitter 0.27.0 / tree-sitter-python 0.25.0), `tree-projection` (1),
+  `storage-schema` (`oxide-ladybug-schema-v1`), `storage-format` (47), `lbug`
+  (0.21.2). Each generation stores them verbatim in `DERIVATION`.
+- **Capture encoding** is `oxide-capture-v2-gitignore`: ADR-0010's
+  `SnapshotId` inputs plus each repository `.gitignore` path and digest, even
+  when the rule file itself is ignored. Rules are parsed by the `ignore`
+  crate; no Git process, global Git configuration or hooks are used. `.git`
+  and `.oxide` are always excluded. Undecodable or unreadable ignore rules
+  fail the capture closed.
+- **Source hydration** reads the generation's retained blob named by the
+  SHA-256 of its bytes, re-verifies length and digest, and never reads the
+  worktree.
 
-Measured checkpoint result: `mise run verify` **PASS** (Rust formatting,
-clippy, all Rust tests, frozen Bun install, Biome, TypeScript checking and
-20 Bun tests). Biome reports three existing template-string warnings in
-unchanged `src/boundary.test.ts`; the command exits successfully. Python
-ingestion and capture → ingest → publish → reopen are **not implemented or
-validated** yet.
+## Python slice
 
-## Resume first
+Chosen because `fixtures/py_repo` is the smallest retained fixture with
+packages, relative imports, classes, methods and tests.
 
-1. Address the static-review recovery finding: a first build killed after
-   sealing but before its initial CURRENT publication leaves a valid sealed
-   directory with no CURRENT; startup rejects it as corruption and cannot
-   reopen for a fresh build. Add a regression for this interruption window
-   and handle the unpublished seal without selecting an arbitrary current
-   generation. Preserve fail-closed behavior for malformed CURRENT and
-   missing/unreadable targets of an existing pointer. The existing crash
-   test covers pre-seal interruption with an already published generation.
-2. Implement **one Python language slice**. No parser/ingestion product files
-   exist yet. Runtime has pinned tree-sitter 0.27.0 and tree-sitter-python
-   0.25.0 dependencies. Read the required architecture documents completely
-   before edits; inspect pinned APIs/grammar (Context7 ID
-   `/websites/rs_tree-sitter` was resolved and Rust parser docs fetched).
-3. Keep parsing substrate in runtime and pure domain normalization/resolution
-   in the dependency-free kernel. Write failing conformance and end-to-end
-   tests first. Define Python ModuleId and synthetic-name conventions,
-   duplicate/nested declaration ordinals, coverage and conservative
-   unresolved/ambiguous references/imports; no compiler-resolution claim.
-4. Implement runtime `derive(repo, capture)` and `derivation_components()`;
-   integrate RepositorySession full rebuild through capture → derive →
-   begin → retain_source/retain_derivation → write → publish. Expose skipped
-   capture diagnostics. Test process/store close and reopen, changed/deleted
-   fresh rebuilds, historical bytes, malformed/unsupported source, and
-   shadowed/dynamic reference handling.
-5. Review the complete implementation, run `mise run verify`, and document
-   measured generation memory/disk footprint. No incremental indexing.
+- `ModuleId` = `python:` + the dotted path from the repository root
+  (`a/b.py`, `a/b/__init__.py` → `python:a.b`). Files with a non-identifier
+  segment have no module. `sys.path` and source roots are not modeled. Module
+  ⊃ file is logical containment; a module `DEFINES` its file's top-level
+  declarations.
+- Symbols: `class`/`def` only (`class`, `function`, `method`), nested by
+  declaration. Ordinals count same-named siblings in byte order. Decorated
+  ranges include decorators. No synthetic names: lambdas and comprehensions
+  are expressions. Python cannot put two declarations on one line.
+- Coverage: syntax errors → `Partial` with byte diagnostics, keeping what
+  parsed. Non-UTF-8 `.py` (PEP 263 is not decoded) and every non-Python file
+  → `Unsupported`, still file evidence.
+- Fact classes: syntax (`Syntactic`: containment, module membership, the
+  presence of an import, call or base); resolved (`Resolved`: one declaration
+  or repository module by Python scoping); ambiguous (several candidates,
+  e.g. redefined functions); unresolved (`Unresolved { name }` for builtins,
+  external modules, attribute calls, re-exports and anything shadowed or
+  rebound: parameters, assignments, loop targets, star imports, `global` /
+  `nonlocal`). Scoping skips enclosing class bodies. There is no type
+  inference, and `globals()`/`setattr`/`exec` mutation is not modeled.
+  `IMPLEMENTS` is never emitted: Python inheritance is a `REFERENCES` from
+  class to base.
+- Tests: pytest default discovery sets the test facet. A test calling a
+  resolved non-test symbol yields `TESTED_BY` with `Heuristic` basis.
 
-Use `docs/superpowers/plans/2026-10-07-phase-2b.md` as the implementation plan.
-The storage implementation report is summarized here; temporary reports at
-`/tmp/oxide-phase2b-{store-report,store-review,ingestion-report}.md` and the
-ignored plan ledger may be available locally, but are not needed to resume.
+## Verification (measured 2026-10-08)
 
-## Current limitations
+- Fake/LadybugDB parity: the eight shared `KnowledgeStore` cases pass on
+  both. `ingestion.rs` also compares full TreeIndex-walked knowledge of the
+  ingested fixture in `MemoryStore` and LadybugDB: equal.
+- capture → ingest → publish → close → reopen → same knowledge: passes
+  (`fixture_capture_ingest_publish_reopen`). Changed/deleted files, pinned
+  history, revert → re-point, and restart retention:
+  `changed_and_deleted_files_rebuild_fresh_and_history_stays_exact`.
+- Adapter: 24 tests, including ownership (in-process, pinned view,
+  cross-process), serialized writes, transaction rollback, concurrent
+  immutable views, crash before seal, first/later seal interrupted before
+  publication, bad/missing `CURRENT`, older/newer storage format, derivation-manifest
+  identity and source corruption.
+- `mise run verify`: pass.
 
-All sealed generations and captured bytes are retained; no GC yet. Startup
-opens all retained generation handles, each configured with a 32 MiB buffer
-pool and two threads. Resource footprint is not measured at repository scale.
-Derivation component conventions for Python remain unfinished. The service
-v1 transport is unchanged; no integration is built on its provisional
-process-per-request behavior. FTS/vector, routing, models and packing remain
-outside this checkpoint.
+Footprint, release build, Linux x86_64, rebuild into an empty store (RSS
+includes the process; "—" was not measured):
+
+| Input | Files | Source | Entities / relations | Rebuild | Max RSS | Store on disk |
+| --- | --- | --- | --- | --- | --- | --- |
+| `fixtures/py_repo` | 11 | 44 KiB | — | 0.63 s | 124 MiB | 5.2 MiB |
+| CPython 3.14 `email/` | 117 | 1.8 MiB | — | 8.7 s | 139 MiB | 15.5 MiB |
+| CPython 3.14 `asyncio/` (with `.pyc`) | 140 | 2.7 MiB | 1,283 / 5,224 | 12.3 s | 155 MiB | 18.6 MiB |
+
+Capture plus derivation of `asyncio/` takes 0.11 s. The rest is the
+adapter's per-row write and publish statements (about 2 ms per row), which
+is a **negative result**. Bulk load (`COPY FROM`) or reused prepared
+statements is the measured upgrade path, and ADR-0002 lists bulk-load speed
+as a reconsideration criterion. Each generation is a full copy (database
+plus retained source), with a ~5 MiB fixed database cost.
+
+## Open (not Phase 2B)
+
+- In-process GC of unpinned superseded generations and source-blob
+  deduplication across generations.
+- Write/publish throughput (above) before mid-size repositories.
+- Incremental indexing with full/incremental parity; FTS/vector accelerators
+  (Phase 3); service operations for rebuild/status (the v1 contract is
+  unchanged); recovery UX for a fail-closed corrupt store (today: delete the
+  repository's directory under the data location).

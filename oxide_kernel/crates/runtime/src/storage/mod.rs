@@ -17,6 +17,13 @@ use std::{
 
 type R<T> = Result<T, StoreError>;
 
+/// LadybugDB on-disk format at the pinned lbug (ADR-0002 § 1). A generation
+/// in another format is rebuilt, never migrated.
+pub const STORAGE_FORMAT: u64 = 47;
+
+/// Version of this adapter's physical schema and encodings.
+pub const SCHEMA: &str = "oxide-ladybug-schema-v1";
+
 const TABLES: [&str; 7] = [
     "CONTAINS",
     "DEFINES",
@@ -135,6 +142,58 @@ fn source_name(digest: &Digest) -> R<&str> {
     }
     Ok(name)
 }
+fn is_generation_name(name: &str) -> bool {
+    name.len() == 64
+        && name
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+}
+
+/// Opens one sealed generation read-only after verifying its identity.
+/// `None` means it was written in an older storage format and must be
+/// rebuilt. A newer format belongs to a newer OXIDE: it is refused, never
+/// deleted.
+fn load_generation(path: &Path, name: &str, owner: &Arc<Lock>) -> R<Option<Generation>> {
+    let manifest = codec::parse(&fs::read_to_string(path.join("MANIFEST")).map_err(io)?)?;
+    match manifest[0].as_u64() {
+        Some(format) if format < STORAGE_FORMAT => return Ok(None),
+        Some(format) if format > STORAGE_FORMAT => {
+            return Err(StoreError::Unsupported(format!(
+                "store uses storage format {format}, newer than this runtime's {STORAGE_FORMAT}"
+            )));
+        }
+        _ => {}
+    }
+    let m = codec::de_manifest(&manifest)?;
+    let derivation_path = path.join("DERIVATION");
+    if m.key.derivation.as_str().starts_with("sha256:") && !derivation_path.exists() {
+        return Err(StoreError::Corrupt(
+            "derivation manifest missing; rebuild required".into(),
+        ));
+    }
+    if derivation_path.exists() {
+        let components: BTreeMap<String, String> =
+            serde_json::from_slice(&fs::read(&derivation_path).map_err(io)?)
+                .map_err(|e| StoreError::Corrupt(e.to_string()))?;
+        if crate::derivation::derivation_id(&components) != m.key.derivation {
+            return Err(StoreError::Corrupt(
+                "derivation manifest identity mismatch; rebuild required".into(),
+            ));
+        }
+    }
+    if generation(&m.key) != name {
+        return Err(StoreError::Corrupt(
+            "generation identity mismatch; rebuild required".into(),
+        ));
+    }
+    Ok(Some(Generation {
+        db: read_db(&path.join("db"))?,
+        manifest: m,
+        path: path.to_path_buf(),
+        _owner: owner.clone(),
+    }))
+}
+
 fn sync(path: &Path) -> R<()> {
     File::open(path).map_err(io)?.sync_all().map_err(io)
 }
@@ -208,6 +267,11 @@ pub struct LadybugView {
 
 impl LadybugStore {
     pub fn new(path: &Path) -> R<Self> {
+        if lbug::get_storage_version() != STORAGE_FORMAT {
+            return Err(StoreError::Unsupported(
+                "linked LadybugDB storage format differs from the pin".into(),
+            ));
+        }
         fs::create_dir_all(path).map_err(io)?;
 
         let lock = OpenOptions::new()
@@ -237,93 +301,62 @@ impl LadybugStore {
             poisoned: false,
         };
 
-        for entry in fs::read_dir(&dirs).map_err(io)? {
-            let entry = entry.map_err(io)?;
-
-            let name = entry.file_name().to_string_lossy().into_owned();
-
-            if name.ends_with(".staging") {
-                fs::remove_dir_all(entry.path()).map_err(io)?;
-
-                continue;
-            }
-
-            if name.len() != 64 || !name.bytes().all(|b| b.is_ascii_hexdigit()) {
-                return Err(StoreError::Corrupt(
-                    "invalid generation directory; rebuild required".into(),
-                ));
-            }
-
-            let m = codec::de_manifest(&codec::parse(
-                &fs::read_to_string(entry.path().join("MANIFEST")).map_err(io)?,
-            )?)?;
-
-            let derivation_path = entry.path().join("DERIVATION");
-            if m.key.derivation.as_str().starts_with("sha256:") && !derivation_path.exists() {
-                return Err(StoreError::Corrupt(
-                    "derivation manifest missing; rebuild required".into(),
-                ));
-            }
-            if derivation_path.exists() {
-                let components: BTreeMap<String, String> =
-                    serde_json::from_slice(&fs::read(&derivation_path).map_err(io)?)
-                        .map_err(|e| StoreError::Corrupt(e.to_string()))?;
-                if crate::derivation::derivation_id(&components) != m.key.derivation {
-                    return Err(StoreError::Corrupt(
-                        "derivation manifest identity mismatch; rebuild required".into(),
-                    ));
-                }
-            }
-            if generation(&m.key) != name {
-                return Err(StoreError::Corrupt(
-                    "generation identity mismatch; rebuild required".into(),
-                ));
-            }
-
-            let g = Arc::new(Generation {
-                db: read_db(&entry.path().join("db"))?,
-                manifest: m.clone(),
-                path: entry.path(),
-                _owner: state.owner.clone(),
-            });
-
-            state.published.insert(m.key, g);
-        }
-
-        match fs::read_to_string(state.root.join("CURRENT")) {
+        // Recovery (ADR-0002 § 6.7). Only CURRENT names a published
+        // generation; no view can be pinned before startup, so every other
+        // directory is an incomplete build, a seal that never reached CURRENT
+        // or a superseded generation. CURRENT is checked before anything is
+        // removed, and a bad pointer fails closed.
+        let current = match fs::read_to_string(state.root.join("CURRENT")) {
             Ok(name) => {
-                let name = name.trim();
-
-                if name.len() != 64 || !name.bytes().all(|b| b.is_ascii_hexdigit()) {
+                let name = name.trim().to_owned();
+                if !is_generation_name(&name) {
                     return Err(StoreError::Corrupt(
                         "invalid CURRENT; rebuild required".into(),
                     ));
                 }
-
-                state.current = Some(
-                    state
-                        .published
-                        .keys()
-                        .find(|k| generation(k) == name)
-                        .cloned()
-                        .ok_or_else(|| {
-                            StoreError::Corrupt(
-                                "CURRENT generation missing; rebuild required".into(),
-                            )
-                        })?,
-                );
-            }
-
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
-                if !state.published.is_empty() {
+                if !dirs.join(&name).is_dir() {
                     return Err(StoreError::Corrupt(
-                        "CURRENT missing; rebuild required".into(),
+                        "CURRENT generation missing; rebuild required".into(),
                     ));
                 }
+                Some(name)
             }
-
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => None,
             Err(e) => return Err(io(e)),
+        };
+        let mut entries = Vec::new();
+        for entry in fs::read_dir(&dirs).map_err(io)? {
+            let entry = entry.map_err(io)?;
+            let name = entry.file_name().to_string_lossy().into_owned();
+            let unpublished = name
+                .strip_suffix(".staging")
+                .is_some_and(is_generation_name);
+            if !unpublished && !is_generation_name(&name) {
+                return Err(StoreError::Corrupt(
+                    "invalid generation directory; rebuild required".into(),
+                ));
+            }
+            entries.push((name, entry.path()));
         }
+        if let Some(name) = &current {
+            match load_generation(&dirs.join(name), name, &state.owner)? {
+                Some(g) => {
+                    state.current = Some(g.manifest.key.clone());
+                    state.published.insert(g.manifest.key.clone(), Arc::new(g));
+                }
+                // Older storage format: rebuild, never migrate.
+                None => {
+                    fs::remove_file(state.root.join("CURRENT")).map_err(io)?;
+                    sync(&state.root)?;
+                }
+            }
+        }
+        for (name, path) in entries {
+            if state.current.is_none() || current.as_deref() != Some(name.as_str()) {
+                fs::remove_dir_all(path).map_err(io)?;
+            }
+        }
+        sync(&dirs)?;
 
         let (sender, receiver) = mpsc::sync_channel::<Job>(16);
 
@@ -378,6 +411,22 @@ impl LadybugStore {
             fs::write(g.path.join("DERIVATION"), bytes).map_err(io)
         })
     }
+    /// Atomically points CURRENT at a generation this store already sealed,
+    /// e.g. when a rebuild reproduces an earlier snapshot.
+    pub fn activate(&mut self, key: &SnapshotKey) -> R<()> {
+        let key = key.clone();
+        self.call(move |s| {
+            if !s.published.contains_key(&key) {
+                return Err(StoreError::MissingSnapshot);
+            }
+            s.poisoned = true;
+            point_current(s, &key)?;
+            s.current = Some(key);
+            s.poisoned = false;
+            Ok(())
+        })
+    }
+
     pub fn retain_source(&mut self, capture: &SourceCapture) -> R<()> {
         let capture = capture.clone();
 
@@ -1048,13 +1097,18 @@ fn publish_state(s: &mut State, key: SnapshotKey) -> R<()> {
         path: sealed,
         _owner: s.owner.clone(),
     });
-    let tmp = s.root.join("CURRENT.tmp");
-    fs::write(&tmp, format!("{}\n", generation(&key))).map_err(io)?;
-    sync(&tmp)?;
-    fs::rename(tmp, s.root.join("CURRENT")).map_err(io)?;
-    sync(&s.root)?;
+    point_current(s, &key)?;
     s.published.insert(key.clone(), published);
     s.current = Some(key);
     s.poisoned = false;
     Ok(())
+}
+
+/// Publication: the only step readers observe (ADR-0002 § 6.5).
+fn point_current(s: &State, key: &SnapshotKey) -> R<()> {
+    let tmp = s.root.join("CURRENT.tmp");
+    fs::write(&tmp, format!("{}\n", generation(key))).map_err(io)?;
+    sync(&tmp)?;
+    fs::rename(tmp, s.root.join("CURRENT")).map_err(io)?;
+    sync(&s.root)
 }

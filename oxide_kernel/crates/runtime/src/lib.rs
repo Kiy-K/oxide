@@ -8,6 +8,7 @@
 pub mod capture;
 pub mod derivation;
 pub mod embedding;
+pub mod python;
 pub mod repository;
 
 use std::io::{self, Read, Write};

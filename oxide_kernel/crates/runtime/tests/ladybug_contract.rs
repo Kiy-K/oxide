@@ -248,28 +248,108 @@ fn serialized_writer_requests_preserve_every_batch() {
     );
 }
 
+fn generation_dirs(root: &std::path::Path) -> Vec<std::path::PathBuf> {
+    std::fs::read_dir(root.join("generations"))
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .collect()
+}
+/// Rewrites the storage format recorded by the CURRENT generation.
+fn set_storage_format(root: &std::path::Path, format: u64) {
+    let current = std::fs::read_to_string(root.join("CURRENT")).unwrap();
+    let path = root
+        .join("generations")
+        .join(current.trim())
+        .join("MANIFEST");
+    let mut manifest: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+    manifest[0] = serde_json::json!(format);
+    std::fs::write(path, manifest.to_string()).unwrap();
+}
 #[test]
-fn storage_format_mismatch_requires_rebuild() {
-    let root = temp("format");
+fn older_storage_format_is_discarded_for_rebuild() {
+    let root = temp("old-format");
     let key = common::key("format", "d");
     {
         let mut store = LadybugStore::new(&root).unwrap();
         common::publish(&mut store, &key, common::batch());
     }
-    let dir = std::fs::read_dir(root.join("generations"))
-        .unwrap()
-        .next()
-        .unwrap()
-        .unwrap()
-        .path();
-    let path = dir.join("MANIFEST");
-    let mut manifest: serde_json::Value =
-        serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
-    manifest[0] = serde_json::json!(46);
-    std::fs::write(path, manifest.to_string()).unwrap();
-    assert!(
-        matches!(LadybugStore::new(&root),Err(StoreError::Corrupt(reason)) if reason.contains("rebuild"))
-    );
+    set_storage_format(&root, oxide_runtime::storage::STORAGE_FORMAT - 1);
+    // Never migrated: the old-format generation is dropped and the key is
+    // rebuilt from scratch.
+    let mut store = LadybugStore::new(&root).unwrap();
+    assert_eq!(store.current(&key.repo), Err(StoreError::MissingSnapshot));
+    assert!(generation_dirs(&root).is_empty());
+    common::publish(&mut store, &key, common::batch());
+    assert_eq!(store.current(&key.repo).unwrap(), key);
+}
+#[test]
+fn newer_storage_format_is_refused_and_kept() {
+    let root = temp("new-format");
+    let key = common::key("format", "d");
+    {
+        let mut store = LadybugStore::new(&root).unwrap();
+        common::publish(&mut store, &key, common::batch());
+        // A superseded generation must survive the refusal too.
+        common::publish(&mut store, &common::key("newer", "d"), common::batch());
+    }
+    let before = generation_dirs(&root).len();
+    let current = std::fs::read(root.join("CURRENT")).unwrap();
+    set_storage_format(&root, oxide_runtime::storage::STORAGE_FORMAT + 1);
+    assert!(matches!(
+        LadybugStore::new(&root),
+        Err(StoreError::Unsupported(reason)) if reason.contains("newer")
+    ));
+    assert_eq!(generation_dirs(&root).len(), before);
+    assert_eq!(std::fs::read(root.join("CURRENT")).unwrap(), current);
+}
+#[test]
+fn first_seal_interrupted_before_publication_is_discarded() {
+    // State of a first build killed after its seal/rename and before CURRENT
+    // was written: a valid sealed generation and no pointer.
+    let root = temp("first-seal");
+    let key = common::key("first", "d");
+    {
+        let mut store = LadybugStore::new(&root).unwrap();
+        common::publish(&mut store, &key, common::batch());
+    }
+    std::fs::remove_file(root.join("CURRENT")).unwrap();
+    let mut store = LadybugStore::new(&root).unwrap();
+    assert_eq!(store.current(&key.repo), Err(StoreError::MissingSnapshot));
+    assert_eq!(store.open(&key).err(), Some(StoreError::MissingSnapshot));
+    assert!(generation_dirs(&root).is_empty());
+    common::publish(&mut store, &key, common::batch());
+    assert_eq!(store.current(&key.repo).unwrap(), key);
+}
+#[test]
+fn later_seal_interrupted_before_publication_keeps_previous_current() {
+    let root = temp("later-seal");
+    let good = common::key("good", "d");
+    let sealed = common::key("sealed", "d");
+    {
+        let mut store = LadybugStore::new(&root).unwrap();
+        common::publish(&mut store, &good, common::batch());
+    }
+    let current = std::fs::read(root.join("CURRENT")).unwrap();
+    {
+        let mut store = LadybugStore::new(&root).unwrap();
+        common::publish(&mut store, &sealed, common::batch());
+    }
+    // Rewind the pointer: `sealed` is now a seal that never became current.
+    std::fs::write(root.join("CURRENT"), current).unwrap();
+    let store = LadybugStore::new(&root).unwrap();
+    assert_eq!(store.current(&good.repo).unwrap(), good);
+    assert_eq!(store.open(&sealed).err(), Some(StoreError::MissingSnapshot));
+    assert_eq!(generation_dirs(&root).len(), 1);
+    drop(store);
+    // A pointer to a missing generation still fails closed.
+    for dir in generation_dirs(&root) {
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+    assert!(matches!(
+        LadybugStore::new(&root),
+        Err(StoreError::Corrupt(_))
+    ));
 }
 #[test]
 fn concurrent_read_views_remain_immutable_during_publication() {
