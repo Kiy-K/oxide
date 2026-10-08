@@ -136,16 +136,14 @@ pub fn derivations_are_never_mixed(mut store: impl KnowledgeStore) {
         Some(StoreError::MissingSnapshot)
     );
 
+    let pinned = store.open(&d1).unwrap();
     let d2 = key("s1", "d2");
     let mut b = batch();
     b.entities.iter_mut().find(|e| e.id == g()).unwrap().name = "g-v2".into();
     publish(&mut store, &d2, b);
-    let name = |k| {
-        let found = store.open(k).unwrap().entities(&[g()]).unwrap();
-        found[0].clone().unwrap().name
-    };
-    assert_eq!(name(&d1), "g");
-    assert_eq!(name(&d2), "g-v2");
+    let name = |view: &dyn ReadView| view.entities(&[g()]).unwrap()[0].clone().unwrap().name;
+    assert_eq!(name(&pinned), "g");
+    assert_eq!(name(&store.open(&d2).unwrap()), "g-v2");
     assert_eq!(store.current(&d1.repo), Ok(d2));
 }
 
@@ -269,6 +267,8 @@ pub fn published_generations_are_immutable(mut store: impl KnowledgeStore) {
 pub fn publication_is_independent_of_write_order(mut store: impl KnowledgeStore) {
     let forward = key("forward", "d1");
     publish(&mut store, &forward, batch());
+    // Pinned, so the superseded generation stays readable for the dump.
+    let _pinned = store.open(&forward).unwrap();
 
     // Same facts, reversed and split across two batches.
     let reversed = key("reversed", "d1");
@@ -303,4 +303,88 @@ pub fn publication_is_independent_of_write_order(mut store: impl KnowledgeStore)
         (entities, edges)
     };
     assert_eq!(dump(&forward), dump(&reversed));
+}
+
+pub fn superseded_generations_are_freed_when_unpinned(mut store: impl KnowledgeStore) {
+    let first = key("s1", "d1");
+    publish(&mut store, &first, batch());
+    let pinned = store.open(&first).unwrap();
+    let second = key("s2", "d1");
+    publish(&mut store, &second, batch());
+    // Superseded but pinned: readable, and can be opened again.
+    assert!(store.open(&first).is_ok());
+    assert!(pinned.entities(&[g()]).unwrap()[0].is_some());
+    drop(pinned);
+    let third = key("s3", "d1");
+    publish(&mut store, &third, batch());
+    // Superseded and unpinned: collected. The current one never is.
+    assert_eq!(store.open(&first).err(), Some(StoreError::MissingSnapshot));
+    assert_eq!(store.open(&second).err(), Some(StoreError::MissingSnapshot));
+    assert!(store.open(&third).is_ok());
+    assert_eq!(store.current(&third.repo), Ok(third));
+}
+
+pub fn lexical_search_is_scoped_ordered_and_bounded(mut store: impl KnowledgeStore) {
+    use oxide_kernel::lexical::{LexicalRequest, terms};
+    let old = key("s1", "d1");
+    publish(&mut store, &old, batch());
+    let pinned = store.open(&old).unwrap();
+    let new = key("s2", "d1");
+    let mut b = batch();
+    b.entities.iter_mut().find(|e| e.id == g()).unwrap().name = "gamma".into();
+    publish(&mut store, &new, b);
+    let search = |view: &dyn ReadView, text: &str, limit| {
+        view.lexical(&LexicalRequest {
+            terms: terms(text),
+            limit,
+        })
+        .unwrap()
+    };
+    let fresh = store.open(&new).unwrap();
+
+    // An exact identifier ranks first; order is score, then identity.
+    let hits = search(&fresh, "test_h", 10);
+    assert_eq!(hits.hits[0].entity, test_h());
+    assert!(!hits.scorer.is_empty());
+    for pair in hits.hits.windows(2) {
+        let (a, b) = (&pair[0], &pair[1]);
+        assert!(a.score > b.score || (a.score == b.score && a.entity < b.entity));
+    }
+    assert!(
+        hits.hits
+            .iter()
+            .all(|h| h.score.is_finite() && h.score > 0.0)
+    );
+    let one = search(&fresh, "test_h", 1);
+    assert_eq!((one.hits.len(), one.truncated), (1, hits.hits.len() > 1));
+    assert_eq!(one.hits[0], hits.hits[0]);
+
+    // Scoped to the pinned generation: the rename is visible only in `new`.
+    assert!(
+        search(&fresh, "gamma", 10)
+            .hits
+            .iter()
+            .any(|h| h.entity == g())
+    );
+    assert!(search(&pinned, "gamma", 10).hits.is_empty());
+    assert!(search(&fresh, "zzzunmatched", 10).hits.is_empty());
+    // One-character terms are not lexical terms, on any store.
+    assert!(terms("f g h").is_empty());
+    assert!(search(&fresh, "f g h", 10).hits.is_empty());
+    assert!(search(&fresh, "", 10).hits.is_empty());
+    assert!(matches!(
+        fresh.lexical(&LexicalRequest {
+            terms: terms("g"),
+            limit: MAX_REQUEST_ITEMS + 1
+        }),
+        Err(StoreError::LimitExceeded { .. })
+    ));
+
+    // Exact names in domain order, bounded.
+    let named = fresh.named("f", 10).unwrap();
+    assert_eq!((named.entities, named.truncated), (vec![f0(), f1()], false));
+    let named = fresh.named("f", 1).unwrap();
+    assert_eq!((named.entities, named.truncated), (vec![f0()], true));
+    assert!(fresh.named("absent", 10).unwrap().entities.is_empty());
+    assert_eq!(pinned.named("g", 10).unwrap().entities, [g()]);
 }

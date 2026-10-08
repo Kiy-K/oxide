@@ -8,10 +8,11 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
-use std::sync::Arc;
+use std::sync::{Arc, Weak};
 
 use crate::id::{DerivationId, EntityId, RepoId, SnapshotKey};
 use crate::knowledge::{Batch, Entity, Relation, RelationKind, RepositorySnapshot, validate};
+use crate::lexical::{self, LexicalHit, LexicalRequest, LexicalResult};
 
 /// Upper bound on items in one read request (IDs looked up, edges returned).
 pub const MAX_REQUEST_ITEMS: usize = 4096;
@@ -82,9 +83,19 @@ pub struct Adjacency {
     pub truncated: bool,
 }
 
+/// Entities with one exact name, in domain order, at most `limit`;
+/// `truncated` when more exist.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Named {
+    pub entities: Vec<EntityId>,
+    pub truncated: bool,
+}
+
 /// Write side: stage a generation, fill it, then publish it atomically.
 /// Readers never see a staged generation, and a failed publication leaves it
-/// staged (and invisible) until discarded.
+/// staged (and invisible) until discarded. A superseded generation stays
+/// readable while a view pins it; once unpinned it is freed, and `open`
+/// reports it missing.
 pub trait KnowledgeStore {
     type View: ReadView;
 
@@ -107,6 +118,21 @@ pub trait ReadView {
     /// One result per requested ID, in request order; `None` is missing.
     fn entities(&self, ids: &[EntityId]) -> Result<Vec<Option<Entity>>, StoreError>;
     fn adjacency(&self, request: &AdjacencyRequest) -> Result<Adjacency, StoreError>;
+    /// Lexical entry-point search ([`lexical`]). `Unsupported` when this
+    /// view has no lexical capability; the caller reports the channel as
+    /// unavailable rather than empty.
+    fn lexical(&self, request: &LexicalRequest) -> Result<LexicalResult, StoreError>;
+    /// Exact-name lookup, for symbol hints.
+    fn named(&self, name: &str, limit: usize) -> Result<Named, StoreError>;
+}
+
+fn check_limit(limit: usize) -> Result<(), StoreError> {
+    if limit > MAX_REQUEST_ITEMS {
+        return Err(StoreError::LimitExceeded {
+            limit: MAX_REQUEST_ITEMS,
+        });
+    }
+    Ok(())
 }
 
 #[derive(Debug)]
@@ -121,8 +147,15 @@ struct Generation {
 #[derive(Debug, Default)]
 pub struct MemoryStore {
     staged: BTreeMap<SnapshotKey, Generation>,
-    published: BTreeMap<SnapshotKey, Arc<Generation>>,
-    current: BTreeMap<RepoId, SnapshotKey>,
+    /// Published generations; only `current` holds them strongly.
+    published: BTreeMap<SnapshotKey, Weak<Generation>>,
+    current: BTreeMap<RepoId, Arc<Generation>>,
+}
+
+impl MemoryStore {
+    fn live(&self, key: &SnapshotKey) -> Option<Arc<Generation>> {
+        self.published.get(key).and_then(Weak::upgrade)
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -132,14 +165,16 @@ impl KnowledgeStore for MemoryStore {
     type View = MemoryView;
 
     fn open(&self, key: &SnapshotKey) -> Result<MemoryView, StoreError> {
-        if let Some(generation) = self.published.get(key) {
-            return Ok(MemoryView(Arc::clone(generation)));
+        if let Some(generation) = self.live(key) {
+            return Ok(MemoryView(generation));
         }
         let available: Vec<DerivationId> = self
             .published
-            .keys()
-            .filter(|k| k.repo == key.repo && k.snapshot == key.snapshot)
-            .map(|k| k.derivation.clone())
+            .iter()
+            .filter(|(k, g)| {
+                k.repo == key.repo && k.snapshot == key.snapshot && g.strong_count() > 0
+            })
+            .map(|(k, _)| k.derivation.clone())
             .collect();
         if available.is_empty() {
             Err(StoreError::MissingSnapshot)
@@ -151,12 +186,13 @@ impl KnowledgeStore for MemoryStore {
     fn current(&self, repo: &RepoId) -> Result<SnapshotKey, StoreError> {
         self.current
             .get(repo)
-            .cloned()
+            .map(|g| g.snapshot.key.clone())
             .ok_or(StoreError::MissingSnapshot)
     }
 
     fn begin(&mut self, manifest: RepositorySnapshot) -> Result<(), StoreError> {
         let key = manifest.key.clone();
+        self.published.retain(|_, g| g.strong_count() > 0);
         if self.staged.contains_key(&key) || self.published.contains_key(&key) {
             return Err(StoreError::Conflict);
         }
@@ -198,9 +234,11 @@ impl KnowledgeStore for MemoryStore {
             &generation.relations,
         )
         .map_err(StoreError::InvalidBatch)?;
-        let generation = self.staged.remove(key).expect("checked above");
-        self.published.insert(key.clone(), Arc::new(generation));
-        self.current.insert(key.repo.clone(), key.clone());
+        let generation = Arc::new(self.staged.remove(key).expect("checked above"));
+        self.published
+            .insert(key.clone(), Arc::downgrade(&generation));
+        self.current.insert(key.repo.clone(), generation);
+        self.published.retain(|_, g| g.strong_count() > 0);
         Ok(())
     }
 
@@ -254,6 +292,43 @@ impl ReadView for MemoryView {
         let edges: Vec<Relation> = matching.by_ref().take(request.limit).cloned().collect();
         Ok(Adjacency {
             edges,
+            truncated: matching.next().is_some(),
+        })
+    }
+
+    /// Fake scorer: how many distinct query terms the entity's document
+    /// contains. Real stores use their own named scorer.
+    fn lexical(&self, request: &LexicalRequest) -> Result<LexicalResult, StoreError> {
+        check_limit(request.limit)?;
+        let wanted: BTreeSet<&str> = request.terms.iter().map(String::as_str).collect();
+        let hits = self
+            .0
+            .entities
+            .values()
+            .filter_map(|e| {
+                let document = lexical::document(e);
+                let have: BTreeSet<&str> = document.split(' ').collect();
+                let score = wanted.intersection(&have).count();
+                (score > 0).then(|| LexicalHit {
+                    entity: e.id.clone(),
+                    score: score as f64,
+                })
+            })
+            .collect();
+        lexical::rank("memory-term-overlap-v1".into(), hits, request.limit)
+            .map_err(StoreError::Corrupt)
+    }
+
+    fn named(&self, name: &str, limit: usize) -> Result<Named, StoreError> {
+        check_limit(limit)?;
+        let mut matching = self.0.entities.values().filter(|e| e.name == name);
+        let entities = matching
+            .by_ref()
+            .take(limit)
+            .map(|e| e.id.clone())
+            .collect();
+        Ok(Named {
+            entities,
             truncated: matching.next().is_some(),
         })
     }

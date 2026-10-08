@@ -127,6 +127,9 @@ plus retained source), with a ~5 MiB fixed database cost.
 
 ## Open (not Phase 2B)
 
+In-process GC, write throughput, FTS and the adapter encoding check were
+closed in Phase 3 ([phase-3.md](phase-3.md)).
+
 - In-process GC of unpinned superseded generations and source-blob
   deduplication across generations.
 - Write/publish throughput (above) before mid-size repositories.

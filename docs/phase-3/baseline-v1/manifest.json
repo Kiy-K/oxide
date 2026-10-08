@@ -1,0 +1,58 @@
+{
+  "baseline": "phase3-baseline-v1",
+  "claims": "entry-point retrieval and TreeRouter routing only; no context quality, no agent success; a fixture regression floor, not generalization",
+  "decision_provider": "none (heuristic equivalence asserted per run)",
+  "derivation_components": {
+    "id-namespace": "oxide-id-v1",
+    "lbug": "0.21.2",
+    "lexical": "ladybug-fts-0.21.0;stemmer=porter;stopwords=default;oxide-terms-v1",
+    "python": "oxide-python-v1",
+    "python-parser": "tree-sitter=0.27.0 tree-sitter-python=0.25.0",
+    "storage-format": "47",
+    "storage-schema": "oxide-ladybug-schema-v2",
+    "tree-projection": "1"
+  },
+  "fixture": "fixtures/py_repo",
+  "gold_mapping": "file#A.b -> SymbolId(file, [(A,0),(b,0)]); missing/ambiguous excluded and listed per task",
+  "gold_sources": [
+    "fixtures/benchmark.json (py)",
+    "fixtures/structural_benchmark.json (py)"
+  ],
+  "lexical_scorer": "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive",
+  "metric_definitions": {
+    "coverage_at_routed_size": "diagnostic: gold in plain lexical top-N, N = routed universe size",
+    "deferral_loss": "gold reached but not explored because a bound fired",
+    "entity_coverage": "mapped gold among routed candidates",
+    "entry_coverage": "mapped gold anywhere in the CandidateSet",
+    "mrr": "1 / CandidateSet position of the first gold, 0 if none",
+    "pruning_loss": "gold reached but pruned by a branch judgment",
+    "recall@k": "mapped gold in the first k CandidateSet entries / mapped gold, macro over tasks",
+    "region_coverage": "the file region of mapped gold among routed candidates",
+    "unreached": "gold never reached by routing"
+  },
+  "retrieval_configs": [
+    {
+      "config": "RetrievalConfig { lexical: true, structural: false, lexical_limit: 20, symbol_limit: 8 }",
+      "label": "lexical-only"
+    },
+    {
+      "config": "RetrievalConfig { lexical: false, structural: true, lexical_limit: 20, symbol_limit: 8 }",
+      "label": "structural-only"
+    },
+    {
+      "config": "RetrievalConfig { lexical: true, structural: true, lexical_limit: 20, symbol_limit: 8 }",
+      "label": "lexical+structural"
+    }
+  ],
+  "retrieval_version": "oxide-retrieval-v1",
+  "route_limits": "RouteLimits { max_regions: 64, max_depth: 2, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+  "route_policy": "RoutePolicy { follow: [Calls, References, Imports, Implements, TestedBy, Contains(Logical)], ascend: true, prune_below: 0.25 }",
+  "router_version": "oxide-router-bfs-v1",
+  "semantic": "unconfigured (no vector channel in Phase 3)",
+  "snapshot": {
+    "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+    "repo": "phase3-eval",
+    "snapshot": "sha256:eccfbe9467b3b4b27f167be7b40cfc03d5a06baff395f5fc0f7d75707df7952a"
+  },
+  "tasks": 7
+}

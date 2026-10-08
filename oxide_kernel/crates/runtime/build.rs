@@ -47,6 +47,13 @@ fn main() {
             "Native artifact integrity failure; run mise run native:prepare"
         );
     }
-    // ADR-0002: host exports needed by explicitly loaded extensions in later phases.
+    // The pinned FTS extension (native:prepare). Its digest is checked by the
+    // runtime before every load; a missing file is an unavailable lexical
+    // accelerator, not a build failure.
+    let fts = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+        .join("../../native/.cache/extensions-0.21.0/libfts.lbug_extension");
+    println!("cargo:rerun-if-changed={}", fts.display());
+    println!("cargo:rustc-env=OXIDE_FTS_EXTENSION={}", fts.display());
+    // ADR-0002 § 3: extensions resolve lbug symbols from the host binary.
     println!("cargo:rustc-link-arg=-rdynamic");
 }

@@ -24,7 +24,9 @@ cases!(
     adjacency_is_typed_bounded_and_stable,
     views_stay_pinned_across_publication,
     published_generations_are_immutable,
-    publication_is_independent_of_write_order
+    publication_is_independent_of_write_order,
+    superseded_generations_are_freed_when_unpinned,
+    lexical_search_is_scoped_ordered_and_bounded
 );
 
 use oxide_kernel::{
@@ -254,17 +256,93 @@ fn generation_dirs(root: &std::path::Path) -> Vec<std::path::PathBuf> {
         .map(|e| e.unwrap().path())
         .collect()
 }
-/// Rewrites the storage format recorded by the CURRENT generation.
-fn set_storage_format(root: &std::path::Path, format: u64) {
+/// Rewrites the MANIFEST of the CURRENT generation.
+fn edit_manifest(root: &std::path::Path, edit: impl FnOnce(&mut Vec<serde_json::Value>)) {
     let current = std::fs::read_to_string(root.join("CURRENT")).unwrap();
     let path = root
         .join("generations")
         .join(current.trim())
         .join("MANIFEST");
-    let mut manifest: serde_json::Value =
+    let mut manifest: Vec<serde_json::Value> =
         serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
-    manifest[0] = serde_json::json!(format);
-    std::fs::write(path, manifest.to_string()).unwrap();
+    edit(&mut manifest);
+    std::fs::write(path, serde_json::Value::from(manifest).to_string()).unwrap();
+}
+/// Rewrites the storage format recorded by the CURRENT generation.
+fn set_storage_format(root: &std::path::Path, format: u64) {
+    edit_manifest(root, |m| m[0] = format.into());
+}
+/// Publishes one generation, rewrites its MANIFEST, then reopens the store.
+fn reopen_edited(
+    name: &str,
+    edit: impl FnOnce(&mut Vec<serde_json::Value>),
+) -> (
+    std::path::PathBuf,
+    SnapshotKey,
+    Result<LadybugStore, StoreError>,
+) {
+    let root = temp(name);
+    let key = common::key("encoding", "d");
+    {
+        let mut store = LadybugStore::new(&root).unwrap();
+        common::publish(&mut store, &key, common::batch());
+    }
+    edit_manifest(&root, edit);
+    let reopened = LadybugStore::new(&root);
+    (root, key, reopened)
+}
+#[test]
+fn older_adapter_encoding_is_discarded_for_rebuild() {
+    use oxide_runtime::storage::SCHEMA_VERSION;
+    let older = |m: &mut Vec<serde_json::Value>| m[1] = (SCHEMA_VERSION - 1).into();
+    // Schema 1 MANIFESTs had no encoding field at all.
+    let legacy = |m: &mut Vec<serde_json::Value>| drop(m.remove(1));
+    for (name, edit) in [
+        ("old-encoding", &older as &dyn Fn(&mut Vec<_>)),
+        ("v1-manifest", &legacy),
+    ] {
+        let (root, key, store) = reopen_edited(name, edit);
+        let mut store = store.unwrap();
+        // Never read under the new encoding: dropped, then rebuilt.
+        assert_eq!(store.current(&key.repo), Err(StoreError::MissingSnapshot));
+        assert!(generation_dirs(&root).is_empty());
+        common::publish(&mut store, &key, common::batch());
+        assert_eq!(store.current(&key.repo).unwrap(), key);
+    }
+}
+#[test]
+fn newer_adapter_encoding_is_refused_and_kept() {
+    let newer = |m: &mut Vec<serde_json::Value>| {
+        m[1] = (oxide_runtime::storage::SCHEMA_VERSION + 1).into();
+    };
+    let (root, _, store) = reopen_edited("new-encoding", newer);
+    assert!(matches!(store, Err(StoreError::Unsupported(r)) if r.contains("adapter encoding")));
+    assert_eq!(generation_dirs(&root).len(), 1);
+    let (_, _, store) = reopen_edited("bad-encoding", |m| m[1] = "two".into());
+    assert!(matches!(store, Err(StoreError::Corrupt(_))));
+}
+#[test]
+fn superseded_generations_are_closed_and_removed_once_unpinned() {
+    let root = temp("collect");
+    let mut store = LadybugStore::new(&root).unwrap();
+    // A long-lived runtime rebuilding repeatedly keeps one open generation,
+    // not one buffer pool per rebuild.
+    for i in 0..5 {
+        common::publish(
+            &mut store,
+            &common::key(&format!("g{i}"), "d"),
+            common::batch(),
+        );
+        assert_eq!(generation_dirs(&root).len(), 1);
+    }
+    let pinned = store.open(&common::key("g4", "d")).unwrap();
+    common::publish(&mut store, &common::key("g5", "d"), common::batch());
+    assert_eq!(generation_dirs(&root).len(), 2);
+    assert!(pinned.entities(&[common::g()]).unwrap()[0].is_some());
+    drop(pinned);
+    // Collected by the next store call, whatever it is.
+    store.current(&common::key("g5", "d").repo).unwrap();
+    assert_eq!(generation_dirs(&root).len(), 1);
 }
 #[test]
 fn older_storage_format_is_discarded_for_rebuild() {
@@ -290,7 +368,9 @@ fn newer_storage_format_is_refused_and_kept() {
     {
         let mut store = LadybugStore::new(&root).unwrap();
         common::publish(&mut store, &key, common::batch());
-        // A superseded generation must survive the refusal too.
+        // A superseded generation (kept by a pin here) must survive the
+        // refusal too.
+        let _pin = store.open(&key).unwrap();
         common::publish(&mut store, &common::key("newer", "d"), common::batch());
     }
     let before = generation_dirs(&root).len();
@@ -333,6 +413,9 @@ fn later_seal_interrupted_before_publication_keeps_previous_current() {
     let current = std::fs::read(root.join("CURRENT")).unwrap();
     {
         let mut store = LadybugStore::new(&root).unwrap();
+        // Pinned, so `good` is not collected when `sealed` supersedes it,
+        // as in a crash between seal and CURRENT.
+        let _pin = store.open(&good).unwrap();
         common::publish(&mut store, &sealed, common::batch());
     }
     // Rewind the pointer: `sealed` is now a seal that never became current.
@@ -486,4 +569,39 @@ fn failure_inside_native_transaction_rolls_back_earlier_entities() {
     store.write(&key, common::batch()).unwrap();
     store.publish(&key).unwrap();
     assert!(store.open(&key).unwrap().entities(&[common::g()]).unwrap()[0].is_some());
+}
+
+#[test]
+fn a_newer_encoding_is_refused_even_beside_an_older_format() {
+    use oxide_runtime::storage::{SCHEMA_VERSION, STORAGE_FORMAT};
+    let (root, _, store) = reopen_edited("mixed-versions", |m| {
+        m[0] = (STORAGE_FORMAT - 1).into();
+        m[1] = (SCHEMA_VERSION + 1).into();
+    });
+    assert!(matches!(store, Err(StoreError::Unsupported(_))));
+    assert_eq!(generation_dirs(&root).len(), 1);
+}
+#[test]
+fn a_leftover_sealed_directory_does_not_block_republication() {
+    let root = temp("leftover");
+    let mut store = LadybugStore::new(&root).unwrap();
+    let first = common::key("first", "d");
+    common::publish(&mut store, &first, common::batch());
+    let dir = generation_dirs(&root).pop().unwrap();
+    common::publish(&mut store, &common::key("second", "d"), common::batch());
+    assert!(!dir.exists());
+    // As if collecting it had failed: a stale copy of `first` on disk.
+    std::fs::create_dir_all(dir.join("db")).unwrap();
+    std::fs::write(dir.join("MANIFEST"), b"stale").unwrap();
+    common::publish(&mut store, &first, common::batch());
+    assert_eq!(store.current(&first.repo).unwrap(), first);
+    assert!(
+        store
+            .open(&first)
+            .unwrap()
+            .entities(&[common::g()])
+            .unwrap()[0]
+            .is_some()
+    );
+    assert_eq!(generation_dirs(&root).len(), 1);
 }

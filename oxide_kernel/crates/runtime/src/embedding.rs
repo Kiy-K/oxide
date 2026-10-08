@@ -1,8 +1,14 @@
 //! Embedding provider boundary (SPEC § Embedding providers). External runners
 //! (Ollama, llama.cpp) execute inference; runtime clients implement
-//! [`EmbeddingProvider`] against them in Phase 3. Phase 1 fixes identity,
-//! capability, batching and error contracts, and the rule that discovery is
-//! advisory: only the configured runner is ever probed or used.
+//! [`EmbeddingProvider`] against them. Phase 1 fixed identity, capability,
+//! batching and error contracts, and the rule that discovery is advisory:
+//! only the configured runner is ever probed or used. Phase 3 adds deadlines
+//! and the semantic channel state retrieval reports. No HTTP client to a
+//! real runner exists yet; semantic retrieval is optional and unavailable.
+
+use std::time::{Duration, Instant};
+
+use oxide_kernel::retrieve::ChannelState;
 
 /// Runner API family. Says how to talk to a runner, not which model to use.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -108,12 +114,13 @@ pub enum EmbedError {
     Malformed(String),
 }
 
-/// Runtime client for one runner endpoint.
+/// Runtime client for one runner endpoint. Every call gets the time left
+/// before its deadline and returns `Timeout` rather than wait past it.
 pub trait EmbeddingProvider {
     fn endpoint(&self) -> &Endpoint;
-    fn probe(&self) -> Result<Probe, EmbedError>;
+    fn probe(&self, timeout: Duration) -> Result<Probe, EmbedError>;
     /// One vector per text, in order; at most `Probe::max_batch` texts.
-    fn embed(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, EmbedError>;
+    fn embed(&self, texts: &[String], timeout: Duration) -> Result<Vec<Vec<f32>>, EmbedError>;
 }
 
 /// The persisted, explicitly chosen provider. Only explicit reconfiguration
@@ -149,11 +156,12 @@ pub enum SemanticStatus {
     },
 }
 
-/// Resolves semantic status. Probes the configured runner only; `discovered`
-/// endpoints are listed, never contacted or selected.
+/// Resolves semantic status. Probes the configured runner only, within
+/// `timeout`; `discovered` endpoints are listed, never contacted or selected.
 pub fn semantic_status(
     configured: Option<(&Configured, &dyn EmbeddingProvider)>,
     discovered: &[Endpoint],
+    timeout: Duration,
 ) -> SemanticStatus {
     let Some((config, client)) = configured else {
         return SemanticStatus::Unconfigured {
@@ -165,7 +173,7 @@ pub fn semantic_status(
         &config.endpoint,
         "client for another runner"
     );
-    let readiness = match client.probe() {
+    let readiness = match client.probe(timeout) {
         Err(error) => Readiness::Unavailable(error),
         Ok(probe) => match config.space.compare(&probe.space) {
             Compatibility::Same => Readiness::Ready,
@@ -184,17 +192,39 @@ pub fn semantic_status(
     }
 }
 
+/// The semantic channel as retrieval reports it. No vector index exists in
+/// this phase, so even a ready runner leaves the channel unavailable; it is
+/// never reported as an empty or zero-scored result.
+pub fn channel_state(status: &SemanticStatus) -> ChannelState {
+    let why = match status {
+        SemanticStatus::Unconfigured { .. } => return ChannelState::Unconfigured,
+        SemanticStatus::Configured { readiness, .. } => match readiness {
+            Readiness::Ready => "no vector index for this generation".to_owned(),
+            Readiness::Unavailable(error) => format!("configured runner: {error:?}"),
+            Readiness::Mismatch => "runner serves a different embedding space".to_owned(),
+            Readiness::Unverified => "runner embedding space is unverified".to_owned(),
+        },
+    };
+    ChannelState::Unavailable(why)
+}
+
 /// Embeds `texts` in batches of at most `max_batch`, validating every
-/// response against `space`.
+/// response against `space`. A batch starts only before `deadline` and gets
+/// the time left; partial results are discarded on any failure.
 pub fn embed_all(
     client: &dyn EmbeddingProvider,
     space: &EmbeddingSpace,
     max_batch: usize,
     texts: &[String],
+    deadline: Instant,
 ) -> Result<Vec<Vec<f32>>, EmbedError> {
     let mut out = Vec::with_capacity(texts.len());
     for chunk in texts.chunks(max_batch.max(1)) {
-        let vectors = client.embed(chunk)?;
+        let left = deadline.saturating_duration_since(Instant::now());
+        if left.is_zero() {
+            return Err(EmbedError::Timeout);
+        }
+        let vectors = client.embed(chunk, left)?;
         if vectors.len() != chunk.len() {
             return Err(EmbedError::Malformed(format!(
                 "{} vectors for {} texts",
@@ -248,7 +278,7 @@ mod tests {
             &self.endpoint
         }
 
-        fn probe(&self) -> Result<Probe, EmbedError> {
+        fn probe(&self, _: Duration) -> Result<Probe, EmbedError> {
             match self.up {
                 true => Ok(Probe {
                     space: self.space.clone(),
@@ -258,11 +288,21 @@ mod tests {
             }
         }
 
-        fn embed(&self, texts: &[String]) -> Result<Vec<Vec<f32>>, EmbedError> {
-            self.probe()?;
+        fn embed(&self, texts: &[String], timeout: Duration) -> Result<Vec<Vec<f32>>, EmbedError> {
+            self.probe(timeout)?;
             assert!(texts.len() <= 2, "batch over max_batch");
+            assert!(
+                !timeout.is_zero() && timeout <= SECOND,
+                "time left is passed down"
+            );
             Ok((self.answer)(texts, self.space.dimension))
         }
+    }
+
+    const SECOND: Duration = Duration::from_secs(1);
+
+    fn soon() -> Instant {
+        Instant::now() + SECOND
     }
 
     fn unit(texts: &[String], dimension: u32) -> Vec<Vec<f32>> {
@@ -318,11 +358,15 @@ mod tests {
         let unconfigured = SemanticStatus::Unconfigured {
             offers: vec![other.clone()],
         };
-        assert_eq!(semantic_status(None, &discovered), unconfigured);
+        assert_eq!(semantic_status(None, &discovered, SECOND), unconfigured);
 
         let config = configured();
         let status = |client: &FakeRunner, found: &[Endpoint]| {
-            semantic_status(Some((&config, client as &dyn EmbeddingProvider)), found)
+            semantic_status(
+                Some((&config, client as &dyn EmbeddingProvider)),
+                found,
+                SECOND,
+            )
         };
         let configured = |readiness, alternatives| SemanticStatus::Configured {
             endpoint: config.endpoint.clone(),
@@ -353,10 +397,11 @@ mod tests {
     #[test]
     fn model_drift_and_unproven_identity_are_not_ready() {
         let config = configured();
-        let readiness = |client: &FakeRunner| match semantic_status(Some((&config, client)), &[]) {
-            SemanticStatus::Configured { readiness, .. } => readiness,
-            other => panic!("{other:?}"),
-        };
+        let readiness =
+            |client: &FakeRunner| match semantic_status(Some((&config, client)), &[], SECOND) {
+                SemanticStatus::Configured { readiness, .. } => readiness,
+                other => panic!("{other:?}"),
+            };
         let mut drifted = runner(true);
         drifted.space.model_digest = Some("sha256:bbb".into());
         assert_eq!(readiness(&drifted), Readiness::Mismatch);
@@ -386,7 +431,7 @@ mod tests {
     #[test]
     fn batches_respect_max_batch_and_validate_vectors() {
         let texts: Vec<String> = (0..5).map(|i| format!("t{i}")).collect();
-        let vectors = embed_all(&runner(true), &space(), 2, &texts).unwrap();
+        let vectors = embed_all(&runner(true), &space(), 2, &texts, soon()).unwrap();
         assert_eq!(vectors.len(), 5);
 
         let wrong_dimension = |t: &[String], d| unit(t, d + 1);
@@ -400,13 +445,37 @@ mod tests {
                 ..runner(true)
             };
             assert!(matches!(
-                embed_all(&client, &space(), 2, &texts),
+                embed_all(&client, &space(), 2, &texts, soon()),
                 Err(EmbedError::Malformed(_))
             ));
         }
         assert_eq!(
-            embed_all(&runner(false), &space(), 2, &texts),
+            embed_all(&runner(false), &space(), 2, &texts, soon()),
             Err(EmbedError::Unavailable)
         );
+    }
+
+    #[test]
+    fn passed_deadlines_time_out_without_calling_the_runner() {
+        let texts = vec!["t".to_owned()];
+        let past = Instant::now() - SECOND;
+        assert_eq!(
+            embed_all(&runner(true), &space(), 2, &texts, past),
+            Err(EmbedError::Timeout)
+        );
+    }
+
+    #[test]
+    fn semantic_status_maps_to_a_visible_channel_state() {
+        let config = configured();
+        let status = |client: &FakeRunner| semantic_status(Some((&config, client)), &[], SECOND);
+        let unconfigured = semantic_status(None, &[endpoint(Runner::LlamaCpp, 8080)], SECOND);
+        assert_eq!(channel_state(&unconfigured), ChannelState::Unconfigured);
+        for client in [runner(true), runner(false)] {
+            assert!(matches!(
+                channel_state(&status(&client)),
+                ChannelState::Unavailable(_)
+            ));
+        }
     }
 }

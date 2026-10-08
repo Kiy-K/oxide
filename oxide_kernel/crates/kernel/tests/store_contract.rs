@@ -21,6 +21,8 @@ contract_suite!(memory: oxide_kernel::store::MemoryStore::default();
     views_stay_pinned_across_publication,
     published_generations_are_immutable,
     publication_is_independent_of_write_order,
+    superseded_generations_are_freed_when_unpinned,
+    lexical_search_is_scoped_ordered_and_bounded,
 );
 
 use common::store_cases::*;

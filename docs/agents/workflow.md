@@ -82,11 +82,22 @@ Phase 3).
 Before the first build, run `mise run native:prepare` (also part of
 `mise run bootstrap`). This explicit task caches and SHA-256 verifies the
 approved LadybugDB v0.21.2 compat archive, then restores its library and
-headers into `oxide_kernel/native/.cache/liblbug-0.21.2`. CI restores this
-cache and runs the same preparation before `mise run verify`.
+headers into `oxide_kernel/native/.cache/liblbug-0.21.2`. It also fetches
+and verifies the pinned FTS extension (0.21.0) into
+`oxide_kernel/native/.cache/extensions-0.21.0`. CI restores this cache and
+runs the same preparation before `mise run verify`.
 
 Cargo uses controlled paths in `oxide_kernel/.cargo/config.toml`; normal
 builds do not fetch native artifacts. The runtime build checks the exact
 library/header digests. A modified cache fails verification; rerun the
-preparation task to restore it. No FTS/vector extension is loaded in Phase
-2B. Their implementation remains Phase 3 work.
+preparation task to restore it. The runtime re-verifies the FTS digest and
+loads it by path (`LOAD EXTENSION`, never `INSTALL`); without it lexical
+retrieval reports unavailable. No vector extension is loaded.
+
+The Phase 3 baseline (`docs/phase-3/baseline-v1/`) is checked by
+`cargo test` and never regenerated to make a failure pass. Its manifest pins
+every derivation component (lbug, parser, FTS extension, terms version,
+schema), so a dependency or version bump fails `mise run verify` by design,
+even when quality is unchanged. That change creates a new baseline directory
+(`baseline-v2/`), points `runtime/tests/phase3_eval.rs` at it, writes it with
+`OXIDE_FREEZE_PHASE3=1`, keeps the old directory, and records the comparison.

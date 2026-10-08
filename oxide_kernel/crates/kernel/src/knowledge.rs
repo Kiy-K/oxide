@@ -240,8 +240,8 @@ pub fn validate(
 
 /// The physical parent an entity's identity implies: repository for modules
 /// and files, the file for a top-level symbol, the enclosing declaration for a
-/// nested one.
-fn physical_parent(id: &EntityId) -> Option<EntityId> {
+/// nested one. Publication guarantees it is the stored parent.
+pub(crate) fn physical_parent(id: &EntityId) -> Option<EntityId> {
     match id {
         EntityId::Repository => None,
         EntityId::Module(_) | EntityId::File(_) => Some(EntityId::Repository),

@@ -223,7 +223,8 @@ impl RepositorySession {
 
     /// Full rebuild from a fresh capture, published atomically. A capture
     /// that matches the current generation publishes nothing; one matching
-    /// an earlier generation of this session is re-pointed, not rebuilt.
+    /// an earlier generation still open in this session is re-pointed, not
+    /// rebuilt.
     /// Any failure leaves the previous generation current.
     pub fn rebuild(&mut self, scope: &Scope) -> Result<BuildReport, BuildError> {
         let capture = capture::capture(&self.root, scope).map_err(BuildError::Capture)?;
@@ -240,14 +241,14 @@ impl RepositorySession {
             Ok(_) | Err(StoreError::MissingSnapshot) => {}
             Err(error) => return Err(error.into()),
         }
-        match self.store.begin(manifest) {
-            Ok(()) => {}
-            Err(StoreError::Conflict) => {
-                self.store.activate(&key)?;
-                return Ok(report(Outcome::Reactivated));
-            }
+        // A generation of this snapshot still open (a view pins it) is
+        // re-pointed in one step; a collected one is rebuilt.
+        match self.store.activate(&key) {
+            Ok(()) => return Ok(report(Outcome::Reactivated)),
+            Err(StoreError::MissingSnapshot) => {}
             Err(error) => return Err(error.into()),
         }
+        self.store.begin(manifest)?;
         let staged = self
             .store
             .retain_derivation(&key, &components)
@@ -269,7 +270,7 @@ pub enum Outcome {
     Published,
     /// The capture matched the current generation.
     Unchanged,
-    /// The capture matched an earlier generation still held by this store.
+    /// The capture matched an earlier generation still open in this store.
     Reactivated,
 }
 

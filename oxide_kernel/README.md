@@ -9,8 +9,9 @@ contracts and an in-memory store (§ Phase 1 domain contracts). Phase 2A adds
 source capture and the LadybugDB feasibility spike (§ Phase 2A). Phase 2B
 adds the production LadybugDB adapter, generation publication, captured-source
 retention, the external repository registry and one language slice (Python),
-with full rebuild and reopen (§ Phase 2B). No routing algorithm or real model
-provider has been added.
+with full rebuild and reopen (§ Phase 2B). Phase 3 adds lexical/structural
+entry-point retrieval, the TreeRouter baseline and the frozen evaluation
+baseline (§ Phase 3). No real model provider has been added.
 
 ## Layout and dependency map
 
@@ -111,7 +112,7 @@ Native preparation details are in `docs/agents/workflow.md`.
 | `Query`, `QueryContext`, `ContextBudget` | `kernel/src/query.rs` | (plain data) |
 | `KnowledgeStore` / `ReadView` port, `MemoryStore` | `kernel/src/store.rs` | `store_contract.rs`, generic over the store (`contract_suite!`) |
 | TreeIndex projection 1 and bounded region navigation | `kernel/src/tree.rs` | `kernel/tests/routing_boundary.rs` |
-| TreeRouter input/output/trace/limit types | `kernel/src/route.rs` | (types only; the algorithm is Phase 3) |
+| TreeRouter input/output/trace/limit types | `kernel/src/route.rs` | (Phase 3 adds the algorithm) |
 | DecisionProvider, capsule v1, heuristic, validation/fallback, shared allowance | `kernel/src/decision.rs` | `routing_boundary.rs` |
 | Embedding space identity, runner client, batching, semantic status | `runtime/src/embedding.rs` | unit tests there (fake runner) |
 
@@ -195,13 +196,25 @@ adapter links the pinned native library through explicit preparation.
 Conventions, retention, derivation components, measurements and limits:
 [docs/phase-2b.md](../docs/phase-2b.md). Linux x86_64 only.
 
+## Phase 3: retrieval, TreeRouter and evaluation
+
+| Contract / evidence | Where | Tests |
+| --- | --- | --- |
+| Code-aware lexical terms, lexical/named port operations | `kernel/src/lexical.rs`, `kernel/src/store.rs` | shared store cases |
+| Entry-point retrieval → `CandidateSet` | `kernel/src/retrieve.rs` | `kernel/tests/retrieval_routing.rs` |
+| TreeRouter baseline (bounded BFS, root fallback, judged pruning) | `kernel/src/route.rs` | `kernel/tests/retrieval_routing.rs` |
+| LadybugDB FTS, adapter encoding version, bulk load, generation collection | `runtime/src/storage/` | `runtime/tests/ladybug_contract.rs` |
+| Frozen retrieval/routing baseline | `runtime/tests/phase3_eval.rs`, `docs/phase-3/baseline-v1/` | reproduces byte for byte |
+
+Details, measurements and limits: [docs/phase-3.md](../docs/phase-3.md).
+
 ## Open questions
 
 | Question | Needed before |
 | --- | --- |
 | Long-lived runtime framing, multi-client ownership/discovery, supervision | real integrations; ADR-0003 |
 | One schema generating both contract type sets | when the contract grows past a few operations |
-| Store write/publish throughput, in-process GC, incremental indexing | before mid-size repositories; `docs/phase-2b.md` § Open |
+| Incremental indexing; per-query read cost in routing | before mid-size repositories; `docs/phase-3.md` § Open |
 | Everything in SPEC § Open questions (IDs, TreeIndex projection, LadybugDB pin, capsule schema, tokenizer, ...) | Phase 1+ as listed there |
 
 ## Evidence inventory (historical main `ac985b28`, the parent of this branch's docs)

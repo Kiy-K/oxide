@@ -11,14 +11,18 @@
 //! ([`tree`]), TreeRouter contracts ([`route`]) and the DecisionProvider seam
 //! ([`decision`]). Phase 2A adds the captured-source input ([`source`]);
 //! Phase 2B adds ingestion ([`ingest`]) and its one language slice ([`python`]).
+//! Phase 3 adds lexical terms ([`lexical`]), entry-point retrieval
+//! ([`retrieve`]) and the TreeRouter baseline in [`route`].
 #![forbid(unsafe_code)]
 
 pub mod decision;
 pub mod id;
 pub mod ingest;
 pub mod knowledge;
+pub mod lexical;
 pub mod python;
 pub mod query;
+pub mod retrieve;
 pub mod route;
 pub mod source;
 pub mod store;

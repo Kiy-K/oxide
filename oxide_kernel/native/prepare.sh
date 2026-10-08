@@ -24,3 +24,16 @@ echo "$sha  $archive" | sha256sum --check -
 dir="$base/liblbug-$version"
 mkdir -p "$dir"
 tar -xzf "$archive" -C "$dir"
+# FTS is a separate native extension (ADR-0002 § 3): never `INSTALL`ed at
+# runtime. Fetch the pinned file once, verify it here, and the runtime
+# re-verifies the digest before `LOAD EXTENSION` by path.
+ext_version=0.21.0
+fts_sha=742f2756c2f80bcd1886b6ee0446483038cff0ecf6cf47f698bc6fe855cbaef6
+fts="$base/extensions-$ext_version/libfts.lbug_extension"
+if [ ! -f "$fts" ]; then
+  mkdir -p "$(dirname "$fts")"
+  curl --fail --location --retry 3 --output "$fts.tmp" "https://extension.ladybugdb.com/v$ext_version/linux_amd64/fts/libfts.lbug_extension"
+  echo "$fts_sha  $fts.tmp" | sha256sum --check -
+  mv "$fts.tmp" "$fts"
+fi
+echo "$fts_sha  $fts" | sha256sum --check -

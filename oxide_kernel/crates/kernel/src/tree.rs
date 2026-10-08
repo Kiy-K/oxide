@@ -7,8 +7,8 @@
 //! share this navigation code; materializing them is a later decision.
 
 use crate::id::EntityId;
-use crate::knowledge::{Containment, Coverage, Entity, Relation, RelationKind};
-use crate::store::{AdjacencyRequest, Direction, ReadView, StoreError};
+use crate::knowledge::{Containment, Coverage, Entity, Relation, RelationKind, physical_parent};
+use crate::store::{AdjacencyRequest, Direction, MAX_REQUEST_ITEMS, ReadView, StoreError};
 
 /// Version of the projection rules that produced a region reference.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -86,38 +86,38 @@ pub fn region(
         .and_then(|f| view.snapshot().files.get(f))
         .map(|f| f.coverage.clone());
 
-    let adjacency = |direction, kinds: Vec<RelationKind>, limit| {
-        view.adjacency(&AdjacencyRequest {
-            entity: id.anchor.clone(),
-            direction,
-            kinds,
-            limit,
-        })
-    };
-    let parent = adjacency(Direction::Incoming, vec![HIERARCHY], 1)?
+    // The parent is the one the ID implies (a publication invariant), so
+    // one adjacency read covers children and cross-edges.
+    let parent = physical_parent(&id.anchor).map(RegionId::of);
+    let all = view.adjacency(&AdjacencyRequest {
+        entity: id.anchor.clone(),
+        direction: Direction::Both,
+        kinds: RelationKind::ALL.to_vec(),
+        limit: MAX_REQUEST_ITEMS,
+    })?;
+    let (hierarchy, cross): (Vec<Relation>, Vec<Relation>) = all
         .edges
-        .pop()
-        .map(|edge| RegionId::of(edge.from));
-    let children = adjacency(Direction::Outgoing, vec![HIERARCHY], limits.children)?;
-    let cross_kinds = RelationKind::ALL
         .into_iter()
-        .filter(|k| *k != HIERARCHY)
+        .partition(|edge| edge.kind == HIERARCHY);
+    let mut children: Vec<RegionId> = hierarchy
+        .into_iter()
+        .filter(|edge| edge.from == id.anchor)
+        .flat_map(|edge| edge.to.entities().to_vec())
+        .map(RegionId::of)
         .collect();
-    let cross = adjacency(Direction::Both, cross_kinds, limits.cross_edges)?;
+    let children_truncated = all.truncated || children.len() > limits.children;
+    children.truncate(limits.children);
+    let cross_edges_truncated = all.truncated || cross.len() > limits.cross_edges;
+    let cross_edges = cross.into_iter().take(limits.cross_edges).collect();
 
     Ok(Region {
         id: id.clone(),
         anchor,
         coverage,
         parent,
-        children: children
-            .edges
-            .into_iter()
-            .flat_map(|edge| edge.to.entities().to_vec())
-            .map(RegionId::of)
-            .collect(),
-        children_truncated: children.truncated,
-        cross_edges: cross.edges,
-        cross_edges_truncated: cross.truncated,
+        children,
+        children_truncated,
+        cross_edges,
+        cross_edges_truncated,
     })
 }

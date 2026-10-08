@@ -21,7 +21,8 @@ pub fn components() -> BTreeMap<String, String> {
             "tree-projection",
             oxide_kernel::tree::PROJECTION.0.to_string(),
         ),
-        ("storage-schema", storage::SCHEMA.to_owned()),
+        ("storage-schema", storage::schema()),
+        ("lexical", storage::lexical_component()),
         ("storage-format", storage::STORAGE_FORMAT.to_string()),
         ("lbug", lbug::VERSION.to_owned()),
     ]

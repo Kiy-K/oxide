@@ -7,7 +7,7 @@
 use crate::id::{EntityId, SnapshotKey};
 use crate::knowledge::{Coverage, Entity, Relation, SourceRef};
 use crate::query::Query;
-use crate::route::ChannelEvidence;
+use crate::retrieve::ChannelEvidence;
 use crate::tree::{Region, RegionId};
 
 pub const CAPSULE_VERSION: u32 = 1;
@@ -260,7 +260,7 @@ pub struct Decision {
 /// within `allowance`, validating every answer and falling back to the
 /// heuristic per subject.
 pub fn decide(
-    provider: Option<&mut dyn DecisionProvider>,
+    provider: Option<&mut (dyn DecisionProvider + '_)>,
     capsules: &[Capsule],
     allowance: &mut Allowance,
     policy: DecisionPolicy,
