@@ -12,18 +12,26 @@
 //! ([`decision`]). Phase 2A adds the captured-source input ([`source`]);
 //! Phase 2B adds ingestion ([`ingest`]) and its one language slice ([`python`]).
 //! Phase 3 adds lexical terms ([`lexical`]), entry-point retrieval
-//! ([`retrieve`]) and the TreeRouter baseline in [`route`].
+//! ([`retrieve`]) and the TreeRouter baseline in [`route`]. Phase 4 adds
+//! capsule v2 ([`capsule`], with [`digest`]), deterministic selection and
+//! expansion ([`select`]), the ContextPacker ([`pack`]) and the end-to-end
+//! pipeline with its CandidateGraph ([`context`]).
 #![forbid(unsafe_code)]
 
+pub mod capsule;
+pub mod context;
 pub mod decision;
+pub mod digest;
 pub mod id;
 pub mod ingest;
 pub mod knowledge;
 pub mod lexical;
+pub mod pack;
 pub mod python;
 pub mod query;
 pub mod retrieve;
 pub mod route;
+pub mod select;
 pub mod source;
 pub mod store;
 pub mod tree;

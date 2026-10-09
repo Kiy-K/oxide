@@ -11,7 +11,10 @@ adds the production LadybugDB adapter, generation publication, captured-source
 retention, the external repository registry and one language slice (Python),
 with full rebuild and reopen (§ Phase 2B). Phase 3 adds lexical/structural
 entry-point retrieval, the TreeRouter baseline and the frozen evaluation
-baseline (§ Phase 3). No real model provider has been added.
+baseline (§ Phase 3). Phase 4 adds capsule v2, deterministic selection and
+expansion, the ContextPacker and the frozen context-quality baseline, plus an
+optional, fixture-only JEV adapter (§ Phase 4). No live model provider has
+been added.
 
 ## Layout and dependency map
 
@@ -150,11 +153,12 @@ in `id.rs` and bumps derivations, nothing else.
   in the kernel from typed adjacency, so fake and real stores share the
   navigation code. Materialized regions and richer groupings stay open.
 - **Decisions.** Judgments correlate by subject, question and capsule
-  version (no capsule digest yet). Missing, duplicate, out-of-range or
+  version (Phase 4 adds the capsule digest). Missing, duplicate, out-of-range or
   non-finite values, wrong versions, abstentions, unsupported questions,
   provider errors, exhausted allowances and (when a floor is set) low or
   unreported confidence all fall back per subject to the heuristic, with a
-  reason. Phase 1's heuristic is a neutral constant. The questions
+  reason. Phase 1's heuristic was a neutral constant (Phase 4 replaces it
+  with `heuristic-evidence/1`). The questions
   (`Relevance`, `NeighborValue`, `BranchValue`) are the candidate, neighbor
   and branch capabilities a JEV adapter maps to; nothing JEV-specific is in
   the kernel.
@@ -165,7 +169,7 @@ in `id.rs` and bumps derivations, nothing else.
   alternatives (configured) and are never substituted.
 - **Deferred to their phases:** lexical/vector search operations and source
   hydration (Phase 2/3), the router algorithm (Phase 3), and SelectionPlan,
-  ContextBundle and packer types (Phase 4).
+  ContextBundle and packer types (Phase 4, now in place).
 
 ## Phase 2A: feasibility and source capture
 
@@ -207,6 +211,21 @@ Conventions, retention, derivation components, measurements and limits:
 | Frozen retrieval/routing baseline | `runtime/tests/phase3_eval.rs`, `docs/phase-3/baseline-v1/` | reproduces byte for byte |
 
 Details, measurements and limits: [docs/phase-3.md](../docs/phase-3.md).
+
+## Phase 4: capsules, selection, packing
+
+| Contract / evidence | Where | Tests |
+| --- | --- | --- |
+| CandidateCapsule v2, canonical rendering, digest (kernel SHA-256) | `kernel/src/capsule.rs`, `kernel/src/digest.rs` | `kernel/tests/routing_boundary.rs`, `runtime/tests/context.rs` |
+| Digest-correlated judgments, `heuristic-evidence/1`, `Replay` provider | `kernel/src/decision.rs` | same |
+| `SourceProvider` port, verified hydration | `kernel/src/source.rs`, `runtime/src/storage/` | `runtime/tests/context.rs` |
+| CandidateGraph, `build_context` pipeline | `kernel/src/context.rs` | same |
+| Greedy inclusion, prerequisites, bounded expansion → `SelectionPlan` | `kernel/src/select.rs` | same |
+| ContextPacker, `oxide-units-v1`, `oxide-payload-v1`, `ContextBundle` | `kernel/src/pack.rs` | unit tests there, `runtime/tests/context.rs` |
+| Optional JEV adapter (fixture/replay only, no HTTP transport) | `runtime/src/jev.rs` | unit tests there |
+| Frozen context-quality baseline | `runtime/tests/phase4_eval.rs`, `docs/phase-4/baseline-v1/` | reproduces byte for byte |
+
+Details, measurements and limits: [docs/phase-4.md](../docs/phase-4.md).
 
 ## Open questions
 

@@ -8,6 +8,7 @@
 pub mod capture;
 pub mod derivation;
 pub mod embedding;
+pub mod jev;
 pub mod python;
 pub mod repository;
 

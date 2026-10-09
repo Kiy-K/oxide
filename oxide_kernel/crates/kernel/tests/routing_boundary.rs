@@ -155,12 +155,7 @@ fn fake(answer: fn(&[Capsule]) -> Result<Vec<Judgment>, ProviderError>) -> Fake 
 }
 
 fn value(capsule: &Capsule, value: f64, confidence: Option<f64>) -> Judgment {
-    Judgment {
-        subject: capsule.subject.clone(),
-        question: capsule.question,
-        capsule_version: capsule.version,
-        verdict: Verdict::Value { value, confidence },
-    }
+    Judgment::of(capsule, Verdict::Value { value, confidence })
 }
 
 fn verdict(capsule: &Capsule, verdict: Verdict) -> Judgment {
@@ -248,6 +243,19 @@ fn abstention_wrong_version_and_low_or_unreported_confidence_fall_back() {
             verdict(&c[3], Verdict::Unsupported),
         ])
     });
+    // An answer for other capsule content (same subject, question and
+    // version) is not an answer for this capsule.
+    let mut edited = fake(|c| {
+        let mut other = c[0].clone();
+        other.query.push('!');
+        Ok(vec![Judgment {
+            capsule_digest: other.digest(),
+            ..value(&c[0], 0.7, Some(0.9))
+        }])
+    });
+    let mut allowance = Allowance { remaining: 10 };
+    let decisions = decide(Some(&mut edited), &capsules[..1], &mut allowance, ANY);
+    assert_eq!(fallbacks(&decisions), [Some(Fallback::Invalid)]);
     let mut allowance = Allowance { remaining: 10 };
     let decisions = decide(Some(&mut provider), &capsules, &mut allowance, CONFIDENT);
     assert_eq!(
@@ -337,14 +345,36 @@ fn capsules_are_bounded_and_correlated() {
         .unwrap();
     let relations = vec![call; MAX_CAPSULE_RELATIONS + 3];
     let snapshot = key("s1", "d1");
-    let capsule = Capsule::candidate(
+    let capsule = Capsule::new(
         &snapshot,
         &long,
+        Subject::Candidate(g()),
         Question::Relevance,
-        &g_entity,
-        &[],
-        &relations,
+        Evidence {
+            entity: &g_entity,
+            coverage: None,
+            snippet: &Snippet::Text {
+                text: "x\n".repeat(MAX_CAPSULE_SNIPPET_BYTES),
+                truncated: false,
+            },
+            channels: &[],
+            seeds: &[],
+            depth: Some(1),
+            origins: &[],
+            relations: &relations,
+            relations_truncated: false,
+        },
     );
+    let Snippet::Text { text, truncated } = &capsule.snippet else {
+        panic!("snippet kept")
+    };
+    assert!(*truncated && text.len() <= MAX_CAPSULE_SNIPPET_BYTES && text.ends_with('\n'));
+    assert!(capsule.relations.iter().all(|r| r.evidence.is_none()));
+    // Rendering is canonical: rebuilt capsules render and digest alike, and
+    // withholding source changes the rendering but not the digest.
+    assert_eq!(capsule.render(false), capsule.clone().render(false));
+    assert!(!capsule.render(true).contains("x\\nx"));
+    assert_ne!(capsule.render(true), capsule.render(false));
     assert!(capsule.query.len() <= MAX_CAPSULE_QUERY_BYTES && capsule.query_truncated);
     assert_eq!(capsule.relations.len(), MAX_CAPSULE_RELATIONS);
     assert!(capsule.relations_truncated);

@@ -1,0 +1,79 @@
+{
+  "baseline": "phase4-baseline-v1",
+  "budgets": [
+    256,
+    1024
+  ],
+  "claims": "context quality of the packed ContextBundle on a 65-entity fixture: a regression floor, not generalization; no downstream agent success; no JEV result",
+  "configs": [
+    {
+      "decision_provider": "control-constant/1 (0.5 for every subject)",
+      "graph": "GraphLimits { max_nodes: 64, max_edges_per_node: 32 }",
+      "judgments": 256,
+      "label": "A-constant-greedy",
+      "route_limits": "RouteLimits { max_regions: 64, max_depth: 2, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+      "select": "SelectPolicy { include_floor: 0.4, expand_floor: 0.4, max_items: 24, expansion: ExpansionLimits { max_depth: 1, max_fanout: 4, max_nodes: 16, max_edges_per_seed: 64, follow: [(Calls, Outgoing), (Calls, Incoming), (References, Outgoing), (Implements, Outgoing), (Implements, Incoming), (TestedBy, Outgoing)] } }"
+    },
+    {
+      "decision_provider": "none: heuristic-evidence/1 offline",
+      "graph": "GraphLimits { max_nodes: 64, max_edges_per_node: 32 }",
+      "judgments": 256,
+      "label": "B-heuristic-greedy",
+      "route_limits": "RouteLimits { max_regions: 64, max_depth: 2, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+      "select": "SelectPolicy { include_floor: 0.4, expand_floor: 0.4, max_items: 24, expansion: ExpansionLimits { max_depth: 1, max_fanout: 4, max_nodes: 16, max_edges_per_seed: 64, follow: [(Calls, Outgoing), (Calls, Incoming), (References, Outgoing), (Implements, Outgoing), (Implements, Incoming), (TestedBy, Outgoing)] } }"
+    },
+    {
+      "decision_provider": "none: heuristic-evidence/1 offline",
+      "graph": "GraphLimits { max_nodes: 64, max_edges_per_node: 32 }",
+      "judgments": 256,
+      "label": "B-no-expansion",
+      "route_limits": "RouteLimits { max_regions: 64, max_depth: 2, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+      "select": "SelectPolicy { include_floor: 0.4, expand_floor: 0.4, max_items: 24, expansion: ExpansionLimits { max_depth: 0, max_fanout: 4, max_nodes: 16, max_edges_per_seed: 64, follow: [(Calls, Outgoing), (Calls, Incoming), (References, Outgoing), (Implements, Outgoing), (Implements, Incoming), (TestedBy, Outgoing)] } }"
+    },
+    {
+      "decision_provider": "none: heuristic-evidence/1 offline",
+      "graph": "GraphLimits { max_nodes: 64, max_edges_per_node: 32 }",
+      "judgments": 256,
+      "label": "B-no-routing",
+      "route_limits": "RouteLimits { max_regions: 64, max_depth: 0, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+      "select": "SelectPolicy { include_floor: 0.4, expand_floor: 0.4, max_items: 24, expansion: ExpansionLimits { max_depth: 1, max_fanout: 4, max_nodes: 16, max_edges_per_seed: 64, follow: [(Calls, Outgoing), (Calls, Incoming), (References, Outgoing), (Implements, Outgoing), (Implements, Incoming), (TestedBy, Outgoing)] } }"
+    },
+    {
+      "decision_provider": "none: heuristic-evidence/1 offline",
+      "graph": "GraphLimits { max_nodes: 64, max_edges_per_node: 32 }",
+      "judgments": 256,
+      "label": "B-no-routing-no-expansion",
+      "route_limits": "RouteLimits { max_regions: 64, max_depth: 0, max_fanout: 16, max_edges: 2048, max_judgments: 64 }",
+      "select": "SelectPolicy { include_floor: 0.4, expand_floor: 0.4, max_items: 24, expansion: ExpansionLimits { max_depth: 0, max_fanout: 4, max_nodes: 16, max_edges_per_seed: 64, follow: [(Calls, Outgoing), (Calls, Incoming), (References, Outgoing), (Implements, Outgoing), (Implements, Incoming), (TestedBy, Outgoing)] } }"
+    }
+  ],
+  "fixture": "fixtures/py_repo",
+  "gold_mapping": "as phase3-baseline-v1",
+  "jev": "not run: no captured live JEV responses exist; the adapter is tested only against synthetic, docs-shaped fixtures",
+  "metric_definitions": {
+    "budget_utilization": "tokens used / budget (not a target)",
+    "gold_token_share": "tokens of packed items overlapping a gold range / tokens used (labeled precision; 0 when empty)",
+    "packing_loss": "gold planned but not packed complete",
+    "required_file_recall": "gold whose file has any packed item",
+    "required_symbol_header_only": "gold only partly shown (header view or partial overlap)",
+    "required_symbol_recall": "gold whose whole source range lies inside one packed item / mapped gold",
+    "routed_gold_coverage": "gold among CandidateGraph nodes (the selection ceiling)",
+    "selection_loss": "gold routed but not planned",
+    "tokens": "oxide-units-v1, the canonical payload unit; not any model's tokenizer",
+    "unlabeled_token_share": "1 - gold_token_share: an upper bound on noise; there are no irrelevance labels, so true noise is not measured"
+  },
+  "phase3_baseline": "docs/phase-3/baseline-v1 (same snapshot, retrieval and routing configuration)",
+  "snapshot": {
+    "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+    "repo": "phase3-eval",
+    "snapshot": "sha256:eccfbe9467b3b4b27f167be7b40cfc03d5a06baff395f5fc0f7d75707df7952a"
+  },
+  "tasks": 7,
+  "versions": {
+    "capsule": 2,
+    "counter": "oxide-units-v1",
+    "heuristic": "heuristic-evidence/1",
+    "payload": "oxide-payload-v1",
+    "selector": "oxide-select-greedy-v1"
+  }
+}

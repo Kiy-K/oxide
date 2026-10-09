@@ -4,7 +4,12 @@ mod codec;
 use lbug::{Connection, Database, SystemConfig, Value};
 
 use oxide_kernel::lexical::{self, LexicalHit, LexicalRequest, LexicalResult};
-use oxide_kernel::{id::*, knowledge::*, source::SourceCapture, store::*};
+use oxide_kernel::{
+    id::*,
+    knowledge::*,
+    source::{SourceCapture, SourceProvider},
+    store::*,
+};
 
 use sha2::{Digest as _, Sha256};
 
@@ -788,6 +793,27 @@ impl LadybugView {
         }
 
         Ok(bytes[source.range.start as usize..source.range.end as usize].to_vec())
+    }
+}
+
+/// Retained bytes for hydration. Only files of the pinned manifest are
+/// served; the kernel re-verifies every digest.
+impl SourceProvider for LadybugView {
+    fn file(&self, file: &RepoPath, digest: &Digest) -> R<Option<Vec<u8>>> {
+        let pinned = self.generation.manifest.files.get(file);
+        if pinned.is_none_or(|m| m.digest != *digest) {
+            return Ok(None);
+        }
+        let path = self
+            .generation
+            .path
+            .join("source")
+            .join(source_name(digest)?);
+        match fs::read(path) {
+            Ok(bytes) => Ok(Some(bytes)),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
+            Err(e) => Err(io(e)),
+        }
     }
 }
 

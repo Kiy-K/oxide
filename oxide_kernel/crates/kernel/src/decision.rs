@@ -1,145 +1,45 @@
 //! DecisionProvider seam: bounded capsules out, validated judgments back,
 //! deterministic heuristic fallback for anything missing, invalid, uncertain
 //! or over the allowance. Models judge; this module's Rust decides what a
-//! judgment is worth. Capsule fields are the Phase 1 minimum (SPEC § Candidate
-//! capsule); Phase 4 refines them under a new `CAPSULE_VERSION`.
+//! judgment is worth. The capsule itself is [`crate::capsule`] (v2 in
+//! Phase 4).
 
-use crate::id::{EntityId, SnapshotKey};
-use crate::knowledge::{Coverage, Entity, Relation, SourceRef};
-use crate::query::Query;
-use crate::retrieve::ChannelEvidence;
-use crate::tree::{Region, RegionId};
+use std::collections::BTreeMap;
 
-pub const CAPSULE_VERSION: u32 = 1;
-/// Query bytes carried in a capsule; longer queries are cut at a char
-/// boundary and flagged, before any provider sees them.
-pub const MAX_CAPSULE_QUERY_BYTES: usize = 2048;
-pub const MAX_CAPSULE_RELATIONS: usize = 16;
+pub use crate::capsule::{
+    CAPSULE_VERSION, Capsule, Evidence, MAX_CAPSULE_PROVENANCE, MAX_CAPSULE_QUERY_BYTES,
+    MAX_CAPSULE_RELATIONS, MAX_CAPSULE_SIGNATURE_BYTES, MAX_CAPSULE_SNIPPET_BYTES, Question,
+    Snippet, Subject,
+};
+use crate::id::Digest;
+use crate::knowledge::RelationKind;
+use crate::retrieve::Channel;
+use crate::route::Origin;
+use crate::store::Direction;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Subject {
-    Candidate(EntityId),
-    Region(RegionId),
-}
-
-/// The narrow questions a judge may answer, JEV included. None of them is
-/// "is this code correct".
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Question {
-    /// Is this candidate relevant to the task?
-    Relevance,
-    /// Would this neighbor add value next to already chosen evidence?
-    NeighborValue,
-    /// Is this region worth exploring?
-    BranchValue,
-}
-
-/// Bounded, storage-free evidence about one subject for one question.
-#[derive(Debug, Clone, PartialEq)]
-pub struct Capsule {
-    pub version: u32,
-    pub snapshot: SnapshotKey,
-    pub subject: Subject,
-    pub question: Question,
-    pub query: String,
-    pub query_truncated: bool,
-    pub kind: String,
-    pub name: String,
-    pub signature: Option<String>,
-    pub source: Option<SourceRef>,
-    pub test: bool,
-    pub coverage: Option<Coverage>,
-    pub channels: Vec<ChannelEvidence>,
-    pub relations: Vec<Relation>,
-    pub relations_truncated: bool,
-}
-
-impl Capsule {
-    /// Branch-value capsule for a navigated region.
-    pub fn branch(snapshot: &SnapshotKey, query: &Query, region: &Region) -> Self {
-        let mut capsule = Self::build(
-            snapshot,
-            query,
-            Subject::Region(region.id.clone()),
-            Question::BranchValue,
-            &region.anchor,
-            &region.cross_edges,
-        );
-        capsule.coverage = region.coverage.clone();
-        capsule.relations_truncated |= region.cross_edges_truncated;
-        capsule
-    }
-
-    /// Candidate capsule; `question` must be a candidate question.
-    pub fn candidate(
-        snapshot: &SnapshotKey,
-        query: &Query,
-        question: Question,
-        entity: &Entity,
-        channels: &[ChannelEvidence],
-        relations: &[Relation],
-    ) -> Self {
-        assert_ne!(
-            question,
-            Question::BranchValue,
-            "branch questions take a region"
-        );
-        let mut capsule = Self::build(
-            snapshot,
-            query,
-            Subject::Candidate(entity.id.clone()),
-            question,
-            entity,
-            relations,
-        );
-        capsule.channels = channels.to_vec();
-        capsule
-    }
-
-    fn build(
-        snapshot: &SnapshotKey,
-        query: &Query,
-        subject: Subject,
-        question: Question,
-        entity: &Entity,
-        relations: &[Relation],
-    ) -> Self {
-        let mut end = query.text.len().min(MAX_CAPSULE_QUERY_BYTES);
-        while !query.text.is_char_boundary(end) {
-            end -= 1;
-        }
-        Self {
-            version: CAPSULE_VERSION,
-            snapshot: snapshot.clone(),
-            subject,
-            question,
-            query: query.text[..end].to_owned(),
-            query_truncated: end < query.text.len(),
-            kind: entity.kind.clone(),
-            name: entity.name.clone(),
-            signature: entity.signature.clone(),
-            source: entity.source.clone(),
-            test: entity.test,
-            coverage: None,
-            channels: Vec::new(),
-            relations: relations
-                .iter()
-                .take(MAX_CAPSULE_RELATIONS)
-                .cloned()
-                .collect(),
-            relations_truncated: relations.len() > MAX_CAPSULE_RELATIONS,
-        }
-    }
-}
-
-/// A provider's answer for one capsule, correlated by subject, question and
-/// capsule version.
+/// A provider's answer for one capsule, correlated by subject, question,
+/// capsule version and capsule digest: an answer for other content (a
+/// replayed response for an edited capsule, say) never matches.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Judgment {
     pub subject: Subject,
     pub question: Question,
     pub capsule_version: u32,
+    pub capsule_digest: Digest,
     pub verdict: Verdict,
+}
+
+impl Judgment {
+    /// A judgment correlated to `capsule`.
+    pub fn of(capsule: &Capsule, verdict: Verdict) -> Self {
+        Self {
+            subject: capsule.subject.clone(),
+            question: capsule.question,
+            capsule_version: capsule.version,
+            capsule_digest: capsule.digest(),
+            verdict,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -157,7 +57,7 @@ pub enum Verdict {
 }
 
 /// Provider/model/heuristic identity recorded on every decision.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ProviderIdentity {
     pub name: String,
     pub version: String,
@@ -173,26 +73,76 @@ pub enum ProviderError {
 
 /// Implemented by the heuristic judge here and by runtime clients (JEV, local
 /// or stronger judges). Deadlines and transport are the client's job; a
-/// provider only estimates value and never returns policy.
+/// provider only estimates value and never returns policy. It may answer a
+/// subset of the capsules; the rest fall back.
 pub trait DecisionProvider {
     fn identity(&self) -> ProviderIdentity;
     fn supports(&self, question: Question) -> bool;
     fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError>;
 }
 
-/// Required offline baseline. Phase 1 answers a neutral prior for every
-/// subject.
-// ponytail: neutral constant; Phase 3/4 replace it with structural/lexical
-// heuristics under a new version.
+/// Required offline baseline and the fallback for every other provider. It
+/// reads only the capsule, so a recorded capsule replays to the same value.
+/// Values are priors on one `[0, 1]` scale, not probabilities, and carry no
+/// confidence:
+///
+/// - `BranchValue`: a neutral 0.5 for every region, so heuristic routing is
+///   exactly unjudged routing (the Phase 3 baseline asserts this).
+/// - `Relevance` and `Necessity` (no separate necessity evidence yet):
+///   repositories, modules and files 0.2 (containers; their members compete
+///   on their own); a structural seed 0.9; a lexical entry point
+///   `0.85 - 0.025 * (rank - 1)`, at least 0.5; a routed-only candidate 0.45
+///   at depth 1, else 0.3.
+/// - `NeighborValue`, by the relation that reached the subject: a test of the
+///   seed 0.6, an implementation link 0.55, a callee 0.55, a referenced
+///   definition 0.5, a caller 0.45, anything else 0.35.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Heuristic;
 
-const HEURISTIC_VALUE: f64 = 0.5;
+impl Heuristic {
+    pub fn value(capsule: &Capsule) -> f64 {
+        match capsule.question {
+            Question::BranchValue => 0.5,
+            Question::Relevance | Question::Necessity => {
+                if matches!(capsule.kind.as_str(), "repository" | "module" | "file") {
+                    0.2
+                } else if !capsule.seeds.is_empty() {
+                    0.9
+                } else if let Some(lexical) = capsule
+                    .channels
+                    .iter()
+                    .find(|c| c.channel == Channel::Lexical)
+                {
+                    (0.85 - 0.025 * (lexical.rank.saturating_sub(1)) as f64).max(0.5)
+                } else if capsule.depth == Some(1) {
+                    0.45
+                } else {
+                    0.3
+                }
+            }
+            Question::NeighborValue => match capsule.origins.first() {
+                Some(Origin::Neighbor {
+                    relation,
+                    direction,
+                    ..
+                }) => match (relation, direction) {
+                    (RelationKind::TestedBy, Direction::Outgoing) => 0.6,
+                    (RelationKind::Implements, _) => 0.55,
+                    (RelationKind::Calls, Direction::Outgoing) => 0.55,
+                    (RelationKind::References, Direction::Outgoing) => 0.5,
+                    (RelationKind::Calls, Direction::Incoming) => 0.45,
+                    _ => 0.35,
+                },
+                _ => 0.35,
+            },
+        }
+    }
+}
 
 impl DecisionProvider for Heuristic {
     fn identity(&self) -> ProviderIdentity {
         ProviderIdentity {
-            name: "heuristic-neutral".into(),
+            name: "heuristic-evidence".into(),
             version: "1".into(),
         }
     }
@@ -204,14 +154,92 @@ impl DecisionProvider for Heuristic {
     fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
         Ok(capsules
             .iter()
-            .map(|c| Judgment {
-                subject: c.subject.clone(),
-                question: c.question,
-                capsule_version: c.version,
-                verdict: Verdict::Value {
-                    value: HEURISTIC_VALUE,
+            .map(|c| {
+                let verdict = Verdict::Value {
+                    value: Self::value(c),
                     confidence: None,
-                },
+                };
+                Judgment::of(c, verdict)
+            })
+            .collect())
+    }
+}
+
+/// A whole provider call that failed, recorded per capsule it carried.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Failure {
+    pub subject: Subject,
+    pub question: Question,
+    pub capsule_digest: Digest,
+    pub error: ProviderError,
+}
+
+type Key = (Subject, Question, Digest);
+
+/// Fake/replay provider: answers from recorded judgments and failures,
+/// matched by subject, question and capsule digest, under the recorded
+/// provider's identity. Every recorded verdict is returned (duplicates
+/// replay as duplicates); a batch containing a capsule whose recorded call
+/// failed fails the same way; anything unrecorded is left unanswered
+/// (heuristic fallback). An edited capsule cannot reuse a stale answer.
+/// `fail` scripts a whole-call failure.
+#[derive(Debug, Clone)]
+pub struct Replay {
+    pub identity: ProviderIdentity,
+    pub judgments: BTreeMap<Key, Vec<Verdict>>,
+    pub failures: BTreeMap<Key, ProviderError>,
+    pub fail: Option<ProviderError>,
+}
+
+impl Replay {
+    pub fn new(identity: ProviderIdentity, judgments: &[Judgment], failures: &[Failure]) -> Self {
+        let mut recorded: BTreeMap<Key, Vec<Verdict>> = BTreeMap::new();
+        for j in judgments {
+            let key = (j.subject.clone(), j.question, j.capsule_digest.clone());
+            recorded.entry(key).or_default().push(j.verdict);
+        }
+        let failures = failures
+            .iter()
+            .map(|f| {
+                let key = (f.subject.clone(), f.question, f.capsule_digest.clone());
+                (key, f.error)
+            })
+            .collect();
+        Self {
+            identity,
+            judgments: recorded,
+            failures,
+            fail: None,
+        }
+    }
+}
+
+impl DecisionProvider for Replay {
+    fn identity(&self) -> ProviderIdentity {
+        self.identity.clone()
+    }
+
+    fn supports(&self, _: Question) -> bool {
+        true
+    }
+
+    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
+        if let Some(error) = self.fail {
+            return Err(error);
+        }
+        let keys: Vec<Key> = capsules
+            .iter()
+            .map(|c| (c.subject.clone(), c.question, c.digest()))
+            .collect();
+        if let Some(error) = keys.iter().find_map(|k| self.failures.get(k)) {
+            return Err(*error);
+        }
+        Ok(capsules
+            .iter()
+            .zip(&keys)
+            .flat_map(|(c, k)| {
+                let verdicts = self.judgments.get(k).map_or(&[][..], Vec::as_slice);
+                verdicts.iter().map(|v| Judgment::of(c, *v))
             })
             .collect())
     }
@@ -250,6 +278,8 @@ pub enum Fallback {
 pub struct Decision {
     pub subject: Subject,
     pub question: Question,
+    /// The judged capsule, for replay and trace correlation.
+    pub capsule_digest: Digest,
     pub value: f64,
     pub confidence: Option<f64>,
     pub provider: ProviderIdentity,
@@ -298,11 +328,17 @@ pub fn decide(
         .map(|(capsule, outcome)| {
             let (value, confidence, provider, fallback) = match outcome {
                 Ok((value, confidence)) => (value, confidence, identity.clone(), None),
-                Err(reason) => (HEURISTIC_VALUE, None, Heuristic.identity(), Some(reason)),
+                Err(reason) => (
+                    Heuristic::value(capsule),
+                    None,
+                    Heuristic.identity(),
+                    Some(reason),
+                ),
             };
             Decision {
                 subject: capsule.subject.clone(),
                 question: capsule.question,
+                capsule_digest: capsule.digest(),
                 value,
                 confidence,
                 provider,
@@ -325,7 +361,7 @@ fn check(
         (Some(_), Some(_)) => return Err(Fallback::Duplicate),
         (Some(judgment), None) => judgment,
     };
-    if judgment.capsule_version != capsule.version {
+    if judgment.capsule_version != capsule.version || judgment.capsule_digest != capsule.digest() {
         return Err(Fallback::Invalid);
     }
     let unit = |x: f64| (0.0..=1.0).contains(&x); // false for NaN and ±inf

@@ -392,15 +392,7 @@ impl DecisionProvider for Fixed {
         true
     }
     fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
-        Ok(capsules
-            .iter()
-            .map(|c| Judgment {
-                subject: c.subject.clone(),
-                question: c.question,
-                capsule_version: c.version,
-                verdict: self.0,
-            })
-            .collect())
+        Ok(capsules.iter().map(|c| Judgment::of(c, self.0)).collect())
     }
 }
 
