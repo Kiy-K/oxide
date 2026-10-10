@@ -257,6 +257,6 @@ and byte-identical payload. Published knowledge is unchanged.
   context request). Done in the
   [follow-up](phase-5-followup.md): bounded concurrent requests, offline
   p50 2.6 s, with the routing loss broken down by stage.
-  [Follow-up 2](phase-5-followup-2.md): routing load order rejected
-  (negative result), JEV drift measured from recordings.
+  [Follow-up 2](phase-5-followup-2.md): no routing load-order gain
+  detected (underpowered dev gate), JEV drift measured from recordings.
 - Downstream agent success is not measured.

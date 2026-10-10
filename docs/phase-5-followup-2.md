@@ -1,13 +1,14 @@
 # Phase 5 follow-up 2: routing load order and JEV stability
 
 Status: done (2026-10-10) on `rewrite/v2`, after `4582f6d`. No live JEV
-call, no model training. No routing change was accepted: the router stays
+call, no model training. No routing change was accepted (no gain
+detected; the dev gate is underpowered, see below): the router stays
 `oxide-router-bfs-v1`, and no Phase 3/4/5 artifact changed. Protocol,
 frozen before any measurement:
 [phase-5/followup-2/preregistration.md](phase-5/followup-2/preregistration.md).
 Results: `phase-5/followup-2/{routing,stability}.json`.
 
-## Routing: load order does not recover gold (negative result)
+## Routing: no gain detected from load order (underpowered)
 
 The baseline is level-synchronous BFS. Layer 0 loads the 20 entry points,
 then layer 1 uses the remaining 44 regions in discovery order, so it
@@ -26,7 +27,14 @@ graph and selection:
 
 All variants loaded 64 regions (edges examined 687–723; lexical-only 419).
 None met the gate (mean ≥ +0.05, lower bound > 0), so calibration and
-test were not run. Route latency is from one timed route per task under
+test were not run. The gate is underpowered at 14 tasks: interval
+half-widths are about 0.08, so even a true +0.05 gain would have a lower
+bound near −0.03 and fail. Read the result as "no gain detected", not
+"no gain". `lexical` is undecided (+0.004, interval up to +0.080).
+`balanced` and `lexical+balanced` lean negative, but their intervals
+also include 0. Ruling `lexical` out would take a new, dated
+preregistration with a pooled dev + calibration comparison. The current
+protocol confirms only dev-accepted variants on calibration. Route latency is from one timed route per task under
 a 200% CPU quota; the lexical-first request makes `lexical` about 1.25×
 slower at p50, inside the 1.5× limit. Packed recall was identical in every
 task (measured). The likely reason is in the code (inferred): the
