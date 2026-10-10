@@ -586,7 +586,8 @@ impl Transport for Http {
 }
 
 impl Http {
-    fn send(&self, body: &str, timeout: Duration) -> Result<String, TransportError> {
+    /// One request, shareable across threads (the pool's unit of work).
+    pub fn send(&self, body: &str, timeout: Duration) -> Result<String, TransportError> {
         if timeout.is_zero() {
             return Err(TransportError::Timeout);
         }

@@ -78,11 +78,38 @@ The p50 context makes 3 sequential judge calls. Even with unlimited
 concurrency, 3 round trips plus the pipeline leave a floor of about 1.3 s
 (inferred).
 
-**Not measured:** the live service under concurrent load. The simulation
-replays latencies recorded one request at a time, and the docs state no
-rate or concurrency limits. Under concurrency, latency may grow or 429s
-may appear; 429s are retried within the deadline. A small, capped live
-check is needed before trusting 2.6 s as a live number.
+The simulation replays latencies recorded one request at a time, and the
+docs state no rate or concurrency limits. A capped live smoke check
+followed (below).
+
+**Live smoke check (2026-10-10, authorized).** `live_concurrency_smoke`
+(opt-in, `OXIDE_FOLLOWUP_LIVE=1`) ran 3 public dev tasks at concurrency
+16, one per dev repository: the task with the smallest recorded token use.
+Caps were 240 requests, 750k input tokens and $0.10. Used: 211 requests,
+488.6k tokens, $0.021. There were no 429s, retries, failed requests,
+fallbacks or refused bodies (a guard refuses, without sending, any capsule
+from outside the task's repository). Results:
+`phase-5/followup/live-smoke.json`.
+
+| Task | Live | Offline at recorded latency | Requests |
+| --- | --- | --- | --- |
+| keras `3f3ff585` | 2.41 s | 1.75 s | 64 |
+| sphinx `b8417a37` | 2.79 s | 2.47 s | 71 |
+| sympy `17c22a6f` | 3.86 s | 3.35 s | 76 |
+
+The median context took 2.79 s live. Live runs were 0.3–0.7 s slower than
+the simulation. A request's round trip was p50 312 ms, the same as one at
+a time (306 ms), but p95 992 ms against 409 ms sequential: concurrency
+widens the tail. The first context was the slowest (p95 992 ms against
+543–566 ms for the others), likely while 16 new connections were set up
+(inferred). The wait for a pool slot was p50 851 ms. Three contexts are a
+smoke test, not a p95 benchmark.
+
+Correctness held. Each live run equals a sequential replay of its own
+answers, so completion order changed nothing. Bundles differ from the
+frozen Phase 5 replay in all three tasks because JEV answered differently
+this time: 52–59 of 64 relevance values changed, consistent with Phase 5's
+13 of 100 bit-identical repeats. Packed recall was unchanged in all three.
 
 **Rejected: selective judging (D).** Judging only the first K capsules in
 graph order (the shared allowance) failed the preregistered rule on dev:
@@ -173,7 +200,7 @@ at selection.
 
 ## Limitations
 
-- Concurrent live behavior of the service is unmeasured (above).
+- Concurrent live behavior is a 3-context smoke test only (above).
 - Latency was measured under a 200% CPU quota, as in Phase 5.
 - Peak RSS is per process, not per configuration.
 - Waterfall reachability uses resolved edges only (the router's policy).

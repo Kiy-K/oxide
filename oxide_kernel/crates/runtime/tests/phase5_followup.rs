@@ -37,7 +37,8 @@ use oxide_kernel::route::{RouteLimits, RouteRequest, baseline_policy, route};
 use oxide_kernel::store::{KnowledgeStore, MAX_REQUEST_ITEMS, ReadView};
 use oxide_runtime::decisionbench::{self as db, Split};
 use oxide_runtime::jev::{
-    Jev, JevConfig, Recorded, Replay, Sent, Transport, TransportError, fan_out,
+    Exchange, Http, Jev, JevConfig, MODEL, Recorded, Recording, Replay, Sent, Transport,
+    TransportError, fan_out,
 };
 use serde_json::{Value, json};
 
@@ -805,4 +806,316 @@ fn phase5_followup() {
     write("selective.json", &selective);
     write("waterfall.json", &waterfall);
     write("routing.json", &routing);
+}
+
+/// The live smoke test (authorized 2026-10-10): per dev repository, the
+/// task with the smallest recorded JEV token use, chosen before any call.
+const LIVE_TASKS: [&str; 3] = [
+    "SWE-PolyBench__python__maintenance__bugfix__3f3ff585",
+    "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37",
+    "SWE-Bench-Verified__python__maintenance__bugfix__17c22a6f",
+];
+/// Hard caps over the whole test, retries included ($0.0315 at most).
+const LIVE_REQUESTS: usize = 240;
+const LIVE_TOKENS: u64 = 750_000;
+const LIVE_CONCURRENCY: usize = 16;
+/// A context with more 429s than this share of its requests stops the test.
+const THROTTLE_STOP: f64 = 0.1;
+
+/// One live exchange: body, answer, wait in the pool, round trip.
+type LiveExchange = (String, Result<String, TransportError>, Duration, Duration);
+
+/// The live service, refusing (never sending) any body whose capsule is
+/// not from `repo`, and logging each request's wait and round trip.
+struct Live {
+    http: Http,
+    repo: String,
+    log: Vec<LiveExchange>,
+    refused: usize,
+}
+
+impl Transport for Live {
+    fn post(&mut self, body: &str, timeout: Duration) -> Result<String, TransportError> {
+        let sent = self.post_all(&[body], Instant::now() + timeout, 1);
+        sent.into_iter()
+            .flatten()
+            .next()
+            .map_or(Err(TransportError::Timeout), |s| s.answer)
+    }
+
+    fn post_all(
+        &mut self,
+        bodies: &[&str],
+        deadline: Instant,
+        concurrency: usize,
+    ) -> Vec<Option<Sent>> {
+        let batch = Instant::now();
+        let refused: Vec<bool> = bodies
+            .iter()
+            .map(|b| {
+                let v: Option<Value> = serde_json::from_str(b).ok();
+                v.is_none_or(|v| v["state"]["snapshot"]["repo"] != self.repo.as_str())
+            })
+            .collect();
+        let queued: Vec<std::sync::OnceLock<Duration>> =
+            bodies.iter().map(|_| std::sync::OnceLock::new()).collect();
+        let http = &self.http;
+        let sent = fan_out(bodies, deadline, concurrency, |body, left| {
+            let i = bodies.iter().position(|b| *b == body).unwrap();
+            let _ = queued[i].set(batch.elapsed());
+            if refused[i] {
+                return Err(TransportError::Unavailable(
+                    "outside the authorized repository".into(),
+                ));
+            }
+            http.send(body, left)
+        });
+        self.refused += refused.iter().filter(|r| **r).count();
+        for (i, s) in sent.iter().enumerate() {
+            if let Some(s) = s {
+                let wait = queued[i].get().copied().unwrap_or_default();
+                self.log
+                    .push((bodies[i].to_owned(), s.answer.clone(), wait, s.elapsed));
+            }
+        }
+        sent
+    }
+}
+
+fn percentiles(mut xs: Vec<f64>) -> Value {
+    if xs.is_empty() {
+        return Value::Null;
+    }
+    json!({"p50": round(quantile(&mut xs, 0.5)), "p95": round(quantile(&mut xs, 0.95)),
+           "max": round(quantile(&mut xs, 1.0)), "n": xs.len()})
+}
+
+#[test]
+#[ignore = "live: sends public-repository capsules to the hosted JEV service; needs OXIDE_FOLLOWUP_LIVE=1"]
+fn live_concurrency_smoke() {
+    assert_eq!(
+        std::env::var("OXIDE_FOLLOWUP_LIVE").as_deref(),
+        Ok("1"),
+        "live JEV calls need OXIDE_FOLLOWUP_LIVE=1"
+    );
+    let root = repo_root();
+    let docs = root.join("docs/phase-5/decisionbench-v1");
+    let read = |f: &str| -> Value {
+        serde_json::from_str(&std::fs::read_to_string(docs.join(f)).unwrap()).unwrap()
+    };
+    let spec = read("contextbench-tasks.json");
+    let splits: BTreeMap<String, Split> =
+        serde_json::from_value(read("splits.json")["repositories"].clone()).unwrap();
+    let data = data_dir();
+    let answers = recorded(&[&docs.join("fixture/jev"), &data.join("jev")]);
+    let frozen_replay = Replay {
+        exchanges: answers
+            .iter()
+            .map(|(k, (r, _))| (k.clone(), r.clone()))
+            .collect(),
+    };
+    let logs = data.join("followup-live");
+    std::fs::create_dir_all(&logs).unwrap();
+
+    let (mut used_requests, mut used_tokens) = (0usize, 0u64);
+    let (mut rows, mut waits, mut trips) = (Vec::new(), Vec::new(), Vec::new());
+    let mut stop: Option<String> = None;
+    for id in LIVE_TASKS {
+        let t = spec["tasks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|t| t["id"] == id)
+            .unwrap();
+        let split = splits[t["repo"].as_str().unwrap()];
+        assert_eq!(split, Split::Dev, "{id}: only dev tasks are authorized");
+        let Indexed {
+            store,
+            key,
+            gold,
+            dir,
+            ..
+        } = phase5::index_task(t, &data);
+        let view = store.open(&key).unwrap();
+        let input = TaskInput {
+            id,
+            repository: t["repo"].as_str().unwrap(),
+            split,
+            query: t["query"].as_str().unwrap(),
+            symbols: Vec::new(),
+            gold: gold.clone(),
+        };
+        let all: Vec<EntityId> = gold.verified.iter().cloned().collect();
+        let all_sources = gold_sources(&view, &all);
+        let base = baseline();
+        let request = phase5::request(&input, TOKENS);
+
+        // The frozen sequential replay, and what it implies will be sent.
+        let (frozen, _, _) = judged(&view, &request, &base, jev_config(), frozen_replay.clone());
+        let relevance_bytes: u64 = frozen
+            .capsules
+            .iter()
+            .map(|c| request_body(c).len() as u64)
+            .sum();
+        let predicted = frozen.capsules.len() + frozen.plan.capsules.len();
+        if used_requests + predicted > LIVE_REQUESTS || used_tokens + relevance_bytes > LIVE_TOKENS
+        {
+            stop = Some(format!(
+                "{id}: predicted {predicted} requests / {relevance_bytes} bytes exceed the remaining caps"
+            ));
+            break;
+        }
+
+        let live = Live {
+            http: Http::from_env().unwrap(),
+            repo: key.repo.as_str().to_owned(),
+            log: Vec::new(),
+            refused: 0,
+        };
+        let config = JevConfig {
+            concurrency: LIVE_CONCURRENCY,
+            max_requests: LIVE_REQUESTS - used_requests,
+            max_input_tokens: LIVE_TOKENS - used_tokens,
+            deadline: Duration::from_secs(120),
+            ..jev_config()
+        };
+        let (run, latency, jev) = judged(&view, &request, &base, config, live);
+        let stats = jev.stats;
+        let live = jev.into_transport();
+        used_requests += stats.requests;
+        used_tokens += stats.input_tokens;
+        let recording = Recording {
+            inner: (),
+            exchanges: live
+                .log
+                .iter()
+                .map(|(body, answer, _, trip)| Exchange {
+                    body: body.clone(),
+                    recorded: match answer {
+                        Ok(r) => Recorded::Response(r.clone()),
+                        Err(e) => Recorded::Failed(e.clone()),
+                    },
+                    elapsed: *trip,
+                })
+                .collect(),
+        };
+        let document = recording.to_json(MODEL);
+        std::fs::write(logs.join(format!("{id}.json")), &document).unwrap();
+
+        // Correctness: the same live answers, applied one at a time.
+        let replay = Replay::from_json(&document).unwrap();
+        let (sequential, _, _) = judged(&view, &request, &base, jev_config(), replay);
+        let consistent = sequential == run;
+        let changed = frozen
+            .decisions
+            .iter()
+            .zip(&run.decisions)
+            .filter(|(a, b)| a.value != b.value)
+            .count();
+        let throttled = live
+            .log
+            .iter()
+            .filter(|e| matches!(e.1, Err(TransportError::Status(429))))
+            .count();
+        let failed = live.log.iter().filter(|e| e.1.is_err()).count();
+        let mut fallback = 0;
+        for (reason, n) in fallbacks(&run).as_object().unwrap() {
+            if reason != "Unsupported" {
+                fallback += n.as_u64().unwrap();
+            }
+        }
+        let simulated = std::fs::read_to_string(data.join("followup").join(format!("{id}.json")))
+            .ok()
+            .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+            .and_then(|r| r["runs"]["C-16"]["latency_ms"].as_f64());
+        let task_waits: Vec<f64> = live.log.iter().map(|e| ms(e.2)).collect();
+        let task_trips: Vec<f64> = live.log.iter().map(|e| ms(e.3)).collect();
+        waits.extend(&task_waits);
+        trips.extend(&task_trips);
+        let quality =
+            |r: &ContextRun| metrics(&all, &all_sources, r)["required_symbol_recall"].clone();
+        rows.push(json!({
+            "task": id, "repository": input.repository,
+            "latency_ms": ms(latency), "simulated_c16_ms": simulated,
+            "requests": stats.requests, "retries": stats.retries, "http_429": throttled,
+            "failed_requests": failed, "fallbacks": fallback, "skipped_by_caps": stats.skipped,
+            "input_tokens": stats.input_tokens, "cost_usd": stats.cost_usd(),
+            "request_round_trip_ms": percentiles(task_trips),
+            "pool_wait_ms": percentiles(task_waits),
+            "equal_to_sequential_replay_of_live_answers": consistent,
+            "bundle_equal_to_frozen_replay": run.bundle == frozen.bundle,
+            "relevance_values_changed_vs_frozen": changed,
+            "relevance_judged": run.decisions.len(),
+            "packed_recall_live": quality(&run), "packed_recall_frozen": quality(&frozen),
+            "refused_outside_repository": live.refused,
+        }));
+        eprintln!(
+            "{id}: {:.0} ms live, {} requests",
+            ms(latency),
+            stats.requests
+        );
+        drop(view);
+        drop(store);
+        let _ = std::fs::remove_dir_all(&dir);
+        if live.refused > 0 {
+            stop = Some(format!(
+                "{id}: a body outside the authorized repository was refused"
+            ));
+        } else if !consistent {
+            stop = Some(format!("{id}: live run differs from its sequential replay"));
+        } else if throttled as f64 > THROTTLE_STOP * stats.requests as f64 {
+            stop = Some(format!(
+                "{id}: {throttled} of {} requests throttled",
+                stats.requests
+            ));
+        } else if stats.skipped > 0 {
+            stop = Some(format!("{id}: the caps stopped {} requests", stats.skipped));
+        }
+        if stop.is_some() {
+            break;
+        }
+    }
+
+    let summary = json!({
+        "authorized": {"tasks": LIVE_TASKS, "concurrency": LIVE_CONCURRENCY,
+                       "max_requests": LIVE_REQUESTS, "max_input_tokens": LIVE_TOKENS,
+                       "max_usd": 0.10},
+        "used": {"requests": used_requests, "input_tokens": used_tokens,
+                 "cost_usd": used_tokens as f64 * oxide_runtime::jev::USD_PER_INPUT_TOKEN},
+        "request_round_trip_ms": percentiles(trips),
+        "pool_wait_ms": percentiles(waits),
+        "contexts": rows,
+        "stopped": stop,
+    });
+    std::fs::write(
+        root.join("docs/phase-5/followup/live-smoke.json"),
+        serde_json::to_string_pretty(&summary).unwrap() + "\n",
+    )
+    .unwrap();
+    assert!(stop.is_none(), "{stop:?}");
+}
+
+/// One JEV context run over `transport`: the run, its latency, the adapter.
+fn judged<T: Transport>(
+    view: &(impl ReadView + oxide_kernel::source::SourceProvider),
+    request: &oxide_kernel::context::ContextRequest,
+    base: &ContextConfig,
+    config: JevConfig,
+    transport: T,
+) -> (ContextRun, Duration, Jev<T>) {
+    let mut jev = Jev::new(config, transport).unwrap();
+    let started = Instant::now();
+    let run = {
+        let mut only = CandidatesOnly(&mut jev);
+        build_context(view, view, request, base, Some(&mut only)).unwrap()
+    };
+    (run, started.elapsed(), jev)
+}
+
+fn request_body(c: &Capsule) -> String {
+    oxide_runtime::jev::request(
+        c,
+        oxide_runtime::jev::MODEL,
+        oxide_runtime::jev::Disclosure::Source,
+    )
 }
