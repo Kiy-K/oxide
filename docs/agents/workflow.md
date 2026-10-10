@@ -129,3 +129,8 @@ repositories involved and a request/spend cap (`common/phase5.rs`:
 `LIVE_REQUESTS`, `LIVE_TOKENS`). It reads `TYPESAFE_API_KEY`, which never
 enters recordings. The test split stays sealed unless
 `OXIDE_PHASE5_UNSEAL_TEST=1` and `docs/phase-5/preregistration.md` exists.
+
+The follow-up (`docs/phase-5-followup.md`) is opt-in the same way and
+never calls JEV: `--test phase5_followup -- --ignored` replays the
+recordings at their recorded latency, and caches per task under
+`OXIDE_DECISIONBENCH_DATA/followup/`.

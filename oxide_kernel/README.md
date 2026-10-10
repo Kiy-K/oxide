@@ -236,7 +236,7 @@ Details, measurements and limits: [docs/phase-4.md](../docs/phase-4.md).
 | --- | --- | --- |
 | DecisionBench v1 records, labels, validation, leakage checks, judgment statistics | `runtime/src/decisionbench.rs` | unit tests there, `runtime/tests/phase5_decisionbench.rs` |
 | Confidence floors only over calibrated confidence (`Fallback::Uncalibrated`) | `kernel/src/decision.rs` | `kernel/tests/routing_boundary.rs` |
-| JEV HTTPS transport, 429/529 retries, request/token caps, validity analysis | `runtime/src/jev.rs` | unit tests there (local mock server) |
+| JEV HTTPS transport, bounded concurrent requests applied in capsule order, 429/529 retries, request/token caps, validity analysis | `runtime/src/jev.rs` | unit tests there (local mock server) |
 | Configurable LadybugDB buffer pool for mid-size repositories; single-threaded publish, measured to give identical BM25 scores across processes | `runtime/src/storage/mod.rs` | `runtime/tests/phase5_contextbench.rs` (opt-in) |
 | Fixture DecisionBench and recorded live JEV replay (frozen) | `runtime/tests/phase5_decisionbench.rs`, `docs/phase-5/decisionbench-v1/fixture/` | reproduces byte for byte, offline |
 | ContextBench DecisionBench (opt-in, machine-local records) | `runtime/tests/phase5_contextbench.rs`, `docs/phase-5/decisionbench-v1/contextbench/` | `#[ignore]`d |

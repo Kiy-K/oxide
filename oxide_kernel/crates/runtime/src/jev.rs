@@ -12,7 +12,9 @@
 //! the versioned model that answered. Pinned model `jev-1.13.0`; aliases
 //! (`jev-latest`, `jev-preview`) move silently and are refused.
 //!
-//! Mapping: one request per capsule (no batching, so no position bias);
+//! Mapping: one request per capsule (no batching, so no position bias; the
+//! service documents none across states), sent up to `concurrency` at a
+//! time and applied in capsule order;
 //! `state` is the capsule's canonical rendering, with source text withheld
 //! unless [`Disclosure::Source`] was configured; one three-level Score per
 //! question; value = `score / 2`, confidence = the answer's `confidence`
@@ -33,6 +35,8 @@
 //! [`USD_PER_INPUT_TOKEN`] and capped by `max_input_tokens`.
 
 use std::collections::BTreeMap;
+use std::sync::OnceLock;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 
 use oxide_kernel::capsule::{Capsule, Question};
@@ -87,7 +91,15 @@ pub struct JevConfig {
     /// Retries of one capsule after 429 or 529, within the deadline.
     pub retries: u32,
     pub disclosure: Disclosure,
+    /// Requests one `judge` call keeps in flight, 1 to [`MAX_CONCURRENCY`]
+    /// (1 is sequential). Answers apply in capsule order, so completion
+    /// order never changes a judgment.
+    pub concurrency: usize,
 }
+
+/// The most requests a [`Jev`] keeps in flight (and [`Http`] keeps
+/// connections pooled for).
+pub const MAX_CONCURRENCY: usize = 16;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TransportError {
@@ -102,6 +114,77 @@ pub trait Transport {
     /// Sends one request body, waiting at most `timeout`, and returns the
     /// response body.
     fn post(&mut self, body: &str, timeout: Duration) -> Result<String, TransportError>;
+
+    /// Sends every body, at most `concurrency` at a time, none past
+    /// `deadline`; answers come back in input order. `None`: never sent,
+    /// the deadline passed first. The default sends one at a time.
+    fn post_all(
+        &mut self,
+        bodies: &[&str],
+        deadline: Instant,
+        concurrency: usize,
+    ) -> Vec<Option<Sent>> {
+        let _ = concurrency;
+        bodies
+            .iter()
+            .map(|body| timed(body, deadline, |b, left| self.post(b, left)))
+            .collect()
+    }
+}
+
+/// One sent request's outcome.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Sent {
+    pub answer: Result<String, TransportError>,
+    pub elapsed: Duration,
+    /// It finished after the deadline: a timeout, though possibly billed.
+    pub late: bool,
+}
+
+fn timed(
+    body: &str,
+    deadline: Instant,
+    post: impl FnOnce(&str, Duration) -> Result<String, TransportError>,
+) -> Option<Sent> {
+    let started = Instant::now();
+    let left = deadline.saturating_duration_since(started);
+    if left.is_zero() {
+        return None;
+    }
+    let answer = post(body, left);
+    Some(Sent {
+        answer,
+        elapsed: started.elapsed(),
+        late: Instant::now() > deadline,
+    })
+}
+
+/// [`Transport::post_all`] on at most `concurrency` scoped threads: a
+/// bounded worker pool taking bodies in input order, so queued requests
+/// wait (backpressure) and are dropped, never sent, once the deadline
+/// passes. Answers are returned by input position.
+pub fn fan_out(
+    bodies: &[&str],
+    deadline: Instant,
+    concurrency: usize,
+    post: impl Fn(&str, Duration) -> Result<String, TransportError> + Sync,
+) -> Vec<Option<Sent>> {
+    let next = AtomicUsize::new(0);
+    let slots: Vec<OnceLock<Sent>> = bodies.iter().map(|_| OnceLock::new()).collect();
+    std::thread::scope(|scope| {
+        for _ in 0..concurrency.clamp(1, bodies.len().max(1)) {
+            scope.spawn(|| {
+                loop {
+                    let i = next.fetch_add(1, Ordering::Relaxed);
+                    let Some(body) = bodies.get(i) else { break };
+                    if let Some(sent) = timed(body, deadline, &post) {
+                        let _ = slots[i].set(sent);
+                    }
+                }
+            });
+        }
+    });
+    slots.into_iter().map(OnceLock::into_inner).collect()
 }
 
 /// What the adapter observed, for cost and fallback reporting.
@@ -138,6 +221,9 @@ impl<T: Transport> Jev<T> {
         let m = &config.model;
         if m.is_empty() || m.ends_with("-latest") || m.ends_with("-preview") {
             return Err(format!("JEV model `{m}` is not a pinned version"));
+        }
+        if !(1..=MAX_CONCURRENCY).contains(&config.concurrency) {
+            return Err(format!("JEV concurrency must be 1 to {MAX_CONCURRENCY}"));
         }
         Ok(Self {
             config,
@@ -277,55 +363,44 @@ impl<T: Transport> DecisionProvider for Jev<T> {
     }
 
     fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
-        let start = Instant::now();
+        let deadline = Instant::now() + self.config.deadline;
+        let bodies: Vec<String> = capsules
+            .iter()
+            .map(|c| request(c, &self.config.model, self.config.disclosure))
+            .collect();
+        let answers = self.send(&bodies, deadline);
         let mut out = Vec::new();
         let mut errors = Vec::new();
-        for capsule in capsules {
-            let left = self.config.deadline.saturating_sub(start.elapsed());
-            if left.is_zero() {
-                self.stats.skipped += 1;
-                errors.push(ProviderError::Timeout);
-                continue;
-            }
-            let body = request(capsule, &self.config.model, self.config.disclosure);
-            let Some(answer) = self.send(&body, start) else {
-                self.stats.skipped += 1;
-                errors.push(ProviderError::Unavailable);
-                continue;
-            };
-            if answer.is_ok() {
-                // Billed whether or not it parses or is late; unreported
-                // usage counts as the body's length.
-                let reported = answer.as_ref().ok().and_then(|b| {
-                    let v: Value = serde_json::from_str(b).ok()?;
-                    v["usage"]["input_tokens"].as_u64()
-                });
-                self.stats.input_tokens += reported.unwrap_or(body.len() as u64);
-            }
-            // A late answer is a timeout, whatever the transport did.
-            let answer = match answer {
-                Ok(_) if start.elapsed() > self.config.deadline => Err(TransportError::Timeout),
-                other => other,
-            };
-            match answer.map(|b| parse(&b, &self.config.model)) {
-                Ok(Ok((value, confidence, _))) => {
+        for (capsule, answer) in capsules.iter().zip(answers) {
+            let error = match answer.map(|a| a.map(|b| parse(&b, &self.config.model))) {
+                Answer::Sent(Ok(Ok((value, confidence, _)))) => {
                     self.stats.answered += 1;
                     let confidence = Some(confidence);
                     out.push(Judgment::of(capsule, Verdict::Value { value, confidence }));
+                    continue;
                 }
-                Ok(Err(_)) => {
+                Answer::Sent(Ok(Err(_))) => {
                     self.stats.malformed += 1;
-                    errors.push(ProviderError::Malformed);
+                    ProviderError::Malformed
                 }
-                Err(TransportError::Timeout) => {
+                Answer::Sent(Err(TransportError::Timeout)) => {
                     self.stats.timeouts += 1;
-                    errors.push(ProviderError::Timeout);
+                    ProviderError::Timeout
                 }
-                Err(_) => {
+                Answer::Sent(Err(_)) => {
                     self.stats.unavailable += 1;
-                    errors.push(ProviderError::Unavailable);
+                    ProviderError::Unavailable
                 }
-            }
+                Answer::OverCap => {
+                    self.stats.skipped += 1;
+                    ProviderError::Unavailable
+                }
+                Answer::PastDeadline => {
+                    self.stats.skipped += 1;
+                    ProviderError::Timeout
+                }
+            };
+            errors.push(error);
         }
         // Nothing answered: report the whole call's failure so the kernel
         // records why; otherwise unanswered subjects are simply missing.
@@ -343,36 +418,104 @@ impl<T: Transport> DecisionProvider for Jev<T> {
     }
 }
 
-impl<T: Transport> Jev<T> {
-    /// Sends one body with bounded retries on 429/529. `None` when the
-    /// request or token cap leaves no room for a first attempt.
-    fn send(&mut self, body: &str, start: Instant) -> Option<Result<String, TransportError>> {
-        let fits = |stats: &JevStats, config: &JevConfig| {
-            stats.requests < config.max_requests
-                && stats.input_tokens + body.len() as u64 <= config.max_input_tokens
-        };
-        if !fits(&self.stats, &self.config) {
-            return None;
+/// What became of one capsule's request.
+enum Answer<A> {
+    Sent(A),
+    /// Not sent: the request or token cap had no room.
+    OverCap,
+    /// Not sent: the deadline passed before its turn.
+    PastDeadline,
+}
+
+impl<A> Answer<A> {
+    fn map<B>(self, f: impl FnOnce(A) -> B) -> Answer<B> {
+        match self {
+            Answer::Sent(a) => Answer::Sent(f(a)),
+            Answer::OverCap => Answer::OverCap,
+            Answer::PastDeadline => Answer::PastDeadline,
         }
+    }
+}
+
+impl<T: Transport> Jev<T> {
+    /// Sends every body with bounded retries on 429/529, in rounds. Each
+    /// round admits bodies in capsule order while the request cap and the
+    /// token cap (counting each body's bytes, an upper bound on its tokens)
+    /// have room, so what is sent never depends on completion order. Unlike
+    /// one-at-a-time sending, a 429 is retried after its whole round.
+    fn send(
+        &mut self,
+        bodies: &[String],
+        deadline: Instant,
+    ) -> Vec<Answer<Result<String, TransportError>>> {
+        let mut answers: Vec<_> = bodies.iter().map(|_| Answer::OverCap).collect();
+        let all: Vec<usize> = (0..bodies.len()).collect();
+        let mut batch = self.admit(&all, bodies);
         let mut attempt = 0;
         loop {
-            let left = self.config.deadline.saturating_sub(start.elapsed());
-            self.stats.requests += 1;
-            let answer = self.transport.post(body, left);
-            let retryable = matches!(answer, Err(TransportError::Status(429 | 529)));
+            let refs: Vec<&str> = batch.iter().map(|&i| bodies[i].as_str()).collect();
+            let sent = self
+                .transport
+                .post_all(&refs, deadline, self.config.concurrency);
+            let mut retry = Vec::new();
+            for (&i, sent) in batch.iter().zip(sent) {
+                let Some(Sent { answer, late, .. }) = sent else {
+                    // A retry dropped at the deadline keeps its real 429.
+                    if matches!(answers[i], Answer::OverCap) {
+                        answers[i] = Answer::PastDeadline;
+                    }
+                    continue;
+                };
+                self.stats.requests += 1;
+                if let Ok(b) = &answer {
+                    // Billed whether or not it parses or is late; unreported
+                    // usage counts as the body's length.
+                    let reported = serde_json::from_str::<Value>(b)
+                        .ok()
+                        .and_then(|v| v["usage"]["input_tokens"].as_u64());
+                    self.stats.input_tokens += reported.unwrap_or(bodies[i].len() as u64);
+                }
+                // A late answer is a timeout, whatever the transport did.
+                let answer = match answer {
+                    Ok(_) if late => Err(TransportError::Timeout),
+                    other => other,
+                };
+                if matches!(answer, Err(TransportError::Status(429 | 529))) {
+                    retry.push(i);
+                }
+                answers[i] = Answer::Sent(answer);
+            }
             let backoff = BACKOFF * 2u32.pow(attempt);
-            let left = self.config.deadline.saturating_sub(start.elapsed());
-            if !retryable
+            if retry.is_empty()
                 || attempt >= self.config.retries
-                || backoff >= left
-                || !fits(&self.stats, &self.config)
+                || backoff >= deadline.saturating_duration_since(Instant::now())
             {
-                return Some(answer);
+                return answers;
+            }
+            batch = self.admit(&retry, bodies);
+            if batch.is_empty() {
+                return answers;
             }
             std::thread::sleep(backoff);
             attempt += 1;
-            self.stats.retries += 1;
+            self.stats.retries += batch.len();
         }
+    }
+
+    /// The bodies of `pending` the caps leave room for, in order.
+    fn admit(&self, pending: &[usize], bodies: &[String]) -> Vec<usize> {
+        let mut batch = Vec::new();
+        let mut reserved = 0;
+        for &i in pending {
+            let len = bodies[i].len() as u64;
+            if self.stats.requests + batch.len() < self.config.max_requests
+                && self.stats.input_tokens + reserved + len <= self.config.max_input_tokens
+            {
+                reserved += len;
+                batch.push(i);
+            }
+        }
+        batch
     }
 }
 
@@ -403,9 +546,12 @@ impl Http {
         if key.trim().is_empty() {
             return Err("empty JEV API key".into());
         }
+        // Every in-flight request keeps its connection for the next one.
         let config = ureq::Agent::config_builder()
             .http_status_as_error(false)
             .max_redirects(0)
+            .max_idle_connections(MAX_CONCURRENCY)
+            .max_idle_connections_per_host(MAX_CONCURRENCY)
             .build();
         Ok(Self {
             endpoint: endpoint.to_owned(),
@@ -423,6 +569,24 @@ impl Http {
 
 impl Transport for Http {
     fn post(&mut self, body: &str, timeout: Duration) -> Result<String, TransportError> {
+        self.send(body, timeout)
+    }
+
+    fn post_all(
+        &mut self,
+        bodies: &[&str],
+        deadline: Instant,
+        concurrency: usize,
+    ) -> Vec<Option<Sent>> {
+        let this = &*self;
+        fan_out(bodies, deadline, concurrency, |body, left| {
+            this.send(body, left)
+        })
+    }
+}
+
+impl Http {
+    fn send(&self, body: &str, timeout: Duration) -> Result<String, TransportError> {
         if timeout.is_zero() {
             return Err(TransportError::Timeout);
         }
@@ -546,6 +710,32 @@ pub struct Recording<T> {
 }
 
 impl<T: Transport> Transport for Recording<T> {
+    fn post_all(
+        &mut self,
+        bodies: &[&str],
+        deadline: Instant,
+        concurrency: usize,
+    ) -> Vec<Option<Sent>> {
+        let sent = self.inner.post_all(bodies, deadline, concurrency);
+        // In input order, so a recording never depends on completion order.
+        for (body, sent) in bodies.iter().zip(&sent) {
+            if let Some(Sent {
+                answer, elapsed, ..
+            }) = sent
+            {
+                self.exchanges.push(Exchange {
+                    body: (*body).to_owned(),
+                    recorded: match answer {
+                        Ok(r) => Recorded::Response(r.clone()),
+                        Err(e) => Recorded::Failed(e.clone()),
+                    },
+                    elapsed: *elapsed,
+                });
+            }
+        }
+        sent
+    }
+
     fn post(&mut self, body: &str, timeout: Duration) -> Result<String, TransportError> {
         let start = Instant::now();
         let answer = self.inner.post(body, timeout);
@@ -715,12 +905,16 @@ mod tests {
     use oxide_kernel::query::Query;
 
     fn capsule(question: Question) -> Capsule {
+        named(question, "f")
+    }
+
+    fn named(question: Question, name: &str) -> Capsule {
         let file = RepoPath::new("a.py").unwrap();
         let id = EntityId::Symbol(
             SymbolId::new(
                 file,
                 vec![Segment {
-                    name: "f".into(),
+                    name: name.into(),
                     ordinal: 0,
                 }],
             )
@@ -729,7 +923,7 @@ mod tests {
         let entity = Entity {
             id: id.clone(),
             kind: "function".into(),
-            name: "f".into(),
+            name: name.into(),
             signature: Some("def f(secret)".into()),
             source: None,
             test: false,
@@ -775,6 +969,7 @@ mod tests {
             max_input_tokens: 1_000_000,
             retries: 2,
             disclosure: Disclosure::Metadata,
+            concurrency: 1,
         }
     }
 
@@ -1007,6 +1202,107 @@ mod tests {
         assert!(replayed.contains(&&Recorded::Failed(TransportError::Status(429))));
         let mut again = Jev::new(config(), replay).unwrap();
         assert_eq!(again.judge(std::slice::from_ref(&c)).unwrap(), first);
+    }
+
+    /// Answers every body after a delay that makes later bodies finish
+    /// first, counting the most requests ever in flight.
+    struct Delayed {
+        answers: BTreeMap<String, String>,
+        /// Delay per rank: the last body waits one unit, the first twelve.
+        unit: Duration,
+        in_flight: AtomicUsize,
+        peak: AtomicUsize,
+    }
+
+    impl Transport for Delayed {
+        fn post(&mut self, body: &str, _: Duration) -> Result<String, TransportError> {
+            Ok(self.answers[body].clone())
+        }
+
+        fn post_all(
+            &mut self,
+            bodies: &[&str],
+            deadline: Instant,
+            concurrency: usize,
+        ) -> Vec<Option<Sent>> {
+            let this = &*self;
+            fan_out(bodies, deadline, concurrency, |body, _| {
+                let now = this.in_flight.fetch_add(1, Ordering::SeqCst) + 1;
+                this.peak.fetch_max(now, Ordering::SeqCst);
+                let rank = bodies.len() - bodies.iter().position(|b| *b == body).unwrap();
+                std::thread::sleep(this.unit * rank as u32);
+                this.in_flight.fetch_sub(1, Ordering::SeqCst);
+                Ok(this.answers[body].clone())
+            })
+        }
+    }
+
+    #[test]
+    fn concurrent_answers_apply_in_capsule_order_within_bounds() {
+        let capsules: Vec<Capsule> = (0..12)
+            .map(|i| named(Question::Relevance, &format!("f{i}")))
+            .collect();
+        let answers: BTreeMap<String, String> = capsules
+            .iter()
+            .enumerate()
+            .map(|(i, c)| {
+                let mut p = [0.0; 3];
+                p[i % 3] = 1.0;
+                let body = request(c, MODEL, Disclosure::Metadata);
+                (body, answer((i % 3) as f64, p, 0.9))
+            })
+            .collect();
+        let transport = |unit| Delayed {
+            answers: answers.clone(),
+            unit,
+            in_flight: AtomicUsize::new(0),
+            peak: AtomicUsize::new(0),
+        };
+        let run = |config: JevConfig, unit| {
+            let mut jev = Jev::new(config, transport(unit)).unwrap();
+            let mut allowance = Allowance { remaining: 100 };
+            let policy = DecisionPolicy::default();
+            let d = decide(Some(&mut jev), &capsules, &mut allowance, policy);
+            let stats = jev.stats;
+            (d, stats, jev.into_transport().peak.into_inner())
+        };
+        let ms = Duration::from_millis;
+        let (one, stats, peak) = run(config(), ms(2));
+        assert_eq!(peak, 1);
+        assert!(one.iter().all(|d| d.fallback.is_none()));
+        let (eight, stats8, peak8) = run(
+            JevConfig {
+                concurrency: 8,
+                ..config()
+            },
+            ms(2),
+        );
+        // Completion order is reversed, yet every decision and count is
+        // the sequential run's.
+        assert_eq!((&one, stats), (&eight, stats8));
+        assert!((2..=8).contains(&peak8), "{peak8}");
+
+        // Past the deadline, queued requests are dropped unsent and the
+        // late ones time out (the first two take 330+ ms, the deadline is
+        // 100 ms, ample time for both workers to start).
+        let (late, stats, _) = run(
+            JevConfig {
+                concurrency: 2,
+                deadline: ms(100),
+                ..config()
+            },
+            ms(30),
+        );
+        assert_eq!((stats.requests, stats.skipped, stats.answered), (2, 10, 0));
+        let timeout = Some(Fallback::ProviderFailed(ProviderError::Timeout));
+        assert!(late.iter().all(|d| d.fallback == timeout));
+        for concurrency in [0, MAX_CONCURRENCY + 1] {
+            let bad = JevConfig {
+                concurrency,
+                ..config()
+            };
+            assert!(Jev::new(bad, Replay::default()).is_err());
+        }
     }
 
     /// Scripted transport: answers in order, then refuses.

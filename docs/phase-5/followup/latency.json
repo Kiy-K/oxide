@@ -1,0 +1,234 @@
+{
+  "A": {
+    "gold_token_share": {
+      "mean": 0.2440878421473496
+    },
+    "latency_ms": {
+      "p50": 340.6229,
+      "p95": 536.6333
+    },
+    "required_file_recall": {
+      "mean": 0.5071089282585289
+    },
+    "required_symbol_recall": {
+      "mean": 0.11817795366185531
+    },
+    "tasks": 52
+  },
+  "A_stages_ms": {
+    "capsules_select_pack": {
+      "p50": 47.2294,
+      "p95": 94.3936
+    },
+    "graph": {
+      "p50": 127.3304,
+      "p95": 155.7422
+    },
+    "retrieve": {
+      "p50": 20.4258,
+      "p95": 88.329
+    },
+    "route": {
+      "p50": 142.0203,
+      "p95": 175.9107
+    }
+  },
+  "B": {
+    "client_ms": {
+      "p50": 16.1008,
+      "p95": 19.7033
+    },
+    "cost_usd": {
+      "mean": 0.007841194846153846
+    },
+    "fallback_rate": 0.0,
+    "gold_token_share": {
+      "mean": 0.38199684957316704
+    },
+    "input_tokens": {
+      "mean": 186695.11538461538
+    },
+    "judge_calls": {
+      "p50": 3.0,
+      "p95": 6.0
+    },
+    "judge_ms": {
+      "p50": 22040.433,
+      "p95": 25682.9237
+    },
+    "latency_ms": {
+      "p50": 22389.6665,
+      "p95": 26069.7962
+    },
+    "outside_judge_ms": {
+      "p50": 347.193,
+      "p95": 475.7578
+    },
+    "requests": {
+      "p50": 68.0,
+      "p95": 80.0
+    },
+    "required_file_recall": {
+      "mean": 0.6982050146829898
+    },
+    "required_symbol_recall": {
+      "mean": 0.19619242428588232
+    },
+    "tasks": 52,
+    "transport_ms": {
+      "p50": 22021.2994,
+      "p95": 25664.4768
+    }
+  },
+  "C-16": {
+    "client_ms": {
+      "p50": 15.944,
+      "p95": 21.277
+    },
+    "cost_usd": {
+      "mean": 0.007841194846153846
+    },
+    "fallback_rate": 0.0,
+    "gold_token_share": {
+      "mean": 0.38199684957316704
+    },
+    "input_tokens": {
+      "mean": 186695.11538461538
+    },
+    "judge_calls": {
+      "p50": 3.0,
+      "p95": 6.0
+    },
+    "judge_ms": {
+      "p50": 2188.4637,
+      "p95": 3356.9897
+    },
+    "latency_ms": {
+      "p50": 2604.3684,
+      "p95": 3756.161
+    },
+    "outside_judge_ms": {
+      "p50": 362.0863,
+      "p95": 517.472
+    },
+    "requests": {
+      "p50": 68.0,
+      "p95": 80.0
+    },
+    "required_file_recall": {
+      "mean": 0.6982050146829898
+    },
+    "required_symbol_recall": {
+      "mean": 0.19619242428588232
+    },
+    "tasks": 52,
+    "transport_ms": {
+      "p50": 2174.8696,
+      "p95": 3334.5201
+    }
+  },
+  "C-4": {
+    "client_ms": {
+      "p50": 15.8201,
+      "p95": 19.9719
+    },
+    "cost_usd": {
+      "mean": 0.007841194846153846
+    },
+    "fallback_rate": 0.0,
+    "gold_token_share": {
+      "mean": 0.38199684957316704
+    },
+    "input_tokens": {
+      "mean": 186695.11538461538
+    },
+    "judge_calls": {
+      "p50": 3.0,
+      "p95": 6.0
+    },
+    "judge_ms": {
+      "p50": 5941.3943,
+      "p95": 7345.6159
+    },
+    "latency_ms": {
+      "p50": 6358.6318,
+      "p95": 7806.0508
+    },
+    "outside_judge_ms": {
+      "p50": 365.6205,
+      "p95": 526.3944
+    },
+    "requests": {
+      "p50": 68.0,
+      "p95": 80.0
+    },
+    "required_file_recall": {
+      "mean": 0.6982050146829898
+    },
+    "required_symbol_recall": {
+      "mean": 0.19619242428588232
+    },
+    "tasks": 52,
+    "transport_ms": {
+      "p50": 5922.0387,
+      "p95": 7327.9379
+    }
+  },
+  "C-8": {
+    "client_ms": {
+      "p50": 15.5521,
+      "p95": 21.8492
+    },
+    "cost_usd": {
+      "mean": 0.007841194846153846
+    },
+    "fallback_rate": 0.0,
+    "gold_token_share": {
+      "mean": 0.38199684957316704
+    },
+    "input_tokens": {
+      "mean": 186695.11538461538
+    },
+    "judge_calls": {
+      "p50": 3.0,
+      "p95": 6.0
+    },
+    "judge_ms": {
+      "p50": 3439.4402,
+      "p95": 4685.7678
+    },
+    "latency_ms": {
+      "p50": 3833.812,
+      "p95": 5057.2731
+    },
+    "outside_judge_ms": {
+      "p50": 352.0022,
+      "p95": 532.4559
+    },
+    "requests": {
+      "p50": 68.0,
+      "p95": 80.0
+    },
+    "required_file_recall": {
+      "mean": 0.6982050146829898
+    },
+    "required_symbol_recall": {
+      "mean": 0.19619242428588232
+    },
+    "tasks": 52,
+    "transport_ms": {
+      "p50": 3424.3418,
+      "p95": 4663.1018
+    }
+  },
+  "budget_units": 1024,
+  "peak_rss_kib": 3449100,
+  "preregistration_sha256": "482a74e726896743b6be07ab8b9b7555577cbcadde9375f049c518b650531d33",
+  "recommended_concurrency": 16,
+  "simulation_check": {
+    "live_p50_ms": 21126.0,
+    "simulated_b_p50_ms": 22389.6665,
+    "within_15_percent": true
+  },
+  "tasks": 52
+}

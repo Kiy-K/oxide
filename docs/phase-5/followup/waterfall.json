@@ -1,0 +1,151 @@
+{
+  "all": {
+    "gold_spans": {
+      "file_level": 84,
+      "unverified": 59,
+      "verified": 382
+    },
+    "gold_symbols": 410,
+    "heuristic": {
+      "budget": 16,
+      "packed": 35,
+      "packed_via_enclosing": 10,
+      "selection": 101,
+      "unrouted": 248
+    },
+    "jev": {
+      "budget": 27,
+      "packed": 63,
+      "packed_via_enclosing": 22,
+      "selection": 62,
+      "unrouted": 236
+    },
+    "reach_capped_tasks": 0,
+    "tasks": 52,
+    "unrouted_cause": {
+      "depth_limit": 9,
+      "entry_limit": 76,
+      "lexical_miss_and_graph_gap": 33,
+      "work_limit": 130
+    },
+    "unrouted_lexical_rank": {
+      "1-20": 0,
+      "21-200": 66,
+      ">200": 130,
+      "no_hit": 52
+    },
+    "verified_file_level": 57,
+    "verified_gold": 467
+  },
+  "calibration": {
+    "gold_spans": {
+      "file_level": 42,
+      "unverified": 15,
+      "verified": 141
+    },
+    "gold_symbols": 129,
+    "heuristic": {
+      "budget": 7,
+      "packed": 8,
+      "selection": 37,
+      "unrouted": 77
+    },
+    "jev": {
+      "budget": 11,
+      "packed": 24,
+      "packed_via_enclosing": 5,
+      "selection": 17,
+      "unrouted": 72
+    },
+    "reach_capped_tasks": 0,
+    "tasks": 14,
+    "unrouted_cause": {
+      "entry_limit": 26,
+      "lexical_miss_and_graph_gap": 19,
+      "work_limit": 32
+    },
+    "unrouted_lexical_rank": {
+      "1-20": 0,
+      "21-200": 24,
+      ">200": 28,
+      "no_hit": 25
+    },
+    "verified_file_level": 28,
+    "verified_gold": 157
+  },
+  "dev": {
+    "gold_spans": {
+      "file_level": 13,
+      "unverified": 27,
+      "verified": 64
+    },
+    "gold_symbols": 60,
+    "heuristic": {
+      "budget": 3,
+      "packed": 8,
+      "selection": 12,
+      "unrouted": 37
+    },
+    "jev": {
+      "budget": 9,
+      "packed": 8,
+      "packed_via_enclosing": 3,
+      "selection": 6,
+      "unrouted": 34
+    },
+    "reach_capped_tasks": 0,
+    "tasks": 14,
+    "unrouted_cause": {
+      "depth_limit": 1,
+      "entry_limit": 8,
+      "lexical_miss_and_graph_gap": 9,
+      "work_limit": 19
+    },
+    "unrouted_lexical_rank": {
+      "1-20": 0,
+      "21-200": 11,
+      ">200": 17,
+      "no_hit": 9
+    },
+    "verified_file_level": 8,
+    "verified_gold": 68
+  },
+  "test": {
+    "gold_spans": {
+      "file_level": 29,
+      "unverified": 17,
+      "verified": 177
+    },
+    "gold_symbols": 221,
+    "heuristic": {
+      "budget": 6,
+      "packed": 19,
+      "packed_via_enclosing": 10,
+      "selection": 52,
+      "unrouted": 134
+    },
+    "jev": {
+      "budget": 7,
+      "packed": 31,
+      "packed_via_enclosing": 14,
+      "selection": 39,
+      "unrouted": 130
+    },
+    "reach_capped_tasks": 0,
+    "tasks": 24,
+    "unrouted_cause": {
+      "depth_limit": 8,
+      "entry_limit": 42,
+      "lexical_miss_and_graph_gap": 5,
+      "work_limit": 79
+    },
+    "unrouted_lexical_rank": {
+      "1-20": 0,
+      "21-200": 31,
+      ">200": 85,
+      "no_hit": 18
+    },
+    "verified_file_level": 21,
+    "verified_gold": 242
+  }
+}

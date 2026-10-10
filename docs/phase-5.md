@@ -254,5 +254,7 @@ and byte-identical payload. Published knowledge is unchanged.
   combination" and necessity.
 - Live JEV at routing time (branch pruning) and its cost under deadlines.
 - A batched or concurrent JEV transport (sequential calls add about 20 s per
-  context request).
+  context request). Done in the
+  [follow-up](phase-5-followup.md): bounded concurrent requests, offline
+  p50 2.6 s, with the routing loss broken down by stage.
 - Downstream agent success is not measured.

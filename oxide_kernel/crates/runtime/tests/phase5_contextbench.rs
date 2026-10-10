@@ -16,27 +16,19 @@
 mod common;
 
 use std::collections::BTreeMap;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use common::phase5::{
-    self, PREREGISTRATION_SHA256, Tape, TaskInput, TaskOutput, composition, evaluate,
-    jev_confidence_points, jev_config, judge_branches, repeat_dev, run_task,
+    self, BUFFER_POOL, GOLD_SOURCE, Indexed, PREREGISTRATION_SHA256, Tape, TaskInput, TaskOutput,
+    composition, data_dir, evaluate, jev_confidence_points, jev_config, judge_branches, repeat_dev,
+    run_task,
 };
 use common::{repo_root, rss_peak_kib};
-use oxide_kernel::id::RepoId;
 use oxide_kernel::store::KnowledgeStore;
-use oxide_runtime::capture::{Scope, capture};
 use oxide_runtime::decisionbench::{self as db, Record, Split};
-use oxide_runtime::derivation::derive;
 use oxide_runtime::jev::{self, Http, Jev, MODEL};
-use oxide_runtime::storage::LadybugStore;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-
-/// Real repositories outgrow the default 32 MiB pool at publication.
-const BUFFER_POOL: u64 = 1 << 30;
-const GOLD_SOURCE: &str =
-    "ContextBench gold_context (benchmark-curated, independent of OXIDE and JEV)";
 
 /// A task's outputs, cached per JEV mode so evaluation can be rerun
 /// without re-indexing.
@@ -47,37 +39,6 @@ struct Cached {
     jev: BTreeMap<String, (f64, Option<f64>, Option<String>)>,
     routing: Value,
     provenance: Value,
-}
-
-fn data_dir() -> PathBuf {
-    std::env::var_os("OXIDE_DECISIONBENCH_DATA")
-        .map(PathBuf::from)
-        .unwrap_or_else(|| {
-            let home = std::env::var_os("HOME").unwrap();
-            Path::new(&home).join("Projects/oxide-eval-data/oxide-decisionbench")
-        })
-}
-
-fn worktree(id: &str) -> Option<PathBuf> {
-    let dirs = std::env::var("OXIDE_CB_WORKTREES").expect("set OXIDE_CB_WORKTREES");
-    dirs.split(':')
-        .map(|d| Path::new(d).join(id))
-        .find(|p| p.is_dir())
-}
-
-/// The worktree's checked-out commit, read from its git files (git itself
-/// is never run: SPEC § Security and privacy).
-fn head(root: &Path) -> Option<String> {
-    let dot = root.join(".git");
-    let gitdir = if dot.is_file() {
-        let text = std::fs::read_to_string(&dot).ok()?;
-        let p = PathBuf::from(text.strip_prefix("gitdir:")?.trim());
-        if p.is_absolute() { p } else { root.join(p) }
-    } else {
-        dot
-    };
-    let head = std::fs::read_to_string(gitdir.join("HEAD")).ok()?;
-    Some(head.trim().to_owned())
 }
 
 fn merged_validity(dirs: &[&Path]) -> Value {
@@ -122,34 +83,18 @@ fn build(
 ) -> (TaskOutput, Value) {
     let id = t["id"].as_str().unwrap();
     let repo = t["repo"].as_str().unwrap();
-    let root = worktree(id).unwrap_or_else(|| panic!("no worktree for {id}"));
-    let head = head(&root);
-    assert_eq!(
-        head.as_deref(),
-        t["base_commit"].as_str(),
-        "{id}: not at base_commit"
-    );
-    let started = std::time::Instant::now();
-    let source = capture(&root, &Scope::default()).unwrap();
-    let slug: String = repo
-        .chars()
-        .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
-        .collect();
-    let repo_id = RepoId::new(format!("decisionbench-{slug}")).unwrap();
-    let (manifest, batch, components) = derive(&repo_id, &source).unwrap();
-    let key = manifest.key.clone();
-    let spans = t["gold"].as_array().unwrap();
-    let (gold, span_counts) = phase5::map_gold(&source, &batch.entities, spans, GOLD_SOURCE);
-    let entities = batch.entities.len();
-    let store_dir = data.join("stores").join(id);
-    let _ = std::fs::remove_dir_all(&store_dir);
-    let mut store = LadybugStore::with_buffer_pool(&store_dir, BUFFER_POOL).unwrap();
-    store.begin(manifest).unwrap();
-    store.retain_derivation(&key, &components).unwrap();
-    store.retain_source(&source).unwrap();
-    store.write(&key, batch).unwrap();
-    store.publish(&key).unwrap();
-    let index_seconds = started.elapsed().as_secs_f64();
+    let Indexed {
+        store,
+        key,
+        gold,
+        span_counts,
+        head,
+        files,
+        skipped,
+        entities,
+        index_seconds,
+        dir: store_dir,
+    } = phase5::index_task(t, data);
     let view = store.open(&key).unwrap();
     let input = TaskInput {
         id,
@@ -177,7 +122,7 @@ fn build(
         "split": split,
         "snapshot": {"repo": key.repo.as_str(), "snapshot": key.snapshot.as_str(),
                      "derivation": key.derivation.as_str()},
-        "files": source.files.len(), "skipped": source.skipped.len(), "entities": entities,
+        "files": files, "skipped": skipped, "entities": entities,
         "gold_spans": span_counts,
         "records": out.records.len(),
         "records_sha256": db::sha256_hex(jsonl.as_bytes()),

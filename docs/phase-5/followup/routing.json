@@ -1,0 +1,206 @@
+{
+  "calibration": {
+    "baseline": {
+      "edges_examined": 585.9286,
+      "entry_points": 20.0,
+      "gold_token_share": 0.2369,
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.0442,
+      "routed_gold_coverage": 0.4266,
+      "tasks": 14
+    }
+  },
+  "dev": {
+    "baseline": {
+      "edges_examined": 693.3571,
+      "entry_points": 20.0,
+      "gold_token_share": 0.1974,
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.5833,
+      "tasks": 14
+    },
+    "lexical_limit=10": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.1429,
+          0.0238
+        ],
+        "mean_diff": -0.0476,
+        "tasks": 14
+      },
+      "edges_examined": 622.0714,
+      "entry_points": 10.0,
+      "gold_token_share": 0.1953,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 60.7143,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.5357,
+      "tasks": 14
+    },
+    "lexical_limit=40": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.25,
+          0.0238
+        ],
+        "mean_diff": -0.0881,
+        "tasks": 14
+      },
+      "edges_examined": 651.1429,
+      "entry_points": 40.0,
+      "gold_token_share": 0.1973,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.4952,
+      "tasks": 14
+    },
+    "lexical_only=64": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.2881,
+          0.0327
+        ],
+        "mean_diff": -0.1125,
+        "tasks": 14
+      },
+      "edges_examined": 419.0714,
+      "entry_points": 64.0,
+      "gold_token_share": 0.1957,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.4708,
+      "tasks": 14
+    },
+    "max_depth=1": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.0857,
+          0.0
+        ],
+        "mean_diff": -0.0286,
+        "tasks": 14
+      },
+      "edges_examined": 614.0714,
+      "entry_points": 20.0,
+      "gold_token_share": 0.1974,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 50.7143,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.5548,
+      "tasks": 14
+    },
+    "max_depth=3": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "edges_examined": 693.3571,
+      "entry_points": 20.0,
+      "gold_token_share": 0.1974,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.5833,
+      "tasks": 14
+    },
+    "max_fanout=32": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.2667,
+          0.0095
+        ],
+        "mean_diff": -0.0952,
+        "tasks": 14
+      },
+      "edges_examined": 987.7857,
+      "entry_points": 20.0,
+      "gold_token_share": 0.1974,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.4881,
+      "tasks": 14
+    },
+    "max_fanout=8": {
+      "accepted_on_dev": false,
+      "coverage_vs_baseline": {
+        "ci95": [
+          -0.2524,
+          0.019
+        ],
+        "mean_diff": -0.0857,
+        "tasks": 14
+      },
+      "edges_examined": 454.7857,
+      "entry_points": 20.0,
+      "gold_token_share": 0.1974,
+      "recall_vs_baseline": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "regions_loaded": 64.0,
+      "required_symbol_recall": 0.2,
+      "routed_gold_coverage": 0.4976,
+      "tasks": 14
+    }
+  }
+}

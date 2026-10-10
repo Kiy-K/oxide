@@ -473,6 +473,7 @@ fn failing_abstaining_or_absent_judges_cannot_break_context_construction() {
         max_input_tokens: 10_000_000,
         retries: 0,
         disclosure: Disclosure::Metadata,
+        concurrency: 1,
     };
     let mut jev = Jev::new(jev_config, JevReplay::default()).unwrap();
     for provider in [

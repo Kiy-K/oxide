@@ -25,19 +25,22 @@ use oxide_kernel::context::{ContextRequest, ContextRun, baseline, build_context}
 use oxide_kernel::decision::{
     DecisionProvider, Fallback, Heuristic, Judgment, ProviderError, ProviderIdentity,
 };
-use oxide_kernel::id::EntityId;
+use oxide_kernel::id::{EntityId, RepoId, SnapshotKey};
 use oxide_kernel::knowledge::Entity;
 use oxide_kernel::pack::counter;
 use oxide_kernel::query::{ContextBudget, Query, QueryContext};
 use oxide_kernel::retrieve::ChannelState;
 use oxide_kernel::source::{SourceCapture, SourceProvider};
-use oxide_kernel::store::ReadView;
+use oxide_kernel::store::{KnowledgeStore, ReadView};
 use oxide_kernel::tree::NavLimits;
+use oxide_runtime::capture::{Scope, capture};
 use oxide_runtime::decisionbench::{self as db, Gold, LabelValue, Record, Split, SubjectKind};
+use oxide_runtime::derivation::derive;
 use oxide_runtime::jev::{
     self, Disclosure, Http, Jev, JevConfig, MODEL, Recorded, Recording, Replay, Transport,
     TransportError,
 };
+use oxide_runtime::storage::LadybugStore;
 use serde_json::{Value, json};
 
 use super::{Constant, gold_sources, mean, metrics};
@@ -247,6 +250,7 @@ pub fn jev_config() -> JevConfig {
         max_input_tokens: u64::MAX,
         retries: 2,
         disclosure: Disclosure::Source,
+        concurrency: 1,
     }
 }
 
@@ -274,7 +278,7 @@ pub struct TaskOutput {
     pub routing: Value,
 }
 
-fn request(input: &TaskInput<'_>, tokens: u32) -> ContextRequest {
+pub fn request(input: &TaskInput<'_>, tokens: u32) -> ContextRequest {
     ContextRequest {
         query: Query {
             text: input.query.into(),
@@ -291,7 +295,7 @@ fn request(input: &TaskInput<'_>, tokens: u32) -> ContextRequest {
     }
 }
 
-fn fallbacks(run: &ContextRun) -> Value {
+pub fn fallbacks(run: &ContextRun) -> Value {
     let mut counts: BTreeMap<String, usize> = BTreeMap::new();
     let all = run
         .route
@@ -467,7 +471,7 @@ fn labeled(r: &Record) -> Option<bool> {
     }
 }
 
-fn round(x: f64) -> Value {
+pub fn round(x: f64) -> Value {
     json!((x * 1e4).round() / 1e4)
 }
 
@@ -512,7 +516,7 @@ fn within_task(points: &Points) -> BTreeMap<String, f64> {
         .collect()
 }
 
-fn paired(a: &BTreeMap<String, f64>, b: &BTreeMap<String, f64>) -> Value {
+pub fn paired(a: &BTreeMap<String, f64>, b: &BTreeMap<String, f64>) -> Value {
     let diffs: Vec<f64> = a.iter().filter_map(|(t, x)| Some(x - b.get(t)?)).collect();
     if diffs.is_empty() {
         return json!({"tasks": 0});
@@ -749,6 +753,102 @@ pub fn composition(records: &[&Record]) -> Value {
         }
     }
     json!({"by_subject_and_label": subjects, "by_stratum": strata})
+}
+
+/// Real repositories outgrow the default 32 MiB pool at publication.
+pub const BUFFER_POOL: u64 = 1 << 30;
+pub const GOLD_SOURCE: &str =
+    "ContextBench gold_context (benchmark-curated, independent of OXIDE and JEV)";
+
+pub fn data_dir() -> PathBuf {
+    std::env::var_os("OXIDE_DECISIONBENCH_DATA")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            let home = std::env::var_os("HOME").unwrap();
+            Path::new(&home).join("Projects/oxide-eval-data/oxide-decisionbench")
+        })
+}
+
+pub fn worktree(id: &str) -> Option<PathBuf> {
+    let dirs = std::env::var("OXIDE_CB_WORKTREES").expect("set OXIDE_CB_WORKTREES");
+    dirs.split(':')
+        .map(|d| Path::new(d).join(id))
+        .find(|p| p.is_dir())
+}
+
+/// The worktree's checked-out commit, read from its git files (git itself
+/// is never run: SPEC § Security and privacy).
+pub fn head(root: &Path) -> Option<String> {
+    let dot = root.join(".git");
+    let gitdir = if dot.is_file() {
+        let text = std::fs::read_to_string(&dot).ok()?;
+        let p = PathBuf::from(text.strip_prefix("gitdir:")?.trim());
+        if p.is_absolute() { p } else { root.join(p) }
+    } else {
+        dot
+    };
+    let head = std::fs::read_to_string(gitdir.join("HEAD")).ok()?;
+    Some(head.trim().to_owned())
+}
+
+/// One ContextBench task indexed into a fresh store under `data/stores`.
+pub struct Indexed {
+    pub store: LadybugStore,
+    pub key: SnapshotKey,
+    pub gold: Gold,
+    pub span_counts: BTreeMap<&'static str, usize>,
+    pub head: Option<String>,
+    pub files: usize,
+    pub skipped: usize,
+    pub entities: usize,
+    pub index_seconds: f64,
+    pub dir: PathBuf,
+}
+
+/// Captures, derives and publishes task `t` (a `contextbench-tasks.json`
+/// entry) from its worktree at the benchmark base commit, and maps its gold.
+pub fn index_task(t: &Value, data: &Path) -> Indexed {
+    let id = t["id"].as_str().unwrap();
+    let repo = t["repo"].as_str().unwrap();
+    let root = worktree(id).unwrap_or_else(|| panic!("no worktree for {id}"));
+    let head = head(&root);
+    assert_eq!(
+        head.as_deref(),
+        t["base_commit"].as_str(),
+        "{id}: not at base_commit"
+    );
+    let started = Instant::now();
+    let source = capture(&root, &Scope::default()).unwrap();
+    let slug: String = repo
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
+        .collect();
+    let repo_id = RepoId::new(format!("decisionbench-{slug}")).unwrap();
+    let (manifest, batch, components) = derive(&repo_id, &source).unwrap();
+    let key = manifest.key.clone();
+    let spans = t["gold"].as_array().unwrap();
+    let (gold, span_counts) = map_gold(&source, &batch.entities, spans, GOLD_SOURCE);
+    let entities = batch.entities.len();
+    let dir = data.join("stores").join(id);
+    let _ = std::fs::remove_dir_all(&dir);
+    let mut store = LadybugStore::with_buffer_pool(&dir, BUFFER_POOL).unwrap();
+    store.begin(manifest).unwrap();
+    store.retain_derivation(&key, &components).unwrap();
+    store.retain_source(&source).unwrap();
+    store.write(&key, batch).unwrap();
+    store.publish(&key).unwrap();
+    Indexed {
+        store,
+        key,
+        gold,
+        span_counts,
+        head,
+        files: source.files.len(),
+        skipped: source.skipped.len(),
+        entities,
+        index_seconds: started.elapsed().as_secs_f64(),
+        dir,
+    }
 }
 
 /// ContextBench gold spans (1-based inclusive lines) mapped to entities
