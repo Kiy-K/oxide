@@ -1,7 +1,7 @@
 //! Phase-by-phase profiling of `oxide::literal::search` (the shipped
 //! control) against `rg -F`, to find where the ~1.3-1.6x latency gap
-//! recorded in `docs/literal-search-eval/README.md` actually comes from.
-//! Diagnostic only -- no changes to `src/literal.rs`, nothing here is an
+//! recorded in `docs/literal-search-eval/README.md` (on `main`) actually
+//! comes from. Diagnostic only -- no changes to `src/literal.rs`, nothing here is an
 //! optimization.
 //!
 //! Decomposes the control's own work into the same phases it performs
@@ -15,8 +15,8 @@
 //! set, same pattern) is included too, to correlate these in-process
 //! numbers with the subprocess-based benchmark already in the eval doc.
 //!
-//! A Greptile review of this file (see docs/literal-search-eval/README.md)
-//! caught an early version attributing the whole `C - (A+B)` remainder to
+//! A Greptile review of this file (see docs/literal-search-eval/README.md
+//! on `main`) caught an early version attributing the whole `C - (A+B)` remainder to
 //! "the matcher" — it also includes line-splitting (`bytes.split(|&b| b ==
 //! b'\n')`, a scalar per-byte closure call with no SIMD path in
 //! `std::slice::split`) and per-hit allocation (a path clone and snippet
@@ -208,8 +208,8 @@ fn main() {
 
 /// Peak resident set size in KB for this process so far, from
 /// `/proc/self/status`'s `VmHWM` (high-water mark) — Linux-specific, and
-/// the same idiom `docs/literal-search-eval/spike/src/bin/bench.rs` uses,
-/// so RSS numbers from the two tools are comparable.
+/// the same idiom `docs/literal-search-eval/spike/src/bin/bench.rs` (on
+/// `main`) uses, so RSS numbers from the two tools are comparable.
 fn peak_rss_kb() -> Option<u64> {
     let status = std::fs::read_to_string("/proc/self/status").ok()?;
     status.lines().find_map(|line| {

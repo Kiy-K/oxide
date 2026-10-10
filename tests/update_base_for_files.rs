@@ -1,5 +1,6 @@
 //! `update_base_for_files` (the auto-indexing watcher's scoped base-update
-//! primitive, `docs/auto-indexing-watcher-constraints/README.md` seam #3).
+//! primitive, `docs/auto-indexing-watcher-constraints/README.md` seam #3, on
+//! `main`).
 //! The one property that matters most: deletions come ONLY from a confirmed
 //! `NotFound` for a path already in `changed_paths` — never from a file's
 //! mere absence from that set. A file the caller doesn't mention is
