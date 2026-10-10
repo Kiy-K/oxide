@@ -1,0 +1,77 @@
+{
+  "claims": "a 65-entity regression floor with maintainer-written gold; not a generalization benchmark",
+  "composition": {
+    "by_stratum": {
+      "container": 70,
+      "entry:lexical": 110,
+      "entry:seed": 2,
+      "expansion": 2,
+      "hard_negative": 215,
+      "lexical_top5": 35,
+      "misleading_lexical": 25,
+      "neighbor_of_gold": 26,
+      "no_gold_branch": 122,
+      "promising_no_gold": 1,
+      "routed_only": 125,
+      "same_file_as_gold": 40,
+      "test": 25,
+      "useful_descendants": 1
+    },
+    "by_subject_and_label": {
+      "candidate": {
+        "irrelevant": 213,
+        "relevant": 9,
+        "uncertain": 11
+      },
+      "neighbor": {
+        "irrelevant": 2
+      },
+      "region": {
+        "irrelevant": 122,
+        "relevant": 1
+      }
+    }
+  },
+  "dataset": "oxide-decisionbench-v1",
+  "gold": "fixtures/benchmark.json + fixtures/structural_benchmark.json (relevant symbols hand-written by OXIDE maintainers, historical)",
+  "jev_recordings": [
+    {
+      "exchanges": 295,
+      "failed": {},
+      "identical": 0,
+      "malformed": 0,
+      "models": [
+        "jev-1.13.0"
+      ],
+      "repeated": 0,
+      "session": "session-000.json",
+      "valid": 295
+    }
+  ],
+  "label_rules": [
+    "gold-membership-v1 (candidates, neighbors)",
+    "subtree-contains-gold-v1 (regions)"
+  ],
+  "leakage": {
+    "errors": [],
+    "near_duplicates_within_split": [],
+    "shared_capsules": 0
+  },
+  "records": 358,
+  "repository": "fixture/py_repo",
+  "snapshot": {
+    "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+    "repo": "phase3-eval",
+    "snapshot": "sha256:eccfbe9467b3b4b27f167be7b40cfc03d5a06baff395f5fc0f7d75707df7952a"
+  },
+  "split": "dev (the fixture is the CI regression set, never held out)",
+  "tasks": 7,
+  "versions": {
+    "capsule": 2,
+    "heuristic": "heuristic-evidence/1",
+    "jev_model": "jev-1.13.0",
+    "retrieval": "oxide-retrieval-v1",
+    "router": "oxide-router-bfs-v1",
+    "selector": "oxide-select-greedy-v1"
+  }
+}

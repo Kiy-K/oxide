@@ -116,19 +116,24 @@ fn native(e: lbug::Error) -> StoreError {
     }
 }
 
-fn config() -> SystemConfig {
+/// The default buffer pool. Enough for the fixture and CPython-package
+/// scale (docs/phase-3.md); publishing a repository of ~17k entities and
+/// ~88k relations (ansible) needs more ([`LadybugStore::with_buffer_pool`]).
+pub const DEFAULT_BUFFER_POOL: u64 = 32 << 20;
+
+fn config(buffer_pool: u64) -> SystemConfig {
     SystemConfig::default()
-        .buffer_pool_size(32 << 20)
+        .buffer_pool_size(buffer_pool)
         .max_num_threads(2)
         .max_db_size(1 << 30)
 }
 
-fn db(path: &Path) -> R<Database> {
-    Database::new(path, config()).map_err(native)
+fn db(path: &Path, buffer_pool: u64) -> R<Database> {
+    Database::new(path, config(buffer_pool)).map_err(native)
 }
 
-fn read_db(path: &Path) -> R<Database> {
-    Database::new(path, config().read_only(true))
+fn read_db(path: &Path, buffer_pool: u64) -> R<Database> {
+    Database::new(path, config(buffer_pool).read_only(true))
         .map_err(|e| StoreError::Corrupt(format!("unreadable generation; rebuild required: {e}")))
 }
 fn query(c: &Connection, q: &str) -> R<Vec<Vec<Value>>> {
@@ -210,7 +215,12 @@ fn is_generation_name(name: &str) -> bool {
 /// `None` means it was written in an older storage format or adapter
 /// encoding and must be rebuilt. A newer one belongs to a newer OXIDE: it is
 /// refused, never deleted.
-fn load_generation(path: &Path, name: &str, owner: &Arc<Lock>) -> R<Option<Generation>> {
+fn load_generation(
+    path: &Path,
+    name: &str,
+    owner: &Arc<Lock>,
+    buffer_pool: u64,
+) -> R<Option<Generation>> {
     let manifest = codec::parse(&fs::read_to_string(path.join("MANIFEST")).map_err(io)?)?;
     // Schema 1 manifests have no encoding field: the key sits in its place.
     let schema = if manifest[1].is_array() {
@@ -264,7 +274,12 @@ fn load_generation(path: &Path, name: &str, owner: &Arc<Lock>) -> R<Option<Gener
             "generation identity mismatch; rebuild required".into(),
         ));
     }
-    Ok(Some(Generation::open(path.to_path_buf(), m, owner)?))
+    Ok(Some(Generation::open(
+        path.to_path_buf(),
+        m,
+        owner,
+        buffer_pool,
+    )?))
 }
 
 fn sync(path: &Path) -> R<()> {
@@ -302,8 +317,13 @@ struct Generation {
 }
 
 impl Generation {
-    fn open(path: PathBuf, manifest: RepositorySnapshot, owner: &Arc<Lock>) -> R<Self> {
-        let db = read_db(&path.join("db"))?;
+    fn open(
+        path: PathBuf,
+        manifest: RepositorySnapshot,
+        owner: &Arc<Lock>,
+        buffer_pool: u64,
+    ) -> R<Self> {
+        let db = read_db(&path.join("db"), buffer_pool)?;
         // A generation stays readable without its accelerator: lexical
         // search then reports why it is unavailable.
         let lexical = match load_fts(&db) {
@@ -348,6 +368,7 @@ struct State {
     current: Option<Arc<Generation>>,
     poisoned: bool,
     owner: Arc<Lock>,
+    buffer_pool: u64,
 }
 
 impl State {
@@ -409,6 +430,12 @@ pub struct LadybugView {
 
 impl LadybugStore {
     pub fn new(path: &Path) -> R<Self> {
+        Self::with_buffer_pool(path, DEFAULT_BUFFER_POOL)
+    }
+
+    /// A store whose databases use a `buffer_pool`-byte buffer pool, for
+    /// repositories larger than [`DEFAULT_BUFFER_POOL`] can publish.
+    pub fn with_buffer_pool(path: &Path, buffer_pool: u64) -> R<Self> {
         if lbug::get_storage_version() != STORAGE_FORMAT {
             return Err(StoreError::Unsupported(
                 "linked LadybugDB storage format differs from the pin".into(),
@@ -441,6 +468,7 @@ impl LadybugStore {
             sealed: BTreeMap::new(),
             current: None,
             poisoned: false,
+            buffer_pool,
         };
 
         // Recovery (ADR-0002 § 6.7). Only CURRENT names a published
@@ -481,7 +509,7 @@ impl LadybugStore {
             entries.push((name, entry.path()));
         }
         if let Some(name) = &current {
-            match load_generation(&dirs.join(name), name, &state.owner)? {
+            match load_generation(&dirs.join(name), name, &state.owner, state.buffer_pool)? {
                 Some(g) => {
                     let g = Arc::new(g);
                     state
@@ -1007,7 +1035,7 @@ fn begin_state(s: &mut State, manifest: RepositorySnapshot) -> R<()> {
         ));
     }
     fs::create_dir(&path).map_err(io)?;
-    let created = create_staged(&path);
+    let created = create_staged(&path, s.buffer_pool);
     if created.is_err() {
         // Never left behind half-made: a retry of this key starts clean.
         let _ = fs::remove_dir_all(&path);
@@ -1026,8 +1054,8 @@ fn begin_state(s: &mut State, manifest: RepositorySnapshot) -> R<()> {
 }
 
 /// The empty schema-2 database of a new staged generation.
-fn create_staged(path: &Path) -> R<Database> {
-    let database = db(&path.join("db"))?;
+fn create_staged(path: &Path, buffer_pool: u64) -> R<Database> {
+    let database = db(&path.join("db"), buffer_pool)?;
     let c = Connection::new(&database).map_err(native)?;
     query(
         &c,
@@ -1233,7 +1261,11 @@ fn publish_state(s: &mut State, key: SnapshotKey) -> R<()> {
     let dir = g.path.join("load");
     let _ = fs::remove_dir_all(&dir);
     fs::create_dir(&dir).map_err(io)?;
-    let c = Connection::new(&g.db).map_err(native)?;
+    let mut c = Connection::new(&g.db).map_err(native)?;
+    // One thread for the load and the FTS build. With two, the same snapshot
+    // scored differently in the last bits across processes (measured, Phase
+    // 5; likely row order and BM25 statistics' summation order).
+    c.set_max_num_threads_for_exec(1);
     query(&c, "BEGIN TRANSACTION")?;
     let result = (|| {
         load(&c, g, &dir)?;
@@ -1292,7 +1324,12 @@ fn publish_state(s: &mut State, key: SnapshotKey) -> R<()> {
     }
     fs::rename(&g.path, &sealed).map_err(io)?;
     sync(&s.root.join("generations"))?;
-    let published = Arc::new(Generation::open(sealed, g.manifest, &s.owner)?);
+    let published = Arc::new(Generation::open(
+        sealed,
+        g.manifest,
+        &s.owner,
+        s.buffer_pool,
+    )?);
     point_current(s, &key)?;
     s.sealed.insert(key, Arc::downgrade(&published));
     s.current = Some(published);

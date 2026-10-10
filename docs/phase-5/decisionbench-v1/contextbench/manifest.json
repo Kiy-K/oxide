@@ -1,0 +1,1491 @@
+{
+  "dataset": "oxide-decisionbench-v1",
+  "gold": "ContextBench gold_context (benchmark-curated, independent of OXIDE and JEV)",
+  "label_rules": [
+    "gold-membership-v1 (candidates, neighbors)",
+    "subtree-contains-gold-v1 (regions)",
+    "cb-span-innermost-v1 (span -> entities)"
+  ],
+  "leakage": {
+    "errors": [],
+    "near_duplicates_within_split": [],
+    "shared_capsules": 0
+  },
+  "peak_rss_kib": 1024236,
+  "records_location": "machine-local (source-bearing): OXIDE_DECISIONBENCH_DATA/records/<task>.jsonl; sha256 per task below",
+  "splits": {
+    "calibration": {
+      "composition": {
+        "by_stratum": {
+          "container": 138,
+          "entry:lexical": 280,
+          "expansion": 25,
+          "hard_negative": 823,
+          "lexical_top5": 70,
+          "misleading_lexical": 54,
+          "neighbor_of_gold": 14,
+          "no_gold_branch": 556,
+          "promising_no_gold": 307,
+          "relevant_structural_neighbor": 27,
+          "routed_only": 641,
+          "same_file_as_gold": 164,
+          "test": 93,
+          "useful_descendants": 30
+        },
+        "by_subject_and_label": {
+          "candidate": {
+            "irrelevant": 801,
+            "relevant": 57,
+            "uncertain": 38
+          },
+          "neighbor": {
+            "irrelevant": 22,
+            "relevant": 2,
+            "uncertain": 1
+          },
+          "region": {
+            "irrelevant": 556,
+            "relevant": 55,
+            "uncertain": 5
+          }
+        }
+      },
+      "records": 1537,
+      "tasks": 14
+    },
+    "dev": {
+      "composition": {
+        "by_stratum": {
+          "container": 145,
+          "entry:lexical": 280,
+          "expansion": 51,
+          "hard_negative": 884,
+          "lexical_top5": 70,
+          "misleading_lexical": 53,
+          "neighbor_of_gold": 53,
+          "no_gold_branch": 582,
+          "promising_no_gold": 267,
+          "relevant_structural_neighbor": 13,
+          "routed_only": 667,
+          "same_file_as_gold": 137,
+          "test": 86,
+          "useful_descendants": 16
+        },
+        "by_subject_and_label": {
+          "candidate": {
+            "irrelevant": 833,
+            "relevant": 26,
+            "uncertain": 37
+          },
+          "neighbor": {
+            "irrelevant": 51
+          },
+          "region": {
+            "irrelevant": 582,
+            "relevant": 29,
+            "uncertain": 5
+          }
+        }
+      },
+      "records": 1563,
+      "tasks": 14
+    },
+    "test": {
+      "composition": {
+        "by_stratum": {
+          "container": 233,
+          "entry:lexical": 480,
+          "expansion": 47,
+          "hard_negative": 1426,
+          "lexical_top5": 120,
+          "misleading_lexical": 92,
+          "neighbor_of_gold": 89,
+          "no_gold_branch": 963,
+          "promising_no_gold": 506,
+          "relevant_structural_neighbor": 56,
+          "routed_only": 1103,
+          "same_file_as_gold": 150,
+          "test": 137,
+          "useful_descendants": 33
+        },
+        "by_subject_and_label": {
+          "candidate": {
+            "irrelevant": 1379,
+            "relevant": 96,
+            "uncertain": 61
+          },
+          "neighbor": {
+            "irrelevant": 47
+          },
+          "region": {
+            "irrelevant": 963,
+            "relevant": 89,
+            "uncertain": 4
+          }
+        }
+      },
+      "records": 2639,
+      "tasks": 24
+    }
+  },
+  "tasks": [
+    {
+      "base_commit": "1503805b703787aba06111f67e7dc564e3420cad",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 17459,
+      "files": 5079,
+      "gold_spans": {
+        "file_level": 4,
+        "unverified": 4,
+        "verified": 9
+      },
+      "head": "1503805b703787aba06111f67e7dc564e3420cad",
+      "index_seconds": 7.719353759,
+      "original_id": "instance_ansible__ansible-1a4644ff15355fd696ac5b9d074a566a80fe7ca3-v30a923fb5c164d6cd18280c02422f75e611e8fb2",
+      "records": 108,
+      "records_sha256": "6d76fb85ab9c9082b213316aa961177119a70d59a3cc0e5702df4366e1c5d30a",
+      "repo": "ansible/ansible",
+      "repo_url": "https://github.com/ansible/ansible.git",
+      "skipped": 60,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-ansible-ansible",
+        "snapshot": "sha256:e4ee360387d68b30c38da4065ed768f4959c1d34ab5ba34f59e5b3ef52cd7e7e"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__0c4f8d13"
+    },
+    {
+      "base_commit": "6198c7377f545207218fe8eb2e3cfa9673ff8f5e",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 19747,
+      "files": 5551,
+      "gold_spans": {
+        "file_level": 5,
+        "verified": 22
+      },
+      "head": "6198c7377f545207218fe8eb2e3cfa9673ff8f5e",
+      "index_seconds": 8.676337411,
+      "original_id": "instance_ansible__ansible-1c06c46cc14324df35ac4f39a45fb3ccd602195d-v0f01c69f1e2528b935359cfe578530722bca2c59",
+      "records": 108,
+      "records_sha256": "cad3da507099db03b92ccd4f69077ddd5abe4a79ffac700e77a54fc422f7748c",
+      "repo": "ansible/ansible",
+      "repo_url": "https://github.com/ansible/ansible.git",
+      "skipped": 60,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-ansible-ansible",
+        "snapshot": "sha256:900e175cfd6be2cd4a0545eb5887d18eae6e10e5c1ae7200691648005b5d5bd1"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__22a1484c"
+    },
+    {
+      "base_commit": "744cd94469de77f52905bebb123597c040ac07b6",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8576,
+      "files": 857,
+      "gold_spans": {
+        "file_level": 7,
+        "unverified": 1,
+        "verified": 12
+      },
+      "head": "744cd94469de77f52905bebb123597c040ac07b6",
+      "index_seconds": 2.89081143,
+      "original_id": "instance_qutebrowser__qutebrowser-16de05407111ddd82fa12e54389d532362489da9-v363c8a7e5ccdf6968fc7ab84a2053ac78036691d",
+      "records": 110,
+      "records_sha256": "0447d5926e6b0cb7d81e9c6acb19ce433ae8852d52bbf1dbd8dfeda9e99e9230",
+      "repo": "qutebrowser/qutebrowser",
+      "repo_url": "https://github.com/qutebrowser/qutebrowser.git",
+      "skipped": 2,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-qutebrowser-qutebrowser",
+        "snapshot": "sha256:5486713cb39faf4d2e5dcb09b192a254fee0789726e6d4b49a9528f49fa198ce"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__3e3c6b22"
+    },
+    {
+      "base_commit": "9d9f3a19983876522bcfd17c9079c46a17986cb3",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 7141,
+      "files": 1789,
+      "gold_spans": {
+        "file_level": 5,
+        "unverified": 1,
+        "verified": 13
+      },
+      "head": "9d9f3a19983876522bcfd17c9079c46a17986cb3",
+      "index_seconds": 2.91730009,
+      "original_id": "instance_internetarchive__openlibrary-8a5a63af6e0be406aa6c8c9b6d5f28b2f1b6af5a-v0f5aece3601a5b4419f7ccec1dbda2071be28ee4",
+      "records": 108,
+      "records_sha256": "1898802eb0e1fed82acec6d4c038b362e6e68883dbe0ae6445e2f840595526f0",
+      "repo": "internetarchive/openlibrary",
+      "repo_url": "https://github.com/internetarchive/openlibrary.git",
+      "skipped": 5,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-internetarchive-openlibrary",
+        "snapshot": "sha256:75d934622276efa402a5435c74f18a05abfe2c7f1a0e80e17b092bb30ecf8f2f"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__53ca6a30"
+    },
+    {
+      "base_commit": "b6360dc5e068288dcdf9513dba732f1d823d1dfe",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 16532,
+      "files": 4697,
+      "gold_spans": {
+        "file_level": 5,
+        "verified": 14
+      },
+      "head": "b6360dc5e068288dcdf9513dba732f1d823d1dfe",
+      "index_seconds": 7.553510981,
+      "original_id": "instance_ansible__ansible-83909bfa22573777e3db5688773bda59721962ad-vba6da65a0f3baefda7a058ebbd0a8dcafb8512f5",
+      "records": 109,
+      "records_sha256": "7b550de61bb8097254a105032fb9e2c1b8dd1b5eeb43f6481e196aa163f88fc8",
+      "repo": "ansible/ansible",
+      "repo_url": "https://github.com/ansible/ansible.git",
+      "skipped": 65,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-ansible-ansible",
+        "snapshot": "sha256:8447aed8045b53e854b3ac9d58bc5cecbfd276298aa6f51d6aff25cb1a60a483"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__64469377"
+    },
+    {
+      "base_commit": "c97257cac01d9f7d67fb42d0344cb4332c7a0833",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8878,
+      "files": 880,
+      "gold_spans": {
+        "file_level": 2,
+        "verified": 8
+      },
+      "head": "c97257cac01d9f7d67fb42d0344cb4332c7a0833",
+      "index_seconds": 3.041937775,
+      "original_id": "instance_qutebrowser__qutebrowser-85b867fe8d4378c8e371f055c70452f546055854-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+      "records": 108,
+      "records_sha256": "3c328f6db82f3aa049691042af9a9f448d75cff85aa4bcc231d42d94576958d7",
+      "repo": "qutebrowser/qutebrowser",
+      "repo_url": "https://github.com/qutebrowser/qutebrowser.git",
+      "skipped": 2,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-qutebrowser-qutebrowser",
+        "snapshot": "sha256:523c7e87c4b17c847676905bb4b1a8d158b0526cb6ac381ff6f452923c447da7"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__66e05eaa"
+    },
+    {
+      "base_commit": "487f90443cd1bf66bf2368b7a5c004f4e1b27777",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8421,
+      "files": 844,
+      "gold_spans": {
+        "file_level": 8,
+        "unverified": 2,
+        "verified": 19
+      },
+      "head": "487f90443cd1bf66bf2368b7a5c004f4e1b27777",
+      "index_seconds": 3.069032879,
+      "original_id": "instance_qutebrowser__qutebrowser-fd6790fe8c02b144ab2464f1fc8ab3d02ce3c476-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+      "records": 108,
+      "records_sha256": "b20dc554bd70891083a8475199581d091eae039b1f16eda61b73ad6985f03bb7",
+      "repo": "qutebrowser/qutebrowser",
+      "repo_url": "https://github.com/qutebrowser/qutebrowser.git",
+      "skipped": 2,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-qutebrowser-qutebrowser",
+        "snapshot": "sha256:04e1adc786e67767409586e168e8a7db948ded78bab214f0a62a787e4ad493b4"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__71253eae"
+    },
+    {
+      "base_commit": "77c16d530b4d5c0f33d68bead2c6b329aee9b996",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6972,
+      "files": 1749,
+      "gold_spans": {
+        "file_level": 9,
+        "unverified": 1,
+        "verified": 19
+      },
+      "head": "77c16d530b4d5c0f33d68bead2c6b329aee9b996",
+      "index_seconds": 2.8135507349999997,
+      "original_id": "instance_internetarchive__openlibrary-e1e502986a3b003899a8347ac8a7ff7b08cbfc39-v08d8e8889ec945ab821fb156c04c7d2e2810debb",
+      "records": 110,
+      "records_sha256": "269bb374612c9411f7dc077a33a4c1c66628fe2db86db6badaf8fb72bb44f4b4",
+      "repo": "internetarchive/openlibrary",
+      "repo_url": "https://github.com/internetarchive/openlibrary.git",
+      "skipped": 5,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-internetarchive-openlibrary",
+        "snapshot": "sha256:be70231e4997ca57e23099ecd814c91d284df7ee568b0b639257075949078a2f"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__7c2efe8a"
+    },
+    {
+      "base_commit": "80f511d3344a1f9743ff6efb0a2bdf0051529e3a",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6951,
+      "files": 1748,
+      "gold_spans": {
+        "file_level": 7,
+        "unverified": 2,
+        "verified": 18
+      },
+      "head": "80f511d3344a1f9743ff6efb0a2bdf0051529e3a",
+      "index_seconds": 2.739239784,
+      "original_id": "instance_internetarchive__openlibrary-77c16d530b4d5c0f33d68bead2c6b329aee9b996-ve8c8d62a2b60610a3c4631f5f23ed866bada9818",
+      "records": 108,
+      "records_sha256": "f8581f5164241fcaef7161e888a1e00e05fe982cebfd97ae3fb1834d9181455f",
+      "repo": "internetarchive/openlibrary",
+      "repo_url": "https://github.com/internetarchive/openlibrary.git",
+      "skipped": 5,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-internetarchive-openlibrary",
+        "snapshot": "sha256:bb5f730972bac9dad6ed89bdb351cdf3a39c7328abc0e111d82ef30ef2c858a9"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__d9d9c3a6"
+    },
+    {
+      "base_commit": "c9795319b19c60e884f34df3eaf7e3e7f2bfd58c",
+      "benchmark_source": "Pro",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6479,
+      "files": 1604,
+      "gold_spans": {
+        "file_level": 2,
+        "verified": 36
+      },
+      "head": "c9795319b19c60e884f34df3eaf7e3e7f2bfd58c",
+      "index_seconds": 2.413942341,
+      "original_id": "instance_internetarchive__openlibrary-111347e9583372e8ef91c82e0612ea437ae3a9c9-v2d9a6c849c60ed19fd0858ce9e40b7cc8e097e59",
+      "records": 108,
+      "records_sha256": "5af6ae0aa431f05e6474dd04d9a8c9388df715adfdc2402aceba007f1e5d7051",
+      "repo": "internetarchive/openlibrary",
+      "repo_url": "https://github.com/internetarchive/openlibrary.git",
+      "skipped": 5,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-internetarchive-openlibrary",
+        "snapshot": "sha256:dea7c19be5e39740ac11dc38a9581f6f0d6b096a5ca833d1a9042b8ce2376e4a"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Pro__python__maintenance__bugfix__f29228c8"
+    },
+    {
+      "base_commit": "66ba515e671638971bd11a34cff12c107a437e0b",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 16197,
+      "files": 4392,
+      "gold_spans": {
+        "verified": 7
+      },
+      "head": "66ba515e671638971bd11a34cff12c107a437e0b",
+      "index_seconds": 7.374168522,
+      "original_id": "matplotlib__matplotlib-25332",
+      "records": 109,
+      "records_sha256": "f42277cab85d8eece34a245219eb912e3f180eb4e11abf407e7210458beb6123",
+      "repo": "matplotlib/matplotlib",
+      "repo_url": "https://github.com/matplotlib/matplotlib.git",
+      "skipped": 10,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-matplotlib-matplotlib",
+        "snapshot": "sha256:49ecde91fbd87a2181f0e94e5450fe7fb2aab694cd769eeaf4b8f54813bb6ff2"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__09457b9b"
+    },
+    {
+      "base_commit": "a7e7043c8746933dafce652507d3b821801cdc7d",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 45283,
+      "files": 6547,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 3
+      },
+      "head": "a7e7043c8746933dafce652507d3b821801cdc7d",
+      "index_seconds": 14.976783185,
+      "original_id": "django__django-15104",
+      "records": 109,
+      "records_sha256": "fdcfe6560d51342dd6b4f5b203c94c4470eb2d8d3d632fd77cf6c351f0d47dc2",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:75a6a1ea8415904d2e6ce778d45114eb7f3891ca6d77acab24c8e51836a2cdf7"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7"
+    },
+    {
+      "base_commit": "14c96b510ebeba40f573e512299b1976f35b620e",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 16050,
+      "files": 4350,
+      "gold_spans": {
+        "file_level": 2,
+        "unverified": 1,
+        "verified": 5
+      },
+      "head": "14c96b510ebeba40f573e512299b1976f35b620e",
+      "index_seconds": 5.32179003,
+      "original_id": "matplotlib__matplotlib-24026",
+      "records": 110,
+      "records_sha256": "4ca3331ad0ce4e5607ea917bb24f5ee75fcb795c5cf1b3b6886fb2c343c46f5a",
+      "repo": "matplotlib/matplotlib",
+      "repo_url": "https://github.com/matplotlib/matplotlib.git",
+      "skipped": 10,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-matplotlib-matplotlib",
+        "snapshot": "sha256:03c262192ef8aaf845a0c79e4bfd7c3beeb530476faff22a607bcd62b320f325"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__0e1d5fcf"
+    },
+    {
+      "base_commit": "1923822ddf8265199dbd9ef9ce09641d3fd042b9",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 42799,
+      "files": 1722,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 3
+      },
+      "head": "1923822ddf8265199dbd9ef9ce09641d3fd042b9",
+      "index_seconds": 31.854370696,
+      "original_id": "sympy__sympy-18189",
+      "records": 116,
+      "records_sha256": "1195977b011f5e3b0186f8187aa73f032762f7ea4edd88f4770d9b9853b169dc",
+      "repo": "sympy/sympy",
+      "repo_url": "https://github.com/sympy/sympy.git",
+      "skipped": 1,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sympy-sympy",
+        "snapshot": "sha256:374f0f55929c83e6f52bd0239302af7777067dcd5641b40d60840ceeb59b9642"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__1756507b"
+    },
+    {
+      "base_commit": "a62775e99f2a5ea3d51db7160fad783f6cd8a4c5",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 10066,
+      "files": 1191,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "head": "a62775e99f2a5ea3d51db7160fad783f6cd8a4c5",
+      "index_seconds": 5.439464203,
+      "original_id": "scikit-learn__scikit-learn-13439",
+      "records": 116,
+      "records_sha256": "3a304326eb9307d7d4571a840fc70a74f064365f907a59d4fb85a240cb9babea",
+      "repo": "scikit-learn/scikit-learn",
+      "repo_url": "https://github.com/scikit-learn/scikit-learn.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-scikit-learn-scikit-learn",
+        "snapshot": "sha256:841aca473d7fc79e7da7643ef5803694c7619f636c608eb47577509d9d805142"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5"
+    },
+    {
+      "base_commit": "a5e6a101869e027e7930e694f8b1cfb082603453",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 28445,
+      "files": 1506,
+      "gold_spans": {
+        "verified": 5
+      },
+      "head": "a5e6a101869e027e7930e694f8b1cfb082603453",
+      "index_seconds": 31.38283802,
+      "original_id": "sympy__sympy-13757",
+      "records": 113,
+      "records_sha256": "a809b1f58a0b25545f36f8238755fd1f513efe88144b7f160f0d76b354e13586",
+      "repo": "sympy/sympy",
+      "repo_url": "https://github.com/sympy/sympy.git",
+      "skipped": 1,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sympy-sympy",
+        "snapshot": "sha256:c181af157644110d87ebeb076398f3fc51522f43ecc7c53ccaeef1bf4c8dd93a"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__17c22a6f"
+    },
+    {
+      "base_commit": "c807dfe7569692cad24f02a08477b70c1679a4dd",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 25527,
+      "files": 1427,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 3
+      },
+      "head": "c807dfe7569692cad24f02a08477b70c1679a4dd",
+      "index_seconds": 13.753203318,
+      "original_id": "sympy__sympy-12481",
+      "records": 116,
+      "records_sha256": "ff5a4350b7187d3bb7061a403a74f4bda458cfcf3c5b2c587c069542943200a7",
+      "repo": "sympy/sympy",
+      "repo_url": "https://github.com/sympy/sympy.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sympy-sympy",
+        "snapshot": "sha256:cd65c4809e0f4e3a8a49ab52430dfe6cdf7c2464ddbab7a919858a9f38ce2a99"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__1a9633de"
+    },
+    {
+      "base_commit": "37522e991a32ee3c0ad1a5ff8afe8e3eb1885550",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 5440,
+      "files": 269,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "head": "37522e991a32ee3c0ad1a5ff8afe8e3eb1885550",
+      "index_seconds": 2.674771763,
+      "original_id": "pydata__xarray-4966",
+      "records": 110,
+      "records_sha256": "0ab2e85c9ce0204f6cde74bce85a349681734324817eb5223728943e1945b3c8",
+      "repo": "pydata/xarray",
+      "repo_url": "https://github.com/pydata/xarray.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pydata-xarray",
+        "snapshot": "sha256:a96d645c96c20b8d4995a73a376463fb89955983ef84b7c12fc833f50fe11a24"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__20eb5bc8"
+    },
+    {
+      "base_commit": "d3b6aa6d8b997df115a53c001d00222a0f92f63a",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6221,
+      "files": 302,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 11
+      },
+      "head": "d3b6aa6d8b997df115a53c001d00222a0f92f63a",
+      "index_seconds": 2.972341202,
+      "original_id": "pydata__xarray-4687",
+      "records": 108,
+      "records_sha256": "ec725cc44e4a67006bf24734b35dc6ca5a7cf6ba68a6a1b9754c110927021b27",
+      "repo": "pydata/xarray",
+      "repo_url": "https://github.com/pydata/xarray.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pydata-xarray",
+        "snapshot": "sha256:9a88e17cc5d3254cff643aad1883ea20f7ee7f108f59d95bba568de8525e7912"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c"
+    },
+    {
+      "base_commit": "0eb3e9bd754e4c9fac8b616b705178727fc8031e",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 47027,
+      "files": 6653,
+      "gold_spans": {
+        "verified": 2
+      },
+      "head": "0eb3e9bd754e4c9fac8b616b705178727fc8031e",
+      "index_seconds": 14.822180865,
+      "original_id": "django__django-16662",
+      "records": 112,
+      "records_sha256": "fb6eb9d6825026a2763e3be0bb7d40d41d7699310877050a739a94ff78dee91a",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:01275ff63e881d20a319ac36b1e5336f94937f9eb972ae28d4ec46660b3ea5b2"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e"
+    },
+    {
+      "base_commit": "97523985b39ecde369d83352d7c3baf403b60a22",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8891,
+      "files": 1064,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 1
+      },
+      "head": "97523985b39ecde369d83352d7c3baf403b60a22",
+      "index_seconds": 4.541109199,
+      "original_id": "scikit-learn__scikit-learn-10844",
+      "records": 117,
+      "records_sha256": "1416f4755acdaa92dac3659ff6b4cc74a7de05e4f99ff8c8e8602fee3131fbb7",
+      "repo": "scikit-learn/scikit-learn",
+      "repo_url": "https://github.com/scikit-learn/scikit-learn.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-scikit-learn-scikit-learn",
+        "snapshot": "sha256:30ba9d57335c1de793c1b209d8a02f7ce1181b7d7084a7eb598696ad6052e505"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690"
+    },
+    {
+      "base_commit": "4aded39b5663d943f6a4809abacfa9cae3d7fb6a",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9719,
+      "files": 1203,
+      "gold_spans": {
+        "verified": 8
+      },
+      "head": "4aded39b5663d943f6a4809abacfa9cae3d7fb6a",
+      "index_seconds": 5.11534646,
+      "original_id": "scikit-learn__scikit-learn-14629",
+      "records": 113,
+      "records_sha256": "3c7022d741406d47e2c8563bb9f04a823a4abf782cb46df6d8c15cb089963829",
+      "repo": "scikit-learn/scikit-learn",
+      "repo_url": "https://github.com/scikit-learn/scikit-learn.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-scikit-learn-scikit-learn",
+        "snapshot": "sha256:12111fd3dfc494b88c1ce53d11117bf9801b29a85e1ffbb50f7a118a847d6f42"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c"
+    },
+    {
+      "base_commit": "e05cef574b8f23ab1b57f57e7da6dee509a4e230",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8898,
+      "files": 1524,
+      "gold_spans": {
+        "verified": 5
+      },
+      "head": "e05cef574b8f23ab1b57f57e7da6dee509a4e230",
+      "index_seconds": 3.162292678,
+      "original_id": "sphinx-doc__sphinx-9320",
+      "records": 114,
+      "records_sha256": "c578febaeab0115171cc2348533025eeea6ebba4543db9d4b438e43865e9a2b3",
+      "repo": "sphinx-doc/sphinx",
+      "repo_url": "https://github.com/sphinx-doc/sphinx.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sphinx-doc-sphinx",
+        "snapshot": "sha256:afbb898cb3cab849703f764d4535efe03937c55b286f9f9f14c1b62a24baa587"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__5462d419"
+    },
+    {
+      "base_commit": "f618e033acd37d59b536d6e6126e6c5be18037f6",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 40884,
+      "files": 6125,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 2
+      },
+      "head": "f618e033acd37d59b536d6e6126e6c5be18037f6",
+      "index_seconds": 13.001156291,
+      "original_id": "django__django-11603",
+      "records": 113,
+      "records_sha256": "63d4d0baee1d661f547dd249eafd802a9014c1dad0aecb4be97c94db33ab57bb",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:d28784fb1598d92fffe18eedc1f4c6612bd0ddd058359c9a937e5d64d2c9b7a6"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__607f6b9e"
+    },
+    {
+      "base_commit": "884b4c27f506b3c29d58509fc83a35c30ea10d94",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 46043,
+      "files": 6619,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "head": "884b4c27f506b3c29d58509fc83a35c30ea10d94",
+      "index_seconds": 15.236532456,
+      "original_id": "django__django-15569",
+      "records": 113,
+      "records_sha256": "ec99011ac84f64bdd8e787df4894c13a78cb107f15bc13cad66f42620ca192bd",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:0188e4bdcf0aab304a1b8f7b9c15bc56ac3541394b35cfafa38a80c35b2608e0"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__681ea2b6"
+    },
+    {
+      "base_commit": "6ed769d58d89380ebaa1ef52b300691eefda8928",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 20822,
+      "files": 1922,
+      "gold_spans": {
+        "file_level": 1,
+        "verified": 4
+      },
+      "head": "6ed769d58d89380ebaa1ef52b300691eefda8928",
+      "index_seconds": 8.13630327,
+      "original_id": "astropy__astropy-13236",
+      "records": 108,
+      "records_sha256": "072be3865676c97414d05d23c7214a5e251752fe19da4f4b9d00161bf52e84d0",
+      "repo": "astropy/astropy",
+      "repo_url": "https://github.com/astropy/astropy.git",
+      "skipped": 3,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-astropy-astropy",
+        "snapshot": "sha256:fcd8722cdef7075525a3d13bfba2297d9c498873c773c896db09d67d4a26f994"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b"
+    },
+    {
+      "base_commit": "5e17a90c19f7eecfa10c1ab872648ae7e2131323",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 40279,
+      "files": 1653,
+      "gold_spans": {
+        "file_level": 1,
+        "unverified": 2,
+        "verified": 4
+      },
+      "head": "5e17a90c19f7eecfa10c1ab872648ae7e2131323",
+      "index_seconds": 31.003592438,
+      "original_id": "sympy__sympy-15599",
+      "records": 108,
+      "records_sha256": "34e5b5c097025ad103c58cfe98b89f4b514db9c59c2b72a39e30beaf890d7430",
+      "repo": "sympy/sympy",
+      "repo_url": "https://github.com/sympy/sympy.git",
+      "skipped": 1,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sympy-sympy",
+        "snapshot": "sha256:21b5f59f6afc49e2f3530b09af9c0d599ce13b68c295090e21d7ee75abbaa619"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__7080a326"
+    },
+    {
+      "base_commit": "19e6efa50b603af325e7f62058364f278596758f",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 46607,
+      "files": 6644,
+      "gold_spans": {
+        "file_level": 1,
+        "verified": 5
+      },
+      "head": "19e6efa50b603af325e7f62058364f278596758f",
+      "index_seconds": 15.112993006,
+      "original_id": "django__django-16136",
+      "records": 108,
+      "records_sha256": "71066885f81895935c4557a60b22b811f09eef1b78c408de642d09c6cbdcfc63",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:966d0b60e3ac55a4036802c3ce90a8204deae1cbacedfd3a5fe524d9e3162397"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__84a1749f"
+    },
+    {
+      "base_commit": "3aa75c8d00a4a2d4acf10d80f76b937cadb666b7",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6910,
+      "files": 321,
+      "gold_spans": {
+        "verified": 6
+      },
+      "head": "3aa75c8d00a4a2d4acf10d80f76b937cadb666b7",
+      "index_seconds": 3.177850367,
+      "original_id": "pydata__xarray-7229",
+      "records": 108,
+      "records_sha256": "e88be8e3fb35302ba35698ab22a3c694b39f3df5e1c5cb1e62fbf1d9fcf376b1",
+      "repo": "pydata/xarray",
+      "repo_url": "https://github.com/pydata/xarray.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pydata-xarray",
+        "snapshot": "sha256:959c3951b93d2d937410608ddf559becbc56bbe7f06df84d11657c788f724e66"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27"
+    },
+    {
+      "base_commit": "838e432e3e5519c5383d12018e6c78f8ec7833c1",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 40226,
+      "files": 6046,
+      "gold_spans": {
+        "verified": 4
+      },
+      "head": "838e432e3e5519c5383d12018e6c78f8ec7833c1",
+      "index_seconds": 13.203305714,
+      "original_id": "django__django-10880",
+      "records": 111,
+      "records_sha256": "0ce45cc6b71220887303fef27aa2818c383ace777fc1d7745073d962b1652fa7",
+      "repo": "django/django",
+      "repo_url": "https://github.com/django/django.git",
+      "skipped": 4,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-django-django",
+        "snapshot": "sha256:bf814810a87a241f2dd93e19a6b8db56ce8d9d6446ca1038ff94f731f516cb70"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4"
+    },
+    {
+      "base_commit": "33b47e4bd60e2302e42616141e76285038b724d6",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 45042,
+      "files": 1829,
+      "gold_spans": {
+        "file_level": 2,
+        "unverified": 3,
+        "verified": 9
+      },
+      "head": "33b47e4bd60e2302e42616141e76285038b724d6",
+      "index_seconds": 33.348653715,
+      "original_id": "sympy__sympy-20438",
+      "records": 120,
+      "records_sha256": "c5d7eb4d83c080c7710820e59c889c3e9c84f92e3ee076d2aea60d32c8b8ba97",
+      "repo": "sympy/sympy",
+      "repo_url": "https://github.com/sympy/sympy.git",
+      "skipped": 1,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sympy-sympy",
+        "snapshot": "sha256:c6fedbf2fa479296c1aa090cd3c7d568d096fa27efe95fb3fd1d5245969acc3e"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__960705f5"
+    },
+    {
+      "base_commit": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9208,
+      "files": 1668,
+      "gold_spans": {
+        "file_level": 4,
+        "unverified": 4,
+        "verified": 8
+      },
+      "head": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+      "index_seconds": 3.457653144,
+      "original_id": "sphinx-doc__sphinx-11510",
+      "records": 112,
+      "records_sha256": "96c1b98106fbeba7ea480bb5e3bed7fa3b95a5683842f017e9ca0afa0224e506",
+      "repo": "sphinx-doc/sphinx",
+      "repo_url": "https://github.com/sphinx-doc/sphinx.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sphinx-doc-sphinx",
+        "snapshot": "sha256:2f45554364709b246de60f6d4b5fa80bb7af70db6296a42082346c370cb0c09d"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__9c4b27a6"
+    },
+    {
+      "base_commit": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6209,
+      "files": 570,
+      "gold_spans": {
+        "file_level": 1,
+        "unverified": 3,
+        "verified": 4
+      },
+      "head": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+      "index_seconds": 2.164010915,
+      "original_id": "pytest-dev__pytest-10051",
+      "records": 109,
+      "records_sha256": "5b152c21a97191faf14c9d9660caafb9721eb3c7d15f8058a73172dedac82156",
+      "repo": "pytest-dev/pytest",
+      "repo_url": "https://github.com/pytest-dev/pytest.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pytest-dev-pytest",
+        "snapshot": "sha256:0ee1cb2c415b40fd28dad4c7c87b4d2106a5eb960b7b763a729661a66d5259e4"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__9f3a5677"
+    },
+    {
+      "base_commit": "da9a2b584eb7a6c7e924b2621ed0ddaeca0a7bea",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6210,
+      "files": 571,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 5
+      },
+      "head": "da9a2b584eb7a6c7e924b2621ed0ddaeca0a7bea",
+      "index_seconds": 2.168069902,
+      "original_id": "pytest-dev__pytest-10081",
+      "records": 108,
+      "records_sha256": "77cb83877243c2079e6534575166bee618bbb9123b03d0dc4613d3f7eb3c467c",
+      "repo": "pytest-dev/pytest",
+      "repo_url": "https://github.com/pytest-dev/pytest.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pytest-dev-pytest",
+        "snapshot": "sha256:0039106462a75300320ca543d5ed29ff0ce63b8f9193d030d1cf2b9475b16559"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__abb9b8b0"
+    },
+    {
+      "base_commit": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9142,
+      "files": 1599,
+      "gold_spans": {
+        "file_level": 2,
+        "unverified": 7,
+        "verified": 7
+      },
+      "head": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+      "index_seconds": 3.449928356,
+      "original_id": "sphinx-doc__sphinx-10673",
+      "records": 115,
+      "records_sha256": "5abd576ece8080f543be353599bf6d01e663c5b25e596b2ce7934917d24fdb14",
+      "repo": "sphinx-doc/sphinx",
+      "repo_url": "https://github.com/sphinx-doc/sphinx.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sphinx-doc-sphinx",
+        "snapshot": "sha256:62d8388cb8f0a7d0ad61cd4b2beaff074f3f38c8821569c74904153cfdc145fa"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37"
+    },
+    {
+      "base_commit": "5250b2442501e6c671c6b380536f1edb352602d1",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 21008,
+      "files": 1865,
+      "gold_spans": {
+        "verified": 4
+      },
+      "head": "5250b2442501e6c671c6b380536f1edb352602d1",
+      "index_seconds": 7.925050679,
+      "original_id": "astropy__astropy-13977",
+      "records": 108,
+      "records_sha256": "0e2866602bc781939700b0e239148c16ec0dbbd6bda1233863b5a623a1553f60",
+      "repo": "astropy/astropy",
+      "repo_url": "https://github.com/astropy/astropy.git",
+      "skipped": 3,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-astropy-astropy",
+        "snapshot": "sha256:ad08990a751c6908f9803c288914e30be33e365287187e73c4ff22dc7ddcbae0"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192"
+    },
+    {
+      "base_commit": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 5496,
+      "files": 494,
+      "gold_spans": {
+        "file_level": 1,
+        "verified": 8
+      },
+      "head": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+      "index_seconds": 1.923067141,
+      "original_id": "pytest-dev__pytest-7205",
+      "records": 110,
+      "records_sha256": "fbca9fec10fce74d693802af198e1ddf7f89117a231e47eb33606c754ecba6e6",
+      "repo": "pytest-dev/pytest",
+      "repo_url": "https://github.com/pytest-dev/pytest.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pytest-dev-pytest",
+        "snapshot": "sha256:00b3fb86c19ecfb204943388ffc2110f769553059172ae8231ea7bd3894b6f73"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__c2f0f2be"
+    },
+    {
+      "base_commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 841,
+      "files": 96,
+      "gold_spans": {
+        "verified": 6
+      },
+      "head": "0192aac24123735b3eaf9b08df46429bb770c283",
+      "index_seconds": 0.496800932,
+      "original_id": "psf__requests-6028",
+      "records": 111,
+      "records_sha256": "c815c4886ab02d43eb21b2af821cc67b430f5b54bf266dea40f1aeeaade70e7f",
+      "repo": "psf/requests",
+      "repo_url": "https://github.com/psf/requests.git",
+      "skipped": 1,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-psf-requests",
+        "snapshot": "sha256:3310fa41c74d4052b3ea9555df3ba72f0eb5c6f4d615574daadb275413ba2fe2"
+      },
+      "split": "calibration",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d"
+    },
+    {
+      "base_commit": "51ef2a66c4e0896eab7d2b03e3dfb3963e338e3c",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 5302,
+      "files": 265,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 5
+      },
+      "head": "51ef2a66c4e0896eab7d2b03e3dfb3963e338e3c",
+      "index_seconds": 2.558917215,
+      "original_id": "pydata__xarray-4695",
+      "records": 108,
+      "records_sha256": "834a451b4c36e53a4b6a5dec518c7d4b4b63ab2d719b64898938f6235d9e7455",
+      "repo": "pydata/xarray",
+      "repo_url": "https://github.com/pydata/xarray.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-pydata-xarray",
+        "snapshot": "sha256:9a45e1dd0ddb9eacbdbb80da6a9d05483d5c9180533fbc898a9ee8a121acd5e7"
+      },
+      "split": "test",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c"
+    },
+    {
+      "base_commit": "e188d56ed1248dead58f3f8018c0e9a3f99193f7",
+      "benchmark_source": "Verified",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8413,
+      "files": 1435,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 2
+      },
+      "head": "e188d56ed1248dead58f3f8018c0e9a3f99193f7",
+      "index_seconds": 3.094412421,
+      "original_id": "sphinx-doc__sphinx-8056",
+      "records": 108,
+      "records_sha256": "05af91d274636b2962c27f41745d72c000e1dc54627437cc5924264fe429189d",
+      "repo": "sphinx-doc/sphinx",
+      "repo_url": "https://github.com/sphinx-doc/sphinx.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-sphinx-doc-sphinx",
+        "snapshot": "sha256:552f719953be0349a5a7d9535b7c346daeeb36a26091e3f8e0e0578c7387ca50"
+      },
+      "split": "dev",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__f0418d70"
+    },
+    {
+      "base_commit": "10252a9e7d68c6818423deee1c4c8549038e4171",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 11626,
+      "files": 754,
+      "gold_spans": {
+        "file_level": 2,
+        "verified": 8
+      },
+      "head": "10252a9e7d68c6818423deee1c4c8549038e4171",
+      "index_seconds": 4.632482661,
+      "original_id": "keras-team__keras-18871",
+      "records": 109,
+      "records_sha256": "87326cf0f18d9db061a3710779f9a1fc4e6f17440e2a8deecf481fe8598df735",
+      "repo": "keras-team/keras",
+      "repo_url": "https://github.com/keras-team/keras.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-keras-team-keras",
+        "snapshot": "sha256:f0bd887f5c97e1f4069f35b59a07f3916efc2ac8ff74fcc11426dd5587ccf842"
+      },
+      "split": "dev",
+      "task": "SWE-PolyBench__python__evolution__refactor__57ad5598"
+    },
+    {
+      "base_commit": "cd71f9381b86b0dc1fd60e8b87fb5bade35aa0cd",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 67087,
+      "files": 4280,
+      "gold_spans": {
+        "file_level": 1,
+        "verified": 7
+      },
+      "head": "cd71f9381b86b0dc1fd60e8b87fb5bade35aa0cd",
+      "index_seconds": 26.363617525,
+      "original_id": "huggingface__transformers-31448",
+      "records": 108,
+      "records_sha256": "f0b8cbfa85ca36aba6ccb9f09625de1b872bd1cfbebad1950aef9683fbdb2c1e",
+      "repo": "huggingface/transformers",
+      "repo_url": "https://github.com/huggingface/transformers.git",
+      "skipped": 2,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-huggingface-transformers",
+        "snapshot": "sha256:9aad9218c5f61f708a59b3a51dc86c17b49a5eaecff6db97bdef459ac780ef46"
+      },
+      "split": "test",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__05ee156f"
+    },
+    {
+      "base_commit": "26abe697a8802de40cb2761fc98b843fe1b2d5f6",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 12466,
+      "files": 821,
+      "gold_spans": {
+        "unverified": 2,
+        "verified": 4
+      },
+      "head": "26abe697a8802de40cb2761fc98b843fe1b2d5f6",
+      "index_seconds": 4.765917835,
+      "original_id": "keras-team__keras-19838",
+      "records": 108,
+      "records_sha256": "0e9ac530a454417946f495ddee3b66926756eab848a40d98114059df8f132333",
+      "repo": "keras-team/keras",
+      "repo_url": "https://github.com/keras-team/keras.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-keras-team-keras",
+        "snapshot": "sha256:854ccf490f3f0907d1e41dc51c716cec32f22b9882f844de3e237da0e99e29d5"
+      },
+      "split": "dev",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__31f7341a"
+    },
+    {
+      "base_commit": "f079514957401f49db30ec4cd25f8c8246b0c1de",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9943,
+      "files": 1194,
+      "gold_spans": {
+        "file_level": 6,
+        "unverified": 1,
+        "verified": 14
+      },
+      "head": "f079514957401f49db30ec4cd25f8c8246b0c1de",
+      "index_seconds": 4.327205519,
+      "original_id": "yt-dlp__yt-dlp-5933",
+      "records": 113,
+      "records_sha256": "5823d85a9a8b707c68386d1f6f698a1f72d2473ae43e2ac77b476ea1a8e44f4c",
+      "repo": "yt-dlp/yt-dlp",
+      "repo_url": "https://github.com/yt-dlp/yt-dlp.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-yt-dlp-yt-dlp",
+        "snapshot": "sha256:e8dc26dcf20d58878cf2445e58674030fa0f0431d057f2f94fe94f818b0e65b8"
+      },
+      "split": "calibration",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__37455515"
+    },
+    {
+      "base_commit": "ec67b760ba25e1ccc392d288f7d8c6e9e153eea2",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 11084,
+      "files": 670,
+      "gold_spans": {
+        "unverified": 4,
+        "verified": 1
+      },
+      "head": "ec67b760ba25e1ccc392d288f7d8c6e9e153eea2",
+      "index_seconds": 4.224490212,
+      "original_id": "keras-team__keras-19201",
+      "records": 108,
+      "records_sha256": "8bd8c98a3c599e3abb8ce8664b810f8505f281d124d71c377c3d87b2e822fbad",
+      "repo": "keras-team/keras",
+      "repo_url": "https://github.com/keras-team/keras.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-keras-team-keras",
+        "snapshot": "sha256:23e705aef0b1d95fee35c2379bc4c05c25a1f2c7380ea535b41da0eb44827da5"
+      },
+      "split": "dev",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__3f3ff585"
+    },
+    {
+      "base_commit": "2c98d998181c81ee49908be03c031204fd66d03d",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9630,
+      "files": 1161,
+      "gold_spans": {
+        "file_level": 1,
+        "unverified": 1,
+        "verified": 8
+      },
+      "head": "2c98d998181c81ee49908be03c031204fd66d03d",
+      "index_seconds": 4.523045193,
+      "original_id": "yt-dlp__yt-dlp-5195",
+      "records": 116,
+      "records_sha256": "211efb2c8f058421d5e2828038abfd2e337203efaa2c21ed168b53ab16e21ff0",
+      "repo": "yt-dlp/yt-dlp",
+      "repo_url": "https://github.com/yt-dlp/yt-dlp.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-yt-dlp-yt-dlp",
+        "snapshot": "sha256:ab1d472344986ddb5eedf123fa1c299aceab4d1d94a9a1e04aedc2e4248dbe2f"
+      },
+      "split": "calibration",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__4c48ff4b"
+    },
+    {
+      "base_commit": "28d6277396013a16613008647c312bbd6c4623cc",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 8940,
+      "files": 1855,
+      "gold_spans": {
+        "file_level": 2,
+        "verified": 9
+      },
+      "head": "28d6277396013a16613008647c312bbd6c4623cc",
+      "index_seconds": 3.334688814,
+      "original_id": "langchain-ai__langchain-5609",
+      "records": 108,
+      "records_sha256": "8cf07857abfd54d820d49ad5ada05179a8c5c74fd4a136cd9ceb6666aab75956",
+      "repo": "langchain-ai/langchain",
+      "repo_url": "https://github.com/langchain-ai/langchain.git",
+      "skipped": 11,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-langchain-ai-langchain",
+        "snapshot": "sha256:def0ba0bf981707e85c733ecaa03352534baa569a12111f990205ef34618859d"
+      },
+      "split": "test",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__52a91dd8"
+    },
+    {
+      "base_commit": "1c60668f6bdd05dab619806e7b2dc25d3ed4ccbf",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 12465,
+      "files": 821,
+      "gold_spans": {
+        "file_level": 2,
+        "unverified": 1,
+        "verified": 3
+      },
+      "head": "1c60668f6bdd05dab619806e7b2dc25d3ed4ccbf",
+      "index_seconds": 5.145488848,
+      "original_id": "keras-team__keras-19844",
+      "records": 108,
+      "records_sha256": "60091183f03fd74ce3a65b3bc2c7a4195793c0b0f0b28b9ed42e6d0af3abb2cf",
+      "repo": "keras-team/keras",
+      "repo_url": "https://github.com/keras-team/keras.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-keras-team-keras",
+        "snapshot": "sha256:c7395de59954bbb56bcba6606fb5a1bdd430ba742e5fd576c59f8ebfa46a3ea2"
+      },
+      "split": "dev",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__64a006b0"
+    },
+    {
+      "base_commit": "33cb21150c034aae0f11b9ab6e38752a7c6d1784",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 32881,
+      "files": 2093,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 7
+      },
+      "head": "33cb21150c034aae0f11b9ab6e38752a7c6d1784",
+      "index_seconds": 14.983326196,
+      "original_id": "huggingface__transformers-16661",
+      "records": 108,
+      "records_sha256": "779ac913b0612e776843547e3862d449a2ecdb6d8e4fa3e8e386e8b09d0207cf",
+      "repo": "huggingface/transformers",
+      "repo_url": "https://github.com/huggingface/transformers.git",
+      "skipped": 3,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-huggingface-transformers",
+        "snapshot": "sha256:5aafe2fa95784546de11ba62030313c1f770cd89255e87060e0d1679161e48de"
+      },
+      "split": "test",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__6cfdf766"
+    },
+    {
+      "base_commit": "d0d89d39efb5f292f72e70973f3b70c4ca095047",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 9094,
+      "files": 1898,
+      "gold_spans": {
+        "file_level": 1,
+        "verified": 9
+      },
+      "head": "d0d89d39efb5f292f72e70973f3b70c4ca095047",
+      "index_seconds": 3.445596968,
+      "original_id": "langchain-ai__langchain-5625",
+      "records": 108,
+      "records_sha256": "ba69d4ff57b93225c3ce2e0e6e0fa436735291243ed773cfedc5d6b9e8147333",
+      "repo": "langchain-ai/langchain",
+      "repo_url": "https://github.com/langchain-ai/langchain.git",
+      "skipped": 11,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-langchain-ai-langchain",
+        "snapshot": "sha256:d2024bc041902f1af357df16cfc32db6ba1cd2c3c02cbd3d2fa0fa22c54b1b6f"
+      },
+      "split": "test",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__7fb7f57f"
+    },
+    {
+      "base_commit": "436937dea3d52eecff3cb6f1bd5161f23c825fae",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 11074,
+      "files": 670,
+      "gold_spans": {
+        "verified": 2
+      },
+      "head": "436937dea3d52eecff3cb6f1bd5161f23c825fae",
+      "index_seconds": 4.388222258,
+      "original_id": "keras-team__keras-19190",
+      "records": 108,
+      "records_sha256": "2fda3af3b95a4be174b81a93f4d5869307a66ba8d72b1130542ad84835780c4f",
+      "repo": "keras-team/keras",
+      "repo_url": "https://github.com/keras-team/keras.git",
+      "skipped": 0,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-keras-team-keras",
+        "snapshot": "sha256:958cc2a4080de988a7e46afc87a19168660ffa176b5b67eb8cf709a32003ef1f"
+      },
+      "split": "dev",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__d492f44e"
+    },
+    {
+      "base_commit": "624554a43a1ab0113f3d79ebcbc9e726faecb339",
+      "benchmark_source": "Poly",
+      "buffer_pool_bytes": 1073741824,
+      "entities": 6839,
+      "files": 1455,
+      "gold_spans": {
+        "unverified": 1,
+        "verified": 1
+      },
+      "head": "624554a43a1ab0113f3d79ebcbc9e726faecb339",
+      "index_seconds": 2.687865982,
+      "original_id": "langchain-ai__langchain-4103",
+      "records": 111,
+      "records_sha256": "1880867683fe890014fb99407a5a24186c9a8e016c2ade65608811dce53029a1",
+      "repo": "langchain-ai/langchain",
+      "repo_url": "https://github.com/langchain-ai/langchain.git",
+      "skipped": 8,
+      "snapshot": {
+        "derivation": "sha256:2bc670d284ea3a0cb0e224710af503eb43d1c83bda1f5b0fb3cb0ebee5b0c399",
+        "repo": "decisionbench-langchain-ai-langchain",
+        "snapshot": "sha256:5e4ab4ca8f8e823e2ea6a58b00e2b6aaad46a8b47a08833d662bac38791b0e05"
+      },
+      "split": "test",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__ef257729"
+    }
+  ],
+  "test_split": "unsealed under the preregistration"
+}

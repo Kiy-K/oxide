@@ -1,0 +1,51 @@
+{
+  "contextbench": {
+    "cost_usd": 0.534533412,
+    "exchanges": 4853,
+    "failed": {},
+    "identical_on_repeat": 13,
+    "input_tokens": 12726986,
+    "latency_ms": {
+      "max": 1539,
+      "p50": 306,
+      "p95": 409
+    },
+    "malformed": 0,
+    "max_confidence_spread": 0.21999999999999997,
+    "max_value_spread": 0.08500000000000002,
+    "mean_value_spread": 0.015399999999999994,
+    "models": [
+      "jev-1.13.0"
+    ],
+    "repeated_requests": 100,
+    "schema_valid_rate": 1.0,
+    "stable_on_repeat": 97,
+    "stable_spread": 0.05,
+    "valid": 4853
+  },
+  "fixture": {
+    "cost_usd": 0.0203427,
+    "exchanges": 295,
+    "failed": {},
+    "identical_on_repeat": 0,
+    "input_tokens": 484350,
+    "latency_ms": {
+      "max": 1247,
+      "p50": 305,
+      "p95": 408
+    },
+    "malformed": 0,
+    "max_confidence_spread": 0.0,
+    "max_value_spread": 0.0,
+    "mean_value_spread": 0.0,
+    "models": [
+      "jev-1.13.0"
+    ],
+    "repeated_requests": 0,
+    "schema_valid_rate": 1.0,
+    "stable_on_repeat": 0,
+    "stable_spread": 0.05,
+    "valid": 295
+  },
+  "repeats_sent_this_run": 0
+}

@@ -1,0 +1,674 @@
+{
+  "branch_value": {
+    "B-heuristic": {
+      "auroc": 0.5,
+      "n": 1052,
+      "prune_threshold": 0.25,
+      "pruning_loss": 0.0,
+      "selection_accuracy_at_prune_threshold": 0.0846,
+      "unnecessary_exploration": 1.0,
+      "useful": 89
+    },
+    "B-heuristic-on-C-sample": {
+      "auroc": null,
+      "n": 191,
+      "prune_threshold": 0.25,
+      "pruning_loss": 0.0,
+      "selection_accuracy_at_prune_threshold": 0.0785,
+      "unnecessary_exploration": 1.0,
+      "useful": 15
+    },
+    "C-jev-sampled": {
+      "auroc": null,
+      "failed": 0,
+      "mean_inclusion_probability": 0.1818,
+      "n": 191,
+      "prune_threshold": 0.25,
+      "pruning_loss": 0.0,
+      "selection_accuracy_at_prune_threshold": 0.6545,
+      "unnecessary_exploration": 0.375,
+      "useful": 15
+    }
+  },
+  "candidate_relevance": {
+    "A-constant": {
+      "auroc_pooled": 0.5,
+      "auroc_within_task_mean": 0.5,
+      "floor": 0.4,
+      "irrelevant": 1379,
+      "n": 1475,
+      "precision_at_floor": 0.0651,
+      "recall_at_floor": 1.0,
+      "relevant": 96,
+      "tasks_with_both_classes": 19,
+      "value_brier": 0.25,
+      "value_ece": 0.4349
+    },
+    "B-heuristic": {
+      "auroc_pooled": 0.6039,
+      "auroc_within_task_mean": 0.6934,
+      "floor": 0.4,
+      "irrelevant": 1379,
+      "n": 1475,
+      "precision_at_floor": 0.0738,
+      "recall_at_floor": 0.8438,
+      "relevant": 96,
+      "tasks_with_both_classes": 19,
+      "value_brier": 0.2237,
+      "value_ece": 0.3832
+    },
+    "C-jev": {
+      "auroc_pooled": 0.9045,
+      "auroc_within_task_mean": 0.9061,
+      "floor": 0.4,
+      "irrelevant": 1379,
+      "n": 1475,
+      "precision_at_floor": 0.1995,
+      "recall_at_floor": 0.8438,
+      "relevant": 96,
+      "tasks_with_both_classes": 19,
+      "value_brier": 0.1187,
+      "value_ece": 0.2064
+    },
+    "C-jev-answered-only": {
+      "auroc_pooled": 0.9045,
+      "auroc_within_task_mean": 0.9061,
+      "floor": 0.4,
+      "irrelevant": 1379,
+      "n": 1475,
+      "precision_at_floor": 0.1995,
+      "recall_at_floor": 0.8438,
+      "relevant": 96,
+      "tasks_with_both_classes": 19,
+      "value_brier": 0.1187,
+      "value_ece": 0.2064
+    },
+    "C-jev-confidence": {
+      "accuracy_at_coverage": [
+        [
+          0.25,
+          0.9729
+        ],
+        [
+          0.5,
+          0.9173
+        ],
+        [
+          0.75,
+          0.8627
+        ],
+        [
+          1.0,
+          0.84
+        ]
+      ],
+      "aurc": 0.0781,
+      "confidence_brier": 0.1887,
+      "confidence_ece": 0.1945,
+      "correct": 1239,
+      "n": 1475,
+      "reliability_bins": [
+        [
+          7,
+          0.02,
+          0.5714
+        ],
+        [
+          16,
+          0.1656,
+          0.625
+        ],
+        [
+          91,
+          0.2584,
+          0.7253
+        ],
+        [
+          157,
+          0.3422,
+          0.8535
+        ],
+        [
+          193,
+          0.4436,
+          0.7306
+        ],
+        [
+          202,
+          0.549,
+          0.7475
+        ],
+        [
+          148,
+          0.6472,
+          0.7635
+        ],
+        [
+          155,
+          0.7428,
+          0.8387
+        ],
+        [
+          159,
+          0.8445,
+          0.956
+        ],
+        [
+          347,
+          0.9521,
+          0.9741
+        ]
+      ]
+    },
+    "C-jev-fallback-rate": 0.0,
+    "uncertain_excluded": 61
+  },
+  "context": {
+    "A-constant@1024": {
+      "budget_omissions": 49.4583,
+      "budget_utilization": 0.9875,
+      "expanded_planned": 0.0,
+      "expansion_considered": 1.8333,
+      "expansion_duplicates": 14.125,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2755,
+      "graph_nodes": 64.0,
+      "items": 7.5833,
+      "judgments_answered": 109.8333,
+      "omitted_expansion": 1.8333,
+      "omitted_packing": 0.0,
+      "omitted_selection": 57.3333,
+      "packing_loss": 0.0494,
+      "planned": 6.6667,
+      "reduced_to_header": 2.9583,
+      "required_file_recall": 0.5428,
+      "required_symbol_header_only": 0.0692,
+      "required_symbol_recall": 0.1136,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.2505,
+      "tokens_used": 1011.25,
+      "unlabeled_token_share": 0.7245
+    },
+    "A-constant@256": {
+      "budget_omissions": 52.75,
+      "budget_utilization": 0.9443,
+      "expanded_planned": 0.0,
+      "expansion_considered": 1.625,
+      "expansion_duplicates": 7.2917,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2678,
+      "graph_nodes": 64.0,
+      "items": 3.4583,
+      "judgments_answered": 109.625,
+      "omitted_expansion": 1.625,
+      "omitted_packing": 0.0,
+      "omitted_selection": 60.8333,
+      "packing_loss": 0.0437,
+      "planned": 3.1667,
+      "reduced_to_header": 2.4583,
+      "required_file_recall": 0.3668,
+      "required_symbol_header_only": 0.0616,
+      "required_symbol_recall": 0.0482,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.3047,
+      "tokens_used": 241.75,
+      "unlabeled_token_share": 0.7322
+    },
+    "A-constant@4096": {
+      "budget_omissions": 35.375,
+      "budget_utilization": 0.966,
+      "expanded_planned": 0.0,
+      "expansion_considered": 4.625,
+      "expansion_duplicates": 25.125,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.1696,
+      "graph_nodes": 64.0,
+      "items": 20.0833,
+      "judgments_answered": 112.625,
+      "omitted_expansion": 4.625,
+      "omitted_packing": 0.0,
+      "omitted_selection": 46.625,
+      "packing_loss": 0.0296,
+      "planned": 17.375,
+      "reduced_to_header": 3.1667,
+      "required_file_recall": 0.6178,
+      "required_symbol_header_only": 0.0561,
+      "required_symbol_recall": 0.2497,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.1557,
+      "tokens_used": 3956.7917,
+      "unlabeled_token_share": 0.8304
+    },
+    "B-heuristic@1024": {
+      "budget_omissions": 42.875,
+      "budget_utilization": 0.9875,
+      "expanded_planned": 0.0,
+      "expansion_considered": 1.9583,
+      "expansion_duplicates": 14.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2755,
+      "graph_nodes": 64.0,
+      "items": 7.5833,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 1.9583,
+      "omitted_packing": 0.0,
+      "omitted_selection": 57.3333,
+      "packing_loss": 0.0494,
+      "planned": 6.6667,
+      "reduced_to_header": 2.9583,
+      "required_file_recall": 0.5428,
+      "required_symbol_header_only": 0.0692,
+      "required_symbol_recall": 0.1136,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.2505,
+      "tokens_used": 1011.25,
+      "unlabeled_token_share": 0.7245
+    },
+    "B-heuristic@256": {
+      "budget_omissions": 46.1667,
+      "budget_utilization": 0.9443,
+      "expanded_planned": 0.0,
+      "expansion_considered": 1.75,
+      "expansion_duplicates": 7.1667,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2678,
+      "graph_nodes": 64.0,
+      "items": 3.4583,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 1.75,
+      "omitted_packing": 0.0,
+      "omitted_selection": 60.8333,
+      "packing_loss": 0.0437,
+      "planned": 3.1667,
+      "reduced_to_header": 2.4583,
+      "required_file_recall": 0.3668,
+      "required_symbol_header_only": 0.0616,
+      "required_symbol_recall": 0.0482,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.3047,
+      "tokens_used": 241.75,
+      "unlabeled_token_share": 0.7322
+    },
+    "B-heuristic@4096": {
+      "budget_omissions": 30.5833,
+      "budget_utilization": 0.9791,
+      "expanded_planned": 0.625,
+      "expansion_considered": 4.375,
+      "expansion_duplicates": 24.9167,
+      "expansion_tokens_estimated": 133.9583,
+      "gold_token_share": 0.1695,
+      "graph_nodes": 64.0,
+      "items": 20.5,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 3.75,
+      "omitted_packing": 0.0,
+      "omitted_selection": 46.9583,
+      "packing_loss": 0.0304,
+      "planned": 17.5417,
+      "reduced_to_header": 3.5417,
+      "required_file_recall": 0.6225,
+      "required_symbol_header_only": 0.0569,
+      "required_symbol_recall": 0.2513,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.1565,
+      "tokens_used": 4010.5,
+      "unlabeled_token_share": 0.8305
+    },
+    "B-no-expansion@1024": {
+      "budget_omissions": 40.9167,
+      "budget_utilization": 0.9875,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2755,
+      "graph_nodes": 64.0,
+      "items": 7.5833,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 57.3333,
+      "packing_loss": 0.0494,
+      "planned": 6.6667,
+      "reduced_to_header": 2.9583,
+      "required_file_recall": 0.5428,
+      "required_symbol_header_only": 0.0692,
+      "required_symbol_recall": 0.1136,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.2505,
+      "tokens_used": 1011.25,
+      "unlabeled_token_share": 0.7245
+    },
+    "B-no-expansion@256": {
+      "budget_omissions": 44.4167,
+      "budget_utilization": 0.9443,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.2678,
+      "graph_nodes": 64.0,
+      "items": 3.4583,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 60.8333,
+      "packing_loss": 0.0437,
+      "planned": 3.1667,
+      "reduced_to_header": 2.4583,
+      "required_file_recall": 0.3668,
+      "required_symbol_header_only": 0.0616,
+      "required_symbol_recall": 0.0482,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.3047,
+      "tokens_used": 241.75,
+      "unlabeled_token_share": 0.7322
+    },
+    "B-no-expansion@4096": {
+      "budget_omissions": 26.375,
+      "budget_utilization": 0.966,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.1696,
+      "graph_nodes": 64.0,
+      "items": 20.0833,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 46.625,
+      "packing_loss": 0.0296,
+      "planned": 17.375,
+      "reduced_to_header": 3.1667,
+      "required_file_recall": 0.6178,
+      "required_symbol_header_only": 0.0561,
+      "required_symbol_recall": 0.2497,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.1557,
+      "tokens_used": 3956.7917,
+      "unlabeled_token_share": 0.8304
+    },
+    "B-no-routing@1024": {
+      "budget_omissions": 18.6667,
+      "budget_utilization": 0.9854,
+      "expanded_planned": 0.2083,
+      "expansion_considered": 6.0833,
+      "expansion_duplicates": 3.7083,
+      "expansion_tokens_estimated": 5.2083,
+      "gold_token_share": 0.2754,
+      "graph_nodes": 20.0,
+      "items": 7.5833,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 5.875,
+      "omitted_packing": 0.0,
+      "omitted_selection": 14.25,
+      "packing_loss": 0.0494,
+      "planned": 5.9583,
+      "reduced_to_header": 2.5,
+      "required_file_recall": 0.5428,
+      "required_symbol_header_only": 0.0692,
+      "required_symbol_recall": 0.1136,
+      "routed_gold_coverage": 0.2523,
+      "selection_loss": 0.1085,
+      "tokens_used": 1009.0,
+      "unlabeled_token_share": 0.7246
+    },
+    "B-no-routing@256": {
+      "budget_omissions": 18.875,
+      "budget_utilization": 0.9259,
+      "expanded_planned": 0.1667,
+      "expansion_considered": 3.0833,
+      "expansion_duplicates": 2.0833,
+      "expansion_tokens_estimated": 5.5417,
+      "gold_token_share": 0.2737,
+      "graph_nodes": 20.0,
+      "items": 3.3333,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 2.9167,
+      "omitted_packing": 0.0,
+      "omitted_selection": 17.4167,
+      "packing_loss": 0.0453,
+      "planned": 2.75,
+      "reduced_to_header": 2.0833,
+      "required_file_recall": 0.3864,
+      "required_symbol_header_only": 0.0633,
+      "required_symbol_recall": 0.0482,
+      "routed_gold_coverage": 0.2523,
+      "selection_loss": 0.1638,
+      "tokens_used": 237.0417,
+      "unlabeled_token_share": 0.7263
+    },
+    "B-no-routing@4096": {
+      "budget_omissions": 12.0833,
+      "budget_utilization": 0.9759,
+      "expanded_planned": 3.125,
+      "expansion_considered": 10.7083,
+      "expansion_duplicates": 6.75,
+      "expansion_tokens_estimated": 412.125,
+      "gold_token_share": 0.1793,
+      "graph_nodes": 20.0,
+      "items": 20.4167,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 7.5833,
+      "omitted_packing": 0.0,
+      "omitted_selection": 6.625,
+      "packing_loss": 0.031,
+      "planned": 16.5,
+      "reduced_to_header": 3.4167,
+      "required_file_recall": 0.6374,
+      "required_symbol_header_only": 0.0574,
+      "required_symbol_recall": 0.2543,
+      "routed_gold_coverage": 0.2523,
+      "selection_loss": 0.0361,
+      "tokens_used": 3997.3333,
+      "unlabeled_token_share": 0.8207
+    },
+    "C-jev@1024": {
+      "budget_omissions": 11.4583,
+      "budget_utilization": 0.8503,
+      "expanded_planned": 0.625,
+      "expansion_considered": 5.6667,
+      "expansion_duplicates": 12.6667,
+      "expansion_tokens_estimated": 64.6667,
+      "gold_token_share": 0.3941,
+      "graph_nodes": 64.0,
+      "items": 5.9167,
+      "judgments_answered": 69.6667,
+      "omitted_expansion": 5.0417,
+      "omitted_packing": 0.0,
+      "omitted_selection": 57.9583,
+      "packing_loss": 0.0568,
+      "planned": 6.6667,
+      "reduced_to_header": 3.125,
+      "required_file_recall": 0.7605,
+      "required_symbol_header_only": 0.0943,
+      "required_symbol_recall": 0.1883,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.181,
+      "tokens_used": 870.6667,
+      "unlabeled_token_share": 0.5643
+    },
+    "C-jev@256": {
+      "budget_omissions": 14.0417,
+      "budget_utilization": 0.8504,
+      "expanded_planned": 0.2917,
+      "expansion_considered": 4.1667,
+      "expansion_duplicates": 8.4583,
+      "expansion_tokens_estimated": 18.875,
+      "gold_token_share": 0.4206,
+      "graph_nodes": 64.0,
+      "items": 3.9167,
+      "judgments_answered": 68.1667,
+      "omitted_expansion": 3.875,
+      "omitted_packing": 0.0,
+      "omitted_selection": 60.6667,
+      "packing_loss": 0.0774,
+      "planned": 3.625,
+      "reduced_to_header": 2.9583,
+      "required_file_recall": 0.7492,
+      "required_symbol_header_only": 0.1148,
+      "required_symbol_recall": 0.0816,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.246,
+      "tokens_used": 217.7083,
+      "unlabeled_token_share": 0.5378
+    },
+    "C-jev@4096": {
+      "budget_omissions": 5.7917,
+      "budget_utilization": 0.7806,
+      "expanded_planned": 1.5,
+      "expansion_considered": 8.0833,
+      "expansion_duplicates": 18.875,
+      "expansion_tokens_estimated": 475.4583,
+      "gold_token_share": 0.3823,
+      "graph_nodes": 64.0,
+      "items": 10.7917,
+      "judgments_answered": 72.0833,
+      "omitted_expansion": 6.5833,
+      "omitted_packing": 0.0,
+      "omitted_selection": 52.4167,
+      "packing_loss": 0.0084,
+      "planned": 13.0417,
+      "reduced_to_header": 2.4583,
+      "required_file_recall": 0.8063,
+      "required_symbol_header_only": 0.0467,
+      "required_symbol_recall": 0.4046,
+      "routed_gold_coverage": 0.3966,
+      "selection_loss": 0.1265,
+      "tokens_used": 3197.2917,
+      "unlabeled_token_share": 0.5761
+    }
+  },
+  "context_tasks_without_verified_gold": 0,
+  "gold_unobserved_by_routing": 0.6033,
+  "paired_context": {
+    "B-minus-A@1024:gold_token_share": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 24
+    },
+    "B-minus-A@1024:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 24
+    },
+    "B-minus-A@256:gold_token_share": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 24
+    },
+    "B-minus-A@256:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 24
+    },
+    "B-minus-A@4096:gold_token_share": {
+      "ci95": [
+        -0.0007,
+        0.0003
+      ],
+      "mean_diff": -0.0001,
+      "tasks": 24
+    },
+    "B-minus-A@4096:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0047
+      ],
+      "mean_diff": 0.0016,
+      "tasks": 24
+    },
+    "C-minus-B@1024:gold_token_share": {
+      "ci95": [
+        0.0091,
+        0.2399
+      ],
+      "mean_diff": 0.1186,
+      "tasks": 24
+    },
+    "C-minus-B@1024:required_symbol_recall": {
+      "ci95": [
+        0.0264,
+        0.1307
+      ],
+      "mean_diff": 0.0747,
+      "tasks": 24
+    },
+    "C-minus-B@256:gold_token_share": {
+      "ci95": [
+        0.0524,
+        0.2606
+      ],
+      "mean_diff": 0.1527,
+      "tasks": 24
+    },
+    "C-minus-B@256:required_symbol_recall": {
+      "ci95": [
+        0.0016,
+        0.0798
+      ],
+      "mean_diff": 0.0333,
+      "tasks": 24
+    },
+    "C-minus-B@4096:gold_token_share": {
+      "ci95": [
+        0.1201,
+        0.3168
+      ],
+      "mean_diff": 0.2128,
+      "tasks": 24
+    },
+    "C-minus-B@4096:required_symbol_recall": {
+      "ci95": [
+        0.0668,
+        0.2597
+      ],
+      "mean_diff": 0.1532,
+      "tasks": 24
+    }
+  },
+  "paired_within_task_auroc": {
+    "B-minus-A": {
+      "ci95": [
+        0.0847,
+        0.2933
+      ],
+      "mean_diff": 0.1934,
+      "tasks": 19
+    },
+    "C-minus-B": {
+      "ci95": [
+        0.1218,
+        0.3225
+      ],
+      "mean_diff": 0.2128,
+      "tasks": 19
+    }
+  },
+  "preregistration_sha256": "42fca4473ba84cae85019d39bbca6e8e95d205107bd2c65451ea090d56607c0a",
+  "records": 2639,
+  "routing_mean": {
+    "branch_judgments": 44.0,
+    "edges_examined": 651.75,
+    "gold_entry": 1.6667,
+    "gold_routed": 4.0,
+    "gold_unverified": 1.1667,
+    "gold_verified": 10.0833,
+    "regions_loaded": 64.0,
+    "routed": 64.0
+  },
+  "tasks": 24
+}

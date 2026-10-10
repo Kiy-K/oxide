@@ -1,0 +1,23 @@
+{
+  "G1_validity": "PASS",
+  "G2_candidate_quality": "PASS",
+  "G3_context_quality_1024": "PASS",
+  "G4_cost": "PASS",
+  "inputs": {
+    "auroc_c_minus_b": {
+      "ci95": [
+        0.1218,
+        0.3225
+      ],
+      "mean_diff": 0.2128,
+      "tasks": 19
+    },
+    "cost_per_context_request_usd": 0.007509007213675214,
+    "p95_latency_ms": 409.0,
+    "recall_ci_lo": 0.0264,
+    "repeated": 100,
+    "stable": 97.0
+  },
+  "preregistration_sha256": "42fca4473ba84cae85019d39bbca6e8e95d205107bd2c65451ea090d56607c0a",
+  "promotable": true
+}

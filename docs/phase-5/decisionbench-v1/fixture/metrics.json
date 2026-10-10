@@ -1,0 +1,673 @@
+{
+  "branch_value": {
+    "B-heuristic": {
+      "auroc": null,
+      "n": 123,
+      "prune_threshold": 0.25,
+      "pruning_loss": 0.0,
+      "selection_accuracy_at_prune_threshold": 0.0081,
+      "unnecessary_exploration": 1.0,
+      "useful": 1
+    },
+    "B-heuristic-on-C-sample": {
+      "auroc": null,
+      "n": 54,
+      "prune_threshold": 0.25,
+      "pruning_loss": null,
+      "selection_accuracy_at_prune_threshold": 0.0,
+      "unnecessary_exploration": 1.0,
+      "useful": 0
+    },
+    "C-jev-sampled": {
+      "auroc": null,
+      "failed": 0,
+      "mean_inclusion_probability": 0.523,
+      "n": 54,
+      "prune_threshold": 0.25,
+      "pruning_loss": null,
+      "selection_accuracy_at_prune_threshold": 0.1111,
+      "unnecessary_exploration": 0.8889,
+      "useful": 0
+    }
+  },
+  "candidate_relevance": {
+    "A-constant": {
+      "auroc_pooled": null,
+      "auroc_within_task_mean": 0.5,
+      "floor": 0.4,
+      "irrelevant": 213,
+      "n": 222,
+      "precision_at_floor": 0.0405,
+      "recall_at_floor": 1.0,
+      "relevant": 9,
+      "tasks_with_both_classes": 7,
+      "value_brier": "insufficient sample",
+      "value_ece": "insufficient sample"
+    },
+    "B-heuristic": {
+      "auroc_pooled": null,
+      "auroc_within_task_mean": 0.9614,
+      "floor": 0.4,
+      "irrelevant": 213,
+      "n": 222,
+      "precision_at_floor": 0.0833,
+      "recall_at_floor": 1.0,
+      "relevant": 9,
+      "tasks_with_both_classes": 7,
+      "value_brier": "insufficient sample",
+      "value_ece": "insufficient sample"
+    },
+    "C-jev": {
+      "auroc_pooled": null,
+      "auroc_within_task_mean": 0.9075,
+      "floor": 0.4,
+      "irrelevant": 213,
+      "n": 222,
+      "precision_at_floor": 0.075,
+      "recall_at_floor": 1.0,
+      "relevant": 9,
+      "tasks_with_both_classes": 7,
+      "value_brier": "insufficient sample",
+      "value_ece": "insufficient sample"
+    },
+    "C-jev-answered-only": {
+      "auroc_pooled": null,
+      "auroc_within_task_mean": 0.9075,
+      "floor": 0.4,
+      "irrelevant": 213,
+      "n": 222,
+      "precision_at_floor": 0.075,
+      "recall_at_floor": 1.0,
+      "relevant": 9,
+      "tasks_with_both_classes": 7,
+      "value_brier": "insufficient sample",
+      "value_ece": "insufficient sample"
+    },
+    "C-jev-confidence": {
+      "accuracy_at_coverage": [
+        [
+          0.25,
+          0.625
+        ],
+        [
+          0.5,
+          0.5856
+        ],
+        [
+          0.75,
+          0.5928
+        ],
+        [
+          1.0,
+          0.5991
+        ]
+      ],
+      "aurc": 0.4011,
+      "confidence_brier": 0.3057,
+      "confidence_ece": 0.2395,
+      "correct": 133,
+      "n": 222,
+      "reliability_bins": [
+        [
+          9,
+          0.0056,
+          0.3333
+        ],
+        [
+          6,
+          0.1317,
+          0.6667
+        ],
+        [
+          13,
+          0.2654,
+          0.5385
+        ],
+        [
+          20,
+          0.3375,
+          0.7
+        ],
+        [
+          23,
+          0.4522,
+          0.6522
+        ],
+        [
+          24,
+          0.555,
+          0.625
+        ],
+        [
+          31,
+          0.651,
+          0.5161
+        ],
+        [
+          22,
+          0.7514,
+          0.5
+        ],
+        [
+          26,
+          0.8477,
+          0.6923
+        ],
+        [
+          48,
+          0.9621,
+          0.625
+        ]
+      ]
+    },
+    "C-jev-fallback-rate": 0.0,
+    "uncertain_excluded": 11
+  },
+  "context": {
+    "A-constant@1024": {
+      "budget_omissions": 12.0,
+      "budget_utilization": 0.9669,
+      "expanded_planned": 0.2857,
+      "expansion_considered": 0.7143,
+      "expansion_duplicates": 12.8571,
+      "expansion_tokens_estimated": 30.0,
+      "gold_token_share": 0.3095,
+      "graph_nodes": 33.2857,
+      "items": 9.2857,
+      "judgments_answered": 51.5714,
+      "omitted_expansion": 0.4286,
+      "omitted_packing": 0.0,
+      "omitted_selection": 21.5714,
+      "packing_loss": 0.0,
+      "planned": 12.0,
+      "reduced_to_header": 2.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 990.1429,
+      "unlabeled_token_share": 0.6905
+    },
+    "A-constant@256": {
+      "budget_omissions": 19.0,
+      "budget_utilization": 0.9459,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.1429,
+      "expansion_duplicates": 8.5714,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.3089,
+      "graph_nodes": 33.2857,
+      "items": 4.4286,
+      "judgments_answered": 51.0,
+      "omitted_expansion": 0.1429,
+      "omitted_packing": 0.0,
+      "omitted_selection": 28.8571,
+      "packing_loss": 0.6429,
+      "planned": 4.4286,
+      "reduced_to_header": 2.4286,
+      "required_file_recall": 0.8571,
+      "required_symbol_header_only": 0.7143,
+      "required_symbol_recall": 0.0714,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.2857,
+      "tokens_used": 242.1429,
+      "unlabeled_token_share": 0.6911
+    },
+    "A-constant@4096": {
+      "budget_omissions": 0.0,
+      "budget_utilization": 0.5073,
+      "expanded_planned": 1.1429,
+      "expansion_considered": 1.7143,
+      "expansion_duplicates": 20.1429,
+      "expansion_tokens_estimated": 98.2857,
+      "gold_token_share": 0.1629,
+      "graph_nodes": 33.2857,
+      "items": 12.2857,
+      "judgments_answered": 52.5714,
+      "omitted_expansion": 0.5714,
+      "omitted_packing": 0.0,
+      "omitted_selection": 12.5714,
+      "packing_loss": 0.0,
+      "planned": 21.8571,
+      "reduced_to_header": 0.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 2077.7143,
+      "unlabeled_token_share": 0.8371
+    },
+    "B-heuristic@1024": {
+      "budget_omissions": 5.4286,
+      "budget_utilization": 0.8577,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.2857,
+      "expansion_duplicates": 12.1429,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.414,
+      "graph_nodes": 33.2857,
+      "items": 8.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.2857,
+      "omitted_packing": 0.0,
+      "omitted_selection": 22.5714,
+      "packing_loss": 0.0,
+      "planned": 10.7143,
+      "reduced_to_header": 1.2857,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 878.2857,
+      "unlabeled_token_share": 0.586
+    },
+    "B-heuristic@256": {
+      "budget_omissions": 12.0,
+      "budget_utilization": 0.9146,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.2857,
+      "expansion_duplicates": 7.8571,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.341,
+      "graph_nodes": 33.2857,
+      "items": 4.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.2857,
+      "omitted_packing": 0.0,
+      "omitted_selection": 29.1429,
+      "packing_loss": 0.6429,
+      "planned": 4.1429,
+      "reduced_to_header": 2.1429,
+      "required_file_recall": 0.8571,
+      "required_symbol_header_only": 0.7143,
+      "required_symbol_recall": 0.0714,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.2857,
+      "tokens_used": 234.1429,
+      "unlabeled_token_share": 0.659
+    },
+    "B-heuristic@4096": {
+      "budget_omissions": 0.0,
+      "budget_utilization": 0.3321,
+      "expanded_planned": 0.4286,
+      "expansion_considered": 0.4286,
+      "expansion_duplicates": 16.4286,
+      "expansion_tokens_estimated": 42.2857,
+      "gold_token_share": 0.3264,
+      "graph_nodes": 33.2857,
+      "items": 8.2857,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 17.0,
+      "packing_loss": 0.0,
+      "planned": 16.2857,
+      "reduced_to_header": 0.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 1360.2857,
+      "unlabeled_token_share": 0.6736
+    },
+    "B-no-expansion@1024": {
+      "budget_omissions": 5.1429,
+      "budget_utilization": 0.8577,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.414,
+      "graph_nodes": 33.2857,
+      "items": 8.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 22.5714,
+      "packing_loss": 0.0,
+      "planned": 10.7143,
+      "reduced_to_header": 1.2857,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 878.2857,
+      "unlabeled_token_share": 0.586
+    },
+    "B-no-expansion@256": {
+      "budget_omissions": 11.7143,
+      "budget_utilization": 0.9146,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.341,
+      "graph_nodes": 33.2857,
+      "items": 4.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 29.1429,
+      "packing_loss": 0.6429,
+      "planned": 4.1429,
+      "reduced_to_header": 2.1429,
+      "required_file_recall": 0.8571,
+      "required_symbol_header_only": 0.7143,
+      "required_symbol_recall": 0.0714,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.2857,
+      "tokens_used": 234.1429,
+      "unlabeled_token_share": 0.659
+    },
+    "B-no-expansion@4096": {
+      "budget_omissions": 0.0,
+      "budget_utilization": 0.3218,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.0,
+      "expansion_duplicates": 0.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.3316,
+      "graph_nodes": 33.2857,
+      "items": 7.8571,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 17.4286,
+      "packing_loss": 0.0,
+      "planned": 15.8571,
+      "reduced_to_header": 0.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 1318.0,
+      "unlabeled_token_share": 0.6684
+    },
+    "B-no-routing@1024": {
+      "budget_omissions": 3.0,
+      "budget_utilization": 0.8577,
+      "expanded_planned": 0.5714,
+      "expansion_considered": 1.5714,
+      "expansion_duplicates": 9.1429,
+      "expansion_tokens_estimated": 28.2857,
+      "gold_token_share": 0.4137,
+      "graph_nodes": 15.7143,
+      "items": 8.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 1.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 5.5714,
+      "packing_loss": 0.0,
+      "planned": 10.7143,
+      "reduced_to_header": 1.2857,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 878.2857,
+      "unlabeled_token_share": 0.5863
+    },
+    "B-no-routing@256": {
+      "budget_omissions": 9.1429,
+      "budget_utilization": 0.9146,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.8571,
+      "expansion_duplicates": 6.0,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.341,
+      "graph_nodes": 15.7143,
+      "items": 4.1429,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.8571,
+      "omitted_packing": 0.0,
+      "omitted_selection": 11.8571,
+      "packing_loss": 0.6429,
+      "planned": 3.8571,
+      "reduced_to_header": 1.8571,
+      "required_file_recall": 0.8571,
+      "required_symbol_header_only": 0.7143,
+      "required_symbol_recall": 0.0714,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.2857,
+      "tokens_used": 234.1429,
+      "unlabeled_token_share": 0.659
+    },
+    "B-no-routing@4096": {
+      "budget_omissions": 0.0,
+      "budget_utilization": 0.3073,
+      "expanded_planned": 2.0,
+      "expansion_considered": 2.0,
+      "expansion_duplicates": 10.5714,
+      "expansion_tokens_estimated": 340.7143,
+      "gold_token_share": 0.3426,
+      "graph_nodes": 15.7143,
+      "items": 8.8571,
+      "judgments_answered": 0.0,
+      "omitted_expansion": 0.0,
+      "omitted_packing": 0.0,
+      "omitted_selection": 3.5714,
+      "packing_loss": 0.0,
+      "planned": 14.1429,
+      "reduced_to_header": 0.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 1258.7143,
+      "unlabeled_token_share": 0.6574
+    },
+    "C-jev@1024": {
+      "budget_omissions": 3.4286,
+      "budget_utilization": 0.8238,
+      "expanded_planned": 0.2857,
+      "expansion_considered": 0.8571,
+      "expansion_duplicates": 9.4286,
+      "expansion_tokens_estimated": 15.4286,
+      "gold_token_share": 0.4294,
+      "graph_nodes": 33.2857,
+      "items": 5.4286,
+      "judgments_answered": 34.1429,
+      "omitted_expansion": 0.5714,
+      "omitted_packing": 0.0,
+      "omitted_selection": 23.4286,
+      "packing_loss": 0.0,
+      "planned": 9.8571,
+      "reduced_to_header": 1.1429,
+      "required_file_recall": 0.8571,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 0.8571,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.1429,
+      "tokens_used": 843.5714,
+      "unlabeled_token_share": 0.5706
+    },
+    "C-jev@256": {
+      "budget_omissions": 9.2857,
+      "budget_utilization": 0.9353,
+      "expanded_planned": 0.0,
+      "expansion_considered": 0.1429,
+      "expansion_duplicates": 5.4286,
+      "expansion_tokens_estimated": 0.0,
+      "gold_token_share": 0.5866,
+      "graph_nodes": 33.2857,
+      "items": 3.2857,
+      "judgments_answered": 33.4286,
+      "omitted_expansion": 0.1429,
+      "omitted_packing": 0.0,
+      "omitted_selection": 29.5714,
+      "packing_loss": 0.3571,
+      "planned": 3.7143,
+      "reduced_to_header": 1.5714,
+      "required_file_recall": 0.6429,
+      "required_symbol_header_only": 0.3571,
+      "required_symbol_recall": 0.2857,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.3571,
+      "tokens_used": 239.4286,
+      "unlabeled_token_share": 0.4134
+    },
+    "C-jev@4096": {
+      "budget_omissions": 0.0,
+      "budget_utilization": 0.2978,
+      "expanded_planned": 0.4286,
+      "expansion_considered": 1.1429,
+      "expansion_duplicates": 12.5714,
+      "expansion_tokens_estimated": 29.8571,
+      "gold_token_share": 0.3527,
+      "graph_nodes": 33.2857,
+      "items": 6.8571,
+      "judgments_answered": 34.4286,
+      "omitted_expansion": 0.7143,
+      "omitted_packing": 0.0,
+      "omitted_selection": 20.0,
+      "packing_loss": 0.0,
+      "planned": 13.4286,
+      "reduced_to_header": 0.0,
+      "required_file_recall": 1.0,
+      "required_symbol_header_only": 0.0,
+      "required_symbol_recall": 1.0,
+      "routed_gold_coverage": 1.0,
+      "selection_loss": 0.0,
+      "tokens_used": 1219.8571,
+      "unlabeled_token_share": 0.6473
+    }
+  },
+  "context_tasks_without_verified_gold": 0,
+  "gold_unobserved_by_routing": 0.0,
+  "paired_context": {
+    "B-minus-A@1024:gold_token_share": {
+      "ci95": [
+        0.0004,
+        0.3115
+      ],
+      "mean_diff": 0.1045,
+      "tasks": 7
+    },
+    "B-minus-A@1024:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 7
+    },
+    "B-minus-A@256:gold_token_share": {
+      "ci95": [
+        0.0,
+        0.0964
+      ],
+      "mean_diff": 0.0321,
+      "tasks": 7
+    },
+    "B-minus-A@256:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 7
+    },
+    "B-minus-A@4096:gold_token_share": {
+      "ci95": [
+        0.0162,
+        0.404
+      ],
+      "mean_diff": 0.1635,
+      "tasks": 7
+    },
+    "B-minus-A@4096:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 7
+    },
+    "C-minus-B@1024:gold_token_share": {
+      "ci95": [
+        -0.053,
+        0.1082
+      ],
+      "mean_diff": 0.0154,
+      "tasks": 7
+    },
+    "C-minus-B@1024:required_symbol_recall": {
+      "ci95": [
+        -0.4286,
+        0.0
+      ],
+      "mean_diff": -0.1429,
+      "tasks": 7
+    },
+    "C-minus-B@256:gold_token_share": {
+      "ci95": [
+        -0.0309,
+        0.5523
+      ],
+      "mean_diff": 0.2456,
+      "tasks": 7
+    },
+    "C-minus-B@256:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.5
+      ],
+      "mean_diff": 0.2143,
+      "tasks": 7
+    },
+    "C-minus-B@4096:gold_token_share": {
+      "ci95": [
+        -0.0082,
+        0.0808
+      ],
+      "mean_diff": 0.0262,
+      "tasks": 7
+    },
+    "C-minus-B@4096:required_symbol_recall": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean_diff": 0.0,
+      "tasks": 7
+    }
+  },
+  "paired_within_task_auroc": {
+    "B-minus-A": {
+      "ci95": [
+        0.4432,
+        0.4813
+      ],
+      "mean_diff": 0.4614,
+      "tasks": 7
+    },
+    "C-minus-B": {
+      "ci95": [
+        -0.1589,
+        0.0276
+      ],
+      "mean_diff": -0.0539,
+      "tasks": 7
+    }
+  },
+  "records": 358,
+  "routing_mean": {
+    "branch_judgments": 17.5714,
+    "edges_examined": 162.4286,
+    "gold_entry": 1.2857,
+    "gold_routed": 1.2857,
+    "gold_unverified": 0.0,
+    "gold_verified": 1.2857,
+    "regions_loaded": 33.2857,
+    "routed": 33.2857
+  },
+  "tasks": 7
+}

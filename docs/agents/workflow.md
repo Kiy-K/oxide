@@ -101,3 +101,31 @@ schema), so a dependency or version bump fails `mise run verify` by design,
 even when quality is unchanged. That change creates a new baseline directory
 (`baseline-v2/`), points `runtime/tests/phase3_eval.rs` at it, writes it with
 `OXIDE_FREEZE_PHASE3=1`, keeps the old directory, and records the comparison.
+
+## Phase 5 DecisionBench and JEV
+
+`cargo test` checks the fixture DecisionBench
+(`docs/phase-5/decisionbench-v1/fixture/`) offline: config C replays the
+recorded live JEV exchanges in `fixture/jev/`. Never regenerate it to make a
+failure pass. A changed dataset is a new version.
+
+The ContextBench run is opt-in, machine-local and `#[ignore]`d. It needs
+the public task repositories checked out at their base commits. Records
+and JEV exchanges hold source, so they stay under
+`OXIDE_DECISIONBENCH_DATA` (default
+`~/Projects/oxide-eval-data/oxide-decisionbench`). Results are cached per
+task, so a rerun resumes.
+
+```bash
+cd oxide_kernel && cargo test --release -p oxide-runtime --test phase5_contextbench --no-run
+systemd-run --user --scope -p MemoryMax=8G -p CPUQuota=200% env \
+  OXIDE_CB_WORKTREES=<dir>:<dir> OXIDE_PHASE5_JEV=replay \
+  target/release/deps/phase5_contextbench-<hash> --ignored --nocapture
+```
+
+`OXIDE_PHASE5_JEV=off|replay|live`. Live mode sends source to the hosted
+JEV service, so use it only with explicit authorization for the
+repositories involved and a request/spend cap (`common/phase5.rs`:
+`LIVE_REQUESTS`, `LIVE_TOKENS`). It reads `TYPESAFE_API_KEY`, which never
+enters recordings. The test split stays sealed unless
+`OXIDE_PHASE5_UNSEAL_TEST=1` and `docs/phase-5/preregistration.md` exists.

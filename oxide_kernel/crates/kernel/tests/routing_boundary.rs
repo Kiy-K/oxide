@@ -185,9 +185,11 @@ fn fallbacks(decisions: &[Decision]) -> Vec<Option<Fallback>> {
 
 const ANY: DecisionPolicy = DecisionPolicy {
     min_confidence: None,
+    confidence_calibrated: false,
 };
 const CONFIDENT: DecisionPolicy = DecisionPolicy {
     min_confidence: Some(0.5),
+    confidence_calibrated: true,
 };
 
 #[test]
@@ -267,6 +269,23 @@ fn abstention_wrong_version_and_low_or_unreported_confidence_fall_back() {
             Some(Fallback::Unsupported)
         ]
     );
+
+    // A floor over confidence nobody has calibrated accepts nothing: a
+    // provider's own confidence is not evidence.
+    let uncalibrated = DecisionPolicy {
+        confidence_calibrated: false,
+        ..CONFIDENT
+    };
+    let mut sure = fake(|c| Ok(vec![value(&c[0], 0.7, Some(0.99))]));
+    let decisions = decide(
+        Some(&mut sure),
+        &capsules[..1],
+        &mut allowance,
+        uncalibrated,
+    );
+    assert_eq!(fallbacks(&decisions), [Some(Fallback::Uncalibrated)]);
+    let decisions = decide(Some(&mut sure), &capsules[..1], &mut allowance, CONFIDENT);
+    assert_eq!(fallbacks(&decisions), [None]);
 
     // Without a confidence floor an unreported confidence is accepted, and it
     // stays unreported rather than becoming certainty.

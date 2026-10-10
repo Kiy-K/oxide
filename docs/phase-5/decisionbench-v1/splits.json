@@ -1,0 +1,31 @@
+{
+ "format": "oxide-decisionbench-splits-v1",
+ "frozen": "2026-10-09, before any Phase 5 judgment or context metric was computed",
+ "unit": "repository: every task of a repository is in one split",
+ "rule": "fixture/py_repo -> dev; ContextBench repositories sorted by sha256('oxide-decisionbench-v1/' + repo), each assigned to the split furthest below its target share of tasks (dev 0.3, calibration 0.3, test 0.4; ties dev < calibration < test)",
+ "splits": {
+  "dev": "evaluation design and development; metrics may be read freely",
+  "calibration": "held-out calibration: fit/threshold confidence only here, never on test",
+  "test": "final repository-held-out test: sealed until a preregistered comparison runs",
+  "train_reserved": "reserved for future training; empty in v1 (no training in Phase 5)"
+ },
+ "repositories": {
+  "ansible/ansible": "calibration",
+  "astropy/astropy": "test",
+  "django/django": "test",
+  "fixture/py_repo": "dev",
+  "huggingface/transformers": "test",
+  "internetarchive/openlibrary": "test",
+  "keras-team/keras": "dev",
+  "langchain-ai/langchain": "test",
+  "matplotlib/matplotlib": "calibration",
+  "psf/requests": "calibration",
+  "pydata/xarray": "test",
+  "pytest-dev/pytest": "calibration",
+  "qutebrowser/qutebrowser": "calibration",
+  "scikit-learn/scikit-learn": "test",
+  "sphinx-doc/sphinx": "dev",
+  "sympy/sympy": "dev",
+  "yt-dlp/yt-dlp": "calibration"
+ }
+}

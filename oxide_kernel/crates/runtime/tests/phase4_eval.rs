@@ -15,51 +15,22 @@ mod common;
 use std::collections::BTreeMap;
 use std::time::Instant;
 
-use common::{Task, mean, name, repo_root, tasks};
-use oxide_kernel::capsule::{Capsule, Question};
+use common::{Constant, gold_sources, mean, metrics, name, repo_root, rss_peak_kib, tasks};
 use oxide_kernel::context::{ContextConfig, ContextRequest, ContextRun, baseline, build_context};
-use oxide_kernel::decision::{
-    DecisionProvider, Judgment, ProviderError, ProviderIdentity, Verdict,
-};
+use oxide_kernel::decision::DecisionProvider;
 use oxide_kernel::digest::digest;
 use oxide_kernel::id::RepoId;
-use oxide_kernel::knowledge::SourceRef;
-use oxide_kernel::pack::{COUNTER, PAYLOAD_VERSION, View, count, counter};
+use oxide_kernel::pack::{COUNTER, PAYLOAD_VERSION, count, counter};
 use oxide_kernel::query::{ContextBudget, Query, QueryContext};
 use oxide_kernel::retrieve::ChannelState;
 use oxide_kernel::select::{OmitReason, Reason, SELECTOR_VERSION, Stage};
-use oxide_kernel::store::{KnowledgeStore, ReadView};
+use oxide_kernel::store::KnowledgeStore;
 use oxide_runtime::capture::{Scope, capture};
 use oxide_runtime::derivation::derive;
-use oxide_runtime::storage::{LadybugStore, LadybugView};
+use oxide_runtime::storage::LadybugStore;
 use serde_json::{Value, json};
 
 const BUDGETS: [u32; 2] = [256, 1024];
-
-/// Control A: no judgment at all. Every subject gets the same constant, so
-/// greedy order is the pool order (entry points in CandidateSet order, then
-/// routed-only candidates by depth) and routing is unchanged (0.5 never
-/// prunes).
-struct Constant;
-
-impl DecisionProvider for Constant {
-    fn identity(&self) -> ProviderIdentity {
-        ProviderIdentity {
-            name: "control-constant".into(),
-            version: "1".into(),
-        }
-    }
-    fn supports(&self, _: Question) -> bool {
-        true
-    }
-    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
-        let verdict = Verdict::Value {
-            value: 0.5,
-            confidence: None,
-        };
-        Ok(capsules.iter().map(|c| Judgment::of(c, verdict)).collect())
-    }
-}
 
 fn configs() -> Vec<(&'static str, ContextConfig, bool)> {
     let b = baseline();
@@ -76,76 +47,6 @@ fn configs() -> Vec<(&'static str, ContextConfig, bool)> {
         ("B-no-routing", no_routing, false),
         ("B-no-routing-no-expansion", neither, false),
     ]
-}
-
-fn covers(item: &SourceRef, gold: &SourceRef) -> bool {
-    item.file == gold.file
-        && item.range.start <= gold.range.start
-        && gold.range.end <= item.range.end
-}
-
-fn overlaps(item: &SourceRef, gold: &SourceRef) -> bool {
-    item.file == gold.file && item.range.start < gold.range.end && gold.range.start < item.range.end
-}
-
-fn metrics(task: &Task, gold: &[SourceRef], run: &ContextRun) -> Value {
-    let bundle = &run.bundle;
-    let items: Vec<&SourceRef> = bundle.items.iter().map(|i| &i.source).collect();
-    let n = task.gold.len() as f64;
-    let share = |f: &dyn Fn(usize) -> bool| (0..gold.len()).filter(|&i| f(i)).count() as f64 / n;
-    let complete = |i: usize| items.iter().any(|s| covers(s, &gold[i]));
-    let partial = |i: usize| !complete(i) && items.iter().any(|s| overlaps(s, &gold[i]));
-    let in_file = |i: usize| items.iter().any(|s| s.file == gold[i].file);
-    let routed = |i: usize| run.graph.nodes.iter().any(|n| n.entity.id == task.gold[i]);
-    let planned = |i: usize| run.plan.items.iter().any(|p| p.entity == task.gold[i]);
-    let gold_tokens: u32 = bundle
-        .items
-        .iter()
-        .filter(|i| gold.iter().any(|g| overlaps(&i.source, g)))
-        .map(|i| i.tokens)
-        .sum();
-    let used = bundle.used_tokens;
-    let ratio = |a: u32| {
-        if used == 0 {
-            0.0
-        } else {
-            a as f64 / used as f64
-        }
-    };
-    let expanded = |r: &Reason| matches!(r, Reason::Expanded { .. });
-    let omitted = |stage: Stage| bundle.omitted.iter().filter(|o| o.stage == stage).count();
-    let budget_omission = |r: &OmitReason| {
-        matches!(
-            r,
-            OmitReason::BudgetExceeded { .. } | OmitReason::TooLarge { .. }
-        )
-    };
-    let expanded_items = run.plan.items.iter().filter(|i| expanded(&i.reason));
-    json!({
-        "required_symbol_recall": share(&complete),
-        "required_symbol_header_only": share(&partial),
-        "required_file_recall": share(&in_file),
-        "routed_gold_coverage": share(&routed),
-        "selection_loss": share(&|i| routed(i) && !planned(i)),
-        "packing_loss": share(&|i| planned(i) && !complete(i)),
-        "gold_token_share": ratio(gold_tokens),
-        "unlabeled_token_share": if used == 0 { 0.0 } else { 1.0 - ratio(gold_tokens) },
-        "tokens_used": used,
-        "budget_utilization": used as f64 / bundle.budget.tokens as f64,
-        "items": bundle.items.len(),
-        "planned": run.plan.items.len(),
-        "expanded_planned": expanded_items.clone().count(),
-        "expansion_tokens_estimated": expanded_items.map(|i| i.estimated_tokens).sum::<u32>(),
-        "expansion_considered": run.plan.expansion.considered,
-        "expansion_duplicates": run.plan.expansion.duplicates,
-        "reduced_to_header": run.plan.items.iter().filter(|i| i.view == View::Header).count(),
-        "omitted_selection": omitted(Stage::Selection),
-        "omitted_expansion": omitted(Stage::Expansion),
-        "omitted_packing": omitted(Stage::Packing),
-        "budget_omissions": bundle.omitted.iter().filter(|o| budget_omission(&o.reason)).count(),
-        "graph_nodes": run.graph.nodes.len(),
-        "judgments_answered": run.judgments.len(),
-    })
 }
 
 fn reason(r: &Reason) -> Value {
@@ -215,21 +116,6 @@ fn raw(run: &ContextRun) -> Value {
     })
 }
 
-fn gold_sources(view: &LadybugView, task: &Task) -> Vec<SourceRef> {
-    view.entities(&task.gold)
-        .unwrap()
-        .into_iter()
-        .map(|e| e.unwrap().source.unwrap())
-        .collect()
-}
-
-fn rss_peak_kib() -> u64 {
-    let status = std::fs::read_to_string("/proc/self/status").unwrap_or_default();
-    let line = status.lines().find(|l| l.starts_with("VmHWM:"));
-    line.and_then(|l| l.split_whitespace().nth(1)?.parse().ok())
-        .unwrap_or(0)
-}
-
 #[test]
 fn phase4_frozen_baseline_reproduces() {
     let source = capture(&repo_root().join("fixtures/py_repo"), &Scope::default()).unwrap();
@@ -253,7 +139,7 @@ fn phase4_frozen_baseline_reproduces() {
     let mut capsules = String::new();
     let mut timings: Vec<f64> = Vec::new();
     for task in &tasks {
-        let gold = gold_sources(&view, task);
+        let gold = gold_sources(&view, &task.gold);
         let mut runs = serde_json::Map::new();
         for (label, config, constant) in configs() {
             for tokens in BUDGETS {
@@ -304,7 +190,7 @@ fn phase4_frozen_baseline_reproduces() {
                 table
                     .entry(row.clone())
                     .or_default()
-                    .push(metrics(task, &gold, &run));
+                    .push(metrics(&task.gold, &gold, &run));
                 runs.insert(row, raw(&run));
             }
         }

@@ -252,11 +252,18 @@ pub struct Allowance {
     pub remaining: usize,
 }
 
-/// Rust-owned acceptance rules. `min_confidence`, when set, also rejects
-/// judgments that report no confidence.
+/// Rust-owned acceptance rules. `min_confidence`, when set, is a floor on
+/// *calibrated* confidence: a judgment reporting no confidence falls back as
+/// `LowConfidence`, and while `confidence_calibrated` is false every
+/// judgment under the floor falls back as `Uncalibrated`, because a
+/// provider's self-reported confidence is not evidence of correctness
+/// (SPEC § Uncertainty). Only a versioned policy that records a held-out
+/// calibration result for its provider may set `confidence_calibrated`
+/// (docs/phase-5.md § Calibration); no policy does yet.
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct DecisionPolicy {
     pub min_confidence: Option<f64>,
+    pub confidence_calibrated: bool,
 }
 
 /// Why a subject got the heuristic judgment instead of the provider's.
@@ -271,6 +278,9 @@ pub enum Fallback {
     Invalid,
     Abstained,
     LowConfidence,
+    /// A confidence floor is set but the provider's confidence has not been
+    /// shown to be calibrated.
+    Uncalibrated,
 }
 
 /// The value Rust policy will use for one subject, with its provenance.
@@ -372,10 +382,15 @@ fn check(
             if !unit(value) || confidence.is_some_and(|c| !unit(c)) {
                 return Err(Fallback::Invalid);
             }
-            if let Some(min) = policy.min_confidence
-                && !confidence.is_some_and(|c| c >= min)
-            {
-                return Err(Fallback::LowConfidence);
+            if let Some(min) = policy.min_confidence {
+                match confidence {
+                    None => return Err(Fallback::LowConfidence),
+                    Some(_) if !policy.confidence_calibrated => {
+                        return Err(Fallback::Uncalibrated);
+                    }
+                    Some(c) if c < min => return Err(Fallback::LowConfidence),
+                    Some(_) => {}
+                }
             }
             Ok((value, confidence))
         }

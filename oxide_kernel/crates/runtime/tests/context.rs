@@ -470,6 +470,8 @@ fn failing_abstaining_or_absent_judges_cannot_break_context_construction() {
         model: MODEL.into(),
         deadline: std::time::Duration::from_secs(1),
         max_requests: 1000,
+        max_input_tokens: 10_000_000,
+        retries: 0,
         disclosure: Disclosure::Metadata,
     };
     let mut jev = Jev::new(jev_config, JevReplay::default()).unwrap();

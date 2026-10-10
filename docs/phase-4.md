@@ -1,6 +1,6 @@
 # Phase 4 — capsules, judgments, deterministic selection and packing
 
-Status: **complete** (2026-10-09) on `rewrite/v2`. Phase 5 has not started.
+Status: **complete** (2026-10-09) on `rewrite/v2`. Phase 5: [phase-5.md](phase-5.md).
 Decisions stay inside SPEC, [ADR-0002](adr/0002-ladybugdb-knowledge-store.md)
 and [ADR-0010](adr/0010-domain-identity-and-source-capture.md); no ADR status
 changed. Linux x86_64 only, as before.

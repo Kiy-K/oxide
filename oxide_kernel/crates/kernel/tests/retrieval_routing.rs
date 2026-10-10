@@ -431,6 +431,7 @@ fn judgments_prune_branches_but_fallbacks_never_steer_the_route() {
     let mut allowance = Allowance { remaining: 100 };
     let floor = DecisionPolicy {
         min_confidence: Some(0.5),
+        confidence_calibrated: true,
     };
     let request = request(&set, BASELINE_LIMITS);
     let result = route(

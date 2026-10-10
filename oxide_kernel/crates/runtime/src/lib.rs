@@ -6,6 +6,7 @@
 //! code.
 
 pub mod capture;
+pub mod decisionbench;
 pub mod derivation;
 pub mod embedding;
 pub mod jev;
