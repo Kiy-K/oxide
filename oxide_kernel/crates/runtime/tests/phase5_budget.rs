@@ -15,7 +15,7 @@ use std::path::Path;
 use std::time::Instant;
 
 use common::phase5::{
-    self, Indexed, Oracle, TaskInput, data_dir, fallbacks, paired, round, stages,
+    self, GoldPriority, Indexed, TaskInput, data_dir, fallbacks, paired, round, stages,
 };
 use common::{gold_sources, metrics, repo_root, rss_peak_kib};
 use oxide_kernel::context::{ContextConfig, ContextRun, baseline, build_context};
@@ -123,7 +123,7 @@ fn measure(t: &Value, data: &Path) -> Value {
             let heuristic = build_context(&view, &view, &request, &config, None).unwrap();
             let heuristic_ms = started.elapsed().as_secs_f64() * 1e3;
             assert_eq!(heuristic.route, routed, "{regions}: route not reproducible");
-            let mut oracle = Oracle {
+            let mut oracle = GoldPriority {
                 symbols: &symbol_set,
                 other: &other,
             };

@@ -927,16 +927,20 @@ pub fn map_gold(
     (gold, counts)
 }
 
-/// Evaluation-only judge that knows the gold: never a product path.
-pub struct Oracle<'a> {
+/// Evaluation-only judge that knows the gold: never a product path. A
+/// gold-priority reference, not an upper bound: it orders all gold alike
+/// regardless of cost and never selects non-gold containers, so a judge
+/// whose plan covers gold inside an enclosing item can beat it
+/// (docs/phase-5-followup-5.md).
+pub struct GoldPriority<'a> {
     pub symbols: &'a BTreeSet<EntityId>,
     pub other: &'a BTreeSet<EntityId>,
 }
 
-impl DecisionProvider for Oracle<'_> {
+impl DecisionProvider for GoldPriority<'_> {
     fn identity(&self) -> ProviderIdentity {
         ProviderIdentity {
-            name: "gold-oracle".into(),
+            name: "gold-priority".into(),
             version: "eval-only".into(),
         }
     }

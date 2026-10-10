@@ -206,6 +206,8 @@ pub fn metrics(ids: &[EntityId], gold: &[SourceRef], run: &ContextRun) -> Value 
         "required_file_recall": share(&in_file),
         "routed_gold_coverage": share(&routed),
         "selection_loss": share(&|i| routed(i) && !planned(i)),
+        // Planned but not fully packed, which includes gold the selector
+        // itself planned as a header (follow-up 5: the packer lost none).
         "packing_loss": share(&|i| planned(i) && !complete(i)),
         "gold_token_share": ratio(gold_tokens),
         "unlabeled_token_share": if used == 0 { 0.0 } else { 1.0 - ratio(gold_tokens) },

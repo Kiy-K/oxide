@@ -263,4 +263,7 @@ and byte-identical payload. Published knowledge is unchanged.
   gold, but the heuristic never selects it; 64 kept.
   [Follow-up 4](phase-5-followup-4.md): four interpretable rescorings of
   the same candidates gain nothing at 1,024 units; the heuristic is kept.
+  [Follow-up 5](phase-5-followup-5.md): the packer loses nothing and
+  the oracle is a gold-priority reference, not a ceiling; an item cap of 48
+  gains nothing. Selection and packing R&D is closed.
 - Downstream agent success is not measured.

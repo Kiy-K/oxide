@@ -17,8 +17,8 @@ use std::path::Path;
 use std::time::Instant;
 
 use common::phase5::{
-    self, CandidatesOnly, Indexed, Oracle, Tape, TaskInput, data_dir, jev_config, paired, round,
-    stages,
+    self, CandidatesOnly, GoldPriority, Indexed, Tape, TaskInput, data_dir, jev_config, paired,
+    round, stages,
 };
 use common::{covers, gold_sources, metrics, repo_root};
 use oxide_kernel::capsule::{Capsule, Question};
@@ -646,7 +646,7 @@ fn measure_variants(t: &Value, data: &Path, labels: &[&'static str], tape: Tape)
             m["jev_agreement"] = json!(jev_agreement(&values, &jev_values));
             row[format!("{label}@{budget}")] = m;
         }
-        let mut oracle = Oracle {
+        let mut oracle = GoldPriority {
             symbols: &symbols,
             other: &other,
         };

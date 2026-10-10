@@ -1,0 +1,427 @@
+{
+  "latency_ratio_heuristic_4096": 1.006,
+  "passes": false,
+  "preregistration_sha256": "31f4eceb15c23defc97a643dd4619d361e947c9fc83f6e9f8a422b6a1332ec20",
+  "rss_peak_kib": 3456052,
+  "runs": {
+    "heuristic@1024": {
+      "budget_utilization": 0.9845,
+      "diagnosis_sum": {
+        "budget_omitted": 512,
+        "budget_omitted_fits_unused": 20,
+        "budget_omitted_fits_unused_gold": 1,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 141,
+        "estimated": 14255,
+        "expanded_planned": 3,
+        "expanded_planned_gold": 0,
+        "header_gold": 3,
+        "header_items": 55,
+        "header_units": 2559,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 113,
+        "unused": 222,
+        "used": 14114,
+        "with_prerequisites": 42
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 10,
+        "full": 8,
+        "planned_header": 3,
+        "unreached": 37
+      },
+      "gold_token_share": 0.1974,
+      "items": 9.9286,
+      "latency_ms": 378.1537,
+      "latency_ms_p50": 339.3344,
+      "packing_loss": 0.0881,
+      "required_symbol_header_only": 0.1,
+      "required_symbol_recall": 0.2,
+      "selection_loss": 0.2952,
+      "tokens_used": 1008.1429,
+      "unlabeled_token_share": 0.8026
+    },
+    "heuristic@4096": {
+      "budget_utilization": 0.9802,
+      "diagnosis_sum": {
+        "budget_omitted": 421,
+        "budget_omitted_fits_unused": 104,
+        "budget_omitted_fits_unused_gold": 1,
+        "cap_reached": 1,
+        "estimate_below_actual": 0,
+        "estimate_slack": 825,
+        "estimated": 57032,
+        "expanded_planned": 17,
+        "expanded_planned_gold": 0,
+        "header_gold": 1,
+        "header_items": 42,
+        "header_units": 1431,
+        "max_items_omitted": 26,
+        "max_items_omitted_gold": 3,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 202,
+        "unused": 1137,
+        "used": 56207,
+        "with_prerequisites": 70
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 4,
+        "Selection:MaxItems": 3,
+        "full": 13,
+        "planned_header": 1,
+        "unreached": 37
+      },
+      "gold_token_share": 0.1694,
+      "items": 17.3571,
+      "latency_ms": 362.8339,
+      "latency_ms_p50": 334.3916,
+      "packing_loss": 0.0238,
+      "required_symbol_header_only": 0.0405,
+      "required_symbol_recall": 0.3119,
+      "selection_loss": 0.2476,
+      "tokens_used": 4014.7857,
+      "unlabeled_token_share": 0.8306
+    },
+    "heuristic_cap48@1024": {
+      "budget_utilization": 0.9845,
+      "diagnosis_sum": {
+        "budget_omitted": 512,
+        "budget_omitted_fits_unused": 20,
+        "budget_omitted_fits_unused_gold": 1,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 141,
+        "estimated": 14255,
+        "expanded_planned": 3,
+        "expanded_planned_gold": 0,
+        "header_gold": 3,
+        "header_items": 55,
+        "header_units": 2559,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 113,
+        "unused": 222,
+        "used": 14114,
+        "with_prerequisites": 42
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 10,
+        "full": 8,
+        "planned_header": 3,
+        "unreached": 37
+      },
+      "gold_token_share": 0.1974,
+      "items": 9.9286,
+      "latency_ms": 341.8222,
+      "latency_ms_p50": 321.5109,
+      "packing_loss": 0.0881,
+      "required_symbol_header_only": 0.1,
+      "required_symbol_recall": 0.2,
+      "selection_loss": 0.2952,
+      "tokens_used": 1008.1429,
+      "unlabeled_token_share": 0.8026
+    },
+    "heuristic_cap48@4096": {
+      "budget_utilization": 0.9844,
+      "diagnosis_sum": {
+        "budget_omitted": 445,
+        "budget_omitted_fits_unused": 109,
+        "budget_omitted_fits_unused_gold": 1,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 842,
+        "estimated": 57289,
+        "expanded_planned": 19,
+        "expanded_planned_gold": 0,
+        "header_gold": 2,
+        "header_items": 48,
+        "header_units": 1688,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 208,
+        "unused": 897,
+        "used": 56447,
+        "with_prerequisites": 72
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 6,
+        "full": 13,
+        "planned_header": 2,
+        "unreached": 37
+      },
+      "gold_token_share": 0.1697,
+      "items": 17.7857,
+      "latency_ms": 356.3943,
+      "latency_ms_p50": 336.397,
+      "packing_loss": 0.0357,
+      "required_symbol_header_only": 0.0524,
+      "required_symbol_recall": 0.3119,
+      "selection_loss": 0.2357,
+      "tokens_used": 4031.9286,
+      "unlabeled_token_share": 0.8303
+    },
+    "jev_replay@1024": {
+      "budget_utilization": 0.9693,
+      "diagnosis_sum": {
+        "budget_omitted": 145,
+        "budget_omitted_fits_unused": 3,
+        "budget_omitted_fits_unused_gold": 0,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 102,
+        "estimated": 13998,
+        "expanded_planned": 13,
+        "expanded_planned_gold": 0,
+        "header_gold": 9,
+        "header_items": 56,
+        "header_units": 2267,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 104,
+        "unused": 440,
+        "used": 13896,
+        "with_prerequisites": 15
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 4,
+        "full": 8,
+        "full_inside_other": 3,
+        "planned_header": 9,
+        "unreached": 34
+      },
+      "gold_token_share": 0.244,
+      "items": 7.3571,
+      "judgment_fallbacks": 0,
+      "latency_ms": 359.0377,
+      "latency_ms_p50": 340.1423,
+      "packing_loss": 0.2476,
+      "required_symbol_header_only": 0.2881,
+      "required_symbol_recall": 0.2173,
+      "selection_loss": 0.1452,
+      "tokens_used": 992.5714,
+      "unlabeled_token_share": 0.756
+    },
+    "jev_replay@4096": {
+      "budget_utilization": 0.8793,
+      "diagnosis_sum": {
+        "budget_omitted": 96,
+        "budget_omitted_fits_unused": 22,
+        "budget_omitted_fits_unused_gold": 0,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 1897,
+        "estimated": 52319,
+        "expanded_planned": 29,
+        "expanded_planned_gold": 0,
+        "header_gold": 0,
+        "header_items": 49,
+        "header_units": 2039,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 160,
+        "unused": 6922,
+        "used": 50422,
+        "with_prerequisites": 25
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 2,
+        "full": 19,
+        "full_inside_other": 9,
+        "unreached": 28
+      },
+      "gold_token_share": 0.406,
+      "items": 10.8571,
+      "judgment_fallbacks": 0,
+      "latency_ms": 359.5197,
+      "latency_ms_p50": 336.6668,
+      "packing_loss": 0.0,
+      "required_symbol_header_only": 0.0476,
+      "required_symbol_recall": 0.5911,
+      "selection_loss": 0.0857,
+      "tokens_used": 3601.5714,
+      "unlabeled_token_share": 0.594
+    },
+    "jev_replay_cap48@1024": {
+      "budget_utilization": 0.9693,
+      "diagnosis_sum": {
+        "budget_omitted": 145,
+        "budget_omitted_fits_unused": 3,
+        "budget_omitted_fits_unused_gold": 0,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 102,
+        "estimated": 13998,
+        "expanded_planned": 13,
+        "expanded_planned_gold": 0,
+        "header_gold": 9,
+        "header_items": 56,
+        "header_units": 2267,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 104,
+        "unused": 440,
+        "used": 13896,
+        "with_prerequisites": 15
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 4,
+        "full": 8,
+        "full_inside_other": 3,
+        "planned_header": 9,
+        "unreached": 34
+      },
+      "gold_token_share": 0.244,
+      "items": 7.3571,
+      "judgment_fallbacks": 0,
+      "latency_ms": 345.7984,
+      "latency_ms_p50": 328.5357,
+      "packing_loss": 0.2476,
+      "required_symbol_header_only": 0.2881,
+      "required_symbol_recall": 0.2173,
+      "selection_loss": 0.1452,
+      "tokens_used": 992.5714,
+      "unlabeled_token_share": 0.756
+    },
+    "jev_replay_cap48@4096": {
+      "budget_utilization": 0.8793,
+      "diagnosis_sum": {
+        "budget_omitted": 96,
+        "budget_omitted_fits_unused": 22,
+        "budget_omitted_fits_unused_gold": 0,
+        "cap_reached": 0,
+        "estimate_below_actual": 0,
+        "estimate_slack": 1897,
+        "estimated": 52319,
+        "expanded_planned": 29,
+        "expanded_planned_gold": 0,
+        "header_gold": 0,
+        "header_items": 49,
+        "header_units": 2039,
+        "max_items_omitted": 0,
+        "max_items_omitted_gold": 0,
+        "packer_omitted": 0,
+        "packer_reduced": 0,
+        "planned": 160,
+        "unused": 6922,
+        "used": 50422,
+        "with_prerequisites": 25
+      },
+      "gold_symbol_outcomes": {
+        "Selection:BelowFloor": 2,
+        "Selection:BudgetExceeded": 2,
+        "full": 19,
+        "full_inside_other": 9,
+        "unreached": 28
+      },
+      "gold_token_share": 0.406,
+      "items": 10.8571,
+      "judgment_fallbacks": 0,
+      "latency_ms": 361.39,
+      "latency_ms_p50": 341.1223,
+      "packing_loss": 0.0,
+      "required_symbol_header_only": 0.0476,
+      "required_symbol_recall": 0.5911,
+      "selection_loss": 0.0857,
+      "tokens_used": 3601.5714,
+      "unlabeled_token_share": 0.594
+    }
+  },
+  "split": "dev",
+  "tasks": 14,
+  "vs_baseline": {
+    "heuristic_cap48@1024": {
+      "required_symbol_recall": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "unlabeled_token_share": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      }
+    },
+    "heuristic_cap48@4096": {
+      "required_symbol_recall": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "unlabeled_token_share": {
+        "ci95": [
+          -0.0007,
+          0.0
+        ],
+        "mean_diff": -0.0002,
+        "tasks": 14
+      }
+    },
+    "jev_replay_cap48@1024": {
+      "required_symbol_recall": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "unlabeled_token_share": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      }
+    },
+    "jev_replay_cap48@4096": {
+      "required_symbol_recall": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      },
+      "unlabeled_token_share": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean_diff": 0.0,
+        "tasks": 14
+      }
+    }
+  }
+}

@@ -142,4 +142,7 @@ patch to `git apply`. Follow-up 3 (`docs/phase-5-followup-3.md`, dev only):
 `OXIDE_DECISIONBENCH_DATA/followup-3/`. Follow-up 4
 (`docs/phase-5-followup-4.md`, dev only): `--test phase5_selection --
 --ignored` runs the audit and the variants, caching under
-`OXIDE_DECISIONBENCH_DATA/followup-4/`.
+`OXIDE_DECISIONBENCH_DATA/followup-4/`. Follow-up 5
+(`docs/phase-5-followup-5.md`, dev only): `--test phase5_packing --
+--ignored --test-threads=1` runs the packing audit and the item-cap
+variant, caching under `OXIDE_DECISIONBENCH_DATA/followup-5/`.
