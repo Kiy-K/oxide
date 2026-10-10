@@ -1,0 +1,3368 @@
+{
+ "py_repo": {
+  "parity": {
+   "entity": {
+    "lines": 65,
+    "differing": 0
+   },
+   "adjacency": {
+    "lines": 65,
+    "differing": 0
+   },
+   "named": {
+    "lines": 54,
+    "differing": 0
+   },
+   "retrieve-structural": {
+    "lines": 8,
+    "differing": 0
+   },
+   "route-structural": {
+    "lines": 8,
+    "differing": 0
+   },
+   "trace-structural": {
+    "lines": 8,
+    "differing": 0
+   },
+   "lexical": {
+    "lines": 8,
+    "differing": 6
+   }
+  },
+  "reports": {
+   "ladybug": {
+    "backend": "ladybug",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 0.230116089,
+      "rss_mib": 167.02734375
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 0.21335477,
+      "rss_mib": 199.30078125
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 0.218629715,
+      "rss_mib": 208.67578125
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 0.209619494,
+      "rss_mib": 218.7109375
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 0.217499382,
+      "rss_mib": 219.796875
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 0.204554088,
+      "rss_mib": 211.29296875
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 0.221631203,
+      "rss_mib": 214.89453125
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 0.203681737,
+      "rss_mib": 230.3828125
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 0.209855798,
+      "rss_mib": 213.0
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 0.208806649,
+      "rss_mib": 213.15234375
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 0.246042931,
+      "rss_mib": 218.9140625
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 0.204030504,
+      "rss_mib": 219.5234375
+     }
+    ],
+    "disk": {
+     "db_mib": 8.47265625,
+     "generation_mib": 8.482325553894043
+    },
+    "entities": 65,
+    "files": 11,
+    "final_peak_rss_mib": 248.5546875,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 5.24,
+      "degree": 20,
+      "truncated": false,
+      "warm": 1.6
+     },
+     "entities_1_ms": {
+      "cold": 1.44,
+      "warm": 0.33
+     },
+     "entities_64_ms": {
+      "cold": 7.69,
+      "warm": 5.91
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 1.6473972769230771,
+      "adjacency_s": 0.107080823,
+      "entities": 65,
+      "entity_lookup_s": 0.006483462,
+      "named_s": 0.021169913,
+      "names": 54
+     },
+     "query_ms_median": {
+      "lexical": 1.44,
+      "retrieve": 1.32,
+      "route": 74.69
+     },
+     "region_file_ms": {
+      "cold": 1.88,
+      "warm": 1.93
+     },
+     "rss_after_reads_mib": {
+      "peak": 117.8203125,
+      "rss": 117.8203125
+     },
+     "tasks": [
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 1.0
+       },
+       "task": "py-exact-retrypolicy"
+      },
+      {
+       "gold": 2,
+       "lexical+structural": {
+        "candidates": 48,
+        "entries": 20,
+        "mrr": 0.1111111111111111,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 0.0,
+        "regions_loaded": 48,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 48,
+        "entries": 20,
+        "mrr": 0.1111111111111111,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 0.0,
+        "regions_loaded": 48,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-semantic-http-retries"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 28,
+        "entries": 19,
+        "mrr": 0.5,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 28,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 28,
+        "entries": 19,
+        "mrr": 0.5,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 28,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-crossfile-token-refresh"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-related-test-gives-up"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 12,
+        "entries": 6,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 12,
+        "entries": 6,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 1.0
+       },
+       "task": "py-ttl-cache-expiry"
+      },
+      {
+       "gold": 2,
+       "lexical+structural": {
+        "candidates": 42,
+        "entries": 20,
+        "mrr": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 42,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 42,
+        "entries": 20,
+        "mrr": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 42,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 12,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "task": "py-implementors-notifier"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 29,
+        "entries": 9,
+        "mrr": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 29,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 29,
+        "entries": 9,
+        "mrr": 0.5,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 29,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 16,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 16,
+        "routed_coverage": 0.0
+       },
+       "task": "py-callers-should-retry"
+      },
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.024425496,
+     "entities_per_s": 246.40616419971514,
+     "peak_rss_mib": 114.36328125,
+     "publish_s": 0.239244349,
+     "rss_mib": 93.76171875,
+     "total_s": 0.263792102,
+     "write_s": 0.000122257
+    },
+    "relations": 194,
+    "reopen": {
+     "ms": 14.12,
+     "rss_mib": 115.890625
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125,
+      117.8203125
+     ],
+     "seconds": 16.635506566
+    }
+   },
+   "helix": {
+    "backend": "helix",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 0.31112219,
+      "rss_mib": 48.02734375
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 0.306727168,
+      "rss_mib": 61.7421875
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 0.291042655,
+      "rss_mib": 71.0234375
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 0.306387689,
+      "rss_mib": 80.04296875
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 0.313630623,
+      "rss_mib": 80.4140625
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 0.305403605,
+      "rss_mib": 89.4609375
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 0.295266078,
+      "rss_mib": 94.3359375
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 0.309589117,
+      "rss_mib": 98.61328125
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 0.319636941,
+      "rss_mib": 98.875
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 0.309560168,
+      "rss_mib": 98.9296875
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 0.328997724,
+      "rss_mib": 98.94140625
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 0.326592531,
+      "rss_mib": 98.9609375
+     }
+    ],
+    "disk": {
+     "db_mib": 0.45386219024658203,
+     "generation_mib": 0.46356964111328125
+    },
+    "entities": 65,
+    "files": 11,
+    "final_peak_rss_mib": 98.9609375,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 1.39,
+      "degree": 20,
+      "truncated": false,
+      "warm": 0.89
+     },
+     "entities_1_ms": {
+      "cold": 0.85,
+      "warm": 0.34
+     },
+     "entities_64_ms": {
+      "cold": 1.69,
+      "warm": 1.47
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 0.6096922,
+      "adjacency_s": 0.039629993,
+      "entities": 65,
+      "entity_lookup_s": 0.001263329,
+      "named_s": 0.014314881,
+      "names": 54
+     },
+     "query_ms_median": {
+      "lexical": 1.16,
+      "retrieve": 1.08,
+      "route": 39.47
+     },
+     "region_file_ms": {
+      "cold": 0.98,
+      "warm": 0.71
+     },
+     "rss_after_reads_mib": {
+      "peak": 41.33984375,
+      "rss": 37.75
+     },
+     "tasks": [
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 1.0
+       },
+       "task": "py-exact-retrypolicy"
+      },
+      {
+       "gold": 2,
+       "lexical+structural": {
+        "candidates": 42,
+        "entries": 10,
+        "mrr": 0.2,
+        "recall@1": 0.0,
+        "recall@10": 0.5,
+        "recall@20": 0.5,
+        "recall@5": 0.5,
+        "regions_loaded": 42,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 42,
+        "entries": 10,
+        "mrr": 0.2,
+        "recall@1": 0.0,
+        "recall@10": 0.5,
+        "recall@20": 0.5,
+        "recall@5": 0.5,
+        "regions_loaded": 42,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-semantic-http-retries"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 47,
+        "entries": 20,
+        "mrr": 0.5,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 47,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 47,
+        "entries": 20,
+        "mrr": 0.5,
+        "recall@1": 0.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 47,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-crossfile-token-refresh"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 37,
+        "entries": 18,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 37,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "py-related-test-gives-up"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 12,
+        "entries": 6,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 12,
+        "entries": 6,
+        "mrr": 1.0,
+        "recall@1": 1.0,
+        "recall@10": 1.0,
+        "recall@20": 1.0,
+        "recall@5": 1.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 1.0
+       },
+       "task": "py-ttl-cache-expiry"
+      },
+      {
+       "gold": 2,
+       "lexical+structural": {
+        "candidates": 61,
+        "entries": 18,
+        "mrr": 0.07692307692307693,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 1.0,
+        "recall@5": 0.0,
+        "regions_loaded": 61,
+        "routed_coverage": 1.0
+       },
+       "lexical-only": {
+        "candidates": 61,
+        "entries": 18,
+        "mrr": 0.07692307692307693,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 1.0,
+        "recall@5": 0.0,
+        "regions_loaded": 61,
+        "routed_coverage": 1.0
+       },
+       "structural-only": {
+        "candidates": 12,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 12,
+        "routed_coverage": 1.0
+       },
+       "task": "py-implementors-notifier"
+      },
+      {
+       "gold": 1,
+       "lexical+structural": {
+        "candidates": 16,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 16,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 16,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 16,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 16,
+        "entries": 1,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 16,
+        "routed_coverage": 0.0
+       },
+       "task": "py-callers-should-retry"
+      },
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 32,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 32,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.000856444,
+     "entities_per_s": 222.58752373437923,
+     "peak_rss_mib": 41.33984375,
+     "publish_s": 0.291030643,
+     "rss_mib": 36.078125,
+     "total_s": 0.292019961,
+     "write_s": 0.000132874
+    },
+    "relations": 194,
+    "reopen": {
+     "ms": 3.11,
+     "rss_mib": 36.0078125
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      37.75,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625,
+      37.9140625
+     ],
+     "seconds": 7.535012254
+    }
+   }
+  },
+  "tasks": {
+   "ladybug": [
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-exact-retrypolicy"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 48,
+      "entries": 20,
+      "mrr": 0.1111111111111111,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 48,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 48,
+      "entries": 20,
+      "mrr": 0.1111111111111111,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 48,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-semantic-http-retries"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 28,
+      "entries": 19,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 28,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 28,
+      "entries": 19,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 28,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-crossfile-token-refresh"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-related-test-gives-up"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-ttl-cache-expiry"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 42,
+      "entries": 20,
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 42,
+      "entries": 20,
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 12,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "task": "py-implementors-notifier"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 29,
+      "entries": 9,
+      "mrr": 0.3333333333333333,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 29,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 29,
+      "entries": 9,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 29,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 16,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 16,
+      "routed_coverage": 0.0
+     },
+     "task": "py-callers-should-retry"
+    },
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix": [
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-exact-retrypolicy"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 42,
+      "entries": 10,
+      "mrr": 0.2,
+      "recall@1": 0.0,
+      "recall@10": 0.5,
+      "recall@20": 0.5,
+      "recall@5": 0.5,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 42,
+      "entries": 10,
+      "mrr": 0.2,
+      "recall@1": 0.0,
+      "recall@10": 0.5,
+      "recall@20": 0.5,
+      "recall@5": 0.5,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-semantic-http-retries"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 47,
+      "entries": 20,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 47,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 47,
+      "entries": 20,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 47,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-crossfile-token-refresh"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-related-test-gives-up"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-ttl-cache-expiry"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 61,
+      "entries": 18,
+      "mrr": 0.07692307692307693,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 61,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 61,
+      "entries": 18,
+      "mrr": 0.07692307692307693,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 61,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 12,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "task": "py-implementors-notifier"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 16,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 16,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 16,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 16,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 16,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 16,
+      "routed_coverage": 0.0
+     },
+     "task": "py-callers-should-retry"
+    },
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix-stem-tuned": [
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-exact-retrypolicy"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 48,
+      "entries": 20,
+      "mrr": 0.1,
+      "recall@1": 0.0,
+      "recall@10": 0.5,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 48,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 48,
+      "entries": 20,
+      "mrr": 0.1,
+      "recall@1": 0.0,
+      "recall@10": 0.5,
+      "recall@20": 1.0,
+      "recall@5": 0.0,
+      "regions_loaded": 48,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-semantic-http-retries"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 47,
+      "entries": 20,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 47,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 47,
+      "entries": 20,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 47,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-crossfile-token-refresh"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 18,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 37,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "py-related-test-gives-up"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 12,
+      "entries": 6,
+      "mrr": 1.0,
+      "recall@1": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 1.0
+     },
+     "task": "py-ttl-cache-expiry"
+    },
+    {
+     "gold": 2,
+     "lexical+structural": {
+      "candidates": 42,
+      "entries": 20,
+      "mrr": 0.25,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 42,
+      "entries": 20,
+      "mrr": 0.25,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 42,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 12,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 12,
+      "routed_coverage": 1.0
+     },
+     "task": "py-implementors-notifier"
+    },
+    {
+     "gold": 1,
+     "lexical+structural": {
+      "candidates": 29,
+      "entries": 9,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 29,
+      "routed_coverage": 1.0
+     },
+     "lexical-only": {
+      "candidates": 29,
+      "entries": 9,
+      "mrr": 0.5,
+      "recall@1": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "recall@5": 1.0,
+      "regions_loaded": 29,
+      "routed_coverage": 1.0
+     },
+     "structural-only": {
+      "candidates": 16,
+      "entries": 1,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 16,
+      "routed_coverage": 0.0
+     },
+     "task": "py-callers-should-retry"
+    },
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 32,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 32,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ]
+  }
+ },
+ "email": {
+  "parity": {
+   "entity": {
+    "lines": 814,
+    "differing": 0
+   },
+   "adjacency": {
+    "lines": 814,
+    "differing": 0
+   },
+   "named": {
+    "lines": 625,
+    "differing": 0
+   },
+   "retrieve-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "route-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "trace-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "lexical": {
+    "lines": 1,
+    "differing": 1
+   }
+  },
+  "reports": {
+   "ladybug": {
+    "backend": "ladybug",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 0.428355864,
+      "rss_mib": 190.71484375
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 0.420816393,
+      "rss_mib": 227.99609375
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 0.404059338,
+      "rss_mib": 234.68359375
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 0.394076391,
+      "rss_mib": 237.3671875
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 0.406621935,
+      "rss_mib": 241.7421875
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 0.390834652,
+      "rss_mib": 226.80078125
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 0.397257741,
+      "rss_mib": 237.63671875
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 0.393019739,
+      "rss_mib": 249.453125
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 0.391827391,
+      "rss_mib": 252.36328125
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 0.397300717,
+      "rss_mib": 252.71875
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 0.399042177,
+      "rss_mib": 238.328125
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 0.394158713,
+      "rss_mib": 238.36328125
+     }
+    ],
+    "disk": {
+     "db_mib": 18.0859375,
+     "generation_mib": 19.445557594299316
+    },
+    "entities": 814,
+    "files": 117,
+    "final_peak_rss_mib": 271.16015625,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 6.01,
+      "degree": 148,
+      "truncated": true,
+      "warm": 1.81
+     },
+     "entities_1_ms": {
+      "cold": 1.47,
+      "warm": 0.31
+     },
+     "entities_64_ms": {
+      "cold": 8.1,
+      "warm": 6.75
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 1.7176073390663391,
+      "adjacency_s": 1.398132374,
+      "entities": 814,
+      "entity_lookup_s": 0.09115053,
+      "named_s": 0.250790375,
+      "names": 625
+     },
+     "query_ms_median": {
+      "lexical": 4.78,
+      "retrieve": 1.22,
+      "route": 86.05
+     },
+     "region_file_ms": {
+      "cold": 1.96,
+      "warm": 2.01
+     },
+     "rss_after_reads_mib": {
+      "peak": 139.27734375,
+      "rss": 139.27734375
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 37,
+        "entries": 3,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 37,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 37,
+        "entries": 3,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 37,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.032840698,
+     "entities_per_s": 1661.6437191151415,
+     "peak_rss_mib": 129.9296875,
+     "publish_s": 0.455712015,
+     "rss_mib": 111.71875,
+     "total_s": 0.489876374,
+     "write_s": 0.001323661
+    },
+    "relations": 3702,
+    "reopen": {
+     "ms": 15.23,
+     "rss_mib": 133.625
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375,
+      139.27734375
+     ],
+     "seconds": 17.001851923
+    }
+   },
+   "helix": {
+    "backend": "helix",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 1.411274203,
+      "rss_mib": 182.4609375
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 1.385036261,
+      "rss_mib": 220.74609375
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 1.402955593,
+      "rss_mib": 249.46484375
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 1.392217483,
+      "rss_mib": 254.8359375
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 1.409879394,
+      "rss_mib": 269.59765625
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 1.448767785,
+      "rss_mib": 269.66796875
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 1.367024015,
+      "rss_mib": 270.2734375
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 1.407099871,
+      "rss_mib": 270.3828125
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 1.402125672,
+      "rss_mib": 271.87890625
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 1.37941187,
+      "rss_mib": 276.6640625
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 1.424151263,
+      "rss_mib": 276.73828125
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 1.4161382470000001,
+      "rss_mib": 277.63671875
+     }
+    ],
+    "disk": {
+     "db_mib": 7.586626052856445,
+     "generation_mib": 8.946284294128418
+    },
+    "entities": 814,
+    "files": 117,
+    "final_peak_rss_mib": 277.63671875,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 3.9,
+      "degree": 148,
+      "truncated": true,
+      "warm": 3.05
+     },
+     "entities_1_ms": {
+      "cold": 0.71,
+      "warm": 0.35
+     },
+     "entities_64_ms": {
+      "cold": 2.97,
+      "warm": 1.88
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 0.6952223808353809,
+      "adjacency_s": 0.565911018,
+      "entities": 814,
+      "entity_lookup_s": 0.01490401,
+      "named_s": 0.151791884,
+      "names": 625
+     },
+     "query_ms_median": {
+      "lexical": 3.12,
+      "retrieve": 1.91,
+      "route": 69.31
+     },
+     "region_file_ms": {
+      "cold": 1.45,
+      "warm": 1.01
+     },
+     "rss_after_reads_mib": {
+      "peak": 121.8125,
+      "rss": 114.3125
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.008102507,
+     "entities_per_s": 569.982425782282,
+     "peak_rss_mib": 123.1953125,
+     "publish_s": 1.418032032,
+     "rss_mib": 123.1953125,
+     "total_s": 1.428114207,
+     "write_s": 0.001979668
+    },
+    "relations": 3702,
+    "reopen": {
+     "ms": 3.85,
+     "rss_mib": 110.4296875
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      114.4296875,
+      114.546875,
+      114.58984375,
+      114.6171875,
+      114.6171875,
+      114.6171875,
+      114.625,
+      114.62890625,
+      114.6328125,
+      114.63671875,
+      114.63671875
+     ],
+     "seconds": 16.585799903
+    }
+   }
+  },
+  "tasks": {
+   "ladybug": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 37,
+      "entries": 3,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 37,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 37,
+      "entries": 3,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 37,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix-stem-tuned": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ]
+  }
+ },
+ "asyncio": {
+  "parity": {
+   "entity": {
+    "lines": 1283,
+    "differing": 0
+   },
+   "adjacency": {
+    "lines": 1283,
+    "differing": 0
+   },
+   "named": {
+    "lines": 823,
+    "differing": 0
+   },
+   "retrieve-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "route-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "trace-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "lexical": {
+    "lines": 1,
+    "differing": 1
+   }
+  },
+  "reports": {
+   "ladybug": {
+    "backend": "ladybug",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 0.533650523,
+      "rss_mib": 218.203125
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 0.495243843,
+      "rss_mib": 237.5546875
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 0.498661265,
+      "rss_mib": 254.42578125
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 0.501252491,
+      "rss_mib": 240.67578125
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 0.513000698,
+      "rss_mib": 244.6484375
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 0.519112255,
+      "rss_mib": 238.4375
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 0.539361679,
+      "rss_mib": 246.30859375
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 0.535877111,
+      "rss_mib": 241.0859375
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 0.528483847,
+      "rss_mib": 251.90625
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 0.50285446,
+      "rss_mib": 246.33984375
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 0.531714597,
+      "rss_mib": 240.71484375
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 0.514998749,
+      "rss_mib": 237.0078125
+     }
+    ],
+    "disk": {
+     "db_mib": 19.796875,
+     "generation_mib": 22.028996467590332
+    },
+    "entities": 1283,
+    "files": 140,
+    "final_peak_rss_mib": 273.99609375,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 6.58,
+      "degree": 174,
+      "truncated": true,
+      "warm": 1.69
+     },
+     "entities_1_ms": {
+      "cold": 2.18,
+      "warm": 0.52
+     },
+     "entities_64_ms": {
+      "cold": 8.6,
+      "warm": 6.26
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 1.6297651823850352,
+      "adjacency_s": 2.090988729,
+      "entities": 1283,
+      "entity_lookup_s": 0.127634978,
+      "named_s": 0.336691176,
+      "names": 823
+     },
+     "query_ms_median": {
+      "lexical": 6.35,
+      "retrieve": 2.53,
+      "route": 127.35
+     },
+     "region_file_ms": {
+      "cold": 1.99,
+      "warm": 1.95
+     },
+     "rss_after_reads_mib": {
+      "peak": 142.1171875,
+      "rss": 142.1171875
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.037314058,
+     "entities_per_s": 2335.7400929115174,
+     "peak_rss_mib": 139.81640625,
+     "publish_s": 0.509823275,
+     "rss_mib": 114.1484375,
+     "total_s": 0.549290567,
+     "write_s": 0.002153234
+    },
+    "relations": 5224,
+    "reopen": {
+     "ms": 14.58,
+     "rss_mib": 134.62890625
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875,
+      142.1171875
+     ],
+     "seconds": 26.081394487
+    }
+   },
+   "helix": {
+    "backend": "helix",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 2.286539962,
+      "rss_mib": 192.08984375
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 2.290907771,
+      "rss_mib": 218.09765625
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 2.255480557,
+      "rss_mib": 245.8515625
+     },
+     {
+      "cycle": 3,
+      "generation_dirs": 1,
+      "rebuild_s": 2.27285885,
+      "rss_mib": 272.4296875
+     },
+     {
+      "cycle": 4,
+      "generation_dirs": 1,
+      "rebuild_s": 2.280244469,
+      "rss_mib": 277.76171875
+     },
+     {
+      "cycle": 5,
+      "generation_dirs": 1,
+      "rebuild_s": 2.241919229,
+      "rss_mib": 282.671875
+     },
+     {
+      "cycle": 6,
+      "generation_dirs": 1,
+      "rebuild_s": 2.319194396,
+      "rss_mib": 296.8203125
+     },
+     {
+      "cycle": 7,
+      "generation_dirs": 1,
+      "rebuild_s": 2.272935637,
+      "rss_mib": 297.66796875
+     },
+     {
+      "cycle": 8,
+      "generation_dirs": 1,
+      "rebuild_s": 2.309281736,
+      "rss_mib": 299.875
+     },
+     {
+      "cycle": 9,
+      "generation_dirs": 1,
+      "rebuild_s": 2.285679878,
+      "rss_mib": 299.921875
+     },
+     {
+      "cycle": 10,
+      "generation_dirs": 1,
+      "rebuild_s": 2.282184302,
+      "rss_mib": 313.15625
+     },
+     {
+      "cycle": 11,
+      "generation_dirs": 1,
+      "rebuild_s": 2.270432509,
+      "rss_mib": 300.1640625
+     }
+    ],
+    "disk": {
+     "db_mib": 11.545050621032715,
+     "generation_mib": 13.777210235595703
+    },
+    "entities": 1283,
+    "files": 140,
+    "final_peak_rss_mib": 311.91796875,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 3.81,
+      "degree": 174,
+      "truncated": true,
+      "warm": 3.25
+     },
+     "entities_1_ms": {
+      "cold": 0.96,
+      "warm": 0.56
+     },
+     "entities_64_ms": {
+      "cold": 5.22,
+      "warm": 2.02
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 0.8105645081839439,
+      "adjacency_s": 1.039954264,
+      "entities": 1283,
+      "entity_lookup_s": 0.023373356,
+      "named_s": 0.228400128,
+      "names": 823
+     },
+     "query_ms_median": {
+      "lexical": 4.18,
+      "retrieve": 2.29,
+      "route": 71.71
+     },
+     "region_file_ms": {
+      "cold": 1.81,
+      "warm": 1.37
+     },
+     "rss_after_reads_mib": {
+      "peak": 162.97265625,
+      "rss": 135.77734375
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.009554222,
+     "entities_per_s": 576.5977732262288,
+     "peak_rss_mib": 164.44921875,
+     "publish_s": 2.212263755,
+     "rss_mib": 164.44921875,
+     "total_s": 2.2251213229999998,
+     "write_s": 0.003303346
+    },
+    "relations": 5224,
+    "reopen": {
+     "ms": 5.05,
+     "rss_mib": 129.78125
+    },
+    "soak": {
+     "rounds": 200,
+     "rss_mib": [
+      135.80078125,
+      135.96484375,
+      136.0,
+      136.01953125,
+      136.02734375,
+      136.02734375,
+      136.03125,
+      136.0390625,
+      136.04296875,
+      136.046875,
+      136.0625
+     ],
+     "seconds": 14.618972784
+    }
+   }
+  },
+  "tasks": {
+   "ladybug": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix-tuned": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix-stem-tuned": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ]
+  }
+ },
+ "ansible": {
+  "parity": {
+   "entity": {
+    "lines": 20404,
+    "differing": 0
+   },
+   "adjacency": {
+    "lines": 20404,
+    "differing": 0
+   },
+   "named": {
+    "lines": 13826,
+    "differing": 0
+   },
+   "retrieve-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "route-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "trace-structural": {
+    "lines": 1,
+    "differing": 0
+   },
+   "lexical": {
+    "lines": 1,
+    "differing": 1
+   }
+  },
+  "reports": {
+   "ladybug": {
+    "backend": "ladybug",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 6.414342916,
+      "rss_mib": 675.48828125
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 6.474614544,
+      "rss_mib": 791.6875
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 6.582721246,
+      "rss_mib": 754.640625
+     }
+    ],
+    "disk": {
+     "db_mib": 120.08203125,
+     "generation_mib": 135.75495433807373
+    },
+    "entities": 20404,
+    "files": 5812,
+    "final_peak_rss_mib": 969.88671875,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 20.58,
+      "degree": 7387,
+      "truncated": true,
+      "warm": 9.42
+     },
+     "entities_1_ms": {
+      "cold": 1.54,
+      "warm": 0.29
+     },
+     "entities_64_ms": {
+      "cold": 6.8,
+      "warm": 6.17
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 2.1100605126445795,
+      "adjacency_s": 43.0536747,
+      "entities": 20404,
+      "entity_lookup_s": 1.901009307,
+      "named_s": 30.077786093,
+      "names": 13826
+     },
+     "query_ms_median": {
+      "lexical": 9.02,
+      "retrieve": 3.34,
+      "route": 169.37
+     },
+     "region_file_ms": {
+      "cold": 3.29,
+      "warm": 2.11
+     },
+     "rss_after_reads_mib": {
+      "peak": 625.21875,
+      "rss": 583.58203125
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.158967232,
+     "entities_per_s": 2754.453977562172,
+     "peak_rss_mib": 625.21875,
+     "publish_s": 7.198160457,
+     "rss_mib": 525.25390625,
+     "total_s": 7.407638743000001,
+     "write_s": 0.050511054
+    },
+    "relations": 100019,
+    "reopen": {
+     "ms": 14.36,
+     "rss_mib": 465.86328125
+    },
+    "soak": {
+     "rounds": 100,
+     "rss_mib": [
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375,
+      509.52734375
+     ],
+     "seconds": 17.55488458
+    }
+   },
+   "helix": {
+    "backend": "helix",
+    "cycles": [
+     {
+      "cycle": 0,
+      "generation_dirs": 1,
+      "rebuild_s": 78.664436564,
+      "rss_mib": 1128.05078125
+     },
+     {
+      "cycle": 1,
+      "generation_dirs": 1,
+      "rebuild_s": 78.211112262,
+      "rss_mib": 1234.26953125
+     },
+     {
+      "cycle": 2,
+      "generation_dirs": 1,
+      "rebuild_s": 76.687926832,
+      "rss_mib": 1337.42578125
+     }
+    ],
+    "disk": {
+     "db_mib": 279.9085578918457,
+     "generation_mib": 295.5815191268921
+    },
+    "entities": 20404,
+    "files": 5812,
+    "final_peak_rss_mib": 1337.42578125,
+    "reads": {
+     "adjacency_hub_64_ms": {
+      "cold": 178.27,
+      "degree": 7387,
+      "truncated": true,
+      "warm": 166.27
+     },
+     "entities_1_ms": {
+      "cold": 2.53,
+      "warm": 0.53
+     },
+     "entities_64_ms": {
+      "cold": 8.11,
+      "warm": 2.8
+     },
+     "full_scan": {
+      "adjacency_per_entity_ms": 1.265322697363262,
+      "adjacency_s": 25.817644317,
+      "entities": 20404,
+      "entity_lookup_s": 0.673261035,
+      "named_s": 5.971678537,
+      "names": 13826
+     },
+     "query_ms_median": {
+      "lexical": 14.01,
+      "retrieve": 6.63,
+      "route": 96.65
+     },
+     "region_file_ms": {
+      "cold": 2.28,
+      "warm": 1.96
+     },
+     "rss_after_reads_mib": {
+      "peak": 973.15625,
+      "rss": 973.15625
+     },
+     "tasks": [
+      {
+       "gold": 0,
+       "lexical+structural": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "lexical-only": {
+        "candidates": 64,
+        "entries": 20,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 64,
+        "routed_coverage": 0.0
+       },
+       "structural-only": {
+        "candidates": 33,
+        "entries": 0,
+        "mrr": 0.0,
+        "recall@1": 0.0,
+        "recall@10": 0.0,
+        "recall@20": 0.0,
+        "recall@5": 0.0,
+        "regions_loaded": 33,
+        "routed_coverage": 0.0
+       },
+       "task": "bench-query"
+      }
+     ]
+    },
+    "rebuild": {
+     "begin_s": 0.117179,
+     "entities_per_s": 258.49417959610514,
+     "peak_rss_mib": 942.83203125,
+     "publish_s": 78.759237136,
+     "rss_mib": 942.83203125,
+     "total_s": 78.93407902599999,
+     "write_s": 0.05766289
+    },
+    "relations": 100019,
+    "reopen": {
+     "ms": 11.21,
+     "rss_mib": 895.9296875
+    },
+    "soak": {
+     "rounds": 100,
+     "rss_mib": [
+      899.109375,
+      899.12109375,
+      899.12109375,
+      899.12109375,
+      899.29296875,
+      899.30078125,
+      899.30078125,
+      899.30078125,
+      899.30078125,
+      899.30078125,
+      899.30078125
+     ],
+     "seconds": 11.323077378
+    }
+   }
+  },
+  "tasks": {
+   "ladybug": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ],
+   "helix-stem-tuned": [
+    {
+     "gold": 0,
+     "lexical+structural": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "lexical-only": {
+      "candidates": 64,
+      "entries": 20,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 64,
+      "routed_coverage": 0.0
+     },
+     "structural-only": {
+      "candidates": 33,
+      "entries": 0,
+      "mrr": 0.0,
+      "recall@1": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 0.0,
+      "recall@5": 0.0,
+      "regions_loaded": 33,
+      "routed_coverage": 0.0
+     },
+     "task": "bench-query"
+    }
+   ]
+  }
+ }
+}

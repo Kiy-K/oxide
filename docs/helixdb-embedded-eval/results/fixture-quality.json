@@ -1,0 +1,585 @@
+{
+ "datasets": [
+  "py_repo"
+ ],
+ "lexical-only": {
+  "ladybug": {
+   "recall@1": 0.2857142857142857,
+   "recall@5": 0.8571428571428571,
+   "recall@10": 1.0,
+   "recall@20": 1.0,
+   "mrr": 0.5396825396825397,
+   "routed_coverage": 1.0
+  },
+  "helix": {
+   "recall@1": 0.42857142857142855,
+   "recall@5": 0.6428571428571429,
+   "recall@10": 0.6428571428571429,
+   "recall@20": 0.7857142857142857,
+   "mrr": 0.5395604395604395,
+   "routed_coverage": 0.8571428571428571
+  },
+  "helix-stem-tuned": {
+   "recall@1": 0.42857142857142855,
+   "recall@5": 0.8571428571428571,
+   "recall@10": 0.9285714285714286,
+   "recall@20": 1.0,
+   "mrr": 0.6214285714285713,
+   "routed_coverage": 1.0
+  }
+ },
+ "per_task": {
+  "ladybug": [
+   {
+    "task": "py-exact-retrypolicy",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-semantic-http-retries",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 48,
+     "entries": 20,
+     "mrr": 0.1111111111111111,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 48,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 48,
+     "entries": 20,
+     "mrr": 0.1111111111111111,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 48,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-crossfile-token-refresh",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 28,
+     "entries": 19,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 28,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 28,
+     "entries": 19,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 28,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-related-test-gives-up",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 0.3333333333333333,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 0.3333333333333333,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-ttl-cache-expiry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-implementors-notifier",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 42,
+     "entries": 20,
+     "mrr": 0.3333333333333333,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 42,
+     "entries": 20,
+     "mrr": 0.3333333333333333,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-callers-should-retry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 29,
+     "entries": 9,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 29,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 29,
+     "entries": 9,
+     "mrr": 0.3333333333333333,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 29,
+     "routed_coverage": 1.0
+    }
+   }
+  ],
+  "helix": [
+   {
+    "task": "py-exact-retrypolicy",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-semantic-http-retries",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 42,
+     "entries": 10,
+     "mrr": 0.2,
+     "recall@1": 0.0,
+     "recall@10": 0.5,
+     "recall@20": 0.5,
+     "recall@5": 0.5,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 42,
+     "entries": 10,
+     "mrr": 0.2,
+     "recall@1": 0.0,
+     "recall@10": 0.5,
+     "recall@20": 0.5,
+     "recall@5": 0.5,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-crossfile-token-refresh",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 47,
+     "entries": 20,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 47,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 47,
+     "entries": 20,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 47,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-related-test-gives-up",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-ttl-cache-expiry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-implementors-notifier",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 61,
+     "entries": 18,
+     "mrr": 0.07692307692307693,
+     "recall@1": 0.0,
+     "recall@10": 0.0,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 61,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 61,
+     "entries": 18,
+     "mrr": 0.07692307692307693,
+     "recall@1": 0.0,
+     "recall@10": 0.0,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 61,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-callers-should-retry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 16,
+     "entries": 1,
+     "mrr": 0.0,
+     "recall@1": 0.0,
+     "recall@10": 0.0,
+     "recall@20": 0.0,
+     "recall@5": 0.0,
+     "regions_loaded": 16,
+     "routed_coverage": 0.0
+    },
+    "lexical+structural": {
+     "candidates": 16,
+     "entries": 1,
+     "mrr": 0.0,
+     "recall@1": 0.0,
+     "recall@10": 0.0,
+     "recall@20": 0.0,
+     "recall@5": 0.0,
+     "regions_loaded": 16,
+     "routed_coverage": 0.0
+    }
+   }
+  ],
+  "helix-stem-tuned": [
+   {
+    "task": "py-exact-retrypolicy",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-semantic-http-retries",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 48,
+     "entries": 20,
+     "mrr": 0.1,
+     "recall@1": 0.0,
+     "recall@10": 0.5,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 48,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 48,
+     "entries": 20,
+     "mrr": 0.1,
+     "recall@1": 0.0,
+     "recall@10": 0.5,
+     "recall@20": 1.0,
+     "recall@5": 0.0,
+     "regions_loaded": 48,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-crossfile-token-refresh",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 47,
+     "entries": 20,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 47,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 47,
+     "entries": 20,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 47,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-related-test-gives-up",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 37,
+     "entries": 18,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 37,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-ttl-cache-expiry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 12,
+     "entries": 6,
+     "mrr": 1.0,
+     "recall@1": 1.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 12,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-implementors-notifier",
+    "gold": 2,
+    "lexical-only": {
+     "candidates": 42,
+     "entries": 20,
+     "mrr": 0.25,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 42,
+     "entries": 20,
+     "mrr": 0.25,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 42,
+     "routed_coverage": 1.0
+    }
+   },
+   {
+    "task": "py-callers-should-retry",
+    "gold": 1,
+    "lexical-only": {
+     "candidates": 29,
+     "entries": 9,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 29,
+     "routed_coverage": 1.0
+    },
+    "lexical+structural": {
+     "candidates": 29,
+     "entries": 9,
+     "mrr": 0.5,
+     "recall@1": 0.0,
+     "recall@10": 1.0,
+     "recall@20": 1.0,
+     "recall@5": 1.0,
+     "regions_loaded": 29,
+     "routed_coverage": 1.0
+    }
+   }
+  ]
+ }
+}
