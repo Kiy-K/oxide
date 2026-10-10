@@ -1,0 +1,498 @@
+diff --git a/oxide_kernel/crates/kernel/src/route.rs b/oxide_kernel/crates/kernel/src/route.rs
+index d97eea9..0bc8f2c 100644
+--- a/oxide_kernel/crates/kernel/src/route.rs
++++ b/oxide_kernel/crates/kernel/src/route.rs
+@@ -21,6 +21,7 @@ use crate::decision::{
+ };
+ use crate::id::{EntityId, SnapshotKey};
+ use crate::knowledge::{Containment, RelationKind};
++use crate::lexical::{LexicalRequest, terms};
+ use crate::query::Query;
+ use crate::retrieve::{ChannelEvidence, EntryPoint, Seed};
+ use crate::store::{Direction, ReadView, StoreError};
+@@ -56,6 +57,12 @@ pub struct RoutePolicy {
+     pub ascend: bool,
+     /// A validated branch value below this prunes the region.
+     pub prune_below: f64,
++    /// Load each non-entry layer round-robin over the entry point every
++    /// region descends from, instead of in discovery order.
++    pub balance: bool,
++    /// When nonzero, a non-entry layer's regions among this many top
++    /// lexical hits load first, by rank.
++    pub lexical_first: usize,
+ }
+ 
+ /// The frozen v2 baseline limits (docs/phase-3.md).
+@@ -81,6 +88,8 @@ pub fn baseline_policy() -> RoutePolicy {
+         ],
+         ascend: true,
+         prune_below: 0.25,
++        balance: false,
++        lexical_first: 0,
+     }
+ }
+ 
+@@ -231,6 +240,22 @@ pub fn route(
+             .collect()
+     };
+     layer.retain(|(id, _)| seen.insert(id.clone()));
++    // The entry point each region descends from, by first discovery.
++    let mut roots: BTreeMap<RegionId, usize> = layer
++        .iter()
++        .enumerate()
++        .map(|(i, (id, _))| (id.clone(), i))
++        .collect();
++    let lexical: BTreeMap<EntityId, usize> = if request.policy.lexical_first > 0 {
++        let hits = view.lexical(&LexicalRequest {
++            terms: terms(&request.query.text),
++            limit: request.policy.lexical_first,
++        })?;
++        let ranks = hits.hits.into_iter().enumerate();
++        ranks.map(|(rank, hit)| (hit.entity, rank)).collect()
++    } else {
++        BTreeMap::new()
++    };
+     // Every way each seen region was reached, attached to the candidates
+     // once routing ends, so the record does not depend on visit order.
+     let mut reached: BTreeMap<RegionId, Vec<Origin>> = layer
+@@ -241,6 +266,9 @@ pub fn route(
+     let mut candidates: BTreeMap<EntityId, Candidate> = BTreeMap::new();
+     let mut depth = 0u32;
+     while !layer.is_empty() {
++        if depth > 0 {
++            order(&mut layer, &roots, &lexical, request.policy.balance);
++        }
+         let mut loaded: Vec<(Region, Origin)> = Vec::new();
+         for (id, origin) in layer {
+             let bound = if trace.work.regions_loaded >= limits.max_regions {
+@@ -334,6 +362,7 @@ pub fn route(
+                     continue;
+                 }
+                 seen.insert(id.clone());
++                roots.insert(id.clone(), roots[&region.id]);
+                 if depth as usize >= limits.max_depth {
+                     trace.stopped_by.get_or_insert(Bound::Depth);
+                     trace.steps.push(RouteStep {
+@@ -362,6 +391,35 @@ pub fn route(
+     })
+ }
+ 
++/// Reorders one non-entry layer by the policy's load order: lexical hits
++/// by rank, then (when balancing) the k-th region of every entry point
++/// before the (k+1)-th of any, then discovery order (the sort is stable).
++fn order(
++    layer: &mut [(RegionId, Origin)],
++    roots: &BTreeMap<RegionId, usize>,
++    lexical: &BTreeMap<EntityId, usize>,
++    balance: bool,
++) {
++    if lexical.is_empty() && !balance {
++        return;
++    }
++    let mut turns: BTreeMap<usize, usize> = BTreeMap::new();
++    let mut keys: BTreeMap<RegionId, (usize, usize, usize)> = BTreeMap::new();
++    for (id, _) in layer.iter() {
++        let rank = lexical.get(&id.anchor).copied().unwrap_or(usize::MAX);
++        let root = roots[id];
++        let turn = turns.entry(root).or_default();
++        let key = if balance {
++            (rank, *turn, root)
++        } else {
++            (rank, 0, 0)
++        };
++        *turn += 1;
++        keys.insert(id.clone(), key);
++    }
++    layer.sort_by_key(|(id, _)| keys[id]);
++}
++
+ /// Neighbors of one explored region in expansion order, deduplicated.
+ fn expand(region: &Region, policy: &RoutePolicy) -> Vec<(RegionId, Origin)> {
+     let anchor = &region.id.anchor;
+diff --git a/oxide_kernel/crates/runtime/tests/phase5_routing.rs b/oxide_kernel/crates/runtime/tests/phase5_routing.rs
+new file mode 100644
+index 0000000..5e33cb8
+--- /dev/null
++++ b/oxide_kernel/crates/runtime/tests/phase5_routing.rs
+@@ -0,0 +1,381 @@
++//! Phase 5 follow-up 2 (docs/phase-5/followup-2/preregistration.md):
++//! part A: routing load order at equal work (rejected; this file ships as
++//! `docs/phase-5/followup-2/routing-order.patch`). Opt-in and machine-local
++//! like `phase5_followup.rs`; it never calls JEV:
++//!
++//! ```text
++//! OXIDE_CB_WORKTREES=<dir>:<dir> \
++//!   cargo test --release -p oxide-runtime --test phase5_routing -- --ignored
++//! ```
++//!
++//! Routing variants run on dev. `OXIDE_ROUTING_CONFIRM=<label>` adds the
++//! calibration confirmation of a dev-accepted variant, and
++//! `OXIDE_ROUTING_TEST=<label>` the descriptive test-split report of a
++//! confirmed one.
++
++mod common;
++
++use std::collections::{BTreeMap, BTreeSet};
++use std::path::Path;
++use std::time::Instant;
++
++use common::phase5::{self, Indexed, TaskInput, data_dir, paired, round};
++use common::{gold_sources, metrics, repo_root};
++use oxide_kernel::context::{ContextConfig, ContextRun, baseline, build_context};
++use oxide_kernel::decision::{Allowance, DecisionPolicy};
++use oxide_kernel::id::EntityId;
++use oxide_kernel::query::Query;
++use oxide_kernel::retrieve::{EntryPoint, retrieve};
++use oxide_kernel::route::{Candidate, Origin, RouteLimits, RouteRequest, baseline_policy, route};
++use oxide_kernel::store::{KnowledgeStore, MAX_REQUEST_ITEMS, ReadView};
++use oxide_runtime::decisionbench::{self as db, Split};
++use serde_json::{Value, json};
++
++const PREREGISTRATION_SHA256: &str =
++    "e18b7f160561d76ea6b0e7eb418cfe8b81a6f75563367082fdb6b53bd5074d2f";
++const TOKENS: u32 = 1024;
++const LEXICAL_FIRST: usize = 200;
++
++fn variants() -> Vec<(&'static str, ContextConfig)> {
++    let with = |balance: bool, lexical_first: usize| {
++        let mut c = baseline();
++        c.route_policy.balance = balance;
++        c.route_policy.lexical_first = lexical_first;
++        c
++    };
++    let mut lexical_only = baseline();
++    lexical_only.retrieval.lexical_limit = 64;
++    lexical_only.route_limits.max_depth = 0;
++    vec![
++        ("bfs", baseline()),
++        ("balanced", with(true, 0)),
++        ("lexical", with(false, LEXICAL_FIRST)),
++        ("lexical+balanced", with(true, LEXICAL_FIRST)),
++        ("lexical_only=64", lexical_only),
++    ]
++}
++
++fn preregistered() -> (Value, BTreeMap<String, Split>) {
++    let root = repo_root();
++    let prereg = std::fs::read(root.join("docs/phase-5/followup-2/preregistration.md")).unwrap();
++    assert_eq!(
++        db::sha256_hex(&prereg),
++        PREREGISTRATION_SHA256,
++        "preregistration edited"
++    );
++    let docs = root.join("docs/phase-5/decisionbench-v1");
++    let read = |f: &str| -> Value {
++        serde_json::from_str(&std::fs::read_to_string(docs.join(f)).unwrap()).unwrap()
++    };
++    let splits = serde_json::from_value(read("splits.json")["repositories"].clone()).unwrap();
++    (read("contextbench-tasks.json"), splits)
++}
++
++/// A task's cached result, or `measure` run and cached.
++fn cached(path: &Path, wanted: impl Fn(&Value) -> bool, measure: impl FnOnce() -> Value) -> Value {
++    let hit = std::fs::read_to_string(path)
++        .ok()
++        .map(|t| serde_json::from_str::<Value>(&t).unwrap())
++        .filter(&wanted);
++    hit.unwrap_or_else(|| {
++        let r = measure();
++        std::fs::write(path, serde_json::to_string(&r).unwrap()).unwrap();
++        r
++    })
++}
++
++fn input<'a>(t: &'a Value, split: Split, gold: &db::Gold) -> TaskInput<'a> {
++    TaskInput {
++        id: t["id"].as_str().unwrap(),
++        repository: t["repo"].as_str().unwrap(),
++        split,
++        query: t["query"].as_str().unwrap(),
++        symbols: Vec::new(),
++        gold: gold.clone(),
++    }
++}
++
++fn quantile(xs: &mut [f64], q: f64) -> f64 {
++    xs.sort_by(f64::total_cmp);
++    xs[((xs.len() - 1) as f64 * q).round() as usize]
++}
++
++// ---------------------------------------------------------------- Part A
++
++/// Entities reachable by baseline-policy routing from `entries` within
++/// `depth`, with work unbounded.
++fn reach(
++    view: &impl ReadView,
++    run: &ContextRun,
++    query: &Query,
++    entries: Vec<EntryPoint>,
++    depth: usize,
++) -> BTreeMap<EntityId, Candidate> {
++    let request = RouteRequest {
++        snapshot: run.candidates.snapshot.clone(),
++        query: query.clone(),
++        entry_points: entries,
++        limits: RouteLimits {
++            max_regions: 200_000,
++            max_depth: depth,
++            max_fanout: MAX_REQUEST_ITEMS,
++            max_edges: usize::MAX / 4,
++            max_judgments: 0,
++        },
++        policy: baseline_policy(),
++    };
++    let mut none = Allowance { remaining: 0 };
++    let routed = route(view, &request, None, &mut none, DecisionPolicy::default()).unwrap();
++    let candidates = routed.candidates.into_iter();
++    candidates.map(|c| (c.entity.clone(), c)).collect()
++}
++
++/// How a candidate was first reached, and the region it was reached from.
++fn step(c: &Candidate) -> (String, Option<EntityId>) {
++    match c.origins.first() {
++        Some(Origin::RegionMember(r)) => ("member".into(), Some(r.anchor.clone())),
++        Some(Origin::Scope(r)) => ("scope".into(), Some(r.anchor.clone())),
++        Some(Origin::Neighbor {
++            via,
++            relation,
++            direction,
++        }) => (format!("{relation:?}/{direction:?}"), Some(via.clone())),
++        Some(o) => (format!("{o:?}"), None),
++        None => ("none".into(), None),
++    }
++}
++
++fn measure_routing(t: &Value, split: Split, data: &Path, labels: &[&str]) -> Value {
++    let Indexed {
++        store,
++        key,
++        gold,
++        dir,
++        ..
++    } = phase5::index_task(t, data);
++    let view = store.open(&key).unwrap();
++    let input = input(t, split, &gold);
++    let all: Vec<EntityId> = gold.verified.iter().cloned().collect();
++    let sources = gold_sources(&view, &all);
++    let request = phase5::request(&input, TOKENS);
++    let mut rows = BTreeMap::new();
++    let mut diagnostic = Value::Null;
++    for (label, config) in variants() {
++        if !labels.contains(&label) {
++            continue;
++        }
++        let run = build_context(&view, &view, &request, &config, None).unwrap();
++        // Route alone, timed: the lexical-first request is routing work.
++        let candidates = retrieve(
++            &view,
++            &request.query,
++            &request.context,
++            request.semantic.clone(),
++            config.retrieval,
++        )
++        .unwrap();
++        let route_request = RouteRequest {
++            snapshot: candidates.snapshot.clone(),
++            query: request.query.clone(),
++            entry_points: candidates.entries.clone(),
++            limits: config.route_limits,
++            policy: config.route_policy.clone(),
++        };
++        let mut allowance = Allowance {
++            remaining: config.judgments,
++        };
++        let started = Instant::now();
++        let routed = route(&view, &route_request, None, &mut allowance, config.decision).unwrap();
++        let route_ms = started.elapsed().as_secs_f64() * 1e3;
++        assert_eq!(routed, run.route, "{label}: route not reproducible");
++        let mut row = metrics(&all, &sources, &run);
++        let work = run.route.trace.work;
++        row["regions_loaded"] = json!(work.regions_loaded);
++        row["edges_examined"] = json!(work.edges_examined);
++        row["route_ms"] = json!(route_ms);
++        if label == "bfs" {
++            // Where baseline-unrouted gold symbols sit with work unbounded.
++            let routed: BTreeSet<&EntityId> =
++                run.route.candidates.iter().map(|c| &c.entity).collect();
++            let unrouted: Vec<&EntityId> = all
++                .iter()
++                .filter(|g| matches!(g, EntityId::Symbol(_)) && !routed.contains(g))
++                .collect();
++            let entries = run.candidates.entries.clone();
++            let d1 = reach(&view, &run, &request.query, entries.clone(), 1);
++            let d2 = reach(&view, &run, &request.query, entries.clone(), 2);
++            // The two hops of each depth-2-only gold symbol, and the rank of
++            // the entry point the path starts from.
++            let mut paths: BTreeMap<String, usize> = BTreeMap::new();
++            let mut entry_ranks = Vec::new();
++            for g in unrouted.iter().filter(|g| !d1.contains_key(g)) {
++                let Some(c) = d2.get(g) else { continue };
++                let (second, via) = step(c);
++                let (first, entry) = via
++                    .as_ref()
++                    .and_then(|v| d2.get(v))
++                    .map_or(("?".into(), None), step);
++                *paths.entry(format!("{first} > {second}")).or_default() += 1;
++                let rank = entry.and_then(|e| entries.iter().position(|x| x.entity == e));
++                entry_ranks.push(rank.map(|r| r + 1));
++            }
++            diagnostic = json!({
++                "unrouted_symbols": unrouted.len(),
++                "depth1": unrouted.iter().filter(|g| d1.contains_key(g)).count(),
++                "depth2_only": unrouted.iter().filter(|g| !d1.contains_key(g) && d2.contains_key(g)).count(),
++                "depth2_paths": paths, "depth2_entry_ranks": entry_ranks,
++            });
++        }
++        rows.insert(label.to_owned(), row);
++    }
++    drop(view);
++    drop(store);
++    let _ = std::fs::remove_dir_all(&dir);
++    json!({"task": input.id, "split": split, "routing": rows, "unrouted_depth": diagnostic})
++}
++
++fn by_task(tasks: &[&Value], label: &str, k: &str) -> BTreeMap<String, f64> {
++    tasks
++        .iter()
++        .filter_map(|t| {
++            Some((
++                t["task"].as_str()?.to_owned(),
++                t["routing"][label][k].as_f64()?,
++            ))
++        })
++        .collect()
++}
++
++/// Per-variant means against `bfs`; `gate` applies the dev acceptance
++/// rule, otherwise the calibration confirmation rule.
++fn routing_summary(tasks: &[&Value], gate: bool) -> Value {
++    let mut out = BTreeMap::new();
++    let mut base: Vec<f64> = by_task(tasks, "bfs", "route_ms").into_values().collect();
++    let base_p50 = quantile(&mut base, 0.5);
++    for (label, _) in variants() {
++        let rows: Vec<&Value> = tasks
++            .iter()
++            .map(|t| &t["routing"][label])
++            .filter(|r| r.is_object())
++            .collect();
++        if rows.is_empty() {
++            continue;
++        }
++        let mean =
++            |k: &str| rows.iter().filter_map(|r| r[k].as_f64()).sum::<f64>() / rows.len() as f64;
++        let mut latency: Vec<f64> = rows.iter().filter_map(|r| r["route_ms"].as_f64()).collect();
++        let p50 = quantile(&mut latency, 0.5);
++        let mut row = json!({"tasks": rows.len(), "route_ms_p50": round(p50),
++                             "route_ms_p95": round(quantile(&mut latency, 0.95))});
++        for k in [
++            "routed_gold_coverage",
++            "required_symbol_recall",
++            "gold_token_share",
++            "selection_loss",
++            "regions_loaded",
++            "edges_examined",
++        ] {
++            row[k] = round(mean(k));
++        }
++        if label != "bfs" {
++            let coverage = paired(
++                &by_task(tasks, label, "routed_gold_coverage"),
++                &by_task(tasks, "bfs", "routed_gold_coverage"),
++            );
++            let recall = paired(
++                &by_task(tasks, label, "required_symbol_recall"),
++                &by_task(tasks, "bfs", "required_symbol_recall"),
++            );
++            let lo = |v: &Value| v["ci95"][0].as_f64().unwrap_or(f64::NEG_INFINITY);
++            let gain = coverage["mean_diff"].as_f64().unwrap_or(0.0);
++            row["accepted"] = json!(if gate {
++                gain >= 0.05 && lo(&coverage) > 0.0 && lo(&recall) > -0.02 && p50 <= 1.5 * base_p50
++            } else {
++                gain > 0.0 && recall["mean_diff"].as_f64().unwrap_or(-1.0) >= -0.01
++            });
++            row["coverage_vs_bfs"] = coverage;
++            row["recall_vs_bfs"] = recall;
++        }
++        out.insert(label, row);
++    }
++    let diag = |k: &str| {
++        tasks
++            .iter()
++            .filter_map(|t| t["unrouted_depth"][k].as_u64())
++            .sum::<u64>()
++    };
++    let mut paths: BTreeMap<String, u64> = BTreeMap::new();
++    let mut ranks: Vec<Value> = Vec::new();
++    for t in tasks {
++        let d = &t["unrouted_depth"];
++        for (k, n) in d["depth2_paths"].as_object().into_iter().flatten() {
++            *paths.entry(k.clone()).or_default() += n.as_u64().unwrap();
++        }
++        ranks.extend(
++            d["depth2_entry_ranks"]
++                .as_array()
++                .into_iter()
++                .flatten()
++                .cloned(),
++        );
++    }
++    json!({"variants": out, "unrouted_symbols": diag("unrouted_symbols"),
++           "unrouted_reachable_depth1": diag("depth1"),
++           "unrouted_reachable_depth2_only": diag("depth2_only"),
++           "depth2_paths": paths, "depth2_entry_ranks": ranks})
++}
++
++#[test]
++#[ignore = "machine-local: needs ContextBench worktrees"]
++fn routing_order() {
++    let (spec, splits) = preregistered();
++    let confirm = std::env::var("OXIDE_ROUTING_CONFIRM").ok();
++    let test = std::env::var("OXIDE_ROUTING_TEST").ok();
++    assert!(
++        test.is_none() || test == confirm,
++        "the test split reports only the confirmed variant"
++    );
++    let data = data_dir();
++    let cache_dir = data.join("followup-2/routing");
++    std::fs::create_dir_all(&cache_dir).unwrap();
++    let mut results = Vec::new();
++    for t in spec["tasks"].as_array().unwrap() {
++        let id = t["id"].as_str().unwrap();
++        let split = splits[t["repo"].as_str().unwrap()];
++        let labels: Vec<&str> = match split {
++            Split::Dev => variants().into_iter().map(|(l, _)| l).collect(),
++            Split::Calibration => confirm.iter().map(String::as_str).chain(["bfs"]).collect(),
++            Split::Test => test.iter().map(String::as_str).chain(["bfs"]).collect(),
++            Split::TrainReserved => Vec::new(),
++        };
++        if labels.len() < 2 {
++            continue;
++        }
++        let path = cache_dir.join(format!("{id}.json"));
++        let wanted = |r: &Value| {
++            labels.iter().all(|l| r["routing"][l].is_object())
++                && r["unrouted_depth"].get("depth2_paths").is_some()
++        };
++        let r = cached(&path, wanted, || measure_routing(t, split, &data, &labels));
++        eprintln!("{id}: {labels:?}");
++        results.push(r);
++    }
++    let of =
++        |s: Split| -> Vec<&Value> { results.iter().filter(|r| r["split"] == json!(s)).collect() };
++    let mut out = json!({"preregistration_sha256": PREREGISTRATION_SHA256,
++                         "budget_units": TOKENS, "lexical_first": LEXICAL_FIRST,
++                         "dev": routing_summary(&of(Split::Dev), true)});
++    if confirm.is_some() {
++        out["calibration"] = routing_summary(&of(Split::Calibration), false);
++    }
++    if test.is_some() {
++        out["test"] = routing_summary(&of(Split::Test), false);
++    }
++    let text = serde_json::to_string_pretty(&out).unwrap() + "\n";
++    std::fs::write(
++        repo_root().join("docs/phase-5/followup-2/routing.json"),
++        &text,
++    )
++    .unwrap();
++    eprintln!("{text}");
++}

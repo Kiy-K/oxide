@@ -64,7 +64,7 @@ pub const LIVE_TOKENS: u64 = 20_000_000;
 pub const BRANCH_SAMPLE: usize = 8;
 pub const REPEAT_SAMPLE: usize = 100;
 pub const REPEATS: usize = 2;
-const BOOTSTRAP: (usize, u64) = (10_000, 0x5eed_0005);
+pub const BOOTSTRAP: (usize, u64) = (10_000, 0x5eed_0005);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Judge {

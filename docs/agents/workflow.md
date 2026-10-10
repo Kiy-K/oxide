@@ -133,4 +133,8 @@ enters recordings. The test split stays sealed unless
 The follow-up (`docs/phase-5-followup.md`) is opt-in the same way and
 never calls JEV: `--test phase5_followup -- --ignored` replays the
 recordings at their recorded latency, and caches per task under
-`OXIDE_DECISIONBENCH_DATA/followup/`.
+`OXIDE_DECISIONBENCH_DATA/followup/`. Follow-up 2
+(`docs/phase-5-followup-2.md`) works the same way: `--test
+phase5_stability -- --ignored` replays recordings only, caching under
+`OXIDE_DECISIONBENCH_DATA/followup-2/`. Its rejected routing harness is a
+patch to `git apply`.

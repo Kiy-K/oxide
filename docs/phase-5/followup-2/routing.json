@@ -1,0 +1,159 @@
+{
+  "budget_units": 1024,
+  "dev": {
+    "depth2_entry_ranks": [
+      17,
+      2,
+      8,
+      15,
+      15,
+      8,
+      15,
+      17,
+      11,
+      7,
+      9,
+      9,
+      9,
+      5
+    ],
+    "depth2_paths": {
+      "Calls/Outgoing > Calls/Incoming": 1,
+      "Calls/Outgoing > member": 4,
+      "Imports/Incoming > Imports/Outgoing": 3,
+      "member > member": 1,
+      "scope > Calls/Outgoing": 1,
+      "scope > member": 4
+    },
+    "unrouted_reachable_depth1": 5,
+    "unrouted_reachable_depth2_only": 14,
+    "unrouted_symbols": 37,
+    "variants": {
+      "balanced": {
+        "accepted": false,
+        "coverage_vs_bfs": {
+          "ci95": [
+            -0.2667,
+            0.0095
+          ],
+          "mean_diff": -0.0952,
+          "tasks": 14
+        },
+        "edges_examined": 723.0,
+        "gold_token_share": 0.1974,
+        "recall_vs_bfs": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "regions_loaded": 64.0,
+        "required_symbol_recall": 0.2,
+        "route_ms_p50": 152.4483,
+        "route_ms_p95": 194.6249,
+        "routed_gold_coverage": 0.4881,
+        "selection_loss": 0.2,
+        "tasks": 14
+      },
+      "bfs": {
+        "edges_examined": 693.3571,
+        "gold_token_share": 0.1974,
+        "regions_loaded": 64.0,
+        "required_symbol_recall": 0.2,
+        "route_ms_p50": 160.7413,
+        "route_ms_p95": 183.0248,
+        "routed_gold_coverage": 0.5833,
+        "selection_loss": 0.2952,
+        "tasks": 14
+      },
+      "lexical": {
+        "accepted": false,
+        "coverage_vs_bfs": {
+          "ci95": [
+            -0.0768,
+            0.0798
+          ],
+          "mean_diff": 0.0042,
+          "tasks": 14
+        },
+        "edges_examined": 686.8571,
+        "gold_token_share": 0.1974,
+        "recall_vs_bfs": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "regions_loaded": 64.0,
+        "required_symbol_recall": 0.2,
+        "route_ms_p50": 200.9983,
+        "route_ms_p95": 277.432,
+        "routed_gold_coverage": 0.5875,
+        "selection_loss": 0.2994,
+        "tasks": 14
+      },
+      "lexical+balanced": {
+        "accepted": false,
+        "coverage_vs_bfs": {
+          "ci95": [
+            -0.2571,
+            0.0179
+          ],
+          "mean_diff": -0.0911,
+          "tasks": 14
+        },
+        "edges_examined": 704.4286,
+        "gold_token_share": 0.1974,
+        "recall_vs_bfs": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "regions_loaded": 64.0,
+        "required_symbol_recall": 0.2,
+        "route_ms_p50": 175.296,
+        "route_ms_p95": 253.3989,
+        "routed_gold_coverage": 0.4923,
+        "selection_loss": 0.2042,
+        "tasks": 14
+      },
+      "lexical_only=64": {
+        "accepted": false,
+        "coverage_vs_bfs": {
+          "ci95": [
+            -0.2881,
+            0.0327
+          ],
+          "mean_diff": -0.1125,
+          "tasks": 14
+        },
+        "edges_examined": 419.0714,
+        "gold_token_share": 0.1957,
+        "recall_vs_bfs": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "regions_loaded": 64.0,
+        "required_symbol_recall": 0.2,
+        "route_ms_p50": 153.5665,
+        "route_ms_p95": 224.3584,
+        "routed_gold_coverage": 0.4708,
+        "selection_loss": 0.1827,
+        "tasks": 14
+      }
+    }
+  },
+  "lexical_first": 200,
+  "preregistration_sha256": "e18b7f160561d76ea6b0e7eb418cfe8b81a6f75563367082fdb6b53bd5074d2f"
+}
