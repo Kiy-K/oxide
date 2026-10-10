@@ -137,4 +137,6 @@ recordings at their recorded latency, and caches per task under
 (`docs/phase-5-followup-2.md`) works the same way: `--test
 phase5_stability -- --ignored` replays recordings only, caching under
 `OXIDE_DECISIONBENCH_DATA/followup-2/`. Its rejected routing harness is a
-patch to `git apply`.
+patch to `git apply`. Follow-up 3 (`docs/phase-5-followup-3.md`, dev only):
+`--test phase5_budget -- --ignored`, caching under
+`OXIDE_DECISIONBENCH_DATA/followup-3/`.

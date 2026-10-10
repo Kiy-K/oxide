@@ -1,0 +1,269 @@
+{
+  "oracle_fallbacks": 0,
+  "preregistration_sha256": "46afec24e1ad2f136654f8c1b2117bb506ea7441c313e876b81101787de49263",
+  "process_peak_rss_kib": 3529068,
+  "regions": {
+    "128": {
+      "edges_examined": 1234.1429,
+      "est_extra_jev_latency_ms_at_16": 1224.0,
+      "est_extra_jev_requests": 63.4286,
+      "est_jev_cost_usd": 0.014,
+      "est_jev_input_tokens": 333429.3973,
+      "est_jev_request_kib": 743.8391,
+      "est_jev_requests": 131.0714,
+      "gold_symbols": 60.0,
+      "graph_edges": 1616.1429,
+      "graph_gold_symbol_recall": 0.5167,
+      "graph_nodes": 127.4286,
+      "heuristic@1024": {
+        "packed_gold_symbols": 0.1333,
+        "planned_gold_symbols": 0.1833,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.2
+      },
+      "heuristic@256": {
+        "packed_gold_symbols": 0.0167,
+        "planned_gold_symbols": 0.1,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.0119
+      },
+      "heuristic@4096": {
+        "packed_gold_symbols": 0.2167,
+        "planned_gold_symbols": 0.2333,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.3119
+      },
+      "heuristic_latency_ms_p50": 599.0102,
+      "max_depth_reached": [
+        "2"
+      ],
+      "oracle@1024": {
+        "packed_gold_symbols": 0.3833,
+        "planned_gold_symbols": 0.5333,
+        "recall_vs_64": {
+          "ci95": [
+            0.0143,
+            0.1506
+          ],
+          "mean_diff": 0.0768,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.3887
+      },
+      "oracle@256": {
+        "packed_gold_symbols": 0.0833,
+        "planned_gold_symbols": 0.4333,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0268
+          ],
+          "mean_diff": 0.0089,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.0613
+      },
+      "oracle@4096": {
+        "packed_gold_symbols": 0.5333,
+        "planned_gold_symbols": 0.5333,
+        "recall_vs_64": {
+          "ci95": [
+            0.0143,
+            0.2107
+          ],
+          "mean_diff": 0.1006,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.6554
+      },
+      "passes_decision_rule": false,
+      "regions_loaded": 127.4286,
+      "route_ms_p50": 291.8712,
+      "routed_gold_symbol_recall": 0.5167,
+      "stopped_by": [
+        "\"Some(Depth)\"",
+        "\"Some(Regions)\""
+      ]
+    },
+    "64": {
+      "edges_examined": 693.3571,
+      "est_jev_cost_usd": 0.0075,
+      "est_jev_input_tokens": 178356.4241,
+      "est_jev_request_kib": 397.8908,
+      "est_jev_requests": 67.6429,
+      "gold_symbols": 60.0,
+      "graph_edges": 901.3571,
+      "graph_gold_symbol_recall": 0.3833,
+      "graph_nodes": 64.0,
+      "heuristic@1024": {
+        "packed_gold_symbols": 0.1333,
+        "planned_gold_symbols": 0.1833,
+        "required_symbol_recall": 0.2
+      },
+      "heuristic@256": {
+        "packed_gold_symbols": 0.0167,
+        "planned_gold_symbols": 0.1,
+        "required_symbol_recall": 0.0119
+      },
+      "heuristic@4096": {
+        "packed_gold_symbols": 0.2167,
+        "planned_gold_symbols": 0.2333,
+        "required_symbol_recall": 0.3119
+      },
+      "heuristic_latency_ms_p50": 316.896,
+      "max_depth_reached": [
+        "1",
+        "2"
+      ],
+      "oracle@1024": {
+        "packed_gold_symbols": 0.25,
+        "planned_gold_symbols": 0.3833,
+        "required_symbol_recall": 0.3119
+      },
+      "oracle@256": {
+        "packed_gold_symbols": 0.0667,
+        "planned_gold_symbols": 0.3333,
+        "required_symbol_recall": 0.0524
+      },
+      "oracle@4096": {
+        "packed_gold_symbols": 0.3833,
+        "planned_gold_symbols": 0.3833,
+        "required_symbol_recall": 0.5548
+      },
+      "regions_loaded": 64.0,
+      "route_ms_p50": 158.334,
+      "routed_gold_symbol_recall": 0.3833,
+      "stopped_by": [
+        "\"Some(Regions)\""
+      ]
+    },
+    "96": {
+      "edges_examined": 970.5714,
+      "est_extra_jev_latency_ms_at_16": 612.0,
+      "est_extra_jev_requests": 32.0,
+      "est_jev_cost_usd": 0.0108,
+      "est_jev_input_tokens": 258207.8357,
+      "est_jev_request_kib": 576.0292,
+      "est_jev_requests": 99.6429,
+      "gold_symbols": 60.0,
+      "graph_edges": 1266.2143,
+      "graph_gold_symbol_recall": 0.45,
+      "graph_nodes": 96.0,
+      "heuristic@1024": {
+        "packed_gold_symbols": 0.1333,
+        "planned_gold_symbols": 0.1833,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.2
+      },
+      "heuristic@256": {
+        "packed_gold_symbols": 0.0167,
+        "planned_gold_symbols": 0.1,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.0119
+      },
+      "heuristic@4096": {
+        "packed_gold_symbols": 0.2167,
+        "planned_gold_symbols": 0.2333,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.3119
+      },
+      "heuristic_latency_ms_p50": 452.4274,
+      "max_depth_reached": [
+        "1",
+        "2"
+      ],
+      "oracle@1024": {
+        "packed_gold_symbols": 0.3167,
+        "planned_gold_symbols": 0.45,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0667
+          ],
+          "mean_diff": 0.0262,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.3381
+      },
+      "oracle@256": {
+        "packed_gold_symbols": 0.0667,
+        "planned_gold_symbols": 0.35,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.0524
+      },
+      "oracle@4096": {
+        "packed_gold_symbols": 0.45,
+        "planned_gold_symbols": 0.45,
+        "recall_vs_64": {
+          "ci95": [
+            0.0,
+            0.0667
+          ],
+          "mean_diff": 0.0262,
+          "tasks": 14
+        },
+        "required_symbol_recall": 0.581
+      },
+      "passes_decision_rule": false,
+      "regions_loaded": 96.0,
+      "route_ms_p50": 211.5231,
+      "routed_gold_symbol_recall": 0.45,
+      "stopped_by": [
+        "\"Some(Regions)\""
+      ]
+    }
+  },
+  "split": "dev",
+  "tasks": 14,
+  "tokens_per_request_byte": 0.4377,
+  "usd_per_input_token": 4.2e-8
+}

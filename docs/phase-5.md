@@ -259,4 +259,6 @@ and byte-identical payload. Published knowledge is unchanged.
   p50 2.6 s, with the routing loss broken down by stage.
   [Follow-up 2](phase-5-followup-2.md): no routing load-order gain
   detected (underpowered dev gate), JEV drift measured from recordings.
+  [Follow-up 3](phase-5-followup-3.md): 96/128-region budgets route more
+  gold, but the heuristic never selects it; 64 kept.
 - Downstream agent success is not measured.
