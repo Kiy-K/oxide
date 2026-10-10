@@ -14,15 +14,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 use std::time::Instant;
 
-use common::phase5::{self, Indexed, TaskInput, data_dir, fallbacks, paired, round};
-use common::{covers, gold_sources, metrics, repo_root, rss_peak_kib};
-use oxide_kernel::capsule::{Capsule, Question, Subject};
-use oxide_kernel::context::{ContextConfig, ContextRun, baseline, build_context};
-use oxide_kernel::decision::{
-    Allowance, DecisionProvider, Judgment, ProviderError, ProviderIdentity, Verdict,
+use common::phase5::{
+    self, Indexed, Oracle, TaskInput, data_dir, fallbacks, paired, round, stages,
 };
+use common::{gold_sources, metrics, repo_root, rss_peak_kib};
+use oxide_kernel::context::{ContextConfig, ContextRun, baseline, build_context};
+use oxide_kernel::decision::Allowance;
 use oxide_kernel::id::EntityId;
-use oxide_kernel::knowledge::SourceRef;
 use oxide_kernel::retrieve::RETRIEVAL_VERSION;
 use oxide_kernel::retrieve::retrieve;
 use oxide_kernel::route::{ROUTER_VERSION, RouteRequest, route};
@@ -45,56 +43,6 @@ fn config(regions: usize) -> ContextConfig {
     c.route_limits.max_regions = regions;
     c.graph.max_nodes = regions;
     c
-}
-
-/// Evaluation-only judge that knows the gold: never a product path.
-struct Oracle<'a> {
-    symbols: &'a BTreeSet<EntityId>,
-    other: &'a BTreeSet<EntityId>,
-}
-
-impl DecisionProvider for Oracle<'_> {
-    fn identity(&self) -> ProviderIdentity {
-        ProviderIdentity {
-            name: "gold-oracle".into(),
-            version: "eval-only".into(),
-        }
-    }
-    // Routing stays unjudged, so the oracle sees the heuristic's route.
-    fn supports(&self, question: Question) -> bool {
-        question != Question::BranchValue
-    }
-    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
-        let value = |c: &Capsule| match &c.subject {
-            Subject::Candidate(id) if self.symbols.contains(id) => 1.0,
-            Subject::Candidate(id) if self.other.contains(id) => 0.5,
-            _ => 0.0,
-        };
-        Ok(capsules
-            .iter()
-            .map(|c| {
-                let verdict = Verdict::Value {
-                    value: value(c),
-                    confidence: Some(1.0),
-                };
-                Judgment::of(c, verdict)
-            })
-            .collect())
-    }
-}
-
-/// Gold symbols at each stage of one run.
-fn stages(run: &ContextRun, gold: &[EntityId], sources: &[SourceRef]) -> Value {
-    let routed: BTreeSet<&EntityId> = run.route.candidates.iter().map(|c| &c.entity).collect();
-    let graph: BTreeSet<&EntityId> = run.graph.nodes.iter().map(|n| &n.entity.id).collect();
-    let planned: BTreeSet<&EntityId> = run.plan.items.iter().map(|p| &p.entity).collect();
-    let count = |s: &BTreeSet<&EntityId>| gold.iter().filter(|g| s.contains(g)).count();
-    let packed = sources
-        .iter()
-        .filter(|s| run.bundle.items.iter().any(|i| covers(&i.source, s)))
-        .count();
-    json!({"routed": count(&routed), "graph": count(&graph), "planned": count(&planned),
-           "packed": packed})
 }
 
 /// How many capsules a JEV run would send here (relevance, then

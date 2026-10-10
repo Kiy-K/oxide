@@ -139,4 +139,7 @@ phase5_stability -- --ignored` replays recordings only, caching under
 `OXIDE_DECISIONBENCH_DATA/followup-2/`. Its rejected routing harness is a
 patch to `git apply`. Follow-up 3 (`docs/phase-5-followup-3.md`, dev only):
 `--test phase5_budget -- --ignored`, caching under
-`OXIDE_DECISIONBENCH_DATA/followup-3/`.
+`OXIDE_DECISIONBENCH_DATA/followup-3/`. Follow-up 4
+(`docs/phase-5-followup-4.md`, dev only): `--test phase5_selection --
+--ignored` runs the audit and the variants, caching under
+`OXIDE_DECISIONBENCH_DATA/followup-4/`.

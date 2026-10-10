@@ -20,13 +20,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use oxide_kernel::capsule::{Capsule, Question};
+use oxide_kernel::capsule::{Capsule, Question, Subject};
 use oxide_kernel::context::{ContextRequest, ContextRun, baseline, build_context};
 use oxide_kernel::decision::{
-    DecisionProvider, Fallback, Heuristic, Judgment, ProviderError, ProviderIdentity,
+    DecisionProvider, Fallback, Heuristic, Judgment, ProviderError, ProviderIdentity, Verdict,
 };
 use oxide_kernel::id::{EntityId, RepoId, SnapshotKey};
-use oxide_kernel::knowledge::Entity;
+use oxide_kernel::knowledge::{Entity, SourceRef};
 use oxide_kernel::pack::counter;
 use oxide_kernel::query::{ContextBudget, Query, QueryContext};
 use oxide_kernel::retrieve::ChannelState;
@@ -43,7 +43,7 @@ use oxide_runtime::jev::{
 use oxide_runtime::storage::LadybugStore;
 use serde_json::{Value, json};
 
-use super::{Constant, gold_sources, mean, metrics};
+use super::{Constant, covers, gold_sources, mean, metrics};
 
 pub const BUDGETS: [u32; 3] = [256, 1024, 4096];
 /// SHA-256 of the frozen protocol files (2026-10-09, before any result;
@@ -925,4 +925,54 @@ pub fn map_gold(
     let verified = gold.verified.clone();
     gold.unverified.retain(|e| !verified.contains(e));
     (gold, counts)
+}
+
+/// Evaluation-only judge that knows the gold: never a product path.
+pub struct Oracle<'a> {
+    pub symbols: &'a BTreeSet<EntityId>,
+    pub other: &'a BTreeSet<EntityId>,
+}
+
+impl DecisionProvider for Oracle<'_> {
+    fn identity(&self) -> ProviderIdentity {
+        ProviderIdentity {
+            name: "gold-oracle".into(),
+            version: "eval-only".into(),
+        }
+    }
+    // Routing stays unjudged, so the oracle sees the heuristic's route.
+    fn supports(&self, question: Question) -> bool {
+        question != Question::BranchValue
+    }
+    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
+        let value = |c: &Capsule| match &c.subject {
+            Subject::Candidate(id) if self.symbols.contains(id) => 1.0,
+            Subject::Candidate(id) if self.other.contains(id) => 0.5,
+            _ => 0.0,
+        };
+        Ok(capsules
+            .iter()
+            .map(|c| {
+                let verdict = Verdict::Value {
+                    value: value(c),
+                    confidence: Some(1.0),
+                };
+                Judgment::of(c, verdict)
+            })
+            .collect())
+    }
+}
+
+/// Gold symbols at each stage of one run.
+pub fn stages(run: &ContextRun, gold: &[EntityId], sources: &[SourceRef]) -> Value {
+    let routed: BTreeSet<&EntityId> = run.route.candidates.iter().map(|c| &c.entity).collect();
+    let graph: BTreeSet<&EntityId> = run.graph.nodes.iter().map(|n| &n.entity.id).collect();
+    let planned: BTreeSet<&EntityId> = run.plan.items.iter().map(|p| &p.entity).collect();
+    let count = |s: &BTreeSet<&EntityId>| gold.iter().filter(|g| s.contains(g)).count();
+    let packed = sources
+        .iter()
+        .filter(|s| run.bundle.items.iter().any(|i| covers(&i.source, s)))
+        .count();
+    json!({"routed": count(&routed), "graph": count(&graph), "planned": count(&planned),
+           "packed": packed})
 }

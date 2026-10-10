@@ -261,4 +261,6 @@ and byte-identical payload. Published knowledge is unchanged.
   detected (underpowered dev gate), JEV drift measured from recordings.
   [Follow-up 3](phase-5-followup-3.md): 96/128-region budgets route more
   gold, but the heuristic never selects it; 64 kept.
+  [Follow-up 4](phase-5-followup-4.md): four interpretable rescorings of
+  the same candidates gain nothing at 1,024 units; the heuristic is kept.
 - Downstream agent success is not measured.

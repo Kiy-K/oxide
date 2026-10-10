@@ -1,0 +1,232 @@
+{
+  "split": "dev",
+  "summary": {
+    "classes": {
+      "container": {
+        "gold_outcomes@1024": {},
+        "gold_outcomes@4096": {},
+        "gold_packed@1024": 0,
+        "gold_packed@4096": 0,
+        "gold_rate": 0.0,
+        "gold_symbols": 0,
+        "heuristic_mean": 0.2,
+        "jev_mean_gold": null,
+        "jev_mean_other": 0.2946,
+        "jev_recorded": 145,
+        "nodes": 145,
+        "outcomes@1024": {
+          "container": 145
+        },
+        "outcomes@4096": {
+          "container": 145
+        }
+      },
+      "lexical_r1-5": {
+        "gold_outcomes@1024": {
+          "planned_full": 6,
+          "planned_header": 3
+        },
+        "gold_outcomes@4096": {
+          "planned_full": 9
+        },
+        "gold_packed@1024": 6,
+        "gold_packed@4096": 9,
+        "gold_rate": 0.1552,
+        "gold_symbols": 9,
+        "heuristic_mean": 0.8004,
+        "jev_mean_gold": 0.8511,
+        "jev_mean_other": 0.3966,
+        "jev_recorded": 58,
+        "nodes": 58,
+        "outcomes@1024": {
+          "budget_exceeded": 4,
+          "planned_full": 39,
+          "planned_header": 15
+        },
+        "outcomes@4096": {
+          "planned_full": 57,
+          "planned_header": 1
+        }
+      },
+      "lexical_r16+": {
+        "gold_outcomes@1024": {
+          "budget_exceeded": 1
+        },
+        "gold_outcomes@4096": {
+          "planned_header": 1
+        },
+        "gold_packed@1024": 0,
+        "gold_packed@4096": 0,
+        "gold_rate": 0.0161,
+        "gold_symbols": 1,
+        "heuristic_mean": 0.5,
+        "jev_mean_gold": 0.24,
+        "jev_mean_other": 0.2288,
+        "jev_recorded": 62,
+        "nodes": 62,
+        "outcomes@1024": {
+          "budget_exceeded": 59,
+          "planned_full": 1,
+          "planned_header": 2
+        },
+        "outcomes@4096": {
+          "budget_exceeded": 43,
+          "planned_full": 17,
+          "planned_header": 2
+        }
+      },
+      "lexical_r6-15": {
+        "gold_outcomes@1024": {
+          "budget_exceeded": 1,
+          "planned_full": 2
+        },
+        "gold_outcomes@4096": {
+          "budget_exceeded": 1,
+          "planned_full": 2
+        },
+        "gold_packed@1024": 2,
+        "gold_packed@4096": 2,
+        "gold_rate": 0.0246,
+        "gold_symbols": 3,
+        "heuristic_mean": 0.6125,
+        "jev_mean_gold": 0.875,
+        "jev_mean_other": 0.2867,
+        "jev_recorded": 122,
+        "nodes": 122,
+        "outcomes@1024": {
+          "budget_exceeded": 86,
+          "planned_full": 18,
+          "planned_header": 18
+        },
+        "outcomes@4096": {
+          "budget_exceeded": 43,
+          "planned_full": 65,
+          "planned_header": 14
+        }
+      },
+      "routed_d1": {
+        "gold_outcomes@1024": {
+          "budget_exceeded": 8
+        },
+        "gold_outcomes@4096": {
+          "budget_exceeded": 3,
+          "max_items": 3,
+          "planned_full": 2
+        },
+        "gold_packed@1024": 0,
+        "gold_packed@4096": 2,
+        "gold_rate": 0.0241,
+        "gold_symbols": 8,
+        "heuristic_mean": 0.45,
+        "jev_mean_gold": 0.93,
+        "jev_mean_other": 0.2793,
+        "jev_recorded": 332,
+        "nodes": 332,
+        "outcomes@1024": {
+          "budget_exceeded": 315,
+          "planned_header": 17
+        },
+        "outcomes@4096": {
+          "budget_exceeded": 279,
+          "max_items": 24,
+          "planned_full": 6,
+          "planned_header": 23
+        }
+      },
+      "routed_d2+": {
+        "gold_outcomes@1024": {
+          "below_floor": 2
+        },
+        "gold_outcomes@4096": {
+          "below_floor": 2
+        },
+        "gold_packed@1024": 0,
+        "gold_packed@4096": 0,
+        "gold_rate": 0.0113,
+        "gold_symbols": 2,
+        "heuristic_mean": 0.3,
+        "jev_mean_gold": 0.655,
+        "jev_mean_other": 0.2091,
+        "jev_recorded": 177,
+        "nodes": 177,
+        "outcomes@1024": {
+          "below_floor": 176,
+          "planned_header_via_expansion": 1
+        },
+        "outcomes@4096": {
+          "below_floor": 175,
+          "planned_full_via_expansion": 2
+        }
+      }
+    },
+    "expanded_gold": {
+      "1024": 0,
+      "4096": 0
+    },
+    "plan_spend": {
+      "1024": {
+        "expansion": {
+          "gold_items": 0,
+          "items": 3,
+          "tokens": 136
+        },
+        "lexical_r1-5": {
+          "gold_items": 9,
+          "items": 54,
+          "tokens": 10014
+        },
+        "lexical_r16+": {
+          "gold_items": 0,
+          "items": 3,
+          "tokens": 232
+        },
+        "lexical_r6-15": {
+          "gold_items": 2,
+          "items": 36,
+          "tokens": 3732
+        },
+        "routed_d1": {
+          "gold_items": 0,
+          "items": 17,
+          "tokens": 141
+        }
+      },
+      "4096": {
+        "expansion": {
+          "gold_items": 0,
+          "items": 17,
+          "tokens": 2376
+        },
+        "lexical_r1-5": {
+          "gold_items": 9,
+          "items": 58,
+          "tokens": 26576
+        },
+        "lexical_r16+": {
+          "gold_items": 1,
+          "items": 19,
+          "tokens": 3405
+        },
+        "lexical_r6-15": {
+          "gold_items": 2,
+          "items": 79,
+          "tokens": 21547
+        },
+        "routed_d1": {
+          "gold_items": 2,
+          "items": 29,
+          "tokens": 3128
+        }
+      }
+    },
+    "routed_coverage": {
+      "gold_symbols": 60,
+      "gold_verified": 68,
+      "pooled_gold_symbols": 0.3833,
+      "routed_gold_symbols": 23,
+      "task_mean_all_verified_gold": 0.5833,
+      "task_mean_gold_symbols": 0.6054
+    }
+  },
+  "tasks": 14
+}

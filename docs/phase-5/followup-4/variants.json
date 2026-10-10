@@ -1,0 +1,726 @@
+{
+  "preregistration_sha256": "0273c60445cc750ce0c5266268a5c705d8415aecc02fd6f25c390c5886ad1b7a",
+  "runs": {
+    "B": {
+      "1024": {
+        "budget_utilization": 0.9864,
+        "composition_items_units_gold": {
+          "lexical_r1-5": [
+            41,
+            7377,
+            8
+          ],
+          "lexical_r16+": [
+            1,
+            56,
+            0
+          ],
+          "lexical_r6-15": [
+            14,
+            1176,
+            2
+          ],
+          "routed_d1": [
+            54,
+            5651,
+            3
+          ]
+        },
+        "expansion_considered": 6.1429,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 7,
+        "gold_symbols_planned": 13,
+        "gold_token_share": 0.1963,
+        "items": 9.2143,
+        "jev_order_agreement": 0.5641,
+        "latency_ms_p50": 340.4386,
+        "packing_loss": 0.1357,
+        "plan_jaccard_vs_h": 0.413,
+        "required_symbol_header_only": 0.1714,
+        "required_symbol_recall": 0.1952,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.0381,
+            0.031
+          ],
+          "mean_diff": -0.0048,
+          "tasks": 14
+        },
+        "selection_loss": 0.2524,
+        "tokens_used": 1010.0714,
+        "unlabeled_token_share": 0.8037,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0813,
+            0.0731
+          ],
+          "mean_diff": 0.0011,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.9943,
+        "composition_items_units_gold": {
+          "expansion": [
+            11,
+            1124,
+            0
+          ],
+          "lexical_r1-5": [
+            53,
+            25685,
+            9
+          ],
+          "lexical_r16+": [
+            7,
+            899,
+            0
+          ],
+          "lexical_r6-15": [
+            59,
+            7362,
+            2
+          ],
+          "routed_d1": [
+            86,
+            22190,
+            5
+          ]
+        },
+        "expansion_considered": 7.1429,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 15,
+        "gold_symbols_planned": 16,
+        "gold_token_share": 0.1934,
+        "items": 19.0,
+        "jev_order_agreement": 0.5641,
+        "latency_ms_p50": 350.5534,
+        "packing_loss": 0.0714,
+        "plan_jaccard_vs_h": 0.4233,
+        "required_symbol_header_only": 0.0881,
+        "required_symbol_recall": 0.3595,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.0,
+            0.1429
+          ],
+          "mean_diff": 0.0476,
+          "tasks": 14
+        },
+        "selection_loss": 0.1524,
+        "tokens_used": 4072.5714,
+        "unlabeled_token_share": 0.8066,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0851,
+            0.0119
+          ],
+          "mean_diff": -0.024,
+          "tasks": 14
+        }
+      },
+      "latency_ratio_vs_h": 1.0875,
+      "passes_dev_rule": false
+    },
+    "H": {
+      "1024": {
+        "budget_utilization": 0.9845,
+        "composition_items_units_gold": {
+          "expansion": [
+            3,
+            136,
+            0
+          ],
+          "lexical_r1-5": [
+            54,
+            10014,
+            9
+          ],
+          "lexical_r16+": [
+            3,
+            232,
+            0
+          ],
+          "lexical_r6-15": [
+            36,
+            3732,
+            2
+          ],
+          "routed_d1": [
+            17,
+            141,
+            0
+          ]
+        },
+        "expansion_considered": 3.6429,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 8,
+        "gold_symbols_planned": 11,
+        "gold_token_share": 0.1974,
+        "items": 9.9286,
+        "jev_order_agreement": 0.5725,
+        "latency_ms_p50": 313.0425,
+        "packing_loss": 0.0881,
+        "plan_jaccard_vs_h": 1.0,
+        "required_symbol_header_only": 0.1,
+        "required_symbol_recall": 0.2,
+        "selection_loss": 0.2952,
+        "tokens_used": 1008.1429,
+        "unlabeled_token_share": 0.8026
+      },
+      "4096": {
+        "budget_utilization": 0.9802,
+        "composition_items_units_gold": {
+          "expansion": [
+            17,
+            2376,
+            0
+          ],
+          "lexical_r1-5": [
+            58,
+            26576,
+            9
+          ],
+          "lexical_r16+": [
+            19,
+            3405,
+            1
+          ],
+          "lexical_r6-15": [
+            79,
+            21547,
+            2
+          ],
+          "routed_d1": [
+            29,
+            3128,
+            2
+          ]
+        },
+        "expansion_considered": 5.3571,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 13,
+        "gold_symbols_planned": 14,
+        "gold_token_share": 0.1694,
+        "items": 17.3571,
+        "jev_order_agreement": 0.5725,
+        "latency_ms_p50": 341.054,
+        "packing_loss": 0.0238,
+        "plan_jaccard_vs_h": 1.0,
+        "required_symbol_header_only": 0.0405,
+        "required_symbol_recall": 0.3119,
+        "selection_loss": 0.2476,
+        "tokens_used": 4014.7857,
+        "unlabeled_token_share": 0.8306
+      }
+    },
+    "L": {
+      "1024": {
+        "budget_utilization": 0.9847,
+        "composition_items_units_gold": {
+          "expansion": [
+            12,
+            1042,
+            0
+          ],
+          "lexical_r1-5": [
+            54,
+            10014,
+            9
+          ],
+          "lexical_r6-15": [
+            22,
+            2342,
+            2
+          ],
+          "routed_d1": [
+            33,
+            877,
+            1
+          ]
+        },
+        "expansion_considered": 4.7143,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 8,
+        "gold_symbols_planned": 12,
+        "gold_token_share": 0.2007,
+        "items": 9.8571,
+        "jev_order_agreement": 0.5867,
+        "latency_ms_p50": 323.8216,
+        "packing_loss": 0.1,
+        "plan_jaccard_vs_h": 0.7235,
+        "required_symbol_header_only": 0.1119,
+        "required_symbol_recall": 0.2,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "selection_loss": 0.2833,
+        "tokens_used": 1008.2857,
+        "unlabeled_token_share": 0.7993,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0118,
+            0.0016
+          ],
+          "mean_diff": -0.0033,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.9889,
+        "composition_items_units_gold": {
+          "expansion": [
+            36,
+            4919,
+            0
+          ],
+          "lexical_r1-5": [
+            58,
+            26576,
+            9
+          ],
+          "lexical_r6-15": [
+            36,
+            11346,
+            2
+          ],
+          "routed_d1": [
+            69,
+            14440,
+            5
+          ]
+        },
+        "expansion_considered": 8.2857,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 14,
+        "gold_symbols_planned": 16,
+        "gold_token_share": 0.1929,
+        "items": 15.5,
+        "jev_order_agreement": 0.5867,
+        "latency_ms_p50": 351.4495,
+        "packing_loss": 0.0357,
+        "plan_jaccard_vs_h": 0.5731,
+        "required_symbol_header_only": 0.0762,
+        "required_symbol_recall": 0.3357,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.0,
+            0.0714
+          ],
+          "mean_diff": 0.0238,
+          "tasks": 14
+        },
+        "selection_loss": 0.2119,
+        "tokens_used": 4050.4286,
+        "unlabeled_token_share": 0.8071,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0804,
+            0.0109
+          ],
+          "mean_diff": -0.0234,
+          "tasks": 14
+        }
+      },
+      "latency_ratio_vs_h": 1.0344,
+      "passes_dev_rule": false
+    },
+    "LS": {
+      "1024": {
+        "budget_utilization": 0.9858,
+        "composition_items_units_gold": {
+          "expansion": [
+            8,
+            639,
+            0
+          ],
+          "lexical_r1-5": [
+            54,
+            10014,
+            9
+          ],
+          "lexical_r6-15": [
+            5,
+            472,
+            1
+          ],
+          "routed_d1": [
+            47,
+            3139,
+            4
+          ]
+        },
+        "expansion_considered": 5.2857,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 8,
+        "gold_symbols_planned": 14,
+        "gold_token_share": 0.2103,
+        "items": 9.3571,
+        "jev_order_agreement": 0.5672,
+        "latency_ms_p50": 324.8806,
+        "packing_loss": 0.1357,
+        "plan_jaccard_vs_h": 0.5013,
+        "required_symbol_header_only": 0.1476,
+        "required_symbol_recall": 0.2,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.0357,
+            0.0357
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "selection_loss": 0.2476,
+        "tokens_used": 1009.4286,
+        "unlabeled_token_share": 0.7897,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0931,
+            0.0558
+          ],
+          "mean_diff": -0.0129,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.9923,
+        "composition_items_units_gold": {
+          "expansion": [
+            24,
+            3802,
+            0
+          ],
+          "lexical_r1-5": [
+            58,
+            26576,
+            9
+          ],
+          "lexical_r6-15": [
+            20,
+            1544,
+            1
+          ],
+          "routed_d1": [
+            119,
+            25295,
+            5
+          ]
+        },
+        "expansion_considered": 8.5714,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 14,
+        "gold_symbols_planned": 15,
+        "gold_token_share": 0.1816,
+        "items": 17.8571,
+        "jev_order_agreement": 0.5672,
+        "latency_ms_p50": 343.4031,
+        "packing_loss": 0.0714,
+        "plan_jaccard_vs_h": 0.3452,
+        "required_symbol_header_only": 0.1071,
+        "required_symbol_recall": 0.3476,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.0357,
+            0.1429
+          ],
+          "mean_diff": 0.0357,
+          "tasks": 14
+        },
+        "selection_loss": 0.1643,
+        "tokens_used": 4064.2857,
+        "unlabeled_token_share": 0.8184,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0795,
+            0.0323
+          ],
+          "mean_diff": -0.0122,
+          "tasks": 14
+        }
+      },
+      "latency_ratio_vs_h": 1.0378,
+      "passes_dev_rule": false
+    },
+    "S": {
+      "1024": {
+        "budget_utilization": 0.9879,
+        "composition_items_units_gold": {
+          "expansion": [
+            1,
+            34,
+            0
+          ],
+          "lexical_r1-5": [
+            54,
+            10014,
+            9
+          ],
+          "lexical_r16+": [
+            1,
+            56,
+            0
+          ],
+          "lexical_r6-15": [
+            12,
+            1060,
+            1
+          ],
+          "routed_d1": [
+            43,
+            3104,
+            4
+          ]
+        },
+        "expansion_considered": 4.7143,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 8,
+        "gold_symbols_planned": 14,
+        "gold_token_share": 0.2102,
+        "items": 9.5,
+        "jev_order_agreement": 0.5551,
+        "latency_ms_p50": 322.1709,
+        "packing_loss": 0.1357,
+        "plan_jaccard_vs_h": 0.5594,
+        "required_symbol_header_only": 0.1476,
+        "required_symbol_recall": 0.2,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.0357,
+            0.0357
+          ],
+          "mean_diff": 0.0,
+          "tasks": 14
+        },
+        "selection_loss": 0.2476,
+        "tokens_used": 1011.6429,
+        "unlabeled_token_share": 0.7898,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0941,
+            0.056
+          ],
+          "mean_diff": -0.0128,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.9943,
+        "composition_items_units_gold": {
+          "expansion": [
+            14,
+            1353,
+            0
+          ],
+          "lexical_r1-5": [
+            58,
+            26576,
+            9
+          ],
+          "lexical_r16+": [
+            6,
+            714,
+            0
+          ],
+          "lexical_r6-15": [
+            47,
+            4920,
+            1
+          ],
+          "routed_d1": [
+            102,
+            23724,
+            5
+          ]
+        },
+        "expansion_considered": 7.2143,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 14,
+        "gold_symbols_planned": 15,
+        "gold_token_share": 0.1876,
+        "items": 19.7143,
+        "jev_order_agreement": 0.5551,
+        "latency_ms_p50": 343.656,
+        "packing_loss": 0.0714,
+        "plan_jaccard_vs_h": 0.4242,
+        "required_symbol_header_only": 0.0881,
+        "required_symbol_recall": 0.3476,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.0357,
+            0.1429
+          ],
+          "mean_diff": 0.0357,
+          "tasks": 14
+        },
+        "selection_loss": 0.1643,
+        "tokens_used": 4072.8571,
+        "unlabeled_token_share": 0.8124,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.0821,
+            0.0223
+          ],
+          "mean_diff": -0.0182,
+          "tasks": 14
+        }
+      },
+      "latency_ratio_vs_h": 1.0292,
+      "passes_dev_rule": false
+    },
+    "jev_replay": {
+      "1024": {
+        "budget_utilization": 0.9693,
+        "expansion_considered": 7.0,
+        "fallbacks": {
+          "Unsupported": 616
+        },
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 11,
+        "gold_symbols_planned": 17,
+        "gold_token_share": 0.244,
+        "items": 7.3571,
+        "packing_loss": 0.2476,
+        "required_symbol_header_only": 0.2881,
+        "required_symbol_recall": 0.2173,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            -0.1137,
+            0.1369
+          ],
+          "mean_diff": 0.0173,
+          "tasks": 14
+        },
+        "selection_loss": 0.1452,
+        "tokens_used": 992.5714,
+        "unlabeled_token_share": 0.756,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.229,
+            0.127
+          ],
+          "mean_diff": -0.0466,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.8793,
+        "expansion_considered": 9.5,
+        "fallbacks": {
+          "Unsupported": 616
+        },
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 28,
+        "gold_symbols_planned": 19,
+        "gold_token_share": 0.406,
+        "items": 10.8571,
+        "packing_loss": 0.0,
+        "required_symbol_header_only": 0.0476,
+        "required_symbol_recall": 0.5911,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.119,
+            0.4548
+          ],
+          "mean_diff": 0.2792,
+          "tasks": 14
+        },
+        "selection_loss": 0.0857,
+        "tokens_used": 3601.5714,
+        "unlabeled_token_share": 0.594,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.3821,
+            -0.102
+          ],
+          "mean_diff": -0.2365,
+          "tasks": 14
+        }
+      }
+    },
+    "oracle": {
+      "1024": {
+        "budget_utilization": 0.3684,
+        "expansion_considered": 1.7143,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 15,
+        "gold_symbols_planned": 23,
+        "gold_token_share": 0.7254,
+        "items": 2.1429,
+        "packing_loss": 0.2429,
+        "required_symbol_header_only": 0.2548,
+        "required_symbol_recall": 0.3119,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.0238,
+            0.2286
+          ],
+          "mean_diff": 0.1119,
+          "tasks": 14
+        },
+        "selection_loss": 0.0286,
+        "tokens_used": 377.2857,
+        "unlabeled_token_share": 0.0603,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.8697,
+            -0.5993
+          ],
+          "mean_diff": -0.7423,
+          "tasks": 14
+        }
+      },
+      "4096": {
+        "budget_utilization": 0.2802,
+        "expansion_considered": 1.7143,
+        "gold_symbols": 60,
+        "gold_symbols_graph": 23,
+        "gold_symbols_packed": 23,
+        "gold_symbols_planned": 23,
+        "gold_token_share": 0.7703,
+        "items": 2.1429,
+        "packing_loss": 0.0,
+        "required_symbol_header_only": 0.0119,
+        "required_symbol_recall": 0.5548,
+        "required_symbol_recall_vs_h": {
+          "ci95": [
+            0.0714,
+            0.45
+          ],
+          "mean_diff": 0.2429,
+          "tasks": 14
+        },
+        "selection_loss": 0.0286,
+        "tokens_used": 1147.7143,
+        "unlabeled_token_share": 0.0154,
+        "unlabeled_token_share_vs_h": {
+          "ci95": [
+            -0.911,
+            -0.6962
+          ],
+          "mean_diff": -0.8151,
+          "tasks": 14
+        }
+      }
+    }
+  },
+  "split": "dev",
+  "tasks": 14
+}
