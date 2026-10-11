@@ -1,0 +1,422 @@
+{
+  "cost": {
+    "cached": 6569,
+    "documents": 6687,
+    "embedded": 0,
+    "query_ms_first": 870.649278,
+    "query_ms_warm": [
+      876.0093559999999,
+      877.9208550000001,
+      869.837655
+    ],
+    "seconds_embedding": 0,
+    "unique_texts": 6569,
+    "vectors_mib": 26.12109375
+  },
+  "hits": [
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }, Segment { name: \"__init__\", ordinal: 0 }] })",
+      1059207237
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"function_with_pep484_type_annotations\", ordinal: 0 }] })",
+      1058880811
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"function_with_types_in_docstring\", ordinal: 0 }] })",
+      1058807484
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }, Segment { name: \"__init__\", ordinal: 0 }] })",
+      1058772412
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"function_with_types_in_docstring\", ordinal: 0 }] })",
+      1058639665
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"NumpyDocstring\", ordinal: 0 }] })",
+      1058347476
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_raises_types\", ordinal: 0 }] })",
+      1058273847
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_see_also_refs\", ordinal: 0 }] })",
+      1058211877
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"module_level_function\", ordinal: 0 }] })",
+      1058190021
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }, Segment { name: \"example_method\", ordinal: 0 }] })",
+      1058182129
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }, Segment { name: \"example_method\", ordinal: 0 }] })",
+      1058008319
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_list_in_parameter_description\", ordinal: 0 }] })",
+      1057988600
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_list_in_parameter_description\", ordinal: 0 }] })",
+      1057984516
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }] })",
+      1057983964
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"function_with_pep484_type_annotations\", ordinal: 0 }] })",
+      1057946403
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_raises_types\", ordinal: 0 }] })",
+      1057916703
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }] })",
+      1057906094
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NamedtupleSubclassTest\", ordinal: 0 }] })",
+      1057866876
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NamedtupleSubclassTest\", ordinal: 0 }, Segment { name: \"test_attributes_docstring\", ordinal: 0 }] })",
+      1057864259
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"module_level_function\", ordinal: 0 }] })",
+      1057857019
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/util/docstrings.py\"), path: [Segment { name: \"prepare_docstring\", ordinal: 0 }] })",
+      1057840851
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"TestNumpyDocstring\", ordinal: 0 }] })",
+      1057839466
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_xrefs_in_return_type\", ordinal: 0 }] })",
+      1057786518
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_xrefs_in_return_type\", ordinal: 0 }] })",
+      1057718106
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"ExampleClass\", ordinal: 0 }] })",
+      1057699397
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_noindex\", ordinal: 0 }] })",
+      1057695695
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_format_docutils_params\", ordinal: 0 }] })",
+      1057649986
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_parameters_without_class_reference\", ordinal: 0 }] })",
+      1057644716
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_numpy.py\"), path: [Segment { name: \"ExampleError\", ordinal: 0 }] })",
+      1057643494
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }] })",
+      1057630029
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"NumpyDocstring\", ordinal: 0 }, Segment { name: \"_escape_args_and_kwargs\", ordinal: 0 }] })",
+      1057542000
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/testing/fixtures.py\"), path: [Segment { name: \"test_params\", ordinal: 0 }] })",
+      1057513862
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"__str__\", ordinal: 0 }] })",
+      1057476931
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"ExampleError\", ordinal: 0 }] })",
+      1057425080
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/domains/c.py\"), path: [Segment { name: \"ASTParameters\", ordinal: 0 }] })",
+      1057423780
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"NumpyDocstring\", ordinal: 0 }, Segment { name: \"_parse_numpydoc_see_also_section\", ordinal: 0 }] })",
+      1057400744
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/directive.py\"), path: [Segment { name: \"DocumenterBridge\", ordinal: 0 }] })",
+      1057374622
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/writers/latex.py\"), path: [Segment { name: \"LaTeXTranslator\", ordinal: 0 }, Segment { name: \"visit_option_argument\", ordinal: 0 }] })",
+      1057334862
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/directives/code.py\"), path: [Segment { name: \"LiteralIncludeReader\", ordinal: 0 }, Segment { name: \"parse_options\", ordinal: 0 }] })",
+      1057293709
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"TestNumpyDocstring\", ordinal: 0 }, Segment { name: \"test_escape_args_and_kwargs\", ordinal: 0 }] })",
+      1057288476
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/transforms/i18n.py\"), path: [Segment { name: \"publish_msgstr\", ordinal: 0 }] })",
+      1057251950
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"lines\", ordinal: 0 }] })",
+      1057251328
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_parameters_with_class_reference\", ordinal: 0 }] })",
+      1057247882
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"TestNumpyDocstring\", ordinal: 0 }, Segment { name: \"test_token_type_invalid\", ordinal: 0 }] })",
+      1057246920
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_parameter_types\", ordinal: 0 }] })",
+      1057237335
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_parse_returns_section\", ordinal: 0 }] })",
+      1057211958
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }] })",
+      1057139382
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_autosummary.py\"), path: [Segment { name: \"test_get_items_summary\", ordinal: 0 }, Segment { name: \"handler\", ordinal: 0 }] })",
+      1057126222
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/search/ja.py\"), path: [Segment { name: \"BaseSplitter\", ordinal: 0 }] })",
+      1057099600
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"DocstringSignatureMixin\", ordinal: 0 }] })",
+      1057090449
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_attributes_with_class_reference\", ordinal: 0 }] })",
+      1057015906
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/roots/test-autosummary/dummy_module.py\"), path: [Segment { name: \"C\", ordinal: 0 }, Segment { name: \"_prop_attr_get\", ordinal: 0 }] })",
+      1057005213
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_parse_parameters_section\", ordinal: 0 }] })",
+      1056967618
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_colon_in_return_type\", ordinal: 0 }] })",
+      1056921410
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"_recombine_set_tokens\", ordinal: 0 }, Segment { name: \"combine_set\", ordinal: 0 }] })",
+      1056876832
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon.py\"), path: [Segment { name: \"ProcessDocstringTest\", ordinal: 0 }, Segment { name: \"test_modify_in_place\", ordinal: 0 }] })",
+      1056855279
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_parameters_with_class_reference\", ordinal: 0 }] })",
+      1056851415
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_underscore_in_attribute_strip_signature_backslash\", ordinal: 0 }] })",
+      1056842069
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/__init__.py\"), path: [Segment { name: \"_process_docstring\", ordinal: 0 }] })",
+      1056818024
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_kwargs_in_arguments\", ordinal: 0 }] })",
+      1056806535
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/domains/cpp.py\"), path: [Segment { name: \"ASTTemplateParams\", ordinal: 0 }] })",
+      1056762318
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_format_fields\", ordinal: 0 }] })",
+      1056725676
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_pycode_parser.py\"), path: [Segment { name: \"test_comment_picker_basic\", ordinal: 0 }] })",
+      1056670674
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_autodoc.py\"), path: [Segment { name: \"test_format_signature\", ordinal: 0 }, Segment { name: \"F2\", ordinal: 0 }, Segment { name: \"__init__\", ordinal: 0 }] })",
+      1056627310
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/pycode/parser.py\"), path: [Segment { name: \"dedent_docstring\", ordinal: 0 }] })",
+      1056597988
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/usage/extensions/example_google.py\"), path: [Segment { name: \"example_generator\", ordinal: 0 }] })",
+      1056540660
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autosummary/generate.py\"), path: [Segment { name: \"find_autosummary_in_docstring\", ordinal: 0 }] })",
+      1056482944
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/development/tutorials/examples/recipe.py\"), path: [Segment { name: \"RecipeDirective\", ordinal: 0 }, Segment { name: \"add_target_and_index\", ordinal: 0 }] })",
+      1056476072
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_parse_methods_section\", ordinal: 0 }] })",
+      1056466307
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"Documenter\", ordinal: 0 }, Segment { name: \"format_args\", ordinal: 0 }] })",
+      1056463287
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"doc/development/tutorials/examples/recipe.py\"), path: [Segment { name: \"RecipeDomain\", ordinal: 0 }, Segment { name: \"add_recipe\", ordinal: 0 }] })",
+      1056452126
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_keywords_with_types\", ordinal: 0 }] })",
+      1056387794
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/roots/test-ext-autodoc/target/overload.py\"), path: [Segment { name: \"Bar\", ordinal: 0 }] })",
+      1056332355
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_convert_numpy_type_spec\", ordinal: 0 }] })",
+      1056328814
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NamedtupleSubclass\", ordinal: 0 }] })",
+      1056316905
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"NumpyDocstringTest\", ordinal: 0 }, Segment { name: \"test_underscore_in_attribute\", ordinal: 0 }] })",
+      1056311531
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/directive.py\"), path: [Segment { name: \"DummyOptionSpec\", ordinal: 0 }] })",
+      1056299173
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/directives/code.py\"), path: [Segment { name: \"LiteralIncludeReader\", ordinal: 0 }, Segment { name: \"append_filter\", ordinal: 0 }] })",
+      1056294989
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/writers/texinfo.py\"), path: [Segment { name: \"TexinfoTranslator\", ordinal: 0 }, Segment { name: \"visit_option_list\", ordinal: 0 }] })",
+      1056262598
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_consume_returns_section\", ordinal: 0 }] })",
+      1056253329
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"Documenter\", ordinal: 0 }, Segment { name: \"_call_format_args\", ordinal: 0 }] })",
+      1056252536
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon.py\"), path: [Segment { name: \"ProcessDocstringTest\", ordinal: 0 }] })",
+      1056249110
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_autodoc.py\"), path: [Segment { name: \"test_format_signature\", ordinal: 0 }, Segment { name: \"F2\", ordinal: 0 }] })",
+      1056243279
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/util/inspect.py\"), path: [Segment { name: \"getdoc\", ordinal: 0 }] })",
+      1056221218
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_parse\", ordinal: 0 }] })",
+      1056220351
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_format_block\", ordinal: 0 }] })",
+      1056210654
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_parse_other_parameters_section\", ordinal: 0 }] })",
+      1056195738
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/writers/latex.py\"), path: [Segment { name: \"LaTeXTranslator\", ordinal: 0 }, Segment { name: \"depart_option_list\", ordinal: 0 }] })",
+      1056176916
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/apidoc.py\"), path: [Segment { name: \"format_directive\", ordinal: 0 }] })",
+      1056173221
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_domain_py.py\"), path: [Segment { name: \"test_pymethod_options\", ordinal: 0 }] })",
+      1056145632
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"ClassDocumenter\", ordinal: 0 }, Segment { name: \"get_doc\", ordinal: 0 }] })",
+      1056131922
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"NumpyDocstring\", ordinal: 0 }, Segment { name: \"_consume_field\", ordinal: 0 }] })",
+      1056097602
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"GoogleDocstringTest\", ordinal: 0 }, Segment { name: \"test_section_header_formatting\", ordinal: 0 }] })",
+      1056069098
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_escape_args_and_kwargs\", ordinal: 0 }] })",
+      1056063181
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/roots/test-ext-autodoc/target/overload.py\"), path: [Segment { name: \"Foo\", ordinal: 0 }] })",
+      1056061223
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/napoleon/docstring.py\"), path: [Segment { name: \"GoogleDocstring\", ordinal: 0 }, Segment { name: \"_consume_field\", ordinal: 0 }] })",
+      1056044757
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_autodoc.py\"), path: [Segment { name: \"test_format_signature\", ordinal: 0 }, Segment { name: \"H\", ordinal: 0 }] })",
+      1056041572
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"merge_members_option\", ordinal: 0 }] })",
+      1056036388
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"tests/test_ext_napoleon_docstring.py\"), path: [Segment { name: \"InlineAttributeTest\", ordinal: 0 }, Segment { name: \"test_class_data_member\", ordinal: 0 }] })",
+      1056026010
+    ],
+    [
+      "Symbol(SymbolId { file: RepoPath(\"sphinx/ext/autodoc/__init__.py\"), path: [Segment { name: \"Documenter\", ordinal: 0 }, Segment { name: \"get_doc\", ordinal: 0 }] })",
+      1056017434
+    ]
+  ],
+  "query": "Render error when combining multiple input parameters in docstring\n**Describe the bug & Reproduce**\r\n\r\nMy team is writing a function in Python, which contains 3 inputs that are similar, so we want to put them in the same line in the docstring. \r\n\r\nAs described in 4. Parameters in [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html#sections), this is possible if you write something like this:\r\n\r\n```\r\nx1, x2 : array_like\r\n    Input arrays, description of `x1`, `x2`.\r\n```\r\n\r\nHowever, this produces:\r\n\r\n<img width=\"406\" alt=\"图片\" src=\"https://user-images.githubusercontent.com/20618587/83668496-566d3680-a5d0-11ea-8a15-5596f77b6c20.png\">\r\n\r\nEven worse, when added \"optional\", the rendered HTML stays the same as the screenshot above, so there is no way to tell whether it is optional:\r\n\r\n```\r\nx1, x2 : array_like, optional\r\n    Input arrays, description of `x1`, `x2`.\r\n```\r\n\r\n**Expected behavior**\r\nSomething like \r\n\r\n- x1, x2 (_array_like, optional_)  -  Input arrays, description of x1, x2.\r\n\r\n**Environment info**\r\n- OS: macOS 10.15.5 (19F101)\r\n- Python version: 3.7.7\r\n- Sphinx version: 3.0.3.\r\n- Extra tools: browser: Firefox 79.0a1 or Safari 13.1.1\r\n- Sphinx extensions:  \r\n\r\n```\r\nextensions = [\r\n    \"sphinx.ext.autodoc\",\r\n    \"sphinx.ext.todo\",\r\n    \"sphinx.ext.coverage\",\r\n    \"sphinx.ext.extlinks\",\r\n    \"sphinx.ext.intersphinx\",\r\n    \"sphinx.ext.mathjax\",\r\n    \"sphinx.ext.viewcode\",\r\n    \"sphinx.ext.napoleon\",\r\n    \"nbsphinx\",\r\n    \"sphinx.ext.mathjax\",\r\n    \"sphinxcontrib.bibtex\",\r\n    \"sphinx.ext.doctest\",\r\n]\r\n```\r\n\r\n\n",
+  "scorer": "cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406",
+  "space": "EmbeddingSpace { runner: LlamaCpp, model: \"LFM2.5-Embedding-350M\", model_digest: Some(\"sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a\"), quantization: Some(\"Q4_K - Medium\"), dimension: 1024, metric: Cosine, normalized: Some(true), pooling: Some(\"cls\"), tokenizer: Some(\"lfm2\"), query_prompt: Some(\"query: \"), document_prompt: Some(\"document: \"), document_recipe: \"oxide-semantic-recipe-v1\", runner_version: Some(\"b11540-1e6f04a75\"), max_tokens: Some(512), canary: Some([496, -9, 89, -42, -587, -555, 116, -281, -219, 47, 219, 607, -31, 209, -76, 564]) }",
+  "truncated": true
+}

@@ -1,0 +1,2995 @@
+diff --git a/oxide_kernel/crates/kernel/src/context.rs b/oxide_kernel/crates/kernel/src/context.rs
+index bef16c8..7b0516f 100644
+--- a/oxide_kernel/crates/kernel/src/context.rs
++++ b/oxide_kernel/crates/kernel/src/context.rs
+@@ -19,7 +19,9 @@ use crate::id::{EntityId, SnapshotKey};
+ use crate::knowledge::{Coverage, Entity, Relation, RelationKind};
+ use crate::pack::{ContextBundle, Degradation, PAYLOAD_VERSION, Versions, pack};
+ use crate::query::{ContextBudget, Query, QueryContext};
+-use crate::retrieve::{CandidateSet, ChannelState, RETRIEVAL_VERSION, RetrievalConfig, retrieve};
++use crate::retrieve::{
++    CandidateSet, ChannelState, RETRIEVAL_VERSION, RetrievalConfig, Semantic, retrieve,
++};
+ use crate::route::{
+     BASELINE_LIMITS, Candidate, ROUTER_VERSION, RouteLimits, RoutePolicy, RouteRequest,
+     RouteResult, baseline_policy as route_baseline, route,
+@@ -165,8 +167,9 @@ pub struct ContextRequest {
+     pub query: Query,
+     pub context: QueryContext,
+     pub budget: ContextBudget,
+-    /// The semantic channel's state as the runtime found it.
+-    pub semantic: ChannelState,
++    /// The semantic channel as the runtime found it: its state, or this
++    /// generation's hits and how they fuse.
++    pub semantic: Semantic,
+ }
+ 
+ /// Every stage artifact of one request.
+diff --git a/oxide_kernel/crates/kernel/src/lib.rs b/oxide_kernel/crates/kernel/src/lib.rs
+index df25b47..2d3c199 100644
+--- a/oxide_kernel/crates/kernel/src/lib.rs
++++ b/oxide_kernel/crates/kernel/src/lib.rs
+@@ -15,7 +15,8 @@
+ //! ([`retrieve`]) and the TreeRouter baseline in [`route`]. Phase 4 adds
+ //! capsule v2 ([`capsule`], with [`digest`]), deterministic selection and
+ //! expansion ([`select`]), the ContextPacker ([`pack`]) and the end-to-end
+-//! pipeline with its CandidateGraph ([`context`]).
++//! pipeline with its CandidateGraph ([`context`]). The optional semantic
++//! channel's document recipe and exact-search result live in [`semantic`].
+ #![forbid(unsafe_code)]
+ 
+ pub mod capsule;
+@@ -27,11 +28,13 @@ pub mod ingest;
+ pub mod knowledge;
+ pub mod lexical;
+ pub mod pack;
++pub mod ppr;
+ pub mod python;
+ pub mod query;
+ pub mod retrieve;
+ pub mod route;
+ pub mod select;
++pub mod semantic;
+ pub mod source;
+ pub mod store;
+ pub mod tree;
+diff --git a/oxide_kernel/crates/kernel/src/ppr.rs b/oxide_kernel/crates/kernel/src/ppr.rs
+new file mode 100644
+index 0000000..4d98879
+--- /dev/null
++++ b/oxide_kernel/crates/kernel/src/ppr.rs
+@@ -0,0 +1,274 @@
++//! Experimental TreeRouter challenger (docs/semantic-eval/README.md):
++//! budgeted best-first exploration ordered by a local personalized
++//! PageRank estimate, under the baseline's limits and trace contract.
++//!
++//! - Personalization: every evidence lane present (structural seeds,
++//!   lexical, semantic) gets an equal share of mass, spread over its entry
++//!   points by `1 / (k + rank)`. Ranks only: channel scores never mix.
++//! - Exploration: the frontier region holding the most residual mass is
++//!   loaded next (ties by [`RegionId`]). Loading keeps `alpha` of its mass
++//!   and pushes the rest to its neighbors (the BFS expansion, cut to the
++//!   same fanout) in proportion to a relation weight. The divisor is the
++//!   weight of *all* its neighbors before the cut, so a high-degree hub
++//!   passes little mass to each; containing scopes and logical containment
++//!   weigh half. Mass reaching a loaded region is absorbed, never pushed
++//!   twice, so cycles end.
++//! - Loads, depth, fanout, edges and branch judgments are bounded and
++//!   traced exactly as in BFS; only the order differs. The router reads
++//!   nothing BFS would not (one region view per load, no graph preview).
++
++use std::collections::{BTreeMap, BTreeSet};
++
++use crate::decision::{Allowance, DecisionPolicy, DecisionProvider, Subject};
++use crate::id::EntityId;
++use crate::knowledge::{Containment, RelationKind};
++use crate::retrieve::{Channel, EntryPoint};
++use crate::route::{
++    Bound, Candidate, Origin, RouteRequest, RouteResult, RouteStep, RouteWork, RoutingTrace, Visit,
++    expand, judge,
++};
++use crate::store::{MAX_REQUEST_ITEMS, ReadView, StoreError};
++use crate::tree::{NavLimits, RegionId, region};
++
++pub const PPR_ROUTER_VERSION: &str = "oxide-router-ppr-best-first-exp";
++
++#[derive(Debug, Clone, Copy, PartialEq)]
++pub struct Ppr {
++    /// Share of a loaded region's mass it keeps (restart probability).
++    pub alpha: f64,
++    /// Rank prior offset in `1 / (k + rank)`.
++    pub k: f64,
++}
++
++fn weight(origin: &Origin) -> f64 {
++    match origin {
++        Origin::Scope(_) => 0.5,
++        Origin::Neighbor {
++            relation: RelationKind::Contains(Containment::Logical),
++            ..
++        } => 0.5,
++        _ => 1.0,
++    }
++}
++
++/// Seed mass per entry point: equal per lane, `1 / (k + rank)` within one.
++fn personalization(entries: &[EntryPoint], k: f64) -> BTreeMap<RegionId, f64> {
++    let mut lanes: BTreeMap<u8, Vec<(RegionId, f64)>> = BTreeMap::new();
++    let mut seeded = 0u32;
++    for entry in entries {
++        let id = RegionId::of(entry.entity.clone());
++        if !entry.seeds.is_empty() {
++            seeded += 1;
++            lanes
++                .entry(0)
++                .or_default()
++                .push((id.clone(), 1.0 / (k + seeded as f64)));
++        }
++        for c in &entry.channels {
++            let lane = match c.channel {
++                Channel::Lexical => 1,
++                Channel::Semantic => 2,
++            };
++            lanes
++                .entry(lane)
++                .or_default()
++                .push((id.clone(), 1.0 / (k + c.rank as f64)));
++        }
++    }
++    let share = 1.0 / lanes.len().max(1) as f64;
++    let mut mass: BTreeMap<RegionId, f64> = BTreeMap::new();
++    for lane in lanes.values() {
++        let total: f64 = lane.iter().map(|(_, w)| w).sum();
++        for (id, w) in lane {
++            *mass.entry(id.clone()).or_default() += share * w / total;
++        }
++    }
++    mass
++}
++
++pub(crate) fn route(
++    view: &impl ReadView,
++    request: &RouteRequest,
++    ppr: Ppr,
++    mut provider: Option<&mut (dyn DecisionProvider + '_)>,
++    allowance: &mut Allowance,
++    decision_policy: DecisionPolicy,
++) -> Result<RouteResult, StoreError> {
++    let limits = request.limits;
++    // The whole neighbor list, for the hub-normalizing divisor; the
++    // frontier still gets the first `max_fanout`, as in BFS.
++    let nav = NavLimits {
++        children: MAX_REQUEST_ITEMS,
++        cross_edges: MAX_REQUEST_ITEMS,
++    };
++    let mut trace = RoutingTrace {
++        router: PPR_ROUTER_VERSION,
++        root_fallback: request.entry_points.is_empty(),
++        steps: Vec::new(),
++        decisions: Vec::new(),
++        truncations: Vec::new(),
++        stopped_by: None,
++        work: RouteWork::default(),
++    };
++    let mut entries: BTreeMap<&EntityId, &EntryPoint> = BTreeMap::new();
++    for entry in &request.entry_points {
++        entries.entry(&entry.entity).or_insert(entry);
++    }
++    let mut residual: BTreeMap<RegionId, f64> = if trace.root_fallback {
++        BTreeMap::from([(RegionId::root(), 1.0)])
++    } else {
++        personalization(&request.entry_points, ppr.k)
++    };
++    let origin0 = if trace.root_fallback {
++        Origin::RootFallback
++    } else {
++        Origin::EntryPoint
++    };
++    let mut depth: BTreeMap<RegionId, u32> = residual.keys().map(|id| (id.clone(), 0)).collect();
++    let mut reached: BTreeMap<RegionId, Vec<Origin>> = residual
++        .keys()
++        .map(|id| (id.clone(), vec![origin0.clone()]))
++        .collect();
++    let mut frontier: BTreeSet<RegionId> = residual.keys().cloned().collect();
++    let mut done: BTreeSet<RegionId> = BTreeSet::new();
++    let mut candidates: BTreeMap<EntityId, Candidate> = BTreeMap::new();
++
++    loop {
++        // Most residual mass first, ties by RegionId.
++        let Some(next) = frontier
++            .iter()
++            .max_by(|a, b| residual[*a].total_cmp(&residual[*b]).then_with(|| b.cmp(a)))
++            .cloned()
++        else {
++            break;
++        };
++        let bound = if trace.work.regions_loaded >= limits.max_regions {
++            Some(Bound::Regions)
++        } else if trace.work.edges_examined >= limits.max_edges {
++            Some(Bound::Edges)
++        } else {
++            None
++        };
++        if let Some(bound) = bound {
++            trace.stopped_by.get_or_insert(bound);
++            // Everything left is deferred, most promising first.
++            let mut left: Vec<RegionId> = std::mem::take(&mut frontier).into_iter().collect();
++            left.sort_by(|a, b| residual[b].total_cmp(&residual[a]).then_with(|| a.cmp(b)));
++            for id in left {
++                let d = depth[&id];
++                trace.steps.push(RouteStep {
++                    region: id,
++                    depth: d,
++                    visit: Visit::Deferred(bound),
++                });
++            }
++            break;
++        }
++        frontier.remove(&next);
++        done.insert(next.clone());
++        let d = depth[&next];
++        let region = region(view, &next, nav)?;
++        trace.work.regions_loaded += 1;
++        trace.work.edges_examined += region.children.len().min(limits.max_fanout)
++            + region.cross_edges.len().min(limits.max_fanout);
++
++        let origin = reached[&next][0].clone();
++        let loaded = [(region, origin)];
++        let cap = limits.max_judgments - trace.work.judgments_requested;
++        let (decisions, sent) = judge(
++            &request.snapshot,
++            &request.query,
++            &loaded,
++            provider.as_deref_mut(),
++            allowance,
++            cap,
++            decision_policy,
++        );
++        trace.work.judgments_requested += sent;
++        let [(region, _)] = loaded;
++        let mut pruned = false;
++        for decision in decisions {
++            if let (Subject::Region(_), None) = (&decision.subject, decision.fallback) {
++                pruned = decision.value < request.policy.prune_below;
++            }
++            trace.decisions.push(decision);
++        }
++        trace.steps.push(RouteStep {
++            region: next.clone(),
++            depth: d,
++            visit: if pruned {
++                Visit::Pruned
++            } else {
++                Visit::Explored
++            },
++        });
++        if pruned {
++            continue;
++        }
++        trace.work.max_depth_reached = trace.work.max_depth_reached.max(d);
++        let anchor = &region.id.anchor;
++        let entry = entries.get(anchor);
++        candidates.insert(
++            anchor.clone(),
++            Candidate {
++                entity: anchor.clone(),
++                depth: d,
++                origins: Vec::new(),
++                channels: entry.map_or_else(Vec::new, |e| e.channels.clone()),
++                seeds: entry.map_or_else(Vec::new, |e| e.seeds.clone()),
++            },
++        );
++
++        let mut neighbors = expand(&region, &request.policy);
++        trace.work.max_fanout_seen = trace.work.max_fanout_seen.max(neighbors.len());
++        let total: f64 = neighbors.iter().map(|(_, o)| weight(o)).sum();
++        if neighbors.len() > limits.max_fanout {
++            neighbors.truncate(limits.max_fanout);
++            trace.truncations.push((region.id.clone(), Bound::Fanout));
++        }
++        let spread = (1.0 - ppr.alpha) * residual[&next];
++        for (id, origin) in neighbors {
++            let origins = reached.entry(id.clone()).or_default();
++            if !origins.contains(&origin) {
++                origins.push(origin.clone());
++            }
++            // Depth is the shortest path seen so far: best-first can reach
++            // a region late by a shorter path than its first one.
++            let known = depth.get(&id).copied();
++            if known.is_some() {
++                trace.work.revisits += 1;
++            }
++            if !done.contains(&id) {
++                *residual.entry(id.clone()).or_default() += spread * weight(&origin) / total;
++            }
++            if known.is_some_and(|k| k <= d + 1) {
++                continue;
++            }
++            depth.insert(id.clone(), d + 1);
++            if done.contains(&id) || frontier.contains(&id) {
++                continue;
++            }
++            if d as usize >= limits.max_depth {
++                trace.stopped_by.get_or_insert(Bound::Depth);
++                trace.steps.push(RouteStep {
++                    region: id,
++                    depth: d + 1,
++                    visit: Visit::Deferred(Bound::Depth),
++                });
++                continue;
++            }
++            trace.work.edges_followed += 1;
++            frontier.insert(id);
++        }
++    }
++
++    for candidate in candidates.values_mut() {
++        let id = RegionId::of(candidate.entity.clone());
++        candidate.origins = reached.get(&id).cloned().unwrap_or_default();
++    }
++    Ok(RouteResult {
++        snapshot: request.snapshot.clone(),
++        candidates: candidates.into_values().collect(),
++        trace,
++    })
++}
+diff --git a/oxide_kernel/crates/kernel/src/retrieve.rs b/oxide_kernel/crates/kernel/src/retrieve.rs
+index afa2b5e..95b1d5f 100644
+--- a/oxide_kernel/crates/kernel/src/retrieve.rs
++++ b/oxide_kernel/crates/kernel/src/retrieve.rs
+@@ -1,17 +1,20 @@
+-//! Entry-point retrieval (SPEC § Retrieval): lexical hits and structural
+-//! seeds from the typed query context become one [`CandidateSet`]. Entry
+-//! points start TreeRouter; they are never final context, and a candidate
+-//! here implies nothing about inclusion.
++//! Entry-point retrieval (SPEC § Retrieval): lexical hits, optional
++//! semantic hits and structural seeds from the typed query context become
++//! one [`CandidateSet`]. Entry points start TreeRouter; they are never final
++//! context, and a candidate here implies nothing about inclusion.
+ 
+-use std::collections::BTreeMap;
++use std::collections::{BTreeMap, BTreeSet};
+ 
+ use crate::id::{EntityId, RepoPath, SnapshotKey};
+ use crate::knowledge::{ByteRange, Containment, RelationKind};
+ use crate::lexical::{LexicalRequest, terms};
+ use crate::query::{Query, QueryContext};
++use crate::semantic::SemanticResult;
+ use crate::store::{AdjacencyRequest, Direction, MAX_REQUEST_ITEMS, ReadView, StoreError};
+ 
+-/// Version of the merge and seeding rules below.
++/// Version of the merge and seeding rules below. With the semantic channel
++/// absent they are exactly the Phase 3 rules; a set that fused semantic
++/// hits records how in [`CandidateSet::fusion`].
+ pub const RETRIEVAL_VERSION: &str = "oxide-retrieval-v1";
+ 
+ /// Scored retrieval channel. Structural seeds are not a scored channel:
+@@ -126,10 +129,61 @@ pub const BASELINE: RetrievalConfig = RetrievalConfig {
+     symbol_limit: 8,
+ };
+ 
++/// How semantic hits enter the entry points. Channel scores never mix:
++/// every rule uses ranks only.
++#[derive(Debug, Clone, Copy, PartialEq, Eq)]
++pub enum Fusion {
++    /// Lexical entries, then the first `depth` semantic hits not already
++    /// entered, in semantic rank.
++    Append { depth: usize },
++    /// Weighted reciprocal-rank fusion of the lexical hits and the first
++    /// `depth` semantic hits: weight/(k + rank) summed per entity, weights
++    /// in thousandths; the best `keep` enter, ties by [`EntityId`].
++    Rrf {
++        k: u32,
++        lexical: u32,
++        semantic: u32,
++        depth: usize,
++        keep: usize,
++    },
++    /// Channels take turns by rank (lexical 1, semantic 1, lexical 2, ...)
++    /// over the first `depth` semantic hits; an entity already entered
++    /// keeps its first turn. The first `keep` entities enter.
++    Interleave { depth: usize, keep: usize },
++}
++
++impl Fusion {
++    /// Semantic hits the rule reads.
++    pub fn depth(self) -> usize {
++        match self {
++            Fusion::Append { depth } | Fusion::Rrf { depth, .. } | Fusion::Interleave { depth, .. } => depth,
++        }
++    }
++}
++
++/// The semantic channel as the runtime hands it to one request.
++#[derive(Debug, Clone, PartialEq)]
++pub enum Semantic {
++    /// The channel did not run; the state says why. Never an empty result.
++    Absent(ChannelState),
++    Ran {
++        result: SemanticResult,
++        fusion: Fusion,
++    },
++}
++
++impl From<ChannelState> for Semantic {
++    fn from(state: ChannelState) -> Self {
++        Semantic::Absent(state)
++    }
++}
++
+ /// Bounded, deduplicated entry points for one query and one generation.
+ /// Order: structural seeds in hint order (selection, paths, symbols,
+-/// changed), then lexical rank. This is a declared precedence, not a fused
+-/// score: channel scores stay on their own scales.
++/// changed), then lexical rank, then (by [`Fusion::Append`]) semantic rank,
++/// or instead of the last two the order of [`Fusion::Interleave`] or
++/// [`Fusion::Rrf`]. This is a declared precedence; channel scores stay on
++/// their own scales.
+ #[derive(Debug, Clone, PartialEq)]
+ pub struct CandidateSet {
+     pub snapshot: SnapshotKey,
+@@ -138,17 +192,22 @@ pub struct CandidateSet {
+     pub channels: Vec<ChannelStatus>,
+     pub entries: Vec<EntryPoint>,
+     pub hints: Vec<HintDiagnostic>,
++    /// The rule semantic hits entered by; `None` when the channel did not run.
++    pub fusion: Option<Fusion>,
++    /// Channel hits the fusion cut (RRF beyond `keep`).
++    pub fusion_omitted: usize,
+ }
+ 
+ /// Retrieves entry points from one pinned view. `semantic` is the semantic
+-/// channel's state as the runtime found it; no vector channel runs in this
+-/// phase, so it is reported, never scored. An unavailable lexical
+-/// capability is reported, not an error.
++/// channel as the runtime found it: absent with a state, or exact-search
++/// hits for this generation, which are checked and ranked here. Unusable
++/// hits leave the channel unavailable rather than fail the request, as does
++/// an unavailable lexical capability.
+ pub fn retrieve(
+     view: &impl ReadView,
+     query: &Query,
+     context: &QueryContext,
+-    semantic: ChannelState,
++    semantic: Semantic,
+     config: RetrievalConfig,
+ ) -> Result<CandidateSet, StoreError> {
+     let mut set = CandidateSet {
+@@ -158,6 +217,8 @@ pub fn retrieve(
+         channels: Vec::new(),
+         entries: Vec::new(),
+         hints: Vec::new(),
++        fusion: None,
++        fusion_omitted: 0,
+     };
+     let mut position: BTreeMap<EntityId, usize> = BTreeMap::new();
+     let mut entry = |set: &mut CandidateSet, entity: EntityId| -> usize {
+@@ -187,6 +248,8 @@ pub fn retrieve(
+         }
+     }
+ 
++    // Each channel's hits as (entity, evidence), in channel rank.
++    let mut lexical_hits: Vec<(EntityId, ChannelEvidence)> = Vec::new();
+     let lexical = if !config.lexical {
+         ChannelState::Disabled
+     } else {
+@@ -197,13 +260,15 @@ pub fn retrieve(
+         match view.lexical(&request) {
+             Ok(result) => {
+                 for (i, hit) in result.hits.iter().enumerate() {
+-                    let at = entry(&mut set, hit.entity.clone());
+-                    set.entries[at].channels.push(ChannelEvidence {
+-                        channel: Channel::Lexical,
+-                        rank: i as u32 + 1,
+-                        score: hit.score,
+-                        scorer: result.scorer.clone(),
+-                    });
++                    lexical_hits.push((
++                        hit.entity.clone(),
++                        ChannelEvidence {
++                            channel: Channel::Lexical,
++                            rank: i as u32 + 1,
++                            score: hit.score,
++                            scorer: result.scorer.clone(),
++                        },
++                    ));
+                 }
+                 ChannelState::Ran {
+                     scorer: result.scorer,
+@@ -215,6 +280,62 @@ pub fn retrieve(
+             Err(error) => return Err(error),
+         }
+     };
++    let (semantic_hits, semantic, fusion) = match semantic {
++        Semantic::Absent(state) => (Vec::new(), state, None),
++        Semantic::Ran { result, fusion } => {
++            match semantic_ranked(&set.snapshot, result, fusion.depth()) {
++                Ok((hits, state)) => (hits, state, Some(fusion)),
++                Err(why) => (Vec::new(), ChannelState::Unavailable(why), None),
++            }
++        }
++    };
++    // Entities in entry order; each enters with all its channel evidence,
++    // lexical first.
++    let mut order: Vec<EntityId> = Vec::new();
++    match fusion {
++        None | Some(Fusion::Append { .. }) => {
++            order.extend(lexical_hits.iter().chain(&semantic_hits).map(|(id, _)| id.clone()));
++        }
++        Some(Fusion::Interleave { keep, .. }) => {
++            for i in 0..lexical_hits.len().max(semantic_hits.len()) {
++                let turn = [lexical_hits.get(i), semantic_hits.get(i)];
++                order.extend(turn.into_iter().flatten().map(|(id, _)| id.clone()));
++            }
++            let mut seen = BTreeSet::new();
++            order.retain(|id| seen.insert(id.clone()));
++            set.fusion_omitted = order.len().saturating_sub(keep);
++            order.truncate(keep);
++        }
++        Some(Fusion::Rrf {
++            k,
++            lexical: wl,
++            semantic: ws,
++            keep,
++            ..
++        }) => {
++            let mut fused: BTreeMap<EntityId, f64> = BTreeMap::new();
++            let weighted = |w: u32, e: &ChannelEvidence| w as f64 / (k as f64 + e.rank as f64);
++            for (id, e) in &lexical_hits {
++                *fused.entry(id.clone()).or_default() += weighted(wl, e);
++            }
++            for (id, e) in &semantic_hits {
++                *fused.entry(id.clone()).or_default() += weighted(ws, e);
++            }
++            let mut fused: Vec<(EntityId, f64)> = fused.into_iter().collect();
++            fused.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
++            set.fusion_omitted = fused.len().saturating_sub(keep);
++            order.extend(fused.into_iter().take(keep).map(|(id, _)| id));
++        }
++    }
++    let mut hits: Vec<(EntityId, ChannelEvidence)> =
++        lexical_hits.into_iter().chain(semantic_hits).collect();
++    for id in order {
++        let at = entry(&mut set, id.clone());
++        for (_, e) in hits.extract_if(.., |(hit, _)| *hit == id) {
++            set.entries[at].channels.push(e);
++        }
++    }
++    set.fusion = fusion;
+     set.channels = vec![
+         ChannelStatus {
+             channel: Channel::Lexical,
+@@ -228,6 +349,50 @@ pub fn retrieve(
+     Ok(set)
+ }
+ 
++/// Checks semantic hits against the pinned generation and ranks them by
++/// score, then [`EntityId`]; keeps the first `depth`. Hits for another
++/// generation, non-finite scores or duplicate entities make the channel
++/// unavailable: they are never repaired into evidence.
++fn semantic_ranked(
++    snapshot: &SnapshotKey,
++    result: SemanticResult,
++    depth: usize,
++) -> Result<(Vec<(EntityId, ChannelEvidence)>, ChannelState), String> {
++    if result.snapshot != *snapshot {
++        return Err("semantic hits are for another generation".into());
++    }
++    let mut hits = result.hits;
++    if hits.iter().any(|(_, s)| !s.is_finite()) {
++        return Err("non-finite semantic score".into());
++    }
++    hits.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
++    let mut seen = BTreeSet::new();
++    if !hits.iter().all(|(e, _)| seen.insert(e)) {
++        return Err("duplicate semantic hit".into());
++    }
++    let truncated = result.truncated || hits.len() > depth;
++    hits.truncate(depth);
++    let state = ChannelState::Ran {
++        scorer: result.scorer.clone(),
++        returned: hits.len(),
++        truncated,
++    };
++    let ranked = hits
++        .into_iter()
++        .enumerate()
++        .map(|(i, (entity, score))| {
++            let evidence = ChannelEvidence {
++                channel: Channel::Semantic,
++                rank: i as u32 + 1,
++                score,
++                scorer: result.scorer.clone(),
++            };
++            (entity, evidence)
++        })
++        .collect();
++    Ok((ranked, state))
++}
++
+ /// Every hint resolved against the pinned generation, in hint order:
+ /// (kind, hint text, (entity, matched case-insensitively)).
+ type Resolved = (HintKind, String, (EntityId, bool));
+diff --git a/oxide_kernel/crates/kernel/src/route.rs b/oxide_kernel/crates/kernel/src/route.rs
+index d97eea9..7a98297 100644
+--- a/oxide_kernel/crates/kernel/src/route.rs
++++ b/oxide_kernel/crates/kernel/src/route.rs
+@@ -56,6 +56,15 @@ pub struct RoutePolicy {
+     pub ascend: bool,
+     /// A validated branch value below this prunes the region.
+     pub prune_below: f64,
++    pub strategy: Strategy,
++}
++
++/// Exploration order. `Bfs` is the baseline; `Ppr` is an experimental
++/// challenger ([`crate::ppr`]).
++#[derive(Debug, Clone, Copy, PartialEq)]
++pub enum Strategy {
++    Bfs,
++    Ppr(crate::ppr::Ppr),
+ }
+ 
+ /// The frozen v2 baseline limits (docs/phase-3.md).
+@@ -81,6 +90,7 @@ pub fn baseline_policy() -> RoutePolicy {
+         ],
+         ascend: true,
+         prune_below: 0.25,
++        strategy: Strategy::Bfs,
+     }
+ }
+ 
+@@ -203,6 +213,9 @@ pub fn route(
+             "route request and view pin different generations".into(),
+         ));
+     }
++    if let Strategy::Ppr(ppr) = request.policy.strategy {
++        return crate::ppr::route(view, request, ppr, provider, allowance, decision_policy);
++    }
+     let limits = request.limits;
+     let nav = NavLimits {
+         children: limits.max_fanout,
+@@ -363,7 +376,7 @@ pub fn route(
+ }
+ 
+ /// Neighbors of one explored region in expansion order, deduplicated.
+-fn expand(region: &Region, policy: &RoutePolicy) -> Vec<(RegionId, Origin)> {
++pub(crate) fn expand(region: &Region, policy: &RoutePolicy) -> Vec<(RegionId, Origin)> {
+     let anchor = &region.id.anchor;
+     let mut out: Vec<(RegionId, Origin)> = region
+         .children
+@@ -402,7 +415,7 @@ fn expand(region: &Region, policy: &RoutePolicy) -> Vec<(RegionId, Origin)> {
+ /// Branch judgments for the non-entry regions of one layer, in one batch,
+ /// within `cap` and the shared allowance. Returns the decisions and how
+ /// many capsules were sent.
+-fn judge(
++pub(crate) fn judge(
+     snapshot: &SnapshotKey,
+     query: &Query,
+     loaded: &[(Region, Origin)],
+diff --git a/oxide_kernel/crates/kernel/src/semantic.rs b/oxide_kernel/crates/kernel/src/semantic.rs
+new file mode 100644
+index 0000000..cdd1062
+--- /dev/null
++++ b/oxide_kernel/crates/kernel/src/semantic.rs
+@@ -0,0 +1,92 @@
++//! Semantic channel contract: the OXIDE-owned text an embedding model sees
++//! (one recipe for every model; model prompts are part of the runtime's
++//! embedding space), and the exact-search result the runtime hands
++//! retrieval. The kernel never embeds or searches vectors itself.
++
++use crate::id::{EntityId, SnapshotKey};
++use crate::knowledge::Entity;
++
++/// Names [`document`] and [`query`]. Part of every embedding-space
++/// fingerprint: changing either invalidates every vector built with it.
++pub const SEMANTIC_RECIPE: &str = "oxide-semantic-recipe-v1";
++/// Path plus source bytes one document carries. A token covers at least one
++/// byte on a byte-level tokenizer, so with a prompt of at most 31 bytes a
++/// document fits a 512-token model window without model-side truncation.
++pub const MAX_DOCUMENT_BYTES: usize = 480;
++/// Query bytes sent to a model. Unlike documents this does not prove a
++/// token bound; the runtime rejects a query its model window cannot hold.
++pub const MAX_QUERY_BYTES: usize = 1200;
++
++/// `path\nsource` of a source-backed symbol, cut at a character boundary.
++/// `source` is the symbol's verified captured text. Files, modules and the
++/// repository have no document: their text is not one unit of meaning.
++pub fn document(entity: &Entity, source: &str) -> Option<String> {
++    let EntityId::Symbol(symbol) = &entity.id else {
++        return None;
++    };
++    let text = format!("{}\n{source}", symbol.file().as_str());
++    Some(cut(&text, MAX_DOCUMENT_BYTES).to_owned())
++}
++
++/// The query text a model sees.
++pub fn query(text: &str) -> &str {
++    cut(text, MAX_QUERY_BYTES)
++}
++
++fn cut(s: &str, max: usize) -> &str {
++    let mut end = max.min(s.len());
++    while !s.is_char_boundary(end) {
++        end -= 1;
++    }
++    &s[..end]
++}
++
++/// Nearest neighbours of one query in one embedding space over one
++/// generation, as the runtime's exact search found them. Retrieval ranks
++/// them (score, then [`EntityId`]) and checks the generation.
++#[derive(Debug, Clone, PartialEq)]
++pub struct SemanticResult {
++    pub snapshot: SnapshotKey,
++    /// Names the space and metric. Scores from different scorers are not
++    /// comparable, and none is a relevance probability.
++    pub scorer: String,
++    pub hits: Vec<(EntityId, f64)>,
++    /// More entities scored than `hits` holds.
++    pub truncated: bool,
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::id::{RepoPath, Segment, SymbolId};
++
++    fn entity(id: EntityId) -> Entity {
++        Entity {
++            id,
++            kind: "function".into(),
++            name: "f".into(),
++            signature: None,
++            source: None,
++            test: false,
++        }
++    }
++
++    #[test]
++    fn documents_are_bounded_symbol_text_at_char_boundaries() {
++        let file = RepoPath::new("pkg/a.py").unwrap();
++        let path = vec![Segment {
++            name: "f".into(),
++            ordinal: 0,
++        }];
++        let symbol = entity(EntityId::Symbol(SymbolId::new(file.clone(), path).unwrap()));
++        assert_eq!(
++            document(&symbol, "def f(): pass").as_deref(),
++            Some("pkg/a.py\ndef f(): pass")
++        );
++        let long = document(&symbol, &"é".repeat(400)).unwrap();
++        assert!(long.len() <= MAX_DOCUMENT_BYTES && long.len() >= MAX_DOCUMENT_BYTES - 1);
++        assert_eq!(document(&entity(EntityId::File(file)), "x"), None);
++        assert_eq!(query(&"q".repeat(5000)).len(), MAX_QUERY_BYTES);
++        assert_eq!(query("short"), "short");
++    }
++}
+diff --git a/oxide_kernel/crates/kernel/tests/retrieval_routing.rs b/oxide_kernel/crates/kernel/tests/retrieval_routing.rs
+index 651937e..5db25ee 100644
+--- a/oxide_kernel/crates/kernel/tests/retrieval_routing.rs
++++ b/oxide_kernel/crates/kernel/tests/retrieval_routing.rs
+@@ -13,6 +13,7 @@ use oxide_kernel::lexical::{LexicalRequest, LexicalResult};
+ use oxide_kernel::query::{Query, QueryContext};
+ use oxide_kernel::retrieve::*;
+ use oxide_kernel::route::*;
++use oxide_kernel::semantic::SemanticResult;
+ use oxide_kernel::store::*;
+ use oxide_kernel::tree::RegionId;
+ 
+@@ -39,6 +40,156 @@ fn get(set: &CandidateSet, id: &EntityId) -> EntryPoint {
+         .clone()
+ }
+ 
++fn semantic(hits: &[(EntityId, f64)], fusion: Fusion) -> Semantic {
++    Semantic::Ran {
++        result: SemanticResult {
++            snapshot: key("s1", "d1"),
++            scorer: "cosine:test".into(),
++            hits: hits.to_vec(),
++            truncated: false,
++        },
++        fusion,
++    }
++}
++
++fn channels(entry: &EntryPoint) -> Vec<(Channel, u32)> {
++    entry.channels.iter().map(|c| (c.channel, c.rank)).collect()
++}
++
++#[test]
++fn appended_semantic_hits_follow_lexical_rank_and_merge_duplicates() {
++    let view = view();
++    let lexical_only = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        ChannelState::Unconfigured.into(),
++        BASELINE,
++    )
++    .unwrap();
++    // Unordered on purpose: retrieval ranks by score, then identity.
++    let hits = [(c(), 0.1), (test_h(), 0.5), (g(), 0.9), (f0(), 0.4)];
++    let set = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        semantic(&hits, Fusion::Append { depth: 3 }),
++        BASELINE,
++    )
++    .unwrap();
++    let n = lexical_only.entries.len();
++    assert_eq!(ids(&set)[..n], ids(&lexical_only)[..]);
++    assert_eq!(ids(&set)[n..], [g(), f0()]);
++    assert_eq!(
++        channels(&get(&set, &test_h())),
++        [(Channel::Lexical, 1), (Channel::Semantic, 2)]
++    );
++    assert_eq!(set.fusion, Some(Fusion::Append { depth: 3 }));
++    let ran = ChannelState::Ran {
++        scorer: "cosine:test".into(),
++        returned: 3,
++        truncated: true,
++    };
++    assert_eq!(set.channels[1].state, ran);
++
++    // Semantic-only: lexical disabled, entries are the semantic rank.
++    let only = RetrievalConfig {
++        lexical: false,
++        ..BASELINE
++    };
++    let set = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        semantic(&hits, Fusion::Append { depth: 3 }),
++        only,
++    )
++    .unwrap();
++    assert_eq!(ids(&set), [g(), test_h(), f0()]);
++    assert_eq!(set.channels[0].state, ChannelState::Disabled);
++}
++
++#[test]
++fn reciprocal_rank_fusion_orders_by_fused_rank_and_records_its_cut() {
++    let view = view();
++    let hits = [(g(), 0.9), (test_h(), 0.5)];
++    let rrf = Fusion::Rrf {
++        k: 60,
++        lexical: 600,
++        semantic: 400,
++        depth: 2,
++        keep: 2,
++    };
++    let set = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        semantic(&hits, rrf),
++        BASELINE,
++    )
++    .unwrap();
++    // In both channels, so first; evidence of each kept with its own rank.
++    assert_eq!(set.entries[0].entity, test_h());
++    assert_eq!(
++        channels(&set.entries[0]),
++        [(Channel::Lexical, 1), (Channel::Semantic, 2)]
++    );
++    assert_eq!(set.entries.len(), 2);
++    let lexical_only = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        ChannelState::Unconfigured.into(),
++        BASELINE,
++    )
++    .unwrap();
++    let mut union = ids(&lexical_only);
++    union.extend([g(), test_h()]);
++    union.sort();
++    union.dedup();
++    assert_eq!(set.fusion_omitted, union.len() - 2);
++    assert_eq!(set.fusion, Some(rrf));
++}
++
++#[test]
++fn unusable_semantic_hits_leave_the_channel_unavailable_and_lexical_intact() {
++    let view = view();
++    let baseline = retrieve(
++        &view,
++        &query("test_h"),
++        &QueryContext::default(),
++        ChannelState::Unconfigured.into(),
++        BASELINE,
++    )
++    .unwrap();
++    let append = Fusion::Append { depth: 5 };
++    let mut stale = semantic(&[(g(), 0.9)], append);
++    if let Semantic::Ran { result, .. } = &mut stale {
++        result.snapshot = key("s0", "d1");
++    }
++    let bad = [
++        stale,
++        semantic(&[(g(), f64::NAN)], append),
++        semantic(&[(g(), 0.9), (g(), 0.8)], append),
++    ];
++    for input in bad {
++        let set = retrieve(
++            &view,
++            &query("test_h"),
++            &QueryContext::default(),
++            input,
++            BASELINE,
++        )
++        .unwrap();
++        assert_eq!(set.entries, baseline.entries);
++        assert!(matches!(
++            set.channels[1].state,
++            ChannelState::Unavailable(_)
++        ));
++        assert_eq!(set.fusion, None);
++    }
++}
++
+ #[test]
+ fn lexical_entry_points_keep_channel_evidence_and_semantic_status() {
+     let view = view();
+@@ -46,7 +197,7 @@ fn lexical_entry_points_keep_channel_evidence_and_semantic_status() {
+         &view,
+         &query("test_h"),
+         &QueryContext::default(),
+-        ChannelState::Unconfigured,
++        ChannelState::Unconfigured.into(),
+         BASELINE,
+     )
+     .unwrap();
+@@ -80,7 +231,7 @@ fn structural_seeds_resolve_every_hint_kind_with_visible_reasons() {
+         &view,
+         &query("g"),
+         &context,
+-        ChannelState::Unconfigured,
++        ChannelState::Unconfigured.into(),
+         config,
+     )
+     .unwrap();
+@@ -125,7 +276,14 @@ fn structural_seeds_resolve_every_hint_kind_with_visible_reasons() {
+         symbols: vec!["f".into()],
+         ..Default::default()
+     };
+-    let set = retrieve(&view, &query(""), &context, ChannelState::Unconfigured, one).unwrap();
++    let set = retrieve(
++        &view,
++        &query(""),
++        &context,
++        ChannelState::Unconfigured.into(),
++        one,
++    )
++    .unwrap();
+     assert_eq!(ids(&set), [f0()]);
+     assert_eq!(set.hints[0].issue, HintIssue::Truncated { limit: 1 });
+ }
+@@ -141,7 +299,7 @@ fn seeds_precede_lexical_hits_and_duplicates_merge_their_evidence() {
+         &view,
+         &query("test_h"),
+         &context,
+-        ChannelState::Unconfigured,
++        ChannelState::Unconfigured.into(),
+         BASELINE,
+     )
+     .unwrap();
+@@ -184,7 +342,14 @@ fn unavailable_capabilities_are_reported_and_structure_still_works() {
+         ..Default::default()
+     };
+     let semantic = ChannelState::Unavailable("configured runner unreachable".into());
+-    let set = retrieve(&view, &query("g"), &context, semantic.clone(), BASELINE).unwrap();
++    let set = retrieve(
++        &view,
++        &query("g"),
++        &context,
++        semantic.clone().into(),
++        BASELINE,
++    )
++    .unwrap();
+     assert_eq!(
+         set.channels[0].state,
+         ChannelState::Unavailable("no lexical accelerator".into())
+@@ -218,7 +383,7 @@ fn seeded(view: &MemoryView, entity: &str) -> CandidateSet {
+         view,
+         &query(""),
+         &context,
+-        ChannelState::Unconfigured,
++        ChannelState::Unconfigured.into(),
+         config,
+     )
+     .unwrap()
+@@ -517,7 +682,7 @@ fn origins_are_complete_whatever_the_entry_order() {
+             &view,
+             &query(""),
+             &context,
+-            ChannelState::Unconfigured,
++            ChannelState::Unconfigured.into(),
+             config,
+         )
+         .unwrap();
+diff --git a/oxide_kernel/crates/runtime/examples/rebuild_bench.rs b/oxide_kernel/crates/runtime/examples/rebuild_bench.rs
+index 03b1329..a471c7e 100644
+--- a/oxide_kernel/crates/runtime/examples/rebuild_bench.rs
++++ b/oxide_kernel/crates/runtime/examples/rebuild_bench.rs
+@@ -110,7 +110,7 @@ fn main() {
+             &view,
+             &query,
+             &context,
+-            ChannelState::Unconfigured,
++            ChannelState::Unconfigured.into(),
+             BASELINE,
+         )
+         .unwrap()
+diff --git a/oxide_kernel/crates/runtime/src/capture.rs b/oxide_kernel/crates/runtime/src/capture.rs
+index d9aa514..e245b71 100644
+--- a/oxide_kernel/crates/runtime/src/capture.rs
++++ b/oxide_kernel/crates/runtime/src/capture.rs
+@@ -443,7 +443,7 @@ pub fn digest(bytes: &[u8]) -> Digest {
+     Digest::new(sha256_text(Sha256::digest(bytes).as_slice())).expect("hex is a valid id")
+ }
+ 
+-fn sha256_text(hash: &[u8]) -> String {
++pub(crate) fn sha256_text(hash: &[u8]) -> String {
+     let mut text = String::from("sha256:");
+     for byte in hash {
+         write!(text, "{byte:02x}").expect("writing to a String");
+diff --git a/oxide_kernel/crates/runtime/src/embedding.rs b/oxide_kernel/crates/runtime/src/embedding.rs
+index 92ac6f2..73f256c 100644
+--- a/oxide_kernel/crates/runtime/src/embedding.rs
++++ b/oxide_kernel/crates/runtime/src/embedding.rs
+@@ -3,10 +3,16 @@
+ //! [`EmbeddingProvider`] against them. Phase 1 fixed identity, capability,
+ //! batching and error contracts, and the rule that discovery is advisory:
+ //! only the configured runner is ever probed or used. Phase 3 adds deadlines
+-//! and the semantic channel state retrieval reports. No HTTP client to a
+-//! real runner exists yet; semantic retrieval is optional and unavailable.
++//! and the semantic channel state retrieval reports. [`LlamaCpp`] is the
++//! first real client; semantic retrieval stays optional ([`crate::semantic`]).
+ 
+-use std::time::{Duration, Instant};
++use std::path::Path;
++use std::sync::Mutex;
++use std::sync::atomic::{AtomicBool, Ordering};
++use std::time::{Duration, Instant, SystemTime};
++
++use serde_json::{Value, json};
++use sha2::{Digest as _, Sha256};
+ 
+ use oxide_kernel::retrieve::ChannelState;
+ 
+@@ -48,8 +54,21 @@ pub struct EmbeddingSpace {
+     pub document_prompt: Option<String>,
+     /// How entity text is assembled before embedding; OXIDE-owned.
+     pub document_recipe: String,
++    /// Runner build serving the model (llama.cpp `build_info`).
++    pub runner_version: Option<String>,
++    /// Model window in tokens; longer inputs are rejected, never truncated.
++    pub max_tokens: Option<u32>,
++    /// The first [`CANARY_DIMS`] components of [`CANARY`]'s vector, in
++    /// ten-thousandths: observed behaviour, since a runner reports neither
++    /// its pooling nor its normalization. Equal within [`CANARY_TOLERANCE`].
++    pub canary: Option<Vec<i32>>,
+ }
+ 
++/// Document text embedded to fingerprint a served space's behaviour.
++pub const CANARY: &str = "def retry(request, attempts=3):\n    return send(request)";
++pub const CANARY_DIMS: usize = 16;
++pub const CANARY_TOLERANCE: i32 = 10;
++
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub enum Compatibility {
+     Same,
+@@ -76,6 +95,9 @@ impl EmbeddingSpace {
+             field(&self.tokenizer, &other.tokenizer),
+             field(&self.query_prompt, &other.query_prompt),
+             field(&self.document_prompt, &other.document_prompt),
++            field(&self.runner_version, &other.runner_version),
++            field(&self.max_tokens, &other.max_tokens),
++            canary(&self.canary, &other.canary),
+         ];
+         if known.contains(&false) || optional.contains(&Compatibility::Different) {
+             Compatibility::Different
+@@ -95,6 +117,27 @@ fn field<T: PartialEq>(a: &Option<T>, b: &Option<T>) -> Compatibility {
+     }
+ }
+ 
++fn canary(a: &Option<Vec<i32>>, b: &Option<Vec<i32>>) -> Compatibility {
++    match (a, b) {
++        (Some(a), Some(b))
++            if a.len() == b.len()
++                && a.iter()
++                    .zip(b)
++                    .all(|(x, y)| (x - y).abs() <= CANARY_TOLERANCE) =>
++        {
++            Compatibility::Same
++        }
++        (Some(_), Some(_)) => Compatibility::Different,
++        _ => Compatibility::Unverified,
++    }
++}
++
++/// [`EmbeddingSpace::canary`] of a vector.
++pub fn canary_of(vector: &[f32]) -> Vec<i32> {
++    let dims = &vector[..CANARY_DIMS.min(vector.len())];
++    dims.iter().map(|x| (x * 1e4).round() as i32).collect()
++}
++
+ /// What a runner reports about the model it serves.
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct Probe {
+@@ -112,6 +155,10 @@ pub enum EmbedError {
+     ModelMissing,
+     /// Wrong count, dimension, non-finite or unnormalized vectors.
+     Malformed(String),
++    /// The runner refused the input (for example longer than its window).
++    Rejected(String),
++    /// The caller cancelled; partial results were discarded.
++    Cancelled,
+ }
+ 
+ /// Runtime client for one runner endpoint. Every call gets the time left
+@@ -121,6 +168,13 @@ pub trait EmbeddingProvider {
+     fn probe(&self, timeout: Duration) -> Result<Probe, EmbedError>;
+     /// One vector per text, in order; at most `Probe::max_batch` texts.
+     fn embed(&self, texts: &[String], timeout: Duration) -> Result<Vec<Vec<f32>>, EmbedError>;
++    /// A cheap token of what the runner serves now, compared before each
++    /// query against the one an index was built with, so a model swapped
++    /// behind a live endpoint is refused rather than compared. `None`: the
++    /// runner offers no such check.
++    fn served(&self, _timeout: Duration) -> Result<Option<String>, EmbedError> {
++        Ok(None)
++    }
+ }
+ 
+ /// The persisted, explicitly chosen provider. Only explicit reconfiguration
+@@ -192,14 +246,14 @@ pub fn semantic_status(
+     }
+ }
+ 
+-/// The semantic channel as retrieval reports it. No vector index exists in
+-/// this phase, so even a ready runner leaves the channel unavailable; it is
+-/// never reported as an empty or zero-scored result.
++/// The semantic channel as retrieval reports it from runner status alone:
++/// without a ready vector index ([`crate::semantic`]) even a ready runner
++/// leaves the channel unavailable; it is never an empty or zero result.
+ pub fn channel_state(status: &SemanticStatus) -> ChannelState {
+     let why = match status {
+         SemanticStatus::Unconfigured { .. } => return ChannelState::Unconfigured,
+         SemanticStatus::Configured { readiness, .. } => match readiness {
+-            Readiness::Ready => "no vector index for this generation".to_owned(),
++            Readiness::Ready => "no ready vector index for this generation".to_owned(),
+             Readiness::Unavailable(error) => format!("configured runner: {error:?}"),
+             Readiness::Mismatch => "runner serves a different embedding space".to_owned(),
+             Readiness::Unverified => "runner embedding space is unverified".to_owned(),
+@@ -209,17 +263,22 @@ pub fn channel_state(status: &SemanticStatus) -> ChannelState {
+ }
+ 
+ /// Embeds `texts` in batches of at most `max_batch`, validating every
+-/// response against `space`. A batch starts only before `deadline` and gets
+-/// the time left; partial results are discarded on any failure.
++/// response against `space`. A batch starts only before `deadline` and
++/// while `cancel` is unset, and gets the time left; partial results are
++/// discarded on any failure.
+ pub fn embed_all(
+     client: &dyn EmbeddingProvider,
+     space: &EmbeddingSpace,
+     max_batch: usize,
+     texts: &[String],
+     deadline: Instant,
++    cancel: &AtomicBool,
+ ) -> Result<Vec<Vec<f32>>, EmbedError> {
+     let mut out = Vec::with_capacity(texts.len());
+     for chunk in texts.chunks(max_batch.max(1)) {
++        if cancel.load(Ordering::Relaxed) {
++            return Err(EmbedError::Cancelled);
++        }
+         let left = deadline.saturating_duration_since(Instant::now());
+         if left.is_zero() {
+             return Err(EmbedError::Timeout);
+@@ -258,8 +317,228 @@ fn check_vector(space: &EmbeddingSpace, vector: &[f32]) -> Result<(), EmbedError
+     Ok(())
+ }
+ 
++/// llama.cpp `llama-server` client: embeddings from its OpenAI-compatible
++/// `/v1/embeddings`, identity from its own `/props` and `/v1/models`, over
++/// the blocking `ureq` agent JEV already uses (no async runtime, and no
++/// dependency that changes serde_json features under JEV's request bytes). The client applies the configured space's
++/// prompts and token window; a probe reports what the server proves of the
++/// rest (model file digest, quantization, dimension, build, canary).
++pub struct LlamaCpp {
++    endpoint: Endpoint,
++    configured: EmbeddingSpace,
++    max_batch: usize,
++    http: ureq::Agent,
++    /// (path, length, modified) -> sha256 of the served model file.
++    digest: Mutex<Option<(String, u64, SystemTime, String)>>,
++}
++
++impl LlamaCpp {
++    /// A client for `endpoint` (the server root, without `/v1`). Contacts
++    /// nothing until called.
++    pub fn new(endpoint: Endpoint, configured: EmbeddingSpace, max_batch: usize) -> Self {
++        assert_eq!(endpoint.runner, Runner::LlamaCpp, "llama.cpp endpoint");
++        let config = ureq::Agent::config_builder()
++            .http_status_as_error(false)
++            .max_redirects(0)
++            .build();
++        Self {
++            endpoint,
++            configured,
++            max_batch,
++            http: ureq::Agent::new_with_config(config),
++            digest: Mutex::new(None),
++        }
++    }
++
++    pub fn space(&self) -> &EmbeddingSpace {
++        &self.configured
++    }
++
++    fn get(&self, path: &str, timeout: Duration) -> Result<Value, EmbedError> {
++        self.call(path, None, timeout, 1 << 20)
++    }
++
++    /// GET `path`, or POST `body` to it, within `timeout`. A non-200 status
++    /// is `ModelMissing` (404) or `Rejected` with the runner's message.
++    fn call(
++        &self,
++        path: &str,
++        body: Option<&Value>,
++        timeout: Duration,
++        limit: u64,
++    ) -> Result<Value, EmbedError> {
++        let url = format!("{}{path}", self.endpoint.url.trim_end_matches('/'));
++        let sent = match body {
++            None => self
++                .http
++                .get(&url)
++                .config()
++                .timeout_global(Some(timeout))
++                .build()
++                .call(),
++            Some(body) => self
++                .http
++                .post(&url)
++                .config()
++                .timeout_global(Some(timeout))
++                .build()
++                .header("content-type", "application/json")
++                .send(body.to_string()),
++        };
++        let mut response = sent.map_err(|e| match e {
++            ureq::Error::Timeout(_) => EmbedError::Timeout,
++            _ => EmbedError::Unavailable,
++        })?;
++        let status = response.status().as_u16();
++        let text = response
++            .body_mut()
++            .with_config()
++            .limit(limit)
++            .read_to_string()
++            .map_err(|e| match e {
++                ureq::Error::Timeout(_) => EmbedError::Timeout,
++                _ => EmbedError::Unavailable,
++            })?;
++        match status {
++            200 => serde_json::from_str(&text).map_err(|e| EmbedError::Malformed(e.to_string())),
++            404 => Err(EmbedError::ModelMissing),
++            _ => Err(EmbedError::Rejected(text)),
++        }
++    }
++
++    /// SHA-256 of the served model file, when this host can read it; hashed
++    /// once per (path, length, modification time).
++    fn model_digest(&self, path: &str) -> Option<String> {
++        let meta = std::fs::metadata(path).ok()?;
++        let stamp = (path.to_owned(), meta.len(), meta.modified().ok()?);
++        let mut cached = self.digest.lock().unwrap();
++        if let Some((p, l, m, d)) = cached.as_ref()
++            && (p, l, m) == (&stamp.0, &stamp.1, &stamp.2)
++        {
++            return Some(d.clone());
++        }
++        let mut hasher = Sha256::new();
++        let mut file = std::fs::File::open(Path::new(path)).ok()?;
++        let mut buffer = vec![0; 1 << 20];
++        loop {
++            match std::io::Read::read(&mut file, &mut buffer).ok()? {
++                0 => break,
++                n => hasher.update(&buffer[..n]),
++            }
++        }
++        let digest = crate::capture::sha256_text(hasher.finalize().as_slice());
++        *cached = Some((stamp.0, stamp.1, stamp.2, digest.clone()));
++        Some(digest)
++    }
++}
++
++impl EmbeddingProvider for LlamaCpp {
++    fn endpoint(&self) -> &Endpoint {
++        &self.endpoint
++    }
++
++    fn probe(&self, timeout: Duration) -> Result<Probe, EmbedError> {
++        let deadline = Instant::now() + timeout;
++        let left = || deadline.saturating_duration_since(Instant::now());
++        let props = self.get("/props", left())?;
++        let models = self.get("/v1/models", left())?;
++        let meta = &models["data"][0]["meta"];
++        let dimension = meta["n_embd"]
++            .as_u64()
++            .ok_or_else(|| EmbedError::Malformed("no n_embd in /v1/models".into()))?;
++        let model_digest = props["model_path"]
++            .as_str()
++            .and_then(|p| self.model_digest(p));
++        let prompt = self.configured.document_prompt.clone().unwrap_or_default();
++        let vector = self
++            .embed(&[format!("{prompt}{CANARY}")], left())?
++            .pop()
++            .ok_or_else(|| EmbedError::Malformed("no canary vector".into()))?;
++        let norm = vector.iter().map(|x| x * x).sum::<f32>().sqrt();
++        // Prompts, recipe, window and pooling are applied or proven by this
++        // client (the canary); the rest is what the server reports.
++        let same_file = model_digest.is_some() && model_digest == self.configured.model_digest;
++        let space = EmbeddingSpace {
++            runner: Runner::LlamaCpp,
++            model: self.configured.model.clone(),
++            model_digest,
++            quantization: meta["ftype"].as_str().map(str::to_owned),
++            dimension: dimension as u32,
++            metric: Metric::Cosine,
++            normalized: Some((norm - 1.0).abs() <= 1e-3),
++            pooling: self.configured.pooling.clone(),
++            tokenizer: same_file
++                .then(|| self.configured.tokenizer.clone())
++                .flatten(),
++            query_prompt: self.configured.query_prompt.clone(),
++            document_prompt: self.configured.document_prompt.clone(),
++            document_recipe: self.configured.document_recipe.clone(),
++            runner_version: props["build_info"].as_str().map(str::to_owned),
++            max_tokens: self.configured.max_tokens,
++            canary: Some(canary_of(&vector)),
++        };
++        Ok(Probe {
++            space,
++            max_batch: self.max_batch,
++        })
++    }
++
++    fn served(&self, timeout: Duration) -> Result<Option<String>, EmbedError> {
++        let props = self.get("/props", timeout)?;
++        let field = |k: &str| props[k].as_str().unwrap_or_default().to_owned();
++        Ok(Some(format!(
++            "{}|{}",
++            field("model_path"),
++            field("build_info")
++        )))
++    }
++
++    fn embed(&self, texts: &[String], timeout: Duration) -> Result<Vec<Vec<f32>>, EmbedError> {
++        if timeout.is_zero() {
++            return Err(EmbedError::Timeout);
++        }
++        let body = json!({"model": self.configured.model, "input": texts});
++        // Room for every component printed in full, plus the envelope.
++        let limit = 64 * (1 + texts.len() as u64) * (16 + u64::from(self.configured.dimension));
++        let response = self.call("/v1/embeddings", Some(&body), timeout, limit)?;
++        let data = response["data"]
++            .as_array()
++            .ok_or_else(|| EmbedError::Malformed("no data in /v1/embeddings".into()))?;
++        let mut vectors: Vec<Option<Vec<f32>>> = vec![None; texts.len()];
++        for item in data {
++            let slot = item["index"]
++                .as_u64()
++                .and_then(|i| vectors.get_mut(i as usize))
++                .ok_or_else(|| EmbedError::Malformed("embedding index out of range".into()))?;
++            let vector = item["embedding"]
++                .as_array()
++                .and_then(|v| v.iter().map(|x| x.as_f64().map(|x| x as f32)).collect())
++                .ok_or_else(|| EmbedError::Malformed("embedding is not numeric".into()))?;
++            if slot.replace(vector).is_some() {
++                return Err(EmbedError::Malformed("duplicate embedding index".into()));
++            }
++        }
++        // One text: its token count is exact, so the window is enforced.
++        if let ([_], Some(max), Some(used)) = (
++            texts,
++            self.configured.max_tokens,
++            response["usage"]["prompt_tokens"].as_u64(),
++        ) && used > u64::from(max)
++        {
++            return Err(EmbedError::Rejected(format!(
++                "{used} tokens exceed the {max}-token window"
++            )));
++        }
++        vectors
++            .into_iter()
++            .map(|v| v.ok_or_else(|| EmbedError::Malformed("missing embedding".into())))
++            .collect()
++    }
++}
++
+ #[cfg(test)]
+ mod tests {
++
+     use super::*;
+ 
+     type Answer = fn(&[String], u32) -> Vec<Vec<f32>>;
+@@ -300,6 +579,7 @@ mod tests {
+     }
+ 
+     const SECOND: Duration = Duration::from_secs(1);
++    static GO: AtomicBool = AtomicBool::new(false);
+ 
+     fn soon() -> Instant {
+         Instant::now() + SECOND
+@@ -332,6 +612,9 @@ mod tests {
+             query_prompt: Some(String::new()),
+             document_prompt: Some(String::new()),
+             document_recipe: "signature+body/1".into(),
++            runner_version: Some("b1".into()),
++            max_tokens: Some(512),
++            canary: Some(vec![1, 2, 3]),
+         }
+     }
+ 
+@@ -431,7 +714,7 @@ mod tests {
+     #[test]
+     fn batches_respect_max_batch_and_validate_vectors() {
+         let texts: Vec<String> = (0..5).map(|i| format!("t{i}")).collect();
+-        let vectors = embed_all(&runner(true), &space(), 2, &texts, soon()).unwrap();
++        let vectors = embed_all(&runner(true), &space(), 2, &texts, soon(), &GO).unwrap();
+         assert_eq!(vectors.len(), 5);
+ 
+         let wrong_dimension = |t: &[String], d| unit(t, d + 1);
+@@ -445,22 +728,187 @@ mod tests {
+                 ..runner(true)
+             };
+             assert!(matches!(
+-                embed_all(&client, &space(), 2, &texts, soon()),
++                embed_all(&client, &space(), 2, &texts, soon(), &GO),
+                 Err(EmbedError::Malformed(_))
+             ));
+         }
+         assert_eq!(
+-            embed_all(&runner(false), &space(), 2, &texts, soon()),
++            embed_all(&runner(false), &space(), 2, &texts, soon(), &GO),
+             Err(EmbedError::Unavailable)
+         );
+     }
+ 
++    /// A loopback llama-server stand-in: answers `/props` and `/v1/models`
++    /// from `model_path`, and each `/v1/embeddings` call with the next
++    /// scripted (status, body). Serves `connections` requests.
++    fn llama_server(
++        model_path: &str,
++        embeddings: Vec<(u16, String)>,
++        connections: usize,
++    ) -> String {
++        use std::io::{Read, Write};
++        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
++        let url = format!("http://127.0.0.1:{}", listener.local_addr().unwrap().port());
++        let props = json!({"model_path": model_path, "build_info": "b11540-1e6f04a75"}).to_string();
++        let models =
++            json!({"data": [{"id": model_path, "meta": {"n_embd": 4, "ftype": "Q4_K - Medium"}}]})
++                .to_string();
++        std::thread::spawn(move || {
++            let mut embeddings = embeddings.into_iter();
++            for _ in 0..connections {
++                let (mut stream, _) = listener.accept().unwrap();
++                let mut raw = Vec::new();
++                let mut buf = [0u8; 4096];
++                let end = loop {
++                    let n = stream.read(&mut buf).unwrap();
++                    raw.extend_from_slice(&buf[..n]);
++                    if let Some(i) = raw.windows(4).position(|w| w == b"\r\n\r\n") {
++                        break i + 4;
++                    }
++                };
++                let head = String::from_utf8_lossy(&raw[..end]).to_lowercase();
++                let length: usize = head
++                    .lines()
++                    .find_map(|l| l.strip_prefix("content-length:"))
++                    .map_or(0, |v| v.trim().parse().unwrap());
++                while raw.len() < end + length {
++                    let n = stream.read(&mut buf).unwrap();
++                    raw.extend_from_slice(&buf[..n]);
++                }
++                let path = head
++                    .split_whitespace()
++                    .nth(1)
++                    .unwrap_or_default()
++                    .to_owned();
++                let (status, body) = match path.as_str() {
++                    "/props" => (200, props.clone()),
++                    "/v1/models" => (200, models.clone()),
++                    _ => embeddings.next().unwrap(),
++                };
++                let reply = format!(
++                    "HTTP/1.1 {status} X\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
++                    body.len()
++                );
++                let _ = stream.write_all(reply.as_bytes());
++            }
++        });
++        url
++    }
++
++    fn vectors(vs: &[[f32; 4]], tokens: u32) -> (u16, String) {
++        let data: Vec<Value> = vs
++            .iter()
++            .enumerate()
++            .map(|(i, v)| json!({"object": "embedding", "index": i, "embedding": v}))
++            .collect();
++        let usage = json!({"prompt_tokens": tokens, "total_tokens": tokens});
++        let body = json!({"object": "list", "model": "lfm", "data": data, "usage": usage});
++        (200, body.to_string())
++    }
++
++    #[test]
++    fn llama_cpp_reports_served_identity_and_explicit_failures() {
++        let model = std::env::temp_dir().join(format!("oxide-fake-gguf-{}", std::process::id()));
++        std::fs::write(&model, b"weights").unwrap();
++        let path = model.to_str().unwrap().to_owned();
++        let unit = [0.6, 0.8, 0.0, 0.0];
++        let replies = vec![
++            vectors(&[unit], 12),  // probe canary
++            vectors(&[unit], 600), // a query over the window
++            (
++                500,
++                r#"{"error":{"code":500,"message":"input too large"}}"#.into(),
++            ),
++        ];
++        let url = llama_server(&path, replies, 6);
++        let configured = EmbeddingSpace {
++            runner: Runner::LlamaCpp,
++            model: "lfm".into(),
++            model_digest: Some(crate::capture::sha256_text(&Sha256::digest(b"weights"))),
++            quantization: Some("Q4_K - Medium".into()),
++            dimension: 4,
++            pooling: Some("cls".into()),
++            runner_version: Some("b11540-1e6f04a75".into()),
++            canary: Some(canary_of(&unit)),
++            ..space()
++        };
++        let endpoint = Endpoint {
++            runner: Runner::LlamaCpp,
++            url,
++        };
++        let client = LlamaCpp::new(endpoint, configured.clone(), 16);
++        let probe = client.probe(5 * SECOND).unwrap();
++        assert_eq!(configured.compare(&probe.space), Compatibility::Same);
++        assert_eq!(probe.space.normalized, Some(true));
++        assert_eq!(
++            client.embed(&["query: long".into()], 5 * SECOND),
++            Err(EmbedError::Rejected(
++                "600 tokens exceed the 512-token window".into()
++            ))
++        );
++        assert!(matches!(
++            client.embed(&["x".into()], 5 * SECOND),
++            Err(EmbedError::Rejected(body)) if body.contains("input too large")
++        ));
++        let served = client.served(5 * SECOND).unwrap().unwrap();
++        assert_eq!(served, format!("{path}|b11540-1e6f04a75"));
++        std::fs::remove_file(&model).unwrap();
++
++        let down = Endpoint {
++            runner: Runner::LlamaCpp,
++            url: "http://127.0.0.1:9".into(),
++        };
++        let client = LlamaCpp::new(down, configured, 16);
++        assert_eq!(client.probe(SECOND), Err(EmbedError::Unavailable));
++        assert_eq!(
++            client.embed(&["x".into()], SECOND),
++            Err(EmbedError::Unavailable)
++        );
++    }
++
++    #[test]
++    fn cancellation_stops_before_the_next_batch() {
++        let texts: Vec<String> = (0..3).map(|i| format!("t{i}")).collect();
++        assert_eq!(
++            embed_all(
++                &runner(true),
++                &space(),
++                2,
++                &texts,
++                soon(),
++                &AtomicBool::new(true)
++            ),
++            Err(EmbedError::Cancelled)
++        );
++    }
++
++    #[test]
++    fn canaries_match_within_tolerance_only() {
++        let a = space();
++        let near = EmbeddingSpace {
++            canary: Some(vec![1 + CANARY_TOLERANCE, 2, 3]),
++            ..space()
++        };
++        let far = EmbeddingSpace {
++            canary: Some(vec![1 + CANARY_TOLERANCE + 1, 2, 3]),
++            ..space()
++        };
++        let build = EmbeddingSpace {
++            runner_version: Some("b2".into()),
++            ..space()
++        };
++        assert_eq!(a.compare(&near), Compatibility::Same);
++        assert_eq!(a.compare(&far), Compatibility::Different);
++        assert_eq!(a.compare(&build), Compatibility::Different);
++        assert_eq!(canary_of(&[0.12345, -1.0]), vec![1235, -10000]);
++    }
++
+     #[test]
+     fn passed_deadlines_time_out_without_calling_the_runner() {
+         let texts = vec!["t".to_owned()];
+         let past = Instant::now() - SECOND;
+         assert_eq!(
+-            embed_all(&runner(true), &space(), 2, &texts, past),
++            embed_all(&runner(true), &space(), 2, &texts, past, &GO),
+             Err(EmbedError::Timeout)
+         );
+     }
+diff --git a/oxide_kernel/crates/runtime/src/lib.rs b/oxide_kernel/crates/runtime/src/lib.rs
+index 2a0b056..2528bdd 100644
+--- a/oxide_kernel/crates/runtime/src/lib.rs
++++ b/oxide_kernel/crates/runtime/src/lib.rs
+@@ -12,6 +12,7 @@ pub mod embedding;
+ pub mod jev;
+ pub mod python;
+ pub mod repository;
++pub mod semantic;
+ 
+ use std::io::{self, Read, Write};
+ 
+diff --git a/oxide_kernel/crates/runtime/src/semantic.rs b/oxide_kernel/crates/runtime/src/semantic.rs
+new file mode 100644
+index 0000000..02a6880
+--- /dev/null
++++ b/oxide_kernel/crates/runtime/src/semantic.rs
+@@ -0,0 +1,626 @@
++//! Optional semantic channel (SPEC § Embedding providers, § Retrieval): a
++//! persistent, content-addressed vector cache per embedding space, a
++//! per-generation index built in the background, and exact cosine search.
++//! Requests never wait for a build: until a generation's index is ready
++//! the channel is unavailable and retrieval stays lexical/structural.
++
++use std::collections::{BTreeMap, HashMap};
++use std::fs::{File, OpenOptions};
++use std::io::{self, Read, Seek, SeekFrom, Write};
++use std::path::{Path, PathBuf};
++use std::sync::Arc;
++use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
++use std::thread::JoinHandle;
++use std::time::{Duration, Instant};
++
++use oxide_kernel::id::{EntityId, SnapshotKey};
++use oxide_kernel::query::Query;
++use oxide_kernel::retrieve::{ChannelState, Fusion, Semantic};
++use oxide_kernel::semantic::{self as recipe, SemanticResult};
++use oxide_kernel::source::{SourceProvider, Sources};
++use oxide_kernel::store::{MAX_REQUEST_ITEMS, ReadView, StoreError};
++use sha2::{Digest as _, Sha256};
++
++use crate::embedding::{Compatibility, EmbedError, EmbeddingProvider, EmbeddingSpace, embed_all};
++
++/// Cache file header; the format of every record after it.
++const MAGIC: &[u8; 8] = b"OXVC1\0\0\0";
++
++type Key = [u8; 32];
++
++fn key(text: &str) -> Key {
++    Sha256::digest(text.as_bytes()).into()
++}
++
++/// Vectors by the exact text a model embedded, for one embedding space.
++/// Keys cover source, recipe and prompt; the directory covers the space,
++/// so a changed model, quantization, runner build or canary never reuses a
++/// vector. One process owns a cache at a time (an exclusive file lock).
++pub struct VectorCache {
++    file: File,
++    dimension: usize,
++    vectors: HashMap<Key, Vec<f32>>,
++}
++
++impl VectorCache {
++    /// Opens (or creates) `root`'s cache for `space`. A record cut short by
++    /// a crash is dropped; anything else malformed is an error, never
++    /// silently reused.
++    pub fn open(root: &Path, space: &EmbeddingSpace) -> io::Result<Self> {
++        // The fingerprint's Debug text names the directory: any field
++        // change, including a new field, is a new space.
++        let fingerprint = format!("{space:?}");
++        let id = crate::decisionbench::sha256_hex(fingerprint.as_bytes());
++        let dir = root.join(&id[..32]);
++        std::fs::create_dir_all(&dir)?;
++        let named = dir.join("space.txt");
++        match std::fs::read_to_string(&named) {
++            Ok(text) if text == fingerprint => {}
++            Ok(_) => return Err(io::Error::other("cache directory names another space")),
++            Err(e) if e.kind() == io::ErrorKind::NotFound => std::fs::write(&named, &fingerprint)?,
++            Err(e) => return Err(e),
++        }
++        let mut file = OpenOptions::new()
++            .read(true)
++            .append(true)
++            .create(true)
++            .open(dir.join("vectors.bin"))?;
++        file.try_lock()
++            .map_err(|_| io::Error::other("vector cache is in use by another owner"))?;
++        let dimension = space.dimension as usize;
++        let mut bytes = Vec::new();
++        file.read_to_end(&mut bytes)?;
++        if bytes.is_empty() {
++            file.write_all(MAGIC)?;
++            file.write_all(&(dimension as u32).to_le_bytes())?;
++            bytes.extend_from_slice(MAGIC);
++            bytes.extend_from_slice(&(dimension as u32).to_le_bytes());
++        }
++        if bytes.len() < 12
++            || &bytes[..8] != MAGIC
++            || bytes[8..12] != (dimension as u32).to_le_bytes()
++        {
++            return Err(io::Error::other("vector cache header does not match"));
++        }
++        let record = 32 + 4 * dimension;
++        let whole = (bytes.len() - 12) / record * record + 12;
++        if whole < bytes.len() {
++            file.set_len(whole as u64)?;
++            file.seek(SeekFrom::End(0))?;
++        }
++        let mut vectors = HashMap::new();
++        for r in bytes[12..whole].chunks_exact(record) {
++            let vector = r[32..]
++                .as_chunks::<4>()
++                .0
++                .iter()
++                .map(|b| f32::from_le_bytes(*b))
++                .collect();
++            vectors.insert(r[..32].try_into().unwrap(), vector);
++        }
++        Ok(Self {
++            file,
++            dimension,
++            vectors,
++        })
++    }
++
++    pub fn len(&self) -> usize {
++        self.vectors.len()
++    }
++
++    pub fn is_empty(&self) -> bool {
++        self.vectors.is_empty()
++    }
++
++    fn put(&mut self, text: &str, vector: Vec<f32>) -> io::Result<()> {
++        debug_assert_eq!(vector.len(), self.dimension);
++        let k = key(text);
++        let mut record = Vec::with_capacity(32 + 4 * vector.len());
++        record.extend_from_slice(&k);
++        vector
++            .iter()
++            .for_each(|x| record.extend_from_slice(&x.to_le_bytes()));
++        self.file.write_all(&record)?;
++        self.vectors.insert(k, vector);
++        Ok(())
++    }
++}
++
++/// Every source-backed symbol's [`recipe::document`], hydrated through the
++/// pinned view and verified against its digest. Symbols whose bytes are not
++/// retained, do not verify or are not UTF-8 get no document (no vector).
++pub fn documents<V: ReadView + SourceProvider>(
++    view: &V,
++    symbols: &[EntityId],
++) -> Result<Vec<(EntityId, String)>, StoreError> {
++    let mut sources = Sources::new(view);
++    let mut out = Vec::new();
++    for chunk in symbols.chunks(MAX_REQUEST_ITEMS) {
++        for entity in view.entities(chunk)?.into_iter().flatten() {
++            let Some(source) = &entity.source else {
++                continue;
++            };
++            let Ok(bytes) = sources.file(&source.file, &source.digest)? else {
++                continue;
++            };
++            let range = source.range.start as usize..source.range.end as usize;
++            let Some(text) = bytes.get(range).and_then(|b| std::str::from_utf8(b).ok()) else {
++                continue;
++            };
++            if let Some(document) = recipe::document(&entity, text) {
++                out.push((entity.id.clone(), document));
++            }
++        }
++    }
++    Ok(out)
++}
++
++/// One generation's vectors in one space, for exact search.
++pub struct SemanticIndex {
++    pub snapshot: SnapshotKey,
++    pub space: EmbeddingSpace,
++    /// What the runner served when the index was built; see
++    /// [`EmbeddingProvider::served`].
++    served: Option<String>,
++    ids: Vec<EntityId>,
++    vectors: Vec<f32>,
++}
++
++impl SemanticIndex {
++    pub fn len(&self) -> usize {
++        self.ids.len()
++    }
++
++    pub fn is_empty(&self) -> bool {
++        self.ids.is_empty()
++    }
++
++    /// Exact cosine top-`depth` for `query` (vectors are normalized, so the
++    /// dot product), ties by [`EntityId`]. Refuses to embed the query if the
++    /// runner no longer serves what the index was built with.
++    pub fn search(
++        &self,
++        provider: &dyn EmbeddingProvider,
++        query: &Query,
++        depth: usize,
++        timeout: Duration,
++    ) -> Result<SemanticResult, EmbedError> {
++        let deadline = Instant::now() + timeout;
++        if self.served.is_some() && provider.served(timeout)? != self.served {
++            return Err(EmbedError::Rejected(
++                "runner now serves another model".into(),
++            ));
++        }
++        let prompt = self.space.query_prompt.as_deref().unwrap_or_default();
++        let text = vec![format!("{prompt}{}", recipe::query(&query.text))];
++        let never = AtomicBool::new(false);
++        let q = embed_all(provider, &self.space, 1, &text, deadline, &never)?.remove(0);
++        let dimension = q.len();
++        let mut scored: Vec<(f64, usize)> = self
++            .vectors
++            .chunks_exact(dimension)
++            .enumerate()
++            .map(|(i, v)| (v.iter().zip(&q).map(|(a, b)| a * b).sum::<f32>() as f64, i))
++            .collect();
++        scored.sort_by(|a, b| {
++            b.0.total_cmp(&a.0)
++                .then_with(|| self.ids[a.1].cmp(&self.ids[b.1]))
++        });
++        let truncated = scored.len() > depth;
++        scored.truncate(depth);
++        let digest = self.space.model_digest.as_deref().unwrap_or("unverified");
++        Ok(SemanticResult {
++            snapshot: self.snapshot.clone(),
++            scorer: format!(
++                "cosine:{}@{}",
++                self.space.model,
++                &digest[..digest.len().min(19)]
++            ),
++            hits: scored
++                .into_iter()
++                .map(|(s, i)| (self.ids[i].clone(), s))
++                .collect(),
++            truncated,
++        })
++    }
++
++    /// The semantic channel for one request: hits fused by `fusion`, or the
++    /// visible reason there are none. Never fails the request.
++    pub fn channel(
++        &self,
++        provider: &dyn EmbeddingProvider,
++        query: &Query,
++        fusion: Fusion,
++        timeout: Duration,
++    ) -> Semantic {
++        match self.search(provider, query, fusion.depth(), timeout) {
++            Ok(result) => Semantic::Ran { result, fusion },
++            Err(e) => ChannelState::Unavailable(format!("query embedding: {e:?}")).into(),
++        }
++    }
++}
++
++#[derive(Debug, Clone, PartialEq, Eq)]
++pub struct BuildStats {
++    pub documents: usize,
++    pub unique_texts: usize,
++    pub cached: usize,
++    pub embedded: usize,
++    pub seconds_embedding: u64,
++}
++
++#[derive(Debug, Default)]
++struct Progress {
++    done: AtomicUsize,
++    total: AtomicUsize,
++}
++
++/// A generation's index being built on its own thread. Nothing waits on
++/// it: [`Build::pending`] is the channel state requests use meanwhile.
++pub struct Build {
++    progress: Arc<Progress>,
++    cancel: Arc<AtomicBool>,
++    handle: JoinHandle<Result<(SemanticIndex, BuildStats), String>>,
++}
++
++impl Build {
++    /// Probes `provider` and refuses to embed unless it serves exactly
++    /// `space`; then embeds what `cache_root`'s cache lacks, `batch_timeout`
++    /// per batch, storing each batch as it lands so a cancelled or failed
++    /// build keeps its progress.
++    pub fn spawn(
++        provider: Box<dyn EmbeddingProvider + Send>,
++        space: EmbeddingSpace,
++        cache_root: PathBuf,
++        snapshot: SnapshotKey,
++        documents: Vec<(EntityId, String)>,
++        batch_timeout: Duration,
++    ) -> Build {
++        let progress = Arc::new(Progress::default());
++        let cancel = Arc::new(AtomicBool::new(false));
++        let (p, c) = (progress.clone(), cancel.clone());
++        let handle = std::thread::spawn(move || {
++            let probe = provider
++                .probe(batch_timeout)
++                .map_err(|e| format!("probe: {e:?}"))?;
++            match space.compare(&probe.space) {
++                Compatibility::Same => {}
++                other => return Err(format!("runner space is {other:?}: {:?}", probe.space)),
++            }
++            let served = provider
++                .served(batch_timeout)
++                .map_err(|e| format!("{e:?}"))?;
++            let mut cache = VectorCache::open(&cache_root, &space).map_err(|e| e.to_string())?;
++            let prompt = space.document_prompt.clone().unwrap_or_default();
++            let texts: Vec<String> = documents
++                .iter()
++                .map(|(_, d)| format!("{prompt}{d}"))
++                .collect();
++            let mut unique: BTreeMap<Key, &String> = BTreeMap::new();
++            for t in &texts {
++                unique.entry(key(t)).or_insert(t);
++            }
++            let missing: Vec<String> = unique
++                .iter()
++                .filter(|(k, _)| !cache.vectors.contains_key(*k))
++                .map(|(_, t)| (*t).clone())
++                .collect();
++            p.total.store(missing.len(), Ordering::Relaxed);
++            let started = Instant::now();
++            for batch in missing.chunks(probe.max_batch.max(1)) {
++                let vectors = embed_all(
++                    provider.as_ref(),
++                    &space,
++                    probe.max_batch,
++                    batch,
++                    Instant::now() + batch_timeout,
++                    &c,
++                )
++                .map_err(|e| format!("embedding: {e:?}"))?;
++                for (text, vector) in batch.iter().zip(vectors) {
++                    cache.put(text, vector).map_err(|e| e.to_string())?;
++                }
++                p.done.fetch_add(batch.len(), Ordering::Relaxed);
++            }
++            let stats = BuildStats {
++                documents: documents.len(),
++                unique_texts: unique.len(),
++                cached: unique.len() - missing.len(),
++                embedded: missing.len(),
++                seconds_embedding: started.elapsed().as_secs(),
++            };
++            let mut vectors = Vec::with_capacity(texts.len() * space.dimension as usize);
++            for t in &texts {
++                vectors.extend_from_slice(&cache.vectors[&key(t)]);
++            }
++            let index = SemanticIndex {
++                snapshot,
++                space,
++                served,
++                ids: documents.into_iter().map(|(id, _)| id).collect(),
++                vectors,
++            };
++            Ok((index, stats))
++        });
++        Build {
++            progress,
++            cancel,
++            handle,
++        }
++    }
++
++    /// (embedded, to embed) so far.
++    pub fn progress(&self) -> (usize, usize) {
++        let p = &self.progress;
++        (
++            p.done.load(Ordering::Relaxed),
++            p.total.load(Ordering::Relaxed),
++        )
++    }
++
++    pub fn cancel(&self) {
++        self.cancel.store(true, Ordering::Relaxed);
++    }
++
++    pub fn is_finished(&self) -> bool {
++        self.handle.is_finished()
++    }
++
++    /// The channel state for requests while the build runs.
++    pub fn pending(&self) -> ChannelState {
++        let reason = match self.progress() {
++            // Still probing the runner or loading the cache.
++            (_, 0) => "vectors building".to_owned(),
++            (done, total) => format!("vectors building {done}/{total}"),
++        };
++        ChannelState::Unavailable(reason)
++    }
++
++    pub fn join(self) -> Result<(SemanticIndex, BuildStats), String> {
++        self.handle
++            .join()
++            .map_err(|_| "build thread panicked".to_owned())?
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use std::sync::Mutex;
++    use std::sync::mpsc::{Receiver, Sender, channel};
++
++    use oxide_kernel::id::{DerivationId, RepoId, RepoPath, Segment, SnapshotId, SymbolId};
++
++    use super::*;
++    use crate::embedding::{Endpoint, Metric, Probe, Runner};
++
++    const SECOND: Duration = Duration::from_secs(1);
++
++    fn space() -> EmbeddingSpace {
++        EmbeddingSpace {
++            runner: Runner::LlamaCpp,
++            model: "fake".into(),
++            model_digest: Some("sha256:aaa".into()),
++            quantization: Some("q4".into()),
++            dimension: 2,
++            metric: Metric::Cosine,
++            normalized: Some(true),
++            pooling: Some("cls".into()),
++            tokenizer: Some("t".into()),
++            query_prompt: Some("query: ".into()),
++            document_prompt: Some("document: ".into()),
++            document_recipe: recipe::SEMANTIC_RECIPE.into(),
++            runner_version: Some("b1".into()),
++            max_tokens: Some(512),
++            canary: Some(vec![1]),
++        }
++    }
++
++    fn key() -> SnapshotKey {
++        SnapshotKey {
++            repo: RepoId::new("r").unwrap(),
++            snapshot: SnapshotId::new("s1").unwrap(),
++            derivation: DerivationId::new("d1").unwrap(),
++        }
++    }
++
++    fn sym(name: &str) -> EntityId {
++        let path = vec![Segment {
++            name: name.into(),
++            ordinal: 0,
++        }];
++        EntityId::Symbol(SymbolId::new(RepoPath::new("a.py").unwrap(), path).unwrap())
++    }
++
++    /// Texts mentioning "x" point along x, others along y; one vector per
++    /// call is counted. With `gate`, every batch waits for a permit.
++    struct Fake {
++        space: EmbeddingSpace,
++        served: Arc<Mutex<String>>,
++        calls: Arc<AtomicUsize>,
++        gate: Option<Mutex<Receiver<()>>>,
++        endpoint: Endpoint,
++    }
++
++    fn fake(served: &Arc<Mutex<String>>, calls: &Arc<AtomicUsize>) -> Fake {
++        Fake {
++            space: space(),
++            served: served.clone(),
++            calls: calls.clone(),
++            gate: None,
++            endpoint: Endpoint {
++                runner: Runner::LlamaCpp,
++                url: "http://127.0.0.1:1".into(),
++            },
++        }
++    }
++
++    impl EmbeddingProvider for Fake {
++        fn endpoint(&self) -> &Endpoint {
++            &self.endpoint
++        }
++        fn probe(&self, _: Duration) -> Result<Probe, EmbedError> {
++            Ok(Probe {
++                space: self.space.clone(),
++                max_batch: 2,
++            })
++        }
++        fn embed(&self, texts: &[String], _: Duration) -> Result<Vec<Vec<f32>>, EmbedError> {
++            if let Some(gate) = &self.gate {
++                gate.lock().unwrap().recv().unwrap();
++            }
++            self.calls.fetch_add(texts.len(), Ordering::Relaxed);
++            let along = |t: &String| match t.contains('x') {
++                true => vec![1.0, 0.0],
++                false => vec![0.0, 1.0],
++            };
++            Ok(texts.iter().map(along).collect())
++        }
++        fn served(&self, _: Duration) -> Result<Option<String>, EmbedError> {
++            Ok(Some(self.served.lock().unwrap().clone()))
++        }
++    }
++
++    fn docs() -> Vec<(EntityId, String)> {
++        ["bx", "ax", "cy", "dy"]
++            .iter()
++            .map(|n| (sym(n), format!("a.py\n{n}")))
++            .collect()
++    }
++
++    fn build(provider: Fake, root: &Path) -> Result<(SemanticIndex, BuildStats), String> {
++        let docs = docs();
++        Build::spawn(
++            Box::new(provider),
++            space(),
++            root.into(),
++            key(),
++            docs,
++            SECOND,
++        )
++        .join()
++    }
++
++    fn scratch(name: &str) -> PathBuf {
++        let dir =
++            std::env::temp_dir().join(format!("oxide-semantic-{name}-{}", std::process::id()));
++        let _ = std::fs::remove_dir_all(&dir);
++        dir
++    }
++
++    #[test]
++    fn builds_reuse_the_cache_and_search_is_exact_and_deterministic() {
++        let root = scratch("reuse");
++        let served = Arc::new(Mutex::new("m1|b1".to_owned()));
++        let calls = Arc::new(AtomicUsize::new(0));
++        let (index, stats) = build(fake(&served, &calls), &root).unwrap();
++        assert_eq!((stats.embedded, stats.cached, index.len()), (4, 0, 4));
++        // A second build of the same documents embeds nothing.
++        let (index, stats) = build(fake(&served, &calls), &root).unwrap();
++        assert_eq!((stats.embedded, stats.cached), (0, 4));
++        assert_eq!(calls.load(Ordering::Relaxed), 4);
++
++        let provider = fake(&served, &calls);
++        let query = Query { text: "x".into() };
++        let result = index.search(&provider, &query, 3, SECOND).unwrap();
++        // Equal scores rank by EntityId; the cut is reported.
++        let ids: Vec<EntityId> = result.hits.iter().map(|(e, _)| e.clone()).collect();
++        assert_eq!(ids, [sym("ax"), sym("bx"), sym("cy")]);
++        assert!(result.truncated);
++        assert_eq!(result.snapshot, key());
++
++        // A model swapped behind the endpoint is refused, not compared.
++        *served.lock().unwrap() = "m2|b1".into();
++        let fusion = Fusion::Append { depth: 2 };
++        assert!(matches!(
++            index.channel(&provider, &query, fusion, SECOND),
++            Semantic::Absent(ChannelState::Unavailable(_))
++        ));
++        let _ = std::fs::remove_dir_all(&root);
++    }
++
++    #[test]
++    fn a_torn_record_is_dropped_and_other_spaces_never_share_vectors() {
++        let root = scratch("torn");
++        let served = Arc::new(Mutex::new("m1|b1".to_owned()));
++        let calls = Arc::new(AtomicUsize::new(0));
++        build(fake(&served, &calls), &root).unwrap();
++        let cache = VectorCache::open(&root, &space()).unwrap();
++        assert_eq!(cache.len(), 4);
++        drop(cache);
++        let dir = std::fs::read_dir(&root)
++            .unwrap()
++            .next()
++            .unwrap()
++            .unwrap()
++            .path();
++        let file = OpenOptions::new()
++            .append(true)
++            .open(dir.join("vectors.bin"))
++            .unwrap();
++        file.set_len(file.metadata().unwrap().len() - 3).unwrap();
++        drop(file);
++        assert_eq!(VectorCache::open(&root, &space()).unwrap().len(), 3);
++
++        let other = EmbeddingSpace {
++            runner_version: Some("b2".into()),
++            ..space()
++        };
++        assert!(VectorCache::open(&root, &other).unwrap().is_empty());
++        let _ = std::fs::remove_dir_all(&root);
++    }
++
++    #[test]
++    fn builds_run_in_the_background_cancel_and_keep_their_progress() {
++        let root = scratch("cancel");
++        let served = Arc::new(Mutex::new("m1|b1".to_owned()));
++        let calls = Arc::new(AtomicUsize::new(0));
++        let (permit, gate): (Sender<()>, Receiver<()>) = channel();
++        let provider = Fake {
++            gate: Some(Mutex::new(gate)),
++            ..fake(&served, &calls)
++        };
++        let docs: Vec<(EntityId, String)> = ["ax", "bx", "cy", "dy", "ex", "fy"]
++            .iter()
++            .map(|n| (sym(n), format!("a.py\n{n}")))
++            .collect();
++        let build = Build::spawn(
++            Box::new(provider),
++            space(),
++            root.clone(),
++            key(),
++            docs,
++            SECOND,
++        );
++        permit.send(()).unwrap();
++        let started = Instant::now();
++        while build.progress() != (2, 6) {
++            assert!(started.elapsed() < 10 * SECOND, "first batch never landed");
++            std::thread::yield_now();
++        }
++        assert!(!build.is_finished());
++        assert_eq!(
++            build.pending(),
++            ChannelState::Unavailable("vectors building 2/6".into())
++        );
++        build.cancel();
++        // The batch already waiting finishes; the third never starts.
++        permit.send(()).unwrap();
++        let error = build.join().err().unwrap();
++        assert!(error.contains("Cancelled"), "{error}");
++        drop(permit);
++        assert_eq!(VectorCache::open(&root, &space()).unwrap().len(), 4);
++
++        // A runner serving another space is refused before any embedding.
++        let mut drifted = fake(&served, &calls);
++        drifted.space.canary = Some(vec![999]);
++        let before = calls.load(Ordering::Relaxed);
++        assert!(build_with(drifted, &root).is_err());
++        assert_eq!(calls.load(Ordering::Relaxed), before);
++        let _ = std::fs::remove_dir_all(&root);
++    }
++
++    fn build_with(provider: Fake, root: &Path) -> Result<(SemanticIndex, BuildStats), String> {
++        build(provider, root)
++    }
++}
+diff --git a/oxide_kernel/crates/runtime/tests/common/phase5.rs b/oxide_kernel/crates/runtime/tests/common/phase5.rs
+index d02a4a5..9cc7e67 100644
+--- a/oxide_kernel/crates/runtime/tests/common/phase5.rs
++++ b/oxide_kernel/crates/runtime/tests/common/phase5.rs
+@@ -291,7 +291,7 @@ pub fn request(input: &TaskInput<'_>, tokens: u32) -> ContextRequest {
+             tokens,
+             counter: counter(),
+         },
+-        semantic: ChannelState::Unconfigured,
++        semantic: ChannelState::Unconfigured.into(),
+     }
+ }
+ 
+@@ -801,6 +801,8 @@ pub struct Indexed {
+     pub files: usize,
+     pub skipped: usize,
+     pub entities: usize,
++    /// Source-backed symbols of the generation, in batch order.
++    pub symbols: Vec<EntityId>,
+     pub index_seconds: f64,
+     pub dir: PathBuf,
+ }
+@@ -829,6 +831,12 @@ pub fn index_task(t: &Value, data: &Path) -> Indexed {
+     let spans = t["gold"].as_array().unwrap();
+     let (gold, span_counts) = map_gold(&source, &batch.entities, spans, GOLD_SOURCE);
+     let entities = batch.entities.len();
++    let symbols = batch
++        .entities
++        .iter()
++        .filter(|e| matches!(e.id, EntityId::Symbol(_)) && e.source.is_some())
++        .map(|e| e.id.clone())
++        .collect();
+     let dir = data.join("stores").join(id);
+     let _ = std::fs::remove_dir_all(&dir);
+     let mut store = LadybugStore::with_buffer_pool(&dir, BUFFER_POOL).unwrap();
+@@ -846,6 +854,7 @@ pub fn index_task(t: &Value, data: &Path) -> Indexed {
+         files: source.files.len(),
+         skipped: source.skipped.len(),
+         entities,
++        symbols,
+         index_seconds: started.elapsed().as_secs_f64(),
+         dir,
+     }
+diff --git a/oxide_kernel/crates/runtime/tests/context.rs b/oxide_kernel/crates/runtime/tests/context.rs
+index 624ad7c..8b87245 100644
+--- a/oxide_kernel/crates/runtime/tests/context.rs
++++ b/oxide_kernel/crates/runtime/tests/context.rs
+@@ -50,7 +50,7 @@ fn ask(text: &str, symbols: &[&str], tokens: u32) -> ContextRequest {
+             tokens,
+             counter: counter(),
+         },
+-        semantic: ChannelState::Unconfigured,
++        semantic: ChannelState::Unconfigured.into(),
+     }
+ }
+ 
+diff --git a/oxide_kernel/crates/runtime/tests/phase3_eval.rs b/oxide_kernel/crates/runtime/tests/phase3_eval.rs
+index 9abe14b..7769300 100644
+--- a/oxide_kernel/crates/runtime/tests/phase3_eval.rs
++++ b/oxide_kernel/crates/runtime/tests/phase3_eval.rs
+@@ -216,7 +216,7 @@ fn phase3_frozen_baseline_reproduces() {
+         let mut per_task = serde_json::Map::new();
+         for (label, config) in RETRIEVAL {
+             let semantic = ChannelState::Unconfigured;
+-            let set = retrieve::retrieve(&view, &query, &context, semantic, config).unwrap();
++            let set = retrieve::retrieve(&view, &query, &context, semantic.into(), config).unwrap();
+             let routed = run_route(&view, &set, &task.text);
+             assert_eq!((&set.snapshot, &routed.snapshot), (&key, &key));
+             // Fake/real parity: the same entry points route identically.
+diff --git a/oxide_kernel/crates/runtime/tests/phase4_eval.rs b/oxide_kernel/crates/runtime/tests/phase4_eval.rs
+index 6a7c200..80622de 100644
+--- a/oxide_kernel/crates/runtime/tests/phase4_eval.rs
++++ b/oxide_kernel/crates/runtime/tests/phase4_eval.rs
+@@ -155,7 +155,7 @@ fn phase4_frozen_baseline_reproduces() {
+                         tokens,
+                         counter: counter(),
+                     },
+-                    semantic: ChannelState::Unconfigured,
++                    semantic: ChannelState::Unconfigured.into(),
+                 };
+                 let mut control = Constant;
+                 let provider = constant.then_some(&mut control as &mut dyn DecisionProvider);
+diff --git a/oxide_kernel/crates/runtime/tests/phase5_contextbench.rs b/oxide_kernel/crates/runtime/tests/phase5_contextbench.rs
+index b3a8c8e..7142e0f 100644
+--- a/oxide_kernel/crates/runtime/tests/phase5_contextbench.rs
++++ b/oxide_kernel/crates/runtime/tests/phase5_contextbench.rs
+@@ -94,6 +94,7 @@ fn build(
+         entities,
+         index_seconds,
+         dir: store_dir,
++        ..
+     } = phase5::index_task(t, data);
+     let view = store.open(&key).unwrap();
+     let input = TaskInput {
+diff --git a/oxide_kernel/crates/runtime/tests/phase5_decisionbench.rs b/oxide_kernel/crates/runtime/tests/phase5_decisionbench.rs
+index 00d7906..fbb3fb0 100644
+--- a/oxide_kernel/crates/runtime/tests/phase5_decisionbench.rs
++++ b/oxide_kernel/crates/runtime/tests/phase5_decisionbench.rs
+@@ -300,7 +300,7 @@ fn ask(tokens: u32) -> ContextRequest {
+             tokens,
+             counter: counter(),
+         },
+-        semantic: ChannelState::Unconfigured,
++        semantic: ChannelState::Unconfigured.into(),
+     }
+ }
+ 
+diff --git a/oxide_kernel/crates/runtime/tests/semantic_routing.rs b/oxide_kernel/crates/runtime/tests/semantic_routing.rs
+new file mode 100644
+index 0000000..c11563d
+--- /dev/null
++++ b/oxide_kernel/crates/runtime/tests/semantic_routing.rs
+@@ -0,0 +1,600 @@
++//! Semantic evidence and graph-aware routing end to end
++//! (docs/semantic-eval/README.md, preregistration.md): lexical only,
++//! semantic only, hybrid under the existing policy, hybrid with
++//! channel-aware fusion and judging, a body-text BM25 control, and the
++//! experimental PPR best-first router against BFS, all through the real
++//! pipeline (routing, selection, packing) with the same candidate and work
++//! budgets. Dev split only. Opt-in and machine-local; it never calls JEV.
++//!
++//! Lexical configurations run on every dev task. Semantic ones run on the
++//! repositories in `OXIDE_SEMANTIC_REPOS`: a task's first run builds its
++//! vectors from the persistent cache (embedding what the cache lacks on a
++//! capped llama-server) and records the query's ranked hits; later runs
++//! replay them and need no runner:
++//!
++//! ```text
++//! OXIDE_CB_WORKTREES=<dir>:<dir> OXIDE_SEMANTIC_REPOS=sphinx-doc/sphinx \
++//!   OXIDE_SEMANTIC_CANARY_LFM=<pinned> [OXIDE_SEMANTIC_URL=http://127.0.0.1:8091] \
++//!   cargo test --release -p oxide-runtime --test semantic_routing -- --ignored --nocapture
++//! ```
++
++mod common;
++
++use std::collections::{BTreeMap, BTreeSet, HashMap};
++use std::path::{Path, PathBuf};
++use std::time::{Duration, Instant};
++
++use common::phase5::{self, Indexed, TaskInput, data_dir, stages};
++use common::{gold_sources, metrics, repo_root, rss_peak_kib};
++use oxide_kernel::capsule::{Capsule, Question};
++use oxide_kernel::context::{ContextConfig, ContextRun, baseline, build_context};
++use oxide_kernel::decision::{
++    Allowance, DecisionProvider, Heuristic, Judgment, ProviderError, ProviderIdentity, Verdict,
++};
++use oxide_kernel::id::EntityId;
++use oxide_kernel::lexical::terms;
++use oxide_kernel::ppr::Ppr;
++use oxide_kernel::query::Query;
++use oxide_kernel::retrieve::{
++    BASELINE, Channel, ChannelState, Fusion, RetrievalConfig, Semantic, retrieve,
++};
++use oxide_kernel::route::{RouteRequest, Strategy, Visit, route};
++use oxide_kernel::semantic::{self as recipe, SemanticResult};
++use oxide_kernel::store::KnowledgeStore;
++use oxide_runtime::decisionbench::Split;
++use oxide_runtime::embedding::{EmbeddingSpace, Endpoint, LlamaCpp, Metric, Runner};
++use oxide_runtime::semantic::{Build, documents};
++use serde_json::{Value, json};
++
++const BUDGETS: [u32; 3] = [256, 1024, 4096];
++/// Semantic hits every fused configuration reads: the lexical limit.
++const DEPTH: usize = 20;
++/// Hits kept per task for channel-only Recall@K and MRR.
++const RANKED: usize = 100;
++const QUERY_TIMEOUT: Duration = Duration::from_secs(30);
++const BATCH_TIMEOUT: Duration = Duration::from_secs(300);
++/// Preregistered PPR parameters: the usual restart probability, and the
++/// frozen RRF constant or a top-heavy prior.
++const PPR_FLAT: Ppr = Ppr { alpha: 0.15, k: 60.0 };
++const PPR_TOP: Ppr = Ppr { alpha: 0.15, k: 1.0 };
++
++/// LiquidAI/LFM2.5-Embedding-350M-GGUF Q4_K_M (LFM Open License v1.0):
++/// explicit identity, never discovered.
++fn space() -> EmbeddingSpace {
++    let canary = std::env::var("OXIDE_SEMANTIC_CANARY_LFM")
++        .ok()
++        .map(|text| text.split(',').map(|x| x.trim().parse().unwrap()).collect());
++    EmbeddingSpace {
++        runner: Runner::LlamaCpp,
++        model: "LFM2.5-Embedding-350M".into(),
++        model_digest: Some(
++            "sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a".into(),
++        ),
++        quantization: Some("Q4_K - Medium".into()),
++        dimension: 1024,
++        metric: Metric::Cosine,
++        normalized: Some(true),
++        pooling: Some("cls".into()),
++        tokenizer: Some("lfm2".into()),
++        query_prompt: Some("query: ".into()),
++        document_prompt: Some("document: ".into()),
++        document_recipe: recipe::SEMANTIC_RECIPE.into(),
++        runner_version: Some("b11540-1e6f04a75".into()),
++        max_tokens: Some(512),
++        canary,
++    }
++}
++
++/// Candidate channel-aware relevance prior: an entry point from any scored
++/// channel gets the heuristic's lexical rank prior at its best rank in any
++/// channel (ranks only: channel scores are never compared). Everything
++/// else is the heuristic's, so lexical-only runs are unchanged.
++struct Channels;
++
++impl Channels {
++    fn value(c: &Capsule) -> f64 {
++        let relevance = matches!(c.question, Question::Relevance | Question::Necessity);
++        let container = matches!(c.kind.as_str(), "repository" | "module" | "file");
++        match c.channels.iter().map(|e| e.rank).min() {
++            Some(best) if relevance && !container && c.seeds.is_empty() => {
++                (0.85 - 0.025 * best.saturating_sub(1) as f64).max(0.5)
++            }
++            _ => Heuristic::value(c),
++        }
++    }
++}
++
++impl DecisionProvider for Channels {
++    fn identity(&self) -> ProviderIdentity {
++        ProviderIdentity {
++            name: "heuristic-channels".into(),
++            version: "candidate".into(),
++        }
++    }
++
++    fn supports(&self, _: Question) -> bool {
++        true
++    }
++
++    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
++        Ok(capsules
++            .iter()
++            .map(|c| {
++                let value = Self::value(c);
++                Judgment::of(c, Verdict::Value { value, confidence: None })
++            })
++            .collect())
++    }
++}
++
++/// BM25 over the same documents the model embeds, with OXIDE's lexical
++/// terms and the production FTS parameters: the control for "the channel
++/// sees symbol bodies", separating that from what the model adds.
++fn bm25_control(docs: &[(EntityId, String)], query: &str, depth: usize) -> Vec<(EntityId, f64)> {
++    let (k1, b) = (1.2, 0.75);
++    let bags: Vec<HashMap<String, f64>> = docs
++        .iter()
++        .map(|(_, d)| {
++            let mut bag = HashMap::new();
++            terms(d)
++                .into_iter()
++                .for_each(|t| *bag.entry(t).or_default() += 1.0);
++            bag
++        })
++        .collect();
++    let lengths: Vec<f64> = bags.iter().map(|b| b.values().sum()).collect();
++    let average = lengths.iter().sum::<f64>() / lengths.len().max(1) as f64;
++    let wanted: BTreeSet<String> = terms(recipe::query(query)).into_iter().collect();
++    let n = docs.len() as f64;
++    let idf: HashMap<&String, f64> = wanted
++        .iter()
++        .map(|t| {
++            let df = bags.iter().filter(|b| b.contains_key(t)).count() as f64;
++            (t, (1.0 + (n - df + 0.5) / (df + 0.5)).ln())
++        })
++        .collect();
++    let mut scored: Vec<(EntityId, f64)> = bags
++        .iter()
++        .zip(&lengths)
++        .zip(docs)
++        .filter_map(|((bag, len), (id, _))| {
++            let s: f64 = wanted
++                .iter()
++                .filter_map(|t| {
++                    let f = *bag.get(t)?;
++                    Some(idf[t] * f * (k1 + 1.0) / (f + k1 * (1.0 - b + b * len / average)))
++                })
++                .sum();
++            (s > 0.0).then(|| (id.clone(), s))
++        })
++        .collect();
++    scored.sort_by(|a, b| b.1.total_cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
++    scored.truncate(depth);
++    scored
++}
++
++/// Recall@K and MRR of `gold` in a ranked list.
++fn ranked(list: &[EntityId], gold: &BTreeSet<EntityId>) -> Value {
++    let at = |k: usize| list.iter().take(k).filter(|e| gold.contains(e)).count() as f64;
++    let n = gold.len().max(1) as f64;
++    let first = list.iter().position(|e| gold.contains(e));
++    json!({"r10": at(10) / n, "r20": at(20) / n, "r40": at(40) / n, "r100": at(100) / n,
++           "mrr": first.map_or(0.0, |p| 1.0 / (p + 1) as f64), "gold": gold.len()})
++}
++
++fn ids(hits: &[(EntityId, f64)]) -> Vec<EntityId> {
++    hits.iter().map(|(e, _)| e.clone()).collect()
++}
++
++#[derive(Clone, Copy, PartialEq)]
++enum Lane {
++    None,
++    Semantic,
++    Control,
++}
++
++#[derive(Clone, Copy, PartialEq)]
++enum Judge {
++    Heuristic,
++    Channels,
++    Fill,
++}
++
++/// Post-hoc diagnostic, not preregistered: a semantic-only entry point is
++/// valued below every lexical one but above the include floor (0.45 at
++/// rank 1, down to 0.41), so it can only use budget lexical evidence
++/// leaves; the rest is the heuristic's.
++struct Fill;
++
++impl DecisionProvider for Fill {
++    fn identity(&self) -> ProviderIdentity {
++        ProviderIdentity {
++            name: "heuristic-fill".into(),
++            version: "diagnostic".into(),
++        }
++    }
++
++    fn supports(&self, _: Question) -> bool {
++        true
++    }
++
++    fn judge(&mut self, capsules: &[Capsule]) -> Result<Vec<Judgment>, ProviderError> {
++        Ok(capsules
++            .iter()
++            .map(|c| {
++                let relevance = matches!(c.question, Question::Relevance | Question::Necessity);
++                let container = matches!(c.kind.as_str(), "repository" | "module" | "file");
++                let lexical = c.channels.iter().any(|e| e.channel == Channel::Lexical);
++                let semantic = c.channels.iter().find(|e| e.channel == Channel::Semantic);
++                let value = match semantic {
++                    Some(e) if relevance && !container && !lexical && c.seeds.is_empty() => {
++                        (0.45 - 0.0025 * e.rank.saturating_sub(1) as f64).max(0.41)
++                    }
++                    _ => Heuristic::value(c),
++                };
++                Judgment::of(c, Verdict::Value { value, confidence: None })
++            })
++            .collect())
++    }
++}
++
++struct Config {
++    label: &'static str,
++    lexical: bool,
++    lane: Lane,
++    fusion: Fusion,
++    judge: Judge,
++    strategy: Strategy,
++}
++
++fn configs() -> Vec<Config> {
++    let append = Fusion::Append { depth: DEPTH };
++    let all = Fusion::Interleave {
++        depth: DEPTH,
++        keep: 2 * DEPTH,
++    };
++    let equal = Fusion::Interleave {
++        depth: DEPTH,
++        keep: DEPTH,
++    };
++    let rrf = Fusion::Rrf {
++        k: 60,
++        lexical: 600,
++        semantic: 400,
++        depth: DEPTH,
++        keep: DEPTH,
++    };
++    let bfs = Strategy::Bfs;
++    let flat = Strategy::Ppr(PPR_FLAT);
++    let top = Strategy::Ppr(PPR_TOP);
++    let c = |label, lexical, lane, fusion, judge, strategy| Config {
++        label,
++        lexical,
++        lane,
++        fusion,
++        judge,
++        strategy,
++    };
++    use Judge::*;
++    use Lane::*;
++    vec![
++        c("lexical", true, None, append, Heuristic, bfs),
++        c("lexical/ch", true, None, append, Channels, bfs),
++        c("lexical/ppr60", true, None, append, Heuristic, flat),
++        c("lexical/ppr1", true, None, append, Heuristic, top),
++        c("semantic", false, Semantic, append, Heuristic, bfs),
++        c("semantic/ch", false, Semantic, append, Channels, bfs),
++        c("append", true, Semantic, append, Heuristic, bfs),
++        c("append/ch", true, Semantic, append, Channels, bfs),
++        c("interleave40/ch", true, Semantic, all, Channels, bfs),
++        c("interleave20/ch", true, Semantic, equal, Channels, bfs),
++        c("rrf20", true, Semantic, rrf, Heuristic, bfs),
++        c("rrf20/ch", true, Semantic, rrf, Channels, bfs),
++        c("interleave40/ch/ppr60", true, Semantic, all, Channels, flat),
++        c("interleave40/ch/ppr1", true, Semantic, all, Channels, top),
++        c("interleave40/fill", true, Semantic, all, Fill, bfs),
++        c("interleave40-control/fill", true, Control, all, Fill, bfs),
++        c("control/ch", false, Control, append, Channels, bfs),
++        c("append-control", true, Control, append, Heuristic, bfs),
++        c("interleave40-control/ch", true, Control, all, Channels, bfs),
++    ]
++}
++
++/// One task's ranked semantic hits (top [`RANKED`]) and what producing them
++/// cost, recorded on its first run so later runs replay them: entity
++/// `Debug` text and the score's f32 bits (scores are f32 cosines).
++fn semantic_hits(
++    t: &Value,
++    indexed: &Indexed,
++    docs: &[(EntityId, String)],
++    query: &Query,
++    cache: &Path,
++) -> (SemanticResult, Value) {
++    let space = space();
++    let id = t["id"].as_str().unwrap();
++    let dir = data_dir().join("semantic-eval");
++    std::fs::create_dir_all(&dir).unwrap();
++    let path = dir.join(format!("{id}.json"));
++    let fingerprint = format!("{space:?}");
++    let by_text: HashMap<String, &EntityId> =
++        docs.iter().map(|(e, _)| (format!("{e:?}"), e)).collect();
++    let replay = |r: &Value| SemanticResult {
++        snapshot: indexed.key.clone(),
++        scorer: r["scorer"].as_str().unwrap().into(),
++        hits: r["hits"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .map(|h| {
++                let entity = by_text[h[0].as_str().unwrap()].clone();
++                (entity, f32::from_bits(h[1].as_u64().unwrap() as u32) as f64)
++            })
++            .collect(),
++        truncated: r["truncated"].as_bool().unwrap(),
++    };
++    if let Ok(text) = std::fs::read_to_string(&path) {
++        let r: Value = serde_json::from_str(&text).unwrap();
++        if r["space"] == fingerprint.as_str() && r["query"] == query.text.as_str() {
++            return (replay(&r), r["cost"].clone());
++        }
++    }
++    let endpoint = Endpoint {
++        runner: Runner::LlamaCpp,
++        url: std::env::var("OXIDE_SEMANTIC_URL")
++            .unwrap_or_else(|_| "http://127.0.0.1:8091".into()),
++    };
++    let client = || LlamaCpp::new(endpoint.clone(), space.clone(), 16);
++    let build = Build::spawn(
++        Box::new(client()),
++        space.clone(),
++        cache.into(),
++        indexed.key.clone(),
++        docs.to_vec(),
++        BATCH_TIMEOUT,
++    );
++    let mut last = Instant::now();
++    while !build.is_finished() {
++        std::thread::sleep(Duration::from_millis(200));
++        if last.elapsed() > Duration::from_secs(30) {
++            eprintln!("  {id} vectors {:?}", build.progress());
++            last = Instant::now();
++        }
++    }
++    let (index, stats) = build.join().unwrap_or_else(|e| panic!("{id}: build: {e}"));
++    let client = client();
++    let timed = || {
++        let t0 = Instant::now();
++        let r = index.search(&client, query, RANKED, QUERY_TIMEOUT).unwrap();
++        (r, t0.elapsed().as_secs_f64() * 1e3)
++    };
++    let (result, first_ms) = timed();
++    let warm: Vec<f64> = (0..3).map(|_| timed().1).collect();
++    let cost = json!({"documents": stats.documents, "unique_texts": stats.unique_texts,
++                      "cached": stats.cached, "embedded": stats.embedded,
++                      "seconds_embedding": stats.seconds_embedding,
++                      "vectors_mib": (index.len() * 4 * space.dimension as usize) as f64 / 1048576.0,
++                      "query_ms_first": first_ms, "query_ms_warm": warm});
++    let hits: Vec<Value> = result
++        .hits
++        .iter()
++        .map(|(e, s)| json!([format!("{e:?}"), (*s as f32).to_bits()]))
++        .collect();
++    let record = json!({"space": fingerprint, "query": query.text, "scorer": result.scorer,
++                        "truncated": result.truncated, "cost": cost, "hits": hits});
++    std::fs::write(&path, serde_json::to_string_pretty(&record).unwrap() + "\n").unwrap();
++    // Replayed, so the first run ranks exactly like every later one.
++    (replay(&record), cost)
++}
++
++/// Retrieval and routing alone, timed: router CPU time and its frontier.
++fn route_cost(view: &impl oxide_kernel::store::ReadView, request: &oxide_kernel::context::ContextRequest, config: &ContextConfig) -> Value {
++    let t0 = Instant::now();
++    let set = retrieve(view, &request.query, &request.context, request.semantic.clone(), config.retrieval).unwrap();
++    let retrieve_ms = t0.elapsed().as_secs_f64() * 1e3;
++    let route_request = RouteRequest {
++        snapshot: set.snapshot.clone(),
++        query: request.query.clone(),
++        entry_points: set.entries.clone(),
++        limits: config.route_limits,
++        policy: config.route_policy.clone(),
++    };
++    let mut allowance = Allowance { remaining: config.judgments };
++    let t0 = Instant::now();
++    let routed = route(view, &route_request, None, &mut allowance, config.decision).unwrap();
++    let route_ms = t0.elapsed().as_secs_f64() * 1e3;
++    let w = routed.trace.work;
++    let deferred = routed.trace.steps.iter().filter(|s| matches!(s.visit, Visit::Deferred(_))).count();
++    let pruned = routed.trace.steps.iter().filter(|s| s.visit == Visit::Pruned).count();
++    json!({"retrieve_ms": retrieve_ms, "route_ms": route_ms,
++           "regions_loaded": w.regions_loaded, "adjacency_reads": w.regions_loaded,
++           "graph_preview_reads": 0, "edges_examined": w.edges_examined,
++           "edges_followed": w.edges_followed, "revisits": w.revisits,
++           "max_depth_reached": w.max_depth_reached, "deferred": deferred, "pruned": pruned,
++           "frontier_regions": routed.trace.steps.len(), "stopped_by": format!("{:?}", routed.trace.stopped_by)})
++}
++
++fn measure(t: &Value, semantic_repo: bool, cache: &Path) -> Value {
++    let indexed = phase5::index_task(t, &data_dir());
++    let view = indexed.store.open(&indexed.key).unwrap();
++    let query = Query {
++        text: t["query"].as_str().unwrap().into(),
++    };
++    let gold = indexed.gold.clone();
++    let input = TaskInput {
++        id: t["id"].as_str().unwrap(),
++        repository: t["repo"].as_str().unwrap(),
++        split: Split::Dev,
++        query: &query.text,
++        symbols: Vec::new(),
++        gold: gold.clone(),
++    };
++    let all: Vec<EntityId> = gold.verified.iter().cloned().collect();
++    let all_sources = gold_sources(&view, &all);
++    let gold_symbols: Vec<EntityId> = all
++        .iter()
++        .filter(|g| matches!(g, EntityId::Symbol(_)))
++        .cloned()
++        .collect();
++    let symbol_sources = gold_sources(&view, &gold_symbols);
++    let gold_set: BTreeSet<EntityId> = gold_symbols.iter().cloned().collect();
++
++    let mut out = json!({"task": input.id, "repo": input.repository,
++                         "gold": all.len(), "gold_symbols": gold_set.len()});
++    let mut lanes: Option<(SemanticResult, SemanticResult)> = None;
++    if semantic_repo {
++        let started = Instant::now();
++        let docs = documents(&view, &indexed.symbols).unwrap();
++        let documents_ms = started.elapsed().as_secs_f64() * 1e3;
++        let embedded: BTreeSet<&EntityId> = docs.iter().map(|(e, _)| e).collect();
++        let (semantic, cost) = semantic_hits(t, &indexed, &docs, &query, cache);
++        let started = Instant::now();
++        let control = SemanticResult {
++            snapshot: indexed.key.clone(),
++            scorer: "control:bm25-body;oxide-terms;k1=1.2;b=0.75".into(),
++            hits: bm25_control(&docs, &query.text, RANKED),
++            truncated: true,
++        };
++        let control_ms = started.elapsed().as_secs_f64() * 1e3;
++        let lexical_hits: BTreeSet<EntityId> = {
++            let request = phase5::request(&input, 1024);
++            let run = build_context(&view, &view, &request, &baseline(), None).unwrap();
++            run.candidates.entries.iter().map(|e| e.entity.clone()).collect()
++        };
++        let unique = |hits: &[(EntityId, f64)]| {
++            let top = ids(hits).into_iter().take(DEPTH);
++            top.filter(|e| gold_set.contains(e) && !lexical_hits.contains(e)).count()
++        };
++        out["gold_symbols_embedded"] = json!(gold_set.iter().filter(|g| embedded.contains(g)).count());
++        out["channel"] = json!({"semantic": ranked(&ids(&semantic.hits), &gold_set),
++            "control": ranked(&ids(&control.hits), &gold_set),
++            "unique_gold_at_20": {"semantic": unique(&semantic.hits), "control": unique(&control.hits)}});
++        out["semantic_cost"] = json!({"documents_ms": documents_ms, "control_ms": control_ms, "channel": cost});
++        lanes = Some((semantic, control));
++    }
++
++    let mut rows = BTreeMap::new();
++    let mut packed_by: BTreeMap<&str, BTreeSet<EntityId>> = BTreeMap::new();
++    for c in configs() {
++        let channel: Semantic = match (c.lane, &lanes) {
++            (Lane::None, _) => ChannelState::Unconfigured.into(),
++            (_, None) => continue,
++            (Lane::Semantic, Some((s, _))) => Semantic::Ran { result: s.clone(), fusion: c.fusion },
++            (Lane::Control, Some((_, k))) => Semantic::Ran { result: k.clone(), fusion: c.fusion },
++        };
++        let mut config = baseline();
++        config.retrieval = RetrievalConfig { lexical: c.lexical, ..BASELINE };
++        config.route_policy.strategy = c.strategy;
++        let mut row = json!({});
++        for budget in BUDGETS {
++            let mut request = phase5::request(&input, budget);
++            request.semantic = channel.clone();
++            let (mut channels, mut fill) = (Channels, Fill);
++            let provider: Option<&mut dyn DecisionProvider> = match c.judge {
++                Judge::Heuristic => None,
++                Judge::Channels => Some(&mut channels),
++                Judge::Fill => Some(&mut fill),
++            };
++            let t0 = Instant::now();
++            let run: ContextRun = build_context(&view, &view, &request, &config, provider).unwrap();
++            let ms = t0.elapsed().as_secs_f64() * 1e3;
++            assert!(run.bundle.used_tokens <= budget);
++            let m = metrics(&all, &all_sources, &run);
++            let keep = ["required_symbol_recall", "routed_gold_coverage", "selection_loss", "packing_loss"];
++            let mut cell: serde_json::Map<String, Value> =
++                keep.iter().map(|k| (k.to_string(), m[*k].clone())).collect();
++            cell.insert("stages".into(), stages(&run, &gold_symbols, &symbol_sources));
++            cell.insert("latency_ms".into(), json!(ms));
++            row[format!("@{budget}")] = Value::Object(cell);
++            if budget == 1024 {
++                let entries: Vec<EntityId> = run.candidates.entries.iter().map(|e| e.entity.clone()).collect();
++                let packed: BTreeSet<EntityId> = gold_symbols
++                    .iter()
++                    .zip(&symbol_sources)
++                    .filter(|(_, s)| run.bundle.items.iter().any(|i| common::covers(&i.source, s)))
++                    .map(|(g, _)| g.clone())
++                    .collect();
++                packed_by.insert(c.label, packed);
++                row["entries"] = ranked(&entries, &gold_set);
++                row["entry_count"] = json!(entries.len());
++                row["fusion_omitted"] = json!(run.candidates.fusion_omitted);
++                row["channels"] = json!(format!("{:?}", run.candidates.channels));
++                row["route"] = route_cost(&view, &request, &config);
++            }
++        }
++        rows.insert(c.label, row);
++    }
++    // The channel-aware judge must leave lexical-only runs untouched.
++    assert_eq!(packed_by["lexical"], packed_by["lexical/ch"], "{}", input.id);
++    let base = &packed_by["lexical"];
++    let deltas: BTreeMap<&str, Value> = packed_by
++        .iter()
++        .map(|(label, with)| {
++            let gained = with.iter().filter(|g| !base.contains(*g)).count();
++            let lost = base.iter().filter(|g| !with.contains(*g)).count();
++            (*label, json!({"packed_gold_gained": gained, "packed_gold_lost": lost}))
++        })
++        .collect();
++    out["configs"] = json!(rows);
++    out["packed_deltas_at_1024"] = json!(deltas);
++    out["lexical_index_seconds"] = json!(indexed.index_seconds);
++    out["entities"] = json!(indexed.entities);
++    out["peak_rss_kib"] = json!(rss_peak_kib());
++    drop(view);
++    let dir = indexed.dir.clone();
++    drop(indexed);
++    let _ = std::fs::remove_dir_all(&dir);
++    out
++}
++
++fn dev_tasks() -> Vec<Value> {
++    let docs = repo_root().join("docs/phase-5/decisionbench-v1");
++    let read = |f: &str| -> Value {
++        serde_json::from_str(&std::fs::read_to_string(docs.join(f)).unwrap()).unwrap()
++    };
++    let splits: BTreeMap<String, Split> =
++        serde_json::from_value(read("splits.json")["repositories"].clone()).unwrap();
++    let spec = read("contextbench-tasks.json");
++    spec["tasks"]
++        .as_array()
++        .unwrap()
++        .iter()
++        // Dev only: calibration and test stay sealed.
++        .filter(|t| splits[t["repo"].as_str().unwrap()] == Split::Dev)
++        .cloned()
++        .collect()
++}
++
++#[test]
++#[ignore = "machine-local: needs ContextBench worktrees and recorded hits or a llama-server"]
++fn semantic_routing() {
++    let repos: Vec<String> = std::env::var("OXIDE_SEMANTIC_REPOS")
++        .map(|r| r.split(',').map(str::to_owned).collect())
++        .unwrap_or_default();
++    let skip: Vec<String> = std::env::var("OXIDE_SKIP_REPOS")
++        .map(|r| r.split(',').map(str::to_owned).collect())
++        .unwrap_or_default();
++    let cache: PathBuf = std::env::var_os("OXIDE_SEMANTIC_CACHE")
++        .map(PathBuf::from)
++        .unwrap_or_else(|| {
++            let home = std::env::var_os("HOME").unwrap();
++            Path::new(&home).join("Projects/oxide-eval-data/oxide-semantic-eval/cache")
++        });
++    let results = data_dir().join("semantic-eval").join("tasks");
++    std::fs::create_dir_all(&results).unwrap();
++    let mut tasks = Vec::new();
++    for t in dev_tasks() {
++        let repo = t["repo"].as_str().unwrap();
++        if skip.iter().any(|r| r == repo) {
++            continue;
++        }
++        let id = t["id"].as_str().unwrap();
++        eprintln!("{id}");
++        let r = measure(&t, repos.iter().any(|r| r == repo), &cache);
++        std::fs::write(results.join(format!("{id}.json")), serde_json::to_string(&r).unwrap()).unwrap();
++        tasks.push(r);
++    }
++    let summary = json!({"space": format!("{:?}", space()), "semantic_repos": repos,
++                         "skipped_repos": skip, "tasks": tasks});
++    let target = repo_root().join("docs/semantic-eval/routing.json");
++    std::fs::write(&target, serde_json::to_string_pretty(&summary).unwrap() + "\n").unwrap();
++}

@@ -7,6 +7,12 @@ the raw per-task results as `pilot-lfm.json`, and the aggregation as
 `scripts/summarize.py`. All numbers below are measured unless marked
 *inferred*.
 
+**Follow-up (same day):** channel-aware routing and selection, the channel
+re-integrated without Rig, and a PPR best-first router were evaluated
+against preregistered gates and also rejected. Semantic evidence now
+reaches the bundle but displaces lexical evidence one for one, and it adds
+nothing over a body-text BM25 control. See [routing.md](routing.md).
+
 ## Question
 
 Does an optional embedding channel give OXIDE's real pipeline (lexical
