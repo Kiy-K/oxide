@@ -210,7 +210,9 @@ steps; PPR can record a depth deferral twice.
 ## Next steps the evidence supports (not done)
 
 - A body-text lexical channel with a non-displacing admission and judge
-  rule is the cheapest candidate for the 4,096-unit gain. It needs its
+  rule is the cheapest candidate for the 4,096-unit gain. *Tested since*,
+  in [../lexical-fields-eval/](../lexical-fields-eval/README.md): no gain
+  at 1,024 units, so it was rejected. It needs its
   own preregistration and held-out confirmation; n = 4 is indicative only.
 - Semantic evidence needs calibrated per-channel value. That means a
   judge with held-out calibration (DecisionBench), not a hand-set prior.

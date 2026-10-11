@@ -1,0 +1,6200 @@
+{
+  "skipped_repos": [
+    "sympy/sympy"
+  ],
+  "split": "dev",
+  "tasks": [
+    {
+      "body": {
+        "body_bytes_median": 291.0,
+        "body_terms_mean_2048": 62.57001554330931,
+        "entities": 8897,
+        "symbols_with_body": 7077,
+        "truncated_share": {
+          "2048": 0.05807545570156846,
+          "512": 0.32471386180584993,
+          "65536": 0.00028260562385191464
+        },
+        "vocabulary": {
+          "body_2048": 13071,
+          "body_2048_joined": 12562,
+          "name+signature+path": 12998
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.5,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 22.857132,
+            "warm_ms": 16.286747000000002
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.030303030303030304,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.5512550000000003,
+            "warm_ms": 2.337414
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 6,
+              "packed": 0,
+              "planned": 0,
+              "routed": 6
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 6,
+              "packed": 0,
+              "planned": 0,
+              "routed": 6
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 6,
+              "packed": 3,
+              "planned": 4,
+              "routed": 6
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.1111111111111111,
+            "r10": 0.16666666666666666,
+            "r100": 0.8333333333333334,
+            "r20": 0.16666666666666666
+          },
+          "entries": {
+            "mrr": 0.1111111111111111,
+            "r10": 0.16666666666666666,
+            "r100": 0.16666666666666666,
+            "r20": 0.16666666666666666
+          },
+          "latency": {
+            "cold_ms": 2.633245,
+            "warm_ms": 2.210605
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 1
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 3.0123480000000002,
+            "warm_ms": 2.806482
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 2.901961,
+            "warm_ms": 2.568251
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 3,
+              "routed": 5
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 2,
+              "routed": 5
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 3,
+              "planned": 3,
+              "routed": 5
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 0.5,
+            "r20": 0.5
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 0.5,
+            "r20": 0.5
+          },
+          "latency": {
+            "cold_ms": 2.984545,
+            "warm_ms": 2.701945
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 3
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 2.8256140000000003,
+            "warm_ms": 2.496546
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.16666666666666666,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.16666666666666666,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 3.115437,
+            "warm_ms": 2.801345
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 3.072493,
+            "warm_ms": 2.801413
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 6,
+              "packed": 2,
+              "planned": 3,
+              "routed": 6
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 6,
+              "packed": 1,
+              "planned": 2,
+              "routed": 6
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 6,
+              "packed": 3,
+              "planned": 3,
+              "routed": 6
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 0.6666666666666666,
+            "r20": 0.5
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 0.5,
+            "r20": 0.5
+          },
+          "latency": {
+            "cold_ms": 3.04351,
+            "warm_ms": 2.8185
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 3
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 8.879114000000001,
+            "warm_ms": 6.5264
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 2
+        }
+      },
+      "cost": {
+        "a_cold_ms": 22.857132,
+        "a_warm_ms": 16.286747000000002,
+        "body_build_ms": 118.03264700000001,
+        "body_index_bytes_2048": 1882066,
+        "fields_ms": 853.953959,
+        "hydrate_ms": 16.854129999999998,
+        "index_seconds": 3.364330722,
+        "meta_build_ms": 9.513067,
+        "meta_index_bytes": 1203642,
+        "rss_growth_kib": 18948,
+        "store_bytes": 74819552
+      },
+      "gold": 6,
+      "gold_symbols": 6,
+      "peak_rss_kib": 300236,
+      "query_terms": 107,
+      "repo": "sphinx-doc/sphinx",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__5462d419"
+    },
+    {
+      "body": {
+        "body_bytes_median": 308.0,
+        "body_terms_mean_2048": 65.31934860612752,
+        "entities": 9207,
+        "symbols_with_body": 7246,
+        "truncated_share": {
+          "2048": 0.060171128898702735,
+          "512": 0.339773668230748,
+          "65536": 0.0002760143527463428
+        },
+        "vocabulary": {
+          "body_2048": 13747,
+          "body_2048_joined": 13211,
+          "name+signature+path": 13839
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.022222222222222223,
+            "r10": 0.0,
+            "r100": 0.16666666666666666,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 20.661189,
+            "warm_ms": 20.500761
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 3.086614,
+            "warm_ms": 2.7098069999999996
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.125,
+            "selection_loss": 0.125,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 0,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.125,
+            "selection_loss": 0.125,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 0,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.125,
+            "routed_gold_coverage": 0.125,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.16666666666666666
+          },
+          "channel": {
+            "mrr": 0.1111111111111111,
+            "r10": 0.16666666666666666,
+            "r100": 0.3333333333333333,
+            "r20": 0.16666666666666666
+          },
+          "entries": {
+            "mrr": 0.1111111111111111,
+            "r10": 0.16666666666666666,
+            "r100": 0.16666666666666666,
+            "r20": 0.16666666666666666
+          },
+          "latency": {
+            "cold_ms": 3.220242,
+            "warm_ms": 2.8858550000000003
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.34066,
+            "warm_ms": 4.054835
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.07262,
+            "warm_ms": 3.779195
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.3022290000000005,
+            "warm_ms": 4.024712
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 3.992637,
+            "warm_ms": 3.7187840000000003
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.370537,
+            "warm_ms": 4.044227
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.322104,
+            "warm_ms": 3.9860649999999995
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.272549,
+            "warm_ms": 3.966721
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.013888888888888888,
+            "r10": 0.0,
+            "r100": 0.16666666666666666,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 10.225076,
+            "warm_ms": 9.405228
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 20.661189,
+        "a_warm_ms": 20.500761,
+        "body_build_ms": 120.53974000000001,
+        "body_index_bytes_2048": 1993193,
+        "fields_ms": 878.743443,
+        "hydrate_ms": 17.860824,
+        "index_seconds": 2.887209612,
+        "meta_build_ms": 10.065172,
+        "meta_index_bytes": 1277248,
+        "rss_growth_kib": 4348,
+        "store_bytes": 78562996
+      },
+      "gold": 8,
+      "gold_symbols": 6,
+      "peak_rss_kib": 348452,
+      "query_terms": 187,
+      "repo": "sphinx-doc/sphinx",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__9c4b27a6"
+    },
+    {
+      "body": {
+        "body_bytes_median": 301.0,
+        "body_terms_mean_2048": 63.84441379310345,
+        "entities": 9141,
+        "symbols_with_body": 7250,
+        "truncated_share": {
+          "2048": 0.05972413793103448,
+          "512": 0.3326896551724138,
+          "65536": 0.00027586206896551725
+        },
+        "vocabulary": {
+          "body_2048": 13375,
+          "body_2048_joined": 12844,
+          "name+signature+path": 13484
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 14.406343999999999,
+            "warm_ms": 12.644720999999999
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 1.964521,
+            "warm_ms": 1.6949930000000002
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.209618,
+            "warm_ms": 1.744631
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 2,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.045454545454545456,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.333831,
+            "warm_ms": 2.09231
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.045454545454545456,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.3032690000000002,
+            "warm_ms": 2.047973
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 2,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.5
+          },
+          "entries": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.5
+          },
+          "latency": {
+            "cold_ms": 2.44434,
+            "warm_ms": 2.165541
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.3333333333333333,
+            "r10": 0.25,
+            "r100": 0.25,
+            "r20": 0.25
+          },
+          "entries": {
+            "mrr": 0.3333333333333333,
+            "r10": 0.25,
+            "r100": 0.25,
+            "r20": 0.25
+          },
+          "latency": {
+            "cold_ms": 2.285828,
+            "warm_ms": 2.092143
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.25
+          },
+          "channel": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.25,
+            "r100": 0.75,
+            "r20": 0.25
+          },
+          "entries": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.25,
+            "r100": 0.25,
+            "r20": 0.25
+          },
+          "latency": {
+            "cold_ms": 2.440169,
+            "warm_ms": 2.2099699999999998
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 2,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.037037037037037035,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.559952,
+            "warm_ms": 2.314032
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.8333333333333334,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 2,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.5,
+            "r20": 0.25
+          },
+          "entries": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.25,
+            "r20": 0.25
+          },
+          "latency": {
+            "cold_ms": 2.5414320000000004,
+            "warm_ms": 2.33365
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 5.5997959999999996,
+            "warm_ms": 5.006544
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 14.406343999999999,
+        "a_warm_ms": 12.644720999999999,
+        "body_build_ms": 117.875538,
+        "body_index_bytes_2048": 1960371,
+        "fields_ms": 866.8235880000001,
+        "hydrate_ms": 17.253942000000002,
+        "index_seconds": 3.395444525,
+        "meta_build_ms": 9.865005,
+        "meta_index_bytes": 1250198,
+        "rss_growth_kib": 4332,
+        "store_bytes": 78084081
+      },
+      "gold": 6,
+      "gold_symbols": 4,
+      "peak_rss_kib": 388832,
+      "query_terms": 81,
+      "repo": "sphinx-doc/sphinx",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37"
+    },
+    {
+      "body": {
+        "body_bytes_median": 287.0,
+        "body_terms_mean_2048": 62.35711081202333,
+        "entities": 8412,
+        "symbols_with_body": 6687,
+        "truncated_share": {
+          "2048": 0.05936892477942276,
+          "512": 0.31852848811126067,
+          "65536": 0.0002990877822640945
+        },
+        "vocabulary": {
+          "body_2048": 12574,
+          "body_2048_joined": 12070,
+          "name+signature+path": 12161
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.4,
+            "routed_gold_coverage": 0.8,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.4
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8,
+            "selection_loss": 0.8,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 0,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.4,
+            "routed_gold_coverage": 0.8,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.4
+          },
+          "channel": {
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.4
+          },
+          "entries": {
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4
+          },
+          "latency": {
+            "cold_ms": 14.807292,
+            "warm_ms": 12.832455
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.012048192771084338,
+            "r10": 0.0,
+            "r100": 0.4,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.795699,
+            "warm_ms": 1.786815
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.012048192771084338,
+            "r10": 0.0,
+            "r100": 0.4,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.067406,
+            "warm_ms": 1.706047
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.358048,
+            "warm_ms": 2.097663
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.3123929999999997,
+            "warm_ms": 2.058327
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.839791,
+            "warm_ms": 2.175575
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.156749,
+            "warm_ms": 1.917422
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.40971,
+            "warm_ms": 2.102623
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.441141,
+            "warm_ms": 2.2271959999999997
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 2.527765,
+            "warm_ms": 2.2473929999999998
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.4,
+            "selection_loss": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 4.978486,
+            "warm_ms": 4.631016
+          },
+          "lost_gold_vs_A": 2,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 14.807292,
+        "a_warm_ms": 12.832455,
+        "body_build_ms": 106.983849,
+        "body_index_bytes_2048": 1772631,
+        "fields_ms": 802.7398380000001,
+        "hydrate_ms": 16.818439,
+        "index_seconds": 2.439344831,
+        "meta_build_ms": 9.027267,
+        "meta_index_bytes": 1120332,
+        "rss_growth_kib": 4152,
+        "store_bytes": 72020932
+      },
+      "gold": 5,
+      "gold_symbols": 5,
+      "peak_rss_kib": 393636,
+      "query_terms": 136,
+      "repo": "sphinx-doc/sphinx",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__f0418d70"
+    },
+    {
+      "body": {
+        "body_bytes_median": 383.0,
+        "body_terms_mean_2048": 82.1233874938454,
+        "entities": 11625,
+        "symbols_with_body": 10155,
+        "truncated_share": {
+          "2048": 0.08931560807483999,
+          "512": 0.40246184145741015,
+          "65536": 0.00009847365829640571
+        },
+        "vocabulary": {
+          "body_2048": 17235,
+          "body_2048_joined": 16666,
+          "name+signature+path": 14903
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.4,
+            "r20": 0.2
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.2,
+            "r20": 0.2
+          },
+          "latency": {
+            "cold_ms": 24.499192999999998,
+            "warm_ms": 23.053152
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.8,
+            "r20": 0.2
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.2,
+            "r20": 0.2
+          },
+          "latency": {
+            "cold_ms": 3.544272,
+            "warm_ms": 3.070438
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 0,
+              "planned": 1,
+              "routed": 5
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 0,
+              "planned": 1,
+              "routed": 5
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 5,
+              "packed": 3,
+              "planned": 2,
+              "routed": 5
+            },
+            "symbol_recall": 0.6
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.8,
+            "r20": 0.8
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.8,
+            "r20": 0.8
+          },
+          "latency": {
+            "cold_ms": 3.6844799999999998,
+            "warm_ms": 3.1085420000000004
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 3
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.4
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4
+          },
+          "latency": {
+            "cold_ms": 3.599663,
+            "warm_ms": 3.1814180000000003
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "latency": {
+            "cold_ms": 3.678821,
+            "warm_ms": 3.206372
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 3,
+              "routed": 4
+            },
+            "symbol_recall": 0.4
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.6,
+            "r100": 0.8,
+            "r20": 0.6
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.6,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "latency": {
+            "cold_ms": 3.6317820000000003,
+            "warm_ms": 3.157653
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.3333333333333333,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.4,
+            "r20": 0.4
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.2,
+            "r100": 0.4,
+            "r20": 0.4
+          },
+          "latency": {
+            "cold_ms": 3.555271,
+            "warm_ms": 2.941198
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 0.3333333333333333,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "entries": {
+            "mrr": 0.3333333333333333,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "latency": {
+            "cold_ms": 3.6784220000000003,
+            "warm_ms": 3.365812
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.8333333333333334,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 3,
+              "routed": 4
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "latency": {
+            "cold_ms": 5.451061,
+            "warm_ms": 3.811173
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.16666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 3,
+              "routed": 4
+            },
+            "symbol_recall": 0.4
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.6,
+            "r100": 0.8,
+            "r20": 0.6
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.6,
+            "r100": 0.6,
+            "r20": 0.6
+          },
+          "latency": {
+            "cold_ms": 3.803027,
+            "warm_ms": 3.3859990000000004
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 2
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 1,
+              "routed": 4
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.16666666666666666,
+            "required_symbol_recall": 0.16666666666666666,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 2,
+              "routed": 4
+            },
+            "symbol_recall": 0.2
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.8,
+            "r20": 0.4
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4
+          },
+          "latency": {
+            "cold_ms": 7.4642,
+            "warm_ms": 7.132877000000001
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        }
+      },
+      "cost": {
+        "a_cold_ms": 24.499192999999998,
+        "a_warm_ms": 23.053152,
+        "body_build_ms": 213.477524,
+        "body_index_bytes_2048": 3085304,
+        "fields_ms": 1118.129291,
+        "hydrate_ms": 31.09121,
+        "index_seconds": 4.683360819,
+        "meta_build_ms": 13.559909,
+        "meta_index_bytes": 1653743,
+        "rss_growth_kib": 18208,
+        "store_bytes": 102534650
+      },
+      "gold": 6,
+      "gold_symbols": 5,
+      "peak_rss_kib": 558156,
+      "query_terms": 89,
+      "repo": "keras-team/keras",
+      "task": "SWE-PolyBench__python__evolution__refactor__57ad5598"
+    },
+    {
+      "body": {
+        "body_bytes_median": 379.0,
+        "body_terms_mean_2048": 81.72600092038657,
+        "entities": 12465,
+        "symbols_with_body": 10865,
+        "truncated_share": {
+          "2048": 0.09111826967326277,
+          "512": 0.39843534284399446,
+          "65536": 0.00009203865623561896
+        },
+        "vocabulary": {
+          "body_2048": 16990,
+          "body_2048_joined": 16501,
+          "name+signature+path": 15000
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 28.963809,
+            "warm_ms": 28.234289999999998
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.419582,
+            "warm_ms": 4.241194999999999
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.305102,
+            "warm_ms": 3.680562
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.058463,
+            "warm_ms": 4.690502
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.628944000000001,
+            "warm_ms": 4.3537
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.943314,
+            "warm_ms": 4.702831
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.522351,
+            "warm_ms": 4.215396
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.143008999999999,
+            "warm_ms": 4.849177
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.063742,
+            "warm_ms": 4.715199
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.006028,
+            "warm_ms": 4.722027
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 2,
+              "routed": 2
+            },
+            "symbol_recall": 0.5
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 11.558822999999999,
+            "warm_ms": 10.28151
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 28.963809,
+        "a_warm_ms": 28.234289999999998,
+        "body_build_ms": 222.74832899999998,
+        "body_index_bytes_2048": 3274843,
+        "fields_ms": 1202.5299149999998,
+        "hydrate_ms": 30.360208999999998,
+        "index_seconds": 4.991573574,
+        "meta_build_ms": 14.437922,
+        "meta_index_bytes": 1831414,
+        "rss_growth_kib": 5996,
+        "store_bytes": 108327644
+      },
+      "gold": 2,
+      "gold_symbols": 2,
+      "peak_rss_kib": 565072,
+      "query_terms": 82,
+      "repo": "keras-team/keras",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__31f7341a"
+    },
+    {
+      "body": {
+        "body_bytes_median": 371.0,
+        "body_terms_mean_2048": 80.98916377019015,
+        "entities": 11083,
+        "symbols_with_body": 9782,
+        "truncated_share": {
+          "2048": 0.09149458188509507,
+          "512": 0.3942956450623594,
+          "65536": 0.00010222858311183807
+        },
+        "vocabulary": {
+          "body_2048": 15579,
+          "body_2048_joined": 15109,
+          "name+signature+path": 13501
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 23.247795,
+            "warm_ms": 22.036565
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.324198,
+            "warm_ms": 3.129887
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.561632,
+            "warm_ms": 3.136997
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.673588,
+            "warm_ms": 3.407455
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.635543,
+            "warm_ms": 3.325963
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.650102,
+            "warm_ms": 3.3563780000000003
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.5333,
+            "warm_ms": 3.3345979999999997
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.855578,
+            "warm_ms": 3.512699
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.785596,
+            "warm_ms": 3.595975
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 3.79589,
+            "warm_ms": 3.5038869999999998
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 1.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 1.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 0.3333333333333333,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 0.3333333333333333,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 8.259151,
+            "warm_ms": 7.566611
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 23.247795,
+        "a_warm_ms": 22.036565,
+        "body_build_ms": 202.59204499999998,
+        "body_index_bytes_2048": 2931262,
+        "fields_ms": 1094.238613,
+        "hydrate_ms": 27.989033,
+        "index_seconds": 4.285787064,
+        "meta_build_ms": 12.205184000000001,
+        "meta_index_bytes": 1539898,
+        "rss_growth_kib": 5060,
+        "store_bytes": 94383757
+      },
+      "gold": 1,
+      "gold_symbols": 1,
+      "peak_rss_kib": 610668,
+      "query_terms": 76,
+      "repo": "keras-team/keras",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__3f3ff585"
+    },
+    {
+      "body": {
+        "body_bytes_median": 379.0,
+        "body_terms_mean_2048": 81.72993372606774,
+        "entities": 12464,
+        "symbols_with_body": 10864,
+        "truncated_share": {
+          "2048": 0.09121870397643593,
+          "512": 0.39837997054491897,
+          "65536": 0.00009204712812960235
+        },
+        "vocabulary": {
+          "body_2048": 16987,
+          "body_2048_joined": 16497,
+          "name+signature+path": 15002
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 29.456832,
+            "warm_ms": 27.049291
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.441071,
+            "warm_ms": 3.8511499999999996
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.335193,
+            "warm_ms": 3.863186
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.612997,
+            "warm_ms": 5.201035
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 0.5,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.227553,
+            "warm_ms": 4.840852
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.605371,
+            "warm_ms": 5.192345
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 4.9994380000000005,
+            "warm_ms": 4.639369
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 0.5,
+            "selection_loss": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.822255999999999,
+            "warm_ms": 5.449703
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.6683699999999995,
+            "warm_ms": 5.653903
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 1.0,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 5.694704,
+            "warm_ms": 5.246513
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.5,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.5,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.5,
+            "stages": {
+              "graph": 1,
+              "packed": 1,
+              "planned": 1,
+              "routed": 1
+            },
+            "symbol_recall": 1.0
+          },
+          "channel": {
+            "mrr": 0.3333333333333333,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "entries": {
+            "mrr": 0.3333333333333333,
+            "r10": 1.0,
+            "r100": 1.0,
+            "r20": 1.0
+          },
+          "latency": {
+            "cold_ms": 12.008362,
+            "warm_ms": 11.276148999999998
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 29.456832,
+        "a_warm_ms": 27.049291,
+        "body_build_ms": 221.37320699999998,
+        "body_index_bytes_2048": 3274655,
+        "fields_ms": 1188.890946,
+        "hydrate_ms": 30.862607999999998,
+        "index_seconds": 4.986850966,
+        "meta_build_ms": 14.59294,
+        "meta_index_bytes": 1831806,
+        "rss_growth_kib": 5772,
+        "store_bytes": 108315018
+      },
+      "gold": 2,
+      "gold_symbols": 1,
+      "peak_rss_kib": 647588,
+      "query_terms": 126,
+      "repo": "keras-team/keras",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__64a006b0"
+    },
+    {
+      "body": {
+        "body_bytes_median": 371.0,
+        "body_terms_mean_2048": 80.91322144903806,
+        "entities": 11073,
+        "symbols_with_body": 9772,
+        "truncated_share": {
+          "2048": 0.0914858780188293,
+          "512": 0.3939828080229226,
+          "65536": 0.00010233319688907081
+        },
+        "vocabulary": {
+          "body_2048": 15568,
+          "body_2048_joined": 15098,
+          "name+signature+path": 13490
+        }
+      },
+      "configs": {
+        "A": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.058823529411764705,
+            "r10": 0.0,
+            "r100": 1.0,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.058823529411764705,
+            "r10": 0.0,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 23.632189,
+            "warm_ms": 22.508824999999998
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "A0": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.02564102564102564,
+            "r10": 0.0,
+            "r100": 1.0,
+            "r20": 0.0
+          },
+          "entries": {
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0
+          },
+          "latency": {
+            "cold_ms": 3.578802,
+            "warm_ms": 3.2040189999999997
+          },
+          "lost_gold_vs_A": 1,
+          "unique_gold_vs_A": 0
+        },
+        "A0-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 0.6666666666666666,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.1,
+            "r10": 0.3333333333333333,
+            "r100": 1.0,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.1,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 3.615846,
+            "warm_ms": 3.192365
+          },
+          "lost_gold_vs_A": 1,
+          "unique_gold_vs_A": 1
+        },
+        "B": {
+          "@1024": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.125,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.125,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 5.221504,
+            "warm_ms": 4.801325
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-joined": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 4.788566,
+            "warm_ms": 4.459454
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "B-qtf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.1,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "entries": {
+            "mrr": 0.1,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "latency": {
+            "cold_ms": 5.218416,
+            "warm_ms": 4.957953
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "B512": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.08333333333333333,
+            "r10": 0.0,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 5.063641,
+            "warm_ms": 4.299749
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        },
+        "Bfull": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.14285714285714285,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "entries": {
+            "mrr": 0.14285714285714285,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "latency": {
+            "cold_ms": 5.26778,
+            "warm_ms": 4.981164
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "C": {
+          "@1024": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.125,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "entries": {
+            "mrr": 0.125,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "latency": {
+            "cold_ms": 5.34511,
+            "warm_ms": 5.036437
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "C-qtf": {
+          "@1024": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.6666666666666666,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 1,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.3333333333333333,
+            "required_symbol_recall": 0.3333333333333333,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 0.3333333333333333,
+            "stages": {
+              "graph": 3,
+              "packed": 1,
+              "planned": 2,
+              "routed": 3
+            },
+            "symbol_recall": 0.3333333333333333
+          },
+          "channel": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.6666666666666666,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "entries": {
+            "mrr": 0.16666666666666666,
+            "r10": 0.6666666666666666,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666
+          },
+          "latency": {
+            "cold_ms": 5.275543,
+            "warm_ms": 4.902166
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 1
+        },
+        "C-rrf": {
+          "@1024": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@256": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "@4096": {
+            "packing_loss": 0.0,
+            "required_symbol_recall": 0.0,
+            "routed_gold_coverage": 1.0,
+            "selection_loss": 1.0,
+            "stages": {
+              "graph": 3,
+              "packed": 0,
+              "planned": 0,
+              "routed": 3
+            },
+            "symbol_recall": 0.0
+          },
+          "channel": {
+            "mrr": 0.07142857142857142,
+            "r10": 0.0,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333
+          },
+          "entries": {
+            "mrr": 0.07142857142857142,
+            "r10": 0.0,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333
+          },
+          "latency": {
+            "cold_ms": 10.637805,
+            "warm_ms": 9.965058
+          },
+          "lost_gold_vs_A": 0,
+          "unique_gold_vs_A": 0
+        }
+      },
+      "cost": {
+        "a_cold_ms": 23.632189,
+        "a_warm_ms": 22.508824999999998,
+        "body_build_ms": 198.796102,
+        "body_index_bytes_2048": 2927585,
+        "fields_ms": 1103.3799490000001,
+        "hydrate_ms": 28.117421,
+        "index_seconds": 4.365697487,
+        "meta_build_ms": 12.170899,
+        "meta_index_bytes": 1538182,
+        "rss_growth_kib": 5036,
+        "store_bytes": 94292118
+      },
+      "gold": 3,
+      "gold_symbols": 3,
+      "peak_rss_kib": 647588,
+      "query_terms": 121,
+      "repo": "keras-team/keras",
+      "task": "SWE-PolyBench__python__maintenance__bugfix__d492f44e"
+    }
+  ]
+}
