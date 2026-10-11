@@ -1,0 +1,1596 @@
+{
+  "repos": [
+    "sphinx-doc/sphinx"
+  ],
+  "space": "lfm",
+  "tasks": [
+    {
+      "channel": {
+        "control": {
+          "gold": 6,
+          "mrr": 0.5,
+          "r10": 0.3333333333333333,
+          "r100": 0.6666666666666666,
+          "r20": 0.3333333333333333,
+          "r40": 0.3333333333333333
+        },
+        "semantic": {
+          "gold": 6,
+          "mrr": 1.0,
+          "r10": 0.5,
+          "r100": 1.0,
+          "r20": 0.6666666666666666,
+          "r40": 0.8333333333333334
+        },
+        "unique_gold_at_20": {
+          "control": 2,
+          "semantic": 3
+        }
+      },
+      "configs": {
+        "control": {
+          "@1024": {
+            "latency_ms": 287.82224699999995,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 4,
+              "packed": 1,
+              "planned": 1,
+              "routed": 4
+            }
+          },
+          "@256": {
+            "latency_ms": 270.361207,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 0,
+              "routed": 4
+            }
+          },
+          "@4096": {
+            "latency_ms": 299.37014899999997,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 770,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333,
+            "r40": 0.3333333333333333
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 4
+        },
+        "lexical": {
+          "@1024": {
+            "latency_ms": 306.448418,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "@256": {
+            "latency_ms": 300.143001,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            }
+          },
+          "@4096": {
+            "latency_ms": 322.361156,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Unconfigured }]",
+          "edges_examined": 718,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333,
+            "r40": 0.3333333333333333
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 5
+        },
+        "lexical+control": {
+          "@1024": {
+            "latency_ms": 299.936302,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "@256": {
+            "latency_ms": 300.885064,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            }
+          },
+          "@4096": {
+            "latency_ms": 327.782375,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 669,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.6666666666666666,
+            "r20": 0.3333333333333333,
+            "r40": 0.6666666666666666
+          },
+          "entry_count": 40,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 5
+        },
+        "lexical+semantic": {
+          "@1024": {
+            "latency_ms": 311.574615,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "@256": {
+            "latency_ms": 293.434843,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            }
+          },
+          "@4096": {
+            "latency_ms": 321.78020899999996,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 718,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.8333333333333334,
+            "r20": 0.3333333333333333,
+            "r40": 0.8333333333333334
+          },
+          "entry_count": 38,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 5
+        },
+        "rrf": {
+          "@1024": {
+            "latency_ms": 316.650646,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "@256": {
+            "latency_ms": 292.965549,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            }
+          },
+          "@4096": {
+            "latency_ms": 312.228654,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 721,
+          "entries": {
+            "gold": 6,
+            "mrr": 1.0,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333,
+            "r40": 0.3333333333333333
+          },
+          "entry_count": 20,
+          "fusion_omitted": 18,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 5
+        },
+        "rrf-control": {
+          "@1024": {
+            "latency_ms": 299.713144,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "@256": {
+            "latency_ms": 319.346375,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 5,
+              "packed": 1,
+              "planned": 1,
+              "routed": 5
+            }
+          },
+          "@4096": {
+            "latency_ms": 308.995024,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 5,
+              "packed": 2,
+              "planned": 2,
+              "routed": 5
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 718,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.5,
+            "r10": 0.3333333333333333,
+            "r100": 0.3333333333333333,
+            "r20": 0.3333333333333333,
+            "r40": 0.3333333333333333
+          },
+          "entry_count": 20,
+          "fusion_omitted": 20,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 5
+        },
+        "semantic": {
+          "@1024": {
+            "latency_ms": 282.28125900000003,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 6,
+              "packed": 1,
+              "planned": 1,
+              "routed": 6
+            }
+          },
+          "@256": {
+            "latency_ms": 268.278458,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 6,
+              "packed": 0,
+              "planned": 1,
+              "routed": 6
+            }
+          },
+          "@4096": {
+            "latency_ms": 292.811624,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 6,
+              "packed": 1,
+              "planned": 1,
+              "routed": 6
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 772,
+          "entries": {
+            "gold": 6,
+            "mrr": 1.0,
+            "r10": 0.5,
+            "r100": 0.6666666666666666,
+            "r20": 0.6666666666666666,
+            "r40": 0.6666666666666666
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 6
+        }
+      },
+      "cost": {
+        "cached": 0,
+        "degraded_during_build": "Some(Channel(ChannelStatus { channel: Semantic, state: Unavailable(\"vectors building 0/0\") }))",
+        "documents": 7077,
+        "embedded": 6952,
+        "index_seconds": 3.2323454050000002,
+        "lexical_context_ms_during_build": 551.3090950000001,
+        "query_ms_cold": 809.598358,
+        "query_ms_warm": [
+          778.515007,
+          779.140032,
+          778.744626,
+          781.851958,
+          782.5173
+        ],
+        "seconds_embedding": 1382,
+        "unique_texts": 6952
+      },
+      "gold_symbols": 6,
+      "gold_symbols_embedded": 6,
+      "packed_deltas_at_1024": {
+        "lexical+control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "lexical+semantic": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf-control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        }
+      },
+      "peak_rss_kib": 329788,
+      "repo": "sphinx-doc/sphinx",
+      "space": "EmbeddingSpace { runner: LlamaCpp, model: \"LFM2.5-Embedding-350M\", model_digest: Some(\"sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a\"), quantization: Some(\"Q4_K - Medium\"), dimension: 1024, metric: Cosine, normalized: Some(true), pooling: Some(\"cls\"), tokenizer: Some(\"lfm2\"), query_prompt: Some(\"query: \"), document_prompt: Some(\"document: \"), document_recipe: \"oxide-semantic-recipe-v1\", runner_version: Some(\"b11540-1e6f04a75\"), max_tokens: Some(512), canary: Some([496, -9, 89, -42, -587, -555, 116, -281, -219, 47, 219, 607, -31, 209, -76, 564]) }",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__5462d419"
+    },
+    {
+      "channel": {
+        "control": {
+          "gold": 6,
+          "mrr": 0.013333333333333334,
+          "r10": 0.0,
+          "r100": 0.16666666666666666,
+          "r20": 0.0,
+          "r40": 0.0
+        },
+        "semantic": {
+          "gold": 6,
+          "mrr": 0.058823529411764705,
+          "r10": 0.0,
+          "r100": 0.3333333333333333,
+          "r20": 0.16666666666666666,
+          "r40": 0.3333333333333333
+        },
+        "unique_gold_at_20": {
+          "control": 0,
+          "semantic": 1
+        }
+      },
+      "configs": {
+        "control": {
+          "@1024": {
+            "latency_ms": 283.963631,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 273.902675,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 283.019163,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 687,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "lexical": {
+          "@1024": {
+            "latency_ms": 307.911182,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 310.485915,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 329.682207,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Unconfigured }]",
+          "edges_examined": 618,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "lexical+control": {
+          "@1024": {
+            "latency_ms": 300.858227,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 295.66215800000003,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 325.125931,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 544,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 40,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "lexical+semantic": {
+          "@1024": {
+            "latency_ms": 307.031498,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 0,
+              "routed": 1
+            }
+          },
+          "@256": {
+            "latency_ms": 305.192037,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 0,
+              "routed": 1
+            }
+          },
+          "@4096": {
+            "latency_ms": 324.16688999999997,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 1,
+              "packed": 0,
+              "planned": 0,
+              "routed": 1
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 590,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.027777777777777776,
+            "r10": 0.0,
+            "r100": 0.16666666666666666,
+            "r20": 0.0,
+            "r40": 0.16666666666666666
+          },
+          "entry_count": 39,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 1
+        },
+        "rrf": {
+          "@1024": {
+            "latency_ms": 312.42577,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 304.96491799999995,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 334.466951,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 672,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 19,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "rrf-control": {
+          "@1024": {
+            "latency_ms": 311.49485300000003,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 298.036649,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 325.47866,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 618,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 20,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "semantic": {
+          "@1024": {
+            "latency_ms": 269.81669600000004,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 274.610429,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 298.63277999999997,
+            "required_symbol_recall": 0.125,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 809,
+          "entries": {
+            "gold": 6,
+            "mrr": 0.058823529411764705,
+            "r10": 0.0,
+            "r100": 0.16666666666666666,
+            "r20": 0.16666666666666666,
+            "r40": 0.16666666666666666
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        }
+      },
+      "cost": {
+        "cached": 3159,
+        "degraded_during_build": "Some(Channel(ChannelStatus { channel: Semantic, state: Unavailable(\"vectors building 0/0\") }))",
+        "documents": 7246,
+        "embedded": 3967,
+        "index_seconds": 3.422330081,
+        "lexical_context_ms_during_build": 542.9453579999999,
+        "query_ms_cold": 985.457108,
+        "query_ms_warm": [
+          962.645946,
+          962.087429,
+          959.047811,
+          960.835103,
+          961.0425929999999
+        ],
+        "seconds_embedding": 956,
+        "unique_texts": 7126
+      },
+      "gold_symbols": 6,
+      "gold_symbols_embedded": 6,
+      "packed_deltas_at_1024": {
+        "lexical+control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "lexical+semantic": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf-control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        }
+      },
+      "peak_rss_kib": 388788,
+      "repo": "sphinx-doc/sphinx",
+      "space": "EmbeddingSpace { runner: LlamaCpp, model: \"LFM2.5-Embedding-350M\", model_digest: Some(\"sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a\"), quantization: Some(\"Q4_K - Medium\"), dimension: 1024, metric: Cosine, normalized: Some(true), pooling: Some(\"cls\"), tokenizer: Some(\"lfm2\"), query_prompt: Some(\"query: \"), document_prompt: Some(\"document: \"), document_recipe: \"oxide-semantic-recipe-v1\", runner_version: Some(\"b11540-1e6f04a75\"), max_tokens: Some(512), canary: Some([496, -9, 89, -42, -587, -555, 116, -281, -219, 47, 219, 607, -31, 209, -76, 564]) }",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__9c4b27a6"
+    },
+    {
+      "channel": {
+        "control": {
+          "gold": 4,
+          "mrr": 0.5,
+          "r10": 0.25,
+          "r100": 0.25,
+          "r20": 0.25,
+          "r40": 0.25
+        },
+        "semantic": {
+          "gold": 4,
+          "mrr": 0.1,
+          "r10": 0.25,
+          "r100": 0.5,
+          "r20": 0.25,
+          "r40": 0.5
+        },
+        "unique_gold_at_20": {
+          "control": 1,
+          "semantic": 1
+        }
+      },
+      "configs": {
+        "control": {
+          "@1024": {
+            "latency_ms": 270.839842,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 270.471009,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 289.736915,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 563,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.5,
+            "r10": 0.25,
+            "r100": 0.25,
+            "r20": 0.25,
+            "r40": 0.25
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "lexical": {
+          "@1024": {
+            "latency_ms": 294.997878,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 292.129686,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 299.859237,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Unconfigured }]",
+          "edges_examined": 400,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "lexical+control": {
+          "@1024": {
+            "latency_ms": 305.31432800000005,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 285.846806,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 306.151961,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 420,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.047619047619047616,
+            "r10": 0.0,
+            "r100": 0.25,
+            "r20": 0.0,
+            "r40": 0.25
+          },
+          "entry_count": 37,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "lexical+semantic": {
+          "@1024": {
+            "latency_ms": 300.012149,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 286.943575,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 306.975736,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 611,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.034482758620689655,
+            "r10": 0.0,
+            "r100": 0.25,
+            "r20": 0.0,
+            "r40": 0.25
+          },
+          "entry_count": 39,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "rrf": {
+          "@1024": {
+            "latency_ms": 302.61006299999997,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 281.746483,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 311.90295299999997,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 446,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 19,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "rrf-control": {
+          "@1024": {
+            "latency_ms": 290.316876,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 281.949487,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 307.506206,
+            "required_symbol_recall": 0.3333333333333333,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 432,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 17,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "semantic": {
+          "@1024": {
+            "latency_ms": 276.966358,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 268.790429,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 290.958601,
+            "required_symbol_recall": 0.16666666666666666,
+            "stages": {
+              "graph": 2,
+              "packed": 1,
+              "planned": 1,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 688,
+          "entries": {
+            "gold": 4,
+            "mrr": 0.1,
+            "r10": 0.25,
+            "r100": 0.25,
+            "r20": 0.25,
+            "r40": 0.25
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        }
+      },
+      "cost": {
+        "cached": 6211,
+        "degraded_during_build": "Some(Channel(ChannelStatus { channel: Semantic, state: Unavailable(\"vectors building 0/0\") }))",
+        "documents": 7250,
+        "embedded": 917,
+        "index_seconds": 3.311064425,
+        "lexical_context_ms_during_build": 572.929798,
+        "query_ms_cold": 803.128305,
+        "query_ms_warm": [
+          802.126334,
+          805.568807,
+          807.01683,
+          810.239039,
+          806.8246730000001
+        ],
+        "seconds_embedding": 242,
+        "unique_texts": 7128
+      },
+      "gold_symbols": 4,
+      "gold_symbols_embedded": 4,
+      "packed_deltas_at_1024": {
+        "lexical+control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "lexical+semantic": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf-control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        }
+      },
+      "peak_rss_kib": 420756,
+      "repo": "sphinx-doc/sphinx",
+      "space": "EmbeddingSpace { runner: LlamaCpp, model: \"LFM2.5-Embedding-350M\", model_digest: Some(\"sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a\"), quantization: Some(\"Q4_K - Medium\"), dimension: 1024, metric: Cosine, normalized: Some(true), pooling: Some(\"cls\"), tokenizer: Some(\"lfm2\"), query_prompt: Some(\"query: \"), document_prompt: Some(\"document: \"), document_recipe: \"oxide-semantic-recipe-v1\", runner_version: Some(\"b11540-1e6f04a75\"), max_tokens: Some(512), canary: Some([496, -9, 89, -42, -587, -555, 116, -281, -219, 47, 219, 607, -31, 209, -76, 564]) }",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37"
+    },
+    {
+      "channel": {
+        "control": {
+          "gold": 5,
+          "mrr": 0.0,
+          "r10": 0.0,
+          "r100": 0.0,
+          "r20": 0.0,
+          "r40": 0.0
+        },
+        "semantic": {
+          "gold": 5,
+          "mrr": 0.018867924528301886,
+          "r10": 0.0,
+          "r100": 0.6,
+          "r20": 0.0,
+          "r40": 0.0
+        },
+        "unique_gold_at_20": {
+          "control": 0,
+          "semantic": 0
+        }
+      },
+      "configs": {
+        "control": {
+          "@1024": {
+            "latency_ms": 267.36484,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 320.28482,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 292.744465,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 394,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        },
+        "lexical": {
+          "@1024": {
+            "latency_ms": 299.730396,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            }
+          },
+          "@256": {
+            "latency_ms": 307.766923,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 0,
+              "routed": 4
+            }
+          },
+          "@4096": {
+            "latency_ms": 304.189346,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Unconfigured }]",
+          "edges_examined": 558,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4,
+            "r40": 0.4
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 4
+        },
+        "lexical+control": {
+          "@1024": {
+            "latency_ms": 303.099559,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 293.567944,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 303.59517800000003,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 558,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4,
+            "r40": 0.4
+          },
+          "entry_count": 40,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "lexical+semantic": {
+          "@1024": {
+            "latency_ms": 302.02410299999997,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 287.950498,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 302.306305,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 480,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4,
+            "r40": 0.4
+          },
+          "entry_count": 38,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "rrf": {
+          "@1024": {
+            "latency_ms": 297.151277,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "@256": {
+            "latency_ms": 288.50038700000005,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 2,
+              "packed": 0,
+              "planned": 0,
+              "routed": 2
+            }
+          },
+          "@4096": {
+            "latency_ms": 301.66672100000005,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 2,
+              "packed": 2,
+              "planned": 2,
+              "routed": 2
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 549,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.14285714285714285,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4,
+            "r40": 0.4
+          },
+          "entry_count": 20,
+          "fusion_omitted": 18,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 2
+        },
+        "rrf-control": {
+          "@1024": {
+            "latency_ms": 292.01267800000005,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            }
+          },
+          "@256": {
+            "latency_ms": 290.579872,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 4,
+              "packed": 0,
+              "planned": 0,
+              "routed": 4
+            }
+          },
+          "@4096": {
+            "latency_ms": 296.797536,
+            "required_symbol_recall": 0.4,
+            "stages": {
+              "graph": 4,
+              "packed": 2,
+              "planned": 2,
+              "routed": 4
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Ran { scorer: \"ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive\", returned: 20, truncated: true } }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"control:bm25-body;oxide-terms;k1=1.2;b=0.75\", returned: 20, truncated: true } }]",
+          "edges_examined": 558,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.2,
+            "r10": 0.4,
+            "r100": 0.4,
+            "r20": 0.4,
+            "r40": 0.4
+          },
+          "entry_count": 20,
+          "fusion_omitted": 20,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 4
+        },
+        "semantic": {
+          "@1024": {
+            "latency_ms": 281.021362,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@256": {
+            "latency_ms": 260.045951,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "@4096": {
+            "latency_ms": 303.281197,
+            "required_symbol_recall": 0.0,
+            "stages": {
+              "graph": 0,
+              "packed": 0,
+              "planned": 0,
+              "routed": 0
+            }
+          },
+          "channels": "[ChannelStatus { channel: Lexical, state: Disabled }, ChannelStatus { channel: Semantic, state: Ran { scorer: \"cosine:LFM2.5-Embedding-350M@sha256:4d7aa9dc6406\", returned: 20, truncated: true } }]",
+          "edges_examined": 381,
+          "entries": {
+            "gold": 5,
+            "mrr": 0.0,
+            "r10": 0.0,
+            "r100": 0.0,
+            "r20": 0.0,
+            "r40": 0.0
+          },
+          "entry_count": 20,
+          "fusion_omitted": 0,
+          "regions_loaded": 64,
+          "routed": 64,
+          "routed_gold": 0
+        }
+      },
+      "cost": {
+        "cached": 5118,
+        "degraded_during_build": "Some(Channel(ChannelStatus { channel: Semantic, state: Unavailable(\"vectors building 0/0\") }))",
+        "documents": 6687,
+        "embedded": 1451,
+        "index_seconds": 3.093325368,
+        "lexical_context_ms_during_build": 578.004888,
+        "query_ms_cold": 880.818412,
+        "query_ms_warm": [
+          880.786115,
+          878.197171,
+          878.137024,
+          881.724762,
+          881.725338
+        ],
+        "seconds_embedding": 360,
+        "unique_texts": 6569
+      },
+      "gold_symbols": 5,
+      "gold_symbols_embedded": 5,
+      "packed_deltas_at_1024": {
+        "lexical+control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "lexical+semantic": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        },
+        "rrf-control": {
+          "packed_gold_gained": 0,
+          "packed_gold_lost": 0
+        }
+      },
+      "peak_rss_kib": 438564,
+      "repo": "sphinx-doc/sphinx",
+      "space": "EmbeddingSpace { runner: LlamaCpp, model: \"LFM2.5-Embedding-350M\", model_digest: Some(\"sha256:4d7aa9dc6406a10fc3dec2c11f8f06781af063bf49211b8e4132e9b876d3f32a\"), quantization: Some(\"Q4_K - Medium\"), dimension: 1024, metric: Cosine, normalized: Some(true), pooling: Some(\"cls\"), tokenizer: Some(\"lfm2\"), query_prompt: Some(\"query: \"), document_prompt: Some(\"document: \"), document_recipe: \"oxide-semantic-recipe-v1\", runner_version: Some(\"b11540-1e6f04a75\"), max_tokens: Some(512), canary: Some([496, -9, 89, -42, -587, -555, 116, -281, -219, 47, 219, 607, -31, 209, -76, 564]) }",
+      "task": "SWE-Bench-Verified__python__maintenance__bugfix__f0418d70"
+    }
+  ]
+}
