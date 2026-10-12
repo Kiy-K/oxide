@@ -37,9 +37,9 @@ All Rust lives under `oxide_kernel/`; root `src/` is TypeScript only. Bun is the
 - **Shutdown:** `close()` rejects queued work and closes stdin. The runtime finishes its current request, sees EOF and exits 0. After a 2 s grace period the supervisor SIGKILLs its child; it never signals any process it didn't spawn.
 - **Capabilities:** the `capabilities` operation reports `protocol_version`, `operations` (exactly what `handle` answers), `max_request_bytes` and `execution`. Adding an operation is backward-compatible, so protocol 1 was not bumped. The TS adapter reports a public operation only when it has an adapter for it **and** the runtime lists the wire operation. No backend availability is reported yet: nothing per-runtime is configured or reachable through the protocol, and reporting more would be guesswork.
 
-### Resource ownership plan (not yet implemented)
+### Resource ownership plan (partly implemented)
 
-Nothing below is reachable through the protocol today; it constrains the next operations.
+`open_repository`/`close_repository` (2026-10-12) implement the first part: sessions own their store and its lock, repeated opens share one session, and a second runtime gets `ownership_conflict`. Everything else below still constrains later operations.
 
 - **Lifetime:** the runtime process owns every repository session. A session is an opened repository bound to a published snapshot's read view. A session holds its LadybugDB `Database` owner (one per store) and the connections, caches and provider clients created from it. A session ends on an explicit close or at runtime exit. On EOF the runtime finishes the current request, then drops sessions (connections before the owner) and exits.
 - **Concurrent callers in one client:** they share the one runtime, serialized today. Later, reads may run concurrently on connections from the single owner (LadybugDB permits this). Publication stays serialized by the adapter's writer queue. Any change is advertised via `execution`.

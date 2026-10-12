@@ -24,22 +24,23 @@ import { createClient, OxideError } from "./src/index.ts";
 await using oxide = createClient({ runtimeBin: "/path/to/oxide-runtime" });
 
 const status = await oxide.getStatus({ signal: AbortSignal.timeout(5_000) });
-// { apiVersion: 1, protocolVersion: 1, kernelVersion: "0.0.0", operations: ["getStatus"] }
-
-if (status.operations.includes("buildContext")) {
-  // not reachable with protocol 1
-}
+// { apiVersion: 1, protocolVersion: 1, kernelVersion: "0.0.0",
+//   operations: ["getStatus", "openRepository", "closeRepository"] }
 
 try {
-  await oxide.openRepository("/work/repo");
+  const repo = await oxide.openRepository("/work/repo"); // absolute, already indexed
+  // { id: "<32 hex>", root: "/work/repo", snapshot: "sha256:..." }
+  await oxide.closeRepository(repo); // optional: releases the store lock now
 } catch (err) {
-  if (err instanceof OxideError && err.category === "capability") {
-    // planned operation, not available from this runtime yet
+  if (err instanceof OxideError && err.category === "operation") {
+    // err.code: invalid_path | not_indexed | repository_unavailable |
+    // incompatible_derivation | ownership_conflict | unknown_handle | internal_error
   } else throw err;
 }
 ```
 
-`await using` (or an explicit `await oxide.close()`) releases the client.
+`await using` (or an explicit `await oxide.close()`) releases the client and
+every repository it still has open.
 
 ## Operations
 
@@ -47,13 +48,14 @@ try {
 | --- | --- | --- |
 | `getStatus()` | **Implemented** | protocol v1 `status` |
 | `close()` | **Implemented** | client lifecycle |
-| `openRepository(root)` | Contract only: rejects with `capability` / `unsupported_operation` | nothing yet |
+| `openRepository(root)` | **Implemented** | `open_repository`: registry lookup + LadybugDB store |
+| `closeRepository(repository)` | **Implemented** | `close_repository` |
 | `indexRepository(repository)` | Contract only | nothing yet |
 | `search(repository, request)` | Contract only | nothing yet |
 | `buildContext(repository, request)` | Contract only | nothing yet |
 
 Contract-only operations never contact the runtime and never return
-fabricated data. Their result types (`RepositoryHandle`, `SourceLocation`,
+fabricated data. Their result types (`SourceLocation`,
 `SearchResult`, `ContextBundle`, `Diagnostic`, ...) mirror the kernel's domain
 concepts (`SourceRef`, `ContextBudget`, `ContextItem`, `ContextBundle`) and
 expose none of its internals. `Status.operations` is the capability report:
@@ -70,11 +72,42 @@ request id, or `null` when no request was sent.
 | `transport` | runtime not reached / no answer (spawn failure, exit, crash, full queue) | `runtime_unavailable`, `transport_failed` |
 | `protocol` | answer outside the contract, wrong id, or version mismatch | `malformed_response`, `unsupported_version`, `invalid_request` |
 | `capability` | operation not supported by this client/runtime | `unsupported_operation` |
-| `operation` | a supported operation ran and failed | none in protocol 1 (reserved) |
+| `operation` | a supported operation ran and failed | the runtime's code, see below |
 | `closed` | client closed before or during the call | `client_closed` |
 
 The cause (`TransportError`, `ProtocolError`) is kept on `error.cause` for
 debugging. It is not part of the API.
+
+`operation` codes (from the runtime, unchanged):
+
+| Code | When |
+| --- | --- |
+| `invalid_path` | `root` is not absolute, doesn't resolve to a directory, or contains the data location |
+| `not_indexed` | not registered, or registered with no published generation (never indexed, or only in an older storage format) |
+| `repository_unavailable` | stored state is corrupt; rebuild required |
+| `incompatible_derivation` | published under another derivation, storage format or encoding than this runtime's |
+| `ownership_conflict` | another runtime process (another client) has the repository open |
+| `unknown_handle` | the handle was closed, forged, or came from another client/runtime |
+| `internal_error` | the runtime failed for reasons not caused by the request |
+
+## Repositories
+
+- `openRepository(root)` opens an **already indexed** repository. It never
+  registers, captures or indexes. The registry under `$XDG_DATA_HOME/oxide/v2`
+  (or `~/.local/share/oxide/v2`) maps the canonical checkout path to its
+  store. The handle pins the snapshot that was current when it opened, under
+  this runtime's own derivation. Whether the working tree has changed since
+  indexing is not checked.
+- Handles are scoped to one client's runtime: an unguessable 128-bit id that
+  is never reused or accepted by another runtime. Opening the same repository
+  again (by any path spelling) returns the **same handle**.
+- An open repository holds its store's exclusive lock. Another client (another
+  runtime process) gets `ownership_conflict` until `closeRepository`,
+  `close()`, or the runtime's exit releases it; a crash releases it too. There
+  is no sharing across processes.
+- An `openRepository` aborted while the runtime runs it may still open the
+  session. Calling it again returns that handle, and `close()` releases it
+  either way.
 
 ## Cancellation and lifecycle
 
@@ -129,11 +162,11 @@ debugging. It is not part of the API.
 
 ## Limits of the current runtime protocol
 
-- Protocol 1 has `status` and the internal `capabilities`. There is no
-  repository, index, search or context op.
+- Protocol 1 has `status`, the internal `capabilities`, and
+  `open_repository`/`close_repository`. There is no index, search or context
+  operation, so an opened handle can't be used for anything else yet.
 - One runtime process per client, serial execution, 64 queued calls at most.
   No cancel message, so running work can't be interrupted. No restart: after
   the runtime exits, create a new client. Two clients mean two runtimes;
   nothing coordinates them yet (ADR-0003).
 - No runtime discovery: `runtimeBin` is required.
-- No `operation`-category errors exist on the wire yet.

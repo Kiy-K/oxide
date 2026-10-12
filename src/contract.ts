@@ -6,18 +6,56 @@
 
 export const PROTOCOL_VERSION = 1;
 
-export type Operation = "status" | "capabilities";
+export type Operation = "status" | "capabilities" | "open_repository" | "close_repository";
 
 export interface Request {
   version: typeof PROTOCOL_VERSION;
   id: string;
   op: Operation;
+  /** Required by operations that take parameters, absent otherwise. */
+  params?: Json;
 }
 
-export type ErrorCode = "invalid_request" | "unsupported_version" | "unknown_operation";
+/** Envelope errors, then operation failures (only from operations with params). */
+export type ErrorCode =
+  | "invalid_request"
+  | "unsupported_version"
+  | "unknown_operation"
+  | OperationErrorCode;
+
+export type OperationErrorCode =
+  | "invalid_path"
+  | "not_indexed"
+  | "repository_unavailable"
+  | "incompatible_derivation"
+  | "ownership_conflict"
+  | "unknown_handle"
+  | "internal_error";
+
+export const OPERATION_ERROR_CODES: readonly OperationErrorCode[] = [
+  "invalid_path",
+  "not_indexed",
+  "repository_unavailable",
+  "incompatible_derivation",
+  "ownership_conflict",
+  "unknown_handle",
+  "internal_error",
+];
 
 export interface StatusResult {
   kernel_version: string;
+}
+
+/** An open repository session in this runtime. */
+export interface OpenedResult {
+  /** Runtime-scoped session handle. */
+  handle: string;
+  repo_id: string;
+  /** Canonical checkout path. */
+  root: string;
+  /** The pinned published snapshot and its derivation. */
+  snapshot: string;
+  derivation: string;
 }
 
 export interface CapabilitiesResult {
@@ -43,6 +81,7 @@ const ERROR_CODES: readonly string[] = [
   "invalid_request",
   "unsupported_version",
   "unknown_operation",
+  ...OPERATION_ERROR_CODES,
 ] satisfies ErrorCode[];
 
 /** The runtime's reply was not a valid version 1 response. */
@@ -133,4 +172,24 @@ export function decodeCapabilities(result: Json): CapabilitiesResult {
 function integer(value: unknown, where: string): number {
   if (!Number.isSafeInteger(value)) throw new ProtocolError(`${where} is not an integer`);
   return value as number;
+}
+
+export function decodeOpened(result: Json): OpenedResult {
+  const r = object(
+    result,
+    ["handle", "repo_id", "root", "snapshot", "derivation"],
+    "open_repository result",
+  );
+  return {
+    handle: string(r.handle, "handle"),
+    repo_id: string(r.repo_id, "repo_id"),
+    root: string(r.root, "root"),
+    snapshot: string(r.snapshot, "snapshot"),
+    derivation: string(r.derivation, "derivation"),
+  };
+}
+
+/** `close_repository` answers an empty object. */
+export function decodeClosed(result: Json): void {
+  object(result, [], "close_repository result");
 }

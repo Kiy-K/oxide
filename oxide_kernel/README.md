@@ -60,8 +60,10 @@ today only encodes requests, decodes envelopes and checks correlation.
 
 ## Service contract v1
 
-Request: `{"version": 1, "id": "<string>", "op": "status" | "capabilities"}`.
-Unknown fields are rejected.
+Request: `{"version": 1, "id": "<string>", "op": "<operation>", "params"?: {...}}`.
+Unknown fields are rejected. `params` is required by the operations that take
+it (`open_repository`: `{"path"}`, `close_repository`: `{"handle"}`) and
+rejected (`invalid_request`) on the others.
 
 Response, always one JSON object:
 
@@ -69,18 +71,34 @@ Response, always one JSON object:
   `status` returns `{"kernel_version": "<semver>"}` from `oxide_kernel::status()`;
   `capabilities` returns `{"protocol_version", "operations", "max_request_bytes",
   "execution"}`, where `operations` is exactly the set `handle` answers
-  (`OPERATIONS`) and `execution` is `"serial"`.
+  (`OPERATIONS`) and `execution` is `"serial"`; `open_repository` returns
+  `{"handle", "repo_id", "root", "snapshot", "derivation"}`; `close_repository`
+  returns `{}`.
 - error: `{"version": 1, "id": "<id>" | null, "ok": false, "error": {"code", "message"}}`.
 
 `version` in a response is the protocol the runtime speaks. Error codes are
 closed per version: `invalid_request` (not JSON/UTF-8, over 1 MiB, wrong
 envelope; `id` is null when it could not be read), `unsupported_version`
 (checked before the envelope shape, so a newer envelope gets this code) and
-`unknown_operation`. Consumers branch on `ok` and `error.code`; `message` is
-for humans. Any incompatible change bumps `PROTOCOL_VERSION` in both
+`unknown_operation`, then the operation failures, which only operations with
+`params` produce: `invalid_path`, `not_indexed`, `repository_unavailable`,
+`incompatible_derivation`, `ownership_conflict`, `unknown_handle`,
+`internal_error` (`ErrorCode` in `crates/runtime/src/lib.rs`). Consumers
+branch on `ok` and `error.code`; `message` is for humans. Any incompatible change bumps `PROTOCOL_VERSION` in both
 `crates/runtime/src/lib.rs` and `src/contract.ts`, plus the cases. Adding an
 operation is compatible (older runtimes answer `unknown_operation`; clients
-learn what exists from `capabilities`), so `capabilities` did not bump it.
+learn what exists from `capabilities`), so neither `capabilities` nor the
+repository operations, their optional `params` envelope field and their new
+error codes bumped it.
+
+Repository sessions (`crates/runtime/src/session.rs`): `open_repository`
+looks the canonical path up in the registry without registering anything
+(`repository::lookup`). It opens the store, which takes its exclusive
+`store.lock`, and pins the current generation under this runtime's own
+derivation, so a generation of another derivation is `incompatible_derivation`.
+It returns a random 128-bit handle. Repeated opens of the same root return the
+same session. `close_repository` or runtime exit drops the pinned view, then
+the store, releasing the lock.
 
 TS distinguishes a contract error (`ok: false`, returned as data),
 `ProtocolError` (reply is not a valid v1 response or result, its id does not

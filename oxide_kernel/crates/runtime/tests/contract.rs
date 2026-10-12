@@ -9,10 +9,11 @@ fn runtime_matches_contract_cases() {
     let cases: Vec<Value> =
         serde_json::from_str(include_str!("../../../contract/cases.json")).unwrap();
     assert!(!cases.is_empty());
+    let mut runtime = oxide_runtime::Runtime::new(None);
     for case in cases {
         let request = case["request"].as_str().unwrap();
         assert_eq!(
-            oxide_runtime::handle(request),
+            runtime.handle(request),
             case["response"],
             "case {}",
             case["name"]

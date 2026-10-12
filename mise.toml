@@ -43,13 +43,15 @@ description = "tsc --noEmit over src/"
 run = "bun run typecheck"
 
 [tasks."ts:test"]
-description = "bun test: control-plane boundary, decoder, and every contract case through the real oxide-runtime"
+description = "bun test: control-plane boundary, decoders, client, supervisor and repository sessions through the real oxide-runtime"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-(cd oxide_kernel && cargo build -j 2 --locked --bin oxide-runtime)
-OXIDE_RUNTIME_BIN="$(realpath "${CARGO_TARGET_DIR:-oxide_kernel/target}/debug/oxide-runtime")"
-export OXIDE_RUNTIME_BIN
+(cd oxide_kernel && cargo build -j 2 --locked --bin oxide-runtime --example prepare_repository)
+target="${CARGO_TARGET_DIR:-oxide_kernel/target}/debug"
+OXIDE_RUNTIME_BIN="$(realpath "$target/oxide-runtime")"
+OXIDE_PREPARE_BIN="$(realpath "$target/examples/prepare_repository")"
+export OXIDE_RUNTIME_BIN OXIDE_PREPARE_BIN
 bun test
 '''
 

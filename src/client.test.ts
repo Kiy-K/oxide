@@ -62,7 +62,7 @@ async function failure(promise: Promise<unknown>): Promise<OxideError> {
   return err as OxideError;
 }
 
-const repo = { id: "r", root: "/repo" };
+const repo = { id: "r", root: "/repo", snapshot: "s" };
 
 test("getStatus maps the runtime answer to the public shape", async () => {
   const { transport, sent } = fake((r) => ok(r));
@@ -107,7 +107,7 @@ test("one client reuses one runtime process", async () => {
     apiVersion: 1,
     protocolVersion: 1,
     kernelVersion: "0.0.0",
-    operations: ["getStatus"],
+    operations: ["getStatus", "openRepository", "closeRepository"],
   });
   expect(supervisor.pid).toBe(pid);
   await c.close();
@@ -203,6 +203,36 @@ test("malformed and uncorrelated responses map to protocol", async () => {
 
 test.each([
   ["openRepository", (c: OxideClient) => c.openRepository("/repo")],
+  ["closeRepository", (c: OxideClient) => c.closeRepository(repo)],
+] as const)("%s is rejected unless the runtime advertises it", async (op, run) => {
+  const { transport, sent } = fake((r) => ok(r)); // capabilities: status, capabilities
+  const err = await failure(run(clientOver(transport)));
+  expect(err).toMatchObject({ category: "capability", code: "unsupported_operation" });
+  expect(err.message).toContain(op);
+  expect(sent.map((r) => r.op)).toEqual(["capabilities"]);
+});
+
+test("repository operations send their params and map operation errors", async () => {
+  const operations = ["capabilities", "open_repository", "close_repository"];
+  const { transport, sent } = fake((r) => {
+    if (r.op === "capabilities") return ok(r, operations);
+    if (r.op === "open_repository") {
+      const result = { handle: "h", repo_id: "x", root: "/r", snapshot: "s", derivation: "d" };
+      return { version: 1, id: r.id, ok: true, result };
+    }
+    return { version: 1, id: r.id, ok: false, error: { code: "unknown_handle", message: "m" } };
+  });
+  const c = clientOver(transport);
+  expect(await c.openRepository("/repo")).toEqual({ id: "h", root: "/r", snapshot: "s" });
+  const err = await failure(c.closeRepository(repo));
+  expect(err).toMatchObject({ category: "operation", code: "unknown_handle", message: "m" });
+  expect(sent.slice(1)).toEqual([
+    { version: 1, id: expect.any(String), op: "open_repository", params: { path: "/repo" } },
+    { version: 1, id: expect.any(String), op: "close_repository", params: { handle: "r" } },
+  ]);
+});
+
+test.each([
   ["indexRepository", (c: OxideClient) => c.indexRepository(repo)],
   ["search", (c: OxideClient) => c.search(repo, { query: "q" })],
   ["buildContext", (c: OxideClient) => c.buildContext(repo, { query: "q", budget: { tokens: 1 } })],

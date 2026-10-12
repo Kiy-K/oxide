@@ -142,9 +142,11 @@ test("reported capabilities are exactly the operations the runtime answers", asy
   if (!caps.ok) throw new Error("capabilities failed");
   const { operations, protocol_version } = decodeCapabilities(caps.result);
   expect(protocol_version).toBe(1);
+  // Every advertised operation is dispatched: without its params it is an
+  // invalid request (or succeeds), never an unknown operation.
   for (const op of operations) {
     const answer = await s.send({ version: 1, id: op, op } as Request);
-    expect(answer.ok).toBe(true);
+    expect(answer.ok || answer.error.code).not.toBe("unknown_operation");
   }
   for (const op of ["index", "search", "build_context", "open"]) {
     const answer = await s.send({ version: 1, id: op, op } as unknown as Request);

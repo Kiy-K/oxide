@@ -9,6 +9,8 @@ import {
   type CapabilitiesResult,
   checkCorrelation,
   decodeCapabilities,
+  decodeClosed,
+  decodeOpened,
   decodeStatus,
   type Json,
   PROTOCOL_VERSION,
@@ -25,6 +27,7 @@ export const API_VERSION = 1;
 export type Operation =
   | "getStatus"
   | "openRepository"
+  | "closeRepository"
   | "indexRepository"
   | "search"
   | "buildContext";
@@ -38,15 +41,21 @@ export interface Status {
   operations: readonly Operation[];
 }
 
+/**
+ * An open repository session in this client's runtime. `id` is opaque and
+ * valid only until the repository or the client is closed; never parse it.
+ */
+export interface RepositoryHandle {
+  readonly id: string;
+  /** Canonical absolute checkout path. */
+  readonly root: string;
+  /** Opaque identity of the published snapshot this session reads. */
+  readonly snapshot: string;
+}
+
 // Contract-only types: the planned operations below have no runtime support
 // yet and always fail. These shapes are provisional until the runtime backs
 // them (docs/public-api.md § Compatibility).
-
-/** An opened repository. `id` is opaque; never parse it. */
-export interface RepositoryHandle {
-  readonly id: string;
-  readonly root: string;
-}
 
 /** Evidence in one captured file: repository-relative path, byte range, digest. */
 export interface SourceLocation {
@@ -165,8 +174,19 @@ export interface CallOptions {
  */
 export interface OxideClient {
   getStatus(options?: CallOptions): Promise<Status>;
-  /** Planned; fails with `capability` today. */
+  /**
+   * Opens an already indexed repository at the absolute path `root`, pinning
+   * its current published snapshot; never indexes. Opening the same
+   * repository again in this client returns the same handle. Fails with
+   * `operation` (`invalid_path`, `not_indexed`, `repository_unavailable`,
+   * `incompatible_derivation`, `ownership_conflict`, `internal_error`).
+   */
   openRepository(root: string, options?: CallOptions): Promise<RepositoryHandle>;
+  /**
+   * Releases the session and its store lock, so other processes can own the
+   * repository. A closed or foreign handle fails with `operation`/`unknown_handle`.
+   */
+  closeRepository(repository: RepositoryHandle, options?: CallOptions): Promise<void>;
   /** Planned; fails with `capability` today. */
   indexRepository(repository: RepositoryHandle, options?: CallOptions): Promise<IndexResult>;
   /** Planned; fails with `capability` today. */
@@ -207,7 +227,11 @@ export function createClient(options: ClientOptions): OxideClient {
  * operation is reported only if the runtime's capabilities list it; ones
  * absent here have no adapter and are never reported.
  */
-const WIRE: Partial<Record<Operation, Request["op"]>> = { getStatus: "status" };
+const WIRE: Partial<Record<Operation, Request["op"]>> = {
+  getStatus: "status",
+  openRepository: "open_repository",
+  closeRepository: "close_repository",
+};
 
 /** A client over any transport (tests, or a replacement for the supervisor). */
 export function clientOver(transport: Transport): OxideClient {
@@ -225,15 +249,21 @@ export function clientOver(transport: Transport): OxideClient {
     throw new OxideError(
       "capability",
       "unsupported_operation",
-      `${op} is not implemented by the runtime yet`,
+      `${op} is not implemented by this client and runtime`,
       null,
     );
   };
 
-  async function send<T>(op: Request["op"], decode: (result: Json) => T, signal?: AbortSignal) {
+  async function send<T>(
+    op: Request["op"],
+    decode: (result: Json) => T,
+    signal?: AbortSignal,
+    params?: Json,
+  ) {
     if (lifetime.signal.aborted) throw closed(null);
     signal?.throwIfAborted();
     const request: Request = { version: PROTOCOL_VERSION, id: crypto.randomUUID(), op };
+    if (params) request.params = params;
     const both = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     let response: Response;
     let result: T | undefined;
@@ -252,21 +282,41 @@ export function clientOver(transport: Transport): OxideClient {
     return result as T;
   }
 
+  /** The runtime's capabilities, fetched once. */
+  async function runtime(signal?: AbortSignal): Promise<CapabilitiesResult> {
+    capabilities ??= await send("capabilities", decodeCapabilities, signal);
+    return capabilities;
+  }
+
+  /** Public operations both this adapter and the runtime implement. */
+  const available = (caps: CapabilitiesResult) =>
+    (Object.keys(WIRE) as Operation[]).filter((op) => caps.operations.includes(WIRE[op] ?? ""));
+
+  /** Rejects `op` as `capability` unless the runtime advertises it. */
+  async function ensure(op: Operation, signal?: AbortSignal): Promise<void> {
+    if (!available(await runtime(signal)).includes(op)) await unsupported(op, { signal });
+  }
+
   return {
     async getStatus(options) {
-      capabilities ??= await send("capabilities", decodeCapabilities, options?.signal);
+      const caps = await runtime(options?.signal);
       const status = await send("status", decodeStatus, options?.signal);
-      const advertised = capabilities.operations;
       return {
         apiVersion: API_VERSION,
-        protocolVersion: capabilities.protocol_version,
+        protocolVersion: caps.protocol_version,
         kernelVersion: status.kernel_version,
-        operations: (Object.keys(WIRE) as Operation[]).filter((op) =>
-          advertised.includes(WIRE[op] ?? ""),
-        ),
+        operations: available(caps),
       };
     },
-    openRepository: (_root, options) => unsupported("openRepository", options),
+    async openRepository(root, options) {
+      await ensure("openRepository", options?.signal);
+      const opened = await send("open_repository", decodeOpened, options?.signal, { path: root });
+      return { id: opened.handle, root: opened.root, snapshot: opened.snapshot };
+    },
+    async closeRepository(repository, options) {
+      await ensure("closeRepository", options?.signal);
+      await send("close_repository", decodeClosed, options?.signal, { handle: repository.id });
+    },
     indexRepository: (_repository, options) => unsupported("indexRepository", options),
     search: (_repository, _request, options) => unsupported("search", options),
     buildContext: (_repository, _request, options) => unsupported("buildContext", options),
@@ -308,5 +358,8 @@ function fromContractError(
       return new OxideError("protocol", "unsupported_version", error.message, requestId);
     case "invalid_request":
       return new OxideError("protocol", "invalid_request", error.message, requestId);
+    default:
+      // A supported operation ran and failed: the runtime's code is public.
+      return new OxideError("operation", error.code, error.message, requestId);
   }
 }

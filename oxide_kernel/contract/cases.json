@@ -13,10 +13,50 @@
       "ok": true,
       "result": {
         "protocol_version": 1,
-        "operations": ["status", "capabilities"],
+        "operations": ["status", "capabilities", "open_repository", "close_repository"],
         "max_request_bytes": 1048576,
         "execution": "serial"
       }
+    }
+  },
+  {
+    "name": "operation without its params",
+    "request": "{\"version\":1,\"id\":\"p\",\"op\":\"open_repository\"}",
+    "response": {
+      "version": 1,
+      "id": "p",
+      "ok": false,
+      "error": { "code": "invalid_request", "message": "invalid params for `open_repository`" }
+    }
+  },
+  {
+    "name": "params on an operation that takes none",
+    "request": "{\"version\":1,\"id\":\"q\",\"op\":\"status\",\"params\":{}}",
+    "response": {
+      "version": 1,
+      "id": "q",
+      "ok": false,
+      "error": { "code": "invalid_request", "message": "invalid params for `status`" }
+    }
+  },
+  {
+    "name": "relative repository path",
+    "request": "{\"version\":1,\"id\":\"r\",\"op\":\"open_repository\",\"params\":{\"path\":\"repo\"}}",
+    "response": {
+      "version": 1,
+      "id": "r",
+      "ok": false,
+      "error": { "code": "invalid_path", "message": "repository path must be absolute" }
+    }
+  },
+  {
+    "name": "unknown repository handle",
+    "request": "{\"version\":1,\"id\":\"u\",\"op\":\"close_repository\",\"params\":{\"handle\":\"0\"}}",
+    "response": {
+      "version": 1,
+      "id": "u",
+      "ok": false,
+      "error": { "code": "unknown_handle", "message": "unknown repository handle" }
     }
   },
   {

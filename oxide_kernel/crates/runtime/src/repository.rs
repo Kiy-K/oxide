@@ -97,6 +97,132 @@ pub struct RepositorySession {
     root: PathBuf,
 }
 
+/// The registry entry of an already registered checkout, found without
+/// registering anything: no `RepoId` is assigned and no metadata or
+/// directory is created. `root` must be canonical. `None` when the checkout
+/// is not registered. Interrupted registrations are still recovered.
+pub fn lookup(
+    root: &Path,
+    location: &DataLocation,
+) -> Result<Option<(RepoId, PathBuf)>, StoreError> {
+    let data = external_directory(&location.0, root)?;
+    if !data.join("repositories").is_dir() {
+        return Ok(None);
+    }
+    Ok(registry_entry(root, &data, false)?.0)
+}
+
+/// Scans the registry under its lock for `root`; with `register`, assigns
+/// and seals a new entry when there is none. Returns the held registry lock
+/// so callers can keep it across the store open.
+fn registry_entry(
+    root: &Path,
+    data: &Path,
+    register: bool,
+) -> Result<(Option<(RepoId, PathBuf)>, File), StoreError> {
+    let registry = OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(data.join("registry.lock"))
+        .map_err(io)?;
+    registry.lock().map_err(io)?;
+    let repositories = data.join("repositories");
+    if register {
+        private_directory(&repositories)?;
+    }
+    let mut found = None;
+    for entry in fs::read_dir(&repositories).map_err(io)? {
+        let entry = entry.map_err(io)?;
+        if !entry.file_type().map_err(io)?.is_dir() {
+            return Err(StoreError::Corrupt(
+                "invalid repository registry entry".into(),
+            ));
+        }
+        if entry.file_name().to_string_lossy().ends_with(".staging") {
+            fs::remove_dir_all(entry.path()).map_err(io)?;
+            continue;
+        }
+        let metadata: Metadata =
+            serde_json::from_slice(&fs::read(entry.path().join("REPO.json")).map_err(io)?)
+                .map_err(|e| StoreError::Corrupt(e.to_string()))?;
+        if metadata.version != 1
+            || metadata.repo_id.len() != 32
+            || !metadata
+                .repo_id
+                .bytes()
+                .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+            || entry.file_name() != std::ffi::OsStr::new(&metadata.repo_id)
+        {
+            return Err(StoreError::Corrupt(
+                "invalid repository metadata; rebuild required".into(),
+            ));
+        }
+        if metadata.checkout == *root {
+            if found.is_some() {
+                return Err(StoreError::Corrupt(
+                    "duplicate repository discovery entries".into(),
+                ));
+            }
+            found = Some((
+                RepoId::new(metadata.repo_id).map_err(|e| StoreError::Corrupt(e.to_string()))?,
+                entry.path(),
+            ));
+        }
+    }
+    if found.is_some() || !register {
+        return Ok((found, registry));
+    }
+
+    let mut bytes = [0u8; 16];
+    let mut assigned = None;
+    for _ in 0..16 {
+        File::open("/dev/urandom")
+            .map_err(io)?
+            .read_exact(&mut bytes)
+            .map_err(io)?;
+        let value: String = bytes.iter().map(|b| format!("{b:02x}")).collect();
+        if repositories.join(&value).exists() {
+            continue;
+        }
+        let directory = repositories.join(format!("{value}.staging"));
+        match DirBuilder::new().mode(0o700).create(&directory) {
+            Ok(()) => {
+                assigned = Some((RepoId::new(value).expect("hex identifier"), directory));
+                break;
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+            Err(error) => return Err(io(error)),
+        }
+    }
+    let (id, directory) = assigned.ok_or(StoreError::Conflict)?;
+    let metadata = Metadata {
+        version: 1,
+        repo_id: id.as_str().into(),
+        checkout: root.to_path_buf(),
+    };
+    let bytes =
+        serde_json::to_vec(&metadata).map_err(|e| StoreError::Unsupported(e.to_string()))?;
+    let temporary = directory.join("REPO.tmp");
+    let mut file = OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .open(&temporary)
+        .map_err(io)?;
+    file.write_all(&bytes).map_err(io)?;
+    file.sync_all().map_err(io)?;
+    fs::rename(temporary, directory.join("REPO.json")).map_err(io)?;
+    File::open(&directory).map_err(io)?.sync_all().map_err(io)?;
+    let sealed = repositories.join(id.as_str());
+    fs::rename(&directory, &sealed).map_err(io)?;
+    File::open(&repositories)
+        .map_err(io)?
+        .sync_all()
+        .map_err(io)?;
+    Ok((Some((id, sealed)), registry))
+}
+
 impl RepositorySession {
     pub fn open(root: &Path, location: &DataLocation) -> Result<Self, StoreError> {
         let root = fs::canonicalize(root).map_err(io)?;
@@ -107,106 +233,8 @@ impl RepositorySession {
         }
         let data = external_directory(&location.0, &root)?;
         private_directory(&data)?;
-        let registry = OpenOptions::new()
-            .create(true)
-            .truncate(false)
-            .read(true)
-            .write(true)
-            .open(data.join("registry.lock"))
-            .map_err(io)?;
-        registry.lock().map_err(io)?;
-        let repositories = data.join("repositories");
-        private_directory(&repositories)?;
-        let mut found = None;
-        for entry in fs::read_dir(&repositories).map_err(io)? {
-            let entry = entry.map_err(io)?;
-            if !entry.file_type().map_err(io)?.is_dir() {
-                return Err(StoreError::Corrupt(
-                    "invalid repository registry entry".into(),
-                ));
-            }
-            if entry.file_name().to_string_lossy().ends_with(".staging") {
-                fs::remove_dir_all(entry.path()).map_err(io)?;
-                continue;
-            }
-            let metadata: Metadata =
-                serde_json::from_slice(&fs::read(entry.path().join("REPO.json")).map_err(io)?)
-                    .map_err(|e| StoreError::Corrupt(e.to_string()))?;
-            if metadata.version != 1
-                || metadata.repo_id.len() != 32
-                || !metadata
-                    .repo_id
-                    .bytes()
-                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
-                || entry.file_name() != std::ffi::OsStr::new(&metadata.repo_id)
-            {
-                return Err(StoreError::Corrupt(
-                    "invalid repository metadata; rebuild required".into(),
-                ));
-            }
-            if metadata.checkout == root {
-                if found.is_some() {
-                    return Err(StoreError::Corrupt(
-                        "duplicate repository discovery entries".into(),
-                    ));
-                }
-                found = Some((
-                    RepoId::new(metadata.repo_id)
-                        .map_err(|e| StoreError::Corrupt(e.to_string()))?,
-                    entry.path(),
-                ));
-            }
-        }
-        let (repo_id, store_directory) = if let Some(existing) = found {
-            existing
-        } else {
-            let mut bytes = [0u8; 16];
-            let mut assigned = None;
-            for _ in 0..16 {
-                File::open("/dev/urandom")
-                    .map_err(io)?
-                    .read_exact(&mut bytes)
-                    .map_err(io)?;
-                let value: String = bytes.iter().map(|b| format!("{b:02x}")).collect();
-                if repositories.join(&value).exists() {
-                    continue;
-                }
-                let directory = repositories.join(format!("{value}.staging"));
-                match DirBuilder::new().mode(0o700).create(&directory) {
-                    Ok(()) => {
-                        assigned = Some((RepoId::new(value).expect("hex identifier"), directory));
-                        break;
-                    }
-                    Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
-                    Err(error) => return Err(io(error)),
-                }
-            }
-            let (id, directory) = assigned.ok_or(StoreError::Conflict)?;
-            let metadata = Metadata {
-                version: 1,
-                repo_id: id.as_str().into(),
-                checkout: root.clone(),
-            };
-            let bytes = serde_json::to_vec(&metadata)
-                .map_err(|e| StoreError::Unsupported(e.to_string()))?;
-            let temporary = directory.join("REPO.tmp");
-            let mut file = OpenOptions::new()
-                .create_new(true)
-                .write(true)
-                .open(&temporary)
-                .map_err(io)?;
-            file.write_all(&bytes).map_err(io)?;
-            file.sync_all().map_err(io)?;
-            fs::rename(temporary, directory.join("REPO.json")).map_err(io)?;
-            File::open(&directory).map_err(io)?.sync_all().map_err(io)?;
-            let sealed = repositories.join(id.as_str());
-            fs::rename(&directory, &sealed).map_err(io)?;
-            File::open(&repositories)
-                .map_err(io)?
-                .sync_all()
-                .map_err(io)?;
-            (id, sealed)
-        };
+        let (entry, registry) = registry_entry(&root, &data, true)?;
+        let (repo_id, store_directory) = entry.expect("registering always yields an entry");
         let store = LadybugStore::new(&store_directory)?;
         drop(registry);
         Ok(Self {

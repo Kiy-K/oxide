@@ -12,11 +12,16 @@ pub mod embedding;
 pub mod jev;
 pub mod python;
 pub mod repository;
+mod session;
 
 use std::io::{self, BufRead, Read, Write};
 
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
+
+use repository::DataLocation;
+use session::{Failure, Sessions};
 
 /// Service contract version. Bump on any incompatible request/response change.
 pub const PROTOCOL_VERSION: u64 = 1;
@@ -26,7 +31,12 @@ pub const PROTOCOL_VERSION: u64 = 1;
 pub const MAX_REQUEST_BYTES: u64 = 1 << 20;
 
 /// Every operation `handle` answers, as reported by `capabilities`.
-pub const OPERATIONS: &[&str] = &["status", "capabilities"];
+pub const OPERATIONS: &[&str] = &[
+    "status",
+    "capabilities",
+    "open_repository",
+    "close_repository",
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -37,6 +47,25 @@ pub enum ErrorCode {
     UnsupportedVersion,
     /// Valid envelope, but no such operation in this version.
     UnknownOperation,
+    // Operation failures: the request was valid, the operation could not
+    // succeed. Only operations that take parameters produce them.
+    /// The repository path is not absolute, does not resolve to a directory,
+    /// or contains the application data location.
+    InvalidPath,
+    /// Not registered, or no published generation (never indexed, or only in
+    /// an older storage format): index or rebuild it.
+    NotIndexed,
+    /// Stored state is corrupt or unusable; rebuild required.
+    RepositoryUnavailable,
+    /// Published only under another derivation, storage format or adapter
+    /// encoding than this runtime's.
+    IncompatibleDerivation,
+    /// Another runtime process owns the repository's store.
+    OwnershipConflict,
+    /// No open repository session has this handle in this runtime.
+    UnknownHandle,
+    /// The runtime failed for a reason that is not the request's.
+    InternalError,
 }
 
 #[derive(Deserialize)]
@@ -46,6 +75,21 @@ struct Request {
     version: u64,
     id: String,
     op: String,
+    /// Operation parameters: required by operations that take them,
+    /// rejected by those that do not.
+    params: Option<Value>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PathParams {
+    path: String,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct HandleParams {
+    handle: String,
 }
 
 #[derive(Serialize)]
@@ -66,7 +110,12 @@ struct CapabilitiesResult {
 /// request, flushed, in arrival order. A final line without a newline is
 /// still a request. Blank lines are skipped. Memory per request is bounded by
 /// `MAX_REQUEST_BYTES`. Only I/O failures (e.g. a closed stdout) end it early.
-pub fn serve(mut input: impl BufRead, mut output: impl Write) -> io::Result<()> {
+/// Dropping `runtime` at EOF closes every repository session it still holds.
+pub fn serve(
+    mut runtime: Runtime,
+    mut input: impl BufRead,
+    mut output: impl Write,
+) -> io::Result<()> {
     let mut line = Vec::new();
     loop {
         line.clear();
@@ -90,7 +139,7 @@ pub fn serve(mut input: impl BufRead, mut output: impl Write) -> io::Result<()> 
             continue;
         } else {
             match std::str::from_utf8(&line) {
-                Ok(text) => handle(text),
+                Ok(text) => runtime.handle(text),
                 Err(_) => error(None, ErrorCode::InvalidRequest, "request is not UTF-8"),
             }
         };
@@ -119,11 +168,88 @@ fn skip_line(input: &mut impl BufRead) -> io::Result<()> {
     }
 }
 
-/// Answers one request. Every input yields a contract response; consumers
-/// branch on `ok` and `error.code`, never on `message`.
-pub fn handle(text: &str) -> Value {
+/// The state one runtime process holds across requests.
+pub struct Runtime {
+    sessions: Sessions,
+}
+
+impl Runtime {
+    /// `location` is the application data root holding the repository
+    /// registry; without one, `open_repository` fails.
+    pub fn new(location: Option<DataLocation>) -> Self {
+        Self {
+            sessions: Sessions::new(location),
+        }
+    }
+
+    /// Answers one request. Every input yields a contract response;
+    /// consumers branch on `ok` and `error.code`, never on `message`.
+    pub fn handle(&mut self, text: &str) -> Value {
+        let request = match envelope(text) {
+            Ok(request) => request,
+            Err(response) => return response,
+        };
+        let Request { id, op, params, .. } = request;
+        match (op.as_str(), params) {
+            ("status", None) => {
+                let status = oxide_kernel::status();
+                ok(
+                    id,
+                    StatusResult {
+                        kernel_version: status.kernel_version,
+                    },
+                )
+            }
+            ("capabilities", None) => ok(
+                id,
+                CapabilitiesResult {
+                    protocol_version: PROTOCOL_VERSION,
+                    operations: OPERATIONS,
+                    max_request_bytes: MAX_REQUEST_BYTES,
+                    execution: "serial",
+                },
+            ),
+            ("open_repository", Some(p)) => match decode::<PathParams>(p) {
+                Some(p) => answer(id, self.sessions.open(&p.path)),
+                None => bad_params(id, op),
+            },
+            ("close_repository", Some(p)) => match decode::<HandleParams>(p) {
+                Some(p) => answer(id, self.sessions.close(&p.handle).map(|()| json!({}))),
+                None => bad_params(id, op),
+            },
+            (op, _) if OPERATIONS.contains(&op) => bad_params(id, op.to_owned()),
+            _ => error(Some(id), ErrorCode::UnknownOperation, "unknown operation"),
+        }
+    }
+}
+
+fn decode<T: DeserializeOwned>(params: Value) -> Option<T> {
+    serde_json::from_value(params).ok()
+}
+
+fn bad_params(id: String, op: String) -> Value {
+    error(
+        Some(id),
+        ErrorCode::InvalidRequest,
+        &format!("invalid params for `{op}`"),
+    )
+}
+
+fn answer(id: String, result: Result<impl Serialize, Failure>) -> Value {
+    match result {
+        Ok(result) => ok(id, result),
+        Err(Failure(code, message)) => error(Some(id), code, &message),
+    }
+}
+
+/// Decodes a version 1 envelope, or the contract error answering it.
+fn envelope(text: &str) -> Result<Request, Value> {
     let Ok(value) = serde_json::from_str::<Value>(text) else {
-        return error(None, ErrorCode::InvalidRequest, "request is not JSON");
+        return Err(error(
+            None,
+            ErrorCode::InvalidRequest,
+            "request is not JSON",
+        ));
     };
     let id = value.get("id").and_then(Value::as_str).map(str::to_owned);
     // Version first: a newer envelope must get `unsupported_version`, not a
@@ -131,46 +257,27 @@ pub fn handle(text: &str) -> Value {
     match value.get("version").and_then(Value::as_u64) {
         Some(PROTOCOL_VERSION) => {}
         Some(_) => {
-            return error(
+            return Err(error(
                 id,
                 ErrorCode::UnsupportedVersion,
                 "unsupported protocol version",
-            );
+            ));
         }
-        None => return error(id, ErrorCode::InvalidRequest, "missing integer `version`"),
+        None => {
+            return Err(error(
+                id,
+                ErrorCode::InvalidRequest,
+                "missing integer `version`",
+            ));
+        }
     }
-    let Ok(request) = serde_json::from_value::<Request>(value) else {
-        return error(
+    serde_json::from_value::<Request>(value).map_err(|_| {
+        error(
             id,
             ErrorCode::InvalidRequest,
             "request does not match the version 1 envelope",
-        );
-    };
-    match request.op.as_str() {
-        "status" => {
-            let status = oxide_kernel::status();
-            ok(
-                request.id,
-                StatusResult {
-                    kernel_version: status.kernel_version,
-                },
-            )
-        }
-        "capabilities" => ok(
-            request.id,
-            CapabilitiesResult {
-                protocol_version: PROTOCOL_VERSION,
-                operations: OPERATIONS,
-                max_request_bytes: MAX_REQUEST_BYTES,
-                execution: "serial",
-            },
-        ),
-        _ => error(
-            Some(request.id),
-            ErrorCode::UnknownOperation,
-            "unknown operation",
-        ),
-    }
+        )
+    })
 }
 
 fn ok(id: String, result: impl Serialize) -> Value {
@@ -208,7 +315,7 @@ mod tests {
     fn served_with(input: &[u8], step: usize) -> Vec<Value> {
         let mut out = Vec::new();
         let reader = io::BufReader::with_capacity(7, Trickle { bytes: input, step });
-        serve(reader, &mut out).unwrap();
+        serve(Runtime::new(None), reader, &mut out).unwrap();
         assert!(
             out.is_empty() || out.last() == Some(&b'\n'),
             "whole lines only"
@@ -282,15 +389,45 @@ mod tests {
 
     #[test]
     fn capabilities_list_exactly_the_answered_operations() {
-        let caps = handle(r#"{"version":1,"id":"c","op":"capabilities"}"#);
+        let mut runtime = Runtime::new(None);
+        let caps = runtime.handle(r#"{"version":1,"id":"c","op":"capabilities"}"#);
         assert_eq!(caps["result"]["operations"], json!(OPERATIONS));
         assert_eq!(caps["result"]["protocol_version"], PROTOCOL_VERSION);
+        // Every listed operation is dispatched: wrong params get
+        // `invalid_request`, never `unknown_operation`.
         for op in OPERATIONS {
-            let answer = handle(&format!(r#"{{"version":1,"id":"x","op":"{op}"}}"#));
-            assert_eq!(answer["ok"], true, "{op}");
+            let answer = runtime.handle(&format!(
+                r#"{{"version":1,"id":"x","op":"{op}","params":7}}"#
+            ));
+            assert_eq!(answer["error"]["code"], "invalid_request", "{op}");
         }
-        let unknown = handle(r#"{"version":1,"id":"x","op":"index"}"#);
+        let unknown = runtime.handle(r#"{"version":1,"id":"x","op":"index"}"#);
         assert_eq!(unknown["error"]["code"], "unknown_operation");
+    }
+
+    #[test]
+    fn repository_operations_validate_params_and_paths() {
+        let mut runtime = Runtime::new(None);
+        let mut code = |request: &str| runtime.handle(request)["error"]["code"].clone();
+        for bad in [
+            r#"{"version":1,"id":"a","op":"open_repository"}"#,
+            r#"{"version":1,"id":"a","op":"open_repository","params":{}}"#,
+            r#"{"version":1,"id":"a","op":"open_repository","params":{"path":1}}"#,
+            r#"{"version":1,"id":"a","op":"open_repository","params":{"path":"/","x":1}}"#,
+            r#"{"version":1,"id":"a","op":"status","params":{}}"#,
+        ] {
+            assert_eq!(code(bad), "invalid_request", "{bad}");
+        }
+        for path in ["relative/repo", "/nonexistent/oxide/repo", "/etc/hostname"] {
+            let request = format!(
+                r#"{{"version":1,"id":"a","op":"open_repository","params":{{"path":"{path}"}}}}"#
+            );
+            assert_eq!(code(&request), "invalid_path", "{path}");
+        }
+        assert_eq!(
+            code(r#"{"version":1,"id":"a","op":"close_repository","params":{"handle":"nope"}}"#),
+            "unknown_handle"
+        );
     }
 }
 

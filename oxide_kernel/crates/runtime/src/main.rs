@@ -5,8 +5,13 @@
 
 use std::process::ExitCode;
 
+use oxide_runtime::Runtime;
+use oxide_runtime::repository::DataLocation;
+
 fn main() -> ExitCode {
-    match oxide_runtime::serve(std::io::stdin().lock(), std::io::stdout().lock()) {
+    // Resolved once; without it `status` still works and opening fails.
+    let runtime = Runtime::new(DataLocation::linux().ok());
+    match oxide_runtime::serve(runtime, std::io::stdin().lock(), std::io::stdout().lock()) {
         Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
             eprintln!("oxide-runtime: {err}");
