@@ -1,0 +1,219 @@
+{
+ "format": "oxide-agentnav-tasks-v1",
+ "source": "docs/phase-5/decisionbench-v1/contextbench-tasks.json, benchmark_source == Verified",
+ "splits": "DecisionBench v1 repository splits: dev -> dev; calibration, test -> heldout",
+ "tasks": [
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__1756507b",
+   "instance_id": "sympy__sympy-18189",
+   "repo": "sympy/sympy",
+   "base_commit": "1923822ddf8265199dbd9ef9ce09641d3fd042b9",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__17c22a6f",
+   "instance_id": "sympy__sympy-13757",
+   "repo": "sympy/sympy",
+   "base_commit": "a5e6a101869e027e7930e694f8b1cfb082603453",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__1a9633de",
+   "instance_id": "sympy__sympy-12481",
+   "repo": "sympy/sympy",
+   "base_commit": "c807dfe7569692cad24f02a08477b70c1679a4dd",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__5462d419",
+   "instance_id": "sphinx-doc__sphinx-9320",
+   "repo": "sphinx-doc/sphinx",
+   "base_commit": "e05cef574b8f23ab1b57f57e7da6dee509a4e230",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__7080a326",
+   "instance_id": "sympy__sympy-15599",
+   "repo": "sympy/sympy",
+   "base_commit": "5e17a90c19f7eecfa10c1ab872648ae7e2131323",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__960705f5",
+   "instance_id": "sympy__sympy-20438",
+   "repo": "sympy/sympy",
+   "base_commit": "33b47e4bd60e2302e42616141e76285038b724d6",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__9c4b27a6",
+   "instance_id": "sphinx-doc__sphinx-11510",
+   "repo": "sphinx-doc/sphinx",
+   "base_commit": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__b8417a37",
+   "instance_id": "sphinx-doc__sphinx-10673",
+   "repo": "sphinx-doc/sphinx",
+   "base_commit": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__f0418d70",
+   "instance_id": "sphinx-doc__sphinx-8056",
+   "repo": "sphinx-doc/sphinx",
+   "base_commit": "e188d56ed1248dead58f3f8018c0e9a3f99193f7",
+   "split": "dev"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__09457b9b",
+   "instance_id": "matplotlib__matplotlib-25332",
+   "repo": "matplotlib/matplotlib",
+   "base_commit": "66ba515e671638971bd11a34cff12c107a437e0b",
+   "split": "heldout",
+   "excluded": "SWE-bench image does not unpack under rootless podman (file UID 197609 outside the user's subordinate UID range); gold validation errored"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+   "instance_id": "django__django-15104",
+   "repo": "django/django",
+   "base_commit": "a7e7043c8746933dafce652507d3b821801cdc7d",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__0e1d5fcf",
+   "instance_id": "matplotlib__matplotlib-24026",
+   "repo": "matplotlib/matplotlib",
+   "base_commit": "14c96b510ebeba40f573e512299b1976f35b620e",
+   "split": "heldout",
+   "excluded": "SWE-bench image does not unpack under rootless podman (file UID 197609 outside the user's subordinate UID range); gold validation errored"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5",
+   "instance_id": "scikit-learn__scikit-learn-13439",
+   "repo": "scikit-learn/scikit-learn",
+   "base_commit": "a62775e99f2a5ea3d51db7160fad783f6cd8a4c5",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__20eb5bc8",
+   "instance_id": "pydata__xarray-4966",
+   "repo": "pydata/xarray",
+   "base_commit": "37522e991a32ee3c0ad1a5ff8afe8e3eb1885550",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance_id": "pydata__xarray-4687",
+   "repo": "pydata/xarray",
+   "base_commit": "d3b6aa6d8b997df115a53c001d00222a0f92f63a",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e",
+   "instance_id": "django__django-16662",
+   "repo": "django/django",
+   "base_commit": "0eb3e9bd754e4c9fac8b616b705178727fc8031e",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+   "instance_id": "scikit-learn__scikit-learn-10844",
+   "repo": "scikit-learn/scikit-learn",
+   "base_commit": "97523985b39ecde369d83352d7c3baf403b60a22",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance_id": "scikit-learn__scikit-learn-14629",
+   "repo": "scikit-learn/scikit-learn",
+   "base_commit": "4aded39b5663d943f6a4809abacfa9cae3d7fb6a",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__607f6b9e",
+   "instance_id": "django__django-11603",
+   "repo": "django/django",
+   "base_commit": "f618e033acd37d59b536d6e6126e6c5be18037f6",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__681ea2b6",
+   "instance_id": "django__django-15569",
+   "repo": "django/django",
+   "base_commit": "884b4c27f506b3c29d58509fc83a35c30ea10d94",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance_id": "astropy__astropy-13236",
+   "repo": "astropy/astropy",
+   "base_commit": "6ed769d58d89380ebaa1ef52b300691eefda8928",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__84a1749f",
+   "instance_id": "django__django-16136",
+   "repo": "django/django",
+   "base_commit": "19e6efa50b603af325e7f62058364f278596758f",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance_id": "pydata__xarray-7229",
+   "repo": "pydata/xarray",
+   "base_commit": "3aa75c8d00a4a2d4acf10d80f76b937cadb666b7",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+   "instance_id": "django__django-10880",
+   "repo": "django/django",
+   "base_commit": "838e432e3e5519c5383d12018e6c78f8ec7833c1",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__9f3a5677",
+   "instance_id": "pytest-dev__pytest-10051",
+   "repo": "pytest-dev/pytest",
+   "base_commit": "aa55975c7d3f6c9f6d7f68accc41bb7cadf0eb9a",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__abb9b8b0",
+   "instance_id": "pytest-dev__pytest-10081",
+   "repo": "pytest-dev/pytest",
+   "base_commit": "da9a2b584eb7a6c7e924b2621ed0ddaeca0a7bea",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance_id": "astropy__astropy-13977",
+   "repo": "astropy/astropy",
+   "base_commit": "5250b2442501e6c671c6b380536f1edb352602d1",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__c2f0f2be",
+   "instance_id": "pytest-dev__pytest-7205",
+   "repo": "pytest-dev/pytest",
+   "base_commit": "5e7f1ab4bf58e473e5d7f878eb2b499d7deabd29",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance_id": "psf__requests-6028",
+   "repo": "psf/requests",
+   "base_commit": "0192aac24123735b3eaf9b08df46429bb770c283",
+   "split": "heldout"
+  },
+  {
+   "id": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+   "instance_id": "pydata__xarray-4695",
+   "repo": "pydata/xarray",
+   "base_commit": "51ef2a66c4e0896eab7d2b03e3dfb3963e338e3c",
+   "split": "heldout"
+  }
+ ]
+}
