@@ -1,7 +1,7 @@
-//! `oxide-runtime`: one request per process over stdin/stdout.
-//!
-//! Provisional Phase 0 transport (docs/adr/0003-kernel-runtime-control-plane-boundary.md),
-//! not the intended long-lived runtime, a CLI or a committed wire framing.
+//! `oxide-runtime`: a long-lived service over stdin/stdout, one JSON request
+//! per line in and one JSON response per line out, until stdin closes
+//! (docs/adr/0003-kernel-runtime-control-plane-boundary.md). Diagnostics go
+//! to stderr only; stdout carries nothing but responses.
 
 use std::process::ExitCode;
 

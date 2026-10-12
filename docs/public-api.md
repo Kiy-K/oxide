@@ -10,7 +10,7 @@ SDK users) depend on this module only, never on `contract.ts` or
 integrations ─▶ src/index.ts (public API, API_VERSION 1)
                    │  src/client.ts: OxideClient + internal adapter
                    ▼
-                src/transport.ts: Transport (process-per-request today)
+                src/transport.ts: Transport = RuntimeSupervisor (one long-lived child)
                    │  src/contract.ts: wire protocol v1
                    ▼
                 oxide-runtime ─▶ kernel
@@ -67,7 +67,7 @@ request id, or `null` when no request was sent.
 
 | Category | Meaning | Codes today |
 | --- | --- | --- |
-| `transport` | runtime not reached / no answer (spawn failure, crash, non-JSON) | `runtime_unavailable`, `transport_failed` |
+| `transport` | runtime not reached / no answer (spawn failure, exit, crash, full queue) | `runtime_unavailable`, `transport_failed` |
 | `protocol` | answer outside the contract, wrong id, or version mismatch | `malformed_response`, `unsupported_version`, `invalid_request` |
 | `capability` | operation not supported by this client/runtime | `unsupported_operation` |
 | `operation` | a supported operation ran and failed | none in protocol 1 (reserved) |
@@ -80,13 +80,19 @@ debugging. It is not part of the API.
 
 - Every operation takes `{ signal?: AbortSignal }`. An aborted call rejects
   with `signal.reason` (an `AbortError` unless you chose a reason), never with
-  an `OxideError`. The process transport kills the runtime child. A result
-  that arrives after the abort is discarded.
+  an `OxideError`. A call still waiting in the client's queue is never sent.
+  A call the runtime is already running is not interrupted: the runtime
+  finishes it, its answer is discarded, and later calls wait for it.
 - The client owns its transport. `close()` is idempotent: it rejects in-flight
   calls with `closed`, makes later calls reject with `closed`, and releases
   the transport exactly once.
-- Calls may overlap, but each is independent. There are no sessions, retries,
-  reconnection or recovery, and the API doesn't promise any.
+- Calls may overlap; the runtime runs them one at a time, in order. Each is
+  independent. There are no sessions, retries, reconnection or recovery, and
+  the API doesn't promise any. If the runtime exits, every pending and later
+  call fails with `transport`.
+- The runtime process starts on the first call and is the client's alone. A
+  client that is never closed does not keep Bun alive while idle; when Bun
+  exits, the runtime sees EOF and exits too.
 
 ## Compatibility
 
@@ -110,22 +116,24 @@ debugging. It is not part of the API.
 ### Absorbing runtime changes
 
 - **Long-lived runtime (ADR-0003):** implement `Transport` (`send`, `close`)
-  over the supervised process and pass it to `clientOver`. `createClient`
-  switches to it. The public API is unchanged.
+  (done): `RuntimeSupervisor` implements `Transport` (`send`, `close`) over one
+  supervised process; `createClient` uses it. The public API did not change.
 - **New operations in the protocol:** add the wire op and decoder in
   `contract.ts` (with shared cases), map the public request/result in the
-  adapter, and add the operation to `SUPPORTED`. Once the runtime reports
-  capabilities, `SUPPORTED` becomes the runtime's answer instead of a
-  constant.
+  adapter's `WIRE` table. `Status.operations` lists a public operation only
+  if it has an adapter and the runtime's `capabilities` report its wire
+  operation, so nothing is advertised before both sides implement it.
 - **Rust core rewrite:** only the runtime side of the contract changes. If
   the wire contract changes too, the adapter maps the new protocol onto the
   same public types.
 
 ## Limits of the current runtime protocol
 
-- Protocol 1 has a single operation, `status`. There is no repository,
-  index, search or context op, and no capability negotiation.
-- Transport is provisional: one `oxide-runtime` process per request, so no
-  shared state, caches or sessions. Each call pays a process spawn.
+- Protocol 1 has `status` and the internal `capabilities`. There is no
+  repository, index, search or context op.
+- One runtime process per client, serial execution, 64 queued calls at most.
+  No cancel message, so running work can't be interrupted. No restart: after
+  the runtime exits, create a new client. Two clients mean two runtimes;
+  nothing coordinates them yet (ADR-0003).
 - No runtime discovery: `runtimeBin` is required.
 - No `operation`-category errors exist on the wire yet.

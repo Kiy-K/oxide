@@ -1,11 +1,12 @@
 // OXIDE v2 service contract, version 1 (oxide_kernel/README.md § Service contract).
-// Types plus a strict decoder: TS validates the envelope it receives and
-// never interprets repository meaning. The shared cases in
+// Types plus strict decoders: TS validates the envelope it receives, then the
+// result of the operation it asked for, and never interprets repository
+// meaning. The shared cases in
 // oxide_kernel/contract/cases.json pin the wire shape for both languages.
 
 export const PROTOCOL_VERSION = 1;
 
-export type Operation = "status";
+export type Operation = "status" | "capabilities";
 
 export interface Request {
   version: typeof PROTOCOL_VERSION;
@@ -19,8 +20,18 @@ export interface StatusResult {
   kernel_version: string;
 }
 
+export interface CapabilitiesResult {
+  protocol_version: number;
+  /** Wire operations the runtime answers; may include ones this client does not know. */
+  operations: string[];
+  max_request_bytes: number;
+  /** `serial`: one request at a time, answered in arrival order. */
+  execution: string;
+}
+
+/** `result` is a JSON object; decode it with the decoder for the operation sent. */
 export type Response =
-  | { version: typeof PROTOCOL_VERSION; id: string; ok: true; result: StatusResult }
+  | { version: typeof PROTOCOL_VERSION; id: string; ok: true; result: Json }
   | {
       version: typeof PROTOCOL_VERSION;
       id: string | null;
@@ -39,7 +50,7 @@ export class ProtocolError extends Error {
   override name = "ProtocolError";
 }
 
-type Json = Record<string, unknown>;
+export type Json = Record<string, unknown>;
 
 function object(value: unknown, keys: string[], where: string): Json {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -77,12 +88,11 @@ export function decodeResponse(value: unknown): Response {
   }
   if (head.ok === true) {
     const r = object(value, ["version", "id", "ok", "result"], "response");
-    const result = object(r.result, ["kernel_version"], "result");
     return {
       version: PROTOCOL_VERSION,
       id: string(r.id, "id"),
       ok: true,
-      result: { kernel_version: string(result.kernel_version, "result.kernel_version") },
+      result: object(r.result, Object.keys(r.result ?? {}), "result"),
     };
   }
   if (head.ok === false) {
@@ -98,4 +108,29 @@ export function decodeResponse(value: unknown): Response {
     };
   }
   throw new ProtocolError("response.ok is not a boolean");
+}
+
+export function decodeStatus(result: Json): StatusResult {
+  const r = object(result, ["kernel_version"], "status result");
+  return { kernel_version: string(r.kernel_version, "kernel_version") };
+}
+
+export function decodeCapabilities(result: Json): CapabilitiesResult {
+  const r = object(
+    result,
+    ["protocol_version", "operations", "max_request_bytes", "execution"],
+    "capabilities result",
+  );
+  if (!Array.isArray(r.operations)) throw new ProtocolError("operations is not an array");
+  return {
+    protocol_version: integer(r.protocol_version, "protocol_version"),
+    operations: r.operations.map((op, i) => string(op, `operations[${i}]`)),
+    max_request_bytes: integer(r.max_request_bytes, "max_request_bytes"),
+    execution: string(r.execution, "execution"),
+  };
+}
+
+function integer(value: unknown, where: string): number {
+  if (!Number.isSafeInteger(value)) throw new ProtocolError(`${where} is not an integer`);
+  return value as number;
 }

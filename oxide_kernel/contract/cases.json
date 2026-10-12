@@ -5,6 +5,21 @@
     "response": { "version": 1, "id": "a", "ok": true, "result": { "kernel_version": "0.0.0" } }
   },
   {
+    "name": "capabilities list the operations",
+    "request": "{\"version\":1,\"id\":\"k\",\"op\":\"capabilities\"}",
+    "response": {
+      "version": 1,
+      "id": "k",
+      "ok": true,
+      "result": {
+        "protocol_version": 1,
+        "operations": ["status", "capabilities"],
+        "max_request_bytes": 1048576,
+        "execution": "serial"
+      }
+    }
+  },
+  {
     "name": "newer protocol version",
     "request": "{\"version\":2,\"id\":\"b\",\"op\":\"status\",\"future\":true}",
     "response": {

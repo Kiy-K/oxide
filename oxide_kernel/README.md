@@ -60,13 +60,16 @@ today only encodes requests, decodes envelopes and checks correlation.
 
 ## Service contract v1
 
-Request: `{"version": 1, "id": "<string>", "op": "status"}`. Unknown fields
-are rejected.
+Request: `{"version": 1, "id": "<string>", "op": "status" | "capabilities"}`.
+Unknown fields are rejected.
 
 Response, always one JSON object:
 
 - success: `{"version": 1, "id": "<id>", "ok": true, "result": {...}}`;
-  `status` returns `{"kernel_version": "<semver>"}` from `oxide_kernel::status()`.
+  `status` returns `{"kernel_version": "<semver>"}` from `oxide_kernel::status()`;
+  `capabilities` returns `{"protocol_version", "operations", "max_request_bytes",
+  "execution"}`, where `operations` is exactly the set `handle` answers
+  (`OPERATIONS`) and `execution` is `"serial"`.
 - error: `{"version": 1, "id": "<id>" | null, "ok": false, "error": {"code", "message"}}`.
 
 `version` in a response is the protocol the runtime speaks. Error codes are
@@ -75,39 +78,50 @@ envelope; `id` is null when it could not be read), `unsupported_version`
 (checked before the envelope shape, so a newer envelope gets this code) and
 `unknown_operation`. Consumers branch on `ok` and `error.code`; `message` is
 for humans. Any incompatible change bumps `PROTOCOL_VERSION` in both
-`crates/runtime/src/lib.rs` and `src/contract.ts`, plus the cases.
+`crates/runtime/src/lib.rs` and `src/contract.ts`, plus the cases. Adding an
+operation is compatible (older runtimes answer `unknown_operation`; clients
+learn what exists from `capabilities`), so `capabilities` did not bump it.
 
 TS distinguishes a contract error (`ok: false`, returned as data),
-`ProtocolError` (reply is not a valid v1 response, or its id does not match)
-and `TransportError` (spawn failure, non-zero exit or kill, non-JSON output).
+`ProtocolError` (reply is not a valid v1 response or result, its id does not
+match, or stdout carried something other than a response line) and
+`TransportError` (spawn failure, exit or kill, full queue, closed transport).
 An aborted call rejects with the `AbortSignal`'s reason (an `AbortError`), not
 a transport error. A contract error with `id: null` (the runtime could not
-read the id, e.g. an oversized request) is returned as that request's answer.
+read the id, e.g. an oversized request) is the answer to the one request on
+the wire.
 
 These are internal. The public TypeScript API (`src/client.ts`, exported by
 `src/index.ts`) maps them onto `OxideError` categories and hides the wire and
 transport: see [docs/public-api.md](../docs/public-api.md).
 
-## Transport and lifecycle — provisional
+## Transport and lifecycle
 
-Phase 0 runs **one `oxide-runtime` process per request**: request on stdin,
-one response line on stdout, exit 0 for every contract response. The process
-owns every resource for the life of one request (at most 1 MiB read, then
-exit); an `AbortSignal` passed to `call`/`exchange` kills it. Only
-`crates/runtime/src/main.rs` and `src/transport.ts` know this; `handle`/`serve`
-and `src/contract.ts` are transport-free.
+`oxide-runtime` is **long-lived**: newline-delimited JSON, one request per
+line on stdin, one response per line on stdout (flushed, in arrival order),
+until stdin closes; then it exits 0. Diagnostics go to stderr only. Lines over
+1 MiB are discarded without buffering and answered with a null-id
+`invalid_request`; malformed lines get their error and the stream continues.
+A final line without a newline is still a request. Requests run serially.
 
-The intended model is a long-lived runtime supervised by Bun that owns
-LadybugDB, sessions, caches and provider clients across requests. See ADR-0003
-for that decision and its open questions (framing, multi-client ownership,
-discovery, supervision). Do not build integrations on process-per-request.
+`src/transport.ts` (`RuntimeSupervisor`) owns one child per client: started
+by the first call, one request on the wire at a time, at most 64 queued
+behind it, responses read with a bounded line buffer. A queued request can be
+cancelled before it is sent; an active one cannot be interrupted (there is no
+cancel message), so its caller is released and its answer dropped. Any exit,
+crash or stdout contamination rejects everything pending and fails the
+transport for good: no retry, no restart. `close()` sends EOF, waits for the
+exit, and SIGKILLs only its own child after 2 s. If Bun dies, the child sees
+EOF and exits. Only `crates/runtime/src/main.rs`, `serve` and
+`src/transport.ts` know the framing; `handle` and `src/contract.ts` are
+transport-free. Design, ownership plan and open questions: ADR-0003.
 
 ## Commands
 
 ```bash
 mise run verify       # what CI runs: rust:lint, rust:test, ts:install, ts:lint, ts:typecheck, ts:test
 mise run rust:test    # kernel/runtime tests, kernel boundary checks, Rust side of the contract cases
-mise run ts:test      # builds oxide-runtime, then bun test (boundary, decoder, contract cases via the binary)
+mise run ts:test      # builds oxide-runtime, then bun test (boundary, decoders, client, contract cases and supervisor via the binary)
 ```
 
 After explicit `mise run native:prepare`, no network or model is needed for Rust tests.

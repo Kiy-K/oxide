@@ -5,8 +5,8 @@
 import { expect, test } from "bun:test";
 import { existsSync } from "node:fs";
 import { clientOver, createClient, type OxideClient, OxideError } from "./client.ts";
-import { decodeResponse, type Request, type Response } from "./contract.ts";
-import { type Transport, TransportError } from "./transport.ts";
+import type { Request, Response } from "./contract.ts";
+import { RuntimeSupervisor, type Transport, TransportError } from "./transport.ts";
 
 const bin =
   process.env.OXIDE_RUNTIME_BIN ??
@@ -15,12 +15,19 @@ if (!existsSync(bin)) {
   throw new Error(`no oxide-runtime at ${bin}: run \`mise run ts:test\` or set OXIDE_RUNTIME_BIN`);
 }
 
-const ok = (id: string): Response => ({
-  version: 1,
-  id,
-  ok: true,
-  result: { kernel_version: "9.9.9" },
-});
+const CAPS = {
+  protocol_version: 1,
+  operations: ["status", "capabilities"],
+  max_request_bytes: 1 << 20,
+  execution: "serial",
+};
+
+/** A successful answer to `request` (or to a status request with that id). */
+const ok = (request: Request | string, operations = CAPS.operations): Response => {
+  const [id, op] = typeof request === "string" ? [request, "status"] : [request.id, request.op];
+  const result = op === "capabilities" ? { ...CAPS, operations } : { kernel_version: "9.9.9" };
+  return { version: 1, id, ok: true, result };
+};
 
 /** A transport answering with `reply`, recording requests and closes. */
 function fake(reply: (request: Request, signal?: AbortSignal) => Promise<Response> | Response) {
@@ -58,7 +65,7 @@ async function failure(promise: Promise<unknown>): Promise<OxideError> {
 const repo = { id: "r", root: "/repo" };
 
 test("getStatus maps the runtime answer to the public shape", async () => {
-  const { transport, sent } = fake((r) => ok(r.id));
+  const { transport, sent } = fake((r) => ok(r));
   const status = await clientOver(transport).getStatus();
   expect(status).toEqual({
     apiVersion: 1,
@@ -66,11 +73,61 @@ test("getStatus maps the runtime answer to the public shape", async () => {
     kernelVersion: "9.9.9",
     operations: ["getStatus"],
   });
-  expect(sent).toEqual([{ version: 1, id: expect.any(String), op: "status" }]);
+  expect(sent).toEqual([
+    { version: 1, id: expect.any(String), op: "capabilities" },
+    { version: 1, id: expect.any(String), op: "status" },
+  ]);
+});
+
+test("capabilities are fetched once per client", async () => {
+  const { transport, sent } = fake((r) => ok(r));
+  const c = clientOver(transport);
+  await c.getStatus();
+  await c.getStatus();
+  expect(sent.map((r) => r.op)).toEqual(["capabilities", "status", "status"]);
+});
+
+test("operations come from the runtime's capabilities, not a fixed list", async () => {
+  // A runtime without `status` reports no public operations, and wire
+  // operations this client has no adapter for are never reported.
+  const { transport } = fake((r) => ok(r, ["capabilities", "status", "index", "frobnicate"]));
+  expect((await clientOver(transport).getStatus()).operations).toEqual(["getStatus"]);
+  const bare = fake((r) => (r.op === "capabilities" ? ok(r, ["capabilities"]) : ok(r)));
+  expect((await clientOver(bare.transport).getStatus()).operations).toEqual([]);
+});
+
+test("one client reuses one runtime process", async () => {
+  const supervisor = new RuntimeSupervisor([bin]);
+  await using c = clientOver(supervisor);
+  const first = await c.getStatus();
+  const pid = supervisor.pid;
+  const again = await Promise.all([c.getStatus(), c.getStatus(), c.getStatus()]);
+  expect(again).toEqual([first, first, first]);
+  expect(first).toEqual({
+    apiVersion: 1,
+    protocolVersion: 1,
+    kernelVersion: "0.0.0",
+    operations: ["getStatus"],
+  });
+  expect(supervisor.pid).toBe(pid);
+  await c.close();
+  expect(() => process.kill(pid as number, 0)).toThrow();
+});
+
+test("a runtime crash surfaces as a transport error on every later call", async () => {
+  const supervisor = new RuntimeSupervisor([bin]);
+  await using c = clientOver(supervisor);
+  await c.getStatus();
+  process.kill(supervisor.pid as number, "SIGKILL");
+  expect(await failure(c.getStatus())).toMatchObject({ category: "transport" });
+  expect(await failure(c.getStatus())).toMatchObject({
+    category: "transport",
+    code: "runtime_unavailable",
+  });
 });
 
 test("every request gets its own id", async () => {
-  const { transport, sent } = fake((r) => ok(r.id));
+  const { transport, sent } = fake((r) => ok(r));
   const c = clientOver(transport);
   await Promise.all([c.getStatus(), c.getStatus()]);
   expect(sent[0]?.id).not.toBe(sent[1]?.id);
@@ -78,7 +135,7 @@ test("every request gets its own id", async () => {
 
 test("replacing the transport does not change the public API", async () => {
   await using real = createClient({ runtimeBin: bin });
-  const replaced = clientOver(fake((r) => ok(r.id)).transport);
+  const replaced = clientOver(fake((r) => ok(r)).transport);
   const [a, b] = await Promise.all([real.getStatus(), replaced.getStatus()]);
   expect(Object.keys(a).sort()).toEqual(Object.keys(b).sort());
   expect(a).toMatchObject({ apiVersion: 1, protocolVersion: 1, kernelVersion: "0.0.0" });
@@ -132,7 +189,7 @@ test("transport failures map to transport, keeping the cause", async () => {
 });
 
 test("malformed and uncorrelated responses map to protocol", async () => {
-  const malformed = fake(() => decodeResponse({ version: 1, id: "x", ok: true, result: {} }));
+  const malformed = fake((r) => ({ version: 1, id: r.id, ok: true, result: { kernel: 1 } }));
   expect(await failure(clientOver(malformed.transport).getStatus())).toMatchObject({
     category: "protocol",
     code: "malformed_response",
@@ -150,7 +207,7 @@ test.each([
   ["search", (c: OxideClient) => c.search(repo, { query: "q" })],
   ["buildContext", (c: OxideClient) => c.buildContext(repo, { query: "q", budget: { tokens: 1 } })],
 ] as const)("%s is unsupported and never reaches the runtime", async (op, run) => {
-  const { transport, sent } = fake((r) => ok(r.id));
+  const { transport, sent } = fake((r) => ok(r));
   const err = await failure(run(clientOver(transport)));
   expect(err).toMatchObject({
     category: "capability",
@@ -183,14 +240,14 @@ test("a result that arrives after abort is discarded", async () => {
   const controller = new AbortController();
   const { transport } = fake((r) => {
     controller.abort();
-    return ok(r.id);
+    return ok(r);
   });
   await expect(
     clientOver(transport).getStatus({ signal: controller.signal }),
   ).rejects.toHaveProperty("name", "AbortError");
 });
 
-test("aborting a real runtime call kills it", async () => {
+test("aborting a real runtime call releases the caller", async () => {
   await using c = createClient({ runtimeBin: bin });
   const controller = new AbortController();
   const pending = c.getStatus({ signal: controller.signal });
@@ -199,7 +256,7 @@ test("aborting a real runtime call kills it", async () => {
 });
 
 test("close is idempotent, releases the transport once and fails later calls", async () => {
-  const f = fake((r) => ok(r.id));
+  const f = fake((r) => ok(r));
   const c = clientOver(f.transport);
   await Promise.all([c.close(), c.close()]);
   await c.close();
@@ -218,7 +275,7 @@ test("close rejects in-flight calls as closed", async () => {
 });
 
 test("await using closes the client", async () => {
-  const f = fake((r) => ok(r.id));
+  const f = fake((r) => ok(r));
   {
     await using c = clientOver(f.transport);
     await c.getStatus();

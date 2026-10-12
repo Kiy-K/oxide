@@ -1,18 +1,22 @@
 // OXIDE public TypeScript API (docs/public-api.md): domain types and one
-// OxideClient. The wire contract (contract.ts) and the transport
-// (transport.ts) stay internal; a new protocol version or a long-lived
-// runtime changes only the adapter section at the bottom of this file.
+// OxideClient. The wire contract (contract.ts) and the runtime supervisor
+// (transport.ts) stay internal; a new protocol version or transport changes
+// only the adapter section at the bottom of this file.
 // Nothing here interprets repository meaning: results come from Rust or the
 // call fails.
 
 import {
+  type CapabilitiesResult,
   checkCorrelation,
+  decodeCapabilities,
+  decodeStatus,
+  type Json,
   PROTOCOL_VERSION,
   ProtocolError,
   type Request,
   type Response,
 } from "./contract.ts";
-import { processTransport, type Transport, TransportError } from "./transport.ts";
+import { RuntimeSupervisor, type Transport, TransportError } from "./transport.ts";
 
 /** Public API version; independent of the runtime protocol version. */
 export const API_VERSION = 1;
@@ -155,8 +159,9 @@ export interface CallOptions {
 }
 
 /**
- * Owns its runtime transport until `close()`. Calls may overlap; each is
- * independent (no sessions, no retries).
+ * Owns one runtime process until `close()`. Calls may overlap; the runtime
+ * runs them one at a time, in order. Each is independent (no sessions, no
+ * retries); if the runtime exits, the client fails every later call.
  */
 export interface OxideClient {
   getStatus(options?: CallOptions): Promise<Status>;
@@ -189,20 +194,27 @@ export interface ClientOptions {
   runtimeBin: string;
 }
 
+/** The runtime process starts on the first call, not here. */
 export function createClient(options: ClientOptions): OxideClient {
-  return clientOver(processTransport(options.runtimeBin));
+  return clientOver(new RuntimeSupervisor([options.runtimeBin]));
 }
 
 // Internal adapter: public operations onto protocol version 1. Not exported
 // from index.ts.
 
-/** What protocol 1 can do; the others are planned. */
-const SUPPORTED: readonly Operation[] = ["getStatus"];
+/**
+ * The wire operation behind each implemented public operation. A public
+ * operation is reported only if the runtime's capabilities list it; ones
+ * absent here have no adapter and are never reported.
+ */
+const WIRE: Partial<Record<Operation, Request["op"]>> = { getStatus: "status" };
 
-/** A client over any transport (tests, and the future long-lived runtime). */
+/** A client over any transport (tests, or a replacement for the supervisor). */
 export function clientOver(transport: Transport): OxideClient {
   const lifetime = new AbortController();
   let closing: Promise<void> | undefined;
+  /** Fixed for the runtime's lifetime, so fetched once. */
+  let capabilities: CapabilitiesResult | undefined;
 
   const closed = (requestId: string | null) =>
     new OxideError("closed", "client_closed", "the client is closed", requestId);
@@ -213,39 +225,45 @@ export function clientOver(transport: Transport): OxideClient {
     throw new OxideError(
       "capability",
       "unsupported_operation",
-      `${op} is not supported by runtime protocol ${PROTOCOL_VERSION}`,
+      `${op} is not implemented by the runtime yet`,
       null,
     );
   };
 
-  async function send(op: Request["op"], signal?: AbortSignal) {
+  async function send<T>(op: Request["op"], decode: (result: Json) => T, signal?: AbortSignal) {
     if (lifetime.signal.aborted) throw closed(null);
     signal?.throwIfAborted();
     const request: Request = { version: PROTOCOL_VERSION, id: crypto.randomUUID(), op };
     const both = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
     let response: Response;
+    let result: T | undefined;
     try {
       response = await transport.send(request, both);
       // A transport that ignored the signal still must not deliver a result.
       both.throwIfAborted();
       checkCorrelation(request, response);
+      if (response.ok) result = decode(response.result);
     } catch (err) {
       if (lifetime.signal.aborted && err === lifetime.signal.reason) throw closed(request.id);
       if (signal?.aborted && err === signal.reason) throw err;
       throw fromFailure(err, request.id);
     }
     if (!response.ok) throw fromContractError(response.error, request.id);
-    return response.result;
+    return result as T;
   }
 
   return {
     async getStatus(options) {
-      const result = await send("status", options?.signal);
+      capabilities ??= await send("capabilities", decodeCapabilities, options?.signal);
+      const status = await send("status", decodeStatus, options?.signal);
+      const advertised = capabilities.operations;
       return {
         apiVersion: API_VERSION,
-        protocolVersion: PROTOCOL_VERSION,
-        kernelVersion: result.kernel_version,
-        operations: SUPPORTED,
+        protocolVersion: capabilities.protocol_version,
+        kernelVersion: status.kernel_version,
+        operations: (Object.keys(WIRE) as Operation[]).filter((op) =>
+          advertised.includes(WIRE[op] ?? ""),
+        ),
       };
     },
     openRepository: (_root, options) => unsupported("openRepository", options),
