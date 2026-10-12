@@ -4,6 +4,9 @@ Status: **INCONCLUSIVE** (held-out, preregistered rule), 2026-10-12; no
 measurable effect of navigation on task success (see Recommendation). Production
 retrieval, routing, selection and packing are unchanged; nothing here is
 production policy. Numbers are measured unless marked *inferred*.
+Follow-up diagnosis (MCP audit, failure attribution, benchmark redesign; the
+verdict is unchanged): [follow-up.md](follow-up.md). **Iteration closed
+2026-10-12**; future promotion needs a new, adequately powered held-out evaluation.
 
 ## Question
 
@@ -184,9 +187,10 @@ Measured on held-out unless stated otherwise.
   runs. With the right file already found by `rg` within a few commands,
   the agent has no reason to ask for relations. E therefore measures only
   the cost of exposing the tools (their schemas in the context), not
-  on-demand expansion. Note that E and C give the agent the same OXIDE
-  information, yet differ by +0.035 [0.000, 0.088] in success. That gap is
-  the noise floor of this sample.
+  on-demand expansion. (Erratum, [follow-up.md](follow-up.md): Codex
+  deferred the MCP schemas, which were never in the model's context.)
+  Note that E and C give the agent the same OXIDE information, yet differ
+  by +0.035 [0.000, 0.088] in success. That gap is the noise floor of this sample.
 - **The bundle points near, not at, the fix.** The NavigationBundle names an
   edited file in 12 of 19 held-out tasks (6 of 9 dev), but its top location
   is an edited file in only 4 of 19 (3 of 9). About 29% of its locations

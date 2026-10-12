@@ -1,0 +1,6213 @@
+{
+ "summary": {
+  "failed_runs": 76,
+  "category": {
+   "not_inspected": 59,
+   "indeterminate": 15,
+   "fix_wrong": 1,
+   "integration": 1
+  },
+  "category_by_variant": {
+   "A": {
+    "not_inspected": 17,
+    "indeterminate": 2
+   },
+   "B": {
+    "not_inspected": 13,
+    "indeterminate": 5,
+    "fix_wrong": 1
+   },
+   "C": {
+    "not_inspected": 15,
+    "indeterminate": 4,
+    "integration": 1
+   },
+   "E": {
+    "not_inspected": 14,
+    "indeterminate": 4
+   }
+  },
+  "empty_patch": 1,
+  "patch_touches_gold_file": 75,
+  "gold_file_named_in_commands": 76,
+  "edit_region_shown_ge_0.5": 61,
+  "ran_code": 15,
+  "per_task": {
+   "astropy__astropy-13236": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 12
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "12/24",
+    "f2p_failed_of_total": [
+     [
+      2,
+      2
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 0
+   },
+   "astropy__astropy-13977": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 11,
+     "fix_wrong": 1
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "9/24",
+    "f2p_failed_of_total": [
+     [
+      8,
+      20
+     ]
+    ],
+    "p2p_broken_max": 4,
+    "ran_code": 0
+   },
+   "psf__requests-6028": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 11,
+     "indeterminate": 1
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "18/48",
+    "f2p_failed_of_total": [
+     [
+      2,
+      2
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 8
+   },
+   "pydata__xarray-4687": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 12
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "34/96",
+    "f2p_failed_of_total": [
+     [
+      1,
+      1
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 2
+   },
+   "pydata__xarray-7229": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 11,
+     "indeterminate": 1
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "17/36",
+    "f2p_failed_of_total": [
+     [
+      1,
+      1
+     ]
+    ],
+    "p2p_broken_max": 10,
+    "ran_code": 0
+   },
+   "pytest-dev__pytest-10051": {
+    "failed": 2,
+    "category": {
+     "indeterminate": 2
+    },
+    "edit_shown_median": 0.0,
+    "support_shown": "2/4",
+    "f2p_failed_of_total": [
+     [
+      1,
+      1
+     ]
+    ],
+    "p2p_broken_max": 1,
+    "ran_code": 2
+   },
+   "pytest-dev__pytest-10081": {
+    "failed": 1,
+    "category": {
+     "integration": 1
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "5/5",
+    "f2p_failed_of_total": [
+     [
+      0,
+      0
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 1
+   },
+   "pytest-dev__pytest-7205": {
+    "failed": 1,
+    "category": {
+     "not_inspected": 1
+    },
+    "edit_shown_median": 1.0,
+    "support_shown": "2/5",
+    "f2p_failed_of_total": [
+     [
+      9,
+      10
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 1
+   },
+   "scikit-learn__scikit-learn-14629": {
+    "failed": 12,
+    "category": {
+     "not_inspected": 1,
+     "indeterminate": 11
+    },
+    "edit_shown_median": 0.0,
+    "support_shown": "30/60",
+    "f2p_failed_of_total": [
+     [
+      1,
+      1
+     ]
+    ],
+    "p2p_broken_max": 0,
+    "ran_code": 1
+   }
+  }
+ },
+ "runs": [
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 0.62
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 0.7
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 0.74
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.24
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.17
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.52,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 0.52
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "A",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.69,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.11
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 0.69
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "B",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.08
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 0.62
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.25
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "B",
+   "rep": 1,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 0.93
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.78
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "B",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "B",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "B",
+   "rep": 1,
+   "category": "fix_wrong",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "B",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.69,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 0.69
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "C",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.17
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 0.65
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.25
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "C",
+   "rep": 1,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.28
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 0.18
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 0.2
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.09
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "C",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "C",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 10,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__9f3a5677",
+   "instance": "pytest-dev__pytest-10051",
+   "variant": "C",
+   "rep": 1,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 1,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      40,
+      46
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      44,
+      52
+     ],
+     "edit": false,
+     "shown": 0.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      331,
+      350
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      345,
+      350
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      437,
+      445
+     ],
+     "edit": true,
+     "shown": 0.06
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      440,
+      446
+     ],
+     "edit": true,
+     "shown": 0.4
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      696,
+      702
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "C",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 0,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 0.05
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "C",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.5
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "E",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.17
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.25
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "E",
+   "rep": 1,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "E",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "E",
+   "rep": 1,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.36,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 0.36
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "E",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 0,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 4,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 0.05
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "E",
+   "rep": 1,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.25
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 4,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.08
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.7
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "A",
+   "rep": 2,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.22
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.03
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 0.69
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 0,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 4,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 0.05
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__c2f0f2be",
+   "instance": "pytest-dev__pytest-7205",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 9,
+   "f2p_total": 10,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "src/_pytest/_io/saferepr.py",
+     "lines": [
+      75,
+      82
+     ],
+     "edit": false,
+     "shown": 0.29
+    },
+    {
+     "file": "src/_pytest/python.py",
+     "lines": [
+      24,
+      33
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "src/_pytest/python.py",
+     "lines": [
+      1029,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "src/_pytest/setuponly.py",
+     "lines": [
+      1,
+      4
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/setuponly.py",
+     "lines": [
+      20,
+      35
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/setuponly.py",
+     "lines": [
+      37,
+      44
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/setuponly.py",
+     "lines": [
+      46,
+      75
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/setuponly.py",
+     "lines": [
+      66,
+      72
+     ],
+     "edit": true,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "A",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.75,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.58
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 0.75
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.5
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "B",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.17
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 0.13
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.11
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "B",
+   "rep": 2,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 0.74
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.58
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "B",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "B",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.07
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__9f3a5677",
+   "instance": "pytest-dev__pytest-10051",
+   "variant": "B",
+   "rep": 2,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 1,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      40,
+      46
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      44,
+      52
+     ],
+     "edit": false,
+     "shown": 0.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      331,
+      350
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      345,
+      350
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      437,
+      445
+     ],
+     "edit": true,
+     "shown": 0.59
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      440,
+      446
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/logging.py",
+     "lines": [
+      696,
+      702
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "B",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.12
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "B",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "C",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.21
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.31
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.5
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "C",
+   "rep": 2,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 0.85
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.03
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 0.11
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "C",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "C",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "C",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 4,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "C",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.11
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "E",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.08
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 0.13
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.11
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.5
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "E",
+   "rep": 2,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 0.85
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.28
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "E",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "E",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "E",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "E",
+   "rep": 2,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.74
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "A",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.08
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 0.13
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.11
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 0.69
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.2
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "A",
+   "rep": 3,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.22
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.24
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "A",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "A",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "A",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 0,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 4,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 0.05
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "A",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.69,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 0,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.42
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 0.69
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "B",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 6,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.54
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 0.65
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.9
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "B",
+   "rep": 3,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 0.78
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.58
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.07
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "B",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "B",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.07
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "B",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.12
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "B",
+   "rep": 3,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.32
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.0
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "C",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.75,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.17
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 0.75
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.31
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "C",
+   "rep": 3,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.58
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.03
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 0.11
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "C",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "C",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__abb9b8b0",
+   "instance": "pytest-dev__pytest-10081",
+   "variant": "C",
+   "rep": 3,
+   "category": "integration",
+   "empty_patch": true,
+   "patch_touches_gold_file": false,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 5,
+   "f2p_failed": 0,
+   "f2p_total": 0,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      65,
+      88
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      96,
+      120
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      122,
+      179
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      183,
+      212
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      301,
+      330
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      316,
+      322
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "src/_pytest/unittest.py",
+     "lines": [
+      412,
+      415
+     ],
+     "edit": false,
+     "shown": 1.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "C",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 4,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "C",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 3,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 0.6
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.5
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.43
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+   "instance": "pydata__xarray-4687",
+   "variant": "E",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 8,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "xarray/core/common.py",
+     "lines": [
+      1254,
+      1291
+     ],
+     "edit": false,
+     "shown": 0.08
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      286,
+      307
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      452,
+      463
+     ],
+     "edit": false,
+     "shown": 0.44
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      749,
+      783
+     ],
+     "edit": false,
+     "shown": 0.12
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1116,
+      1155
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1727,
+      1733
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1743,
+      1748
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1808,
+      1813
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1817,
+      1822
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/ops.py",
+     "lines": [
+      157,
+      185
+     ],
+     "edit": false,
+     "shown": 0.31
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      94,
+      108
+     ],
+     "edit": false,
+     "shown": 0.1
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      166,
+      173
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+   "instance": "scikit-learn__scikit-learn-14629",
+   "variant": "E",
+   "rep": 3,
+   "category": "indeterminate",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 0.0,
+   "support_regions": 5,
+   "support_regions_shown_ge_0.5": 2,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      741,
+      799
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      801,
+      867
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "sklearn/model_selection/_validation.py",
+     "lines": [
+      870,
+      924
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      124,
+      171
+     ],
+     "edit": false,
+     "shown": 0.03
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      300,
+      387
+     ],
+     "edit": true,
+     "shown": 0.11
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      325,
+      330
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      420,
+      426
+     ],
+     "edit": true,
+     "shown": 0.0
+    },
+    {
+     "file": "sklearn/multioutput.py",
+     "lines": [
+      571,
+      589
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+   "instance": "astropy__astropy-13236",
+   "variant": "E",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1,
+      38
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1218,
+      1258
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1239,
+      1251
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/table/table.py",
+     "lines": [
+      1580,
+      1591
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+   "instance": "pydata__xarray-7229",
+   "variant": "E",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 3,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 1,
+   "f2p_total": 1,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1151,
+      1159
+     ],
+     "edit": false,
+     "shown": 0.8
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1775,
+      1875
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1855,
+      1869
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/computation.py",
+     "lines": [
+      1874,
+      1879
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "xarray/core/options.py",
+     "lines": [
+      128,
+      142
+     ],
+     "edit": false,
+     "shown": 0.3
+    },
+    {
+     "file": "xarray/tests/test_computation.py",
+     "lines": [
+      1920,
+      1937
+     ],
+     "edit": false,
+     "shown": 0.0
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+   "instance": "astropy__astropy-13977",
+   "variant": "E",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 2,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 8,
+   "f2p_total": 20,
+   "p2p_broken": 0,
+   "ran_code": false,
+   "regions": [
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      620,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity.py",
+     "lines": [
+      633,
+      685
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      141,
+      167
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "astropy/units/quantity_helper/converters.py",
+     "lines": [
+      293,
+      332
+     ],
+     "edit": false,
+     "shown": 0.08
+    }
+   ]
+  },
+  {
+   "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+   "instance": "psf__requests-6028",
+   "variant": "E",
+   "rep": 3,
+   "category": "not_inspected",
+   "empty_patch": false,
+   "patch_touches_gold_file": true,
+   "gold_file_named_in_commands": true,
+   "edit_region_shown_min": 1.0,
+   "support_regions": 4,
+   "support_regions_shown_ge_0.5": 1,
+   "f2p_failed": 2,
+   "f2p_total": 2,
+   "p2p_broken": 0,
+   "ran_code": true,
+   "regions": [
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      293,
+      318
+     ],
+     "edit": false,
+     "shown": 0.47
+    },
+    {
+     "file": "requests/adapters.py",
+     "lines": [
+      373,
+      393
+     ],
+     "edit": false,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      960,
+      983
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      974,
+      979
+     ],
+     "edit": true,
+     "shown": 1.0
+    },
+    {
+     "file": "requests/utils.py",
+     "lines": [
+      1027,
+      1041
+     ],
+     "edit": false,
+     "shown": 0.38
+    },
+    {
+     "file": "tests/test_utils.py",
+     "lines": [
+      600,
+      607
+     ],
+     "edit": false,
+     "shown": 0.14
+    }
+   ]
+  }
+ ]
+}
