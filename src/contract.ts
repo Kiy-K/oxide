@@ -57,6 +57,18 @@ function string(value: unknown, where: string): string {
   return value;
 }
 
+/**
+ * Throws ProtocolError unless `response` answers `request`. A contract error
+ * whose id the runtime could not read (e.g. an oversized request) carries
+ * `id: null`; it is still this request's answer.
+ */
+export function checkCorrelation(request: Request, response: Response): void {
+  const unread = !response.ok && response.id === null;
+  if (response.id !== request.id && !unread) {
+    throw new ProtocolError(`response id ${response.id} does not match request ${request.id}`);
+  }
+}
+
 /** Strictly decodes one parsed response; throws ProtocolError otherwise. */
 export function decodeResponse(value: unknown): Response {
   const head = object(value, Object.keys(value ?? {}), "response");

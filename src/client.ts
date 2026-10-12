@@ -1,0 +1,294 @@
+// OXIDE public TypeScript API (docs/public-api.md): domain types and one
+// OxideClient. The wire contract (contract.ts) and the transport
+// (transport.ts) stay internal; a new protocol version or a long-lived
+// runtime changes only the adapter section at the bottom of this file.
+// Nothing here interprets repository meaning: results come from Rust or the
+// call fails.
+
+import {
+  checkCorrelation,
+  PROTOCOL_VERSION,
+  ProtocolError,
+  type Request,
+  type Response,
+} from "./contract.ts";
+import { processTransport, type Transport, TransportError } from "./transport.ts";
+
+/** Public API version; independent of the runtime protocol version. */
+export const API_VERSION = 1;
+
+/** Public operations. New members may be added within API version 1. */
+export type Operation =
+  | "getStatus"
+  | "openRepository"
+  | "indexRepository"
+  | "search"
+  | "buildContext";
+
+export interface Status {
+  apiVersion: number;
+  /** The runtime protocol this client spoke to get the answer. */
+  protocolVersion: number;
+  kernelVersion: string;
+  /** Operations this client and runtime can perform; others fail as `capability`. */
+  operations: readonly Operation[];
+}
+
+// Contract-only types: the planned operations below have no runtime support
+// yet and always fail. These shapes are provisional until the runtime backs
+// them (docs/public-api.md § Compatibility).
+
+/** An opened repository. `id` is opaque; never parse it. */
+export interface RepositoryHandle {
+  readonly id: string;
+  readonly root: string;
+}
+
+/** Evidence in one captured file: repository-relative path, byte range, digest. */
+export interface SourceLocation {
+  path: string;
+  /** Half-open byte range of the captured bytes. */
+  bytes: { start: number; end: number };
+  /** 1-based first and last line, derived from `bytes`. */
+  lines: { first: number; last: number };
+  /** Digest of the captured file the bytes were verified against. */
+  digest: string;
+}
+
+/** Why a result is incomplete or degraded. Branch on `code`; `message` is for humans. */
+export interface Diagnostic {
+  code: string;
+  message: string;
+}
+
+export interface IndexResult {
+  repository: RepositoryHandle;
+  /** Opaque identity of the published snapshot. */
+  snapshot: string;
+  diagnostics: Diagnostic[];
+}
+
+export interface SearchRequest {
+  query: string;
+  limit?: number;
+}
+
+export interface SearchHit {
+  location: SourceLocation;
+  /** Declared name of the matched entity, when it has one. */
+  name: string | null;
+}
+
+export interface SearchResult {
+  snapshot: string;
+  hits: SearchHit[];
+  diagnostics: Diagnostic[];
+}
+
+/** Payload-token allowance for one bundle. */
+export interface ContextBudget {
+  tokens: number;
+}
+
+export interface ContextRequest {
+  query: string;
+  budget: ContextBudget;
+  /** Explicit hints; Rust validates and resolves them. */
+  hints?: { paths?: string[]; symbols?: string[]; changed?: string[] };
+}
+
+export interface ContextItem {
+  location: SourceLocation;
+  tokens: number;
+  text: string;
+}
+
+export interface ContextBundle {
+  snapshot: string;
+  budget: ContextBudget;
+  usedTokens: number;
+  /** The counting contract `tokens` are measured under; `strict: false` means estimated. */
+  tokenCounter: { name: string; strict: boolean };
+  items: ContextItem[];
+  /** The agent-facing text: every item's `text`, in order. */
+  payload: string;
+  omitted: Diagnostic[];
+  diagnostics: Diagnostic[];
+}
+
+/**
+ * - `transport`: the runtime could not be reached or did not answer.
+ * - `protocol`: the runtime answered outside the contract, or speaks another version.
+ * - `capability`: this client or runtime does not support the operation.
+ * - `operation`: the runtime ran a supported operation and it failed.
+ * - `closed`: the client was closed before or during the call.
+ *
+ * No new categories within API version 1. Codes may be added; branch on
+ * `category` first.
+ */
+export type ErrorCategory = "transport" | "protocol" | "capability" | "operation" | "closed";
+
+export class OxideError extends Error {
+  override name = "OxideError";
+  readonly category: ErrorCategory;
+  readonly code: string;
+  /** Id of the runtime request this error belongs to; null if none was sent. */
+  readonly requestId: string | null;
+
+  constructor(
+    category: ErrorCategory,
+    code: string,
+    message: string,
+    requestId: string | null,
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+    this.category = category;
+    this.code = code;
+    this.requestId = requestId;
+  }
+}
+
+/** Per-call options. An aborted call rejects with `signal.reason`. */
+export interface CallOptions {
+  signal?: AbortSignal;
+}
+
+/**
+ * Owns its runtime transport until `close()`. Calls may overlap; each is
+ * independent (no sessions, no retries).
+ */
+export interface OxideClient {
+  getStatus(options?: CallOptions): Promise<Status>;
+  /** Planned; fails with `capability` today. */
+  openRepository(root: string, options?: CallOptions): Promise<RepositoryHandle>;
+  /** Planned; fails with `capability` today. */
+  indexRepository(repository: RepositoryHandle, options?: CallOptions): Promise<IndexResult>;
+  /** Planned; fails with `capability` today. */
+  search(
+    repository: RepositoryHandle,
+    request: SearchRequest,
+    options?: CallOptions,
+  ): Promise<SearchResult>;
+  /** Planned; fails with `capability` today. */
+  buildContext(
+    repository: RepositoryHandle,
+    request: ContextRequest,
+    options?: CallOptions,
+  ): Promise<ContextBundle>;
+  /**
+   * Idempotent. In-flight calls reject with `closed`, later calls too, and the
+   * transport is released once.
+   */
+  close(): Promise<void>;
+  [Symbol.asyncDispose](): Promise<void>;
+}
+
+export interface ClientOptions {
+  /** Path to the `oxide-runtime` binary. There is no discovery yet. */
+  runtimeBin: string;
+}
+
+export function createClient(options: ClientOptions): OxideClient {
+  return clientOver(processTransport(options.runtimeBin));
+}
+
+// Internal adapter: public operations onto protocol version 1. Not exported
+// from index.ts.
+
+/** What protocol 1 can do; the others are planned. */
+const SUPPORTED: readonly Operation[] = ["getStatus"];
+
+/** A client over any transport (tests, and the future long-lived runtime). */
+export function clientOver(transport: Transport): OxideClient {
+  const lifetime = new AbortController();
+  let closing: Promise<void> | undefined;
+
+  const closed = (requestId: string | null) =>
+    new OxideError("closed", "client_closed", "the client is closed", requestId);
+
+  const unsupported = async (op: Operation, options?: CallOptions): Promise<never> => {
+    if (lifetime.signal.aborted) throw closed(null);
+    options?.signal?.throwIfAborted();
+    throw new OxideError(
+      "capability",
+      "unsupported_operation",
+      `${op} is not supported by runtime protocol ${PROTOCOL_VERSION}`,
+      null,
+    );
+  };
+
+  async function send(op: Request["op"], signal?: AbortSignal) {
+    if (lifetime.signal.aborted) throw closed(null);
+    signal?.throwIfAborted();
+    const request: Request = { version: PROTOCOL_VERSION, id: crypto.randomUUID(), op };
+    const both = signal ? AbortSignal.any([signal, lifetime.signal]) : lifetime.signal;
+    let response: Response;
+    try {
+      response = await transport.send(request, both);
+      // A transport that ignored the signal still must not deliver a result.
+      both.throwIfAborted();
+      checkCorrelation(request, response);
+    } catch (err) {
+      if (lifetime.signal.aborted && err === lifetime.signal.reason) throw closed(request.id);
+      if (signal?.aborted && err === signal.reason) throw err;
+      throw fromFailure(err, request.id);
+    }
+    if (!response.ok) throw fromContractError(response.error, request.id);
+    return response.result;
+  }
+
+  return {
+    async getStatus(options) {
+      const result = await send("status", options?.signal);
+      return {
+        apiVersion: API_VERSION,
+        protocolVersion: PROTOCOL_VERSION,
+        kernelVersion: result.kernel_version,
+        operations: SUPPORTED,
+      };
+    },
+    openRepository: (_root, options) => unsupported("openRepository", options),
+    indexRepository: (_repository, options) => unsupported("indexRepository", options),
+    search: (_repository, _request, options) => unsupported("search", options),
+    buildContext: (_repository, _request, options) => unsupported("buildContext", options),
+    close() {
+      closing ??= (async () => {
+        lifetime.abort(closed(null));
+        try {
+          await transport.close();
+        } catch (err) {
+          throw fromFailure(err, null);
+        }
+      })();
+      return closing;
+    },
+    [Symbol.asyncDispose]() {
+      return this.close();
+    },
+  };
+}
+
+function fromFailure(err: unknown, requestId: string | null): OxideError {
+  const message = err instanceof Error ? err.message : String(err);
+  if (err instanceof ProtocolError) {
+    return new OxideError("protocol", "malformed_response", message, requestId, { cause: err });
+  }
+  // TransportError or anything else a transport throws: the runtime was not reached.
+  const code = err instanceof TransportError ? "runtime_unavailable" : "transport_failed";
+  return new OxideError("transport", code, message, requestId, { cause: err });
+}
+
+function fromContractError(
+  error: Extract<Response, { ok: false }>["error"],
+  requestId: string,
+): OxideError {
+  switch (error.code) {
+    case "unknown_operation":
+      return new OxideError("capability", "unsupported_operation", error.message, requestId);
+    case "unsupported_version":
+      return new OxideError("protocol", "unsupported_version", error.message, requestId);
+    case "invalid_request":
+      return new OxideError("protocol", "invalid_request", error.message, requestId);
+  }
+}

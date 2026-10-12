@@ -84,6 +84,10 @@ An aborted call rejects with the `AbortSignal`'s reason (an `AbortError`), not
 a transport error. A contract error with `id: null` (the runtime could not
 read the id, e.g. an oversized request) is returned as that request's answer.
 
+These are internal. The public TypeScript API (`src/client.ts`, exported by
+`src/index.ts`) maps them onto `OxideError` categories and hides the wire and
+transport: see [docs/public-api.md](../docs/public-api.md).
+
 ## Transport and lifecycle — provisional
 
 Phase 0 runs **one `oxide-runtime` process per request**: request on stdin,
