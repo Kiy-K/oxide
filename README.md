@@ -1,0 +1,88 @@
+<p align="center">
+  <img src="logo.png" alt="OXIDE" width="140">
+</p>
+
+<h1 align="center">OXIDE</h1>
+<p align="center"><strong>A structural context engine for coding agents</strong></p>
+
+OXIDE v2 captures a repository and derives a typed graph of its files, modules,
+symbols and relations. It persists that graph in LadybugDB and answers
+"what code matters for this task?" with a bounded, source-backed context bundle.
+Retrieval is vectorless: BM25 over code-aware terms plus structural seeds from
+typed hints, then TreeRouter and deterministic selection and packing. There are
+no embeddings, model runners or network access on the query path.
+
+> **Status:** pre-release, on branch `rewrite/v2`. Python is the only language with
+> a parser slice. Other files are kept as unsupported file evidence. The public
+> Python API is the product boundary ([docs/public-api.md](docs/public-api.md)).
+> The legacy v1 implementation and its README live on `main`; a copy of that README
+> is kept as history in [docs/legacy/README-v1.md](docs/legacy/README-v1.md).
+
+## Install
+
+OXIDE needs CPython 3.12–3.14. Development uses [mise](https://mise.jdx.dev) and
+[uv](https://docs.astral.sh/uv/):
+
+```bash
+git clone https://github.com/Kiy-K/oxide && cd oxide && git checkout rewrite/v2
+mise run bootstrap        # uv sync --locked + `oxide prepare`
+```
+
+Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare`
+is the only network access OXIDE ever makes. It downloads the pinned LadybugDB FTS
+extension (Linux x86_64 only) and checks its SHA-256. Without that extension,
+the lexical channel reports `unavailable` and structural seeds and routing still
+work.
+
+## Use
+
+```bash
+uv run oxide index  path/to/repo                      # built | unchanged
+uv run oxide search path/to/repo "where are failed requests retried" --limit 20
+uv run oxide context path/to/repo "where are failed requests retried" --budget 1024 \
+    --symbol RetryPolicy --file src/http/client.py
+```
+
+Every command takes `--json` (the typed result) and `--data-dir`. `context`
+prints the payload on stdout and `used/budget units` on stderr. Errors print
+`error[<code>]: <message>` and exit 2.
+
+```python
+import oxide
+
+with oxide.open_repository("path/to/repo") as repo:   # owns the store until closed
+    repo.index()
+    hits = repo.search("where are failed requests retried")
+    bundle = repo.build_context("where are failed requests retried", budget=1024)
+    print(bundle.payload)                             # used <= budget
+```
+
+The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else
+`$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even
+when it sits inside the repository.
+
+## Limits
+
+- One owner per store, across processes. A `Repository` is not thread-safe.
+- Indexing is a full rebuild per change, and capture holds the captured bytes in
+  memory (at most 1 GiB in scope, 1 MiB per file).
+- FTS and atomic publication are verified on Linux x86_64 only.
+
+[docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
+recovery behavior.
+
+## Develop
+
+```bash
+mise run verify           # ruff, mypy --strict, pytest (CI runs exactly this)
+uv run python scripts/bench.py path/to/corpus   # latency and peak RSS, JSON report
+```
+
+Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md)
+and the decisions in [docs/adr/](docs/adr/), in particular
+[ADR-0011](docs/adr/0011-python-engine-vectorless.md) (Python engine, vectorless
+retrieval). Contributor workflow: [docs/agents/workflow.md](docs/agents/workflow.md).
+
+## License
+
+[MIT](LICENSE)

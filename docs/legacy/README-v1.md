@@ -1,7 +1,7 @@
 > **Legacy v1 reference.** This describes the retired v1 implementation (root Rust crate, SQLite index, legacy CLI/MCP/`packages/*`), removed from `rewrite/v2` and recoverable from `main` / `ac985b28`. It is historical evidence, not instructions for OXIDE v2: see `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md` and the root `AGENTS.md`.
 
 <p align="center">
-  <img src="logo.png" alt="OXIDE" width="140">
+  <img src="../../logo.png" alt="OXIDE" width="140">
 </p>
 
 <h1 align="center">OXIDE</h1>
@@ -13,7 +13,7 @@
   <a href="#supported-languages">Languages</a> ·
   <a href="#evidence">Evidence</a> ·
   <a href="#how-it-works">How it works</a> ·
-  <a href="LICENSE">License</a>
+  <a href="../../LICENSE">License</a>
 </p>
 
 ---
@@ -216,7 +216,7 @@ stay distinct symbols instead of collapsing into one.
 
 OXIDE also extracts imports, references, calls, inheritance, and containment
 where the language grammar exposes them. See the
-[language coverage matrix](docs/language-support/README.md) for exact
+[language coverage matrix](../language-support/README.md) for exact
 behavior and known gaps per language — the committed conformance fixtures
 are the source of truth.
 
@@ -312,7 +312,7 @@ oxide uninstall --agent codex
 
 The integration runs `oxide mcp` over stdio. Any other tool can speak to the
 same MCP server, or call the CLI's JSON interface directly. See
-[`docs/agent-usage-policy.md`](docs/agent-usage-policy.md) for the canonical
+[`docs/agent-usage-policy.md`](../agent-usage-policy.md) for the canonical
 guidance on how an agent should use OXIDE.
 
 ## Evidence
@@ -364,7 +364,7 @@ against the earlier rows in absolute terms.
 
 Exact revisions, commands, memory use, index sizes, and unsupported
 constructs are in the
-[language support report](docs/language-support/README.md#performance).
+[language support report](../language-support/README.md#performance).
 
 ### External-task evidence
 
@@ -372,7 +372,7 @@ The research notes include a pinned 21-task ContextBench retrieval sample
 and a four-task same-agent study. The retrieval sample is directional
 because it is small and provider-specific. In the same-agent study, no
 OXIDE condition beat the stock agent on task outcomes. See
-[Context engineering notes](docs/context-engineering-notes.md#evaluation-pivot-contextbench-official)
+[Context engineering notes](../context-engineering-notes.md#evaluation-pivot-contextbench-official)
 for the protocol, results, and caveats.
 
 > [!IMPORTANT]
@@ -422,7 +422,7 @@ OXIDE runs locally and phones home to nothing by default. Your code, paths,
 queries, index, and MCP traffic never leave the machine. The only optional
 telemetry is crash reporting, off unless you set `OXIDE_TELEMETRY=1`, and
 even then it sends a panic's stack trace and platform details with no
-personal identifiers — see [`TELEMETRY.md`](TELEMETRY.md) for exactly what
+personal identifiers — see [`TELEMETRY.md`](../../TELEMETRY.md) for exactly what
 is and is not collected.
 
 The default embedding provider, **arctic-embed-xs-q** (a 384-dimensional
@@ -504,7 +504,7 @@ invalid value is an error that names the variable and the accepted values.
 
 Per-language extraction gaps (unresolved imports, unsupported constructs,
 metaprogramming that has no static declaration to point at) are documented
-exhaustively in the [language coverage matrix](docs/language-support/README.md#remaining-unsupported-constructs).
+exhaustively in the [language coverage matrix](../language-support/README.md#remaining-unsupported-constructs).
 
 ## Development & contributing
 
@@ -541,7 +541,7 @@ and only wires the already-installed binary into coding-agent MCP configs.
 
 ### Running the checks
 
-Prerequisites beyond Rust are pinned in [`mise.toml`](mise.toml) (Python
+Prerequisites beyond Rust are pinned in [`mise.toml`](../../mise.toml) (Python
 3.11, uv, shellcheck, jq, cargo-llvm-cov, and Node + pnpm for the TypeScript
 workspace). Install
 [mise](https://mise.jdx.dev/installing-mise.html) — a system package
@@ -592,10 +592,10 @@ honestly.
 
 Bug reports and focused pull requests are welcome. Please include a minimal
 reproduction, the command you ran, and the relevant platform or repository
-details. Read [`AGENTS.md`](AGENTS.md) and the
-[review guide](docs/review/README.md) before changing retrieval, indexing,
+details. Read [`AGENTS.md`](../../AGENTS.md) and the
+[review guide](../review/README.md) before changing retrieval, indexing,
 storage, or language extraction.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](../../LICENSE)

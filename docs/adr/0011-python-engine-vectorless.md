@@ -130,28 +130,41 @@ benefit.
 
 ## 4. Accepted performance and packaging tradeoffs
 
-Measured 2026-10-15, Linux x86_64, CPython 3.13, `CPUQuota=200%`,
-`MemoryMax=3G`. The Rust figures are its Phase 3 records (release build);
-the corpora differ where noted, so compare per entity, not per directory name.
+**Corrected 2026-10-15 (migration audit, `docs/migration-audit/`).** The first
+version of this table compared Rust and Python on different source snapshots.
+The Rust asyncio and email runs included `__pycache__`, and asyncio predates a
+stdlib update. One row also compared Rust routing alone with the whole Python
+`build_context`. Those rows were not comparable, and nothing here shows Python
+to be faster than Rust. What was measured on identical inputs is derivation
+parity: the `f79808a` kernel and this engine produce identical entities and
+relations on the fixture, asyncio (with and without `.pyc`) and email.
 
-| Measure | Rust (`docs/phase-3.md`) | Python (this ADR) |
-| --- | --- | --- |
-| `fixtures/py_repo` rebuild | 0.48–0.56 s | 0.27 s |
-| asyncio rebuild | 0.86–0.95 s (1,283 entities / 5,224 relations, with `.pyc`) | 0.66 s (1,179 / 5,139, no `.pyc`) |
-| email rebuild | 0.65–0.80 s (814 / 3,702) | 0.48 s (727 / 3,615) |
-| CPython 3.14 stdlib (713 files, 18 MiB) | not measured | 6.3–6.7 s (20,123 / 94,693); parsing ≈ 2.7 s of it |
-| Re-index with no change | republish skipped | 0.04 s (stdlib), 0.009 s (fixture) |
-| Reopen | 21–25 ms | 13–20 ms |
-| Lexical retrieval, warm | 5.7 ms (asyncio) | 6.4 ms (asyncio), 24 ms (stdlib) |
-| Route (Rust) / whole `build_context` (Python), warm | route alone 263–295 ms (asyncio, 64 regions) | 83 ms (asyncio, 64 regions), 148 ms (stdlib) |
-| Peak RSS | 149–160 MiB (asyncio) | 142 MiB (asyncio), 259 MiB (stdlib) |
-| `import oxide` | n/a | ≈ 170–200 ms |
+Rust figures are the historical Phase 3 records (release build, 2 threads,
+`CPUQuota=200%`, their own harness). They were not re-measured. Python figures
+come from `scripts/bench.py` (5 fresh-process iterations, median, warm = median
+of 20 repeats, 3 default queries, budget 1,024) under `CPUQuota=200%` and
+`MemoryMax=3G`, CPython 3.13, Linux x86_64. The reports, with corpus identities,
+are in `docs/migration-audit/bench/`.
+
+| Measure | Rust (`docs/phase-3.md`) | Python (`scripts/bench.py`) | Comparable? |
+| --- | --- | --- | --- |
+| `fixtures/py_repo` (65 / 194) rebuild | 0.48–0.56 s (write + publish) | 0.16 s `index_cold` (open + capture + derive + publish) | Same corpus; different harness and scope. Indicative only |
+| asyncio rebuild | 0.86–0.95 s (140 files with 105 `.pyc`, 1,283 / 5,224) | 0.35 s (35 files, 1,179 / 5,139) | No: different snapshots |
+| email rebuild | 0.65–0.80 s (117 files with 87 `.pyc`, 814 / 3,702) | 0.29 s (30 files, 727 / 3,615) | No: the gap is exactly the 87 `.pyc` files |
+| CPython 3.14 stdlib (Fedora `/usr/lib64/python3.14`, 633 files, 14 MiB, 16,512 / 78,216) | not measured | 3.1 s (1 iteration) | — |
+| Re-index with no change | republish skipped, not timed | 4.4 ms (asyncio), 44 ms (stdlib) | — |
+| Reopen (store, generation, FTS load) | 21–25 ms (asyncio) | 10 ms (asyncio) | Same definition, different harness |
+| Lexical retrieval, warm | 5.7 ms `retrieve` (asyncio, its tasks) | 2.0 ms `search` (asyncio, default queries) | No: different queries |
+| Routing / context, warm | `route` alone, 263–295 ms (asyncio, 64 regions) | whole `build_context`, 19 ms (asyncio, default queries) | No: different operations and queries |
+| Memory (asyncio) | 149–160 MiB RSS after reads | 143 MiB peak (`ru_maxrss`) | Different measures |
+| `import oxide` | n/a | 53 ms (interpreter start excluded) | — |
 
 Accepted:
 
-- Python-side parsing work (capture-to-facts) grows with source size: about
-  2.7 s for the 18 MiB stdlib. Indexing is a full rebuild per change; there
-  is no incremental indexing yet. If this blocks real repositories, the
+- Python-side parsing work (capture-to-facts) grows with source size. The
+  original record was about 2.7 s for an 18 MiB stdlib; the corpus is not
+  recorded, so this figure can't be reproduced. Indexing is a full rebuild per
+  change; there is no incremental indexing yet. If this blocks real repositories, the
   upgrade path, measured first, is parallel parsing (a process pool), then
   incremental derivation, before considering compiled helpers.
 - Packaging: `ladybug` ships wheels for CPython 3.10–3.14 on manylinux,
@@ -240,6 +253,12 @@ Spike and test findings at `ladybug==0.21.2`:
   as ADR-0002 § 4 required.
 - The extension host returns HTTP 403 to urllib's default User-Agent, so
   `oxide prepare` sends `oxide/<version>`.
+- (Migration audit, 2026-10-15.) `COPY` and `LOAD EXTENSION` paths are literals.
+  Escaping `\` and `'` round-trips byte-exactly, including control and
+  non-ASCII characters, so such paths are now escaped instead of refused. Every
+  native failure surfaces as `RuntimeError`, which OXIDE maps to `store_corrupt`
+  for sealed generations. An empty `graph.lbug` opens as an empty database, so
+  a view compares the stored entity count with the manifest.
 
 ## What was removed, retained, replaced
 

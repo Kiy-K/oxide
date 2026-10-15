@@ -39,7 +39,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 | Python engine, storage, removed/retained features | `docs/adr/0011-python-engine-vectorless.md`, `docs/public-api.md` |
 | Build, test, lint, commit format | `docs/agents/workflow.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
-| Legacy v1 reference only (evidence, not instructions) | `docs/agents/invariants.md`, `docs/review/`, `docs/canonical-baseline.md`, `docs/agent-usage-policy.md`, `skills/oxide-code-context/`, `README.md`, eval reports under `docs/`. They describe the retired implementation (root Rust crate, SQLite, legacy CLI/MCP); port lessons and semantic assertions, never their layout or APIs |
+| Legacy v1 reference only (evidence, not instructions) | `docs/agents/invariants.md`, `docs/review/`, `docs/canonical-baseline.md`, `docs/agent-usage-policy.md`, `skills/oxide-code-context/`, `docs/legacy/README-v1.md`, eval reports under `docs/`. They describe the retired implementation (root Rust crate, SQLite, legacy CLI/MCP); port lessons and semantic assertions, never their layout or APIs |
 
 ## Always-on rules
 

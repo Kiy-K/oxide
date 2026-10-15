@@ -19,6 +19,10 @@ mise run test          #   pytest (tests/python/)
 ```
 
 Use `uv run …` for anything else (`uv run oxide index <path>`, `uv run pytest -k name`).
+`uv run python scripts/bench.py <corpus>` is the reproducible latency and
+peak-RSS benchmark: fresh processes and private data, cold and warm definitions
+in its docstring, and a JSON report with the corpus identity and environment.
+Run it under the limits below; recorded runs are in `docs/migration-audit/bench/`.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
@@ -26,7 +30,9 @@ with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 Tests never write to real user data: `tests/python/conftest.py` gives every
 test a private `OXIDE_DATA_DIR` and XDG locations, fails the session if the
 real data location changes, and every subprocess receives explicit private
-locations (`env()` there). Lexical tests need the pinned FTS extension
+locations (`env()` and `python()` there; `env()` refuses any location outside
+the temporary root). Native probes that could crash, and crash injection, run
+only in such subprocesses. Lexical tests need the pinned FTS extension
 (`uv run oxide prepare`, once).
 
 ## Commits
