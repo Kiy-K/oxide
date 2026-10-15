@@ -1,0 +1,12 @@
+[package]
+name = "paritydump"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+oxide-kernel = { path = "../rust/oxide_kernel/crates/kernel" }
+tree-sitter = "=0.27.0"
+tree-sitter-python = "=0.25.0"
