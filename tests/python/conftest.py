@@ -8,6 +8,9 @@ from __future__ import annotations
 
 import os
 import shutil
+import subprocess
+import sys
+import tempfile
 from collections.abc import Iterator, Mapping
 from pathlib import Path
 
@@ -71,7 +74,10 @@ def write(root: Path, files: Mapping[str, str | bytes]) -> Path:
 
 
 def env(data: Path) -> dict[str, str]:
-    """Environment for a subprocess: explicit private data and cache locations."""
+    """Environment for a subprocess: explicit private data and cache locations.
+    Fails closed unless ``data`` is test-owned (under the temporary root)."""
+    if not data.resolve().is_relative_to(Path(tempfile.gettempdir()).resolve()):
+        raise RuntimeError(f"{data} is not a private test location")
     return {
         **os.environ,
         "OXIDE_DATA_DIR": str(data),
@@ -79,3 +85,10 @@ def env(data: Path) -> dict[str, str]:
         "XDG_DATA_HOME": str(data / "xdg"),
         "XDG_CACHE_HOME": str(data / "cache"),
     }
+
+
+def python(data: Path, script: str, *args: str) -> subprocess.CompletedProcess[str]:
+    """Runs ``script`` in a fresh interpreter with private locations: native probes that
+    could crash, and crash injection, never run in the test process."""
+    command = [sys.executable, "-c", script, *args]
+    return subprocess.run(command, env=env(data), capture_output=True, text=True, check=False)

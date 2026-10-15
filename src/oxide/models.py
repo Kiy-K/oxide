@@ -241,3 +241,9 @@ class CaptureLimit(OxideError):
 
 class Closed(OxideError):
     code = "closed"
+
+
+class InvalidArgument(OxideError, ValueError):
+    """A malformed or out-of-range argument; still a ``ValueError`` for callers."""
+
+    code = "invalid_argument"

@@ -1,7 +1,8 @@
 """``oxide`` command line: a thin presentation layer over the public API.
 
-Human output by default; ``--json`` prints the typed result. Errors print
-``error[<code>]: <message>`` to stderr and exit 2.
+Human output by default; ``--json`` prints the typed result. OXIDE errors print
+``error[<code>]: <message>`` to stderr and exit 2; malformed command lines print
+argparse usage and also exit 2. Exit 1 with a traceback is a bug.
 """
 
 from __future__ import annotations

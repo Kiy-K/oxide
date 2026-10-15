@@ -10,6 +10,7 @@ from conftest import FIXTURE
 
 import oxide
 from oxide.core.retrieval import terms
+from oxide.models import InvalidArgument
 
 
 @pytest.fixture
@@ -78,3 +79,41 @@ def test_missing_fts_is_reported_unavailable_and_seeds_still_work(
         found = repo.search("RetryPolicy", symbols=["RetryPolicy"])
     assert found.lexical.state == "unavailable"
     assert [e.entity.key for e in found.entries] == ["symbol:oxidepy/retry.py#RetryPolicy"]
+
+
+@pytest.mark.parametrize(
+    ("call", "argument"),
+    [
+        ("search", {"limit": -5}),
+        ("search", {"limit": 1001}),
+        ("search", {"limit": 2.5}),
+        ("search", {"limit": True}),
+        ("search", {"limit": "3"}),
+        ("search", {"paths": "oxidepy/retry.py"}),
+        ("search", {"symbols": [None]}),
+        ("search", {"selection": ("oxidepy/retry.py", 5, 2)}),
+        ("search", {"selection": ("oxidepy/retry.py", -1, 2)}),
+        ("search", {"selection": ("oxidepy/retry.py", 0, 1 << 63)}),
+        ("search", {"selection": ["oxidepy/retry.py", 0, 1]}),
+        ("context", {"budget": -1}),
+        ("context", {"budget": (1 << 20) + 1}),
+        ("context", {"budget": 10.0}),
+    ],
+)
+def test_malformed_arguments_are_rejected_before_any_query(
+    repo: oxide.Repository, call: str, argument: dict[str, object]
+) -> None:
+    with pytest.raises(InvalidArgument) as raised:
+        if call == "search":
+            repo.search("retry", **argument)  # type: ignore[arg-type]
+        else:
+            repo.build_context("retry", **{"budget": 512, **argument})  # type: ignore[arg-type]
+    assert raised.value.code == "invalid_argument" and isinstance(raised.value, ValueError)
+    with pytest.raises(InvalidArgument):
+        repo.search(None)  # type: ignore[arg-type]
+
+
+def test_limit_bounds_are_inclusive(repo: oxide.Repository) -> None:
+    assert repo.search("retry", limit=0).lexical.returned == 0
+    assert repo.search("retry", limit=1000).lexical.state == "ran"
+    assert repo.build_context("retry", 0).used == 0

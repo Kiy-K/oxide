@@ -11,7 +11,8 @@ Layout of one repository's store under the data location::
 A generation is built in ``<g>.staging``, bulk-loaded with ``COPY``, read back and
 compared, checkpointed, fsynced and renamed; only then does ``CURRENT`` move. A
 failure leaves the previous generation current. On open, anything but the current
-generation is deleted; a ``CURRENT`` naming a missing generation fails closed.
+generation is deleted. A crash inside a same-name rebuild is undone; any other
+``CURRENT`` naming a missing generation fails closed and nothing is deleted.
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ import secrets
 import shutil
 import sys
 import urllib.request
+import weakref
 from collections.abc import Iterable
 from importlib.metadata import version
 from pathlib import Path
@@ -35,9 +37,10 @@ from typing import Any
 import ladybug
 
 from oxide.capture import Capture, digest
-from oxide.core.indexing import Derived, derivation_id
+from oxide.core.indexing import Derived, components, derivation_id
 from oxide.core.retrieval import document
 from oxide.models import (
+    Closed,
     Entity,
     FileInfo,
     IncompatibleIndex,
@@ -140,11 +143,15 @@ def _rows(conn: ladybug.Connection, query: str, params: dict[str, Any] | None = 
 
 
 def _literal(path: Path) -> str:
-    """A path for a quoted Cypher literal (COPY, LOAD); refused rather than escaped."""
+    """A path as a quoted Cypher literal (COPY, LOAD EXTENSION). ``\\`` and ``'`` are
+    escaped; the pinned parser decodes them back byte-exactly (probed with quotes,
+    backslashes, control and non-ASCII characters, docs/migration-audit)."""
     text = str(path)
-    if "'" in text or "\\" in text:
-        raise InvalidPath(f"{text}: store and extension paths must not contain ' or \\")
-    return text
+    try:
+        text.encode("utf-8")
+    except UnicodeEncodeError as error:
+        raise InvalidPath(f"{text!r}: store and extension paths must be UTF-8") from error
+    return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
 def _field(value: object) -> str:
@@ -204,56 +211,116 @@ def _entity(row: list[Any]) -> Entity:
     return Entity(key, category, kind, name, signature or None, source, test)
 
 
-class View:
-    """A read view pinned to one sealed generation. Not thread-safe."""
+def _text(value: object) -> str:
+    if not isinstance(value, str):
+        raise TypeError(f"expected text, got {value!r}")
+    return value
 
-    def __init__(self, directory: Path) -> None:
+
+def _comparable(parts: dict[str, str]) -> dict[str, str]:
+    """Components that must match to read a generation; lexical availability may differ."""
+    return {k: v for k, v in parts.items() if k != "lexical"}
+
+
+class View:
+    """A read view pinned to one sealed generation. Not thread-safe.
+
+    Everything that can be checked without native code (manifest shape, schema,
+    owner, derivation components) is checked before the database is opened. Any
+    damage after that, at open or on a later read, is ``StoreCorrupt``."""
+
+    def __init__(self, directory: Path, repo_id: str) -> None:
         try:
             manifest = json.loads((directory / "MANIFEST.json").read_bytes())
         except (OSError, ValueError) as error:
             raise StoreCorrupt(f"{directory}: unreadable manifest ({error})") from error
+        if not isinstance(manifest, dict):
+            raise StoreCorrupt(f"{directory}: manifest is not an object")
         if manifest.get("schema") != SCHEMA_VERSION:
             raise IncompatibleIndex(
                 f"{directory}: built by store schema {manifest.get('schema')!r}; re-index"
             )
+        try:
+            self.snapshot = Snapshot(
+                *(_text(manifest[k]) for k in ("repo_id", "snapshot_id", "derivation_id"))
+            )
+            self.components: dict[str, str] = dict(manifest["components"])
+            self.files = {
+                f[0]: FileInfo(_text(f[0]), _text(f[1]), int(f[2]), f[3], f[4], tuple(f[5]))
+                for f in manifest["files"]
+            }
+            self.lexical_unavailable: str | None = manifest["lexical_unavailable"]
+            if self.lexical_unavailable is not None:
+                _text(self.lexical_unavailable)
+            entities = int(manifest["rows"]["Entity"])
+            self.counts = (int(manifest["entities"]), int(manifest["relations"]))
+        except (KeyError, TypeError, ValueError, IndexError) as error:
+            raise StoreCorrupt(f"{directory}: malformed manifest ({error!r})") from error
+        if self.snapshot.repo_id != repo_id:
+            raise StoreCorrupt(f"{directory}: belongs to repository {self.snapshot.repo_id}")
+        if _comparable(self.components) != _comparable(components(storage_components(True))):
+            raise IncompatibleIndex(f"{directory}: built by another OXIDE derivation; re-index")
         self.directory = directory
-        self.snapshot = Snapshot(
-            manifest["repo_id"], manifest["snapshot_id"], manifest["derivation_id"]
-        )
-        self.components: dict[str, str] = manifest["components"]
-        self.files = {
-            f[0]: FileInfo(f[0], f[1], f[2], f[3], f[4], tuple(f[5])) for f in manifest["files"]
-        }
         self.manifest = manifest
         self.lexical_scorer = FTS_SCORER
-        self.lexical_unavailable: str | None = manifest["lexical_unavailable"]
-        self._db = ladybug.Database(
-            str(directory / "graph.lbug"),
-            read_only=True,
-            buffer_pool_size=BUFFER_POOL,
-            max_num_threads=1,
-        )
-        self._conn = ladybug.Connection(self._db)
+        self._db: ladybug.Database | None = None
+        self._conn: ladybug.Connection | None = None
+        try:
+            self._db = ladybug.Database(
+                str(directory / "graph.lbug"),
+                read_only=True,
+                buffer_pool_size=BUFFER_POOL,
+                max_num_threads=1,
+            )
+            self._conn = ladybug.Connection(self._db)
+            # An empty or foreign file opens as some other database: compare what was sealed.
+            stored = _rows(self._conn, "MATCH (e:Entity) RETURN count(e)")[0][0]
+        except RuntimeError as error:
+            self.close()
+            raise StoreCorrupt(f"{directory}: unreadable database ({error})") from error
+        if stored != entities:
+            self.close()
+            raise StoreCorrupt(f"{directory}: {stored} entities stored, {entities} sealed")
         if self.lexical_unavailable is None:
             extension = fts_location()
             self.lexical_unavailable = fts_unavailable(extension)
             if self.lexical_unavailable is None:
-                _rows(self._conn, f"LOAD EXTENSION '{_literal(extension)}'")
+                try:
+                    _rows(self._conn, f"LOAD EXTENSION {_literal(extension)}")
+                except RuntimeError as error:
+                    self.lexical_unavailable = f"FTS extension did not load: {error}"
 
     def close(self) -> None:
-        self._conn.close()
-        self._db.close()
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
+        if self._db is not None:
+            self._db.close()
+            self._db = None
+
+    def _query(self, query: str, params: dict[str, Any] | None = None) -> list[Any]:
+        """A read; native failures on a sealed generation mean it is damaged."""
+        if self._conn is None:
+            raise Closed(f"{self.directory}: view is closed")
+        try:
+            return _rows(self._conn, query, params)
+        except RuntimeError as error:
+            raise StoreCorrupt(f"{self.directory}: read failed ({error})") from error
+
+    def verify_sources(self) -> None:
+        """Every retained source file exists and matches its digest."""
+        for info in self.files.values():
+            self.source(SourceRef(info.path, 0, info.size, info.digest))
 
     def entities(self, keys: Iterable[str]) -> dict[str, Entity]:
         wanted = sorted(set(keys))
         if not wanted:
             return {}
         query = f"MATCH (e:Entity) WHERE e.key IN $keys RETURN {_ENTITY}"
-        return {row[0]: _entity(row) for row in _rows(self._conn, query, {"keys": wanted})}
+        return {row[0]: _entity(row) for row in self._query(query, {"keys": wanted})}
 
     def named(self, name: str, limit: int) -> tuple[list[str], bool]:
-        rows = _rows(
-            self._conn,
+        rows = self._query(
             f"MATCH (e:Entity) WHERE e.name = $name RETURN e.key ORDER BY e.key LIMIT {limit + 1}",
             {"name": name},
         )
@@ -261,8 +328,7 @@ class View:
 
     def innermost(self, path: str, start: int, end: int) -> str | None:
         """The smallest declaration of ``path`` whose range contains ``[start, end)``."""
-        rows = _rows(
-            self._conn,
+        rows = self._query(
             "MATCH (e:Entity) WHERE e.category = 'symbol' AND e.path = $path "
             "AND e.start_byte <= $start AND e.end_byte >= $stop "
             "RETURN e.key ORDER BY e.end_byte - e.start_byte, e.key LIMIT 1",
@@ -282,8 +348,7 @@ class View:
         # OXIDE terms reach here, and they can never close the quote.
         if not _TERMS_TEXT.fullmatch(text):
             raise ValueError(f"lexical query must be OXIDE terms, got {text!r}")
-        rows = _rows(
-            self._conn,
+        rows = self._query(
             f"CALL QUERY_FTS_INDEX('Entity', 'lexical', '{text}', conjunctive := false, "
             "K := 1.2, B := 0.75) RETURN node.key, score ORDER BY score DESC, node.key "
             f"LIMIT {limit + 1}",
@@ -308,21 +373,19 @@ class View:
         out = match + "a.key IN $keys RETURN a.key, r.kind, b.key"
         into = match + "b.key IN $keys RETURN b.key, r.kind, a.key"
         for direction, query in enumerate((out, into)):
-            for key, kind, other in _rows(self._conn, query, params):
+            for key, kind, other in self._query(query, params):
                 found[key][direction].append((kind, other))
         return found
 
     def relations(self, key: str) -> list[Relation]:
         """Every relation touching ``key``, unresolved ones included, in derivation order."""
         columns = "r.kind, r.resolution, r.basis, r.name, r.site, r.ev_path, r.ev_start, r.ev_end"
-        rows = _rows(
-            self._conn,
+        rows = self._query(
             "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE a.key = $key OR b.key = $key "
             f"RETURN a.key, b.key, {columns}",
             {"key": key},
         )
-        rows += _rows(
-            self._conn,
+        rows += self._query(
             "MATCH (a:Entity)-[r:Opaque]->(:Unresolved) WHERE a.key = $key RETURN a.key, NULL, "
             "r.kind, 'unresolved', r.basis, r.name, r.site, r.ev_path, r.ev_start, r.ev_end",
             {"key": key},
@@ -352,47 +415,79 @@ class View:
 
 
 class Store:
-    """The single owner of one repository's store in this process."""
+    """The single owner of one repository's store in this process.
+
+    ``close()`` releases the view and the lock. A store dropped without it releases
+    its lock when collected: the finalizer holds only the descriptor, never the store.
+    """
 
     def __init__(self, root: Path, data: Path) -> None:
         self.root = root
+        self.data = data
         self.dir = data / "repos" / hashlib.sha256(os.fsencode(root)).hexdigest()[:32]
         _literal(self.dir)
         self.dir.mkdir(parents=True, exist_ok=True)
-        self._lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT | os.O_CLOEXEC, 0o600)
+        lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT | os.O_CLOEXEC, 0o600)
         try:
-            fcntl.flock(self._lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as error:
-            os.close(self._lock)
+            os.close(lock)
             raise OwnershipConflict(f"{root}: its store is open in another OXIDE") from error
+        self._release = weakref.finalize(self, os.close, lock)
+        self._view: View | None = None
         try:
             self.repo_id = self._repo_id()
             self.generations = self.dir / "generations"
             self.generations.mkdir(exist_ok=True)
             self.current = self._recover()
         except BaseException:
-            os.close(self._lock)
+            self._release()
             raise
-        self._view: View | None = None
 
     def _repo_id(self) -> str:
         path = self.dir / "repo.json"
-        if path.exists():
+        if not path.exists():
+            if (self.dir / "CURRENT").exists():
+                # Generations without their identity: never re-keyed or deleted silently.
+                raise StoreCorrupt(f"{path} is missing; remove {self.dir} to rebuild")
+            repo_id = secrets.token_hex(16)
+            _write_atomic(path, json.dumps({"repo_id": repo_id, "root": str(self.root)}).encode())
+            return repo_id
+        try:
             meta = json.loads(path.read_bytes())
-            if meta.get("root") != str(self.root):
-                raise StoreCorrupt(f"{self.dir}: belongs to {meta.get('root')!r}")
-            return str(meta["repo_id"])
-        repo_id = secrets.token_hex(16)
-        _write_atomic(path, json.dumps({"repo_id": repo_id, "root": str(self.root)}).encode())
+            root, repo_id = meta["root"], meta["repo_id"]
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            raise StoreCorrupt(f"{path}: unreadable ({error!r}); remove {self.dir}") from error
+        if root != str(self.root):
+            raise StoreCorrupt(f"{self.dir}: belongs to {root!r}")
+        if not (isinstance(repo_id, str) and repo_id):
+            raise StoreCorrupt(f"{path}: invalid repo_id {repo_id!r}; remove {self.dir}")
         return repo_id
+
+    def _restore(self, name: str) -> None:
+        """Undoes publish's first rename when its second one never happened."""
+        target, replaced = self.generations / name, self.generations / f"{name}.replaced"
+        if not target.exists() and replaced.is_dir():
+            os.rename(replaced, target)
+            _fsync(self.generations)
 
     def _recover(self) -> str | None:
         pointer = self.dir / "CURRENT"
-        current = pointer.read_text().strip() if pointer.exists() else None
-        if current is not None and not (
-            _HEX64.fullmatch(current) and (self.generations / current / "MANIFEST.json").is_file()
-        ):
-            raise StoreCorrupt(f"{pointer} names a missing generation; delete {self.dir}")
+        if not pointer.exists():
+            current = None
+        else:
+            try:
+                current = pointer.read_text(encoding="ascii").strip()
+            except (OSError, ValueError) as error:
+                raise StoreCorrupt(f"{pointer}: unreadable ({error}); remove {self.dir}") from error
+            if not _HEX64.fullmatch(current):
+                raise StoreCorrupt(f"{pointer}: not a generation name; remove {self.dir}")
+            # A crash between publish's two renames: the replaced generation goes back
+            # in place. It was unreadable or stale, so the next index() rebuilds it.
+            self._restore(current)
+            if not (self.generations / current / "MANIFEST.json").is_file():
+                # Ambiguous: nothing is deleted, nothing is served.
+                raise StoreCorrupt(f"{pointer} names a missing generation; remove {self.dir}")
         # No view can be pinned before this owner existed: everything else is garbage.
         for entry in self.generations.iterdir():
             if entry.name != current:
@@ -403,14 +498,17 @@ class Store:
         if self.current is None:
             raise NotIndexed(f"{self.root} has not been indexed")
         if self._view is None:
-            self._view = View(self.generations / self.current)
+            self._view = View(self.generations / self.current, self.repo_id)
         return self._view
 
-    def close(self) -> None:
+    def _drop_view(self) -> None:
         if self._view is not None:
             self._view.close()
             self._view = None
-        os.close(self._lock)
+
+    def close(self) -> None:
+        self._drop_view()
+        self._release()
 
     def _name(self, snapshot_id: str, components: dict[str, str]) -> tuple[str, str]:
         derivation = derivation_id(components)
@@ -418,13 +516,15 @@ class Store:
         return hashlib.sha256(identity).hexdigest(), derivation
 
     def is_current(self, snapshot_id: str, components: dict[str, str]) -> bool:
-        """Whether this capture and derivation are already published and readable."""
+        """Whether this capture and derivation are already published, readable and backed
+        by every retained source file."""
         if self._name(snapshot_id, components)[0] != self.current:
             return False
         try:
-            self.view()
+            self.view().verify_sources()
             return True
         except (IncompatibleIndex, StoreCorrupt):
+            self._drop_view()
             return False  # unreadable under this OXIDE: rebuilt, never migrated
 
     def publish(
@@ -462,18 +562,17 @@ class Store:
             target = self.generations / name
             if target.exists():
                 # The unreadable generation this rebuild replaces. A crash between the two
-                # renames leaves CURRENT dangling, which fails closed on the next open.
+                # renames is undone on the next open (_recover); a failure, just below.
                 os.rename(target, self.generations / f"{name}.replaced")
             os.rename(staging, target)
             _fsync(self.generations)
         except BaseException:
             shutil.rmtree(staging, ignore_errors=True)
+            self._restore(name)
             raise
         _write_atomic(self.dir / "CURRENT", name.encode())
         previous, self.current = self.current, name
-        if self._view is not None:
-            self._view.close()
-            self._view = None
+        self._drop_view()
         for stale in {previous, f"{name}.replaced"} - {name, None}:
             shutil.rmtree(self.generations / str(stale), ignore_errors=True)
 
@@ -524,7 +623,7 @@ class Store:
                 csv = staging / f"{table}.csv"
                 if _write_csv(csv, rows):
                     options = "header=false, quote='\"', escape='\"', delim=',', parallel=false"
-                    _rows(conn, f"COPY {table} FROM '{_literal(csv)}' ({options})")
+                    _rows(conn, f"COPY {table} FROM {_literal(csv)} ({options})")
                 csv.unlink()
             _rows(conn, "COMMIT")
             counted = {
@@ -539,7 +638,7 @@ class Store:
                 # COPY can drop rows whose endpoints are missing; never publish that.
                 raise StoreCorrupt(f"read back {read}, wrote {written}")
             if lexical:
-                _rows(conn, f"LOAD EXTENSION '{_literal(fts_location())}'")
+                _rows(conn, f"LOAD EXTENSION {_literal(fts_location())}")
                 _rows(
                     conn,
                     "CALL CREATE_FTS_INDEX('Entity', 'lexical', ['terms'], stemmer := 'porter')",

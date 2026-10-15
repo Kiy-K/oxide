@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from conftest import write
 
+import oxide
 from oxide.capture import MAX_FILE_BYTES, capture
 from oxide.models import CaptureConflict
 
@@ -61,3 +62,23 @@ def test_undecodable_ignore_rules_fail_closed(tmp_path: Path) -> None:
 def test_case_fold_collisions_are_diagnostics(tmp_path: Path) -> None:
     root = write(tmp_path, {"Readme.md": "a", "README.md": "b"})
     assert capture(root).case_collisions == (("README.md", "Readme.md"),)
+
+
+@pytest.mark.parametrize("where", ["state", "deep/nested/state", "alias"])
+def test_a_data_location_inside_the_repository_is_never_captured(
+    repo_copy: Path, tmp_path: Path, where: str
+) -> None:
+    outside = oxide.index_repository(repo_copy, data_dir=tmp_path / "outside")
+    if where == "alias":  # reached through a symlink outside the repository
+        (repo_copy / "real-state").mkdir()
+        (tmp_path / "alias").symlink_to(repo_copy / "real-state")
+        data = tmp_path / "alias"
+    else:
+        data = repo_copy / where
+    statuses = []
+    with oxide.open_repository(repo_copy, data_dir=data) as repo:
+        for _ in range(3):
+            report = repo.index()
+            statuses.append(report.status)
+            assert report.files == outside.files
+    assert statuses == ["built", "unchanged", "unchanged"]

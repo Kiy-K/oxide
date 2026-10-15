@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import stat
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -72,7 +73,7 @@ def _ignored(rules: list[tuple[str, pathspec.GitIgnoreSpec]], path: str, is_dir:
     return ignored
 
 
-def _walk(root: Path) -> _Listing:
+def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
     listing = _Listing({}, {}, [], [])
     stack: list[tuple[str, list[tuple[str, pathspec.GitIgnoreSpec]]]] = [("", [])]
     while stack:
@@ -113,6 +114,8 @@ def _walk(root: Path) -> _Listing:
                 listing.skipped.append(Skip(path, "unreadable"))
                 continue
             is_dir = stat.S_ISDIR(st.st_mode)
+            if is_dir and (st.st_dev, st.st_ino) in excluded:
+                continue
             if _ignored(rules, path, is_dir):
                 continue
             reason: SkipReason | None = None
@@ -149,16 +152,28 @@ def _read(root: Path, path: str, expected: StatKey) -> bytes | None:
     return data if len(data) == expected[1] else None
 
 
-def capture(root: str | os.PathLike[str]) -> Capture:
-    """Captures ``root``; retries when the tree changes underneath, then fails closed."""
+def capture(root: str | os.PathLike[str], exclude: Iterable[Path] = ()) -> Capture:
+    """Captures ``root``; retries when the tree changes underneath, then fails closed.
+
+    Directories in ``exclude`` (OXIDE's own data location) are left out wherever they
+    sit, matched by device and inode, so a symlinked or differently spelled path to
+    the same directory is excluded too. Absent ones are ignored."""
     try:
         base = Path(root).resolve(strict=True)
     except OSError as error:
         raise InvalidPath(f"{root}: {error.strerror}") from error
     if not base.is_dir():
         raise InvalidPath(f"{base}: not a directory")
+    excluded: set[tuple[int, int]] = set()
+    for directory in exclude:
+        try:
+            st = os.stat(directory)
+        except OSError:
+            continue
+        excluded.add((st.st_dev, st.st_ino))
+    frozen = frozenset(excluded)
     for _ in range(ATTEMPTS):
-        listing = _walk(base)
+        listing = _walk(base, frozen)
         total = 0
         files: list[CapturedFile] = []
         for path, expected in sorted(listing.files.items()):
@@ -170,7 +185,7 @@ def capture(root: str | os.PathLike[str]) -> Capture:
                 break
             files.append(CapturedFile(path, data, digest(data)))
         else:
-            if _walk(base).state == listing.state:
+            if _walk(base, frozen).state == listing.state:
                 return _seal(base, files, listing)
     raise CaptureConflict(f"{base}: changed during capture {ATTEMPTS} times")
 

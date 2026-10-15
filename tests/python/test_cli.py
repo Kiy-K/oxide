@@ -37,3 +37,32 @@ def test_errors_exit_2_with_a_stable_code(tmp_path: Path) -> None:
     result = oxide(data, "search", str(FIXTURE), "x", "--data-dir", str(data))
     assert result.returncode == 2
     assert result.stderr.startswith("error[not_indexed]:")
+
+
+def test_expected_errors_never_print_a_traceback(tmp_path: Path, fts: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    for args, code in (
+        (("search", *target, "x", "--limit", "-5"), "error[invalid_argument]:"),
+        (("search", *target, "x", "--limit", "99999"), "error[invalid_argument]:"),
+        (("context", *target, "x", "--budget", "-1"), "error[invalid_argument]:"),
+        (("search", *target, "x", "--limit", "many"), "usage:"),
+        (("index", str(tmp_path / "missing"), "--data-dir", str(data)), "error[invalid_path]:"),
+    ):
+        result = oxide(data, *args)
+        assert result.returncode == 2, (args, result.stderr)
+        assert code in result.stderr and "Traceback" not in result.stderr, result.stderr
+
+
+def test_a_damaged_store_is_a_stable_error_then_rebuilt(tmp_path: Path, fts: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(FIXTURE), "--data-dir", str(data))
+    assert oxide(data, "index", *target).returncode == 0
+    (graph,) = data.glob("repos/*/generations/*/graph.lbug")
+    graph.write_bytes(b"\0" * graph.stat().st_size)
+    result = oxide(data, "search", *target, "RetryPolicy")
+    assert result.returncode == 2 and result.stderr.startswith("error[store_corrupt]:")
+    assert "Traceback" not in result.stderr
+    rebuilt = oxide(data, "index", *target)
+    assert rebuilt.returncode == 0 and rebuilt.stdout.startswith("built:"), rebuilt.stderr

@@ -31,8 +31,8 @@ from oxide.models import (
     Entity,
     EntryPoint,
     FileInfo,
-    IncompatibleIndex,
     IndexReport,
+    InvalidArgument,
     InvalidPath,
     Relation,
     RouteSummary,
@@ -48,14 +48,46 @@ from oxide.storage.ladybug import (
     storage_components,
 )
 
+# Upper bounds of caller-chosen sizes, checked before any query is built.
+MAX_LIMIT = 1000
+MAX_BUDGET = 1 << 20
+_MAX_OFFSET = (1 << 63) - 1  # LadybugDB INT64
+
+
+def _count(name: str, value: object, high: int) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= high:
+        raise InvalidArgument(f"{name} must be an integer in [0, {high}], got {value!r}")
+    return value
+
+
+def _texts(name: str, values: Iterable[str]) -> tuple[str, ...]:
+    out = () if isinstance(values, str) else tuple(values)
+    if isinstance(values, str) or not all(isinstance(v, str) for v in out):
+        raise InvalidArgument(f"{name} must be an iterable of strings, got {values!r}")
+    return out
+
 
 def _hints(
+    query: str,
     paths: Iterable[str],
     symbols: Iterable[str],
     selection: tuple[str, int, int] | None,
     changed: Iterable[str],
 ) -> Hints:
-    return Hints(selection, tuple(paths), tuple(symbols), tuple(changed))
+    if not isinstance(query, str):
+        raise InvalidArgument(f"query must be a string, got {query!r}")
+    if selection is not None:
+        if not (isinstance(selection, tuple) and len(selection) == 3):
+            raise InvalidArgument(f"selection must be (path, start, end), got {selection!r}")
+        path, start, end = selection
+        _texts("selection path", [path])
+        if _count("selection start", start, _MAX_OFFSET) > _count(
+            "selection end", end, _MAX_OFFSET
+        ):
+            raise InvalidArgument(f"selection start {start} is after its end {end}")
+    return Hints(
+        selection, _texts("paths", paths), _texts("symbols", symbols), _texts("changed", changed)
+    )
 
 
 class Repository:
@@ -102,7 +134,8 @@ class Repository:
         reports ``unchanged`` when the capture and derivation equal the current one."""
         started = time.perf_counter()
         store = self.store
-        snapshot = capture(self.root)
+        # The data location is never source, wherever it sits (compared by identity).
+        snapshot = capture(self.root, exclude=(store.data, store.data / "repos"))
         lexical_unavailable = fts_unavailable(fts_location())
         parts = components(storage_components(lexical_unavailable is None))
         built = not store.is_current(snapshot.snapshot_id, parts)
@@ -116,8 +149,8 @@ class Repository:
             snapshot=view.snapshot,
             status="built" if built else "unchanged",
             files=len(view.files),
-            entities=view.manifest["entities"],
-            relations=view.manifest["relations"],
+            entities=view.counts[0],
+            relations=view.counts[1],
             partial=tuple(f.path for f in files if f.coverage == "partial"),
             unsupported=sum(f.coverage == "unsupported" for f in files),
             skipped=snapshot.skipped,
@@ -127,12 +160,8 @@ class Repository:
         )
 
     def _view(self) -> View:
-        view = self.store.view()
-        expected = components(storage_components(True))
-        built = {k: v for k, v in view.components.items() if k != "lexical"}
-        if built != {k: v for k, v in expected.items() if k != "lexical"}:
-            raise IncompatibleIndex(f"{self.root}: indexed by another OXIDE derivation; re-index")
-        return view
+        """The current generation; its compatibility is checked before it is opened."""
+        return self.store.view()
 
     @property
     def snapshot(self) -> Snapshot:
@@ -158,8 +187,9 @@ class Repository:
         changed: Iterable[str] = (),
     ) -> SearchResult:
         """Entry-point candidates for inspection; never the final context."""
+        hints = _hints(query, paths, symbols, selection, changed)
+        limit = _count("limit", limit, MAX_LIMIT)
         view = self._view()
-        hints = _hints(paths, symbols, selection, changed)
         found = retrieval.retrieve(view, query, hints, lexical_limit=limit)
         entities = view.entities(e.key for e in found.entries)
         entries = tuple(
@@ -178,10 +208,10 @@ class Repository:
         changed: Iterable[str] = (),
     ) -> ContextBundle:
         """A bounded, source-backed context bundle: ``used <= budget`` units."""
-        if budget < 0:
-            raise ValueError("budget must be nonnegative")
+        hints = _hints(query, paths, symbols, selection, changed)
+        budget = _count("budget", budget, MAX_BUDGET)
         view = self._view()
-        found = retrieval.retrieve(view, query, _hints(paths, symbols, selection, changed))
+        found = retrieval.retrieve(view, query, hints)
         entries = {e.key: e for e in found.entries}
         route = routing.route(view, list(entries))
         routed = {c.key: c for c in route.candidates}
