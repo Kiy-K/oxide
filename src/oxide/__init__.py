@@ -1,0 +1,47 @@
+"""OXIDE v2: a structural context engine for agents (docs/spec/SPEC.md, ADR-0011)."""
+
+from oxide.api import Repository, index_repository, open_repository
+from oxide.models import (
+    ChannelStatus,
+    ContextBundle,
+    ContextItem,
+    Entity,
+    EntryPoint,
+    FileInfo,
+    HintIssue,
+    IndexReport,
+    ItemEntity,
+    Omission,
+    OxideError,
+    Relation,
+    RouteSummary,
+    SearchResult,
+    Seed,
+    Skip,
+    Snapshot,
+    SourceRef,
+)
+
+__all__ = [
+    "ChannelStatus",
+    "ContextBundle",
+    "ContextItem",
+    "Entity",
+    "EntryPoint",
+    "FileInfo",
+    "HintIssue",
+    "IndexReport",
+    "ItemEntity",
+    "Omission",
+    "OxideError",
+    "Relation",
+    "Repository",
+    "RouteSummary",
+    "SearchResult",
+    "Seed",
+    "Skip",
+    "Snapshot",
+    "SourceRef",
+    "index_repository",
+    "open_repository",
+]

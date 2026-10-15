@@ -1,0 +1,63 @@
+"""Source capture: scope, explicit skips and snapshot identity (ADR-0010)."""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+import pytest
+from conftest import write
+
+from oxide.capture import MAX_FILE_BYTES, capture
+from oxide.models import CaptureConflict
+
+
+def test_scope_follows_gitignore_and_reports_every_skip(tmp_path: Path) -> None:
+    root = write(
+        tmp_path / "repo",
+        {
+            ".gitignore": "*.log\nbuild/\n",
+            "keep.py": "x = 1\n",
+            "debug.log": "noise\n",
+            "build/out.py": "y = 2\n",
+            "sub/.gitignore": "!important.log\n",
+            "sub/important.log": "kept\n",
+            ".git/config": "[core]\n",
+            "big.bin": b"0" * (MAX_FILE_BYTES + 1),
+        },
+    )
+    os.symlink(root / "keep.py", root / "link.py")
+    os.mkfifo(root / "pipe")
+    snapshot = capture(root)
+    assert [f.path for f in snapshot.files] == [
+        ".gitignore",
+        "keep.py",
+        "sub/.gitignore",
+        "sub/important.log",
+    ]
+    assert {(s.path, s.reason) for s in snapshot.skipped} == {
+        ("big.bin", "too_large"),
+        ("link.py", "symlink"),
+        ("pipe", "special"),
+    }
+
+
+def test_snapshot_identity_is_content_addressed(tmp_path: Path) -> None:
+    root = write(tmp_path / "a", {"m.py": "x = 1\n"})
+    other = write(tmp_path / "b", {"m.py": "x = 1\n"})
+    assert capture(root).snapshot_id == capture(other).snapshot_id
+    write(other, {"m.py": "x = 2\n"})
+    assert capture(root).snapshot_id != capture(other).snapshot_id
+    write(other, {"m.py": "x = 1\n", "new.txt": ""})
+    assert capture(root).snapshot_id != capture(other).snapshot_id
+
+
+def test_undecodable_ignore_rules_fail_closed(tmp_path: Path) -> None:
+    root = write(tmp_path, {".gitignore": b"\xff\xfe*.log\n", "a.py": ""})
+    with pytest.raises(CaptureConflict, match="unreadable ignore rules"):
+        capture(root)
+
+
+def test_case_fold_collisions_are_diagnostics(tmp_path: Path) -> None:
+    root = write(tmp_path, {"Readme.md": "a", "README.md": "b"})
+    assert capture(root).case_collisions == (("README.md", "Readme.md"),)

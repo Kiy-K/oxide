@@ -1,0 +1,41 @@
+# OXIDE v2: Python engine (ADR-0011). `mise run verify` is the one check.
+[project]
+name = "oxide"
+version = "0.0.0"
+description = "OXIDE v2: a structural context engine for agents"
+readme = "README.md"
+license = "MIT"
+# ladybug 0.21.2 ships wheels for CPython 3.10-3.14 only.
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "ladybug==0.21.2",
+    "pathspec>=0.12",
+    "tree-sitter>=0.25,<0.27",
+    "tree-sitter-python==0.25.0",
+]
+
+[project.scripts]
+oxide = "oxide.cli:main"
+
+[dependency-groups]
+dev = ["mypy>=1.13", "pytest>=8.3", "ruff>=0.8"]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests/python"]
+mypy_path = ["src", "tests/python"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/python"]
+addopts = "-ra --strict-markers"
