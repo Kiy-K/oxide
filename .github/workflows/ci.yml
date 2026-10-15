@@ -1,7 +1,7 @@
 name: CI
 
 # OXIDE v2: runs exactly `mise run verify` — the same command used locally
-# (Rust fmt/clippy/test in oxide_kernel/, then Bun install/lint/typecheck/test).
+# (Ruff, mypy --strict, pytest over the Python engine; ADR-0011).
 on:
   pull_request:
     branches: [main, rewrite/v2]
@@ -11,38 +11,24 @@ on:
 permissions:
   contents: read
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   verify:
     name: Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # Same pin as oxide_kernel/rust-toolchain.toml.
-      - name: Install pinned Rust toolchain
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy
-      - name: Restore Cargo cache
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            oxide_kernel/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('oxide_kernel/Cargo.lock', 'oxide_kernel/**/Cargo.toml', 'oxide_kernel/rust-toolchain.toml') }}
-      - name: Install pinned Bun
+      - name: Install pinned uv
         uses: jdx/mise-action@v5
         with:
           version: 2026.9.14
-          install_args: bun
-      - name: Restore pinned native archive cache
+          install_args: uv
+      - name: Restore pinned FTS extension cache
         uses: actions/cache@v6
         with:
-          path: oxide_kernel/native/.cache
-          key: linux-x86_64-liblbug-0.21.2-${{ hashFiles('oxide_kernel/native/prepare.sh') }}
-      - name: Prepare and verify pinned native archive
-        run: mise run native:prepare
+          path: ~/.cache/oxide
+          key: ladybug-fts-0.21.0-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py') }}
+      - name: Install locked environment and verify the pinned FTS extension
+        run: mise run bootstrap
       - name: mise run verify
         run: mise run verify
         env:

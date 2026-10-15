@@ -1,81 +1,37 @@
-# OXIDE v2 developer entrypoint. `mise run verify` is the one check, and CI
-# (.github/workflows/ci.yml) runs exactly it.
-#
-# Rust is pinned by oxide_kernel/rust-toolchain.toml (rustup honors it for
-# every cargo call run from oxide_kernel/, which is why the Rust tasks set
-# `dir`); `rustup` itself is assumed present. Bun is the only other tool: it
-# is the TS runtime, package manager and test runner (bun.lock pins the
-# TypeScript/Biome dev tooling).
+# OXIDE v2 developer entrypoint (ADR-0011: one Python package). `mise run verify`
+# is the one check, and CI (.github/workflows/ci.yml) runs exactly it. uv manages
+# Python (.python-version) and dependencies (pyproject.toml, uv.lock).
 min_version = "2024.1.0"
 
 [tools]
-bun = "1.4.2"
+uv = "0.12.22"
 
 [tasks.bootstrap]
-description = "Install the pinned Rust toolchain, Bun and the frozen TS dependencies"
-dir = "{{config_root}}/oxide_kernel"
-run = ["rustup show active-toolchain || rustup show", "cd .. && mise run native:prepare", "cd .. && bun install --frozen-lockfile"]
+description = "Install the locked environment and fetch the pinned, sha256-checked FTS extension"
+run = ["uv sync --locked", "uv run --locked oxide prepare"]
 
-[tasks."native:prepare"]
-description = "Explicit pinned SHA-256 verified LadybugDB v0.21.2 preparation (Linux x86_64)"
-run = "bash oxide_kernel/native/prepare.sh"
+[tasks.lint]
+description = "Ruff lint and format check of the engine and its tests"
+run = [
+  "uv run --locked ruff check src tests/python",
+  "uv run --locked ruff format --check src tests/python",
+]
 
-[tasks."rust:lint"]
-description = "cargo fmt --check + clippy -D warnings (oxide_kernel)"
-dir = "{{config_root}}/oxide_kernel"
-run = ["cargo fmt --check", "cargo clippy -j 2 --locked --all-targets -- -D warnings"]
+[tasks.typecheck]
+description = "mypy --strict over src/ and tests/python/"
+run = "uv run --locked mypy"
 
-[tasks."rust:test"]
-description = "Kernel/runtime tests: kernel boundary checks and the Rust side of the contract cases"
-dir = "{{config_root}}/oxide_kernel"
-run = "cargo test -j 2 --locked"
-
-[tasks."ts:install"]
-description = "bun install from the committed bun.lock (fails if package.json disagrees)"
-run = "bun install --frozen-lockfile"
-
-[tasks."ts:lint"]
-description = "Biome check of the control plane and contract cases"
-run = "bun run lint"
-
-[tasks."ts:typecheck"]
-description = "tsc --noEmit over src/"
-run = "bun run typecheck"
-
-[tasks."ts:test"]
-description = "bun test: control-plane boundary, decoders, client, supervisor and repository sessions through the real oxide-runtime"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-(cd oxide_kernel && cargo build -j 2 --locked --bin oxide-runtime --example prepare_repository)
-target="${CARGO_TARGET_DIR:-oxide_kernel/target}/debug"
-OXIDE_RUNTIME_BIN="$(realpath "$target/oxide-runtime")"
-OXIDE_PREPARE_BIN="$(realpath "$target/examples/prepare_repository")"
-export OXIDE_RUNTIME_BIN OXIDE_PREPARE_BIN
-bun test
-'''
-
-[tasks."spike:ladybug"]
-description = "LadybugDB feasibility spike (not part of verify): fetches the pinned, sha256-checked liblbug and extensions once, then runs offline"
-dir = "{{config_root}}/oxide_kernel/spikes/ladybug"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-eval "$(./fetch-liblbug.sh)"
-export LBUG_LIBRARY_DIR LBUG_INCLUDE_DIR SPIKE_EXTENSION_DIR
-cargo test -j 2 --locked -- --test-threads=1
-'''
+[tasks.test]
+description = "pytest: every test and subprocess uses a private data location"
+run = "uv run --locked pytest"
 
 [tasks.verify]
-description = "Everything CI checks, in order: Rust fmt/clippy/test, then Bun install/lint/typecheck/test"
+description = "Everything CI checks, in order: lint, typecheck, test"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 # Sequential on purpose: stop at the first failure.
-mise run rust:lint
-mise run rust:test
-mise run ts:install
-mise run ts:lint
-mise run ts:typecheck
-mise run ts:test
+mise run lint
+mise run typecheck
+mise run test
 '''
