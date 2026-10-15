@@ -33,6 +33,20 @@ The user’s rewrite instruction and SPEC.md supersede legacy maintenance assump
 17. OXIDE owns context engineering, not model serving. External runners execute inference. Prefer Ollama and llama.cpp embedding adapter boundaries; Sentence Transformers is research/reference infrastructure, and native inference is a future benchmark-driven exception.
 18. Discovery is advisory. Unconfigured semantics remains unavailable with lexical/structural operation and optional setup choices. Persist configured provider/model identity; never switch because another runner appears. Validate explicit reconfiguration and invalidate incompatible vectors. Do not install weights or start inference serving as an automatic discovery side effect.
 
+### Amendment 2026-10-15: Python engine (ADR-0011)
+
+Rules 5–9, 13 and 16–18 were written for the Rust/TypeScript stack and a planned vector channel. They keep their text above as the record; from Phase 6 they read:
+
+- **5.** Keep JEV and every learned judge optional. There are no embeddings or vectors. Preserve deterministic lexical entry points, structural TreeRouter exploration, the heuristic value and ContextPacker with no model or network requirement.
+- **6.** Models judge; deterministic code decides: thresholds, traversal, stopping, inclusion, budget, fallback and packing.
+- **7.** Repository intelligence lives in `oxide.core`; I/O in `oxide.capture` and `oxide.storage`; integrations (CLI, future MCP/editors) are Python clients of `oxide.api` and never parse, route or select.
+- **8.** LadybugDB objects, native IDs, rows and Cypher stay inside `oxide.storage`; `oxide.models` and the API expose domain values only.
+- **9.** One package with clear modules. A new package or dependency needs a demonstrated reuse, packaging or API reason.
+- **13.** Documentation claims are not proof that the Python binding builds, loads extensions or behaves at the pin; verify (ADR-0011 § Storage verification).
+- **16.** A `DecisionProvider` seam returns only as a scoped follow-up behind `oxide.core.packing.value`, with subject correlation, abstention and deterministic fallback; no live judge in CI.
+- **17–18.** Obsolete: no embedding runners, discovery or vector invalidation.
+- **19 (new).** Native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries, hashing); Python holds bounded policy over small sets.
+
 ## Before Phase 0
 
 Record the requested scope, branch/base revision, applicable instructions, and unresolved decisions from SPEC.md. Confirm later implementation is actually authorized; this document itself is not a request to start coding.
@@ -158,6 +172,34 @@ Exit gate:
 - Models cannot alter traversal rules, thresholds, expansion, hard inclusion, budget, or fallback. Judgments remain separate from entry-point scores and TreeRouter/inclusion/packing policy outcomes; no judge is treated as a code-correctness reasoner.
 - Dataset records use the same input semantics/renderer as inference, and policy decisions are not mislabeled as ground-truth relevance.
 - No learned model is promoted without a frozen repository-held-out quality/calibration/cost protocol. A trained checkpoint is not required to complete this architectural interface phase.
+
+### Phase 6 — Python migration (ADR-0011)
+
+Replace the Rust kernel/runtime and Bun control plane with one Python package, without new retrieval experiments or model training.
+
+Delivered (2026-10-15):
+
+- `oxide` package (`src/oxide/`), uv-managed; `mise run verify` runs Ruff (lint, format), mypy `--strict` and pytest.
+- Vertical slice over persisted state: `index_repository` → `search` → `build_context`, typed results, CLI (`oxide index|search|context|prepare`).
+- Python language slice with the Rust `oxide-python-v1` semantics, one tree-sitter query; capture with `.gitignore`, skips and consistency retry; LadybugDB generations with lock, atomic publication, read-back and digest-verified hydration.
+- Retrieval and TreeRouter reproduce `docs/phase-3/baseline-v1` exactly on all 7 tasks (test oracle). Context reaches Phase 4 config B's required-symbol recall 1.0 at 1,024 units.
+- Tests for parsing/indexing, graph relations, retrieval, budgets/provenance, persistence/recovery/ownership, errors, CLI subprocesses and data isolation (every test and subprocess gets a private data location).
+- Rust/Bun production code removed; recoverable at `f79808a`.
+
+Exit gates for the migration:
+
+1. Every public operation the Rust/TS stack offered or planned has a Python equivalent or a recorded decision not to port it (ADR-0011 § What was removed).
+2. Retrieval and routing reproduce the frozen Phase 3 baseline; context quality is no worse than the Phase 4 heuristic baseline on its fixture.
+3. `mise run verify` passes from a clean checkout after `uv run oxide prepare`.
+
+Remaining, in order of the smallest next milestone:
+
+1. Python MCP server over `oxide.api` (one tool each for search and build_context), with subprocess tests using private data locations.
+2. A Python Phase 4 evaluation harness producing `docs/phase-6/baseline-v1/` (frozen metrics for `oxide-payload-v2`); the current test checks only the recall floor.
+3. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
+4. Indexing throughput: measure parallel parsing, then incremental derivation with full/incremental parity tests.
+5. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
+6. macOS/Windows verification of publication atomicity and FTS availability.
 
 ## Boundary validation matrix
 

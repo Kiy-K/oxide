@@ -4,6 +4,8 @@
 
 **Proposed** — 2026-10-07. This records the top-level rewrite proposal. It is not an implementation change or a SemVer release decision.
 
+**Superseded in part** — 2026-10-15 by [ADR-0011](0011-python-engine-vectorless.md): the Rust kernel/runtime and TypeScript control-plane decisions, LadybugDB as a *vector* store, the embedding-provider/runner boundary and JEV as a runtime adapter. The mission, product definition and structural principles below stand. The text is kept as written.
+
 ## Context
 
 OXIDE is an open-source context engine for agents. Its mission remains: **OXIDE transforms repository structure into task-specific context.** More specifically, OXIDE indexes repository knowledge into a structural TreeIndex and routes each task through that structure to construct a bounded, high-value ContextBundle for software agents. It remains agent-agnostic: agents consume its output; OXIDE is not itself an autonomous coding agent.

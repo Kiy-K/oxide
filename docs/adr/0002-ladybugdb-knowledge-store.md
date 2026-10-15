@@ -8,6 +8,8 @@ in [ADR-0001](0001-oxide-v2-rewrite.md) (also Proposed). Evidence:
 (versions, verified vs documented vs unknown) and its tests. Identity rules come
 from [ADR-0010](0010-domain-identity-and-source-capture.md).
 
+**Amended** — 2026-10-15 by [ADR-0011](0011-python-engine-vectorless.md): LadybugDB stays, accessed through its Python wheel at the same pin and storage format. § 2 (Rust build) and the `-rdynamic` part of § 3 no longer apply, the vector accelerator is dropped, and the physical schema in § 7 is replaced by `oxide-ladybug-py-v1`. Ownership, publication and the pinned FTS rules stand. The text below is kept as written for the Rust adapter.
+
 ## Context
 
 SPEC names LadybugDB as the initial `KnowledgeStore` adapter on the strength of

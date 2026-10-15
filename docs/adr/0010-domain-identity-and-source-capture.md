@@ -7,6 +7,8 @@
 Changes one Phase 1 rule: case-fold path collisions are reported, not rejected
 (§ RepoPath). Does not depend on the storage choice ([ADR-0002](0002-ladybugdb-knowledge-store.md)).
 
+Still in force after [ADR-0011](0011-python-engine-vectorless.md) (2026-10-15): the Python engine keeps these rules. It encodes keys as text (`oxide-id-v2`) and capture as `oxide-capture-v3`; the code paths named below are the Rust implementation, removed from the tree and recoverable at `f79808a`.
+
 ## Context
 
 SPEC § Identity and snapshots requires deterministic, collision-safe IDs that

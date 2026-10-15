@@ -4,6 +4,8 @@
 
 **Proposed** — 2026-10-07; amended 2026-10-12 (persistent transport, capabilities, ownership plan), still Proposed. Follow-up to [ADR-0001](0001-oxide-v2-rewrite.md) (also Proposed), listed there as "Rust kernel/runtime and TypeScript control-plane boundary". Records the layout, the runtime model and the current local transport. The framing below is the implemented choice, reversible behind `src/transport.ts`; it is not frozen.
 
+**Superseded** — 2026-10-15 by [ADR-0011](0011-python-engine-vectorless.md): OXIDE v2 is one Python process with no runtime child, transport or TypeScript control plane. The record below is kept as written.
+
 ## Context
 
 [SPEC.md](../spec/SPEC.md) assigns repository intelligence and deterministic policy to a Rust kernel, I/O/resources/sessions/provider clients to a Rust runtime, and integrations/orchestration/presentation to a TypeScript control plane. It leaves the service transport and multi-client ownership open ("Phase 0 minimal boundary; before real integrations"). Phase 0 needed a working typed seam without committing to one.
