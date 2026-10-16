@@ -118,10 +118,11 @@ Damage is classified like this:
 - A `Repository` owns one store until `close()`, `with` exit or garbage
   collection. Its finalizer holds only the lock descriptor, never the
   repository, so dropping the last reference releases the lock.
-- One owner per store across processes (`flock`). An MCP server or any other
-  long-running client should hold one handle for its lifetime and close it on
-  shutdown. While it runs, the CLI gets `ownership_conflict` for that
-  repository.
+- One owner per store across processes (`flock`). While a handle is open, every
+  other owner (the CLI included) gets `ownership_conflict`, so long-running
+  clients should open per request. `oxide mcp` opens, reads and closes on every
+  tool call (9–13 ms open cost, measured in `docs/migration-audit/README.md`), so
+  it never blocks `oxide index` between calls.
 - A `Repository` is not thread-safe, and neither is the native binding.
   Serialize calls.
 
@@ -149,3 +150,34 @@ Damage is classified like this:
 to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug.
+
+## MCP
+
+`oxide mcp [--repo PATH]... [--data-dir D] [--http [--host H] [--port P]]`
+(`src/oxide/mcp_server.py`, FastMCP 4.1) is another client of this API: it never
+parses, routes, selects or packs.
+
+| Tool | Arguments (bounds) | Result |
+| --- | --- | --- |
+| `oxide_search` | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `SearchResult` as structured content and JSON text: locations, never source |
+| `oxide_context` | `query`, `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `ContextBundle` as structured content; the text is a one-line summary, any degradations, then `payload` |
+
+- **Stateless.** Every call opens the repository, reads and closes it, inside a
+  `with`; no handle, connection or lock outlives a call, and nothing depends on an
+  MCP session. Calls are serialized in-process (one store owner per process, and
+  the binding is not thread-safe). A call cancelled while it waits never opens
+  the store; one already reading runs to the end and closes.
+- **Repository.** Each call names `repository` (a path, relative to the server's
+  working directory), or omits it when exactly one `--repo` is served. With
+  `--repo`, other repositories are refused.
+- **Errors** are MCP tool errors (`is_error`). OXIDE errors read
+  `error[<code>]: <advice>`; the engine message, which names store paths, goes
+  to the server log (stderr) only, except for `invalid_argument`. Schema
+  violations are rejected before the call, and unexpected exceptions are masked.
+- **Transports.** stdio by default; stdout carries only protocol frames.
+  `--http` serves stateless Streamable HTTP at `/mcp` on a loopback host only
+  (`127.0.0.1`, `localhost`, `::1`), with Host/Origin validation (foreign Host →
+  421, foreign Origin → 403). It is unauthenticated, so it never listens beyond
+  this machine.
+- **Side effect.** Naming an unindexed directory creates its empty store
+  identity under the data location (as `open_repository` does), never an index.

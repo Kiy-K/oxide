@@ -1,5 +1,6 @@
 """``oxide`` command line: a thin presentation layer over the public API.
 
+``oxide mcp`` serves the same operations to MCP clients (stdio, or ``--http``).
 Human output by default; ``--json`` prints the typed result. OXIDE errors print
 ``error[<code>]: <message>`` to stderr and exit 2; malformed command lines print
 argparse usage and also exit 2. Exit 1 with a traceback is a bug.
@@ -35,6 +36,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="oxide", description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("prepare", help="fetch and verify the pinned LadybugDB FTS extension")
+    serve = commands.add_parser("mcp", help="serve oxide_search and oxide_context over MCP")
+    serve.add_argument(
+        "--repo", action="append", default=[], help="serve only this repository (repeatable)"
+    )
+    serve.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
+    serve.add_argument("--http", action="store_true", help="stateless Streamable HTTP, not stdio")
+    serve.add_argument("--host", default="127.0.0.1", choices=("127.0.0.1", "localhost", "::1"))
+    serve.add_argument("--port", type=int, default=8765)
     for name, text in (
         ("index", "capture and index a repository"),
         ("search", "show entry-point candidates for a query"),
@@ -56,6 +65,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "prepare":
             print(prepare_fts())
+            return 0
+        if args.command == "mcp":
+            # Imported here: the MCP stack is only loaded by the server.
+            from oxide.mcp_server import serve as serve_mcp
+
+            serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
         with open_repository(args.path, data_dir=args.data_dir) as repo:
             result: Any

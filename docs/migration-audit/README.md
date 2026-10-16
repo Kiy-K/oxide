@@ -81,6 +81,26 @@ that was already correct: a non-JSON manifest, a foreign `root`, garbage
 - **Thread safety.** A `Repository` and the native binding are single-threaded.
   Callers serialize, and nothing new was added.
 
+## Request-scoped open cost (MCP, 2026-10-16)
+
+`oxide mcp` opens the repository on every tool call instead of holding it, so the
+CLI can index between calls. Measured cost (one process, 20 calls after one
+warm-up, median/max ms, `CPUQuota=200%`, `MemoryMax=3G`, private data, Linux
+x86_64; fixture `fixtures/py_repo`, and the `.py` files of the CPython 3.14
+stdlib: 1,422 files, 36,376 entities):
+
+| Operation | fixture | stdlib |
+| --- | --- | --- |
+| open + view + close | 9.2 / 10.3 | 13.2 / 17.0 |
+| search, handle held | 1.2 / 1.9 | 15.8 / 24.5 |
+| search, open per call | 12.3 / 13.4 | 37.9 / 48.9 |
+| context (2048 units), handle held | 5.8 / 6.4 | 133.6 / 143.9 |
+| context, open per call | 19.3 / 21.0 | 158.9 / 174.6 |
+
+The open costs about 10 ms. On the stdlib a per-call search also loses about
+10 ms more to a cold buffer pool (inferred from the gap). That is small next to
+an agent's tool-call round trip, so no long-lived handle or lock was introduced.
+
 ## Method
 
 - **Parity.** Extract `f79808a:oxide_kernel` to a scratch directory, place

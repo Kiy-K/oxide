@@ -57,6 +57,21 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
     print(bundle.payload)                             # used <= budget
 ```
 
+### MCP
+
+`oxide mcp` serves two read-only tools, `oxide_search` and `oxide_context`, over
+stdio (FastMCP). It never indexes: run `oxide index` first, and again whenever you
+want fresher results, even while the server runs.
+
+```bash
+uv run oxide mcp --repo path/to/repo                      # stdio, for a local agent
+uv run oxide mcp --repo path/to/repo --http --port 8765   # stateless HTTP, loopback only
+```
+
+For example, in Claude Code: `claude mcp add oxide -- uv run --directory /path/to/oxide
+oxide mcp --repo /path/to/repo`. With `--repo` (repeatable) calls may only name those
+repositories, and with exactly one they may omit `repository`.
+
 The store lives under `--data-dir`, else `$OXIDE_DATA_DIR`, else
 `$XDG_DATA_HOME/oxide/py` (`~/.local/share/oxide/py`). It is never captured, even
 when it sits inside the repository.

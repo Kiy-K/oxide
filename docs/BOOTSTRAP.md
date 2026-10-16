@@ -192,14 +192,16 @@ Exit gates for the migration:
 2. Retrieval and routing reproduce the frozen Phase 3 baseline; context quality is no worse than the Phase 4 heuristic baseline on its fixture.
 3. `mise run verify` passes from a clean checkout after `uv run oxide prepare`.
 
+Delivered (2026-10-16): `oxide mcp`, a stateless FastMCP server over `oxide.api` (`oxide_search`, `oxide_context`; stdio, and stateless Streamable HTTP on loopback), opening the repository per call and tested with FastMCP's client in memory, over stdio and over HTTP with private data locations (`docs/public-api.md` § MCP).
+
 Remaining, in order of the smallest next milestone:
 
-1. Python MCP server over `oxide.api` (one tool each for search and build_context), with subprocess tests using private data locations.
-2. A Python Phase 4 evaluation harness producing `docs/phase-6/baseline-v1/` (frozen metrics for `oxide-payload-v2`); the current test checks only the recall floor.
-3. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
-4. Indexing throughput: measure parallel parsing, then incremental derivation with full/incremental parity tests.
-5. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
-6. macOS/Windows verification of publication atomicity and FTS availability.
+1. A Python Phase 4 evaluation harness producing `docs/phase-6/baseline-v1/` (frozen metrics for `oxide-payload-v2`); the current test checks only the recall floor.
+2. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
+3. Indexing throughput: measure parallel parsing, then incremental derivation with full/incremental parity tests.
+4. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
+5. macOS/Windows verification of publication atomicity and FTS availability.
+6. **Distribution (final milestone):** publish the package to PyPI (`pip install`, `uv tool install`; the distribution name is still open) and ship standalone executables. Prerequisites already kept: one package with console entry point `oxide` (`oxide mcp` included), no runtime dependence on a source checkout, native dependencies only as pinned wheels (`ladybug`, `tree-sitter`), and the FTS extension fetched explicitly by `oxide prepare` into the user cache, never bundled. Open before release: distribution name and version policy, wheel/platform matrix (FTS is Linux x86_64 only), how a frozen binary carries native wheels and the FastMCP/uvicorn stack, and a clean-install smoke test per artifact.
 
 ## Boundary validation matrix
 

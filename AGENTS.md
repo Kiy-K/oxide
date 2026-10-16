@@ -12,7 +12,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - `src/oxide/api.py`, `models.py`: the public API and its typed results/errors, the stable product boundary.
 - `src/oxide/core/`: repository intelligence and deterministic policy (Python slice, derivation, retrieval, TreeRouter, selection/packing). No filesystem or database access except through the read view it is given.
 - `src/oxide/capture.py`, `src/oxide/storage/`: worktree capture; LadybugDB ownership, generations, publication and queries. Nothing else touches LadybugDB.
-- `src/oxide/cli.py` and future MCP/editor adapters: Python clients of `oxide.api` only. They must not parse source, route, select or pack.
+- `src/oxide/cli.py`, `src/oxide/mcp_server.py` (FastMCP) and future editor adapters: Python clients of `oxide.api` only. They must not parse source, route, select or pack.
 - Vectorless: no embeddings, vector indexes or model runners. Judges, if ever added, are optional external services.
 - Toolchain: Mise is the entrypoint (`mise run verify`, which CI runs); uv manages Python and dependencies (`pyproject.toml`, committed `uv.lock`); pytest, Ruff, mypy `--strict`. Rust, Bun/TypeScript, pnpm, Deno and `packages/*` are retired; don't reintroduce them without an ADR.
 

@@ -19,6 +19,8 @@ mise run test          #   pytest (tests/python/)
 ```
 
 Use `uv run …` for anything else (`uv run oxide index <path>`, `uv run pytest -k name`).
+`uv run oxide mcp --repo <path>` serves the MCP tools over stdio (`--http` for
+stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
 `uv run python scripts/bench.py <corpus>` is the reproducible latency and
 peak-RSS benchmark: fresh processes and private data, cold and warm definitions
 in its docstring, and a JSON report with the corpus identity and environment.
