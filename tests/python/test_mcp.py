@@ -7,6 +7,7 @@ import json
 import socket
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -45,6 +46,23 @@ async def call(client: Client[Any], tool: str, **arguments: Any) -> Any:
 
 def text(result: Any) -> str:
     return str(result.content[0].text)
+
+
+class Gate:
+    """``mcp_server._lock`` that signals when a call waits for it and when one left it."""
+
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.waiting = threading.Event()
+        self.left = threading.Event()
+
+    def __enter__(self) -> None:
+        self.waiting.set()
+        self.lock.acquire()
+
+    def __exit__(self, *exc: object) -> None:
+        self.lock.release()
+        self.left.set()
 
 
 def assert_unlocked(repo: Path, data: Path | None = None) -> None:
@@ -120,7 +138,8 @@ async def test_bad_arguments_and_repositories_are_tool_errors(
             result = await call(open_server, "oxide_search", query="x", **arguments)
             assert result.is_error and expected in text(result), text(result)
             assert str(private_data) not in text(result)
-    assert_unlocked(unindexed)
+    # Read-only calls never create a store: only the indexed repository has one.
+    assert len(list((private_data / "repos").iterdir())) == 1
 
 
 async def test_output_is_bounded(indexed: Path) -> None:
@@ -170,22 +189,24 @@ async def test_cancelled_and_failed_calls_release_everything(
         opened.append(str(path))
         return real_open(path, **kwargs)
 
+    gate = Gate()
     monkeypatch.setattr(mcp_server, "open_repository", counting_open)
+    monkeypatch.setattr(mcp_server, "_lock", gate)
     async with Client(server([str(indexed)])) as client:
         # A call cancelled while it waits for the in-process lock never opens the store.
-        mcp_server._lock.acquire()
+        gate.lock.acquire()
         try:
-            with anyio.move_on_after(0.5):
-                await client.call_tool("oxide_search", {"query": "RetryPolicy"})
-            # shortcut: the cancel notification travels asynchronously; 1 s covers delivery.
-            await anyio.sleep(1)
+            async with anyio.create_task_group() as group:
+                group.start_soon(client.call_tool, "oxide_search", {"query": "RetryPolicy"})
+                assert await anyio.to_thread.run_sync(gate.waiting.wait, 30)
+                group.cancel_scope.cancel()
+            # The client sends its cancel notification before the cancelled call returns,
+            # and the server applies it in receive order: once a later request (uncached)
+            # is answered, the queued call's scope is cancelled.
+            assert await client.list_tools(cache_mode="bypass")
         finally:
-            mcp_server._lock.release()
-        for _ in range(100):
-            if mcp_server._lock.acquire(blocking=False):
-                mcp_server._lock.release()
-                break
-            await anyio.sleep(0.05)
+            gate.lock.release()
+        assert await anyio.to_thread.run_sync(gate.left.wait, 30)
         assert opened == []
 
         # An unexpected failure is masked, and the store is still released.

@@ -22,12 +22,12 @@ jobs:
         with:
           version: 2026.9.14
           install_args: uv
-      - name: Restore pinned FTS extension cache
+      - name: Restore pinned FTS extension and ContextBench corpora cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/oxide
-          key: ladybug-fts-0.21.0-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py') }}
-      - name: Install locked environment and verify the pinned FTS extension
+          key: oxide-cache-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py', 'docs/phase-6/baseline-v1/tasks.json') }}
+      - name: Install locked environment, verify the FTS extension, fetch the corpora
         run: mise run bootstrap
       - name: mise run verify
         run: mise run verify

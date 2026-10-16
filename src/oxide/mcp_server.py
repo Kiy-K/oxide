@@ -3,8 +3,8 @@
 Every tool call opens the repository, reads, and closes it: no handle, lock or native
 connection outlives a call, and no call depends on an MCP session, so ``oxide index``
 can run between calls. Calls are serialized in-process because a store has one owner
-and the native binding is not thread-safe. Nothing is indexed here: an unindexed
-repository is a ``not_indexed`` tool error.
+and the native binding is not thread-safe. Nothing is indexed or created here: an
+unindexed repository is a ``not_indexed`` tool error and leaves no store behind.
 """
 
 from __future__ import annotations
@@ -96,7 +96,7 @@ def _read[T](repository: str, data_dir: str | None, read: Callable[[Repository],
         # A call cancelled while it queued never opens the store.
         anyio.from_thread.check_cancelled()
         try:
-            with open_repository(repository, data_dir=data_dir) as repo:
+            with open_repository(repository, data_dir=data_dir, create=False) as repo:
                 return read(repo)
         except OxideError as error:
             log.warning("%s: %s", error.code, error)

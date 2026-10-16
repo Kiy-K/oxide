@@ -105,6 +105,9 @@ def test_typed_errors(tmp_path: Path) -> None:
         oxide.open_repository(tmp_path / "missing")
     with pytest.raises(InvalidPath):
         oxide.open_repository(write(tmp_path, {"file.py": ""}) / "file.py")
+    with pytest.raises(NotIndexed):  # a read-only open writes nothing
+        oxide.open_repository(FIXTURE, data_dir=tmp_path / "reader", create=False)
+    assert not (tmp_path / "reader").exists()
     repo = oxide.open_repository(FIXTURE)
     with pytest.raises(NotIndexed):
         repo.search("x")

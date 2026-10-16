@@ -2,7 +2,7 @@
 
 The public API is what `oxide` (`src/oxide/__init__.py`) exports:
 `open_repository`, `index_repository`, `Repository`, the result types in
-`oxide.models` and `OxideError`. Integrations (the CLI, future MCP and editor
+`oxide.models` and `OxideError`. Integrations (the CLI, `oxide mcp`, future editor
 adapters, SDK users) depend on these only, never on `oxide.core` or
 `oxide.storage`. Decision: [ADR-0011](adr/0011-python-engine-vectorless.md).
 The TypeScript API this replaces is recoverable at `f79808a`.
@@ -32,7 +32,7 @@ once.
 
 | Operation | Returns | Notes |
 | --- | --- | --- |
-| `open_repository(path, *, data_dir=None)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict` |
+| `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` (read-only clients) raises `NotIndexed` for a repository without a store and writes nothing |
 | `Repository.index()` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
@@ -88,7 +88,7 @@ an `OxideError` (`invalid_argument`) and a `ValueError`:
 | `invalid_path` | The repository path is missing or not a directory, or a store/extension path is not UTF-8 |
 | `invalid_argument` | See § Arguments |
 | `ownership_conflict` | Another `Repository` in any process owns the store |
-| `not_indexed` | A read before the first `index()` |
+| `not_indexed` | A read before the first `index()`, or `open_repository(..., create=False)` of a repository without a store |
 | `incompatible_index` | The current generation was built by another derivation (component versions, including `ladybug`) or store schema. Checked from the manifest before the database is opened. `index()` rebuilds |
 | `store_corrupt` | Damage (below). Reads fail closed |
 | `capture_conflict` | The worktree kept changing during capture, or a `.gitignore` is unreadable |
@@ -149,7 +149,8 @@ Damage is classified like this:
 `oxide prepare`. `context` prints the payload to stdout and `used/budget units`
 to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
-with a traceback is a bug.
+with a traceback is a bug. `search` and `context` open with `create=False`, so
+they never leave an empty store behind.
 
 ## MCP
 
@@ -179,5 +180,5 @@ parses, routes, selects or packs.
   (`127.0.0.1`, `localhost`, `::1`), with Host/Origin validation (foreign Host →
   421, foreign Origin → 403). It is unauthenticated, so it never listens beyond
   this machine.
-- **Side effect.** Naming an unindexed directory creates its empty store
-  identity under the data location (as `open_repository` does), never an index.
+- **No side effects.** Calls open with `create=False`: naming an unindexed
+  directory is `not_indexed` and leaves nothing under the data location.

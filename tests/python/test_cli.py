@@ -37,6 +37,7 @@ def test_errors_exit_2_with_a_stable_code(tmp_path: Path) -> None:
     result = oxide(data, "search", str(FIXTURE), "x", "--data-dir", str(data))
     assert result.returncode == 2
     assert result.stderr.startswith("error[not_indexed]:")
+    assert not data.exists()  # a read leaves no empty store behind
 
 
 def test_expected_errors_never_print_a_traceback(tmp_path: Path, fts: Path) -> None:

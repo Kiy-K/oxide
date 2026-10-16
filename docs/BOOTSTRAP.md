@@ -39,7 +39,7 @@ Rules 5–9, 13 and 16–18 were written for the Rust/TypeScript stack and a pla
 
 - **5.** Keep JEV and every learned judge optional. There are no embeddings or vectors. Preserve deterministic lexical entry points, structural TreeRouter exploration, the heuristic value and ContextPacker with no model or network requirement.
 - **6.** Models judge; deterministic code decides: thresholds, traversal, stopping, inclusion, budget, fallback and packing.
-- **7.** Repository intelligence lives in `oxide.core`; I/O in `oxide.capture` and `oxide.storage`; integrations (CLI, future MCP/editors) are Python clients of `oxide.api` and never parse, route or select.
+- **7.** Repository intelligence lives in `oxide.core`; I/O in `oxide.capture` and `oxide.storage`; integrations (CLI, `oxide mcp`, future editors) are Python clients of `oxide.api` and never parse, route or select.
 - **8.** LadybugDB objects, native IDs, rows and Cypher stay inside `oxide.storage`; `oxide.models` and the API expose domain values only.
 - **9.** One package with clear modules. A new package or dependency needs a demonstrated reuse, packaging or API reason.
 - **13.** Documentation claims are not proof that the Python binding builds, loads extensions or behaves at the pin; verify (ADR-0011 § Storage verification).
@@ -190,18 +190,19 @@ Exit gates for the migration:
 
 1. Every public operation the Rust/TS stack offered or planned has a Python equivalent or a recorded decision not to port it (ADR-0011 § What was removed).
 2. Retrieval and routing reproduce the frozen Phase 3 baseline; context quality is no worse than the Phase 4 heuristic baseline on its fixture.
-3. `mise run verify` passes from a clean checkout after `uv run oxide prepare`.
+3. `mise run verify` passes from a clean checkout after `mise run bootstrap` (FTS extension and, since the quality gate, the ContextBench corpora).
 
 Delivered (2026-10-16): `oxide mcp`, a stateless FastMCP server over `oxide.api` (`oxide_search`, `oxide_context`; stdio, and stateless Streamable HTTP on loopback), opening the repository per call and tested with FastMCP's client in memory, over stdio and over HTTP with private data locations (`docs/public-api.md` § MCP).
 
+Delivered (2026-10-16): the context-quality regression gate. `tests/python/contextbench.py` evaluates entry-point recall/MRR, routed coverage, packed recall, utilization and loss diagnostics at 256/1,024/4,096 units on 7 fixture and 37 ContextBench Python tasks (human gold, dev/held-out split by repository); `docs/phase-6/baseline-v1/` freezes the protocol, tasks, per-task results and manifest, and `test_contextbench.py` gates quality and output compatibility separately in `mise run verify`. Read-only MCP and CLI requests no longer create empty stores (`open_repository(..., create=False)`).
+
 Remaining, in order of the smallest next milestone:
 
-1. A Python Phase 4 evaluation harness producing `docs/phase-6/baseline-v1/` (frozen metrics for `oxide-payload-v2`); the current test checks only the recall floor.
-2. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
-3. Indexing throughput: measure parallel parsing, then incremental derivation with full/incremental parity tests.
-4. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
-5. macOS/Windows verification of publication atomicity and FTS availability.
-6. **Distribution (final milestone):** publish the package to PyPI (`pip install`, `uv tool install`; the distribution name is still open) and ship standalone executables. Prerequisites already kept: one package with console entry point `oxide` (`oxide mcp` included), no runtime dependence on a source checkout, native dependencies only as pinned wheels (`ladybug`, `tree-sitter`), and the FTS extension fetched explicitly by `oxide prepare` into the user cache, never bundled. Open before release: distribution name and version policy, wheel/platform matrix (FTS is Linux x86_64 only), how a frozen binary carries native wheels and the FastMCP/uvicorn stack, and a clean-install smoke test per artifact.
+1. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
+2. Indexing throughput: measure parallel parsing, then incremental derivation with full/incremental parity tests.
+3. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
+4. macOS/Windows verification of publication atomicity and FTS availability.
+5. **Distribution (final milestone):** publish the package to PyPI (`pip install`, `uv tool install`; the distribution name is still open) and ship standalone executables. Prerequisites already kept: one package with console entry point `oxide` (`oxide mcp` included), no runtime dependence on a source checkout, native dependencies only as pinned wheels (`ladybug`, `tree-sitter`), and the FTS extension fetched explicitly by `oxide prepare` into the user cache, never bundled. Open before release: distribution name and version policy, wheel/platform matrix (FTS is Linux x86_64 only), how a frozen binary carries native wheels and the FastMCP/uvicorn stack, and a clean-install smoke test per artifact.
 
 ## Boundary validation matrix
 

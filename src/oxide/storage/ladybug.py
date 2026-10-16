@@ -421,11 +421,14 @@ class Store:
     its lock when collected: the finalizer holds only the descriptor, never the store.
     """
 
-    def __init__(self, root: Path, data: Path) -> None:
+    def __init__(self, root: Path, data: Path, create: bool = True) -> None:
         self.root = root
         self.data = data
         self.dir = data / "repos" / hashlib.sha256(os.fsencode(root)).hexdigest()[:32]
         _literal(self.dir)
+        if not create and not self.dir.is_dir():
+            # A reader never leaves an empty store behind for a repository never indexed.
+            raise NotIndexed(f"{root} has not been indexed")
         self.dir.mkdir(parents=True, exist_ok=True)
         lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT | os.O_CLOEXEC, 0o600)
         try:

@@ -12,6 +12,7 @@ installs it). CI (`.github/workflows/ci.yml`) runs exactly `mise run verify`.
 
 ```bash
 mise run bootstrap     # uv sync --locked + `oxide prepare` (pinned FTS extension, sha256-checked)
+                       #   + ContextBench corpora at pinned commits (git, cached)
 mise run verify        # everything, in order, stopping at the first failure:
 mise run lint          #   ruff check + ruff format --check
 mise run typecheck     #   mypy --strict over src/ and tests/python/
@@ -25,6 +26,11 @@ stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
 peak-RSS benchmark: fresh processes and private data, cold and warm definitions
 in its docstring, and a JSON report with the corpus identity and environment.
 Run it under the limits below; recorded runs are in `docs/migration-audit/bench/`.
+`uv run python tests/python/contextbench.py run [--out DIR]` is the context-quality
+harness (entry-point, routing and packing metrics at 256/1,024/4,096 units);
+`tests/python/test_contextbench.py` gates it in `mise run verify` against the frozen
+`docs/phase-6/baseline-v1/`, whose README is the protocol (splits, gate rules, how to
+freeze a new baseline version). Develop on the dev split; never tune on held-out.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
@@ -35,7 +41,8 @@ real data location changes, and every subprocess receives explicit private
 locations (`env()` and `python()` there; `env()` refuses any location outside
 the temporary root). Native probes that could crash, and crash injection, run
 only in such subprocesses. Lexical tests need the pinned FTS extension
-(`uv run oxide prepare`, once).
+(`uv run oxide prepare`, once), and the context-quality gate the corpora
+(`uv run python tests/python/contextbench.py fetch`, once; both are in bootstrap).
 
 ## Commits
 

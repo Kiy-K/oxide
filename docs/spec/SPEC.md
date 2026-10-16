@@ -9,7 +9,7 @@
 - Implementation decision: [ADR-0011](../adr/0011-python-engine-vectorless.md), **Accepted** 2026-10-15: one Python process, LadybugDB through its Python wheel, vectorless retrieval. It supersedes ADR-0003 and the Rust/TypeScript and vector/embedding parts of ADR-0001.
 - Future implementation instructions: [BOOTSTRAP.md](../BOOTSTRAP.md).
 
-**Amended 2026-10-15 (ADR-0011).** OXIDE v2 is implemented in Python. Read "core" (the `oxide.core` modules: pure repository-intelligence policy) where older text said Rust kernel, "engine" (the `oxide` package: API, capture, storage) where it said Rust runtime, and "integrations" (Python clients of the public API: CLI, future MCP/editors) where it said TypeScript control plane. Vector and embedding retrieval is removed from the architecture, not deferred. Sections below were edited accordingly; where historical Rust phases are cited, they are evidence, recoverable at commit `f79808a`.
+**Amended 2026-10-15 (ADR-0011).** OXIDE v2 is implemented in Python. Read "core" (the `oxide.core` modules: pure repository-intelligence policy) where older text said Rust kernel, "engine" (the `oxide` package: API, capture, storage) where it said Rust runtime, and "integrations" (Python clients of the public API: the CLI, the `oxide mcp` server, future editor adapters) where it said TypeScript control plane. Vector and embedding retrieval is removed from the architecture, not deferred. Sections below were edited accordingly; where historical Rust phases are cited, they are evidence, recoverable at commit `f79808a`.
 
 This document specifies the intended architecture of a clean rewrite on the separate branch `rewrite/v2`. It does not authorize implementation in the documentation session. The existing implementation is historical evidence and a source of benchmarks, fixtures, regressions, and proven behavior; its module layout and APIs are not the rewrite template.
 
@@ -72,7 +72,7 @@ The initial rewrite does not include old SQLite migration compatibility, preserv
 OXIDE v2 is one Python package, `oxide`, running in the caller's process (ADR-0011):
 
 ```text
-Integrations (oxide CLI; future MCP/editor adapters)     Python clients of the public API
+Integrations (oxide CLI, oxide mcp; future editors)       Python clients of the public API
           ↓ public API (oxide.api, oxide.models)          the stable product boundary
 Engine: capture · indexing · retrieval · routing · packing
           ↓ core (oxide.core): pure policy over typed data and a read view
@@ -83,7 +83,7 @@ LadybugDB (embedded; graph + FTS)
 
 ```mermaid
 flowchart TD
-    INT[Integrations: CLI, future MCP/editors] --> API[Public API: oxide.api / oxide.models]
+    INT[Integrations: CLI, MCP server, future editors] --> API[Public API: oxide.api / oxide.models]
     API --> CAP[Capture: worktree snapshot]
     API --> CORE[Core: Python slice, retrieval, TreeRouter, selection, packing]
     CORE --> VIEW[Read view of one published generation]
@@ -144,7 +144,7 @@ There is no embedding, vector or model-runner boundary (ADR-0011 § 5). Reintrod
 
 ## Integrations
 
-Integrations (the `oxide` CLI today; MCP and editor adapters later) translate their inputs into typed API calls and render returned results and errors. They MAY collect an editor selection or user-selected roots as typed hints. They MUST NOT parse source for repository intelligence, implement TreeIndex/TreeRouter or graph traversal, rank candidates, derive judgments, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector. Remote integrations transport validated engine results; they do not introduce a second engine.
+Integrations (the `oxide` CLI and the `oxide mcp` server today; editor adapters later) translate their inputs into typed API calls and render returned results and errors. They MAY collect an editor selection or user-selected roots as typed hints. They MUST NOT parse source for repository intelligence, implement TreeIndex/TreeRouter or graph traversal, rank candidates, derive judgments, apply relevance thresholds, choose context items, truncate source to fit budgets, or read LadybugDB directly. Display filtering must not silently become a second selector. Remote integrations transport validated engine results; they do not introduce a second engine. The MCP server is stateless: each request opens the repository, reads it without creating a store, and closes it, so no ownership, lock or session state outlives a request.
 
 ## Repository knowledge model
 
@@ -492,7 +492,7 @@ The root policy, development workflow, domain instructions, invariants, README, 
 | [Embedding safeguards](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/review/embeddings-and-index.md) and [invariants](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/agents/invariants.md) | Fingerprints include prompt, pooling, normalization, metric and text recipe; unfinished provider changes are detectable | Preserve space compatibility, explicit degradation, reproducible hashes, and atomic publication as behavior, without old schema |
 | [ContextBench scorer correction](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/contextbench-scorer-fix/README.md) | Absolute gold paths caused incorrect symbol/span scores; corrected metrics differed while file metrics remained unchanged | Scorer and gold-path validation are architectural dependencies; old quoted numbers need scorer provenance |
 | [Performance baseline](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/perf-baseline-v0.1.md), [one-parse results](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/one-parse-eval/results/ab_summary.md), [reliability fixes](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/docs/reliability-fixes/README.md) | Repeated parsing cost measurable; deep recursive AST walks overflowed; hash-map iteration changed eval order | Share parsing where safe, use bounded/iterative traversal, deterministic iteration, paired cold/warm measurements |
-| [TS platform roadmap, issue 36](https://github.com/Kiy-K/oxide/issues/36) | Historical transport comparisons and packaging gaps; Rust MCP remained canonical then | Reuse integration evidence, but the intended v2 MCP ownership is TS and requires fresh transport/cost validation |
+| [TS platform roadmap, issue 36](https://github.com/Kiy-K/oxide/issues/36) | Historical transport comparisons and packaging gaps; Rust MCP remained canonical then | Reuse integration evidence only; v2 MCP is the Python `oxide mcp` server (FastMCP) over the public API, and transport/cost claims need fresh validation |
 
 Preserve `fixtures/benchmark.json`, language/relation conformance fixtures, `tests/benchmark_gate.rs`, embedding-staleness/recovery/parity regressions, `eval-agent/benchmark/`, ContextBench and agent-evaluation harnesses, `scripts/perf.sh`, frozen dumps/manifests, and negative reports as reference assets. Inventory availability: some machine-local traces are not committed and some retired experiments require their pinned historical code. Their presence in docs does not mean every run can be regenerated from current main.
 

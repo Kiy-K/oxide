@@ -72,7 +72,8 @@ def main(argv: list[str] | None = None) -> int:
 
             serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
-        with open_repository(args.path, data_dir=args.data_dir) as repo:
+        create = args.command == "index"  # reads never leave an empty store behind
+        with open_repository(args.path, data_dir=args.data_dir, create=create) as repo:
             result: Any
             if args.command == "index":
                 result = repo.index()

@@ -7,8 +7,13 @@ min_version = "2024.1.0"
 uv = "0.12.22"
 
 [tasks.bootstrap]
-description = "Install the locked environment and fetch the pinned, sha256-checked FTS extension"
-run = ["uv sync --locked", "uv run --locked oxide prepare"]
+description = "Install the locked environment, fetch the pinned FTS extension and the ContextBench corpora"
+run = [
+  "uv sync --locked",
+  "uv run --locked oxide prepare",
+  # Pinned commits for the context-quality gate (docs/phase-6/baseline-v1); cached.
+  "uv run --locked python tests/python/contextbench.py fetch",
+]
 
 [tasks.lint]
 description = "Ruff lint and format check of the engine and its tests"

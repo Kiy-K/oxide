@@ -92,7 +92,10 @@ def _hints(
 
 class Repository:
     def __init__(
-        self, path: str | os.PathLike[str], data_dir: str | os.PathLike[str] | None = None
+        self,
+        path: str | os.PathLike[str],
+        data_dir: str | os.PathLike[str] | None = None,
+        create: bool = True,
     ) -> None:
         try:
             root = Path(path).resolve(strict=True)
@@ -101,7 +104,8 @@ class Repository:
         if not root.is_dir():
             raise InvalidPath(f"{root}: not a directory")
         self.root = root
-        self._store: Store | None = Store(root, Path(data_dir or default_data_dir()).absolute())
+        data = Path(data_dir or default_data_dir()).absolute()
+        self._store: Store | None = Store(root, data, create)
 
     def __enter__(self) -> Repository:
         return self
@@ -273,11 +277,16 @@ class Repository:
 
 
 def open_repository(
-    path: str | os.PathLike[str], *, data_dir: str | os.PathLike[str] | None = None
+    path: str | os.PathLike[str],
+    *,
+    data_dir: str | os.PathLike[str] | None = None,
+    create: bool = True,
 ) -> Repository:
     """Opens (and exclusively owns) the store of the repository at ``path``. Nothing is
-    indexed until ``index()``; reads before that raise ``NotIndexed``."""
-    return Repository(path, data_dir)
+    indexed until ``index()``; reads before that raise ``NotIndexed``. With
+    ``create=False`` (read-only clients) a repository without a store raises
+    ``NotIndexed`` here, and nothing is written."""
+    return Repository(path, data_dir, create)
 
 
 def index_repository(
