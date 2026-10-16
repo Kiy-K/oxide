@@ -234,7 +234,25 @@ class Repository:
             for k in order
             if k in known
         ]
-        items, omissions = packing.pack(pool, known, budget, view.source)
+        # Module-level views need the top-level declarations of every parsed file.
+        files = [
+            c.entity.key
+            for c in pool
+            if c.entity.category == "file"
+            and c.entity.source is not None
+            and view.files[c.entity.source.path].coverage != "unsupported"
+        ]
+        children = view.adjacency(files)
+        tops = view.entities(b for k in files for kind, b in children[k][0] if kind == "contains")
+        declarations = {
+            k: [
+                (s.start, s.end)
+                for kind, b in children[k][0]
+                if kind == "contains" and b in tops and (s := tops[b].source) is not None
+            ]
+            for k in files
+        }
+        items, omissions = packing.pack(pool, known, budget, view.source, declarations)
         degradations = []
         if found.lexical.state != "ran":
             degradations.append(f"lexical channel {found.lexical.state}: {found.lexical.detail}")

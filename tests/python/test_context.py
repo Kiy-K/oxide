@@ -8,10 +8,11 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from conftest import FIXTURE
+from conftest import FIXTURE, write
 
 import oxide
-from oxide.core.packing import header_end, units
+from oxide.core.packing import Candidate, header_end, module_regions, pack, units
+from oxide.models import ContextItem, Entity, Omission, SourceRef
 
 QUERY = "where failed HTTP requests are retried"
 
@@ -76,9 +77,94 @@ def test_context_is_deterministic_and_reports_routing(repo: oxide.Repository) ->
     assert first.route.regions > 0 and not first.route.root_fallback
     assert first.route.stopped_by == "depth"
     assert "routing stopped by its depth bound" in first.degradations
-    assert first.versions["payload"] == "oxide-payload-v2"
+    assert first.versions["payload"] == "oxide-payload-v3"
 
 
 def test_no_entry_points_fall_back_to_the_root_region(repo: oxide.Repository) -> None:
     bundle = repo.build_context("zzzz qqqq", 256)
     assert bundle.route.root_fallback and bundle.used <= 256
+
+
+# --- module-level evidence: a parsed file's view outside its top-level declarations ---
+
+MODULE = (
+    b'"""Settings."""\nimport os\nLIMIT = 3\n\n\n@cache\ndef f():\n    return LIMIT\n\n\n'
+    b"if os.name:\n    def g():\n        pass\nelse:\n    g = None\nclass C:\n    y = 2\n\n"
+    b"TIMEOUT = 30\n"
+)
+DECLARED = [
+    (MODULE.index(b"@cache"), MODULE.index(b"return LIMIT") + 12),
+    (MODULE.index(b"def g"), MODULE.index(b"pass") + 4),
+    (MODULE.index(b"class C"), MODULE.index(b"y = 2") + 5),
+]
+
+
+def test_module_regions_skip_declarations_and_blank_runs() -> None:
+    regions = module_regions(MODULE, DECLARED)
+    assert [MODULE[s:e] for s, e in regions] == [
+        b'"""Settings."""\nimport os\nLIMIT = 3',  # decorators belong to the declaration
+        b"if os.name:",  # a nested declaration splits its block
+        b"else:\n    g = None",
+        b"TIMEOUT = 30",
+    ]
+    assert module_regions(b"def f():\n    pass\n", [(0, 17)]) == []
+
+
+def _file(path: str, data: bytes) -> Entity:
+    return Entity(
+        f"file:{path}", "file", "file", path, None, SourceRef(path, 0, len(data), "x"), False
+    )
+
+
+def test_module_views_fit_whole_reduced_or_not_at_all() -> None:
+    entity = _file("m.py", MODULE)
+    found = [Candidate(entity, 0, 1, False)]
+
+    def packed(budget: int) -> tuple[list[ContextItem], list[Omission]]:
+        return pack(found, {}, budget, lambda ref: MODULE, {entity.key: DECLARED})
+
+    full, _ = packed(4096)
+    assert [i.lines for i in full] == [(1, 3), (11, 11), (14, 15), (19, 19)]
+    assert full[0].text.startswith("### m.py:1-3 (module-level)\n")
+    assert all(e.key == entity.key and not e.complete for i in full for e in i.entities)
+    header, _ = packed(full[0].units)  # the full view does not fit: its first run does
+    assert [i.text for i in header] == [full[0].text]
+    assert header[0].entities[0].reason.endswith("header view")
+    nothing, omitted = packed(full[0].units - 1)
+    assert nothing == [] and omitted == [Omission(entity.key, "packing", "too large")]
+
+
+def test_files_without_module_evidence_are_omitted_with_a_reason() -> None:
+    unparsed, routed = _file("b.py", MODULE), _file("c.py", MODULE)
+    empty = _file("d.py", b"def f():\n    pass\n")
+    pool = [Candidate(unparsed, 0, 1, False), Candidate(empty, 0, 2, False)]
+    pool.append(Candidate(routed, 1, None, False))  # reached only by routing
+    declarations = {routed.key: DECLARED, empty.key: [(0, 17)]}
+    data = {"d.py": b"def f():\n    pass\n"}
+    items, omitted = pack(pool, {}, 4096, lambda ref: data.get(ref.path, MODULE), declarations)
+    assert items == []
+    assert omitted == [
+        Omission(unparsed.key, "selection", "container"),  # not a parsed Python file
+        Omission(empty.key, "selection", "no module-level source"),
+        Omission(routed.key, "selection", "value 0.20 below floor"),
+    ]
+
+
+def test_retrieved_files_contribute_bounded_module_evidence(fts: Path, tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", {"settings.py": MODULE})
+    query = "settings"
+    with oxide.open_repository(root) as repository:
+        repository.index()
+        bundle = repository.build_context(query, 2048)
+        assert bundle == repository.build_context(query, 2048)
+        for budget in (0, 8, 32, 64, 2048):
+            small = repository.build_context(query, budget)
+            assert small.used <= budget and small.used == units(small.payload)
+    module = [i for i in bundle.items if i.entities[0].key == "file:settings.py"]
+    assert module and all(len(i.entities) == 1 and not i.entities[0].complete for i in module)
+    assert all("lexical rank" in i.entities[0].reason for i in module)
+    shown = "".join(i.text for i in module)
+    assert "import os" in shown and "TIMEOUT = 30" in shown
+    assert "def " not in shown and "class " not in shown  # declarations are their own views
+    ranges = sorted((i.source.start, i.source.end) for i in bundle.items)
+    assert all(a[1] <= b[0] for a, b in itertools.pairwise(ranges))

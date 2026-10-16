@@ -1,4 +1,4 @@
-"""The context-quality regression gate over ``docs/phase-6/baseline-v2`` (protocol in its
+"""The context-quality regression gate over the latest ``docs/phase-6/baseline-vN`` (protocol in its
 README, harness in ``contextbench.py``), and regression cases for the scorer itself.
 
 Quality, invariants and exact output compatibility are separate tests, so a changed

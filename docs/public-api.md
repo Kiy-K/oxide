@@ -64,7 +64,8 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   `lexical_score`, `seeds`), `lexical` (`ChannelStatus`: `ran` with the scorer
   name, or `disabled`/`unavailable` with a reason, never a zero score), `hints`.
 - `ContextBundle`: `items` (`ContextItem`: `source`, `lines`, `entities` with
-  `complete` and `reason`, `units`, `text`), `payload`, `budget`, `used`,
+  `complete` and `reason`, `units`, `text`; a `file:` entity in an item is a run of
+  that file's module-level source, never `complete`), `payload`, `budget`, `used`,
   `units` (`oxide-units-v1`), `omissions` (stage and reason), `route`
   (`RouteSummary`), `lexical`, `hints`, `degradations`, `versions`.
 
