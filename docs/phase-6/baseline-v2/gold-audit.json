@@ -1,0 +1,1381 @@
+{
+ "version": "contextbench-py-gold-audit-v1",
+ "tasks": "docs/phase-6/baseline-v1/tasks.json sha256 22af8803b18bdb149bdf98a617aca8f7586cc16edabf2c2d7da2e251ec7ed914",
+ "source": "EuniAI/ContextBench data/full.parquet sha256 2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "verified": [
+  "ast",
+  "exact",
+  "contained",
+  "path"
+ ],
+ "spans": {
+  "mwaskom__seaborn-3069": [
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 25,
+    "end": 31,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 1188,
+    "end": 1288,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 1238,
+    "end": 1244,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 1628,
+    "end": 1649,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 1631,
+    "end": 1636,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "start": 1644,
+    "end": 1649,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "start": 62,
+    "end": 76,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "start": 143,
+    "end": 152,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/_core/scales.py",
+    "start": 137,
+    "end": 228,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/categorical.py",
+    "start": 195,
+    "end": 224,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/distributions.py",
+    "start": 570,
+    "end": 663,
+    "class": "exact"
+   },
+   {
+    "file": "seaborn/tests/test_distributions.py",
+    "start": 288,
+    "end": 304,
+    "class": "path",
+    "corrected_file": "tests/test_distributions.py",
+    "detail": "seaborn/tests/test_distributions.py is not in the corpus; tests/test_distributions.py holds the content at these lines"
+   }
+  ],
+  "pallets__flask-5014": [
+   {
+    "file": "src/flask/blueprints.py",
+    "start": 169,
+    "end": 190,
+    "class": "range",
+    "detail": "content verbatim at lines 172-191"
+   },
+   {
+    "file": "src/flask/blueprints.py",
+    "start": 190,
+    "end": 195,
+    "class": "contained",
+    "detail": "1 of 4 range lines not in the content"
+   },
+   {
+    "file": "src/flask/blueprints.py",
+    "start": 191,
+    "end": 207,
+    "class": "contained",
+    "detail": "1 of 12 range lines not in the content"
+   }
+  ],
+  "psf__requests-1142": [
+   {
+    "file": "requests/models.py",
+    "start": 332,
+    "end": 387,
+    "class": "range",
+    "detail": "content verbatim at lines 332-395"
+   },
+   {
+    "file": "requests/models.py",
+    "start": 386,
+    "end": 398,
+    "class": "exact"
+   }
+  ],
+  "psf__requests-1766": [
+   {
+    "file": "requests/auth.py",
+    "start": 68,
+    "end": 91,
+    "class": "range",
+    "detail": "content verbatim at lines 68-92"
+   },
+   {
+    "file": "requests/auth.py",
+    "start": 105,
+    "end": 111,
+    "class": "exact"
+   },
+   {
+    "file": "requests/auth.py",
+    "start": 122,
+    "end": 149,
+    "class": "exact"
+   },
+   {
+    "file": "requests/auth.py",
+    "start": 144,
+    "end": 150,
+    "class": "exact"
+   }
+  ],
+  "psf__requests-2317": [
+   {
+    "file": "requests/compat.py",
+    "start": 87,
+    "end": 115,
+    "class": "exact"
+   },
+   {
+    "file": "requests/sessions.py",
+    "start": 11,
+    "end": 23,
+    "class": "exact"
+   },
+   {
+    "file": "requests/sessions.py",
+    "start": 13,
+    "end": 19,
+    "class": "exact"
+   },
+   {
+    "file": "requests/sessions.py",
+    "start": 120,
+    "end": 156,
+    "class": "exact"
+   },
+   {
+    "file": "requests/sessions.py",
+    "start": 425,
+    "end": 431,
+    "class": "exact"
+   },
+   {
+    "file": "requests/utils.py",
+    "start": 655,
+    "end": 671,
+    "class": "exact"
+   }
+  ],
+  "psf__requests-2931": [
+   {
+    "file": "requests/models.py",
+    "start": 74,
+    "end": 99,
+    "class": "contained",
+    "detail": "1 of 24 range lines not in the content"
+   },
+   {
+    "file": "requests/models.py",
+    "start": 81,
+    "end": 87,
+    "class": "exact"
+   },
+   {
+    "file": "requests/models.py",
+    "start": 372,
+    "end": 387,
+    "class": "exact"
+   },
+   {
+    "file": "requests/models.py",
+    "start": 385,
+    "end": 390,
+    "class": "contained",
+    "detail": "1 of 5 range lines not in the content"
+   },
+   {
+    "file": "requests/utils.py",
+    "start": 686,
+    "end": 704,
+    "class": "exact"
+   }
+  ],
+  "psf__requests-5414": [
+   {
+    "file": "requests/models.py",
+    "start": 375,
+    "end": 420,
+    "class": "exact"
+   },
+   {
+    "file": "requests/models.py",
+    "start": 403,
+    "end": 409,
+    "class": "exact"
+   },
+   {
+    "file": "requests/tests/test_requests.py",
+    "start": 77,
+    "end": 87,
+    "class": "path",
+    "corrected_file": "tests/test_requests.py",
+    "detail": "requests/tests/test_requests.py is not in the corpus; tests/test_requests.py holds the content at these lines"
+   }
+  ],
+  "psf__requests-6028": [
+   {
+    "file": "requests/adapters.py",
+    "start": 293,
+    "end": 318,
+    "class": "exact"
+   },
+   {
+    "file": "requests/adapters.py",
+    "start": 373,
+    "end": 393,
+    "class": "exact"
+   },
+   {
+    "file": "requests/utils.py",
+    "start": 960,
+    "end": 983,
+    "class": "exact"
+   },
+   {
+    "file": "requests/utils.py",
+    "start": 974,
+    "end": 979,
+    "class": "exact"
+   },
+   {
+    "file": "requests/utils.py",
+    "start": 1027,
+    "end": 1041,
+    "class": "exact"
+   },
+   {
+    "file": "tests/test_utils.py",
+    "start": 600,
+    "end": 607,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-2905": [
+   {
+    "file": "xarray/core/utils.py",
+    "start": 295,
+    "end": 335,
+    "class": "contained",
+    "detail": "7 of 33 range lines not in the content"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 180,
+    "end": 256,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 218,
+    "end": 224,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 339,
+    "end": 373,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 849,
+    "end": 878,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-3095": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 680,
+    "end": 820,
+    "class": "empty",
+    "detail": "no annotated content to check"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 1375,
+    "end": 1475,
+    "class": "empty",
+    "detail": "no annotated content to check"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 3,
+    "end": 14,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1218,
+    "end": 1275,
+    "class": "empty",
+    "detail": "no annotated content to check"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1227,
+    "end": 1235,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1241,
+    "end": 1253,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1258,
+    "end": 1268,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 1200,
+    "end": 1330,
+    "class": "empty",
+    "detail": "no annotated content to check"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 1299,
+    "end": 1307,
+    "class": "drift",
+    "detail": "5 of 6 content lines are not in the file"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 1915,
+    "end": 1970,
+    "class": "empty",
+    "detail": "no annotated content to check"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 1942,
+    "end": 1955,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-3993": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 3481,
+    "end": 3501,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 3481,
+    "end": 3508,
+    "class": "drift",
+    "detail": "7 of 22 content lines are not in the file"
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 3503,
+    "end": 3508,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 3528,
+    "end": 3534,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 5963,
+    "end": 5970,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 5963,
+    "end": 5982,
+    "class": "drift",
+    "detail": "3 of 16 content lines are not in the file"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 5972,
+    "end": 5982,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4075": [
+   {
+    "file": "xarray/core/weighted.py",
+    "start": 112,
+    "end": 210,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/weighted.py",
+    "start": 142,
+    "end": 148,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/tests/test_weighted.py",
+    "start": 32,
+    "end": 59,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/tests/test_weighted.py",
+    "start": 161,
+    "end": 217,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4356": [
+   {
+    "file": "xarray/core/nanops.py",
+    "start": 1,
+    "end": 23,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "start": 25,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "start": 26,
+    "end": 38,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "start": 111,
+    "end": 117,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "start": 181,
+    "end": 187,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4629": [
+   {
+    "file": "xarray/core/merge.py",
+    "start": 495,
+    "end": 526,
+    "class": "revision",
+    "detail": "content is the file after the fix"
+   },
+   {
+    "file": "xarray/core/merge.py",
+    "start": 501,
+    "end": 507,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4687": [
+   {
+    "file": "xarray/core/common.py",
+    "start": 1254,
+    "end": 1291,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 286,
+    "end": 307,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 452,
+    "end": 463,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 749,
+    "end": 783,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1116,
+    "end": 1155,
+    "class": "range",
+    "detail": "content verbatim at lines 1116-1163"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1727,
+    "end": 1733,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1743,
+    "end": 1748,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1808,
+    "end": 1813,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1817,
+    "end": 1822,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/ops.py",
+    "start": 157,
+    "end": 185,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/options.py",
+    "start": 94,
+    "end": 108,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/options.py",
+    "start": 166,
+    "end": 173,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4695": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 188,
+    "end": 200,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 196,
+    "end": 202,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 1118,
+    "end": 1206,
+    "class": "drift",
+    "detail": "2 of 40 content lines are not in the file"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 2161,
+    "end": 2234,
+    "class": "drift",
+    "detail": "1 of 22 content lines are not in the file"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 23,
+    "end": 50,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/utils.py",
+    "start": 230,
+    "end": 232,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/utils.py",
+    "start": 254,
+    "end": 273,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-4966": [
+   {
+    "file": "xarray/coding/variables.py",
+    "start": 287,
+    "end": 325,
+    "class": "revision",
+    "detail": "content is the file after the fix"
+   },
+   {
+    "file": "xarray/coding/variables.py",
+    "start": 316,
+    "end": 321,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-6461": [
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1743,
+    "end": 1844,
+    "class": "contained",
+    "detail": "57 of 90 range lines not in the content"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1825,
+    "end": 1835,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/options.py",
+    "start": 96,
+    "end": 113,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-6599": [
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1920,
+    "end": 1949,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1933,
+    "end": 1939,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1941,
+    "end": 1946,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 240,
+    "end": 256,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/tests/test_computation.py",
+    "start": 1939,
+    "end": 2015,
+    "class": "unresolved",
+    "detail": "content lines present, not in this order"
+   }
+  ],
+  "pydata__xarray-6721": [
+   {
+    "file": "xarray/core/common.py",
+    "start": 2020,
+    "end": 2034,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/common.py",
+    "start": 2023,
+    "end": 2029,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 2123,
+    "end": 2155,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 285,
+    "end": 352,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-6744": [
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 70,
+    "end": 121,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 225,
+    "end": 270,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 267,
+    "end": 282,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 359,
+    "end": 399,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 399,
+    "end": 478,
+    "class": "contained",
+    "detail": "1 of 69 range lines not in the content"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 479,
+    "end": 499,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 501,
+    "end": 542,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "start": 2210,
+    "end": 2320,
+    "class": "contained",
+    "detail": "2 of 103 range lines not in the content"
+   }
+  ],
+  "pydata__xarray-6992": [
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4026,
+    "end": 4035,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4044,
+    "end": 4059,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4065,
+    "end": 4074,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4083,
+    "end": 4090,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4099,
+    "end": 4105,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4139,
+    "end": 4173,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4177,
+    "end": 4185,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "start": 717,
+    "end": 724,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-7229": [
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1151,
+    "end": 1159,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1775,
+    "end": 1875,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1855,
+    "end": 1869,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "start": 1874,
+    "end": 1879,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/options.py",
+    "start": 128,
+    "end": 142,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/tests/test_computation.py",
+    "start": 1920,
+    "end": 1937,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-7233": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "start": 6254,
+    "end": 6281,
+    "class": "range",
+    "detail": "content verbatim at lines 6254-6299"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 1671,
+    "end": 1711,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 9067,
+    "end": 9109,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 796,
+    "end": 981,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "start": 973,
+    "end": 979,
+    "class": "exact"
+   }
+  ],
+  "pydata__xarray-7393": [
+   {
+    "file": "xarray/core/dataset.py",
+    "start": 4495,
+    "end": 4562,
+    "class": "range",
+    "detail": "content verbatim at lines 4495-4602"
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "start": 391,
+    "end": 410,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "start": 612,
+    "end": 851,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1432,
+    "end": 1444,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1522,
+    "end": 1550,
+    "class": "exact"
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "start": 1531,
+    "end": 1538,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-10051": [
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 40,
+    "end": 46,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 44,
+    "end": 52,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 331,
+    "end": 350,
+    "class": "revision",
+    "detail": "content is the file after the fix"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 345,
+    "end": 350,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 437,
+    "end": 445,
+    "class": "revision",
+    "detail": "content is the file after the fix"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 440,
+    "end": 446,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 696,
+    "end": 702,
+    "class": "range",
+    "detail": "content verbatim at lines 697-704"
+   }
+  ],
+  "pytest-dev__pytest-10081": [
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 65,
+    "end": 88,
+    "class": "range",
+    "detail": "content verbatim at lines 65-94"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 96,
+    "end": 120,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 122,
+    "end": 179,
+    "class": "range",
+    "detail": "content verbatim at lines 122-180"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 183,
+    "end": 212,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 301,
+    "end": 330,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 316,
+    "end": 322,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "start": 412,
+    "end": 415,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-10356": [
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "start": 355,
+    "end": 366,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "start": 366,
+    "end": 388,
+    "class": "drift",
+    "detail": "12 of 21 content lines are not in the file"
+   },
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "start": 388,
+    "end": 394,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-5262": [
+   {
+    "file": "src/_pytest/capture.py",
+    "start": 406,
+    "end": 451,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/capture.py",
+    "start": 447,
+    "end": 452,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/capture.py",
+    "start": 541,
+    "end": 572,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-5631": [
+   {
+    "file": "src/_pytest/compat.py",
+    "start": 58,
+    "end": 78,
+    "class": "contained",
+    "detail": "3 of 16 range lines not in the content"
+   },
+   {
+    "file": "src/_pytest/compat.py",
+    "start": 64,
+    "end": 76,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-5787": [
+   {
+    "file": "src/_pytest/_code/code.py",
+    "start": 1,
+    "end": 220,
+    "class": "drift",
+    "detail": "22 of 33 content lines are not in the file"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 1,
+    "end": 120,
+    "class": "drift",
+    "detail": "24 of 31 content lines are not in the file"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 3,
+    "end": 8,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 121,
+    "end": 240,
+    "class": "drift",
+    "detail": "51 of 57 content lines are not in the file"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 160,
+    "end": 205,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 211,
+    "end": 265,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 241,
+    "end": 460,
+    "class": "drift",
+    "detail": "72 of 77 content lines are not in the file"
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "start": 424,
+    "end": 426,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-5809": [
+   {
+    "file": "src/_pytest/pastebin.py",
+    "start": 65,
+    "end": 84,
+    "class": "range",
+    "detail": "content verbatim at lines 65-86"
+   },
+   {
+    "file": "src/_pytest/pastebin.py",
+    "start": 77,
+    "end": 87,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/pastebin.py",
+    "start": 84,
+    "end": 114,
+    "class": "contained",
+    "detail": "3 of 28 range lines not in the content"
+   }
+  ],
+  "pytest-dev__pytest-7205": [
+   {
+    "file": "src/_pytest/_io/saferepr.py",
+    "start": 75,
+    "end": 82,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/python.py",
+    "start": 24,
+    "end": 33,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/python.py",
+    "start": 1029,
+    "end": 1041,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "start": 1,
+    "end": 4,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "start": 20,
+    "end": 35,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "start": 37,
+    "end": 44,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "start": 46,
+    "end": 75,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "start": 66,
+    "end": 72,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-7324": [
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 1,
+    "end": 17,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 36,
+    "end": 57,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 74,
+    "end": 110,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 127,
+    "end": 132,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 130,
+    "end": 165,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 161,
+    "end": 167,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 168,
+    "end": 218,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "start": 172,
+    "end": 178,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-7432": [
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 30,
+    "end": 62,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 152,
+    "end": 187,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 190,
+    "end": 222,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 225,
+    "end": 245,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 247,
+    "end": 257,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 260,
+    "end": 305,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 291,
+    "end": 297,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-7490": [
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 190,
+    "end": 229,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 231,
+    "end": 247,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 248,
+    "end": 307,
+    "class": "range",
+    "detail": "content verbatim at lines 247-306"
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "start": 250,
+    "end": 261,
+    "class": "exact"
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "start": 400,
+    "end": 427,
+    "class": "exact"
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "start": 548,
+    "end": 577,
+    "class": "exact"
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "start": 983,
+    "end": 1001,
+    "class": "exact"
+   }
+  ],
+  "pytest-dev__pytest-7571": [
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 345,
+    "end": 350,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 353,
+    "end": 358,
+    "class": "exact"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 419,
+    "end": 457,
+    "class": "range",
+    "detail": "content verbatim at lines 418-458"
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "start": 434,
+    "end": 439,
+    "class": "exact"
+   }
+  ]
+ }
+}

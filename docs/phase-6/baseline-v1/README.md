@@ -1,5 +1,10 @@
 # Phase 6 Python context-quality baseline v1 (`contextbench-py-v1`)
 
+> Correction pointer (2026-10-16): superseded as the gate by
+> [`baseline-v2`](../baseline-v2/README.md), which audits the gold and corrects the
+> scorer (blank lines, module-level gold, loss stages) on the same engine output. The
+> numbers below are v1's and stay as frozen.
+
 The frozen quality baseline of the Python engine (ADR-0011) and the regression gate
 that `mise run verify` runs against it. It is independent of the historical Rust
 artifacts in `docs/phase-3/baseline-v1` and `docs/phase-4/baseline-v1`, which stay

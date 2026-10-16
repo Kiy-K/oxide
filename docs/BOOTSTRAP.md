@@ -196,6 +196,8 @@ Delivered (2026-10-16): `oxide mcp`, a stateless FastMCP server over `oxide.api`
 
 Delivered (2026-10-16): the context-quality regression gate. `tests/python/contextbench.py` evaluates entry-point recall/MRR, routed coverage, packed recall, utilization and loss diagnostics at 256/1,024/4,096 units on 7 fixture and 37 ContextBench Python tasks (human gold, dev/held-out split by repository); `docs/phase-6/baseline-v1/` freezes the protocol, tasks, per-task results and manifest, and `test_contextbench.py` gates quality and output compatibility separately in `mise run verify`. Read-only MCP and CLI requests no longer create empty stores (`open_repository(..., create=False)`).
 
+Delivered (2026-10-16): ContextBench scorer v2 and gold audit (`docs/phase-6/baseline-v2/`). Every annotated span is checked against its own content at the pinned commit: 176 of 208 verify (2 after a recorded path correction), 32 are reported separately as unverified with their class (annotation range errors, patched-revision content, drift, empty). Gold lines exclude blank lines, module-level gold is coverable through file entities, and every lost span is attributed to entry, routing, unsupported evidence, selection or budget. The engine output is unchanged.
+
 Remaining, in order of the smallest next milestone:
 
 1. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.

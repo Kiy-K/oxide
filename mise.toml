@@ -11,7 +11,7 @@ description = "Install the locked environment, fetch the pinned FTS extension an
 run = [
   "uv sync --locked",
   "uv run --locked oxide prepare",
-  # Pinned commits for the context-quality gate (docs/phase-6/baseline-v1); cached.
+  # Pinned commits for the context-quality gate (docs/phase-6/); cached.
   "uv run --locked python tests/python/contextbench.py fetch",
 ]
 

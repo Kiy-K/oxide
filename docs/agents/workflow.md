@@ -28,9 +28,11 @@ in its docstring, and a JSON report with the corpus identity and environment.
 Run it under the limits below; recorded runs are in `docs/migration-audit/bench/`.
 `uv run python tests/python/contextbench.py run [--out DIR]` is the context-quality
 harness (entry-point, routing and packing metrics at 256/1,024/4,096 units);
-`tests/python/test_contextbench.py` gates it in `mise run verify` against the frozen
-`docs/phase-6/baseline-v1/`, whose README is the protocol (splits, gate rules, how to
-freeze a new baseline version). Develop on the dev split; never tune on held-out.
+`tests/python/test_contextbench.py` gates it in `mise run verify` against the latest
+frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); v1's README is the
+protocol (splits, gate rules, how to freeze a new version) and each later README states
+its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated.
+Develop on the dev split; never tune on held-out.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
