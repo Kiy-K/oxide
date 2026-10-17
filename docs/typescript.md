@@ -1,4 +1,4 @@
-# TypeScript language slice (`oxide-typescript-v1`)
+# TypeScript language slice (`oxide-typescript-v2`)
 
 The second language slice (BOOTSTRAP § Remaining, item 3), in `src/oxide/core/typescript.py`.
 It has the same shape as the Python slice: one compiled tree-sitter query per dialect
@@ -79,10 +79,35 @@ name), none or unknowable is `unresolved` with the name it used.
   (`export { a as b } from`, `export * from`, `export * as ns from`). A named import
   targets what the export resolves to; the others target the module. Unresolved names
   are shown as `<specifier>:<name>` or `<specifier>`.
-- **Specifiers**: only relative ones (`./`, `../`, `.`, `..`), against the importing
-  file's directory, with an optional `.js`/`.jsx`/`.mjs`/`.cjs`/`.ts`/`.tsx`/`.mts`/`.cts`
-  extension (ESM `./a.js` names `a.ts`), then `<dir>/index`. Bare specifiers (packages,
-  workspace packages, `tsconfig` `paths`/`baseUrl` aliases) are unresolved.
+- **Relative specifiers** (`./`, `../`, `.`, `..`) resolve against the importing file's
+  directory. They may carry a `.js`/`.jsx`/`.mjs`/`.cjs`/`.ts`/`.tsx`/`.mts`/`.cts`
+  extension (ESM `./a.js` names `a.ts`), and fall back to `<dir>/index`.
+- **Bare specifiers** resolve through the importing file's project
+  (`oxide-typescript-v2`, `src/oxide/core/tsconfig.py`), as TypeScript resolves them
+  before it looks in packages. Everything is read from the captured `tsconfig.json`
+  bytes:
+  - **The project** is the nearest `tsconfig.json` above the file whose `files`, or
+    `include` minus `exclude`, contain it (TypeScript 5.6's ancestor search). The
+    defaults are TypeScript's: `**/*`, and `node_modules`, `bower_components` and
+    `jspm_packages` excluded. `**`, `*` and `?` match as TypeScript's do: include
+    wildcards skip names starting with `.`, and a last name with no wildcard and no
+    extension is a directory.
+  - **Inheritance:** relative `extends`, a string or an array, with `.json` appended
+    when the file is missing. A key set later in the chain wins (`baseUrl`, `paths`,
+    `files`, `include`, `exclude`). Each value is relative to the config that sets it.
+  - **Lookup order:** the `paths` pattern that matches exactly, else the matching
+    wildcard pattern with the longest prefix. Its substitutions are tried in order,
+    relative to `baseUrl`, else to the config that sets `paths`. Then `baseUrl` itself.
+    Each candidate is looked up as TypeScript does: the file (TypeScript extensions
+    first), then the directory's `package.json`, then `index`.
+  - **Stops:** a lookup ends unresolved, never at a later candidate, if the first
+    thing TypeScript would load is something OXIDE doesn't model: a JavaScript file,
+    a source that didn't parse, a JSON file, or a directory with a `package.json`.
+  - **Unknowable projects resolve nothing:** a config that doesn't parse as JSONC, an
+    `extends` of a package or a missing file, a cycle, or a key of the wrong type.
+    Packages (`node_modules`, `package.json` `exports`/`types`, workspace links) are
+    never resolved: their targets are mostly build output that isn't in the
+    repository.
 - **Exports**: a module exports its `export`ed top-level declarations under their name
   (or `default`), `export { local as name }`, `export default <identifier>`, and its
   re-exports. Explicit exports win over `export *`, which never re-exports `default`.
@@ -157,16 +182,37 @@ fresh full rebuilds of every logical fact).
   which need types. The unresolved relative imports sampled (27 in zod, 603 in excalidraw)
   are re-exports of workspace packages or package stars and unexported variables,
   unresolved by the rules above.
+- `tsconfig` resolution (`oxide-typescript-v2`, measured 2026-10-17,
+  [phase-6/typescript-v2](phase-6/typescript-v2/README.md)):
+  - **VS Code:** on the 14 corpora with their `tsconfig*.json`, unresolved imports
+    drop from 802,296 to 53,078.
+  - **Correctness:** on vscode@1a599e2d, 56,978 of the 57,190 newly resolved bare
+    imports name the file an independent path oracle predicts. The other 212 resolve
+    through re-exports to the declaring file.
+  - **No change without configuration:** without `tsconfig.json`, the output is
+    identical to v1.
+  - **Cost:** VS Code's index median goes from 23.6 to 24.7 s.
 - All 9 partial files are grammar gaps in `tree-sitter-typescript` 0.23.2, the latest on
   PyPI: variance annotations (`interface X<out T>`, TS 4.7) and generic calls inside
   `typeof import(…)` type queries. Declarations outside the damaged region still parse.
 
 ## Limitations and next steps
 
-- No `tsconfig.json` (`paths`, `baseUrl`, project references) or `package.json`
-  (`exports`, workspaces) resolution. Workspace packages are the largest unresolved
-  class in monorepos. Supporting them means reading those files as declared
-  configuration, a separate design.
+- **`tsconfig.json` coverage:** `paths` and `baseUrl` are resolved, but these aren't:
+  - project `references`;
+  - `rootDirs`;
+  - `moduleResolution: classic`;
+  - `moduleSuffixes`;
+  - `customConditions`;
+  - other names for a project file (`tsc -p tsconfig.build.json` builds with its own).
+
+  A file belongs to one project, its editor project. A file that two projects compile
+  with different `paths` resolves only as the nearest one does.
+- **Workspace packages:** `package.json` (`exports`, `types`, `main`, workspaces) is
+  not read. Monorepos that alias their packages with `paths` resolve, as vue and mui
+  do. Monorepos that rely on `node_modules` links to built `dist/` output don't. There
+  the targets are build output, so source-to-source edges would be a heuristic rather
+  than TypeScript's answer.
 - Type references beyond heritage, and member calls through typed receivers, need
   either type information or a declared heuristic, and are out of this slice.
 - JavaScript (`.js`/`.jsx`) files are not parsed. The `tsx` grammar would parse most of

@@ -68,6 +68,12 @@ settings. Each run below is index, search and a 4,096-unit build, in a fresh pro
 Peak RSS on the largest corpus is the same with a 320 MiB or a 512 MiB override as
 after this change. The pool's ceiling therefore costs nothing; the memory is what the
 load uses, about 350 MB above the 829 MB that derivation holds before `COPY`.
+The TypeScript v1 harness at this commit (all 81 corpora, the product's settings)
+gives a `results.json` and a `metrics.json` byte-identical to the frozen
+[v1](phase-6/typescript-v1/README.md). The pool changes no result, and no corpus records
+a `default_index_failure` (v1: 14). The VS Code index median is 22.9 s (v1: 24.0 s,
+built with the 512 MiB override). The whole run's peak RSS is 1,270 MB (v1: 1,821 MB),
+because no corpus is indexed twice any more.
 `tests/python/test_persistence.py` keeps a scaled-down case: at a 16 MiB floor, 40,400
 relations overflow a fixed pool and load with the per-byte pool.
 

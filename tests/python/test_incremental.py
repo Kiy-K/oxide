@@ -282,6 +282,23 @@ TS_STEPS: list[tuple[str, Edits]] = [
     ("same bytes in another dialect", {"src/App.tsx": None, "src/App.ts": TS_BASE["src/App.tsx"]}),
     ("turn the test file into a non-test", {"src/b.test.ts": None, "src/check.ts": "x();\n"}),
     (
+        "a tsconfig maps a bare specifier",
+        {
+            "tsconfig.json": '{"compilerOptions": {"baseUrl": ".",'
+            ' "paths": {"@app/*": ["src/*"]}}}',
+            "src/e.ts": 'import { helper } from "@app/lib/a";\nexport const e = () => helper();\n',
+        },
+    ),
+    ("only the mapping changes", {"tsconfig.json": '{"compilerOptions": {"paths": {}}}'}),
+    (
+        "the mapping moves to an extended config",
+        {
+            "tsconfig.json": '{"extends": "./base"}',
+            "base.json": '{"compilerOptions": {"paths": {"@app/*": ["./src/*"]}}}',
+        },
+    ),
+    ("the extended config disappears", {"base.json": None}),
+    (
         "partial and undecodable sources",
         {"src/bad.ts": "export function bad( {\n", "src/raw.ts": b"\xff"},
     ),
@@ -296,6 +313,8 @@ TS_STEPS: list[tuple[str, Edits]] = [
                     "src/check.ts",
                     "src/bad.ts",
                     "src/raw.ts",
+                    "src/e.ts",
+                    "tsconfig.json",
                 )
             ),
             **TS_BASE,

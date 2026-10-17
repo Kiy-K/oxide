@@ -43,7 +43,7 @@ from oxide.models import SourceRef
 
 REPO = Path(__file__).resolve().parents[2]
 PHASE6 = REPO / "docs" / "phase-6"
-BASELINE = PHASE6 / "baseline-v4"
+BASELINE = PHASE6 / "baseline-v5"
 # The original annotations, as built for baseline-v1; never edited.
 TASKS = PHASE6 / "baseline-v1" / "tasks.json"
 AUDIT = PHASE6 / "baseline-v2" / "gold-audit.json"

@@ -147,5 +147,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             info = FileInfo(f.path, f.digest, len(f.data), language, coverage, tuple(diagnostics))
         files.append(info)
     python.Resolver(py_sources).derive(entities, edges)
-    typescript.Resolver(ts_sources).derive(entities, edges)
+    parsed = {path for path, _, _ in ts_sources}
+    others = {f.path: f.data for f in capture.files if f.path not in parsed}
+    typescript.Resolver(ts_sources, others).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

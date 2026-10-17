@@ -4,9 +4,9 @@ resolution (docs/typescript.md).
 Same shape as the Python slice: one compiled query per dialect (``.ts``/``.mts``/
 ``.cts`` and ``.tsx``) collects every fact in C, Python only assigns captured nodes
 to their innermost declaration scope, and resolution follows lexical scoping and
-the import/export graph of relative specifiers only: no type inference, no
-``tsconfig`` paths, no packages. Anything shadowed, rebound or reached through an
-unresolvable module stays unresolved.
+the import/export graph of relative specifiers and of ``tsconfig`` ``paths`` and
+``baseUrl`` (``tsconfig.py``): no type inference, no packages. Anything shadowed,
+rebound or reached through an unresolvable module stays unresolved.
 """
 
 from __future__ import annotations
@@ -14,12 +14,14 @@ from __future__ import annotations
 import bisect
 import posixpath
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import tree_sitter_typescript
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
+from oxide.core import tsconfig
 from oxide.core.python import (
     Edge,
     Res,
@@ -32,7 +34,7 @@ from oxide.core.python import (
 )
 from oxide.models import Entity, RelationKind, SourceRef
 
-VERSION = "oxide-typescript-v1"
+VERSION = "oxide-typescript-v2"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
 FACTS_VERSION = "oxide-typescript-facts-v1"
 
@@ -532,6 +534,8 @@ def _sound(parsed: Parsed, size: int) -> bool:
 _EXTENSIONS = (".d.ts", ".d.mts", ".d.cts", ".ts", ".tsx", ".mts", ".cts")
 # Specifier extensions that name a TypeScript source (``./a.js`` is ``a.ts`` under ESM).
 _SPECIFIER_EXTENSIONS = (".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts")
+# What TypeScript's lookup can load (sources it could not parse, JavaScript).
+_LOADED = (*_EXTENSIONS, ".js", ".jsx", ".mjs", ".cjs")
 
 
 def module_name(path: str) -> str | None:
@@ -540,6 +544,14 @@ def module_name(path: str) -> str | None:
         if path.endswith(extension):
             return _directory(path[: -len(extension)])
     return None
+
+
+def _stem(path: str) -> str:
+    """A specifier path without the extension that names a TypeScript source."""
+    for extension in _SPECIFIER_EXTENSIONS:
+        if path.endswith(extension):
+            return path.removesuffix(extension)
+    return path
 
 
 def _directory(name: str) -> str | None:
@@ -570,7 +582,15 @@ class _File:
 class Resolver:
     """Conservative cross-file resolution over every TypeScript file of one capture."""
 
-    def __init__(self, files: list[tuple[str, str, Parsed]]) -> None:
+    def __init__(
+        self, files: list[tuple[str, str, Parsed]], others: Mapping[str, bytes] | None = None
+    ) -> None:
+        """``others``: the capture's files that are not ``files``, by path: the
+        ``tsconfig.json`` files, and what a bare specifier's lookup could reach instead
+        of a parsed TypeScript source."""
+        self.others = others or {}
+        self.projects = tsconfig.Projects(self.others)
+        self.paths = {path for path, _, _ in files}
         self.files: list[_File] = []
         self.modules: dict[str, list[int]] = {}
         self.memo: dict[tuple[str, str], list[str] | None] = {}
@@ -642,18 +662,37 @@ class Resolver:
         return is_test_file(key.removeprefix("symbol:").rsplit("#", 1)[0])
 
     def _specifier(self, i: int, source: str | None) -> str | None:
-        """The known module a relative specifier names, else None (packages, aliases)."""
-        if source is None or not (source in (".", "..") or source.startswith(("./", "../"))):
+        """The known module a specifier names: a relative one against the importing
+        file, a bare one through its project's ``paths`` and ``baseUrl``. Else None
+        (packages, unknowable projects, sources that are not TypeScript)."""
+        if source is None:
             return None
-        joined = posixpath.normpath(posixpath.join(posixpath.dirname(self.files[i].path), source))
-        if joined == ".." or joined.startswith("../"):
-            return None
-        for extension in _SPECIFIER_EXTENSIONS:
-            if joined.endswith(extension):
-                joined = joined.removesuffix(extension)
-                break
-        name = _directory(joined)
-        return name if name in self.modules else None
+        path = self.files[i].path
+        if source in (".", "..") or source.startswith(("./", "../")):
+            joined = posixpath.normpath(posixpath.join(posixpath.dirname(path), source))
+            if joined == ".." or joined.startswith("../"):
+                return None
+            name = _directory(_stem(joined))
+            return name if name in self.modules else None
+        options = self.projects.options(path)
+        for candidate in tsconfig.candidates(options, source) if options is not None else ():
+            stem = _stem(candidate)
+            # TypeScript's lookup: the file (TypeScript before JavaScript), then the
+            # directory (its package.json, then index). What it would find first and
+            # OXIDE does not model stops the lookup unresolved, never at a later one.
+            for found in (stem + e for e in _EXTENSIONS):
+                if found in self.paths:
+                    return module_name(found)
+            if candidate in self.others or any(stem + e in self.others for e in _LOADED):
+                return None
+            if f"{stem}/package.json" in self.others:
+                return None
+            for found in (f"{stem}/index{e}" for e in _EXTENSIONS):
+                if found in self.paths:
+                    return module_name(found)
+            if any(f"{stem}/index{e}" in self.others for e in _LOADED):
+                return None
+        return None
 
     def _import(self, i: int, item: Import) -> Res:
         """What an import clause names: its module, or what a named export resolves to."""

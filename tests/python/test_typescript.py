@@ -12,7 +12,7 @@ from conftest import REPO, write
 
 import oxide
 from oxide.capture import capture
-from oxide.core import typescript
+from oxide.core import tsconfig, typescript
 from oxide.core.indexing import Derived, derive, validate
 
 TS_FIXTURE = REPO / "fixtures" / "ts_repo"
@@ -229,6 +229,94 @@ def test_resolution_follows_the_module_graph(tmp_path: Path) -> None:
     assert ("./side-effect", ()) in imports  # an unknown module stays unresolved
     assert ("./a:missing", ()) in imports
     assert (None, ("module:typescript:src/util/math",)) in imports
+
+
+PROJECT = {
+    # A vscode-like project: an extended base sets baseUrl and paths (JSONC).
+    "src/tsconfig.base.json": """{
+  // comments and trailing commas are tsconfig syntax
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "vs/*": ["./vs/*"],
+      "vs/exact": ["./vs/base/strings"],
+      "@x/*": ["./missing/*", "./lib/*",],
+      "js/*": ["./js/*", "./vs/*"], /* the first lookup finds JavaScript */
+    },
+  },
+}""",
+    "src/tsconfig.json": '{"extends": "./tsconfig.base", "include": ["./vs", "./lib"],'
+    ' "exclude": ["**/*.skip.ts"]}',
+    "src/vs/base/strings.ts": "export function lower() {}\n",
+    "src/vs/thing.ts": "export function thing() {}\n",
+    "src/js/thing.js": "export function thing() {}\n",
+    "src/lib/util/index.ts": "export function util() {}\n",
+    "src/vs/app.ts": 'import { lower } from "vs/base/strings";\n'
+    'import { lower as exact } from "vs/exact";\nimport { util } from "@x/util";\n'
+    'import { util as viaBase } from "lib/util";\nimport { thing } from "js/thing";\n'
+    'import { missing } from "vs/missing";\nimport { useState } from "react";\n',
+    "src/vs/app.skip.ts": 'import { lower } from "vs/base/strings";\n',  # excluded
+    "src/scripts/tool.ts": 'import { lower } from "vs/base/strings";\n',  # not included
+    # paths without baseUrl are relative to their config; a nearer config wins.
+    "packages/p/tsconfig.json": '{"compilerOptions": {"paths": {"#/*": ["./src/*"]}}}',
+    "packages/p/src/a.ts": 'import { b } from "#/b";\nimport { lower } from "vs/base/strings";\n',
+    "packages/p/src/b.ts": "export function b() {}\n",
+    # An extends TypeScript would read from a package: unknowable, resolves nothing.
+    "other/tsconfig.json": '{"extends": "@tsconfig/node16/tsconfig.json",'
+    ' "compilerOptions": {"baseUrl": "."}}',
+    "other/a.ts": 'import { c } from "c";\n',
+    "other/c.ts": "export function c() {}\n",
+}
+
+
+def test_bare_specifiers_resolve_through_their_project_paths(tmp_path: Path) -> None:
+    found = derived(write(tmp_path, PROJECT))
+
+    def imports(path: str) -> dict[str, tuple[str, ...] | str]:
+        return {
+            (e.name or "") if e.resolution == "unresolved" else e.targets[0]: e.resolution
+            for e in found.edges
+            if e.kind == "imports" and e.source == f"file:{path}"
+        }
+
+    strings, util = "symbol:src/vs/base/strings.ts#lower", "symbol:src/lib/util/index.ts#util"
+    assert imports("src/vs/app.ts") == {
+        strings: "resolved",  # vs/* and the exact vs/exact both name it
+        util: "resolved",  # @x/*: the first substitution is missing, the second exists
+        "js/thing:thing": "unresolved",  # TypeScript stops at the JavaScript file
+        "vs/missing:missing": "unresolved",
+        "react:useState": "unresolved",
+    }
+    assert imports("src/vs/app.skip.ts") == {"vs/base/strings:lower": "unresolved"}
+    assert imports("src/scripts/tool.ts") == {"vs/base/strings:lower": "unresolved"}
+    assert imports("packages/p/src/a.ts") == {
+        "symbol:packages/p/src/b.ts#b": "resolved",
+        "vs/base/strings:lower": "unresolved",  # another project's paths do not apply
+    }
+    assert imports("other/a.ts") == {"c:c": "unresolved"}
+
+
+def test_tsconfig_reading_follows_typescript() -> None:
+    assert tsconfig.jsonc(b'{"a": "//not a comment", /* c */ "b": [1,],}') == {
+        "a": "//not a comment",
+        "b": [1],
+    }
+    with pytest.raises(ValueError):
+        tsconfig.jsonc(b"{")
+    options = tsconfig.Options("src", (("a/*", ("x/*",)), ("a/b/*", ("y/*", "z/*"))), "src")
+    assert tsconfig.candidates(options, "a/b/c") == ["src/y/c", "src/z/c", "src/a/b/c"]
+    escapes = tsconfig.Options(".", (("up/*", ("../*",)),), ".")
+    assert tsconfig.candidates(escapes, "up/a") == ["up/a"]  # ../a is outside the repository
+    projects = tsconfig.Projects(
+        {
+            "tsconfig.json": b'{"files": ["only.ts"], "compilerOptions": {"baseUrl": "."}}',
+            "a/tsconfig.json": b'{"extends": "./b.json"}',
+            "a/b.json": b'{"extends": "./tsconfig.json"}',  # a cycle
+        }
+    )
+    assert projects.options("only.ts") == tsconfig.Options(".", (), ".")
+    assert projects.options("other.ts") is None  # files without include: only those
+    assert projects.options("a/x.ts") is None
 
 
 def test_jsx_components_are_calls_and_intrinsics_are_not(tmp_path: Path) -> None:

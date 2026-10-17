@@ -1,6 +1,7 @@
 """ContextBench-ts: TypeScript context quality on the ContextBench-py ruler.
 
-``docs/phase-6/typescript-v1/README.md`` is the protocol. Scoring is ``contextbench.py``'s
+``docs/phase-6/typescript-v1/README.md`` is the protocol, with v2's amendment (each
+corpus also holds the commit's ``tsconfig*.json``). Scoring is ``contextbench.py``'s
 (entry, routing and packing metrics, loss stages, gold audit rules) with three
 TypeScript parts: the corpus is the tracked TypeScript sources, module-level lines come
 from the grammar instead of ``ast``, and every span lost before packing gets a
@@ -22,6 +23,7 @@ import io
 import json
 import os
 import posixpath
+import re
 import resource
 import shutil
 import subprocess
@@ -43,13 +45,15 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v1"
-TASKS = BASELINE / "tasks.json"
-AUDIT = BASELINE / "gold-audit.json"
+BASELINE = cb.PHASE6 / "typescript-v2"
+PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
+TASKS = PROTOCOL / "tasks.json"
+AUDIT = PROTOCOL / "gold-audit.json"
 SCORER = "contextbench-ts-scorer-v1"
 TASKS_VERSION = "contextbench-ts-tasks-v1"
 AUDIT_VERSION = "contextbench-ts-gold-audit-v1"
 SOURCES = (".ts", ".tsx", ".mts", ".cts")
+CONFIGS = re.compile(r"tsconfig[^/]*\.json")  # the project files TypeScript reads (v2)
 # The cost rule of the protocol (TypeScript files at every base commit, from git trees).
 MAX_TS_FILES = 5000
 # Repositories (by URL: ContextBench names mui both ``mui/material`` and
@@ -63,6 +67,8 @@ ELIGIBLE = (
 )
 HELDOUT = ("mui/material-ui", "vuejs/core")  # the two with the most tasks
 CACHE = cb.CACHE.parent / "contextbench-ts"
+# v1's corpora (sources only, ``corpora/``) reproduce v1 at its commit.
+CORPORA = CACHE / "corpora-v2"
 DEFAULT_BUFFER_POOL = ladybug.BUFFER_POOL
 # The smallest power of two that indexed the largest corpus (vscode, 554k relations).
 EVAL_BUFFER_POOL = 512 << 20
@@ -101,12 +107,16 @@ def is_source(path: str) -> bool:
     return path.endswith(SOURCES)
 
 
+def is_config(path: str) -> bool:
+    return CONFIGS.fullmatch(posixpath.basename(path)) is not None
+
+
 def repository(url: str) -> str:
     return url.removeprefix("https://github.com/").removesuffix(".git")
 
 
 def corpus_root(name: str, corpus: dict[str, str]) -> Path:
-    return cb.REPO / corpus["path"] if "path" in corpus else CACHE / "corpora" / name
+    return cb.REPO / corpus["path"] if "path" in corpus else CORPORA / name
 
 
 # --- the grammar's view of declarations (independent of OXIDE's derivation) ---
@@ -380,8 +390,8 @@ def _git(*args: str | Path, data: bytes | None = None) -> bytes:
 
 
 def fetch(corpora: dict[str, dict[str, str]]) -> None:
-    """Trees without blobs, then only the TypeScript and ``package.json`` blobs (a
-    partial clone: a full mui checkout is ~40,000 files)."""
+    """Trees without blobs, then only the TypeScript, ``tsconfig*.json`` and
+    ``package.json`` blobs (a partial clone: a full mui checkout is ~40,000 files)."""
     for name, corpus in corpora.items():
         target = corpus_root(name, corpus)
         if "url" not in corpus or target.is_dir():
@@ -398,7 +408,9 @@ def fetch(corpora: dict[str, dict[str, str]]) -> None:
                 continue
             meta, path = entry.split("\t", 1)
             _, kind, oid = meta.split()
-            if kind == "blob" and (is_source(path) or posixpath.basename(path) == "package.json"):
+            if kind == "blob" and (
+                is_source(path) or is_config(path) or posixpath.basename(path) == "package.json"
+            ):
                 wanted.append((oid, path))
         if (count := sum(is_source(p) for _, p in wanted)) > MAX_TS_FILES:
             raise SystemExit(
@@ -410,11 +422,13 @@ def fetch(corpora: dict[str, dict[str, str]]) -> None:
         )
         # git archive fails on a pathspec that matches nothing.
         patterns = [f"*{s}" for s in SOURCES if any(p.endswith(s) for _, p in wanted)]
+        patterns += [f":(literal){p}" for _, p in wanted if is_config(p)]  # only fetched blobs
         archive = _git("-C", bare, "archive", "--format=tar", commit, "--", *patterns)
         partial = target.with_name(target.name + ".partial")
         shutil.rmtree(partial, ignore_errors=True)
         with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-            tar.extractall(partial, filter="data")
+            kept = [m for m in tar if m.isfile() and (is_source(m.name) or is_config(m.name))]
+            tar.extractall(partial, members=kept, filter="data")
         # Workspace packages (name -> directory), kept beside the corpus, not in it.
         found: dict[str, str] = {}
         for oid, path in sorted(wanted, key=lambda w: w[1]):
@@ -432,10 +446,18 @@ def fetch(corpora: dict[str, dict[str, str]]) -> None:
 
 
 def identity(root: Path) -> dict[str, Any]:
-    """The corpus independent of OXIDE: its TypeScript files and their digests."""
-    files = sorted(p for p in root.rglob("*") if p.is_file() and is_source(p.name))
+    """The corpus independent of OXIDE: its TypeScript and ``tsconfig*.json`` files
+    and their digests (a v1 corpus has no config, so its identity is v1's)."""
+    files = sorted(
+        p for p in root.rglob("*") if p.is_file() and (is_source(p.name) or is_config(p.name))
+    )
     lines = [f"{p.relative_to(root).as_posix()}\0{cb._sha(p.read_bytes())}" for p in files]
-    return {"ts_files": len(files), "tree_sha256": cb._sha("\n".join(lines))}
+    configs = sum(is_config(p.name) for p in files)
+    return {
+        "ts_files": len(files) - configs,
+        "configs": configs,
+        "tree_sha256": cb._sha("\n".join(lines)),
+    }
 
 
 def workspace(name: str, corpus: dict[str, str]) -> dict[str, str]:
@@ -719,8 +741,8 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
     base = cb.manifest(evaluated)
     return {
         **base,
-        "baseline": "contextbench-ts-v1",
-        "protocol": "docs/phase-6/typescript-v1/README.md",
+        "baseline": "contextbench-ts-v2",
+        "protocol": "docs/phase-6/typescript-v1/README.md, amended by typescript-v2/README.md",
         "scorer": SCORER,
         "tasks": f"{TASKS_VERSION} sha256 {cb._sha(TASKS.read_bytes())}",
         "audit": f"{AUDIT_VERSION} sha256 {cb._sha(AUDIT.read_bytes())}",
@@ -746,7 +768,7 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--only", help="evaluate only the corpora whose name starts with this")
     args = parser.parse_args(argv)
     if args.command == "tasks":
-        BASELINE.mkdir(parents=True, exist_ok=True)
+        PROTOCOL.mkdir(parents=True, exist_ok=True)
         TASKS.write_text(json.dumps(build_tasks(args.parquet), indent=1, ensure_ascii=False) + "\n")
         return 0
     if args.command == "audit":

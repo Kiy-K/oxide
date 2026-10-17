@@ -103,6 +103,12 @@ def test_unresolved_import_names_keep_their_specifier() -> None:
     assert ts.specifier_of("node:fs:readFile") == "node:fs"
 
 
+def test_v2_corpora_add_only_the_project_files() -> None:
+    kept = ["tsconfig.json", "src/tsconfig.base.json", "a/b.tsconfig.json"]
+    assert [ts.is_config(p) for p in kept] == [True, True, False]
+    assert not ts.is_config("packages/tsconfig/base.json") and not ts.is_config("jsconfig.json")
+
+
 def test_numbered_annotations_lose_only_their_line_numbers() -> None:
     # Some Multi-SWE-bench gold is in `cat -n` form; an empty last line loses its tab.
     assert ts.unnumbered("7\tdef f():\n8\t  return 1\n9", 7) == ("def f():\n  return 1\n", True)
