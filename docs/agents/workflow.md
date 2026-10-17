@@ -33,6 +33,11 @@ frozen `docs/phase-6/baseline-vN/` (`contextbench.BASELINE`); v1's README is the
 protocol (splits, gate rules, how to freeze a new version) and each later README states
 its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated.
 Develop on the dev split; never tune on held-out.
+`tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol and frozen
+baseline in `docs/phase-6/typescript-v1/`). Its scorer cases run in `verify`; the gate
+needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
+`verify`. Run it under the limits below before and after any TypeScript retrieval,
+resolution, routing or packing change.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).

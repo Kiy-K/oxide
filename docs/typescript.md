@@ -45,9 +45,14 @@ implementation, getter/setter pairs, interface/class merging.
 
 Synthetic names cannot be identifiers. Unexported variables are not symbols, like
 Python module constants: they are module-level source, which ContextPacker packs as
-module-level evidence. Not modeled as symbols: object-literal methods, class fields
-that are not functions, enum members, interface properties, `#private` members and
-computed or string-named members (their names cannot form a key).
+module-level evidence. Not modeled as symbols: class fields that are not functions,
+enum members, interface properties, `#private` members and computed or string-named
+members (their names cannot form a key). Correction (measured, 2026-10-17): methods
+of object literals and method signatures of type literals *are* symbols (kind
+`method`; parent the innermost enclosing function, class, interface, enum or namespace,
+else the file, since a type alias is not a scope). This section first said they were
+not; the TypeScript evaluation's scorer validation found the difference
+([phase-6/typescript-v1](phase-6/typescript-v1/README.md#scorer-validation)).
 
 A declaration's range starts at its `export`/`declare` keyword or its decorators. Its
 signature is the header from the first keyword to the body (`export class Derived extends
