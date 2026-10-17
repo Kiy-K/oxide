@@ -33,7 +33,7 @@ once.
 | Operation | Returns | Notes |
 | --- | --- | --- |
 | `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` (read-only clients) raises `NotIndexed` for a repository without a store and writes nothing |
-| `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python files whose bytes the current generation parsed reuse its parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
+| `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python and TypeScript files whose bytes the current generation parsed reuse their parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
 | `Repository.entity(key)` / `relations(key)` / `files()` | `Entity \| None`, `list[Relation]`, `list[FileInfo]` | Typed graph and coverage inspection |
@@ -53,7 +53,10 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
 - `Entity`: `key`, `category` (`repository`/`module`/`file`/`symbol`), `kind`,
   `name`, `signature`, `source: SourceRef | None`, `test`. Keys are
   deterministic and snapshot-local (ADR-0010): `repo`, `module:python:a.b`,
-  `file:<path>`, `symbol:<path>#Outer.inner~1`.
+  `module:typescript:src/a` ([docs/typescript.md](typescript.md)), `file:<path>`,
+  `symbol:<path>#Outer.inner~1`. Symbol kinds are the slice's: Python `class`,
+  `function`, `method`; TypeScript also `interface`, `type`, `enum`, `namespace`,
+  `variable`. `FileInfo.language` is `python`, `typescript` or `unknown`.
 - `SourceRef`: `path`, half-open byte `start`/`end`, file `digest`
   (`sha256:` of the captured bytes).
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,
@@ -66,8 +69,8 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
 - `IndexReport`: `status` (`built`/`unchanged`), counts, `partial` paths,
   `unsupported`, `skipped`, `case_collisions`, `lexical`, `seconds`; and, for a
   build, `previous` (the `Snapshot` it replaced, None without a readable one),
-  `added`/`modified`/`deleted` paths relative to it, and how many Python files
-  were `parsed` or `reused`.
+  `added`/`modified`/`deleted` paths relative to it, and how many Python and
+  TypeScript files were `parsed` or `reused`.
 - `ContextBundle`: `items` (`ContextItem`: `source`, `lines`, `entities` with
   `complete` and `reason`, `units`, `text`; a `file:` entity in an item is a run of
   that file's module-level source, never `complete`), `payload`, `budget`, `used`,
@@ -161,7 +164,7 @@ Damage is classified like this:
 
 `oxide index|search|context <path> [...] [--data-dir D] [--json]` and
 `oxide prepare`. `index` prints its progress to stderr and a summary to stdout:
-counts, changes since the last index, Python files parsed and reused, then any
+counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the
 payload to stdout and `used/budget units` to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1

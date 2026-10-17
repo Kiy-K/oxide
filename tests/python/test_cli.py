@@ -83,6 +83,6 @@ def test_index_reports_progress_changes_and_reuse(tmp_path: Path, repo_copy: Pat
         lines[1]
         == "changes since the last index: 0 added; 0 modified; 1 deleted (oxidepy/cache.py)"
     )
-    assert lines[2] == "python: 0 parsed, 7 reused"
+    assert lines[2] == "sources: 0 parsed, 7 reused"
     assert second.stderr.splitlines()[0].startswith("oxide: capturing ")
     assert "oxide: publishing" in second.stderr

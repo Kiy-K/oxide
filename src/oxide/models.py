@@ -4,7 +4,7 @@ Every value here is plain, immutable data. Entity keys are the domain identity
 (ADR-0010): deterministic, snapshot-local and never a database row id.
 
 - repository: ``repo``
-- module: ``module:python:a.b``
+- module: ``module:python:a.b``, ``module:typescript:src/a``
 - file: ``file:<repo path>``
 - symbol: ``symbol:<repo path>#Outer.inner~1`` (``~n`` only for a nonzero ordinal)
 
@@ -102,8 +102,8 @@ class IndexReport:
     lexical: str
     seconds: float
     # Files compared with ``previous``, the generation this one replaced (None when
-    # there was no readable one); ``parsed`` Python files were parsed, ``reused`` reused
-    # their facts from it. All empty or zero when ``unchanged``.
+    # there was no readable one); ``parsed`` Python and TypeScript files were parsed,
+    # ``reused`` reused their facts from it. All empty or zero when ``unchanged``.
     previous: Snapshot | None = None
     added: tuple[str, ...] = ()
     modified: tuple[str, ...] = ()

@@ -23,7 +23,7 @@ from types import TracebackType
 
 from oxide.capture import capture
 from oxide.core import packing, retrieval, routing
-from oxide.core.indexing import components, derive, validate
+from oxide.core.indexing import components, derive, dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
     Closed,
@@ -135,10 +135,10 @@ class Repository:
 
     def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
         """Captures the worktree and publishes a new generation, or reports ``unchanged``
-        when the capture and derivation equal the current one. Python files whose bytes
-        the current generation already parsed reuse its facts; resolution and
-        publication always cover the whole capture, so the result equals a full
-        rebuild. ``progress`` receives a line as each stage starts."""
+        when the capture and derivation equal the current one. Python and TypeScript
+        files whose bytes the current generation already parsed reuse its facts;
+        resolution and publication always cover the whole capture, so the result equals
+        a full rebuild. ``progress`` receives a line as each stage starts."""
         started = time.perf_counter()
         report = progress or (lambda line: None)
         store = self.store
@@ -162,13 +162,14 @@ class Repository:
             )
             previous = old.snapshot if old else None
             cached = old.facts() if old else {}
-            python = [d for p, d in after.items() if p.endswith(".py")]
-            hits = sum(d in cached for d in python)
+            sources = [(lang, d) for p, d in after.items() if (lang := dialect(p)) is not None]
+            hits = sum(isinstance(s := cached.get(lang), dict) and d in s for lang, d in sources)
             report(
-                f"deriving {len(after)} files: parsing {len(python) - hits} Python, reusing {hits}"
+                f"deriving {len(after)} files: parsing {len(sources) - hits} source files, "
+                f"reusing {hits}"
             )
             derived = derive(snapshot, store.repo_id, cached)
-            reused, parsed = derived.reused, len(python) - derived.reused
+            reused, parsed = derived.reused, len(sources) - derived.reused
             if reused < hits:
                 report(f"{hits - reused} cached parse facts were unusable and parsed again")
             validate(derived)

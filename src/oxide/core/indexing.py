@@ -9,19 +9,30 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
+from functools import partial
 from importlib.metadata import version
-from typing import Any
+from typing import Any, Literal
 
 from oxide.capture import Capture
-from oxide.core import python
+from oxide.core import python, typescript
 from oxide.core.python import Edge
 from oxide.core.retrieval import TERMS_VERSION
 from oxide.models import Coverage, Entity, FileInfo, OxideError, SourceRef
 
 ID_NAMESPACE = "oxide-id-v2"
 TREE_PROJECTION = "1"
+# ``facts.json``: one section of encoded facts by digest per dialect (the same bytes
+# parse differently as .py, .ts and .tsx); bump with either slice's facts version.
+FACTS_FORMAT = f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION}"
+
+Dialect = Literal["python", "typescript", "tsx"]
+
+
+def dialect(path: str) -> Dialect | None:
+    """The language slice and grammar that parse ``path``, None when none does."""
+    return "python" if path.endswith(".py") else typescript.dialect(path)
 
 
 @dataclass(frozen=True, slots=True)
@@ -29,21 +40,21 @@ class Derived:
     files: tuple[FileInfo, ...]
     entities: tuple[Entity, ...]
     edges: tuple[Edge, ...]
-    # ``python.encode``d facts of every parsed Python file by digest: a cache for the
-    # next derivation, not knowledge.
-    facts: dict[str, Any]
+    # Encoded facts of every parsed file, by dialect and digest (``FACTS_FORMAT``): a
+    # cache for the next derivation, not knowledge.
+    facts: dict[str, dict[str, Any]]
     reused: int = field(default=0, compare=False)  # files whose cached facts were usable
 
 
 def components(storage: dict[str, str]) -> dict[str, str]:
     """Named versions of everything that shapes a generation (ADR-0010 § DerivationId)."""
-    parser = (
-        f"tree-sitter={version('tree-sitter')} tree-sitter-python={version('tree-sitter-python')}"
-    )
+    parser = f"tree-sitter={version('tree-sitter')}"
     return {
         "id-namespace": ID_NAMESPACE,
         "python": python.VERSION,
-        "python-parser": parser,
+        "python-parser": f"{parser} tree-sitter-python={version('tree-sitter-python')}",
+        "typescript": typescript.VERSION,
+        "typescript-parser": f"{parser} tree-sitter-typescript={version('tree-sitter-typescript')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -75,46 +86,66 @@ def validate(derived: Derived) -> None:
             raise OxideError(f"invalid derivation: {key} has {parents.get(key, 0)} parents")
 
 
+def _reuse[P](
+    raw: Any, data: bytes, decode: Callable[[Any, int], P], parse: Callable[[bytes], P | str]
+) -> tuple[P | str, bool]:
+    """Cached facts when ``decode`` accepts them, else a parse; and whether reused."""
+    if raw is not None:
+        try:
+            return decode(raw, len(data)), True
+        except ValueError:
+            pass  # unusable: parsed and replaced, so it never spreads
+    return parse(data), False
+
+
 def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = None) -> Derived:
     """``cached`` holds facts of an earlier derivation under the same components, by
-    file digest. Parsing is a pure function of the bytes, so reusing them derives
-    exactly what parsing would; an entry ``python.decode`` rejects is parsed instead.
+    dialect and file digest. Parsing is a pure function of the bytes, so reusing them
+    derives exactly what parsing would; an entry ``decode`` rejects is parsed instead.
     Resolution always runs over the whole capture."""
     cached = cached or {}
-    facts: dict[str, Any] = {}
+    facts: dict[str, dict[str, Any]] = {}
     reused = 0
     files: list[FileInfo] = []
     entities = [Entity("repo", "repository", "repository", repo_id, None, None, False)]
     edges: list[Edge] = []
-    sources: list[tuple[str, str, python.Parsed]] = []
+    py_sources: list[tuple[str, str, python.Parsed]] = []
+    ts_sources: list[tuple[str, str, typescript.Parsed]] = []
     for f in capture.files:
         key = f"file:{f.path}"
         name = f.path.rsplit("/", 1)[-1]
         source = SourceRef(f.path, 0, len(f.data), f.digest)
         entities.append(Entity(key, "file", "file", name, None, source, False))
         edges.append(Edge("contains", "repo", (key,), "resolved", "syntactic", None, None))
-        if not f.path.endswith(".py"):
+        lang = dialect(f.path)
+        if lang is None:
             files.append(FileInfo(f.path, f.digest, len(f.data), "unknown", "unsupported", ()))
             continue
-        raw = cached.get(f.digest)
-        parsed: python.Parsed | str | None = None
-        if raw is not None:
-            try:
-                parsed = python.decode(raw, len(f.data))
-                reused += 1
-            except ValueError:
-                raw = None  # unusable: parsed below and replaced, so it never spreads
-        if parsed is None:
-            parsed = python.parse(f.data)
-        if isinstance(parsed, str):
-            info = FileInfo(f.path, f.digest, len(f.data), "python", "unsupported", (parsed,))
+        section = cached.get(lang)
+        raw = section.get(f.digest) if isinstance(section, dict) else None
+        language = "python" if lang == "python" else "typescript"
+        diagnostics: list[str] | str
+        if lang == "python":
+            py, hit = _reuse(raw, f.data, python.decode, python.parse)
+            if not isinstance(py, str):
+                py_sources.append((f.path, f.digest, py))
+                encoded = raw if hit else python.encode(py)
+            diagnostics = py if isinstance(py, str) else py.diagnostics
         else:
-            sources.append((f.path, f.digest, parsed))
-            facts[f.digest] = python.encode(parsed) if raw is None else raw
-            coverage: Coverage = "partial" if parsed.diagnostics else "complete"
-            info = FileInfo(
-                f.path, f.digest, len(f.data), "python", coverage, tuple(parsed.diagnostics)
-            )
+            parse = partial(typescript.parse, language=lang)
+            ts, hit = _reuse(raw, f.data, typescript.decode, parse)
+            if not isinstance(ts, str):
+                ts_sources.append((f.path, f.digest, ts))
+                encoded = raw if hit else typescript.encode(ts)
+            diagnostics = ts if isinstance(ts, str) else ts.diagnostics
+        reused += hit
+        if isinstance(diagnostics, str):
+            info = FileInfo(f.path, f.digest, len(f.data), language, "unsupported", (diagnostics,))
+        else:
+            facts.setdefault(lang, {})[f.digest] = encoded
+            coverage: Coverage = "partial" if diagnostics else "complete"
+            info = FileInfo(f.path, f.digest, len(f.data), language, coverage, tuple(diagnostics))
         files.append(info)
-    python.Resolver(sources).derive(entities, edges)
+    python.Resolver(py_sources).derive(entities, edges)
+    typescript.Resolver(ts_sources).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

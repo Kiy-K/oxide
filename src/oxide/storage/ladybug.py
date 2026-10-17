@@ -38,8 +38,7 @@ from typing import Any
 import ladybug
 
 from oxide.capture import Capture, digest
-from oxide.core import python
-from oxide.core.indexing import Derived, components, derivation_id
+from oxide.core.indexing import FACTS_FORMAT, Derived, components, derivation_id
 from oxide.core.retrieval import document
 from oxide.models import (
     Closed,
@@ -310,11 +309,11 @@ class View:
             raise StoreCorrupt(f"{self.directory}: read failed ({error})") from error
 
     def facts(self) -> dict[str, Any]:
-        """The parse facts sealed with this generation, by file digest; empty when it
-        has none of the current format or they do not match their sealed digest. A
+        """The parse facts sealed with this generation, by dialect and file digest; empty
+        when it has none of the current format or they do not match their sealed digest. A
         cache: losing it costs a re-parse, never correctness."""
         sealed = self.manifest.get("facts")
-        if not isinstance(sealed, dict) or sealed.get("format") != python.FACTS_VERSION:
+        if not isinstance(sealed, dict) or sealed.get("format") != FACTS_FORMAT:
             return {}
         try:
             data = (self.directory / "facts.json").read_bytes()
@@ -588,7 +587,7 @@ class Store:
                 "entities": len(derived.entities),
                 "relations": len(derived.edges),
                 "rows": rows,
-                "facts": {"format": python.FACTS_VERSION, "digest": digest(facts)},
+                "facts": {"format": FACTS_FORMAT, "digest": digest(facts)},
             }
             self._seal(staging, capture, manifest)
             target = self.generations / name

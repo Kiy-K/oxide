@@ -1,6 +1,6 @@
 """ContextBench-py: the Python engine's context-quality harness and frozen baseline.
 
-``docs/phase-6/baseline-v3/README.md`` and the READMEs it amends are the protocol: tasks,
+``docs/phase-6/baseline-v4/README.md`` and the READMEs it amends are the protocol: tasks,
 gold, its audit, metrics and the gate rules ``test_contextbench.py`` enforces. Gold
 comes from the fixture benchmark files (mapped to lines with ``ast``) and from
 ContextBench's human annotations, never from OXIDE's output. The annotations are kept
@@ -43,7 +43,7 @@ from oxide.models import SourceRef
 
 REPO = Path(__file__).resolve().parents[2]
 PHASE6 = REPO / "docs" / "phase-6"
-BASELINE = PHASE6 / "baseline-v3"
+BASELINE = PHASE6 / "baseline-v4"
 # The original annotations, as built for baseline-v1; never edited.
 TASKS = PHASE6 / "baseline-v1" / "tasks.json"
 AUDIT = PHASE6 / "baseline-v2" / "gold-audit.json"
@@ -698,7 +698,10 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
         "environment": {
             "python": platform.python_version(),
             "platform": f"{sys.platform}-{platform.machine()}",
-            "packages": {p: version(p) for p in ("ladybug", "tree-sitter", "tree-sitter-python")},
+            "packages": {
+                p: version(p)
+                for p in ("ladybug", "tree-sitter", "tree-sitter-python", "tree-sitter-typescript")
+            },
         },
         "commands": {
             "fetch": "uv run python tests/python/contextbench.py fetch",

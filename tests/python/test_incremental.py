@@ -13,8 +13,8 @@ from conftest import FIXTURE, write
 
 import oxide
 from oxide.capture import capture, digest
-from oxide.core import python
-from oxide.core.indexing import derive, validate
+from oxide.core import python, typescript
+from oxide.core.indexing import derive, dialect, validate
 
 Edits = dict[str, str | bytes | None]
 BASE: dict[str, str | bytes] = {
@@ -211,7 +211,7 @@ def _replace(value: Any, at: tuple[int, ...], new: Any) -> Any:
 def test_unsound_cached_facts_are_parsed_never_trusted_or_fatal(tmp_path: Path) -> None:
     snapshot = capture(write(tmp_path / "repo", {"pkg/m.py": FACTS_SOURCE}))
     full = derive(snapshot, "r")
-    ((key, good),) = full.facts.items()
+    ((key, good),) = full.facts["python"].items()
     size = len(snapshot.files[0].data)
     rejected = 0
     for at in _paths(good):
@@ -221,11 +221,11 @@ def test_unsound_cached_facts_are_parsed_never_trusted_or_fatal(tmp_path: Path) 
                 python.decode(entry, size)
             except ValueError:
                 rejected += 1
-                derived = derive(snapshot, "r", {key: entry})
+                derived = derive(snapshot, "r", {"python": {key: entry}})
                 assert derived == full and derived.reused == 0, (at, bad)
                 continue
             # Well-formed facts parse could have produced: they may differ, never fail.
-            validate(derive(snapshot, "r", {key: entry}))
+            validate(derive(snapshot, "r", {"python": {key: entry}}))
     assert rejected > len(_paths(good)) * len(BAD) // 2
 
 
@@ -233,8 +233,8 @@ def test_sealed_but_unsound_facts_are_parsed_again(repo_copy: Path, private_data
     oxide.index_repository(repo_copy)
     (generation,) = private_data.glob("repos/*/generations/*")
     facts = json.loads((generation / "facts.json").read_bytes())
-    victim = next(k for k, v in sorted(facts.items()) if len(v[0]) > 1)
-    facts[victim][0][1][0] = 1  # a declaration as its own parent: a cycle
+    victim = next(k for k, v in sorted(facts["python"].items()) if len(v[0]) > 1)
+    facts["python"][victim][0][1][0] = 1  # a declaration as its own parent: a cycle
     raw = json.dumps(facts).encode()
     (generation / "facts.json").write_bytes(raw)
     manifest = json.loads((generation / "MANIFEST.json").read_text())
@@ -244,7 +244,7 @@ def test_sealed_but_unsound_facts_are_parsed_again(repo_copy: Path, private_data
     lines: list[str] = []
     with oxide.open_repository(repo_copy) as repo:
         report = repo.index(progress=lines.append)
-        assert (report.parsed, report.reused) == (2, len(facts) - 1)
+        assert (report.parsed, report.reused) == (2, len(facts["python"]) - 1)
         assert "1 cached parse facts were unusable and parsed again" in lines
         expected, healed = dump(repo), repo.store.view().facts()
     shutil.rmtree(private_data)
@@ -252,3 +252,133 @@ def test_sealed_but_unsound_facts_are_parsed_again(repo_copy: Path, private_data
         fresh.index()
         assert dump(fresh) == expected
         assert fresh.store.view().facts() == healed  # the bad entry did not carry over
+
+
+# TypeScript: the same guarantees, over edits that change what barrels, re-exports
+# and namespace imports in *other*, unchanged files resolve to.
+TS_BASE: dict[str, str | bytes] = {
+    "src/index.ts": 'export * from "./a";\nexport { b as renamed } from "./b";\n',
+    "src/a.ts": "export function helper() {}\n",
+    "src/b.ts": 'import { helper } from "./a";\nimport * as d from "./d.js";\n'
+    "export function b() {\n  helper();\n  d.later();\n}\n",
+    "src/App.tsx": 'import { renamed } from "./index";\n'
+    "export const App = () => <Box onClick={renamed} />;\nfunction Box() { return null; }\n",
+    "src/b.test.ts": 'import { renamed } from ".";\nit("b", () => renamed());\n',
+    "lib/util.py": "def py():\n    pass\n",
+}
+TS_STEPS: list[tuple[str, Edits]] = [
+    ("rename what a barrel re-exports", {"src/a.ts": "export function helper2() {}\n"}),
+    ("add the module a namespace import names", {"src/d.ts": "export const later = () => 1;\n"}),
+    ("rebind an exported name", {"src/d.ts": "export let later = () => 1;\nlater = () => 2;\n"}),
+    (
+        "star-export a package from the barrel",
+        {
+            "src/index.ts": 'export * from "./a";\nexport * from "pkg";\n'
+            'export { b as renamed } from "./b";\n'
+        },
+    ),
+    ("delete a re-exported module", {"src/b.ts": None}),
+    ("move a file: same bytes, new path", {"src/a.ts": None, "src/lib/a.ts": TS_BASE["src/a.ts"]}),
+    ("same bytes in another dialect", {"src/App.tsx": None, "src/App.ts": TS_BASE["src/App.tsx"]}),
+    ("turn the test file into a non-test", {"src/b.test.ts": None, "src/check.ts": "x();\n"}),
+    (
+        "partial and undecodable sources",
+        {"src/bad.ts": "export function bad( {\n", "src/raw.ts": b"\xff"},
+    ),
+    (
+        "back to the first tree",
+        {
+            **dict.fromkeys(
+                (
+                    "src/d.ts",
+                    "src/lib/a.ts",
+                    "src/App.ts",
+                    "src/check.ts",
+                    "src/bad.ts",
+                    "src/raw.ts",
+                )
+            ),
+            **TS_BASE,
+        },
+    ),
+]
+
+
+def test_typescript_facts_round_trip_through_their_encoding() -> None:
+    sources = [f.read_bytes() for f in sorted((FIXTURE.parent / "ts_repo").rglob("*.ts*"))]
+    sources += [TS_FACTS_SOURCE.encode(), b"export function broken( {\n"]
+    for data in sources:
+        for language in ("typescript", "tsx"):
+            parsed = typescript.parse(data, language)
+            assert not isinstance(parsed, str)
+            encoded = json.loads(json.dumps(typescript.encode(parsed)))
+            assert typescript.decode(encoded, len(data)) == parsed
+
+
+def test_typescript_reused_facts_derive_what_a_full_derivation_does(tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", TS_BASE)
+    previous = derive(capture(root), "r")
+    for step, edits in TS_STEPS:
+        apply(root, edits)
+        snapshot = capture(root)
+        incremental = derive(snapshot, "r", previous.facts)
+        assert incremental == derive(snapshot, "r"), step
+        previous = incremental
+
+
+def test_typescript_incremental_index_equals_a_full_rebuild(tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", TS_BASE)
+    with oxide.open_repository(root, data_dir=tmp_path / "incremental") as repo:
+        first = repo.index()
+        assert (first.parsed, first.reused) == (6, 0)
+        for i, (step, edits) in enumerate(TS_STEPS):
+            apply(root, edits)
+            report = repo.index()
+            with oxide.open_repository(root, data_dir=tmp_path / f"full-{i}") as fresh:
+                assert fresh.index().reused == 0
+                assert dump(repo) == dump(fresh), step
+            sources = sum(dialect(f.path) is not None for f in repo.files())
+            assert report.parsed + report.reused == sources, step
+            assert report.parsed <= len(report.added) + len(report.modified), step
+
+
+# Every kind of fact TypeScript parse produces: declarations of each kind, exports,
+# re-exports, imports, heritage, calls, JSX-free bindings and rebinding.
+TS_FACTS_SOURCE = """\
+import def, { a as b } from "./m.js";
+import * as ns from "../n";
+import "./side";
+export { b as c } from "./r";
+export * from "./s";
+export * as q from "./q";
+export { b as d };
+export default b;
+export class C<T> extends ns.Base<T> implements I {
+  m({ k, z: w }: O, ...rest: R[]) { helper(k); }
+}
+export const f = (x: number) => x, v = 1;
+namespace N { export function inner() {} }
+interface I extends J {}
+let counter = 0;
+counter++;
+"""
+
+
+def test_unsound_typescript_facts_are_parsed_never_trusted_or_fatal(tmp_path: Path) -> None:
+    snapshot = capture(write(tmp_path / "repo", {"src/m.ts": TS_FACTS_SOURCE}))
+    full = derive(snapshot, "r")
+    ((key, good),) = full.facts["typescript"].items()
+    size = len(snapshot.files[0].data)
+    rejected = 0
+    for at in _paths(good):
+        for bad in BAD:
+            entry = _replace(good, at, bad)
+            try:
+                typescript.decode(entry, size)
+            except ValueError:
+                rejected += 1
+                derived = derive(snapshot, "r", {"typescript": {key: entry}})
+                assert derived == full and derived.reused == 0, (at, bad)
+                continue
+            validate(derive(snapshot, "r", {"typescript": {key: entry}}))
+    assert rejected > len(_paths(good)) * len(BAD) // 2

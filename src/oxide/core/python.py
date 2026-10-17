@@ -253,6 +253,11 @@ def parse(data: bytes) -> Parsed | str:
     for scope in scopes:
         scope.calls.sort(key=lambda u: (u.start, u.end))
         scope.imports.sort(key=lambda i: (i.start, i.end, i.item))
+    return Parsed(scopes, rebound, syntax_diagnostics(root, captures))
+
+
+def syntax_diagnostics(root: Node, captures: dict[str, list[Node]]) -> list[str]:
+    """Bounded diagnostics from a query's ``@error`` and ``@missing`` captures."""
     diagnostics: list[str] = []
     if root.has_error:
         broken = [*captures.get("error", []), *captures.get("missing", [])]
@@ -264,7 +269,7 @@ def parse(data: bytes) -> Parsed | str:
         if len(diagnostics) > MAX_DIAGNOSTICS:
             omitted = len(diagnostics) - MAX_DIAGNOSTICS
             diagnostics = [*diagnostics[:MAX_DIAGNOSTICS], f"{omitted} more syntax errors omitted"]
-    return Parsed(scopes, rebound, diagnostics)
+    return diagnostics
 
 
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
@@ -287,7 +292,7 @@ def encode(parsed: Parsed) -> list[Any]:
     return [scopes, sorted(parsed.rebound), parsed.diagnostics]
 
 
-def _list(value: Any) -> list[Any]:
+def as_list(value: Any) -> list[Any]:
     if type(value) is not list:
         raise TypeError(f"expected a list, got {type(value).__name__}")
     return value
@@ -300,25 +305,27 @@ def decode(value: Any, size: int) -> Parsed:
     resolver only sees well-typed, in-bounds facts: a tree whose parents precede their
     scopes, and identifier names, so keys stay unique."""
     try:
-        scopes, rebound, diagnostics = _list(value)
+        scopes, rebound, diagnostics = as_list(value)
         parsed = Parsed(
             [
                 Scope(
                     parent,
-                    None if decl is None else Decl(*_list(decl)),
-                    tuple(_list(body)),  # length checked by _sound
-                    set(_list(bound)),
+                    None if decl is None else Decl(*as_list(decl)),
+                    tuple(as_list(body)),  # length checked by _sound
+                    set(as_list(bound)),
                     [
-                        Import(level, tuple(_list(module)), *rest)
-                        for level, module, *rest in map(_list, _list(imports))
+                        Import(level, tuple(as_list(module)), *rest)
+                        for level, module, *rest in map(as_list, as_list(imports))
                     ],
-                    [Use(*_list(u)) for u in _list(calls)],
-                    [Use(*_list(u)) for u in _list(bases)],
+                    [Use(*as_list(u)) for u in as_list(calls)],
+                    [Use(*as_list(u)) for u in as_list(bases)],
                 )
-                for parent, decl, body, bound, imports, calls, bases in map(_list, _list(scopes))
+                for parent, decl, body, bound, imports, calls, bases in map(
+                    as_list, as_list(scopes)
+                )
             ],
-            set(_list(rebound)),
-            _list(diagnostics),
+            set(as_list(rebound)),
+            as_list(diagnostics),
         )
     except (TypeError, ValueError) as error:
         raise ValueError(f"malformed parse facts: {error}") from None
@@ -413,26 +420,32 @@ class _File:
     init: bool
 
 
-def _symbol_keys(path: str, parsed: Parsed) -> tuple[list[str], list[list[int]]]:
-    scopes = parsed.scopes
-    children: list[list[int]] = [[] for _ in scopes]
+def symbol_keys(path: str, decls: list[tuple[int, str, int]]) -> tuple[list[str], list[list[int]]]:
+    """Keys of the file (index 0) and of each declaration ``(parent, name, start)``, in
+    order (index k + 1, parents first), and each one's children (ADR-0010 § SymbolId)."""
+    children: list[list[int]] = [[] for _ in range(len(decls) + 1)]
     siblings: dict[tuple[int, str], list[tuple[int, int]]] = {}
-    for k, scope in enumerate(scopes[1:], start=1):
-        assert scope.parent is not None and scope.decl is not None
-        children[scope.parent].append(k)
-        siblings.setdefault((scope.parent, scope.decl.name), []).append((scope.decl.start, k))
-    ordinals = [0] * len(scopes)
+    for k, (parent, name, start) in enumerate(decls, start=1):
+        children[parent].append(k)
+        siblings.setdefault((parent, name), []).append((start, k))
+    ordinals = [0] * (len(decls) + 1)
     for group in siblings.values():
         for ordinal, (_, k) in enumerate(sorted(group)):
             ordinals[k] = ordinal
     segments: list[str] = [""]
-    for k, scope in enumerate(scopes[1:], start=1):
-        assert scope.parent is not None and scope.decl is not None
-        own = scope.decl.name + (f"~{ordinals[k]}" if ordinals[k] else "")
-        parent = segments[scope.parent]
-        segments.append(f"{parent}.{own}" if parent else own)
+    for k, (parent, name, _) in enumerate(decls, start=1):
+        own = name + (f"~{ordinals[k]}" if ordinals[k] else "")
+        segments.append(f"{segments[parent]}.{own}" if segments[parent] else own)
     keys = [f"file:{path}"] + [f"symbol:{path}#{s}" for s in segments[1:]]
     return keys, children
+
+
+def _decls(parsed: Parsed) -> list[tuple[int, str, int]]:
+    out = []
+    for scope in parsed.scopes[1:]:
+        assert scope.parent is not None and scope.decl is not None
+        out.append((scope.parent, scope.decl.name, scope.decl.start))
+    return out
 
 
 def _is_test(file: _File, k: int) -> bool:
@@ -472,7 +485,7 @@ def _import_text(item: Import) -> str:
     return text
 
 
-def _target(res: Res, symbols_only: bool) -> tuple[tuple[str, ...], Resolution, Basis]:
+def edge_target(res: Res, symbols_only: bool) -> tuple[tuple[str, ...], Resolution, Basis]:
     if res and (not symbols_only or all(k.startswith("symbol:") for k in res)):
         if len(res) == 1:
             return (res[0],), "resolved", "resolved"
@@ -480,7 +493,7 @@ def _target(res: Res, symbols_only: bool) -> tuple[tuple[str, ...], Resolution, 
     return (), "unresolved", "syntactic"
 
 
-def _structural(kind: RelationKind, source: str, target: str, at: SourceRef | None) -> Edge:
+def structural(kind: RelationKind, source: str, target: str, at: SourceRef | None) -> Edge:
     return Edge(kind, source, (target,), "resolved", "syntactic", None, at)
 
 
@@ -492,7 +505,7 @@ class Resolver:
         self.modules: dict[str, list[int]] = {}
         self.tests: set[str] = set()
         for path, file_digest, parsed in files:
-            keys, children = _symbol_keys(path, parsed)
+            keys, children = symbol_keys(path, _decls(parsed))
             module = module_name(path)
             if module is not None:
                 self.modules.setdefault(module, []).append(len(self.files))
@@ -505,10 +518,10 @@ class Resolver:
         for name in sorted(self.modules):
             key = module_key(name)
             entities.append(Entity(key, "module", "module", name, None, None, False))
-            edges.append(_structural("contains", "repo", key, None))
+            edges.append(structural("contains", "repo", key, None))
             for i in self.modules[name]:
                 file_key = f"file:{self.files[i].path}"
-                edges.append(_structural("contains_logical", key, file_key, None))
+                edges.append(structural("contains_logical", key, file_key, None))
         for i in range(len(self.files)):
             self._emit(i, entities, edges)
 
@@ -520,7 +533,7 @@ class Resolver:
             return SourceRef(file.path, start, end, file.digest)
 
         def edge(kind: RelationKind, source: str, res: Res, name: str, at: Use | Import) -> Edge:
-            targets, resolution, basis = _target(res, kind == "calls")
+            targets, resolution, basis = edge_target(res, kind == "calls")
             shown = None if resolution == "resolved" else name
             return Edge(kind, source, targets, resolution, basis, shown, evidence(at.start, at.end))
 
@@ -546,9 +559,9 @@ class Resolver:
                 entities.append(
                     Entity(key, "symbol", kind, decl.name, decl.signature, source, test)
                 )
-                edges.append(_structural("contains", file.keys[parent], key, None))
+                edges.append(structural("contains", file.keys[parent], key, None))
                 if parent == 0 and file.module is not None:
-                    edges.append(_structural("defines", module_key(file.module), key, source))
+                    edges.append(structural("defines", module_key(file.module), key, source))
                 for base in scope.bases:
                     res = self._lookup(i, bindings, parent, base.name)
                     edges.append(edge("references", key, res, base.name, base))

@@ -53,7 +53,7 @@ def _index_summary(report: IndexReport) -> str:
             )
         ]
         lines.append(f"changes {since}: " + "; ".join(changes))
-        lines.append(f"python: {report.parsed} parsed, {report.reused} reused")
+        lines.append(f"sources: {report.parsed} parsed, {report.reused} reused")
     if report.partial:
         lines.append(f"partial parses: {len(report.partial)} ({_paths(report.partial)})")
     if report.skipped:
