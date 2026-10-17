@@ -1,0 +1,2836 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "policy",
+   "retry",
+   "retrypolicy"
+  ],
+  "pruned_terms": [
+   "policy",
+   "retrypolicy"
+  ],
+  "distinct_query_terms": [],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "oxidepy/retry.py",
+    "lines": [
+     15,
+     45
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 8,
+    "replica_pruned": 1,
+    "body_pruned": 8,
+    "leaf_body": 1,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "policy",
+     "retry",
+     "retrypolicy"
+    ],
+    "span_overlap": [
+     "policy",
+     "retry",
+     "retrypolicy"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "retry"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "fail",
+   "http",
+   "request",
+   "retri"
+  ],
+  "pruned_terms": [
+   "fail",
+   "request",
+   "retri"
+  ],
+  "distinct_query_terms": [
+   "request"
+  ],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "oxidepy/retry.py",
+    "lines": [
+     31,
+     37
+    ],
+    "entry_rank": 7,
+    "lost": "complete",
+    "fts": 7,
+    "replica": null,
+    "body": 12,
+    "replica_pruned": null,
+    "body_pruned": 5,
+    "leaf_body": null,
+    "file_doc_rank": null,
+    "file_by_entity_rank": null,
+    "doc_overlap": [],
+    "span_overlap": [],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": []
+   },
+   {
+    "file": "oxidepy/http_client.py",
+    "lines": [
+     22,
+     34
+    ],
+    "entry_rank": 2,
+    "lost": "complete",
+    "fts": 2,
+    "replica": 3,
+    "body": 1,
+    "replica_pruned": null,
+    "body_pruned": 2,
+    "leaf_body": 2,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "http"
+    ],
+    "span_overlap": [
+     "fail",
+     "http",
+     "request"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "request"
+    ],
+    "path_overlap": [
+     "http"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "auth",
+   "expir",
+   "refresh",
+   "token"
+  ],
+  "pruned_terms": [
+   "expir",
+   "refresh"
+  ],
+  "distinct_query_terms": [],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "oxidepy/auth.py",
+    "lines": [
+     40,
+     47
+    ],
+    "entry_rank": 2,
+    "lost": "complete",
+    "fts": 2,
+    "replica": 2,
+    "body": 1,
+    "replica_pruned": 1,
+    "body_pruned": 1,
+    "leaf_body": 1,
+    "file_doc_rank": 2,
+    "file_by_entity_rank": 2,
+    "doc_overlap": [
+     "auth",
+     "refresh",
+     "token"
+    ],
+    "span_overlap": [
+     "auth",
+     "expir",
+     "refresh",
+     "token"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "auth"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "attempt",
+   "every",
+   "exhaust",
+   "giv",
+   "retry",
+   "up"
+  ],
+  "pruned_terms": [
+   "every",
+   "exhaust",
+   "giv",
+   "up"
+  ],
+  "distinct_query_terms": [
+   "every"
+  ],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "tests/test_retry.py",
+    "lines": [
+     8,
+     11
+    ],
+    "entry_rank": 3,
+    "lost": "complete",
+    "fts": 3,
+    "replica": 1,
+    "body": 1,
+    "replica_pruned": 1,
+    "body_pruned": 1,
+    "leaf_body": 1,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "attempt",
+     "giv",
+     "retry",
+     "up"
+    ],
+    "span_overlap": [
+     "attempt",
+     "giv",
+     "retry",
+     "up"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "retry"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "cache",
+   "ttl",
+   "ttlcache"
+  ],
+  "pruned_terms": [
+   "cache",
+   "ttl",
+   "ttlcache"
+  ],
+  "distinct_query_terms": [],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "oxidepy/cache.py",
+    "lines": [
+     6,
+     25
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 1,
+    "replica_pruned": 1,
+    "body_pruned": 1,
+    "leaf_body": 1,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "cache",
+     "ttl",
+     "ttlcache"
+    ],
+    "span_overlap": [
+     "cache",
+     "ttl",
+     "ttlcache"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "cache"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "py-implementors-notifier",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "base",
+   "channel",
+   "clas",
+   "delivery",
+   "give",
+   "notify",
+   "retry",
+   "up"
+  ],
+  "pruned_terms": [
+   "base",
+   "channel",
+   "delivery",
+   "give",
+   "notify",
+   "up"
+  ],
+  "distinct_query_terms": [
+   "channel",
+   "delivery",
+   "notify"
+  ],
+  "absent_query_terms": [
+   "give"
+  ],
+  "spans": [
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     13,
+     18
+    ],
+    "entry_rank": 3,
+    "lost": "complete",
+    "fts": 3,
+    "replica": 4,
+    "body": 9,
+    "replica_pruned": 3,
+    "body_pruned": 7,
+    "leaf_body": 8,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 2,
+    "doc_overlap": [
+     "clas",
+     "notify"
+    ],
+    "span_overlap": [
+     "clas",
+     "notify"
+    ],
+    "distinct_doc": [
+     "notify"
+    ],
+    "distinct_span": [
+     "notify"
+    ],
+    "path_overlap": []
+   },
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     21,
+     26
+    ],
+    "entry_rank": 2,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 2,
+    "body": 2,
+    "replica_pruned": 1,
+    "body_pruned": 2,
+    "leaf_body": 1,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 2,
+    "doc_overlap": [
+     "channel",
+     "clas",
+     "notify"
+    ],
+    "span_overlap": [
+     "channel",
+     "clas",
+     "notify"
+    ],
+    "distinct_doc": [
+     "channel",
+     "notify"
+    ],
+    "distinct_span": [
+     "channel",
+     "notify"
+    ],
+    "path_overlap": []
+   }
+  ]
+ },
+ {
+  "task": "py-callers-should-retry",
+  "corpus": "fixture:py_repo",
+  "query_terms": [
+   "again",
+   "attempt",
+   "decid",
+   "fail",
+   "oper",
+   "wheth"
+  ],
+  "pruned_terms": [
+   "again",
+   "decid",
+   "fail",
+   "oper",
+   "wheth"
+  ],
+  "distinct_query_terms": [
+   "again",
+   "decid",
+   "wheth"
+  ],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "oxidepy/notifiers.py",
+    "lines": [
+     31,
+     33
+    ],
+    "entry_rank": 3,
+    "lost": "complete",
+    "fts": 2,
+    "replica": 1,
+    "body": 6,
+    "replica_pruned": null,
+    "body_pruned": null,
+    "leaf_body": 3,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "attempt"
+    ],
+    "span_overlap": [
+     "attempt"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": []
+   }
+  ]
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "corpus": "mwaskom__seaborn@54cab15bdacf",
+  "query_terms": [
+   "about",
+   "active",
+   "actually",
+   "alway",
+   "am",
+   "approach",
+   "artist",
+   "axi",
+   "believe",
+   "best",
+   "categorical",
+   "comment",
+   "def",
+   "discuss",
+   "distinctive",
+   "drawn",
+   "edg",
+   "even",
+   "exactly",
+   "feel",
+   "figure",
+   "finalize",
+   "finalizefigure",
+   "first",
+   "force",
+   "gitt",
+   "good",
+   "grid",
+   "hack",
+   "happen",
+   "idea",
+   "implement",
+   "includ",
+   "inferr",
+   "invert",
+   "invisible",
+   "issue",
+   "itself",
+   "last",
+   "logic",
+   "look",
+   "mak",
+   "margin",
+   "matplotlib",
+   "may",
+   "might",
+   "nominal",
+   "normal",
+   "object",
+   "one",
+   "otherwise",
+   "over",
+   "plot",
+   "plott",
+   "point",
+   "post",
+   "probably",
+   "rath",
+   "scal",
+   "scale",
+   "seaborn",
+   "sense",
+   "sett",
+   "shown",
+   "someth",
+   "spine",
+   "sticky",
+   "straightforward",
+   "style",
+   "suggest",
+   "sure",
+   "theme",
+   "thing",
+   "think",
+   "three",
+   "tick",
+   "tricki",
+   "user",
+   "want"
+  ],
+  "pruned_terms": [
+   "about",
+   "active",
+   "actually",
+   "alway",
+   "am",
+   "approach",
+   "artist",
+   "axi",
+   "believe",
+   "best",
+   "categorical",
+   "comment",
+   "discuss",
+   "distinctive",
+   "drawn",
+   "edg",
+   "even",
+   "exactly",
+   "feel",
+   "figure",
+   "finalize",
+   "finalizefigure",
+   "first",
+   "force",
+   "gitt",
+   "good",
+   "grid",
+   "hack",
+   "happen",
+   "idea",
+   "implement",
+   "includ",
+   "inferr",
+   "invert",
+   "invisible",
+   "issue",
+   "itself",
+   "last",
+   "logic",
+   "look",
+   "mak",
+   "margin",
+   "matplotlib",
+   "may",
+   "might",
+   "nominal",
+   "normal",
+   "object",
+   "one",
+   "otherwise",
+   "over",
+   "plott",
+   "point",
+   "post",
+   "probably",
+   "rath",
+   "scal",
+   "scale",
+   "sense",
+   "sett",
+   "shown",
+   "someth",
+   "spine",
+   "sticky",
+   "straightforward",
+   "style",
+   "suggest",
+   "sure",
+   "theme",
+   "thing",
+   "think",
+   "three",
+   "tick",
+   "tricki",
+   "user",
+   "want"
+  ],
+  "distinct_query_terms": [
+   "active",
+   "am",
+   "approach",
+   "comment",
+   "exactly",
+   "feel",
+   "finalizefigure",
+   "force",
+   "idea",
+   "invisible",
+   "issue",
+   "itself",
+   "mak",
+   "rath",
+   "shown",
+   "spine",
+   "sticky",
+   "straightforward",
+   "suggest",
+   "three",
+   "want"
+  ],
+  "absent_query_terms": [
+   "believe",
+   "discuss",
+   "distinctive",
+   "gitt",
+   "tricki"
+  ],
+  "spans": [
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     25,
+     31
+    ],
+    "entry_rank": null,
+    "lost": "routing: not routed",
+    "fts": 525,
+    "replica": 493,
+    "body": 1573,
+    "replica_pruned": null,
+    "body_pruned": null,
+    "leaf_body": 1332,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "plot",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "plot",
+     "scal",
+     "scale",
+     "seaborn"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1188,
+     1288
+    ],
+    "entry_rank": null,
+    "lost": "budget: reduced view",
+    "fts": 87,
+    "replica": 85,
+    "body": 10,
+    "replica_pruned": 241,
+    "body_pruned": 9,
+    "leaf_body": 14,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "def",
+     "plot",
+     "plott",
+     "scal",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "about",
+     "axi",
+     "categorical",
+     "feel",
+     "hack",
+     "matplotlib",
+     "nominal",
+     "plot",
+     "rath",
+     "scal",
+     "scale",
+     "seaborn",
+     "sense",
+     "someth",
+     "thing",
+     "think"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "feel",
+     "rath"
+    ],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1238,
+     1244
+    ],
+    "entry_rank": null,
+    "lost": "budget: reduced view",
+    "fts": 87,
+    "replica": 85,
+    "body": 10,
+    "replica_pruned": 241,
+    "body_pruned": 9,
+    "leaf_body": 14,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "def",
+     "plot",
+     "plott",
+     "scal",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "axi",
+     "hack",
+     "nominal",
+     "rath",
+     "scal",
+     "scale",
+     "seaborn"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "rath"
+    ],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1628,
+     1649
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 10,
+    "replica_pruned": 1,
+    "body_pruned": 9,
+    "leaf_body": 23,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "def",
+     "figure",
+     "finalize",
+     "finalizefigure",
+     "plot",
+     "plott",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "axi",
+     "def",
+     "figure",
+     "finalize",
+     "finalizefigure",
+     "plot"
+    ],
+    "distinct_doc": [
+     "finalizefigure"
+    ],
+    "distinct_span": [
+     "finalizefigure"
+    ],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1631,
+     1636
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 10,
+    "replica_pruned": 1,
+    "body_pruned": 9,
+    "leaf_body": 23,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "def",
+     "figure",
+     "finalize",
+     "finalizefigure",
+     "plot",
+     "plott",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "axi"
+    ],
+    "distinct_doc": [
+     "finalizefigure"
+    ],
+    "distinct_span": [],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/plot.py",
+    "lines": [
+     1644,
+     1649
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 10,
+    "replica_pruned": 1,
+    "body_pruned": 9,
+    "leaf_body": 23,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "def",
+     "figure",
+     "finalize",
+     "finalizefigure",
+     "plot",
+     "plott",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "axi",
+     "figure"
+    ],
+    "distinct_doc": [
+     "finalizefigure"
+    ],
+    "distinct_span": [],
+    "path_overlap": [
+     "plot",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "lines": [
+     62,
+     76
+    ],
+    "entry_rank": null,
+    "lost": "routing: not routed",
+    "fts": 564,
+    "replica": 364,
+    "body": 82,
+    "replica_pruned": 374,
+    "body_pruned": 83,
+    "leaf_body": 343,
+    "file_doc_rank": 14,
+    "file_by_entity_rank": 18,
+    "doc_overlap": [
+     "def",
+     "scale",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "def",
+     "matplotlib",
+     "nominal",
+     "scale"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/properties.py",
+    "lines": [
+     143,
+     152
+    ],
+    "entry_rank": null,
+    "lost": "routing: not routed",
+    "fts": 1263,
+    "replica": 1386,
+    "body": 1658,
+    "replica_pruned": null,
+    "body_pruned": null,
+    "leaf_body": 1493,
+    "file_doc_rank": 14,
+    "file_by_entity_rank": 18,
+    "doc_overlap": [
+     "seaborn"
+    ],
+    "span_overlap": [
+     "plot",
+     "plott"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/_core/scales.py",
+    "lines": [
+     137,
+     228
+    ],
+    "entry_rank": null,
+    "lost": "budget: omitted, budget",
+    "fts": 35,
+    "replica": 14,
+    "body": 13,
+    "replica_pruned": 15,
+    "body_pruned": 10,
+    "leaf_body": 163,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 2,
+    "doc_overlap": [
+     "axi",
+     "def",
+     "nominal",
+     "scal",
+     "scale",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "about",
+     "axi",
+     "categorical",
+     "def",
+     "implement",
+     "matplotlib",
+     "may",
+     "nominal",
+     "over",
+     "plot",
+     "probably",
+     "scale",
+     "tick"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "scal",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/categorical.py",
+    "lines": [
+     195,
+     224
+    ],
+    "entry_rank": null,
+    "lost": "routing: not routed",
+    "fts": 56,
+    "replica": 56,
+    "body": 1,
+    "replica_pruned": 54,
+    "body_pruned": 1,
+    "leaf_body": 1,
+    "file_doc_rank": 7,
+    "file_by_entity_rank": 9,
+    "doc_overlap": [
+     "axi",
+     "categorical",
+     "def",
+     "plott",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "axi",
+     "best",
+     "categorical",
+     "def",
+     "feel",
+     "grid",
+     "happen",
+     "implement",
+     "includ",
+     "invert",
+     "mak",
+     "matplotlib",
+     "may",
+     "plot",
+     "plott",
+     "seaborn",
+     "someth",
+     "think",
+     "tick"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "feel",
+     "mak"
+    ],
+    "path_overlap": [
+     "categorical",
+     "seaborn"
+    ]
+   },
+   {
+    "file": "seaborn/distributions.py",
+    "lines": [
+     570,
+     663
+    ],
+    "entry_rank": null,
+    "lost": "budget: omitted, budget",
+    "fts": 233,
+    "replica": 232,
+    "body": 9,
+    "replica_pruned": 236,
+    "body_pruned": 8,
+    "leaf_body": 20,
+    "file_doc_rank": 8,
+    "file_by_entity_rank": 24,
+    "doc_overlap": [
+     "def",
+     "plot",
+     "plott",
+     "seaborn"
+    ],
+    "span_overlap": [
+     "artist",
+     "edg",
+     "matplotlib",
+     "plot",
+     "plott",
+     "post",
+     "sticky"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "sticky"
+    ],
+    "path_overlap": [
+     "seaborn"
+    ]
+   },
+   {
+    "file": "tests/test_distributions.py",
+    "lines": [
+     288,
+     304
+    ],
+    "entry_rank": null,
+    "lost": "routing: not routed",
+    "fts": 353,
+    "replica": 249,
+    "body": 274,
+    "replica_pruned": 194,
+    "body_pruned": 253,
+    "leaf_body": 478,
+    "file_doc_rank": 15,
+    "file_by_entity_rank": 8,
+    "doc_overlap": [
+     "def",
+     "margin",
+     "plot"
+    ],
+    "span_overlap": [
+     "def",
+     "margin"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": []
+   }
+  ]
+ },
+ {
+  "task": "pallets__flask-5014",
+  "corpus": "pallets__flask@7ee9ceb71e86",
+  "query_terms": [
+   "4944",
+   "blueprint",
+   "correctly",
+   "empty",
+   "error",
+   "given",
+   "helpful",
+   "name",
+   "non",
+   "rais",
+   "require",
+   "thing",
+   "try",
+   "value",
+   "valueerror",
+   "work"
+  ],
+  "pruned_terms": [
+   "correctly",
+   "empty",
+   "error",
+   "given",
+   "helpful",
+   "name",
+   "non",
+   "rais",
+   "require",
+   "thing",
+   "try",
+   "value",
+   "valueerror",
+   "work"
+  ],
+  "distinct_query_terms": [
+   "correctly",
+   "helpful",
+   "thing"
+  ],
+  "absent_query_terms": [
+   "4944"
+  ],
+  "spans": [
+   {
+    "file": "src/flask/blueprints.py",
+    "lines": [
+     190,
+     195
+    ],
+    "entry_rank": null,
+    "lost": "entry: no entry point in its file",
+    "fts": 64,
+    "replica": 88,
+    "body": 25,
+    "replica_pruned": 302,
+    "body_pruned": 66,
+    "leaf_body": 69,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 11,
+    "doc_overlap": [
+     "blueprint",
+     "name"
+    ],
+    "span_overlap": [
+     "error",
+     "name",
+     "value",
+     "valueerror"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "blueprint"
+    ]
+   },
+   {
+    "file": "src/flask/blueprints.py",
+    "lines": [
+     191,
+     207
+    ],
+    "entry_rank": null,
+    "lost": "entry: no entry point in its file",
+    "fts": 64,
+    "replica": 88,
+    "body": 25,
+    "replica_pruned": 302,
+    "body_pruned": 66,
+    "leaf_body": 69,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 11,
+    "doc_overlap": [
+     "blueprint",
+     "name"
+    ],
+    "span_overlap": [
+     "blueprint",
+     "error",
+     "name",
+     "value",
+     "valueerror"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "blueprint"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-1142",
+  "corpus": "psf__requests@22623bd8c265",
+  "query_terms": [
+   "503",
+   "add",
+   "alway",
+   "amazon",
+   "automatically",
+   "behavior",
+   "com",
+   "contain",
+   "content",
+   "every",
+   "example",
+   "head",
+   "hi",
+   "http",
+   "length",
+   "oren",
+   "possibility",
+   "request",
+   "return",
+   "right",
+   "seem",
+   "send",
+   "thank",
+   "think"
+  ],
+  "pruned_terms": [
+   "add",
+   "alway",
+   "amazon",
+   "automatically",
+   "behavior",
+   "com",
+   "contain",
+   "content",
+   "every",
+   "example",
+   "head",
+   "hi",
+   "http",
+   "length",
+   "oren",
+   "possibility",
+   "return",
+   "right",
+   "seem",
+   "send",
+   "thank",
+   "think"
+  ],
+  "distinct_query_terms": [
+   "automatically",
+   "behavior",
+   "seem",
+   "thank"
+  ],
+  "absent_query_terms": [
+   "amazon",
+   "hi",
+   "oren",
+   "possibility",
+   "think"
+  ],
+  "spans": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     386,
+     398
+    ],
+    "entry_rank": 1,
+    "lost": "selection: value N below floor",
+    "fts": 1,
+    "replica": 1,
+    "body": 2,
+    "replica_pruned": 1,
+    "body_pruned": 2,
+    "leaf_body": 2,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "content",
+     "length",
+     "request"
+    ],
+    "span_overlap": [
+     "content",
+     "head",
+     "http",
+     "length"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "request"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-1766",
+  "corpus": "psf__requests@847735553aed",
+  "query_terms": [
+   "2069",
+   "2617",
+   "append",
+   "auth",
+   "authentic",
+   "backward",
+   "bas",
+   "com",
+   "comamnd",
+   "compatibility",
+   "compliant",
+   "curl",
+   "difference",
+   "digest",
+   "directive",
+   "double",
+   "example",
+   "html",
+   "http",
+   "ietf",
+   "implement",
+   "indicat",
+   "int",
+   "integrity",
+   "line",
+   "made",
+   "minor",
+   "one",
+   "option",
+   "optional",
+   "org",
+   "passwd",
+   "present",
+   "protection",
+   "qop",
+   "quality",
+   "quot",
+   "quote",
+   "rfc",
+   "rfc2617",
+   "scheme",
+   "seem",
+   "sensitive",
+   "serv",
+   "side",
+   "str",
+   "support",
+   "token",
+   "tool",
+   "unfortunately",
+   "user",
+   "valu",
+   "value",
+   "version"
+  ],
+  "pruned_terms": [
+   "append",
+   "auth",
+   "authentic",
+   "backward",
+   "bas",
+   "com",
+   "comamnd",
+   "compatibility",
+   "compliant",
+   "curl",
+   "difference",
+   "digest",
+   "directive",
+   "double",
+   "example",
+   "html",
+   "http",
+   "ietf",
+   "implement",
+   "indicat",
+   "int",
+   "integrity",
+   "line",
+   "made",
+   "minor",
+   "one",
+   "option",
+   "optional",
+   "org",
+   "passwd",
+   "present",
+   "protection",
+   "qop",
+   "quality",
+   "quot",
+   "quote",
+   "rfc",
+   "scheme",
+   "seem",
+   "sensitive",
+   "serv",
+   "side",
+   "str",
+   "support",
+   "token",
+   "tool",
+   "unfortunately",
+   "user",
+   "valu",
+   "value",
+   "version"
+  ],
+  "distinct_query_terms": [
+   "compliant",
+   "curl",
+   "difference",
+   "directive",
+   "ietf",
+   "minor",
+   "passwd",
+   "qop",
+   "quot",
+   "seem",
+   "sensitive",
+   "side",
+   "token",
+   "tool"
+  ],
+  "absent_query_terms": [
+   "comamnd",
+   "indicat",
+   "integrity",
+   "protection",
+   "quality",
+   "rfc2617",
+   "unfortunately"
+  ],
+  "spans": [
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     105,
+     111
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 4,
+    "replica_pruned": 1,
+    "body_pruned": 4,
+    "leaf_body": 15,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "auth",
+     "digest",
+     "http"
+    ],
+    "span_overlap": [],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "auth"
+    ]
+   },
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     122,
+     149
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 4,
+    "replica_pruned": 1,
+    "body_pruned": 4,
+    "leaf_body": 15,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "auth",
+     "digest",
+     "http"
+    ],
+    "span_overlap": [
+     "auth",
+     "digest",
+     "int",
+     "qop"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "qop"
+    ],
+    "path_overlap": [
+     "auth"
+    ]
+   },
+   {
+    "file": "requests/auth.py",
+    "lines": [
+     144,
+     150
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 4,
+    "replica_pruned": 1,
+    "body_pruned": 4,
+    "leaf_body": 15,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "auth",
+     "digest",
+     "http"
+    ],
+    "span_overlap": [
+     "auth",
+     "digest",
+     "qop"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "qop"
+    ],
+    "path_overlap": [
+     "auth"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-2317",
+  "corpus": "psf__requests@091991be0da1",
+  "query_terms": [
+   "404",
+   "am",
+   "arg",
+   "being",
+   "between",
+   "binary",
+   "broken",
+   "bug",
+   "builtin",
+   "builtinstr",
+   "command",
+   "convert",
+   "difference",
+   "doesn",
+   "encode",
+   "exist",
+   "found",
+   "get",
+   "handl",
+   "includ",
+   "list",
+   "literal",
+   "long",
+   "mak",
+   "method",
+   "neutronclient",
+   "problem",
+   "py",
+   "python",
+   "python2",
+   "python3",
+   "request",
+   "response",
+   "right",
+   "safe",
+   "safeencodelist",
+   "seem",
+   "session",
+   "start",
+   "str",
+   "sure",
+   "tri",
+   "use",
+   "util",
+   "valu",
+   "value",
+   "work",
+   "wouldn"
+  ],
+  "pruned_terms": [
+   "am",
+   "arg",
+   "being",
+   "between",
+   "binary",
+   "broken",
+   "bug",
+   "builtin",
+   "builtinstr",
+   "command",
+   "convert",
+   "difference",
+   "doesn",
+   "encode",
+   "exist",
+   "found",
+   "get",
+   "handl",
+   "includ",
+   "list",
+   "literal",
+   "long",
+   "mak",
+   "method",
+   "neutronclient",
+   "problem",
+   "python",
+   "response",
+   "right",
+   "safe",
+   "safeencodelist",
+   "seem",
+   "session",
+   "start",
+   "str",
+   "sure",
+   "tri",
+   "use",
+   "util",
+   "valu",
+   "value",
+   "work",
+   "wouldn"
+  ],
+  "distinct_query_terms": [
+   "am",
+   "binary",
+   "broken",
+   "bug",
+   "command",
+   "difference",
+   "literal",
+   "problem",
+   "python2",
+   "python3",
+   "seem",
+   "tri"
+  ],
+  "absent_query_terms": [
+   "neutronclient",
+   "safeencodelist",
+   "wouldn"
+  ],
+  "spans": [
+   {
+    "file": "requests/compat.py",
+    "lines": [
+     87,
+     115
+    ],
+    "entry_rank": null,
+    "lost": "entry: no entry point in its file",
+    "fts": 245,
+    "replica": 252,
+    "body": 504,
+    "replica_pruned": null,
+    "body_pruned": null,
+    "leaf_body": 454,
+    "file_doc_rank": 61,
+    "file_by_entity_rank": 39,
+    "doc_overlap": [
+     "py",
+     "request"
+    ],
+    "span_overlap": [
+     "builtin",
+     "builtinstr",
+     "list",
+     "long",
+     "py",
+     "request",
+     "str"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     11,
+     23
+    ],
+    "entry_rank": null,
+    "lost": "selection: value N below floor",
+    "fts": 54,
+    "replica": 55,
+    "body": 271,
+    "replica_pruned": 55,
+    "body_pruned": 270,
+    "leaf_body": 211,
+    "file_doc_rank": 7,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "py",
+     "request",
+     "session"
+    ],
+    "span_overlap": [
+     "builtin",
+     "builtinstr",
+     "list",
+     "request",
+     "str",
+     "util"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request",
+     "session"
+    ]
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     13,
+     19
+    ],
+    "entry_rank": null,
+    "lost": "selection: value N below floor",
+    "fts": 54,
+    "replica": 55,
+    "body": 271,
+    "replica_pruned": 55,
+    "body_pruned": 270,
+    "leaf_body": 211,
+    "file_doc_rank": 7,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "py",
+     "request",
+     "session"
+    ],
+    "span_overlap": [
+     "builtin",
+     "builtinstr",
+     "request",
+     "str"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request",
+     "session"
+    ]
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     120,
+     156
+    ],
+    "entry_rank": null,
+    "lost": "budget: omitted, budget",
+    "fts": 60,
+    "replica": 61,
+    "body": 58,
+    "replica_pruned": 62,
+    "body_pruned": 58,
+    "leaf_body": 84,
+    "file_doc_rank": 7,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "py",
+     "request",
+     "session"
+    ],
+    "span_overlap": [
+     "encode",
+     "found",
+     "get",
+     "method",
+     "request",
+     "str"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request",
+     "session"
+    ]
+   },
+   {
+    "file": "requests/sessions.py",
+    "lines": [
+     425,
+     431
+    ],
+    "entry_rank": null,
+    "lost": "budget: reduced view",
+    "fts": 52,
+    "replica": 51,
+    "body": 33,
+    "replica_pruned": 51,
+    "body_pruned": 32,
+    "leaf_body": 35,
+    "file_doc_rank": 7,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "method",
+     "py",
+     "request",
+     "session"
+    ],
+    "span_overlap": [
+     "builtin",
+     "builtinstr",
+     "method",
+     "request",
+     "str"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request",
+     "session"
+    ]
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     655,
+     671
+    ],
+    "entry_rank": 2,
+    "lost": "complete",
+    "fts": 2,
+    "replica": 7,
+    "body": 3,
+    "replica_pruned": 7,
+    "body_pruned": 3,
+    "leaf_body": 1,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "py",
+     "request",
+     "str",
+     "util"
+    ],
+    "span_overlap": [
+     "builtin",
+     "builtinstr",
+     "encode",
+     "py",
+     "str"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request",
+     "util"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-2931",
+  "corpus": "psf__requests@5f7a3a74aab1",
+  "query_terms": [
+   "2844",
+   "binary",
+   "call",
+   "com",
+   "data",
+   "due",
+   "encode",
+   "fail",
+   "github",
+   "http",
+   "httpbin",
+   "import",
+   "introduc",
+   "issu",
+   "kennethreitz",
+   "native",
+   "org",
+   "payload",
+   "put",
+   "request",
+   "str",
+   "tonativestr",
+   "utf",
+   "work"
+  ],
+  "pruned_terms": [
+   "binary",
+   "call",
+   "com",
+   "data",
+   "due",
+   "encode",
+   "fail",
+   "github",
+   "http",
+   "httpbin",
+   "import",
+   "introduc",
+   "issu",
+   "kennethreitz",
+   "native",
+   "org",
+   "payload",
+   "put",
+   "str",
+   "tonativestr",
+   "utf",
+   "work"
+  ],
+  "distinct_query_terms": [
+   "due",
+   "introduc",
+   "payload",
+   "tonativestr"
+  ],
+  "absent_query_terms": [],
+  "spans": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     74,
+     99
+    ],
+    "entry_rank": 12,
+    "lost": "complete",
+    "fts": 12,
+    "replica": 6,
+    "body": 3,
+    "replica_pruned": 6,
+    "body_pruned": 3,
+    "leaf_body": 3,
+    "file_doc_rank": 5,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "data",
+     "encode",
+     "request"
+    ],
+    "span_overlap": [
+     "data",
+     "encode",
+     "native",
+     "str",
+     "tonativestr",
+     "utf"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "tonativestr"
+    ],
+    "path_overlap": [
+     "request"
+    ]
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     81,
+     87
+    ],
+    "entry_rank": 12,
+    "lost": "complete",
+    "fts": 12,
+    "replica": 6,
+    "body": 3,
+    "replica_pruned": 6,
+    "body_pruned": 3,
+    "leaf_body": 3,
+    "file_doc_rank": 5,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "data",
+     "encode",
+     "request"
+    ],
+    "span_overlap": [
+     "data",
+     "native",
+     "str",
+     "tonativestr"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [
+     "tonativestr"
+    ],
+    "path_overlap": [
+     "request"
+    ]
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     372,
+     387
+    ],
+    "entry_rank": null,
+    "lost": "selection: item cap N",
+    "fts": 104,
+    "replica": 190,
+    "body": 1,
+    "replica_pruned": null,
+    "body_pruned": 1,
+    "leaf_body": 2,
+    "file_doc_rank": 5,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "request"
+    ],
+    "span_overlap": [
+     "encode",
+     "str",
+     "utf"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "request"
+    ]
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     385,
+     390
+    ],
+    "entry_rank": null,
+    "lost": "selection: item cap N",
+    "fts": 104,
+    "replica": 190,
+    "body": 1,
+    "replica_pruned": null,
+    "body_pruned": 1,
+    "leaf_body": 2,
+    "file_doc_rank": 5,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "request"
+    ],
+    "span_overlap": [
+     "encode",
+     "str",
+     "utf"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "request"
+    ]
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     686,
+     704
+    ],
+    "entry_rank": 1,
+    "lost": "complete",
+    "fts": 1,
+    "replica": 1,
+    "body": 6,
+    "replica_pruned": 1,
+    "body_pruned": 6,
+    "leaf_body": 5,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 1,
+    "doc_overlap": [
+     "native",
+     "request",
+     "str",
+     "tonativestr"
+    ],
+    "span_overlap": [
+     "encode",
+     "native",
+     "str",
+     "tonativestr"
+    ],
+    "distinct_doc": [
+     "tonativestr"
+    ],
+    "distinct_span": [
+     "tonativestr"
+    ],
+    "path_overlap": [
+     "request"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-5414",
+  "corpus": "psf__requests@39d0fdd9096f",
+  "query_terms": [
+   "006",
+   "09591007",
+   "1010103",
+   "1010103f",
+   "1010104",
+   "1010104f",
+   "15",
+   "19",
+   "23",
+   "25",
+   "40",
+   "401",
+   "4168",
+   "50",
+   "7368",
+   "774",
+   "actual",
+   "af",
+   "attempt",
+   "bas",
+   "bc",
+   "beneficial",
+   "blob",
+   "ca",
+   "ca6f9af5dba09591007b15a7368bc0f006b7cc50",
+   "catch",
+   "cc",
+   "chardet",
+   "codec",
+   "com",
+   "cpython",
+   "cryptography",
+   "dba",
+   "empty",
+   "encod",
+   "error",
+   "even",
+   "example",
+   "exception",
+   "expect",
+   "fail",
+   "far",
+   "fix",
+   "generic",
+   "gett",
+   "github",
+   "help",
+   "hesit",
+   "http",
+   "idna",
+   "implement",
+   "import",
+   "inform",
+   "instead",
+   "intention",
+   "invalid",
+   "invalidurl",
+   "issue",
+   "l401",
+   "label",
+   "line",
+   "linux",
+   "long",
+   "model",
+   "name",
+   "open",
+   "openssl",
+   "opensslversion",
+   "platform",
+   "pr",
+   "psf",
+   "py",
+   "pyopenssl",
+   "python",
+   "python3",
+   "rais",
+   "raise",
+   "release",
+   "reproduction",
+   "request",
+   "result",
+   "rethrow",
+   "seem",
+   "similar",
+   "ssl",
+   "step",
+   "system",
+   "systemssl",
+   "true",
+   "unicode",
+   "unicodeerror",
+   "url",
+   "urllib",
+   "urllib3",
+   "usingpyopenssl",
+   "version"
+  ],
+  "pruned_terms": [
+   "actual",
+   "af",
+   "attempt",
+   "bas",
+   "bc",
+   "beneficial",
+   "blob",
+   "ca",
+   "catch",
+   "cc",
+   "chardet",
+   "codec",
+   "com",
+   "cpython",
+   "cryptography",
+   "dba",
+   "empty",
+   "encod",
+   "error",
+   "even",
+   "example",
+   "exception",
+   "expect",
+   "fail",
+   "far",
+   "fix",
+   "generic",
+   "gett",
+   "github",
+   "help",
+   "hesit",
+   "http",
+   "idna",
+   "implement",
+   "import",
+   "inform",
+   "instead",
+   "intention",
+   "invalid",
+   "invalidurl",
+   "issue",
+   "label",
+   "line",
+   "linux",
+   "long",
+   "model",
+   "name",
+   "open",
+   "openssl",
+   "opensslversion",
+   "platform",
+   "pr",
+   "psf",
+   "pyopenssl",
+   "python",
+   "rais",
+   "raise",
+   "release",
+   "reproduction",
+   "result",
+   "rethrow",
+   "seem",
+   "similar",
+   "ssl",
+   "step",
+   "system",
+   "systemssl",
+   "true",
+   "unicode",
+   "unicodeerror",
+   "url",
+   "urllib",
+   "usingpyopenssl",
+   "version"
+  ],
+  "distinct_query_terms": [
+   "19",
+   "23",
+   "25",
+   "50",
+   "af",
+   "bc",
+   "gett",
+   "linux",
+   "openssl",
+   "opensslversion",
+   "usingpyopenssl"
+  ],
+  "absent_query_terms": [
+   "006",
+   "09591007",
+   "1010103",
+   "1010103f",
+   "1010104",
+   "1010104f",
+   "15",
+   "40",
+   "4168",
+   "7368",
+   "774",
+   "beneficial",
+   "blob",
+   "ca6f9af5dba09591007b15a7368bc0f006b7cc50",
+   "dba",
+   "far",
+   "hesit",
+   "intention",
+   "l401",
+   "python3",
+   "reproduction",
+   "rethrow",
+   "seem",
+   "step"
+  ],
+  "spans": [
+   {
+    "file": "requests/models.py",
+    "lines": [
+     375,
+     420
+    ],
+    "entry_rank": null,
+    "lost": "selection: item cap N",
+    "fts": 78,
+    "replica": 78,
+    "body": 3,
+    "replica_pruned": 77,
+    "body_pruned": 3,
+    "leaf_body": 4,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "encod",
+     "model",
+     "py",
+     "request",
+     "url"
+    ],
+    "span_overlap": [
+     "encod",
+     "error",
+     "exception",
+     "http",
+     "idna",
+     "invalid",
+     "invalidurl",
+     "label",
+     "raise",
+     "unicode",
+     "unicodeerror",
+     "url"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "model",
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/models.py",
+    "lines": [
+     403,
+     409
+    ],
+    "entry_rank": null,
+    "lost": "selection: item cap N",
+    "fts": 78,
+    "replica": 78,
+    "body": 3,
+    "replica_pruned": 77,
+    "body_pruned": 3,
+    "leaf_body": 4,
+    "file_doc_rank": 3,
+    "file_by_entity_rank": 5,
+    "doc_overlap": [
+     "encod",
+     "model",
+     "py",
+     "request",
+     "url"
+    ],
+    "span_overlap": [
+     "encod",
+     "error",
+     "idna",
+     "invalid",
+     "invalidurl",
+     "label",
+     "raise",
+     "unicode",
+     "unicodeerror",
+     "url"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "model",
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "tests/test_requests.py",
+    "lines": [
+     77,
+     87
+    ],
+    "entry_rank": 20,
+    "lost": "complete",
+    "fts": 20,
+    "replica": 20,
+    "body": 15,
+    "replica_pruned": 18,
+    "body_pruned": 15,
+    "leaf_body": 28,
+    "file_doc_rank": 1,
+    "file_by_entity_rank": 4,
+    "doc_overlap": [
+     "exception",
+     "invalid",
+     "py",
+     "request",
+     "url"
+    ],
+    "span_overlap": [
+     "exception",
+     "http",
+     "invalid",
+     "invalidurl",
+     "rais",
+     "request",
+     "url"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   }
+  ]
+ },
+ {
+  "task": "psf__requests-6028",
+  "corpus": "psf__requests@0192aac24123",
+  "query_terms": [
+   "101010",
+   "101010cf",
+   "12",
+   "13",
+   "200",
+   "26",
+   "27",
+   "407",
+   "7620",
+   "am",
+   "assum",
+   "authentic",
+   "bug",
+   "cf",
+   "chang",
+   "chardet",
+   "charset",
+   "charsetnormaliz",
+   "code",
+   "cpython",
+   "cryptography",
+   "doc",
+   "error",
+   "example",
+   "expect",
+   "false",
+   "fine",
+   "generic",
+   "happen",
+   "html",
+   "http",
+   "idna",
+   "implement",
+   "import",
+   "inform",
+   "instead",
+   "json",
+   "linux",
+   "name",
+   "normaliz",
+   "notable",
+   "null",
+   "open",
+   "openssl",
+   "opensslversion",
+   "org",
+   "paid",
+   "platform",
+   "print",
+   "proxy",
+   "py",
+   "pyopenssl",
+   "python",
+   "release",
+   "request",
+   "service",
+   "ssl",
+   "statu",
+   "statuscode",
+   "summary",
+   "system",
+   "systemssl",
+   "test",
+   "true",
+   "urllib",
+   "urllib3",
+   "usingcharsetnormaliz",
+   "usingpyopenssl",
+   "version",
+   "whatsnew",
+   "work"
+  ],
+  "pruned_terms": [
+   "am",
+   "assum",
+   "authentic",
+   "bug",
+   "cf",
+   "chang",
+   "chardet",
+   "charset",
+   "charsetnormaliz",
+   "code",
+   "cpython",
+   "cryptography",
+   "doc",
+   "error",
+   "example",
+   "expect",
+   "false",
+   "fine",
+   "generic",
+   "happen",
+   "html",
+   "http",
+   "idna",
+   "implement",
+   "import",
+   "inform",
+   "instead",
+   "json",
+   "linux",
+   "name",
+   "normaliz",
+   "notable",
+   "null",
+   "open",
+   "openssl",
+   "opensslversion",
+   "org",
+   "paid",
+   "platform",
+   "print",
+   "proxy",
+   "pyopenssl",
+   "python",
+   "release",
+   "service",
+   "ssl",
+   "statu",
+   "statuscode",
+   "summary",
+   "system",
+   "systemssl",
+   "true",
+   "urllib",
+   "usingcharsetnormaliz",
+   "usingpyopenssl",
+   "version",
+   "whatsnew",
+   "work"
+  ],
+  "distinct_query_terms": [
+   "407",
+   "am",
+   "linux",
+   "openssl",
+   "opensslversion",
+   "service",
+   "usingcharsetnormaliz",
+   "usingpyopenssl"
+  ],
+  "absent_query_terms": [
+   "101010",
+   "101010cf",
+   "13",
+   "7620",
+   "cf",
+   "fine",
+   "notable",
+   "paid",
+   "summary",
+   "whatsnew"
+  ],
+  "spans": [
+   {
+    "file": "requests/adapters.py",
+    "lines": [
+     293,
+     318
+    ],
+    "entry_rank": null,
+    "lost": "budget: reduced view",
+    "fts": 125,
+    "replica": 110,
+    "body": 11,
+    "replica_pruned": 86,
+    "body_pruned": 13,
+    "leaf_body": 68,
+    "file_doc_rank": 10,
+    "file_by_entity_rank": 7,
+    "doc_overlap": [
+     "http",
+     "proxy",
+     "py",
+     "request"
+    ],
+    "span_overlap": [
+     "code",
+     "http",
+     "proxy",
+     "request",
+     "urllib",
+     "urllib3"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/adapters.py",
+    "lines": [
+     373,
+     393
+    ],
+    "entry_rank": null,
+    "lost": "budget: reduced view",
+    "fts": 100,
+    "replica": 97,
+    "body": 11,
+    "replica_pruned": 73,
+    "body_pruned": 13,
+    "leaf_body": 37,
+    "file_doc_rank": 10,
+    "file_by_entity_rank": 7,
+    "doc_overlap": [
+     "http",
+     "proxy",
+     "py",
+     "request"
+    ],
+    "span_overlap": [
+     "code",
+     "http",
+     "proxy",
+     "request",
+     "urllib",
+     "urllib3",
+     "work"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     960,
+     983
+    ],
+    "entry_rank": null,
+    "lost": "budget: omitted, budget",
+    "fts": 49,
+    "replica": 762,
+    "body": 317,
+    "replica_pruned": null,
+    "body_pruned": 305,
+    "leaf_body": 316,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 10,
+    "doc_overlap": [
+     "py",
+     "request"
+    ],
+    "span_overlap": [
+     "assum",
+     "test"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     974,
+     979
+    ],
+    "entry_rank": null,
+    "lost": "budget: omitted, budget",
+    "fts": 49,
+    "replica": 762,
+    "body": 317,
+    "replica_pruned": null,
+    "body_pruned": 305,
+    "leaf_body": 316,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 10,
+    "doc_overlap": [
+     "py",
+     "request"
+    ],
+    "span_overlap": [],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "requests/utils.py",
+    "lines": [
+     1027,
+     1041
+    ],
+    "entry_rank": null,
+    "lost": "entry: no entry point in its file",
+    "fts": 657,
+    "replica": 653,
+    "body": 342,
+    "replica_pruned": null,
+    "body_pruned": 316,
+    "leaf_body": 293,
+    "file_doc_rank": 4,
+    "file_by_entity_rank": 10,
+    "doc_overlap": [
+     "py",
+     "request"
+    ],
+    "span_overlap": [
+     "authentic"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "request"
+    ]
+   },
+   {
+    "file": "tests/test_utils.py",
+    "lines": [
+     600,
+     607
+    ],
+    "entry_rank": 20,
+    "lost": "budget: omitted, budget",
+    "fts": 20,
+    "replica": 177,
+    "body": 125,
+    "replica_pruned": 181,
+    "body_pruned": 105,
+    "leaf_body": 85,
+    "file_doc_rank": 8,
+    "file_by_entity_rank": 12,
+    "doc_overlap": [
+     "expect",
+     "py",
+     "test"
+    ],
+    "span_overlap": [
+     "example",
+     "expect",
+     "http",
+     "test"
+    ],
+    "distinct_doc": [],
+    "distinct_span": [],
+    "path_overlap": [
+     "py",
+     "test"
+    ]
+   }
+  ]
+ }
+]
