@@ -19,6 +19,7 @@ from oxide.models import (
     OwnershipConflict,
     StoreCorrupt,
 )
+from oxide.storage import ladybug
 
 
 def store_dir(data: Path) -> Path:
@@ -98,6 +99,24 @@ def test_one_owner_per_store_in_process_and_across_processes(private_data: Path)
         result = subprocess.run([sys.executable, "-c", script], env=env(private_data), check=False)
         assert result.returncode == 0
     oxide.open_repository(FIXTURE).close()  # released on close
+
+
+def test_the_load_pool_grows_with_the_rows_it_copies(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Scaled down: at a 16 MiB floor, these 40k relations overflow a fixed pool (as
+    # VS Code's 554k did 128 MiB, docs/large-repositories.md); views keep the floor.
+    calls = "".join(f"    unknown_{k}()\n" for k in range(500))
+    root = write(tmp_path / "repo", {f"m{i}.py": f"def f{i}():\n{calls}" for i in range(80)})
+    monkeypatch.setattr(ladybug, "BUFFER_POOL", 16 << 20)
+    monkeypatch.setattr(ladybug, "LOAD_POOL_PER_BYTE", 0)
+    fixed = oxide.open_repository(root, data_dir=tmp_path / "fixed")
+    with fixed, pytest.raises(RuntimeError, match="buffer pool is full"):
+        fixed.index()
+    monkeypatch.setattr(ladybug, "LOAD_POOL_PER_BYTE", 2)
+    with oxide.open_repository(root, data_dir=tmp_path / "scaled") as repo:
+        assert repo.index().relations > 40_000
+        assert len(repo.relations("symbol:m7.py#f7")) > 500  # read back at the floor
 
 
 def test_typed_errors(tmp_path: Path) -> None:

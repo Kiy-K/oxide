@@ -57,8 +57,11 @@ from oxide.models import (
 
 SCHEMA_VERSION = "oxide-ladybug-py-v1"
 STORAGE_FORMAT = 47
-# shortcut: one fixed pool; very large repositories may need more, measure first.
+# The pool of every read view, and the floor of a load's. A load holds what it copies
+# in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
+# needs 288 MiB), so a load gets twice its CSV bytes more (docs/large-repositories.md).
 BUFFER_POOL = 128 << 20
+LOAD_POOL_PER_BYTE = 2
 FTS_VERSION = "0.21.0"
 FTS_SHA256 = "742f2756c2f80bcd1886b6ee0446483038cff0ecf6cf47f698bc6fe855cbaef6"
 FTS_URL = f"https://extension.ladybugdb.com/v{FTS_VERSION}/linux_amd64/fts/libfts.lbug_extension"
@@ -640,9 +643,12 @@ class Store:
             for target in edge.targets:
                 rels.append((edge.source, target, edge.kind, edge.resolution, edge.basis, *tail))
         tables = {"Entity": entities, "Unresolved": unresolved, "Rel": rels, "Opaque": opaque}
-        db = ladybug.Database(
-            str(staging / "graph.lbug"), buffer_pool_size=BUFFER_POOL, max_num_threads=1
-        )
+        written = {
+            table: _write_csv(staging / f"{table}.csv", rows) for table, rows in tables.items()
+        }
+        size = sum((staging / f"{table}.csv").stat().st_size for table in tables)
+        pool = BUFFER_POOL + LOAD_POOL_PER_BYTE * size
+        db = ladybug.Database(str(staging / "graph.lbug"), buffer_pool_size=pool, max_num_threads=1)
         conn = ladybug.Connection(db)
         try:
             if db.get_storage_version() != STORAGE_FORMAT:
@@ -650,9 +656,9 @@ class Store:
             for statement in _SCHEMA:
                 _rows(conn, statement)
             _rows(conn, "BEGIN TRANSACTION")
-            for table, rows in tables.items():
+            for table in tables:
                 csv = staging / f"{table}.csv"
-                if _write_csv(csv, rows):
+                if written[table]:
                     options = "header=false, quote='\"', escape='\"', delim=',', parallel=false"
                     _rows(conn, f"COPY {table} FROM {_literal(csv)} ({options})")
                 csv.unlink()
@@ -664,7 +670,6 @@ class Store:
                 "Opaque": "MATCH ()-[r:Opaque]->() RETURN count(r)",
             }
             read = {table: _rows(conn, query)[0][0] for table, query in counted.items()}
-            written = {table: len(rows) for table, rows in tables.items()}
             if read != written:
                 # COPY can drop rows whose endpoints are missing; never publish that.
                 raise StoreCorrupt(f"read back {read}, wrote {written}")
