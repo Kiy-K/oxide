@@ -1,0 +1,818 @@
+{
+ "corpora": {
+  "coder__code-server@5d3c9edce436": {
+   "url": "https://github.com/coder/code-server",
+   "commit": "5d3c9edce436d11d51aa1e586c11eaa49d626dc2",
+   "ts_files": 83,
+   "configs": 4,
+   "tree_sha256": "0187911d60642ead63ecf55312f96052191ad7af44bedd3cc61db48d61db04ed",
+   "snapshot": "sha256:0c7b060768573d00ac5807b5a4197b16a2ebd83ba2c5cb9a7c314af072047734",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 573,
+   "relations": 5278,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 377,
+     "unresolved": 227
+    },
+    "calls": {
+     "resolved": 720,
+     "unresolved": 2576
+    },
+    "references": {
+     "resolved": 12,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 223,
+    "relative:found": 1,
+    "relative:none": 3
+   }
+  },
+  "coder__code-server@78658f1cf48a": {
+   "url": "https://github.com/coder/code-server",
+   "commit": "78658f1cf48a5e019a82cde937cfa8feed8b986b",
+   "ts_files": 72,
+   "configs": 4,
+   "tree_sha256": "88c2c5cdd8b4c0e1b29b324ab4d133c3b71746892b84748df6e1df02502bf815",
+   "snapshot": "sha256:2c5b725f4dc42b3ab21692e419479213a458d5f4bf5024e21a293282e46a6039",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 504,
+   "relations": 4414,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 311,
+     "unresolved": 208
+    },
+    "calls": {
+     "resolved": 563,
+     "unresolved": 2188
+    },
+    "references": {
+     "resolved": 10,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 208
+   }
+  },
+  "darkreader__darkreader@991883df4d59": {
+   "url": "https://github.com/darkreader/darkreader",
+   "commit": "991883df4d5910851130e3dc0e21fcbce604ea7d",
+   "ts_files": 210,
+   "configs": 6,
+   "tree_sha256": "15e65fc03580587c8342118d68695476ce879701b1d26c58840dc891c6283b73",
+   "snapshot": "sha256:173e417c2f2590c66fa7df7b17e6ca15c5b2cb00ca6303a35cde10350380f415",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 1604,
+   "relations": 10760,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 962,
+     "unresolved": 176
+    },
+    "calls": {
+     "ambiguous": 50,
+     "resolved": 2202,
+     "unresolved": 4857
+    },
+    "references": {
+     "resolved": 9,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 138,
+    "relative:found": 38
+   }
+  },
+  "darkreader__darkreader@a787eb511f45": {
+   "url": "https://github.com/darkreader/darkreader",
+   "commit": "a787eb511f45159c8869d30e5a6ba1f91cb67709",
+   "ts_files": 201,
+   "configs": 6,
+   "tree_sha256": "dac67c5c000d3e434bc099bffb23bd719541afa38214dcf678ea60fd18b5680f",
+   "snapshot": "sha256:404e7d9de392d01dbe9d2cb0c794942b546c98dd6af9a9ce27ec3e03d6a2412d",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 1534,
+   "relations": 10265,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 924,
+     "unresolved": 171
+    },
+    "calls": {
+     "ambiguous": 50,
+     "resolved": 2103,
+     "unresolved": 4615
+    },
+    "references": {
+     "resolved": 7,
+     "unresolved": 4
+    }
+   },
+   "unresolved_imports": {
+    "external": 133,
+    "relative:found": 38
+   }
+  },
+  "fixture:ts_repo": {
+   "ts_files": 8,
+   "configs": 1,
+   "tree_sha256": "aedff309da2b4cdabcb2e38cc126de8fff2623c44b60e765390d46cf836885ec",
+   "snapshot": "sha256:002e3790943a90a48dacd1b21e09b0053b344ebebd1f600ecf547263b17d1025",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 53,
+   "relations": 134,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "resolved": 13,
+     "unresolved": 3
+    },
+    "calls": {
+     "resolved": 6,
+     "unresolved": 29
+    },
+    "references": {
+     "resolved": 3
+    }
+   },
+   "unresolved_imports": {
+    "external": 3
+   }
+  },
+  "microsoft__vscode@1a599e2d1792": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "1a599e2d1792630bc7c53232404d83214acb88f4",
+   "ts_files": 3903,
+   "configs": 58,
+   "tree_sha256": "e224d7599e9f13bc576b65fb30d9f12b1588330576cfda334879da81e3da64b8",
+   "snapshot": "sha256:c6e0875ec33d0e24f372d87d9424bb28e519644837204aa876b2fa09c2224840",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 80238,
+   "relations": 513827,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11760,
+     "resolved": 48598,
+     "unresolved": 4062
+    },
+    "calls": {
+     "ambiguous": 14547,
+     "resolved": 69140,
+     "unresolved": 234100
+    },
+    "references": {
+     "ambiguous": 453,
+     "resolved": 5646,
+     "unresolved": 365
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 232,
+    "external": 3621,
+    "relative:found": 103,
+    "relative:none": 90,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@2dff5deef71f": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "2dff5deef71fed71f039f8064e4e6deb818b1e3d",
+   "ts_files": 3812,
+   "configs": 59,
+   "tree_sha256": "75eb228ce0446ceaef8954d1f41c162efb80c85f6457db3461e4367350bd08cc",
+   "snapshot": "sha256:7dd3d158f8adefde40de13300d439d5b7504ad155bd2c867d65a23a9d54681b7",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 78480,
+   "relations": 501816,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11365,
+     "resolved": 47199,
+     "unresolved": 3961
+    },
+    "calls": {
+     "ambiguous": 13930,
+     "resolved": 67491,
+     "unresolved": 229291
+    },
+    "references": {
+     "ambiguous": 437,
+     "resolved": 5518,
+     "unresolved": 351
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 237,
+    "external": 3518,
+    "relative:found": 103,
+    "relative:none": 88,
+    "workspace:none": 15
+   }
+  },
+  "microsoft__vscode@384b03f26310": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "384b03f26310fc3c4ea86156b7c6aefb431d594f",
+   "ts_files": 4242,
+   "configs": 59,
+   "tree_sha256": "417ada784798433cd454140a40c2e364ec6c5aabfdb339e5c6b5b882a353cb51",
+   "snapshot": "sha256:a53ca4cb6d832ec4e6939ab8a36d3bbc86d540bfd336d7bfc0fe99d5f666d785",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 86498,
+   "relations": 549789,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12931,
+     "resolved": 52723,
+     "unresolved": 4284
+    },
+    "calls": {
+     "ambiguous": 15570,
+     "resolved": 73697,
+     "unresolved": 249570
+    },
+    "references": {
+     "ambiguous": 501,
+     "resolved": 6040,
+     "unresolved": 384
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3836,
+    "relative:found": 107,
+    "relative:none": 98,
+    "workspace:none": 17
+   }
+  },
+  "microsoft__vscode@440e61ffab2b": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "440e61ffab2ba257f30852940fdce18a48a168ea",
+   "ts_files": 3988,
+   "configs": 60,
+   "tree_sha256": "f7b72eba7588568527438369e8699d22e34f173c4707e31b70c67d1aa2e7532c",
+   "snapshot": "sha256:c36fb5dfbef4d84df5e9668790c504c229ba34e2fa30abc207b1ed016d48939f",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 81799,
+   "relations": 521725,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12027,
+     "resolved": 49710,
+     "unresolved": 4157
+    },
+    "calls": {
+     "ambiguous": 14780,
+     "resolved": 69374,
+     "unresolved": 238174
+    },
+    "references": {
+     "ambiguous": 466,
+     "resolved": 5737,
+     "unresolved": 363
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 231,
+    "external": 3708,
+    "relative:found": 106,
+    "relative:none": 96,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@4bbec283c36a": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "4bbec283c36a51cf80f9b77c7a81c140a76a363b",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "9962128ca214dcd101eac3ae6945635ce140eca68ad53e441b613cfcb7638799",
+   "snapshot": "sha256:09e79e9e68da8fbcfd29dcce97f6bd403f7ebd47543acd153ba84831a18927a3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 73966,
+   "relations": 467381,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10457,
+     "resolved": 43749,
+     "unresolved": 3524
+    },
+    "calls": {
+     "ambiguous": 13214,
+     "resolved": 62769,
+     "unresolved": 213112
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5172,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3127,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@5b8bd1c45ca3": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "5b8bd1c45ca3041a2a947e499d2db21c0a2df20d",
+   "ts_files": 3789,
+   "configs": 58,
+   "tree_sha256": "912084f56d3c1fb90034ddc129def05043bd9ed3ec68ae3d897d673c2d29335a",
+   "snapshot": "sha256:26314c0f669d49fe72b1c483f59f50593ac87064953423e97a1f4cca76bdca44",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 78031,
+   "relations": 499585,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11357,
+     "resolved": 47040,
+     "unresolved": 3910
+    },
+    "calls": {
+     "ambiguous": 13930,
+     "resolved": 67180,
+     "unresolved": 228304
+    },
+    "references": {
+     "ambiguous": 437,
+     "resolved": 5499,
+     "unresolved": 341
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 234,
+    "external": 3479,
+    "relative:found": 103,
+    "relative:none": 81,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@7d8f55ebb1b7": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "7d8f55ebb1b7ccb084f7e6969b6926519c5c80c3",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "c1f608ef11371fd48b82b55b87d936ef11d4ab2af6e8d10d70bd42912e983137",
+   "snapshot": "sha256:a00c12b8c2442ba3d6c9bbaebd238e8451473076afa2ced0a42eb035150c6526",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 73959,
+   "relations": 467290,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10456,
+     "resolved": 43747,
+     "unresolved": 3521
+    },
+    "calls": {
+     "ambiguous": 13211,
+     "resolved": 62749,
+     "unresolved": 213066
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5171,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3124,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@88ffbc7a7a81": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "88ffbc7a7a81a926c7969ad7428e2ffc54370f42",
+   "ts_files": 3909,
+   "configs": 58,
+   "tree_sha256": "1a1c54cbefa2be5d02684128e8afea33a1f74dcfeba23071e4affff4af17b35f",
+   "snapshot": "sha256:998519099d26861105ec3220f1ea1ffd5c98e1788362097561928a6edeb755bd",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 80446,
+   "relations": 515721,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 11805,
+     "resolved": 48741,
+     "unresolved": 4074
+    },
+    "calls": {
+     "ambiguous": 14582,
+     "resolved": 69507,
+     "unresolved": 234881
+    },
+    "references": {
+     "ambiguous": 458,
+     "resolved": 5657,
+     "unresolved": 369
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 234,
+    "external": 3631,
+    "relative:found": 103,
+    "relative:none": 90,
+    "workspace:none": 16
+   }
+  },
+  "microsoft__vscode@8c76afad6ccf": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "8c76afad6ccf861d1ea08df4bb9f83839e0e0cd0",
+   "ts_files": 2999,
+   "configs": 45,
+   "tree_sha256": "e28fa40b87000be45c75723c562b9d73eb6775675029796019ff7ff9209b2533",
+   "snapshot": "sha256:218204e20b340e73530edfa8e3aa73db827f14a4f4e57b5a3c5e89abf076164b",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 63445,
+   "relations": 391516,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 8153,
+     "resolved": 35598,
+     "unresolved": 3195
+    },
+    "calls": {
+     "ambiguous": 9648,
+     "resolved": 54851,
+     "unresolved": 177007
+    },
+    "references": {
+     "ambiguous": 368,
+     "resolved": 4387,
+     "unresolved": 265
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 191,
+    "external": 2843,
+    "relative:found": 105,
+    "relative:none": 42,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@8ce35fa28ded": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "8ce35fa28dedbb1b0e78c1bff26ab53d1e702868",
+   "ts_files": 2944,
+   "configs": 45,
+   "tree_sha256": "a8d3c91797ef89531b9c93029f59bfdf8cfb3c5ef81459dd4c6ba05454925888",
+   "snapshot": "sha256:e1d118cba649baa65e683058b7debf3ea16bd511417a9e17e5a4ca5ef7bbe398",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 61816,
+   "relations": 382864,
+   "partial_files": 7,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 7893,
+     "resolved": 34844,
+     "unresolved": 3096
+    },
+    "calls": {
+     "ambiguous": 9762,
+     "resolved": 54954,
+     "unresolved": 171441
+    },
+    "references": {
+     "ambiguous": 364,
+     "resolved": 4298,
+     "unresolved": 258
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 179,
+    "external": 2758,
+    "relative:found": 105,
+    "relative:none": 40,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@9a281018181d": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "9a281018181dca942cc46c03f9795be00912e38d",
+   "ts_files": 4414,
+   "configs": 59,
+   "tree_sha256": "2a2a3a329779def7f054dc3bd37286a3136e9a4a456f3d60713722ee48aacf3f",
+   "snapshot": "sha256:478b5c7336f222143aeab14adfeca9e023c31ad029ee6baea4f3ff6e48b528c8",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 89986,
+   "relations": 572846,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 13541,
+     "resolved": 55409,
+     "unresolved": 4418
+    },
+    "calls": {
+     "ambiguous": 16198,
+     "resolved": 76522,
+     "unresolved": 260124
+    },
+    "references": {
+     "ambiguous": 517,
+     "resolved": 6287,
+     "unresolved": 402
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 235,
+    "external": 3963,
+    "relative:found": 106,
+    "relative:none": 95,
+    "workspace:none": 19
+   }
+  },
+  "microsoft__vscode@a993ada9300a": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "a993ada9300a531c09dfa6a1be772b1abc1492ad",
+   "ts_files": 3505,
+   "configs": 56,
+   "tree_sha256": "dd45bc8f0581d4c72de3f37d06ac41e6c247daa115d8c85f134bc9d82512acb0",
+   "snapshot": "sha256:90858d70e0b66803c34fb0aa2512ed95301ce9b039e888cce40430ba464d6825",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 73959,
+   "relations": 467277,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 10456,
+     "resolved": 43747,
+     "unresolved": 3521
+    },
+    "calls": {
+     "ambiguous": 13211,
+     "resolved": 62743,
+     "unresolved": 213060
+    },
+    "references": {
+     "ambiguous": 410,
+     "resolved": 5171,
+     "unresolved": 304
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 226,
+    "external": 3124,
+    "relative:found": 109,
+    "relative:none": 49,
+    "workspace:none": 13
+   }
+  },
+  "microsoft__vscode@cf4b5a703f58": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "cf4b5a703f581944f308b9a6f1e8b386059caef1",
+   "ts_files": 2989,
+   "configs": 45,
+   "tree_sha256": "70dc584c49154cfc389eebc9f58492c0662df55d6e5366e694964e5779a22907",
+   "snapshot": "sha256:af77f601951959c8e86653602ddff0cac254c865af4868a0945328fb460aaecf",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 63064,
+   "relations": 388821,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 8073,
+     "resolved": 35264,
+     "unresolved": 3161
+    },
+    "calls": {
+     "ambiguous": 9565,
+     "resolved": 54544,
+     "unresolved": 175737
+    },
+    "references": {
+     "ambiguous": 374,
+     "resolved": 4366,
+     "unresolved": 265
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 184,
+    "external": 2817,
+    "relative:found": 105,
+    "relative:none": 41,
+    "workspace:none": 14
+   }
+  },
+  "microsoft__vscode@f5fdf679b8d2": {
+   "url": "https://github.com/microsoft/vscode",
+   "commit": "f5fdf679b8d22a0dd0dcb6fd8e3bc96bbeb99f75",
+   "ts_files": 4031,
+   "configs": 59,
+   "tree_sha256": "fe585ef28dd0852b5a44772ab83ee2689347cb4517e9df4e48f9f49a08b29ed6",
+   "snapshot": "sha256:26f237176cf9337049cf22bed7f36677b84643a0d49350578778d0ba8f7d9778",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "entities": 82996,
+   "relations": 530342,
+   "partial_files": 0,
+   "default_index_failure": null,
+   "resolution": {
+    "imports": {
+     "ambiguous": 12312,
+     "resolved": 50597,
+     "unresolved": 4194
+    },
+    "calls": {
+     "ambiguous": 14980,
+     "resolved": 70785,
+     "unresolved": 241690
+    },
+    "references": {
+     "ambiguous": 474,
+     "resolved": 5827,
+     "unresolved": 370
+    }
+   },
+   "unresolved_imports": {
+    "alias:found": 230,
+    "external": 3744,
+    "relative:found": 107,
+    "relative:none": 98,
+    "workspace:none": 15
+   }
+  }
+ },
+ "performance": {
+  "coder__code-server@5d3c9edce436": {
+   "index_s": 0.538,
+   "score_s": {
+    "coder__code-server-6278": 1.509
+   },
+   "max_rss_mb": 143
+  },
+  "coder__code-server@78658f1cf48a": {
+   "index_s": 0.314,
+   "score_s": {
+    "coder__code-server-4923": 1.29
+   },
+   "max_rss_mb": 146
+  },
+  "darkreader__darkreader@991883df4d59": {
+   "index_s": 0.708,
+   "score_s": {
+    "darkreader__darkreader-7241": 1.246
+   },
+   "max_rss_mb": 158
+  },
+  "darkreader__darkreader@a787eb511f45": {
+   "index_s": 0.655,
+   "score_s": {
+    "darkreader__darkreader-6747": 1.48
+   },
+   "max_rss_mb": 159
+  },
+  "fixture:ts_repo": {
+   "index_s": 0.156,
+   "score_s": {
+    "ts-exact-versionedstore": 0.215,
+    "ts-semantic-backoff": 0.377,
+    "ts-crossfile-decode-jwt": 0.189,
+    "tsx-button-component": 0.101,
+    "ts-related-test-button-click": 0.121,
+    "ts-default-policy-const": 0.268,
+    "ts-implementors-retrypolicy": 0.385,
+    "ts-callers-shouldretry": 0.308
+   },
+   "max_rss_mb": 159
+  },
+  "microsoft__vscode@1a599e2d1792": {
+   "index_s": 25.466,
+   "score_s": {
+    "microsoft__vscode-153121": 10.442
+   },
+   "max_rss_mb": 1079
+  },
+  "microsoft__vscode@2dff5deef71f": {
+   "index_s": 25.776,
+   "score_s": {
+    "microsoft__vscode-148971": 11.818
+   },
+   "max_rss_mb": 1143
+  },
+  "microsoft__vscode@384b03f26310": {
+   "index_s": 28.641,
+   "score_s": {
+    "microsoft__vscode-177084": 10.971
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@440e61ffab2b": {
+   "index_s": 26.498,
+   "score_s": {
+    "microsoft__vscode-160342": 9.927
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@4bbec283c36a": {
+   "index_s": 23.47,
+   "score_s": {
+    "microsoft__vscode-136347": 10.189
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@5b8bd1c45ca3": {
+   "index_s": 24.975,
+   "score_s": {
+    "microsoft__vscode-149380": 9.187
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@7d8f55ebb1b7": {
+   "index_s": 23.619,
+   "score_s": {
+    "microsoft__vscode-135805": 9.153
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@88ffbc7a7a81": {
+   "index_s": 24.687,
+   "score_s": {
+    "microsoft__vscode-153857": 11.08
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@8c76afad6ccf": {
+   "index_s": 19.795,
+   "score_s": {
+    "microsoft__vscode-110094": 8.998
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@8ce35fa28ded": {
+   "index_s": 19.664,
+   "score_s": {
+    "microsoft__vscode-106767": 8.645
+   },
+   "max_rss_mb": 1256
+  },
+  "microsoft__vscode@9a281018181d": {
+   "index_s": 27.853,
+   "score_s": {
+    "microsoft__vscode-189223": 9.486
+   },
+   "max_rss_mb": 1283
+  },
+  "microsoft__vscode@a993ada9300a": {
+   "index_s": 23.772,
+   "score_s": {
+    "microsoft__vscode-135197": 11.181
+   },
+   "max_rss_mb": 1283
+  },
+  "microsoft__vscode@cf4b5a703f58": {
+   "index_s": 19.441,
+   "score_s": {
+    "microsoft__vscode-109750": 9.165
+   },
+   "max_rss_mb": 1283
+  },
+  "microsoft__vscode@f5fdf679b8d2": {
+   "index_s": 26.666,
+   "score_s": {
+    "microsoft__vscode-164396": 12.643
+   },
+   "max_rss_mb": 1283
+  }
+ },
+ "max_rss_mb": 1283
+}

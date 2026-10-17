@@ -134,3 +134,97 @@ From the repository root, with corpora fetched, capped as for every heavy run:
 
     systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G -p MemorySwapMax=0 \
       uv run python docs/phase-6/file-localization/scripts/loc_run.py {py|ts} OUTDIR
+
+# Results (2026-10-17, dev only)
+
+**Verdict: NOT VIABLE**, under the preregistered criteria. Criterion 1 (headroom) holds on
+both benchmarks; criterion 2 (practical headroom) fails on both, so stage 2 was not run
+and no `loc` arm exists. Held-out was not opened, `src/` is unchanged, and `none`
+reproduces the frozen compat hashes on 15/15 py and 26/26 ts dev tasks. Every bundle
+in every arm is deterministic. Numbers are measured unless marked *inferred*; the
+per-arm results and summaries are in `results/`.
+
+## Stage 1 (dev macro, verified gold; change against `none`)
+
+| Arm | py `line_recall@1024` | py `@4096` | ts `@1024` | ts `@4096` | vscode `@4096` | tasks up / down (py, ts) |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `none` | 0.548 | 0.659 | 0.330 | 0.370 | 0.045 | — |
+| `file` (oracle) | +0.051 | **+0.117** | +0.093 | **+0.404** | +0.616 | 11/0, 16/0 |
+| `dir` (oracle) | 0.000 | 0.000 | +0.018 | +0.234 | +0.348 | 3/0, 13/0 |
+| `seed` (oracle via `paths`) | −0.020 | +0.027 | +0.006 | −0.010 | −0.007 | 1/6, 6/6 |
+| `file@3` | 0.000 | +0.007 | +0.013 | +0.036 | +0.057 | 1/0, 5/0 |
+| `file@10` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0/0, 0/0 |
+
+- **Criterion 1 holds:** `file` gains +0.117 on py (11 tasks improve, 4 carry the
+  `@4096` gain, flask alone +0.067) and +0.404 on ts (16 tasks improve, 15 carry it).
+  The headroom is real and lies at 4,096 units. At 1,024 units it is below 0.10 on
+  both benchmarks.
+- **Criterion 2 fails:** `file@10`'s gain is 0 on both benchmarks, and even `file@3`
+  keeps only 6 % (py) and 9 % (ts) of `file`'s gain. The restriction does change the
+  entry lists (`file@10` on 7/15 py tasks, `file@3` on 13/15), but with the gold file
+  allowed beside the files the current ranking already prefers, the gold entities
+  still rank below those files' entities, inside the top 20 and therefore inside the
+  bundle.
+
+## What this answers
+
+- **Theoretical bound vs. practical method.** Perfect file localization would roughly
+  double ts packed recall at 4,096 units, and multiply it by 15 on vscode. Placing the
+  gold file among the current ranking's top 3 or 10 files recovers almost none of
+  that. A localizer helps only if it puts the gold file *above* the files whose
+  entities win the existing name/signature/path BM25, which is the existing lexical
+  ranking problem again, one level up. That is the "same failure at a different
+  granularity" outcome.
+- **The `dir` oracle is the one caveat.** Restricting to the gold directory (gold plus
+  its sibling files) still gains +0.234 on ts and +0.348 on vscode. So distractors as
+  such are not the issue: siblings that do not win the global BM25 are harmless. The
+  harmful distractors are exactly the current lexical winners. A directory-level signal
+  that excludes them would have to rank the gold directory near the top using
+  something other than the same terms. Stage 2 would have tested that; the
+  preregistered stopping rule forbids running it here (*inferred*; not measured).
+- **The existing `paths` hint does not turn a correct file into packed gold.** `seed`
+  reaches the file (ts `routed_coverage` 0.468 → 0.968, `file_recall@4096` → 0.980),
+  but packed line recall does not move (ts −0.010 at 4,096; py 6 tasks regress). Of
+  ts's missed spans at 4,096 units, 82 are lost at `budget`: the seeded file's
+  module-level view is valued 0.9 and spends the budget before the gold symbols. This
+  is a selection/packing finding about the hint path, not a localization one.
+
+## Failure reading (verified spans missed at 4,096 units, first-loss stage)
+
+| Arm | py: entry / routing / selection / budget | ts: entry / routing / selection / budget |
+| --- | --- | --- |
+| `none` | 4 / 5 / 7 / 11 (27 of 47) | 66 / 9 / 7 / 11 (93 of 115) |
+| `file` | 1 / 6 / 3 / 9 (19) | 5 / 10 / 8 / 30 (53) |
+| `dir` | 2 / 5 / 7 / 13 (27) | 17 / 11 / 14 / 32 (74) |
+| `seed` | 0 / 6 / 4 / 16 (26) | 0 / 14 / 4 / 82 (100) |
+
+With the file known (`file`), entry losses nearly vanish (66 → 5 on ts), but 48 of the
+53 remaining ts losses come from routing, selection or budget within the known file.
+On py, localization would suffice for only 8 of the 27 missed spans. The rest are the
+same failures at a finer grain.
+
+## Cost
+
+Restriction is a harness filter over the full hit list. The ts run (six arms on one
+index per corpus) peaked at 1,283 MB RSS, with no `default_index_failure`.
+
+## Decision
+
+The investigation closes. Repository-level localization is not a missing capability
+that a deterministic signal could cheaply add. Its headroom only appears under a
+perfect oracle, and disappears as soon as the gold competes with the files the
+current ranking already prefers.
+
+**Recommendation:** move to packaging and stop speculative retrieval R&D. Hierarchical
+retrieval is not justified by this evidence. If retrieval is ever reopened, there are
+two concrete leads, each needing its own preregistration:
+
+- a directory-level localizer that does not reuse the entity terms;
+- why the `paths` hint's file view spends the budget.
+
+## Reproduce
+
+    systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G -p MemorySwapMax=0 \
+      uv run python docs/phase-6/file-localization/scripts/loc_run.py py OUT/py
+    # same for ts, then:
+    uv run python docs/phase-6/file-localization/scripts/loc_sum.py OUT/py py
