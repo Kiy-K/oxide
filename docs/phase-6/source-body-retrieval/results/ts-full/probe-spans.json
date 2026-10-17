@@ -1,0 +1,1719 @@
+[
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/app.ts",
+  "lines": [
+   85,
+   98
+  ],
+  "rank": 183,
+  "file_rank": 13,
+  "holders": [
+   "symbol:src/node/app.ts#createApp",
+   "symbol:src/node/app.ts#createApp.dispose"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/main.ts",
+  "lines": [
+   121,
+   132
+  ],
+  "rank": 3,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/main.ts#runCodeServer"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/main.ts",
+  "lines": [
+   126,
+   132
+  ],
+  "rank": 3,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/main.ts#runCodeServer"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/util.ts",
+  "lines": [
+   53,
+   88
+  ],
+  "rank": 42,
+  "file_rank": 5,
+  "holders": [
+   "symbol:src/node/util.ts#paths",
+   "symbol:src/node/util.ts#getEnvPaths",
+   "symbol:src/node/util.ts#getEnvPaths.append",
+   "file:src/node/util.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/vscodeSocket.ts",
+  "lines": [
+   1,
+   12
+  ],
+  "rank": 13,
+  "file_rank": 8,
+  "holders": [
+   "symbol:src/node/vscodeSocket.ts#DEFAULT_SOCKET_PATH",
+   "file:src/node/vscodeSocket.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/vscodeSocket.ts",
+  "lines": [
+   1,
+   14
+  ],
+  "rank": 13,
+  "file_rank": 8,
+  "holders": [
+   "symbol:src/node/vscodeSocket.ts#DEFAULT_SOCKET_PATH",
+   "symbol:src/node/vscodeSocket.ts#EditorSessionEntry",
+   "file:src/node/vscodeSocket.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/vscodeSocket.ts",
+  "lines": [
+   38,
+   83
+  ],
+  "rank": 45,
+  "file_rank": 8,
+  "holders": [
+   "symbol:src/node/vscodeSocket.ts#makeEditorSessionManagerServer"
+  ]
+ },
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "file": "src/node/vscodeSocket.ts",
+  "lines": [
+   78,
+   84
+  ],
+  "rank": 45,
+  "file_rank": 8,
+  "holders": [
+   "symbol:src/node/vscodeSocket.ts#makeEditorSessionManagerServer"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/app.ts",
+  "lines": [
+   11,
+   17
+  ],
+  "rank": 27,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/app.ts#ListenOptions",
+   "symbol:src/node/app.ts#App",
+   "file:src/node/app.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/app.ts",
+  "lines": [
+   22,
+   28
+  ],
+  "rank": 22,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/app.ts#App",
+   "symbol:src/node/app.ts#listen"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/app.ts",
+  "lines": [
+   31,
+   37
+  ],
+  "rank": 22,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/app.ts#listen",
+   "symbol:src/node/app.ts#listen.onListen"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/app.ts",
+  "lines": [
+   130,
+   134
+  ],
+  "rank": 68,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/node/app.ts#handleArgsSocketCatchError"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/cli.ts",
+  "lines": [
+   56,
+   61
+  ],
+  "rank": 57,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/node/cli.ts#UserProvidedArgs"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/cli.ts",
+  "lines": [
+   175,
+   177
+  ],
+  "rank": null,
+  "file_rank": 1,
+  "holders": [
+   "file:src/node/cli.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/cli.ts",
+  "lines": [
+   175,
+   180
+  ],
+  "rank": null,
+  "file_rank": 1,
+  "holders": [
+   "file:src/node/cli.ts"
+  ]
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "file": "src/node/cli.ts",
+  "lines": [
+   513,
+   518
+  ],
+  "rank": 23,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/node/cli.ts#setDefaults"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-7241",
+  "corpus": "darkreader__darkreader@991883df4d59",
+  "file": "src/generators/utils/parse.ts",
+  "lines": [
+   143,
+   149
+  ],
+  "rank": 238,
+  "file_rank": 4,
+  "holders": [
+   "symbol:src/generators/utils/parse.ts#indexSitesFixesConfig"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-7241",
+  "corpus": "darkreader__darkreader@991883df4d59",
+  "file": "src/generators/utils/parse.ts",
+  "lines": [
+   144,
+   162
+  ],
+  "rank": 238,
+  "file_rank": 4,
+  "holders": [
+   "symbol:src/generators/utils/parse.ts#indexSitesFixesConfig"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/generators/dynamic-theme.ts",
+  "lines": [
+   1,
+   26
+  ],
+  "rank": 12,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/generators/dynamic-theme.ts#parseDynamicThemeFixes",
+   "file:src/generators/dynamic-theme.ts"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/generators/dynamic-theme.ts",
+  "lines": [
+   1,
+   81
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/generators/dynamic-theme.ts#parseDynamicThemeFixes",
+   "symbol:src/generators/dynamic-theme.ts#formatDynamicThemeFixes",
+   "symbol:src/generators/dynamic-theme.ts#getDynamicThemeFixesFor",
+   "file:src/generators/dynamic-theme.ts"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/generators/dynamic-theme.ts",
+  "lines": [
+   50,
+   71
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/generators/dynamic-theme.ts#getDynamicThemeFixesFor"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/generators/utils/parse.ts",
+  "lines": [
+   1,
+   41
+  ],
+  "rank": 8,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/generators/utils/parse.ts#SiteProps",
+   "symbol:src/generators/utils/parse.ts#SitePropsIndex",
+   "symbol:src/generators/utils/parse.ts#SitesFixesParserOptions",
+   "symbol:src/generators/utils/parse.ts#parseSitesFixesConfig",
+   "file:src/generators/utils/parse.ts"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/generators/utils/parse.ts",
+  "lines": [
+   140,
+   161
+  ],
+  "rank": 69,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/generators/utils/parse.ts#indexSitesFixesConfig",
+   "symbol:src/generators/utils/parse.ts#indexSitesFixesConfig.processBlock"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/utils/url.ts",
+  "lines": [
+   1,
+   21
+  ],
+  "rank": 103,
+  "file_rank": 22,
+  "holders": [
+   "symbol:src/utils/url.ts#parsedURLCache",
+   "symbol:src/utils/url.ts#fixBaseURL",
+   "symbol:src/utils/url.ts#parseURL",
+   "file:src/utils/url.ts"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/utils/url.ts",
+  "lines": [
+   32,
+   61
+  ],
+  "rank": 97,
+  "file_rank": 22,
+  "holders": [
+   "symbol:src/utils/url.ts#getAbsoluteURL",
+   "symbol:src/utils/url.ts#getURLHostOrProtocol",
+   "symbol:src/utils/url.ts#compareURLPatterns",
+   "symbol:src/utils/url.ts#isURLInList",
+   "file:src/utils/url.ts"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/utils/url.ts",
+  "lines": [
+   90,
+   151
+  ],
+  "rank": 341,
+  "file_rank": 22,
+  "holders": [
+   "symbol:src/utils/url.ts#createUrlRegex",
+   "symbol:src/utils/url.ts#isPDF"
+  ]
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "file": "src/utils/url.ts",
+  "lines": [
+   120,
+   141
+  ],
+  "rank": 708,
+  "file_rank": 22,
+  "holders": [
+   "symbol:src/utils/url.ts#createUrlRegex"
+  ]
+ },
+ {
+  "task": "ts-exact-versionedstore",
+  "corpus": "fixture:ts_repo",
+  "file": "src/cache/versioned_store.ts",
+  "lines": [
+   6,
+   25
+  ],
+  "rank": 2,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/cache/versioned_store.ts#VersionedStore",
+   "symbol:src/cache/versioned_store.ts#VersionedStore.constructor",
+   "symbol:src/cache/versioned_store.ts#VersionedStore.get",
+   "symbol:src/cache/versioned_store.ts#VersionedStore.set",
+   "symbol:src/cache/versioned_store.ts#VersionedStore.versionOf"
+  ]
+ },
+ {
+  "task": "ts-semantic-backoff",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/retry.ts",
+  "lines": [
+   11,
+   22
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/net/retry.ts#ExponentialBackoff",
+   "symbol:src/net/retry.ts#ExponentialBackoff.constructor",
+   "symbol:src/net/retry.ts#ExponentialBackoff.backoffMs"
+  ]
+ },
+ {
+  "task": "ts-semantic-backoff",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/client.ts",
+  "lines": [
+   12,
+   27
+  ],
+  "rank": 2,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/net/client.ts#ApiClient",
+   "symbol:src/net/client.ts#ApiClient.request"
+  ]
+ },
+ {
+  "task": "ts-crossfile-decode-jwt",
+  "corpus": "fixture:ts_repo",
+  "file": "src/auth/service.ts",
+  "lines": [
+   9,
+   13
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/auth/service.ts#decodeJwt"
+  ]
+ },
+ {
+  "task": "tsx-button-component",
+  "corpus": "fixture:ts_repo",
+  "file": "src/ui/Button.tsx",
+  "lines": [
+   7,
+   13
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/ui/Button.tsx#Button"
+  ]
+ },
+ {
+  "task": "ts-related-test-button-click",
+  "corpus": "fixture:ts_repo",
+  "file": "src/ui/__tests__/Button.test.tsx",
+  "lines": [
+   1,
+   18
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "file:src/ui/__tests__/Button.test.tsx"
+  ]
+ },
+ {
+  "task": "ts-default-policy-const",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/retry.ts",
+  "lines": [
+   24,
+   24
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/net/retry.ts#defaultRetryPolicy"
+  ]
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/retry.ts",
+  "lines": [
+   11,
+   22
+  ],
+  "rank": 4,
+  "file_rank": 2,
+  "holders": [
+   "symbol:src/net/retry.ts#ExponentialBackoff",
+   "symbol:src/net/retry.ts#ExponentialBackoff.constructor",
+   "symbol:src/net/retry.ts#ExponentialBackoff.backoffMs"
+  ]
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/policies.ts",
+  "lines": [
+   3,
+   13
+  ],
+  "rank": 3,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/net/policies.ts#LinearBackoff",
+   "symbol:src/net/policies.ts#LinearBackoff.constructor",
+   "symbol:src/net/policies.ts#LinearBackoff.backoffMs"
+  ]
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/policies.ts",
+  "lines": [
+   15,
+   21
+  ],
+  "rank": 1,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/net/policies.ts#NoRetryPolicy",
+   "symbol:src/net/policies.ts#NoRetryPolicy.backoffMs"
+  ]
+ },
+ {
+  "task": "ts-callers-shouldretry",
+  "corpus": "fixture:ts_repo",
+  "file": "src/net/policies.ts",
+  "lines": [
+   29,
+   31
+  ],
+  "rank": 9,
+  "file_rank": 1,
+  "holders": [
+   "symbol:src/net/policies.ts#attemptWithPolicy"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+  "lines": [
+   59,
+   64
+  ],
+  "rank": 42548,
+  "file_rank": 289,
+  "holders": [
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#CharacterClass"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+  "lines": [
+   66,
+   78
+  ],
+  "rank": 7779,
+  "file_rank": 289,
+  "holders": [
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#WrappingCharacterClassifier",
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#WrappingCharacterClassifier.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+  "lines": [
+   411,
+   417
+  ],
+  "rank": 846,
+  "file_rank": 289,
+  "holders": [
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#createLineBreaks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+  "lines": [
+   411,
+   430
+  ],
+  "rank": 846,
+  "file_rank": 289,
+  "holders": [
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#createLineBreaks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "file": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+  "lines": [
+   489,
+   497
+  ],
+  "rank": 29476,
+  "file_rank": 289,
+  "holders": [
+   "symbol:src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts#canBreak"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "file": "src/vs/base/browser/markdownRenderer.ts",
+  "lines": [
+   120,
+   160
+  ],
+  "rank": 82,
+  "file_rank": 45,
+  "holders": [
+   "symbol:src/vs/base/browser/markdownRenderer.ts#renderMarkdown"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "file": "src/vs/base/browser/markdownRenderer.ts",
+  "lines": [
+   130,
+   159
+  ],
+  "rank": 82,
+  "file_rank": 45,
+  "holders": [
+   "symbol:src/vs/base/browser/markdownRenderer.ts#renderMarkdown"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "file": "src/vs/base/browser/markdownRenderer.ts",
+  "lines": [
+   265,
+   275
+  ],
+  "rank": 82,
+  "file_rank": 45,
+  "holders": [
+   "symbol:src/vs/base/browser/markdownRenderer.ts#renderMarkdown"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "file": "src/vs/base/browser/markdownRenderer.ts",
+  "lines": [
+   267,
+   272
+  ],
+  "rank": 82,
+  "file_rank": 45,
+  "holders": [
+   "symbol:src/vs/base/browser/markdownRenderer.ts#renderMarkdown"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-177084",
+  "corpus": "microsoft__vscode@384b03f26310",
+  "file": "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+  "lines": [
+   451,
+   457
+  ],
+  "rank": 36816,
+  "file_rank": 3275,
+  "holders": [
+   "file:src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-177084",
+  "corpus": "microsoft__vscode@384b03f26310",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+  "lines": [
+   205,
+   211
+  ],
+  "rank": 6803,
+  "file_rank": 75,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts#toLinkSuffix",
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts#detectLinks",
+   "file:src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+  "lines": [
+   105,
+   145
+  ],
+  "rank": 1949,
+  "file_rank": 347,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/files/browser/views/explorerView.ts#getContext",
+   "symbol:src/vs/workbench/contrib/files/browser/views/explorerView.ts#getContext.getCompressedNavigationController"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+  "lines": [
+   108,
+   113
+  ],
+  "rank": 1949,
+  "file_rank": 347,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/files/browser/views/explorerView.ts#getContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "file": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+  "lines": [
+   334,
+   336
+  ],
+  "rank": 1661,
+  "file_rank": 347,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/files/browser/views/explorerView.ts#ExplorerView",
+   "symbol:src/vs/workbench/contrib/files/browser/views/explorerView.ts#ExplorerView.getContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/base/common/charCode.ts",
+  "lines": [
+   1,
+   30
+  ],
+  "rank": 1016,
+  "file_rank": 487,
+  "holders": [
+   "symbol:src/vs/base/common/charCode.ts#CharCode",
+   "file:src/vs/base/common/charCode.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/config/editorOptions.ts",
+  "lines": [
+   575,
+   581
+  ],
+  "rank": 55,
+  "file_rank": 36,
+  "holders": [
+   "symbol:src/vs/editor/common/config/editorOptions.ts#IEditorOptions"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/config/editorOptions.ts",
+  "lines": [
+   4637,
+   4644
+  ],
+  "rank": 102,
+  "file_rank": 36,
+  "holders": [
+   "symbol:src/vs/editor/common/config/editorOptions.ts#EditorOptions"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+  "lines": [
+   500,
+   505
+  ],
+  "rank": 1698,
+  "file_rank": 79,
+  "holders": [
+   "symbol:src/vs/editor/common/viewLayout/viewLineRenderer.ts#resolveRenderLineInput"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+  "lines": [
+   621,
+   626
+  ],
+  "rank": 949,
+  "file_rank": 79,
+  "holders": [
+   "symbol:src/vs/editor/common/viewLayout/viewLineRenderer.ts#splitLargeTokens",
+   "file:src/vs/editor/common/viewLayout/viewLineRenderer.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+  "lines": [
+   950,
+   998
+  ],
+  "rank": 138,
+  "file_rank": 79,
+  "holders": [
+   "symbol:src/vs/editor/common/viewLayout/viewLineRenderer.ts#_renderLine"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+  "lines": [
+   1005,
+   1010
+  ],
+  "rank": 138,
+  "file_rank": 79,
+  "holders": [
+   "symbol:src/vs/editor/common/viewLayout/viewLineRenderer.ts#_renderLine"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+  "lines": [
+   1049,
+   1051
+  ],
+  "rank": 138,
+  "file_rank": 79,
+  "holders": [
+   "symbol:src/vs/editor/common/viewLayout/viewLineRenderer.ts#_renderLine"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "file": "src/vs/monaco.d.ts",
+  "lines": [
+   3226,
+   3232
+  ],
+  "rank": 56,
+  "file_rank": 37,
+  "holders": [
+   "symbol:src/vs/monaco.d.ts#monaco~1",
+   "symbol:src/vs/monaco.d.ts#monaco~1.IEditorOptions"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-149380",
+  "corpus": "microsoft__vscode@5b8bd1c45ca3",
+  "file": "src/vs/workbench/contrib/debug/node/terminals.ts",
+  "lines": [
+   148,
+   151
+  ],
+  "rank": 2451,
+  "file_rank": 624,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/debug/node/terminals.ts#prepareCommand"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   146,
+   150
+  ],
+  "rank": 16864,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#CharacterClass"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   221,
+   228
+  ],
+  "rank": 249,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer",
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer.computeLinks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   258,
+   272
+  ],
+  "rank": 249,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer",
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer.computeLinks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   271,
+   278
+  ],
+  "rank": 249,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer",
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer.computeLinks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   287,
+   291
+  ],
+  "rank": 249,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer",
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer.computeLinks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "file": "src/vs/editor/common/languages/linkComputer.ts",
+  "lines": [
+   318,
+   325
+  ],
+  "rank": 249,
+  "file_rank": 152,
+  "holders": [
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer",
+   "symbol:src/vs/editor/common/languages/linkComputer.ts#LinkComputer.computeLinks"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursor.ts",
+  "lines": [
+   531,
+   537
+  ],
+  "rank": 253,
+  "file_rank": 130,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursor.ts#Cursor",
+   "symbol:src/vs/editor/common/controller/cursor.ts#Cursor._findAutoClosingPairs"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorCommon.ts",
+  "lines": [
+   14,
+   20
+  ],
+  "rank": 44254,
+  "file_rank": 14,
+  "holders": [
+   "file:src/vs/editor/common/controller/cursorCommon.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorCommon.ts",
+  "lines": [
+   75,
+   82
+  ],
+  "rank": 31,
+  "file_rank": 14,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorCommon.ts#CursorConfiguration"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorCommon.ts",
+  "lines": [
+   136,
+   144
+  ],
+  "rank": 31,
+  "file_rank": 14,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorCommon.ts#CursorConfiguration",
+   "symbol:src/vs/editor/common/controller/cursorCommon.ts#CursorConfiguration.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+  "lines": [
+   122,
+   128
+  ],
+  "rank": 185,
+  "file_rank": 20,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorDeleteOperations.ts#DeleteOperations",
+   "symbol:src/vs/editor/common/controller/cursorDeleteOperations.ts#DeleteOperations.deleteLeft"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   439,
+   445
+  ],
+  "rank": 45,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isAutoClosingOvertype"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   498,
+   528
+  ],
+  "rank": 18,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._runAutoClosingOvertype",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._autoClosingPairIsSymmetric",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isBeforeClosingBrace",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._findAutoClosingPairOpen"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   524,
+   549
+  ],
+  "rank": 18,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._findAutoClosingPairOpen"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   548,
+   554
+  ],
+  "rank": 18,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._findAutoClosingPairOpen",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isAutoClosingOpenCharType"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   560,
+   565
+  ],
+  "rank": 20,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isAutoClosingOpenCharType"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   570,
+   580
+  ],
+  "rank": 20,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isAutoClosingOpenCharType"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   612,
+   625
+  ],
+  "rank": 20,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._isAutoClosingOpenCharType",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._runAutoClosingOpenCharType"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   617,
+   626
+  ],
+  "rank": 23,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._runAutoClosingOpenCharType"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   794,
+   802
+  ],
+  "rank": 45,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations.compositionEndWithInterceptors"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   838,
+   846
+  ],
+  "rank": 45,
+  "file_rank": 10,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations.typeWithInterceptors"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/controller/cursorWordOperations.ts",
+  "lines": [
+   384,
+   390
+  ],
+  "rank": 941,
+  "file_rank": 43,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorWordOperations.ts#WordOperations",
+   "symbol:src/vs/editor/common/controller/cursorWordOperations.ts#WordOperations.deleteWordLeft"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+  "lines": [
+   293,
+   311
+  ],
+  "rank": 9,
+  "file_rank": 5,
+  "holders": [
+   "symbol:src/vs/editor/common/modes/languageConfiguration.ts#AutoClosingPairs",
+   "symbol:src/vs/editor/common/modes/languageConfiguration.ts#AutoClosingPairs.constructor",
+   "file:src/vs/editor/common/modes/languageConfiguration.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "file": "src/vs/editor/common/modes/languageConfiguration.ts",
+  "lines": [
+   294,
+   310
+  ],
+  "rank": 9,
+  "file_rank": 5,
+  "holders": [
+   "symbol:src/vs/editor/common/modes/languageConfiguration.ts#AutoClosingPairs",
+   "symbol:src/vs/editor/common/modes/languageConfiguration.ts#AutoClosingPairs.constructor",
+   "file:src/vs/editor/common/modes/languageConfiguration.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+  "lines": [
+   56,
+   61
+  ],
+  "rank": 451,
+  "file_rank": 80,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel",
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+  "lines": [
+   99,
+   104
+  ],
+  "rank": 451,
+  "file_rank": 80,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel",
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel.items",
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel.incomplete"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+  "lines": [
+   136,
+   141
+  ],
+  "rank": 151,
+  "file_rank": 80,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel",
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel._createCachedState"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/completionModel.ts",
+  "lines": [
+   164,
+   169
+  ],
+  "rank": 151,
+  "file_rank": 80,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel",
+   "symbol:src/vs/editor/contrib/suggest/completionModel.ts#CompletionModel._createCachedState"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+  "lines": [
+   44,
+   49
+  ],
+  "rank": null,
+  "file_rank": 115,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestTriggerContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+  "lines": [
+   393,
+   408
+  ],
+  "rank": 221,
+  "file_rank": 115,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel",
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel.trigger"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+  "lines": [
+   550,
+   575
+  ],
+  "rank": 221,
+  "file_rank": 115,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel",
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel._onNewContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+  "lines": [
+   558,
+   564
+  ],
+  "rank": 221,
+  "file_rank": 115,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel",
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel._onNewContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "file": "src/vs/editor/contrib/suggest/suggestModel.ts",
+  "lines": [
+   566,
+   572
+  ],
+  "rank": 221,
+  "file_rank": 115,
+  "holders": [
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel",
+   "symbol:src/vs/editor/contrib/suggest/suggestModel.ts#SuggestModel._onNewContext"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+  "lines": [
+   1,
+   16
+  ],
+  "rank": 7140,
+  "file_rank": 628,
+  "holders": [
+   "file:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+  "lines": [
+   31,
+   53
+  ],
+  "rank": 1747,
+  "file_rank": 628,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector",
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+  "lines": [
+   55,
+   111
+  ],
+  "rank": 1435,
+  "file_rank": 628,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector",
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector.detect"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+  "lines": [
+   113,
+   126
+  ],
+  "rank": 1747,
+  "file_rank": 628,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector",
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector._parseWords"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "file": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts",
+  "lines": [
+   127,
+   132
+  ],
+  "rank": 1747,
+  "file_rank": 628,
+  "holders": [
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector",
+   "symbol:src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts#TerminalWordLinkDetector._refreshSeparatorCodes"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-135197",
+  "corpus": "microsoft__vscode@a993ada9300a",
+  "file": "src/vs/editor/common/controller/cursorCommon.ts",
+  "lines": [
+   423,
+   425
+  ],
+  "rank": 43440,
+  "file_rank": 29,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorCommon.ts#isQuote"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-135197",
+  "corpus": "microsoft__vscode@a993ada9300a",
+  "file": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+  "lines": [
+   598,
+   604
+  ],
+  "rank": 94,
+  "file_rank": 59,
+  "holders": [
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations",
+   "symbol:src/vs/editor/common/controller/cursorTypeOperations.ts#TypeOperations._getAutoClosingPairClose"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+  "lines": [
+   223,
+   250
+  ],
+  "rank": 193,
+  "file_rank": 102,
+  "holders": [
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry",
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry.registerDefaultConfigurations"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+  "lines": [
+   227,
+   235
+  ],
+  "rank": 193,
+  "file_rank": 102,
+  "holders": [
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry",
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry.registerDefaultConfigurations"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "file": "src/vs/platform/configuration/common/configurationRegistry.ts",
+  "lines": [
+   240,
+   245
+  ],
+  "rank": 193,
+  "file_rank": 102,
+  "holders": [
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry",
+   "symbol:src/vs/platform/configuration/common/configurationRegistry.ts#ConfigurationRegistry.registerDefaultConfigurations"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   765,
+   797
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   770,
+   775
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   789,
+   794
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   812,
+   825
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor.bindDocumentChangeListeners"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   814,
+   820
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring.constructor.bindDocumentChangeListeners"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   851,
+   908
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._fetchDocumentSemanticTokensNow"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   868,
+   873
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._fetchDocumentSemanticTokensNow"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   898,
+   904
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._fetchDocumentSemanticTokensNow"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   918,
+   924
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._setDocumentSemanticTokens",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._setDocumentSemanticTokens.rescheduleIfNeeded"
+  ]
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "file": "src/vs/editor/common/services/modelService.ts",
+  "lines": [
+   918,
+   950
+  ],
+  "rank": 60,
+  "file_rank": 42,
+  "holders": [
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._setDocumentSemanticTokens",
+   "symbol:src/vs/editor/common/services/modelService.ts#ModelSemanticColoring._setDocumentSemanticTokens.rescheduleIfNeeded"
+  ]
+ }
+]

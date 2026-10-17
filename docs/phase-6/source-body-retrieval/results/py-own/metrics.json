@@ -1,0 +1,209 @@
+{
+ "dev": {
+  "verified": {
+   "tasks": 15,
+   "spans": 47,
+   "lines": 731,
+   "files": 27,
+   "entry_recall@1": 0.316667,
+   "entry_recall@5": 0.605556,
+   "entry_recall@20": 0.783333,
+   "entry_mrr": 0.583968,
+   "entry_file_recall": 0.966667,
+   "routed_coverage": 0.888889,
+   "span_recall@256": 0.144444,
+   "line_recall@256": 0.223063,
+   "file_recall@256": 0.611111,
+   "utilization@256": 0.967448,
+   "gold_unit_share@256": 0.265129,
+   "span_recall@1024": 0.456667,
+   "line_recall@1024": 0.524119,
+   "file_recall@1024": 0.822222,
+   "utilization@1024": 0.9875,
+   "gold_unit_share@1024": 0.267691,
+   "span_recall@4096": 0.694444,
+   "line_recall@4096": 0.703115,
+   "file_recall@4096": 0.877778,
+   "utilization@4096": 0.789258,
+   "gold_unit_share@4096": 0.155113,
+   "classes": {
+    "ast": 9,
+    "contained": 4,
+    "exact": 32,
+    "path": 2
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 29,
+     "complete": 4,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    },
+    "1024": {
+     "budget": 20,
+     "complete": 13,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    },
+    "4096": {
+     "budget": 12,
+     "complete": 21,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 3,
+   "spans": 3,
+   "lines": 86,
+   "files": 3,
+   "entry_recall@1": 0.333333,
+   "entry_recall@5": 0.666667,
+   "entry_recall@20": 0.666667,
+   "entry_mrr": 0.416667,
+   "entry_file_recall": 1.0,
+   "routed_coverage": 1.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.022727,
+   "file_recall@256": 0.666667,
+   "utilization@256": 0.950521,
+   "gold_unit_share@256": 0.118265,
+   "span_recall@1024": 0.333333,
+   "line_recall@1024": 0.348485,
+   "file_recall@1024": 1.0,
+   "utilization@1024": 0.987955,
+   "gold_unit_share@1024": 0.183639,
+   "span_recall@4096": 0.666667,
+   "line_recall@4096": 0.666667,
+   "file_recall@4096": 1.0,
+   "utilization@4096": 0.998291,
+   "gold_unit_share@4096": 0.171183,
+   "classes": {
+    "range": 3
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2,
+     "selection": 1
+    },
+    "1024": {
+     "budget": 1,
+     "complete": 1,
+     "selection": 1
+    },
+    "4096": {
+     "complete": 2,
+     "selection": 1
+    }
+   }
+  }
+ },
+ "heldout": {},
+ "all": {
+  "verified": {
+   "tasks": 15,
+   "spans": 47,
+   "lines": 731,
+   "files": 27,
+   "entry_recall@1": 0.316667,
+   "entry_recall@5": 0.605556,
+   "entry_recall@20": 0.783333,
+   "entry_mrr": 0.583968,
+   "entry_file_recall": 0.966667,
+   "routed_coverage": 0.888889,
+   "span_recall@256": 0.144444,
+   "line_recall@256": 0.223063,
+   "file_recall@256": 0.611111,
+   "utilization@256": 0.967448,
+   "gold_unit_share@256": 0.265129,
+   "span_recall@1024": 0.456667,
+   "line_recall@1024": 0.524119,
+   "file_recall@1024": 0.822222,
+   "utilization@1024": 0.9875,
+   "gold_unit_share@1024": 0.267691,
+   "span_recall@4096": 0.694444,
+   "line_recall@4096": 0.703115,
+   "file_recall@4096": 0.877778,
+   "utilization@4096": 0.789258,
+   "gold_unit_share@4096": 0.155113,
+   "classes": {
+    "ast": 9,
+    "contained": 4,
+    "exact": 32,
+    "path": 2
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 29,
+     "complete": 4,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    },
+    "1024": {
+     "budget": 20,
+     "complete": 13,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    },
+    "4096": {
+     "budget": 12,
+     "complete": 21,
+     "entry": 2,
+     "routing": 9,
+     "selection": 3
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 3,
+   "spans": 3,
+   "lines": 86,
+   "files": 3,
+   "entry_recall@1": 0.333333,
+   "entry_recall@5": 0.666667,
+   "entry_recall@20": 0.666667,
+   "entry_mrr": 0.416667,
+   "entry_file_recall": 1.0,
+   "routed_coverage": 1.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.022727,
+   "file_recall@256": 0.666667,
+   "utilization@256": 0.950521,
+   "gold_unit_share@256": 0.118265,
+   "span_recall@1024": 0.333333,
+   "line_recall@1024": 0.348485,
+   "file_recall@1024": 1.0,
+   "utilization@1024": 0.987955,
+   "gold_unit_share@1024": 0.183639,
+   "span_recall@4096": 0.666667,
+   "line_recall@4096": 0.666667,
+   "file_recall@4096": 1.0,
+   "utilization@4096": 0.998291,
+   "gold_unit_share@4096": 0.171183,
+   "classes": {
+    "range": 3
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2,
+     "selection": 1
+    },
+    "1024": {
+     "budget": 1,
+     "complete": 1,
+     "selection": 1
+    },
+    "4096": {
+     "complete": 2,
+     "selection": 1
+    }
+   }
+  }
+ }
+}

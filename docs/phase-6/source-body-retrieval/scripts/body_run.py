@@ -20,11 +20,11 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path.cwd() / "tests/python"))
-import contextbench as cb  # noqa: E402
+import contextbench as cb
 
-from oxide import api  # noqa: E402
-from oxide.core import retrieval  # noqa: E402
-from oxide.storage import ladybug  # noqa: E402
+from oxide import api
+from oxide.core import retrieval
+from oxide.storage import ladybug
 
 bench, arm, out = sys.argv[1], sys.argv[2], Path(sys.argv[3])
 assert arm in ("none", "full", "own"), arm
