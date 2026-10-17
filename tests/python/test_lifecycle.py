@@ -1,10 +1,11 @@
 """Resource lifecycle: close, context managers and forgotten handles release the lock,
-the read view and its native connection (Linux: descriptors counted in /proc)."""
+the read view and its native connection (descriptors counted in /proc or /dev/fd)."""
 
 from __future__ import annotations
 
 import gc
 import os
+import sys
 import textwrap
 import weakref
 from pathlib import Path
@@ -28,7 +29,7 @@ OWNS = textwrap.dedent(
 
 
 def descriptors() -> int:
-    return len(os.listdir("/proc/self/fd"))
+    return len(os.listdir("/proc/self/fd" if os.path.isdir("/proc/self/fd") else "/dev/fd"))
 
 
 def use(repo: oxide.Repository) -> None:
@@ -52,6 +53,7 @@ def test_a_dropped_repository_releases_its_lock_on_collection(
         assert again.search("RetryPolicy").entries
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="no descriptor table to count on Windows")
 def test_close_and_exceptions_release_everything(private_data: Path, fts: Path) -> None:
     with oxide.open_repository(FIXTURE) as repo:
         use(repo)  # warms imports and the native library before counting

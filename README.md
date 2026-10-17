@@ -30,7 +30,8 @@ mise run bootstrap        # uv sync --locked + `oxide prepare`
 
 Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare`
 is the only network access OXIDE ever makes. It downloads the pinned LadybugDB FTS
-extension (Linux x86_64 only) and checks its SHA-256. Without that extension,
+extension for your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
+[docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
 the lexical channel reports `unavailable` and structural seeds and routing still
 work.
 
@@ -81,7 +82,8 @@ when it sits inside the repository.
 - One owner per store, across processes. A `Repository` is not thread-safe.
 - Indexing is a full rebuild per change, and capture holds the captured bytes in
   memory (at most 1 GiB in scope, 1 MiB per file).
-- FTS and atomic publication are verified on Linux x86_64 only.
+- FTS and atomic publication are verified on Linux x86_64. macOS and Windows run in
+  the Platforms workflow; see [docs/platforms.md](docs/platforms.md) for their status.
 
 [docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
 recovery behavior.

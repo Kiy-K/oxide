@@ -148,9 +148,10 @@ Damage is classified like this:
 
 ## Platform and native limitations
 
-- The FTS extension is pinned for Linux x86_64 only. Elsewhere the lexical
-  channel reports `unavailable`. Atomic publication and the crash tests are
-  verified on Linux only.
+- The FTS extension is pinned for Linux x86_64, macOS x86_64/arm64 and Windows
+  x86_64 ([platforms.md](platforms.md)). Elsewhere the lexical channel reports
+  `unavailable`. Atomic publication and the crash tests run on all four in the
+  Platforms workflow; [platforms.md](platforms.md) records which have passed.
 - The pinned binding segfaults when it re-runs a parameterized
   `QUERY_FTS_INDEX`, so the FTS query is a literal built only from OXIDE terms
   (`[a-z0-9 ]`). Search text can never reach it unsanitized.

@@ -18,7 +18,6 @@ generation is deleted. A crash inside a same-name rebuild is undone; any other
 
 from __future__ import annotations
 
-import fcntl
 import hashlib
 import json
 import math
@@ -55,6 +54,11 @@ from oxide.models import (
     StoreCorrupt,
 )
 
+if sys.platform == "win32":
+    import msvcrt
+else:
+    import fcntl
+
 SCHEMA_VERSION = "oxide-ladybug-py-v1"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies
@@ -63,8 +67,26 @@ STORAGE_FORMAT = 47
 BUFFER_POOL = 128 << 20
 LOAD_POOL_PER_BYTE = 2
 FTS_VERSION = "0.21.0"
-FTS_SHA256 = "742f2756c2f80bcd1886b6ee0446483038cff0ecf6cf47f698bc6fe855cbaef6"
-FTS_URL = f"https://extension.ladybugdb.com/v{FTS_VERSION}/linux_amd64/fts/libfts.lbug_extension"
+# (sys.platform, platform.machine()) -> the extension host's platform and the build's
+# SHA-256, each downloaded and pinned from extension.ladybugdb.com.
+FTS_BUILDS = {
+    ("linux", "x86_64"): (
+        "linux_amd64",
+        "742f2756c2f80bcd1886b6ee0446483038cff0ecf6cf47f698bc6fe855cbaef6",
+    ),
+    ("darwin", "arm64"): (
+        "osx_arm64",
+        "248332de781a7781f612a55b5397e88f58f1f1ba2a973836ada199eab0f6bf10",
+    ),
+    ("darwin", "x86_64"): (
+        "osx_amd64",
+        "c86f427503555a3ccdc55eb66a8d82793a206aac599a6092f7d1d4eb50c21403",
+    ),
+    ("win32", "AMD64"): (
+        "win_amd64",
+        "7b6132ae6a554e3eeb3c4b0da7e2eb5c483b258b31e848a0e3d6000ac29885ee",
+    ),
+}
 FTS_SCORER = "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive"
 FTS_COMPONENT = "ladybug-fts-0.21.0;stemmer=porter;stopwords=default"
 _HEX64 = re.compile(r"[0-9a-f]{64}")
@@ -89,20 +111,26 @@ def fts_location() -> Path:
     return base / "oxide" / f"ladybug-extensions-{FTS_VERSION}" / "libfts.lbug_extension"
 
 
-def _supported_platform() -> bool:
-    return sys.platform == "linux" and platform.machine() in ("x86_64", "AMD64")
+def _fts_build() -> tuple[str, str] | None:
+    """The pinned extension's URL and SHA-256 for this platform, if there is one."""
+    build = FTS_BUILDS.get((sys.platform, platform.machine()))
+    if build is None:
+        return None
+    host, sha256 = build
+    url = f"https://extension.ladybugdb.com/v{FTS_VERSION}/{host}/fts/libfts.lbug_extension"
+    return url, sha256
 
 
 def fts_unavailable(path: Path) -> str | None:
     """Why the pinned FTS extension cannot be used, or None. Checked on every use:
     loading native code is a trust boundary (ADR-0002 § 3)."""
-    if not _supported_platform():
+    if (build := _fts_build()) is None:
         return f"no pinned FTS extension for {sys.platform}/{platform.machine()}"
     try:
         data = path.read_bytes()
     except OSError:
         return f"FTS extension missing at {path}; run `oxide prepare`"
-    if hashlib.sha256(data).hexdigest() != FTS_SHA256:
+    if hashlib.sha256(data).hexdigest() != build[1]:
         return f"FTS extension at {path} does not match its pinned digest; run `oxide prepare`"
     return None
 
@@ -113,18 +141,19 @@ def prepare_fts(path: Path | None = None) -> Path:
     path = path or fts_location()
     if fts_unavailable(path) is None:
         return path
-    if not _supported_platform():
+    if (build := _fts_build()) is None:
         raise OxideError(f"no pinned FTS extension for {sys.platform}/{platform.machine()}")
+    url, sha256 = build
     path.parent.mkdir(parents=True, exist_ok=True)
     # The extension host refuses urllib's default User-Agent (HTTP 403, measured).
-    request = urllib.request.Request(FTS_URL, headers={"User-Agent": f"oxide/{version('oxide')}"})
+    request = urllib.request.Request(url, headers={"User-Agent": f"oxide/{version('oxide')}"})
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
             data = response.read()
     except OSError as error:
-        raise OxideError(f"could not fetch {FTS_URL}: {error}") from error
-    if hashlib.sha256(data).hexdigest() != FTS_SHA256:
-        raise OxideError(f"downloaded FTS extension does not match {FTS_SHA256}")
+        raise OxideError(f"could not fetch {url}: {error}") from error
+    if hashlib.sha256(data).hexdigest() != sha256:
+        raise OxideError(f"downloaded FTS extension does not match {sha256}")
     partial = path.with_suffix(".partial")
     partial.write_bytes(data)
     os.replace(partial, path)
@@ -178,7 +207,14 @@ def _write_csv(path: Path, rows: Iterable[tuple[object, ...]]) -> int:
 
 
 def _fsync(path: Path) -> None:
-    fd = os.open(path, os.O_RDONLY)
+    if sys.platform == "win32":
+        if path.is_dir():
+            # shortcut: Windows cannot open a directory to flush it, so a rename's
+            # durability rests on NTFS metadata journaling; upgrade with write-through moves.
+            return
+        fd = os.open(path, os.O_RDWR)  # Windows flushes only handles with write access
+    else:
+        fd = os.open(path, os.O_RDONLY)
     try:
         os.fsync(fd)
     finally:
@@ -450,9 +486,16 @@ class Store:
             # A reader never leaves an empty store behind for a repository never indexed.
             raise NotIndexed(f"{root} has not been indexed")
         self.dir.mkdir(parents=True, exist_ok=True)
-        lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT | os.O_CLOEXEC, 0o600)
+        # Not inherited by child processes (PEP 446), so only this process owns it.
+        lock = os.open(self.dir / "store.lock", os.O_RDWR | os.O_CREAT, 0o600)
         try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            if sys.platform == "win32":
+                try:
+                    msvcrt.locking(lock, msvcrt.LK_NBLCK, 1)
+                except OSError as error:  # held by another handle
+                    raise BlockingIOError(*error.args) from error
+            else:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as error:
             os.close(lock)
             raise OwnershipConflict(f"{root}: its store is open in another OXIDE") from error
@@ -618,7 +661,9 @@ class Store:
             blob = source / f.digest.removeprefix("sha256:")
             if not blob.exists():
                 blob.write_bytes(f.data)
-        (staging / "MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False))
+        (staging / "MANIFEST.json").write_text(
+            json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
+        )
         for path in [*source.iterdir(), *staging.iterdir()]:
             if path.is_file():
                 _fsync(path)

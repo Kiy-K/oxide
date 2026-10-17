@@ -69,7 +69,7 @@ def write(root: Path, files: Mapping[str, str | bytes]) -> Path:
         if isinstance(content, bytes):
             path.write_bytes(content)
         else:
-            path.write_text(content)
+            path.write_text(content, encoding="utf-8")
     return root
 
 

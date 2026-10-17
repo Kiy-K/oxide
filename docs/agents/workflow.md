@@ -8,7 +8,9 @@ Commands and verification for OXIDE v2, loaded on demand from the root
 
 [Mise](https://mise.jdx.dev/installing-mise.html) is the one entrypoint;
 `mise.toml` pins uv, and `.python-version` pins the development Python (uv
-installs it). CI (`.github/workflows/ci.yml`) runs exactly `mise run verify`.
+installs it). CI (`.github/workflows/ci.yml`) runs exactly `mise run verify`;
+`.github/workflows/platforms.yml` runs the suite and an installed-artifact smoke on
+Linux, Windows and both macOS architectures ([docs/platforms.md](../platforms.md)).
 
 ```bash
 mise run bootstrap     # uv sync --locked + `oxide prepare` (pinned FTS extension, sha256-checked)
@@ -93,12 +95,12 @@ Phase 3).
   `pgrep -fa` + kill-by-PID; `pkill -f somepattern` matches your own command
   line and kills your own shell.
 
-## LadybugDB FTS extension (Linux x86_64)
+## LadybugDB FTS extension
 
 LadybugDB comes from its Python wheel (`ladybug==0.21.2`), so there is no
 native build step. Full-text search is a separate native extension: `uv run
-oxide prepare` (part of `mise run bootstrap`) downloads the pinned 0.21.0 file
-over HTTPS and checks its SHA-256 into
+oxide prepare` (part of `mise run bootstrap`) downloads this platform's pinned
+0.21.0 build ([docs/platforms.md](../platforms.md)) over HTTPS and checks its SHA-256 into
 `$XDG_CACHE_HOME/oxide/ladybug-extensions-0.21.0/` (override with
 `OXIDE_FTS_EXTENSION`). It is the only network access OXIDE makes. The
 engine re-verifies the digest before every `LOAD EXTENSION` by path, never

@@ -1,0 +1,83 @@
+name: Platforms
+
+# Cross-platform verification of the Python engine (docs/platforms.md): on every
+# supported platform, the locked environment installs, `oxide prepare` fetches that
+# platform's pinned FTS build, mypy and the test suite run from the checkout, and the
+# built wheel and sdist pass scripts/smoke_dist.py from a fresh environment.
+# ContextBench quality gates stay in ci.yml (Linux) and `mise run contextbench-ts`.
+on:
+  pull_request:
+    branches: [main, rewrite/v2]
+  push:
+    branches: [main, rewrite/v2]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  platform:
+    name: ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, label: linux-x86_64 }
+          - { os: windows-2025, label: windows-x86_64 }
+          # ladybug 0.21.2's macOS wheels need macOS 15 or later.
+          - { os: macos-15-intel, label: macos-x86_64 }
+          - { os: macos-15, label: macos-arm64 }
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Fixtures and frozen spans are byte-exact: no CRLF conversion on Windows.
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v7
+      - name: Install pinned uv
+        uses: jdx/mise-action@v5
+        with:
+          version: 2026.9.14
+          install_args: uv
+      - name: Restore the pinned FTS extension
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/oxide
+          key: oxide-fts-${{ matrix.label }}-${{ hashFiles('src/oxide/storage/ladybug.py') }}
+      - name: Install the locked environment and the FTS extension
+        run: |
+          uv sync --locked
+          uv run --locked oxide prepare
+          uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
+      - name: mypy --strict (this platform's branches)
+        run: uv run --locked mypy
+      - name: pytest (without the ContextBench corpora gate)
+        run: >
+          uv run --locked pytest --ignore=tests/python/test_contextbench.py
+          --junitxml=pytest.xml
+      - name: Build the wheel and sdist
+        run: uv build --out-dir dist
+      - name: Smoke-test each artifact in a fresh environment
+        run: |
+          uv export --locked --no-dev --no-emit-project --no-hashes -q -o "$RUNNER_TEMP/requirements.txt"
+          for artifact in dist/*.whl dist/*.tar.gz; do
+            venv="$RUNNER_TEMP/smoke-$(basename "$artifact")"
+            uv venv -q "$venv"
+            uv pip install -q --python "$venv" "$artifact" -r "$RUNNER_TEMP/requirements.txt"
+            python=$(ls "$venv"/bin/python "$venv"/Scripts/python.exe 2>/dev/null | head -n 1)
+            echo "== $artifact"
+            (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")
+          done
+      - name: Keep the platform record
+        # act (local runs) cannot copy this action into podman containers.
+        if: always() && !env.ACT
+        uses: actions/upload-artifact@v5
+        with:
+          name: platform-${{ matrix.label }}
+          path: |
+            environment.json
+            pytest.xml
+            dist/
+          if-no-files-found: ignore
