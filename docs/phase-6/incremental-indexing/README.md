@@ -36,6 +36,56 @@ the whole snapshot.
   `parsed`/`reused`), an `index(progress=...)` callback, and `oxide index` stage
   lines on stderr plus a change/reuse/skip summary on stdout.
 
+## Reliability: cached facts are untrusted input (review, 2026-10-17)
+
+The seal (sha256 in the manifest) only catches accidental damage. A `facts.json`
+whose digest matches but whose contents are wrong could come from an encoder bug
+under an unchanged `FACTS_VERSION`, or from someone editing both files. As first
+committed (`473c15e`), `decode` trusted such entries. Tests that rewrote one entry
+and resealed it (`/tmp` reproduction, fixture repo) showed:
+
+| Outcome | Cases |
+| --- | --- |
+| `index()` raised | wrong arity or container type (`ValueError`), parent index out of range (`IndexError`), non-string name, nested list in a name set (`TypeError`) |
+| `index()` never returned | a scope as its own parent: a parent cycle, so resolution walks forever |
+| `validate` failed the whole index | a name containing `.` or `~` collides with a generated key |
+| silently wrong graph | string offsets, offsets beyond the file, a string spread into a set of characters |
+
+A reused entry is resealed verbatim into the next generation, so a bad entry would
+persist until its file changed, and every index in between would fail the same way.
+
+The fix: `python.decode(value, size)` validates at the trust boundary. It accepts only
+what `parse` can produce:
+- JSON lists in the encoded shape, with exact `int`/`bool`/`str` types;
+- the module scope as `(None, None, (0, size))`;
+- every other scope's parent before the scope itself, which makes the scopes a tree
+  and every walk finite;
+- every offset inside the file;
+- declaration names that are identifiers, so keys stay unique.
+
+Anything else raises `ValueError`. `derive` then parses that file, so the bad entry is
+replaced rather than carried over. `index()` reports the real `reused` count and
+prints "N cached parse facts were unusable and parsed again". Every case in the table
+now indexes successfully and equals a full rebuild.
+
+- Coverage:
+  - `test_unsound_cached_facts_are_parsed_never_trusted_or_fatal` replaces every
+    position of a real entry, containers included, with each of nine bad values. A
+    rejected entry must derive exactly what a full derivation does. An accepted one
+    must still derive and validate.
+  - `test_sealed_but_unsound_facts_are_parsed_again` plants a resealed cycle in a
+    stored generation and checks the report, the progress line, rebuild equality and
+    that the bad entry did not carry over.
+  - With the check disabled, the fuzz test fails.
+- Cost (measured, 3,539 site-packages files): no false rejections; decoding goes
+  from 0.18 s to 0.41 s, about 2% of an incremental index.
+- Limit (inherent): an entry that is well-typed, in bounds and tree-shaped but not
+  what this file parses to cannot be detected without parsing it, which is the cost
+  the cache exists to avoid. One example is a renamed or duplicated declaration.
+  Producing one takes deliberate edits to both `facts.json` and the manifest inside
+  the private data directory. That is the same trust `graph.lbug` already relies
+  on. Recovery is to delete the store.
+
 ## Rejected: unsafe or unmeasurable optimizations
 
 - **In-place or delta store updates.** A relation's `site` is a global
@@ -70,7 +120,7 @@ the whole snapshot.
 - Damaged, missing and unsealed `facts.json` reuse nothing and still equal a fresh
   rebuild.
 - The frozen ContextBench baselines and every other gate are unchanged:
-  `mise run verify` passes (147 tests).
+  `mise run verify` passes (149 tests after the review fix).
 
 ## Results (measured)
 
@@ -106,6 +156,24 @@ and an unchanged index is as fast as before. The costs:
 - a cold build is about 9% slower (encoding plus the facts file);
 - peak RSS is 70–130 MB higher, from holding the decoded facts next to the derived graph;
 - each generation carries a 17 MB `facts.json`, about 11% of its size.
+
+## Do the cold-build and memory costs need action now? No (assessed 2026-10-17)
+
+- **Cold build +9% (+1.2–1.5 s on 3,539 files).** This is encoding (0.77 s measured)
+  plus writing and digesting a 17 MB file. That work is the price of reuse: a build
+  without it can't be reused. It is paid in full only on the first index and after a
+  version or component change, and every later edit index saves about 4.7 s.
+- **Peak RSS +70–130 MB (585 → 655–720 MB).** That is 12–22%, and it comes from the
+  encoded facts (and on an incremental index the previous generation's facts) held
+  during derivation and publication. It stays well within the 3 GiB cap used for
+  heavy runs, and the bound on what `index()` captures (1 GiB in scope) is unchanged.
+  How much each holder contributes was not measured. Releasing the previous facts
+  before publication is a possible saving that would need a measurement first.
+- **Not adopted without measurements**, as scoped: compression (zlib-1 shrinks the
+  file to 5.4 MB, but its time cost was not measured), any further caching layer, and
+  incremental database mutation (unsafe, see below).
+- **Revisit when** cold builds dominate real use (CI on fresh clones), or a
+  repository's peak RSS approaches its memory budget.
 
 ## Limitations and follow-up
 

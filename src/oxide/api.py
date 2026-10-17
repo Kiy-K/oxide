@@ -163,10 +163,14 @@ class Repository:
             previous = old.snapshot if old else None
             cached = old.facts() if old else {}
             python = [d for p, d in after.items() if p.endswith(".py")]
-            reused = sum(d in cached for d in python)
-            parsed = len(python) - reused
-            report(f"deriving {len(after)} files: parsing {parsed} Python, reusing {reused}")
+            hits = sum(d in cached for d in python)
+            report(
+                f"deriving {len(after)} files: parsing {len(python) - hits} Python, reusing {hits}"
+            )
             derived = derive(snapshot, store.repo_id, cached)
+            reused, parsed = derived.reused, len(python) - derived.reused
+            if reused < hits:
+                report(f"{hits - reused} cached parse facts were unusable and parsed again")
             validate(derived)
             report(f"publishing {len(derived.entities)} entities, {len(derived.edges)} relations")
             store.publish(snapshot, derived, parts, lexical_unavailable)

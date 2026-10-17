@@ -287,25 +287,89 @@ def encode(parsed: Parsed) -> list[Any]:
     return [scopes, sorted(parsed.rebound), parsed.diagnostics]
 
 
-def decode(value: Any) -> Parsed:
-    """The inverse of ``encode``: ``decode(encode(p)) == p``."""
-    scopes, rebound, diagnostics = value
-    return Parsed(
-        [
-            Scope(
-                parent,
-                decl and Decl(*decl),
-                (body[0], body[1]),
-                set(bound),
-                [Import(level, tuple(module), *rest) for level, module, *rest in imports],
-                [Use(*u) for u in calls],
-                [Use(*u) for u in bases],
+def _list(value: Any) -> list[Any]:
+    if type(value) is not list:
+        raise TypeError(f"expected a list, got {type(value).__name__}")
+    return value
+
+
+def decode(value: Any, size: int) -> Parsed:
+    """The inverse of ``encode`` for a file of ``size`` bytes: ``decode(encode(p), n) == p``.
+    Cached facts are read from disk, so they are checked here. Anything ``parse`` could
+    not have produced raises ValueError, and the caller parses instead. That way the
+    resolver only sees well-typed, in-bounds facts: a tree whose parents precede their
+    scopes, and identifier names, so keys stay unique."""
+    try:
+        scopes, rebound, diagnostics = _list(value)
+        parsed = Parsed(
+            [
+                Scope(
+                    parent,
+                    None if decl is None else Decl(*_list(decl)),
+                    tuple(_list(body)),  # length checked by _sound
+                    set(_list(bound)),
+                    [
+                        Import(level, tuple(_list(module)), *rest)
+                        for level, module, *rest in map(_list, _list(imports))
+                    ],
+                    [Use(*_list(u)) for u in _list(calls)],
+                    [Use(*_list(u)) for u in _list(bases)],
+                )
+                for parent, decl, body, bound, imports, calls, bases in map(_list, _list(scopes))
+            ],
+            set(_list(rebound)),
+            _list(diagnostics),
+        )
+    except (TypeError, ValueError) as error:
+        raise ValueError(f"malformed parse facts: {error}") from None
+    if not _sound(parsed, size):
+        raise ValueError("parse facts are ill-typed, out of bounds or not a scope tree")
+    return parsed
+
+
+def _sound(parsed: Parsed, size: int) -> bool:
+    """What ``parse`` guarantees of the facts of a file of ``size`` bytes."""
+
+    def spans(*pairs: tuple[Any, ...]) -> bool:
+        return all(
+            len(p) == 2 and type(p[0]) is int and type(p[1]) is int and 0 <= p[0] <= p[1] <= size
+            for p in pairs
+        )
+
+    def texts(*values: Any) -> bool:
+        return all(type(v) is str for v in values)
+
+    scopes = parsed.scopes
+    if not scopes or (scopes[0].parent, scopes[0].decl, scopes[0].body) != (None, None, (0, size)):
+        return False
+    for k, s in enumerate(scopes):
+        d = s.decl
+        if k and not (
+            type(s.parent) is int
+            and 0 <= s.parent < k
+            and d is not None
+            and type(d.cls) is bool
+            and type(d.name) is str
+            and d.name.isidentifier()
+            and texts(d.signature)
+            and spans((d.start, d.end))
+        ):
+            return False
+        uses = (*s.calls, *s.bases)
+        if not (
+            spans(s.body, *((u.start, u.end) for u in uses), *((i.start, i.end) for i in s.imports))
+            and texts(*s.bound, *(u.name for u in uses))
+            and all(
+                type(i.level) is int
+                and i.level >= 0
+                and texts(*i.module)
+                and i.item in ("module", "name", "star")
+                and all(v is None or type(v) is str for v in (i.name, i.alias))
+                for i in s.imports
             )
-            for parent, decl, body, bound, imports, calls, bases in scopes
-        ],
-        set(rebound),
-        list(diagnostics),
-    )
+        ):
+            return False
+    return texts(*parsed.rebound, *parsed.diagnostics)
 
 
 @dataclass(frozen=True, slots=True)

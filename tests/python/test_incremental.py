@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import shutil
 from pathlib import Path
@@ -11,9 +12,9 @@ import pytest
 from conftest import FIXTURE, write
 
 import oxide
-from oxide.capture import capture
+from oxide.capture import capture, digest
 from oxide.core import python
-from oxide.core.indexing import derive
+from oxide.core.indexing import derive, validate
 
 Edits = dict[str, str | bytes | None]
 BASE: dict[str, str | bytes] = {
@@ -85,7 +86,7 @@ def test_facts_round_trip_through_their_encoding() -> None:
     for data in sources:
         parsed = python.parse(data)
         assert not isinstance(parsed, str)
-        assert python.decode(json.loads(json.dumps(python.encode(parsed)))) == parsed
+        assert python.decode(json.loads(json.dumps(python.encode(parsed))), len(data)) == parsed
 
 
 def test_reused_facts_derive_what_a_full_derivation_does(tmp_path: Path) -> None:
@@ -170,3 +171,84 @@ def test_damaged_or_absent_facts_cost_a_reparse_never_correctness(
     with oxide.open_repository(repo_copy) as fresh:
         fresh.index()
         assert dump(fresh) == expected
+
+
+# Every kind of fact parse produces: nesting, decorators, bases, imports, calls, rebinding.
+FACTS_SOURCE = """\
+import os.path as p
+from .. import sibling
+from pkg.mod import *
+global g
+
+@decorator
+class Outer(Base, m.Mixin):
+    def method(self, a, *b, c=1):
+        def inner():
+            helper()
+        return p.join(a)
+"""
+BAD: list[Any] = [None, -1, 1, 10**9, True, "x", "a.b", [], {}]
+
+
+def _paths(value: Any, at: tuple[int, ...] = ()) -> list[tuple[int, ...]]:
+    """Every position in an encoded entry, containers included."""
+    if not isinstance(value, list):
+        return [at]
+    return [at, *(p for i, v in enumerate(value) for p in _paths(v, (*at, i)))]
+
+
+def _replace(value: Any, at: tuple[int, ...], new: Any) -> Any:
+    if not at:
+        return new
+    out = copy.deepcopy(value)
+    holder = out
+    for i in at[:-1]:
+        holder = holder[i]
+    holder[at[-1]] = new
+    return out
+
+
+def test_unsound_cached_facts_are_parsed_never_trusted_or_fatal(tmp_path: Path) -> None:
+    snapshot = capture(write(tmp_path / "repo", {"pkg/m.py": FACTS_SOURCE}))
+    full = derive(snapshot, "r")
+    ((key, good),) = full.facts.items()
+    size = len(snapshot.files[0].data)
+    rejected = 0
+    for at in _paths(good):
+        for bad in BAD:
+            entry = _replace(good, at, bad)
+            try:
+                python.decode(entry, size)
+            except ValueError:
+                rejected += 1
+                derived = derive(snapshot, "r", {key: entry})
+                assert derived == full and derived.reused == 0, (at, bad)
+                continue
+            # Well-formed facts parse could have produced: they may differ, never fail.
+            validate(derive(snapshot, "r", {key: entry}))
+    assert rejected > len(_paths(good)) * len(BAD) // 2
+
+
+def test_sealed_but_unsound_facts_are_parsed_again(repo_copy: Path, private_data: Path) -> None:
+    oxide.index_repository(repo_copy)
+    (generation,) = private_data.glob("repos/*/generations/*")
+    facts = json.loads((generation / "facts.json").read_bytes())
+    victim = next(k for k, v in sorted(facts.items()) if len(v[0]) > 1)
+    facts[victim][0][1][0] = 1  # a declaration as its own parent: a cycle
+    raw = json.dumps(facts).encode()
+    (generation / "facts.json").write_bytes(raw)
+    manifest = json.loads((generation / "MANIFEST.json").read_text())
+    manifest["facts"]["digest"] = digest(raw)  # the seal matches: only decode can tell
+    (generation / "MANIFEST.json").write_text(json.dumps(manifest))
+    write(repo_copy, {"new.py": "x = 1\n"})
+    lines: list[str] = []
+    with oxide.open_repository(repo_copy) as repo:
+        report = repo.index(progress=lines.append)
+        assert (report.parsed, report.reused) == (2, len(facts) - 1)
+        assert "1 cached parse facts were unusable and parsed again" in lines
+        expected, healed = dump(repo), repo.store.view().facts()
+    shutil.rmtree(private_data)
+    with oxide.open_repository(repo_copy) as fresh:
+        fresh.index()
+        assert dump(fresh) == expected
+        assert fresh.store.view().facts() == healed  # the bad entry did not carry over

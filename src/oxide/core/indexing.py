@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from importlib.metadata import version
 from typing import Any
 
@@ -32,6 +32,7 @@ class Derived:
     # ``python.encode``d facts of every parsed Python file by digest: a cache for the
     # next derivation, not knowledge.
     facts: dict[str, Any]
+    reused: int = field(default=0, compare=False)  # files whose cached facts were usable
 
 
 def components(storage: dict[str, str]) -> dict[str, str]:
@@ -77,9 +78,11 @@ def validate(derived: Derived) -> None:
 def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = None) -> Derived:
     """``cached`` holds facts of an earlier derivation under the same components, by
     file digest. Parsing is a pure function of the bytes, so reusing them derives
-    exactly what parsing would; resolution always runs over the whole capture."""
+    exactly what parsing would; an entry ``python.decode`` rejects is parsed instead.
+    Resolution always runs over the whole capture."""
     cached = cached or {}
     facts: dict[str, Any] = {}
+    reused = 0
     files: list[FileInfo] = []
     entities = [Entity("repo", "repository", "repository", repo_id, None, None, False)]
     edges: list[Edge] = []
@@ -94,7 +97,15 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             files.append(FileInfo(f.path, f.digest, len(f.data), "unknown", "unsupported", ()))
             continue
         raw = cached.get(f.digest)
-        parsed = python.parse(f.data) if raw is None else python.decode(raw)
+        parsed: python.Parsed | str | None = None
+        if raw is not None:
+            try:
+                parsed = python.decode(raw, len(f.data))
+                reused += 1
+            except ValueError:
+                raw = None  # unusable: parsed below and replaced, so it never spreads
+        if parsed is None:
+            parsed = python.parse(f.data)
         if isinstance(parsed, str):
             info = FileInfo(f.path, f.digest, len(f.data), "python", "unsupported", (parsed,))
         else:
@@ -106,4 +117,4 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             )
         files.append(info)
     python.Resolver(sources).derive(entities, edges)
-    return Derived(tuple(files), tuple(entities), tuple(edges), facts)
+    return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

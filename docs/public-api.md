@@ -111,7 +111,10 @@ Damage is classified like this:
   such a generation `unchanged`.
 - **Lost reuse only.** A missing, damaged or older-format `facts.json` (the parse
   facts sealed with a generation, checked against the digest in its manifest) is
-  ignored: the next `index()` parses every file again. Reads are unaffected.
+  ignored: the next `index()` parses every file again. An entry that matches its seal
+  but isn't something the parser could produce (ill-typed, out of the file's bounds,
+  not a scope tree) is parsed again and replaced, and `index()` reports it. Reads
+  are unaffected.
 - **Ambiguous state fails closed at `open_repository`, and nothing is deleted or
   rewritten.** This covers a malformed `repo.json`, a missing `repo.json` while
   a `CURRENT` exists, a `CURRENT` that is unreadable or not a generation name,
