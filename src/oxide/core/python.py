@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import bisect
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 import tree_sitter_python
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
@@ -265,6 +265,47 @@ def parse(data: bytes) -> Parsed | str:
             omitted = len(diagnostics) - MAX_DIAGNOSTICS
             diagnostics = [*diagnostics[:MAX_DIAGNOSTICS], f"{omitted} more syntax errors omitted"]
     return Parsed(scopes, rebound, diagnostics)
+
+
+# The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
+FACTS_VERSION = "oxide-python-facts-v1"
+
+
+def encode(parsed: Parsed) -> list[Any]:
+    scopes = [
+        [
+            s.parent,
+            s.decl and [s.decl.cls, s.decl.name, s.decl.start, s.decl.end, s.decl.signature],
+            list(s.body),
+            sorted(s.bound),
+            [[i.level, list(i.module), i.item, i.name, i.alias, i.start, i.end] for i in s.imports],
+            [[u.name, u.start, u.end] for u in s.calls],
+            [[u.name, u.start, u.end] for u in s.bases],
+        ]
+        for s in parsed.scopes
+    ]
+    return [scopes, sorted(parsed.rebound), parsed.diagnostics]
+
+
+def decode(value: Any) -> Parsed:
+    """The inverse of ``encode``: ``decode(encode(p)) == p``."""
+    scopes, rebound, diagnostics = value
+    return Parsed(
+        [
+            Scope(
+                parent,
+                decl and Decl(*decl),
+                (body[0], body[1]),
+                set(bound),
+                [Import(level, tuple(module), *rest) for level, module, *rest in imports],
+                [Use(*u) for u in calls],
+                [Use(*u) for u in bases],
+            )
+            for parent, decl, body, bound, imports, calls, bases in scopes
+        ],
+        set(rebound),
+        list(diagnostics),
+    )
 
 
 @dataclass(frozen=True, slots=True)

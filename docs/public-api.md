@@ -33,7 +33,7 @@ once.
 | Operation | Returns | Notes |
 | --- | --- | --- |
 | `open_repository(path, *, data_dir=None, create=True)` | `Repository` | Takes the store's exclusive lock; a second owner in any process gets `OwnershipConflict`. `create=False` (read-only clients) raises `NotIndexed` for a repository without a store and writes nothing |
-| `Repository.index()` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current |
+| `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python files whose bytes the current generation parsed reuse its parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
 | `Repository.entity(key)` / `relations(key)` / `files()` | `Entity \| None`, `list[Relation]`, `list[FileInfo]` | Typed graph and coverage inspection |
@@ -63,6 +63,11 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
 - `SearchResult`: `entries` (`EntryPoint`: entity, `lexical_rank`,
   `lexical_score`, `seeds`), `lexical` (`ChannelStatus`: `ran` with the scorer
   name, or `disabled`/`unavailable` with a reason, never a zero score), `hints`.
+- `IndexReport`: `status` (`built`/`unchanged`), counts, `partial` paths,
+  `unsupported`, `skipped`, `case_collisions`, `lexical`, `seconds`; and, for a
+  build, `previous` (the `Snapshot` it replaced, None without a readable one),
+  `added`/`modified`/`deleted` paths relative to it, and how many Python files
+  were `parsed` or `reused`.
 - `ContextBundle`: `items` (`ContextItem`: `source`, `lines`, `entities` with
   `complete` and `reason`, `units`, `text`; a `file:` entity in an item is a run of
   that file's module-level source, never `complete`), `payload`, `budget`, `used`,
@@ -104,6 +109,9 @@ Damage is classified like this:
   foreign `MANIFEST.json`, and a missing or digest-mismatched retained source
   file. Reads raise `store_corrupt` until then, and `index()` never reports
   such a generation `unchanged`.
+- **Lost reuse only.** A missing, damaged or older-format `facts.json` (the parse
+  facts sealed with a generation, checked against the digest in its manifest) is
+  ignored: the next `index()` parses every file again. Reads are unaffected.
 - **Ambiguous state fails closed at `open_repository`, and nothing is deleted or
   rewritten.** This covers a malformed `repo.json`, a missing `repo.json` while
   a `CURRENT` exists, a `CURRENT` that is unreadable or not a generation name,
@@ -138,7 +146,9 @@ Damage is classified like this:
 - Store and extension paths may contain `'`, `\`, spaces, control and non-ASCII
   characters (escaped in the two literal paths, `COPY` and `LOAD EXTENSION`).
   Paths that are not valid UTF-8 are `invalid_path`.
-- Indexing is a full rebuild per change. Capture holds every captured file in
+- Indexing reuses parse facts of unchanged bytes, but resolution and publication
+  (the graph, FTS index and retained source) are rebuilt per change
+  (`docs/phase-6/incremental-indexing/`). Capture holds every captured file in
   memory: at most 1 GiB in scope, 1 MiB per file, and peak RSS was about 1.0×
   the captured bytes plus ~30 MiB for capture alone. Derivation adds per-entity
   memory: 239 MiB peak for a 14 MiB stdlib. Measurements are in
@@ -147,8 +157,10 @@ Damage is classified like this:
 ## CLI
 
 `oxide index|search|context <path> [...] [--data-dir D] [--json]` and
-`oxide prepare`. `context` prints the payload to stdout and `used/budget units`
-to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
+`oxide prepare`. `index` prints its progress to stderr and a summary to stdout:
+counts, changes since the last index, Python files parsed and reused, then any
+partial parses, skips, unsupported files and case collisions. `context` prints the
+payload to stdout and `used/budget units` to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug. `search` and `context` open with `create=False`, so
 they never leave an empty store behind.

@@ -1,0 +1,172 @@
+"""Incremental indexing: reused parse facts derive exactly what a full rebuild does."""
+
+from __future__ import annotations
+
+import json
+import shutil
+from pathlib import Path
+from typing import Any
+
+import pytest
+from conftest import FIXTURE, write
+
+import oxide
+from oxide.capture import capture
+from oxide.core import python
+from oxide.core.indexing import derive
+
+Edits = dict[str, str | bytes | None]
+BASE: dict[str, str | bytes] = {
+    "pkg/__init__.py": "",
+    "pkg/a.py": "def helper():\n    pass\n",
+    "pkg/b.py": "from pkg.a import helper\nfrom pkg.d import later\n\n"
+    "def use():\n    helper()\n    later()\n",
+    "tests/test_b.py": "from pkg.b import use\n\ndef test_use():\n    use()\n",
+    "README.md": "# demo\n",
+}
+# Each step edits the tree; most change what *other*, unchanged files resolve to.
+STEPS: list[tuple[str, Edits]] = [
+    ("rename the imported symbol", {"pkg/a.py": "def helper2():\n    pass\n"}),
+    ("add the module an import names", {"pkg/d.py": "def later():\n    pass\n"}),
+    (
+        "rebind names importers resolve",
+        {
+            "pkg/d.py": "def later():\n    pass\ndef reset():\n    global later\n"
+            "def now():\n    pass\nnow = 1\n"
+        },
+    ),
+    (
+        "import the rebound names",
+        {"pkg/e.py": "from pkg.d import later, now\nclass E(Exception):\n    pass\n"},
+    ),
+    ("delete a resolved module", {"pkg/a.py": None}),
+    ("move a file: same bytes, new path", {"pkg/b.py": None, "pkg/bb.py": BASE["pkg/b.py"]}),
+    ("turn the test file into a non-test", {"tests/test_b.py": None, "tests/b.py": "x = 1\n"}),
+    ("partial and undecodable sources", {"pkg/bad.py": "def broken(:\n", "pkg/raw.py": b"\xff"}),
+    (
+        "back to the first tree",
+        {
+            **dict.fromkeys(
+                ("pkg/d.py", "pkg/e.py", "pkg/bb.py", "tests/b.py", "pkg/bad.py", "pkg/raw.py")
+            ),
+            **BASE,
+        },
+    ),
+]
+
+
+def apply(root: Path, edits: Edits) -> None:
+    for name, content in edits.items():
+        if content is None:
+            (root / name).unlink()
+        else:
+            write(root, {name: content})
+
+
+def dump(repo: oxide.Repository) -> dict[str, Any]:
+    """Every logical fact of the current generation, with the random RepoId masked."""
+    view = repo.store.view()
+    keys = [row[0] for row in view._query("MATCH (e:Entity) RETURN e.key ORDER BY e.key")]
+    entities = view.entities(keys)
+    return {
+        "snapshot": (view.snapshot.snapshot_id, view.snapshot.derivation_id),
+        "files": repo.files(),
+        "entities": {k: e if k != "repo" else None for k, e in entities.items()},
+        "relations": {k: repo.relations(k) for k in keys},
+    }
+
+
+def test_facts_round_trip_through_their_encoding() -> None:
+    sources = [f.read_bytes() for f in sorted(FIXTURE.rglob("*.py"))]
+    sources.append(
+        b"from . import *\nglobal g\ndef f(a, *b, c=1, **d):\n    (x := 1)\nclass C(B, m.N): pass\n"
+    )
+    sources.append(b"def broken(:\n")
+    for data in sources:
+        parsed = python.parse(data)
+        assert not isinstance(parsed, str)
+        assert python.decode(json.loads(json.dumps(python.encode(parsed)))) == parsed
+
+
+def test_reused_facts_derive_what_a_full_derivation_does(tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", BASE)
+    previous = derive(capture(root), "r")
+    for step, edits in STEPS:
+        apply(root, edits)
+        snapshot = capture(root)
+        incremental = derive(snapshot, "r", previous.facts)
+        assert incremental == derive(snapshot, "r"), step
+        previous = incremental
+
+
+def test_incremental_index_equals_a_full_rebuild(tmp_path: Path) -> None:
+    root = write(tmp_path / "repo", BASE)
+    with oxide.open_repository(root, data_dir=tmp_path / "incremental") as repo:
+        first = repo.index()
+        assert (first.previous, first.parsed, first.reused) == (None, 4, 0)
+        for i, (step, edits) in enumerate(STEPS):
+            apply(root, edits)
+            report = repo.index()
+            with oxide.open_repository(root, data_dir=tmp_path / f"full-{i}") as fresh:
+                assert fresh.index().reused == 0
+                assert dump(repo) == dump(fresh), step
+            assert report.status == "built" and report.previous is not None, step
+            python_files = sum(f.path.endswith(".py") for f in repo.files())
+            assert report.parsed + report.reused == python_files, step
+        # Back to the first tree: pkg/b.py's bytes were last seen as pkg/bb.py.
+        assert report.added == ("pkg/a.py", "pkg/b.py", "tests/test_b.py")
+        assert report.modified == ()
+        assert report.deleted == (
+            "pkg/bad.py",
+            "pkg/bb.py",
+            "pkg/d.py",
+            "pkg/e.py",
+            "pkg/raw.py",
+            "tests/b.py",
+        )
+        assert (report.parsed, report.reused) == (2, 2)
+
+
+def test_the_report_names_changes_and_reuse(repo_copy: Path, private_data: Path) -> None:
+    with oxide.open_repository(repo_copy) as repo:
+        repo.index()
+        write(repo_copy, {"oxidepy/retry.py": "def changed():\n    pass\n", "new.py": "x = 1\n"})
+        (repo_copy / "oxidepy" / "cache.py").unlink()
+        lines: list[str] = []
+        report = repo.index(progress=lines.append)
+        assert (report.added, report.modified, report.deleted) == (
+            ("new.py",),
+            ("oxidepy/retry.py",),
+            ("oxidepy/cache.py",),
+        )
+        assert (report.parsed, report.reused) == (2, 6)
+        assert lines[0].startswith("capturing") and lines[-1].startswith("publishing")
+        unchanged = repo.index()
+        assert unchanged.status == "unchanged"
+        assert (unchanged.added, unchanged.parsed, unchanged.reused) == ((), 0, 0)
+
+
+@pytest.mark.parametrize("damage", ["corrupt", "missing", "unsealed"])
+def test_damaged_or_absent_facts_cost_a_reparse_never_correctness(
+    repo_copy: Path, private_data: Path, damage: str
+) -> None:
+    oxide.index_repository(repo_copy)
+    (generation,) = private_data.glob("repos/*/generations/*")
+    facts = generation / "facts.json"
+    if damage == "corrupt":  # still valid JSON, but not what was sealed
+        facts.write_bytes(facts.read_bytes() + b" ")
+    elif damage == "missing":
+        facts.unlink()
+    else:  # a generation sealed before facts existed
+        manifest = json.loads((generation / "MANIFEST.json").read_text())
+        del manifest["facts"]
+        (generation / "MANIFEST.json").write_text(json.dumps(manifest))
+    write(repo_copy, {"new.py": "x = 1\n"})
+    with oxide.open_repository(repo_copy) as repo:
+        report = repo.index()
+        assert report.reused == 0
+        expected = dump(repo)
+    shutil.rmtree(private_data)
+    with oxide.open_repository(repo_copy) as fresh:
+        fresh.index()
+        assert dump(fresh) == expected

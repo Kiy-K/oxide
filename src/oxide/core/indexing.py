@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from importlib.metadata import version
+from typing import Any
 
 from oxide.capture import Capture
 from oxide.core import python
@@ -27,6 +29,9 @@ class Derived:
     files: tuple[FileInfo, ...]
     entities: tuple[Entity, ...]
     edges: tuple[Edge, ...]
+    # ``python.encode``d facts of every parsed Python file by digest: a cache for the
+    # next derivation, not knowledge.
+    facts: dict[str, Any]
 
 
 def components(storage: dict[str, str]) -> dict[str, str]:
@@ -69,7 +74,12 @@ def validate(derived: Derived) -> None:
             raise OxideError(f"invalid derivation: {key} has {parents.get(key, 0)} parents")
 
 
-def derive(capture: Capture, repo_id: str) -> Derived:
+def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = None) -> Derived:
+    """``cached`` holds facts of an earlier derivation under the same components, by
+    file digest. Parsing is a pure function of the bytes, so reusing them derives
+    exactly what parsing would; resolution always runs over the whole capture."""
+    cached = cached or {}
+    facts: dict[str, Any] = {}
     files: list[FileInfo] = []
     entities = [Entity("repo", "repository", "repository", repo_id, None, None, False)]
     edges: list[Edge] = []
@@ -83,15 +93,17 @@ def derive(capture: Capture, repo_id: str) -> Derived:
         if not f.path.endswith(".py"):
             files.append(FileInfo(f.path, f.digest, len(f.data), "unknown", "unsupported", ()))
             continue
-        parsed = python.parse(f.data)
+        raw = cached.get(f.digest)
+        parsed = python.parse(f.data) if raw is None else python.decode(raw)
         if isinstance(parsed, str):
             info = FileInfo(f.path, f.digest, len(f.data), "python", "unsupported", (parsed,))
         else:
             sources.append((f.path, f.digest, parsed))
+            facts[f.digest] = python.encode(parsed) if raw is None else raw
             coverage: Coverage = "partial" if parsed.diagnostics else "complete"
             info = FileInfo(
                 f.path, f.digest, len(f.data), "python", coverage, tuple(parsed.diagnostics)
             )
         files.append(info)
     python.Resolver(sources).derive(entities, edges)
-    return Derived(tuple(files), tuple(entities), tuple(edges))
+    return Derived(tuple(files), tuple(entities), tuple(edges), facts)

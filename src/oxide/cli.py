@@ -15,7 +15,7 @@ import sys
 from typing import Any
 
 from oxide.api import open_repository
-from oxide.models import OxideError
+from oxide.models import IndexReport, OxideError
 from oxide.storage.ladybug import prepare_fts
 
 
@@ -30,6 +30,43 @@ def _plain(item: Any) -> Any:
     if isinstance(item, dict):
         return {k: _plain(v) for k, v in item.items()}
     return item
+
+
+def _paths(paths: tuple[str, ...], shown: int = 5) -> str:
+    more = f", +{len(paths) - shown} more" if len(paths) > shown else ""
+    return ", ".join(paths[:shown]) + more
+
+
+def _index_summary(report: IndexReport) -> str:
+    lines = [
+        f"{report.status}: {report.files} files, {report.entities} entities, "
+        f"{report.relations} relations in {report.seconds:.2f}s; lexical {report.lexical}"
+    ]
+    if report.status == "built":
+        since = "since the last index" if report.previous else "(no readable previous index)"
+        changes = [
+            f"{len(paths)} {name}" + (f" ({_paths(paths)})" if paths else "")
+            for name, paths in (
+                ("added", report.added),
+                ("modified", report.modified),
+                ("deleted", report.deleted),
+            )
+        ]
+        lines.append(f"changes {since}: " + "; ".join(changes))
+        lines.append(f"python: {report.parsed} parsed, {report.reused} reused")
+    if report.partial:
+        lines.append(f"partial parses: {len(report.partial)} ({_paths(report.partial)})")
+    if report.skipped:
+        lines.append(
+            f"skipped: {len(report.skipped)} "
+            f"({_paths(tuple(f'{s.path} [{s.reason}]' for s in report.skipped))})"
+        )
+    if report.unsupported:
+        lines.append(f"unsupported (file-level only): {report.unsupported} files")
+    if report.case_collisions:
+        groups = tuple(" = ".join(group) for group in report.case_collisions)
+        lines.append(f"case collisions: {_paths(groups)}")
+    return "\n".join(lines)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -76,12 +113,8 @@ def main(argv: list[str] | None = None) -> int:
         with open_repository(args.path, data_dir=args.data_dir, create=create) as repo:
             result: Any
             if args.command == "index":
-                result = repo.index()
-                text = (
-                    f"{result.status}: {result.files} files, {result.entities} entities, "
-                    f"{result.relations} relations in {result.seconds:.2f}s; "
-                    f"lexical {result.lexical}"
-                )
+                result = repo.index(progress=lambda line: print(f"oxide: {line}", file=sys.stderr))
+                text = _index_summary(result)
             elif args.command == "search":
                 result = repo.search(
                     args.query, limit=args.limit, paths=args.file, symbols=args.symbol

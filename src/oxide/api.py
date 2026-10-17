@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import os
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from types import TracebackType
 
@@ -133,19 +133,42 @@ class Repository:
     def repo_id(self) -> str:
         return self.store.repo_id
 
-    def index(self) -> IndexReport:
-        """Captures the worktree and publishes a new generation (a full rebuild), or
-        reports ``unchanged`` when the capture and derivation equal the current one."""
+    def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
+        """Captures the worktree and publishes a new generation, or reports ``unchanged``
+        when the capture and derivation equal the current one. Python files whose bytes
+        the current generation already parsed reuse its facts; resolution and
+        publication always cover the whole capture, so the result equals a full
+        rebuild. ``progress`` receives a line as each stage starts."""
         started = time.perf_counter()
+        report = progress or (lambda line: None)
         store = self.store
+        report(f"capturing {self.root}")
         # The data location is never source, wherever it sits (compared by identity).
         snapshot = capture(self.root, exclude=(store.data, store.data / "repos"))
         lexical_unavailable = fts_unavailable(fts_location())
         parts = components(storage_components(lexical_unavailable is None))
         built = not store.is_current(snapshot.snapshot_id, parts)
+        previous: Snapshot | None = None
+        changes: tuple[tuple[str, ...], ...] = ((), (), ())
+        parsed = reused = 0
         if built:
-            derived = derive(snapshot, store.repo_id)
+            old = store.previous()
+            before = {f.path: f.digest for f in old.files.values()} if old else {}
+            after = {f.path: f.digest for f in snapshot.files}
+            changes = (
+                tuple(p for p in after if p not in before),
+                tuple(p for p in after if p in before and before[p] != after[p]),
+                tuple(sorted(p for p in before if p not in after)),
+            )
+            previous = old.snapshot if old else None
+            cached = old.facts() if old else {}
+            python = [d for p, d in after.items() if p.endswith(".py")]
+            reused = sum(d in cached for d in python)
+            parsed = len(python) - reused
+            report(f"deriving {len(after)} files: parsing {parsed} Python, reusing {reused}")
+            derived = derive(snapshot, store.repo_id, cached)
             validate(derived)
+            report(f"publishing {len(derived.entities)} entities, {len(derived.edges)} relations")
             store.publish(snapshot, derived, parts, lexical_unavailable)
         view = store.view()
         files = view.files.values()
@@ -161,6 +184,12 @@ class Repository:
             case_collisions=snapshot.case_collisions,
             lexical=view.lexical_unavailable or "available",
             seconds=time.perf_counter() - started,
+            previous=previous,
+            added=changes[0],
+            modified=changes[1],
+            deleted=changes[2],
+            parsed=parsed,
+            reused=reused,
         )
 
     def _view(self) -> View:

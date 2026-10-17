@@ -67,3 +67,22 @@ def test_a_damaged_store_is_a_stable_error_then_rebuilt(tmp_path: Path, fts: Pat
     assert "Traceback" not in result.stderr
     rebuilt = oxide(data, "index", *target)
     assert rebuilt.returncode == 0 and rebuilt.stdout.startswith("built:"), rebuilt.stderr
+
+
+def test_index_reports_progress_changes_and_reuse(tmp_path: Path, repo_copy: Path) -> None:
+    data = tmp_path / "cli-data"
+    target = (str(repo_copy), "--data-dir", str(data))
+    first = oxide(data, "index", *target)
+    assert first.returncode == 0, first.stderr
+    assert "changes (no readable previous index): 11 added" in first.stdout
+    (repo_copy / "oxidepy" / "cache.py").unlink()
+    second = oxide(data, "index", *target)
+    lines = second.stdout.splitlines()
+    assert lines[0].startswith("built:")
+    assert (
+        lines[1]
+        == "changes since the last index: 0 added; 0 modified; 1 deleted (oxidepy/cache.py)"
+    )
+    assert lines[2] == "python: 0 parsed, 7 reused"
+    assert second.stderr.splitlines()[0].startswith("oxide: capturing ")
+    assert "oxide: publishing" in second.stderr

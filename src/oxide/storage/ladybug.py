@@ -6,7 +6,8 @@ Layout of one repository's store under the data location::
         store.lock          exclusive OS lock: one owner per store, enforced by OXIDE
         repo.json           {"repo_id", "root"}; the random RepoId (ADR-0010)
         CURRENT             name of the published generation; replaced atomically
-        generations/<g>/    sealed: graph.lbug, MANIFEST.json, source/<sha256 hex>
+        generations/<g>/    sealed: graph.lbug, MANIFEST.json, source/<sha256 hex>,
+                            facts.json (parse facts the next index() may reuse)
 
 A generation is built in ``<g>.staging``, bulk-loaded with ``COPY``, read back and
 compared, checkpointed, fsynced and renamed; only then does ``CURRENT`` move. A
@@ -37,6 +38,7 @@ from typing import Any
 import ladybug
 
 from oxide.capture import Capture, digest
+from oxide.core import python
 from oxide.core.indexing import Derived, components, derivation_id
 from oxide.core.retrieval import document
 from oxide.models import (
@@ -307,6 +309,22 @@ class View:
         except RuntimeError as error:
             raise StoreCorrupt(f"{self.directory}: read failed ({error})") from error
 
+    def facts(self) -> dict[str, Any]:
+        """The parse facts sealed with this generation, by file digest; empty when it
+        has none of the current format or they do not match their sealed digest. A
+        cache: losing it costs a re-parse, never correctness."""
+        sealed = self.manifest.get("facts")
+        if not isinstance(sealed, dict) or sealed.get("format") != python.FACTS_VERSION:
+            return {}
+        try:
+            data = (self.directory / "facts.json").read_bytes()
+            if digest(data) != sealed.get("digest"):
+                return {}
+            facts = json.loads(data)
+        except (OSError, ValueError):
+            return {}
+        return facts if isinstance(facts, dict) else {}
+
     def verify_sources(self) -> None:
         """Every retained source file exists and matches its digest."""
         for info in self.files.values():
@@ -530,6 +548,14 @@ class Store:
             self._drop_view()
             return False  # unreadable under this OXIDE: rebuilt, never migrated
 
+    def previous(self) -> View | None:
+        """The current generation if it is readable under this OXIDE, else None."""
+        try:
+            return self.view()
+        except (NotIndexed, IncompatibleIndex, StoreCorrupt):
+            self._drop_view()
+            return None
+
     def publish(
         self,
         capture: Capture,
@@ -544,6 +570,8 @@ class Store:
         staging.mkdir()
         try:
             rows = self._load(staging, derived, lexical_unavailable is None)
+            facts = json.dumps(derived.facts, separators=(",", ":")).encode()
+            (staging / "facts.json").write_bytes(facts)
             manifest = {
                 "schema": SCHEMA_VERSION,
                 "repo_id": self.repo_id,
@@ -560,6 +588,7 @@ class Store:
                 "entities": len(derived.entities),
                 "relations": len(derived.edges),
                 "rows": rows,
+                "facts": {"format": python.FACTS_VERSION, "digest": digest(facts)},
             }
             self._seal(staging, capture, manifest)
             target = self.generations / name

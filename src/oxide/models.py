@@ -101,6 +101,15 @@ class IndexReport:
     case_collisions: tuple[tuple[str, ...], ...]
     lexical: str
     seconds: float
+    # Files compared with ``previous``, the generation this one replaced (None when
+    # there was no readable one); ``parsed`` Python files were parsed, ``reused`` reused
+    # their facts from it. All empty or zero when ``unchanged``.
+    previous: Snapshot | None = None
+    added: tuple[str, ...] = ()
+    modified: tuple[str, ...] = ()
+    deleted: tuple[str, ...] = ()
+    parsed: int = 0
+    reused: int = 0
 
 
 @dataclass(frozen=True, slots=True)

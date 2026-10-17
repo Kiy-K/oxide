@@ -202,14 +202,15 @@ Delivered (2026-10-16): module-level evidence in ContextPacker (`oxide-select-gr
 
 Closed (2026-10-16): the selection R&D iteration. Its last experiment, letting routed-only files pack module-level evidence, was INCONCLUSIVE at the preregistered dev-coverage check (one dev task; `docs/phase-6/routed-module-selection/`); `oxide-select-greedy-v3` stays the default.
 
+Delivered (2026-10-17): incremental indexing and indexing UX (`docs/phase-6/incremental-indexing/`). Each generation seals the parse facts of its Python files (`facts.json`, digest in the manifest); `index()` reuses them for unchanged bytes while resolution and publication stay whole-snapshot, so the result equals a full rebuild (parity tested over cross-file edits, moves, deletions and damaged facts). On 3,539 files an edit re-index drops from ~14.5 s to ~9.8 s; cold builds cost ~9% more. `IndexReport` names added/modified/deleted paths and parsed/reused counts; `oxide index` prints stage progress and a change summary.
+
 Remaining, in order of the smallest next milestone:
 
-1. **Incremental Indexing + UX (next milestone):** incremental derivation with full/incremental parity tests before it is advertised, and the indexing experience in the CLI and MCP clients; scope is set when the milestone starts.
-2. Indexing throughput: measure parallel parsing.
-3. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
-4. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
-5. macOS/Windows verification of publication atomicity and FTS availability.
-6. **Distribution (final milestone):** publish the package to PyPI (`pip install`, `uv tool install`; the distribution name is still open) and ship standalone executables. Prerequisites already kept: one package with console entry point `oxide` (`oxide mcp` included), no runtime dependence on a source checkout, native dependencies only as pinned wheels (`ladybug`, `tree-sitter`), and the FTS extension fetched explicitly by `oxide prepare` into the user cache, never bundled. Open before release: distribution name and version policy, wheel/platform matrix (FTS is Linux x86_64 only), how a frozen binary carries native wheels and the FastMCP/uvicorn stack, and a clean-install smoke test per artifact.
+1. Indexing throughput: measure parallel parsing (now on the cold-build and changed-file path only) and incremental publication (needs stable per-file relation ordinals and a verified FTS update path).
+2. Optional `DecisionProvider` seam (heuristic default, replay fake) behind `packing.value`; JEV only if its validity gates are reopened.
+3. Additional language slices (TypeScript first; fixtures exist), each with conformance tests.
+4. macOS/Windows verification of publication atomicity and FTS availability.
+5. **Distribution (final milestone):** publish the package to PyPI (`pip install`, `uv tool install`; the distribution name is still open) and ship standalone executables. Prerequisites already kept: one package with console entry point `oxide` (`oxide mcp` included), no runtime dependence on a source checkout, native dependencies only as pinned wheels (`ladybug`, `tree-sitter`), and the FTS extension fetched explicitly by `oxide prepare` into the user cache, never bundled. Open before release: distribution name and version policy, wheel/platform matrix (FTS is Linux x86_64 only), how a frozen binary carries native wheels and the FastMCP/uvicorn stack, and a clean-install smoke test per artifact.
 
 ## Boundary validation matrix
 
