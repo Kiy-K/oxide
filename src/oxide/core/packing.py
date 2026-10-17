@@ -12,6 +12,11 @@ between its top-level declarations, never the whole file; its header view is the
 first run, and it competes only when retrieval found the file. Other files, modules
 and the repository are containers without a view.
 
+A ``paths`` hint names where the relevant code lives: candidates in a hinted file are
+taken before all others (value, floor and order unchanged within each tier), and the
+hinted file itself contributes only its header view, so its declarations, not its
+module-level glue, get the budget.
+
 Units are ``oxide-units-v1``: each run of word characters costs ceil(len/4), each
 newline 1, other whitespace 0, any other character 1. They claim no model's
 tokenizer. Payload ``oxide-payload-v3``: per item ``### <path>:<l1>-<l2> <names>``
@@ -28,7 +33,7 @@ from dataclasses import dataclass
 
 from oxide.models import ContextItem, Entity, ItemEntity, Omission, SourceRef
 
-SELECTOR_VERSION = "oxide-select-greedy-v3"
+SELECTOR_VERSION = "oxide-select-greedy-v4"
 PAYLOAD_VERSION = "oxide-payload-v3"
 UNITS_VERSION = "oxide-units-v1"
 GRAPH_NODES = 64
@@ -51,6 +56,7 @@ class Candidate:
     depth: int
     rank: int | None
     seeded: bool
+    hinted: bool = False  # its file resolved from a ``paths`` hint
 
 
 def value(c: Candidate) -> tuple[float, str]:
@@ -240,11 +246,14 @@ def pack(
         elif not packer.view(candidate.entity, False, ""):
             omissions.append(Omission(key, "selection", "no module-level source"))
         else:
-            scored.append((-score, position, candidate, f"value {score:.2f}, {basis}"))
+            basis += ", hinted path" if candidate.hinted else ""
+            scored.append(
+                (not candidate.hinted, -score, position, candidate, f"value {score:.2f}, {basis}")
+            )
     pieces: list[_Piece] = []
     items: list[ContextItem] = []
     planned = 0
-    for _, _, candidate, reason in sorted(scored, key=lambda s: (s[0], s[1])):
+    for *_, candidate, reason in sorted(scored, key=lambda s: s[:3]):
         entity = candidate.entity
         if planned >= MAX_ITEMS:
             omissions.append(Omission(entity.key, "selection", f"item cap {MAX_ITEMS}"))
@@ -255,7 +264,8 @@ def pack(
             if outer not in shown and outer in scopes:
                 header = packer.view(scopes[outer], True, f"header of {display(entity.key)}")
                 prerequisites += header or packer.view(scopes[outer], False, "prerequisite")
-        for reduced in (False, True):
+        outline = candidate.hinted and entity.category == "file"
+        for reduced in (True,) if outline and packer.view(entity, True, "") else (False, True):
             view = packer.view(entity, reduced, reason + (", header view" if reduced else ""))
             fitted = packer.fits([*pieces, *prerequisites, *view]) if view else None
             if fitted is not None:

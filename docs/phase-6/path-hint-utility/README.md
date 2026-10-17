@@ -120,3 +120,81 @@ documented in `docs/public-api.md`.
     systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G -p MemorySwapMax=0 \
       uv run python docs/phase-6/path-hint-utility/scripts/hint_run.py {py|ts} OUTDIR
     uv run python docs/phase-6/path-hint-utility/scripts/hint_sum.py OUTDIR {py|ts}
+
+# Results (2026-10-17)
+
+**Verdict: PROMOTE `tier-outline`** as `oxide-select-greedy-v4`. Both variants pass dev
+criteria 1–6. `tier-outline` has the larger mean criterion-1 gain and is chosen by the
+preregistered rule. It is implemented in `src/oxide/core/packing.py` (a `hinted`
+candidate flag set by `api.build_context` from resolved `paths` seeds). The production
+code reproduces the harness arm exactly: the compat hashes of `outline.H` and
+`outline.N` equal production H and N on 15/15 py and 26/26 ts dev tasks. The held-out
+confirmation passes. Numbers are measured; summaries are in `results/`.
+
+## Dev (macro over tasks with verified gold)
+
+| Arm | py `line@1024` | py `line@4096` | py `line@256` | ts `line@1024` | ts `line@4096` | ts `line@256` |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| prod·U (unhinted) | 0.548 | 0.659 | 0.180 | 0.330 | 0.370 | 0.195 |
+| prod·H (hint today) | 0.528 | 0.685 | 0.108 | 0.336 | 0.360 | 0.182 |
+| tier·H | 0.528 | 0.782 | 0.337 | 0.360 | 0.575 | 0.194 |
+| **outline·H** | 0.538 | **0.785** | 0.357 | 0.380 | **0.626** | 0.207 |
+| prod·N (gold + 1 wrong file) | 0.528 | 0.685 | 0.065 | 0.336 | 0.360 | 0.167 |
+| outline·N | 0.528 | 0.695 | 0.065 | 0.342 | 0.472 | 0.174 |
+
+| Criterion | `tier` py / ts | `outline` py / ts |
+| --- | --- | --- |
+| 1 gain over prod·H (carriers) | +0.097 (4) / +0.215 (9) | +0.100 (5) / +0.266 (10) |
+| 2 H over prod·U at 4,096 | +0.124 / +0.205 | +0.127 / +0.256 |
+| 3 worst repository against prod·H | 0.000 / 0.000 | −0.003 (seaborn @1024) / 0.000 |
+| 4 noisy hint against prod·N | 0.000 / +0.008 | 0.000 / +0.006 |
+| 5 unhinted equals frozen | by construction; production 15/15, 26/26 | same |
+| 6 deterministic, within budget; time ratio to prod·H | yes; 0.84 / 0.98 | yes; 0.81 / 0.97 |
+
+Tasks improved / regressed in any packed metric against prod·H: `outline` 11 / 1 (py)
+and 12 / 2 (ts). By repository at 4,096 units under H: vscode 0.038 → 0.377,
+darkreader 0.103 → 0.795, code-server 0.148 → 0.579, requests 0.541 → 0.783; seaborn
+and flask stay where they were (gold beyond the hinted file's top-level declarations).
+The hinted bundle's `gold_unit_share@4096` rises from 0.219 to 0.301 (py) and 0.159 to
+0.268 (ts), so the budget moves to the gold, not just more of the file.
+
+## Held-out confirmation (run once, production code against 7b80ba0)
+
+| | py `line@1024` | py `line@4096` | ts `line@1024` | ts `line@4096` |
+| --- | ---: | ---: | ---: | ---: |
+| prod·U (both trees) | 0.129 | 0.235 | 0.139 | 0.239 |
+| old prod·H | 0.127 | 0.273 | 0.227 | 0.420 |
+| new prod·H | 0.213 | **0.545** | 0.384 | **0.728** |
+
+- gain(new·H, old·H) is +0.272 (py) and +0.308 (ts), both > 0.02.
+- Unhinted output reproduces the frozen held-out compat hashes on 29/29 py and 63/63
+  ts tasks on both trees, and every bundle is deterministic.
+- Every repository gains at 4,096 units: xarray 0.206 → 0.384, pytest 0.369 → 0.772,
+  mui 0.442 → 0.775, vue 0.346 → 0.573.
+- 24/29 py and 50/56 ts tasks improve in some packed metric. 2 py and 12 ts tasks lose
+  in some packed metric, mostly at a single budget.
+
+## What changed and what did not
+
+- With no `paths` hint, every bundle is byte-identical to before. All frozen baselines
+  reproduce exactly. The selector version bump re-freezes ContextBench-py as
+  `baseline-v6` and TypeScript as `typescript-v3`, with only `versions.selector`
+  changed.
+- `changed` and `selection` hints are not affected. Retrieval, routing, indexing and the
+  store are not touched, so the incremental-indexing guarantees are unchanged.
+- Cost: no extra store reads. Median `build_context` time under H was at or below
+  prod·H on every run (the ratio < 1 is noise, *inferred*). Peak RSS of the ts dev run
+  was 1,249 MB.
+
+## Remaining limitations
+
+- A hint is a priority, not a guarantee. Spans in methods two levels deep (routed
+  depth 2, below the 0.4 floor) and declarations beyond the router's per-region fanout
+  of 16 children are still not packed. This is most of what is left on seaborn and
+  flask, and in the 14 ts `routing: not routed` losses.
+- A wrong hint costs budget. Under N, the wrong file's declarations are packed before
+  the lexical evidence too. That is no worse than today on dev (criterion 4), but under
+  N the gain over prod is +0.010 (py) and +0.112 (ts) at 4,096 units, instead of
+  +0.100 and +0.266 with a correct hint.
+- The hinted file's module-level code beyond its first run is no longer packed for
+  that file. This is the cause of the seaborn −0.003 at 1,024 units.

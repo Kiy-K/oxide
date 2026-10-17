@@ -45,6 +45,11 @@ Hints are typed query context: `paths` and `changed` resolve exactly, then by a
 unique case-folded match; `symbols` are names or dotted suffixes
 (`AuthService.refresh_token`); `selection` is `(path, start_byte, end_byte)` and
 seeds the innermost declaration. Unmatched hints come back as `HintIssue`s.
+In `build_context`, candidates in a file resolved from `paths` are packed before all
+others, by the usual value and floor, and that file contributes only its header
+view (its first module-level run). A path hint is a priority, not a guarantee: its
+declarations still compete for the budget, routing bounds still apply, and the rest of
+the budget goes to the usual evidence.
 
 ## Results
 

@@ -1,0 +1,54 @@
+
+== outline.H == frozen compat 0/15; deterministic+within True; median build_context 29.0 ms
+  [ALL n=15] span_recall@1024=0.506 line_recall@256=0.357 line_recall@1024=0.538 line_recall@4096=0.785 file_recall@4096=1.000 gold_unit_share@4096=0.301
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.003 line_recall@1024=0.022 line_recall@4096=0.081 file_recall@4096=1.000 gold_unit_share@4096=0.214
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.083 line_recall@256=0.195 line_recall@1024=0.176 line_recall@4096=0.783 file_recall@4096=1.000 gold_unit_share@4096=0.365
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.599 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.301
+
+== outline.N == frozen compat 0/15; deterministic+within True; median build_context 26.3 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.065 line_recall@1024=0.528 line_recall@4096=0.695 file_recall@4096=1.000 gold_unit_share@4096=0.228
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.000 line_recall@1024=0.022 line_recall@4096=0.081 file_recall@4096=1.000 gold_unit_share@4096=0.214
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.062 line_recall@1024=0.149 line_recall@4096=0.558 file_recall@4096=1.000 gold_unit_share@4096=0.190
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.087 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.296
+
+== prod.H == frozen compat 0/15; deterministic+within True; median build_context 35.7 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.108 line_recall@1024=0.528 line_recall@4096=0.685 file_recall@4096=0.967 gold_unit_share@4096=0.219
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.003 line_recall@1024=0.025 line_recall@4096=0.034 file_recall@4096=0.500 gold_unit_share@4096=0.207
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.168 line_recall@1024=0.149 line_recall@4096=0.541 file_recall@4096=1.000 gold_unit_share@4096=0.164
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.087 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.300
+
+== prod.N == frozen compat 0/15; deterministic+within True; median build_context 33.2 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.065 line_recall@1024=0.528 line_recall@4096=0.685 file_recall@4096=0.967 gold_unit_share@4096=0.217
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.000 line_recall@1024=0.022 line_recall@4096=0.034 file_recall@4096=0.500 gold_unit_share@4096=0.207
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.062 line_recall@1024=0.149 line_recall@4096=0.541 file_recall@4096=1.000 gold_unit_share@4096=0.164
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.087 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.295
+
+== prod.U == frozen compat 15/15; deterministic+within True; median build_context 33.7 ms
+  [ALL n=15] span_recall@1024=0.508 line_recall@256=0.180 line_recall@1024=0.548 line_recall@4096=0.659 file_recall@4096=0.833 gold_unit_share@4096=0.190
+  [mwaskom__seaborn n=1] span_recall@1024=0.250 line_recall@256=0.003 line_recall@1024=0.059 line_recall@4096=0.059 file_recall@4096=0.500 gold_unit_share@4096=0.073
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=0.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.061 line_recall@256=0.168 line_recall@1024=0.195 line_recall@4096=0.470 file_recall@4096=0.833 gold_unit_share@4096=0.109
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.241 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.303
+
+== tier.H == frozen compat 0/15; deterministic+within True; median build_context 30.1 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.337 line_recall@1024=0.528 line_recall@4096=0.782 file_recall@4096=0.989 gold_unit_share@4096=0.300
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.003 line_recall@1024=0.025 line_recall@4096=0.034 file_recall@4096=0.833 gold_unit_share@4096=0.207
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.195 line_recall@1024=0.149 line_recall@4096=0.783 file_recall@4096=1.000 gold_unit_share@4096=0.365
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.556 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.300
+
+== tier.N == frozen compat 0/15; deterministic+within True; median build_context 25.1 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.065 line_recall@1024=0.528 line_recall@4096=0.685 file_recall@4096=0.967 gold_unit_share@4096=0.224
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.000 line_recall@1024=0.022 line_recall@4096=0.034 file_recall@4096=0.500 gold_unit_share@4096=0.207
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.062 line_recall@1024=0.149 line_recall@4096=0.541 file_recall@4096=1.000 gold_unit_share@4096=0.182
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.087 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.295
+
+== criteria ==
+  tier: c1 gain (0.097, 'line_recall@4096', 4); c2 vs prod.U @4096 +0.1237; c3 worst repo (+0.0000, fixture:py_repo, line_recall@1024); c4 noisy +0.0000; tasks up 9 down 0; time ratio 0.841
+  outline: c1 gain (0.1001, 'line_recall@4096', 5); c2 vs prod.U @4096 +0.1268; c3 worst repo (-0.0031, mwaskom__seaborn, line_recall@1024); c4 noisy +0.0000; tasks up 11 down 1; time ratio 0.812
+  prod.H vs prod.U: (0.0267, 'line_recall@4096', 1)

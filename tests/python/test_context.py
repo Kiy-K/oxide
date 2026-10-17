@@ -168,3 +168,22 @@ def test_retrieved_files_contribute_bounded_module_evidence(fts: Path, tmp_path:
     assert "def " not in shown and "class " not in shown  # declarations are their own views
     ranges = sorted((i.source.start, i.source.end) for i in bundle.items)
     assert all(a[1] <= b[0] for a, b in itertools.pairwise(ranges))
+
+
+def test_a_hinted_file_contributes_its_header_view() -> None:
+    entity = _file("m.py", MODULE)
+    found = [Candidate(entity, 0, None, True, hinted=True)]
+    items, _ = pack(found, {}, 4096, lambda ref: MODULE, {entity.key: DECLARED})
+    assert [i.lines for i in items] == [(1, 3)]  # its imports, not every module-level run
+    assert items[0].entities[0].reason.endswith("hinted path, header view")
+
+
+def test_path_hints_pack_the_hinted_files_declarations_first(repo: oxide.Repository) -> None:
+    plain = repo.build_context(QUERY, 512)
+    hinted = repo.build_context(QUERY, 512, paths=["oxidepy/cache.py"])
+    assert hinted == repo.build_context(QUERY, 512, paths=["oxidepy/cache.py"])
+    assert not any("hinted" in e.reason for i in plain.items for e in i.entities)
+    first = [i for i in hinted.items if i.source.path == "oxidepy/cache.py"]
+    assert hinted.items[: len(first)] == tuple(first)  # before any lexical hit elsewhere
+    assert any(e.name == "TTLCache" and e.complete for i in first for e in i.entities)
+    assert any(i.source.path != "oxidepy/cache.py" for i in hinted.items)  # not exclusive

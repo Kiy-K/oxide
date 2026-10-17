@@ -1,0 +1,10 @@
+
+== prod.H == frozen compat 7/63; deterministic+within True; median build_context 55.9 ms
+  [ALL n=56] span_recall@1024=0.289 line_recall@256=0.088 line_recall@1024=0.384 line_recall@4096=0.728 file_recall@4096=0.983 gold_unit_share@4096=0.416
+  [mui__material-ui n=43] span_recall@1024=0.292 line_recall@256=0.100 line_recall@1024=0.390 line_recall@4096=0.775 file_recall@4096=0.978 gold_unit_share@4096=0.408
+  [vuejs__core n=13] span_recall@1024=0.280 line_recall@256=0.045 line_recall@1024=0.361 line_recall@4096=0.573 file_recall@4096=1.000 gold_unit_share@4096=0.442
+
+== prod.U == frozen compat 63/63; deterministic+within True; median build_context 57.2 ms
+  [ALL n=56] span_recall@1024=0.123 line_recall@256=0.040 line_recall@1024=0.139 line_recall@4096=0.239 file_recall@4096=0.404 gold_unit_share@4096=0.088
+  [mui__material-ui n=43] span_recall@1024=0.136 line_recall@256=0.051 line_recall@1024=0.154 line_recall@4096=0.262 file_recall@4096=0.408 gold_unit_share@4096=0.081
+  [vuejs__core n=13] span_recall@1024=0.077 line_recall@256=0.003 line_recall@1024=0.089 line_recall@4096=0.163 file_recall@4096=0.392 gold_unit_share@4096=0.112

@@ -1,0 +1,21 @@
+
+== prod.H == frozen compat 0/15; deterministic+within True; median build_context 24.9 ms
+  [ALL n=15] span_recall@1024=0.506 line_recall@256=0.357 line_recall@1024=0.538 line_recall@4096=0.785 file_recall@4096=1.000 gold_unit_share@4096=0.301
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.003 line_recall@1024=0.022 line_recall@4096=0.081 file_recall@4096=1.000 gold_unit_share@4096=0.214
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.083 line_recall@256=0.195 line_recall@1024=0.176 line_recall@4096=0.783 file_recall@4096=1.000 gold_unit_share@4096=0.365
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.599 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.301
+
+== prod.N == frozen compat 0/15; deterministic+within True; median build_context 28.1 ms
+  [ALL n=15] span_recall@1024=0.494 line_recall@256=0.065 line_recall@1024=0.528 line_recall@4096=0.695 file_recall@4096=1.000 gold_unit_share@4096=0.228
+  [mwaskom__seaborn n=1] span_recall@1024=0.083 line_recall@256=0.000 line_recall@1024=0.022 line_recall@4096=0.081 file_recall@4096=1.000 gold_unit_share@4096=0.214
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=1.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.056 line_recall@256=0.062 line_recall@1024=0.149 line_recall@4096=0.558 file_recall@4096=1.000 gold_unit_share@4096=0.190
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.087 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.296
+
+== prod.U == frozen compat 15/15; deterministic+within True; median build_context 30.1 ms
+  [ALL n=15] span_recall@1024=0.508 line_recall@256=0.180 line_recall@1024=0.548 line_recall@4096=0.659 file_recall@4096=0.833 gold_unit_share@4096=0.190
+  [mwaskom__seaborn n=1] span_recall@1024=0.250 line_recall@256=0.003 line_recall@1024=0.059 line_recall@4096=0.059 file_recall@4096=0.500 gold_unit_share@4096=0.073
+  [pallets__flask n=1] span_recall@1024=0.000 line_recall@256=0.000 line_recall@1024=0.000 line_recall@4096=0.000 file_recall@4096=0.000 gold_unit_share@4096=0.000
+  [psf__requests n=6] span_recall@1024=0.061 line_recall@256=0.168 line_recall@1024=0.195 line_recall@4096=0.470 file_recall@4096=0.833 gold_unit_share@4096=0.109
+  [fixture:py_repo n=7] span_recall@1024=1.000 line_recall@256=0.241 line_recall@1024=1.000 line_recall@4096=1.000 file_recall@4096=1.000 gold_unit_share@4096=0.303

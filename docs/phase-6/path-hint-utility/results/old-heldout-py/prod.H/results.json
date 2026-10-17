@@ -1,0 +1,7541 @@
+[
+ {
+  "task": "pydata__xarray-3095",
+  "split": "heldout",
+  "corpus": "pydata__xarray@1757dffac2fa",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 49,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 0.4,
+    "entry_recall@20": 0.4,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.2,
+    "line_recall@256": 0.183673,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.50996,
+    "span_recall@1024": 0.2,
+    "line_recall@1024": 0.183673,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.97168,
+    "gold_unit_share@1024": 0.128643,
+    "span_recall@4096": 0.4,
+    "line_recall@4096": 0.469388,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.151493
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 6,
+    "lines": 407,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.333333,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.002457,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.123506,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.004914,
+    "file_recall@1024": 0.75,
+    "utilization@1024": 0.97168,
+    "gold_unit_share@1024": 0.073367,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.179361,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.332599
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     680,
+     820
+    ],
+    "class": "empty",
+    "verified": false,
+    "code_lines": 114,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     1375,
+     1475
+    ],
+    "class": "empty",
+    "verified": false,
+    "code_lines": 93,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     3,
+     14
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1218,
+     1275
+    ],
+    "class": "empty",
+    "verified": false,
+    "code_lines": 48,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1227,
+     1235
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1241,
+     1253
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1258,
+     1268
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     1200,
+     1330
+    ],
+    "class": "empty",
+    "verified": false,
+    "code_lines": 104,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     1299,
+     1307
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     1915,
+     1970
+    ],
+    "class": "empty",
+    "verified": false,
+    "code_lines": 48,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     1942,
+     1955
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 251,
+   "fanout_truncations": 12,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 251,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 995,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4086,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 16,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 44,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4ec320e22b09e02f88a708cca8d6961f4706daf648a31b274c66345442f1dfba",
+   "routed": "a5b6310e3803a94c991bb4205b4f948f3a6deec9b30ad7e597587f8282db1bcd",
+   "payload@256": "40bfcbc95c1257cef567490ed9d00c82a1c0d7da4ded10709a3be9dee5dc6786",
+   "payload@1024": "9352189e8c883f85e4689d5b973981da7ab423b57d106c2d28a2078aa8261ab5",
+   "payload@4096": "7c09f3a894e547ac3b51f8b35d2b5f8c2f5e083f68794dff2869c1996d12091d"
+  },
+  "seconds": 0.12298806400212925,
+  "hint_paths": [
+   "xarray/core/indexing.py",
+   "xarray/core/variable.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4075",
+  "split": "heldout",
+  "corpus": "pydata__xarray@19b088636eb7",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 136,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.007353,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.953125,
+    "gold_unit_share@256": 0.143443,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.987305,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.25,
+    "line_recall@4096": 0.132353,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.07824
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/weighted.py",
+    "lines": [
+     112,
+     210
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 76,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/weighted.py",
+    "lines": [
+     142,
+     148
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/tests/test_weighted.py",
+    "lines": [
+     32,
+     59
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/tests/test_weighted.py",
+    "lines": [
+     161,
+     217
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 183,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 244,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 53,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1011,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: container": 1,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4090,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 1,
+     "selection: value N below floor": 4
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "6f940735ce6a502cb0e7adb0424558be95cabcda8818cb130c78f85bc6bb25ad",
+   "routed": "fc9fc9c9a247fe3de40f68f901bf81aeaf697a40195bc1568d8a1738e2ba5545",
+   "payload@256": "d5077fc34cd2c8ee6a76a75de88fc188284c74206001936114be5f79dbafa5f2",
+   "payload@1024": "d1ee7cdc7f884862a3f2a5459e3e4a134d503f0ee36f09c8490984e16f332550",
+   "payload@4096": "77bb7d8d5fec848699ca590c4f4c526e4829f10eb6cef578de2f9b91681d7eaa"
+  },
+  "seconds": 0.0759763460009708,
+  "hint_paths": [
+   "xarray/core/weighted.py",
+   "xarray/tests/test_weighted.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4966",
+  "split": "heldout",
+  "corpus": "pydata__xarray@37522e991a32",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 6,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 34,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.995117,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/coding/variables.py",
+    "lines": [
+     287,
+     325
+    ],
+    "class": "revision",
+    "verified": false,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/coding/variables.py",
+    "lines": [
+     316,
+     321
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 267,
+   "fanout_truncations": 18,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: container": 2,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 14,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: container": 2,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4089,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: container": 2,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "64030e1b31bbff5b39981ee1b1324458cde9850a434fc99550baa0dbd853a97c",
+   "routed": "c8f8af9c3545c2fd95616996cecdb768f506ddd15432fc373972c578eb64e894",
+   "payload@256": "1290eb8d3ac73d78fad1a2f13ecffe96655d5182768df5b8282388394ed2009d",
+   "payload@1024": "0f40bd8e496c66ec32ebe5d372cf5af054234794e3fe46d75d2841797114c9fb",
+   "payload@4096": "15a3ed009503bf8652d07776ca89e5d0cf9f125c7c962022c93debc87ea8ea80"
+  },
+  "seconds": 0.08690427950205049,
+  "hint_paths": [
+   "xarray/coding/variables.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-7229",
+  "split": "heldout",
+  "corpus": "pydata__xarray@3aa75c8d00a4",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 125,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.166667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.666667,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1151,
+     1159
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1775,
+     1875
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 90,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1855,
+     1869
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1874,
+     1879
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/options.py",
+    "lines": [
+     128,
+     142
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/tests/test_computation.py",
+    "lines": [
+     1920,
+     1937
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 145,
+   "fanout_truncations": 5,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 60,
+     "packing: too large": 2,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 60,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4086,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 16,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 55,
+     "selection: container": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2ca678ffb42dc0a14838e0ace11473c69245ed8f2892cffd4f0ec67ab12aa429",
+   "routed": "52efb76d3132ff38b025d532312c2b4a89db8beff8d2185e45dd2ecacbeb40a4",
+   "payload@256": "78062d63ae96211a8c16d54ea4943d7a2382e61ec6b1b7b8edc4051c8e6ffdc0",
+   "payload@1024": "bd04dedfa1fdb6d4df5871cbad779a31b1e1a5ea4b5710f9cd92c1e12eefc2d0",
+   "payload@4096": "61bd1a94790e936a92af5b49ffb0a0acb315898e6ba80d25949af1856f6f66ba"
+  },
+  "seconds": 0.08325793100084411,
+  "hint_paths": [
+   "xarray/core/computation.py",
+   "xarray/core/options.py",
+   "xarray/tests/test_computation.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-7393",
+  "split": "heldout",
+  "corpus": "pydata__xarray@41fef6f1352b",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 251,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.045455,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.4,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 60,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4495,
+     4562
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 60,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "lines": [
+     391,
+     410
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "lines": [
+     612,
+     851
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 198,
+    "module_lines": 0,
+    "entry_rank": 22,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1432,
+     1444
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1522,
+     1550
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     1531,
+     1538
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 300,
+   "fanout_truncations": 13,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 57,
+     "packing: too large": 2,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 57,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "dc1752c00a3a6ec6837394795122df286f88b8047f8b1f4f374ac015b3d8b1ba",
+   "routed": "460d6a77a2b4a8266c56d804e3194903e1f8442e4b478cc1041cdd18e1ae8f2d",
+   "payload@256": "fcef51324e1a900867bce40cb7ed73f56a882de703304ce341657db899de2bd2",
+   "payload@1024": "cfa24e7beca54c9cf35669dab3ecc88c527aa665742974c8bbd7f25fb257902b",
+   "payload@4096": "0ec40867c12c985f1be50053c6ff78bfec8ccb2abb434fd91309f4c17e768053"
+  },
+  "seconds": 0.10741934749967186,
+  "hint_paths": [
+   "xarray/core/indexes.py",
+   "xarray/core/indexing.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-6992",
+  "split": "heldout",
+  "corpus": "pydata__xarray@45c0a114e2b7",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 84,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.914062,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.125,
+    "line_recall@4096": 0.404762,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998779,
+    "gold_unit_share@4096": 0.208506
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4026,
+     4035
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4044,
+     4059
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4065,
+     4074
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4083,
+     4090
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4099,
+     4105
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4139,
+     4173
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     4177,
+     4185
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/indexes.py",
+    "lines": [
+     717,
+     724
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 252,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 234,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 1,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 46,
+     "packing: too large": 1,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4091,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 18,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "a87c8d535e77bfbc455078e4083cd9d3dbbb0fcb3b3bbcbfdf2393394d05cc70",
+   "routed": "dea1bb7926882757ce1bd51affb2dd86d96462bc34db6818588a0aa3e37a58cc",
+   "payload@256": "30a518058494d26f1def6c2fec314664a8e876b93bc1ddfa35a8757c3cc3a746",
+   "payload@1024": "c1d931b69c6bcc0da74921762d794c3c83181e10d08faf8cbdd0b3a1f294a3a9",
+   "payload@4096": "420d951cb9975eecde0f8a4a3b2908cd7aab93a4d7bc81d57ec88e13369301af"
+  },
+  "seconds": 0.1661978425036068,
+  "hint_paths": [
+   "xarray/core/dataset.py",
+   "xarray/core/indexes.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-7233",
+  "split": "heldout",
+  "corpus": "pydata__xarray@51d37d1be955",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 237,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 25,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     6254,
+     6281
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 25,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     1671,
+     1711
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     9067,
+     9109
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     796,
+     981
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 162,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     973,
+     979
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 308,
+   "fanout_truncations": 18,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 49,
+     "packing: too large": 2,
+     "selection: container": 8,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1020,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 45,
+     "packing: too large": 1,
+     "selection: container": 8,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 14,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: container": 8,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "6107425dbc8a39eb4e8d8bb47d24ba79c7c9a806d31ea2697c8dae04809a4404",
+   "routed": "02630d6506d03da6f7f242d5b761f5b2854b953fe517061d3d3b71a7388c28c9",
+   "payload@256": "3bf2f5abf8dbfca269a7457fe8a7fcddeba161f817bb2e1e79a82725954a0a87",
+   "payload@1024": "9957be5358f4a399d59570554a52b85f999e096534115c7b4dfa17976b7df677",
+   "payload@4096": "381db3c17a2cde490c1c9be651d2b70410afdcda8ca7bb31b727a50b074bea07"
+  },
+  "seconds": 0.16625376149750082,
+  "hint_paths": [
+   "xarray/core/dataset.py",
+   "xarray/core/rolling.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4695",
+  "split": "heldout",
+  "corpus": "pydata__xarray@51ef2a66c4e0",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 61,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.4,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.666667,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 143,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.5,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     188,
+     200
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     196,
+     202
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     1118,
+     1206
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 77,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     2161,
+     2234
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 66,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "xarray/core/indexing.py",
+    "lines": [
+     23,
+     50
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 27,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/utils.py",
+    "lines": [
+     230,
+     232
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 2,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/utils.py",
+    "lines": [
+     254,
+     273
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 255,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 50,
+     "packing: too large": 1,
+     "selection: container": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: container": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4092,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 19,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "63439a09af59adda41e8b806bdd64779997f570ba0b274597619790e4218bdd4",
+   "routed": "a4c625bd902d5421d66e3d5f386bc414ef8a54300f22d44824dd5fc0f08ee88b",
+   "payload@256": "2c181108d009d4f307c38e376e3e36922c8023ad2699c47d329df216db7e033a",
+   "payload@1024": "288540d6231cf4f1b587075f98bc97ddf263c588cafc4a5e9e55c719bb8c7626",
+   "payload@4096": "bf5ff25e9917875af5a4e48f2c13ecf50c251b125a19338b4ee6dec565bd812c"
+  },
+  "seconds": 0.08874046599885332,
+  "hint_paths": [
+   "xarray/core/dataarray.py",
+   "xarray/core/indexing.py",
+   "xarray/core/utils.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-6599",
+  "split": "heldout",
+  "corpus": "pydata__xarray@6bb2b855498b",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 41,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.979492,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 77,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.111111,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.979492,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.012987,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.012228
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1920,
+     1949
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1933,
+     1939
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1941,
+     1946
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     240,
+     256
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/tests/test_computation.py",
+    "lines": [
+     1939,
+     2015
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 77,
+    "module_lines": 0,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 225,
+   "fanout_truncations": 12,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 2,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1003,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 53,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4089,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "61f2b255a9d4d64e1eaff29e134428b71dfffa4058c3629ca5b36082ca5f63e7",
+   "routed": "748ec6be5f77a5b1dbf1f2000816d3191df19df52786638899279e0ddef8f6d7",
+   "payload@256": "2b8e1163009d3652af6a5c6ce12bf1497fd5c6a859b700585bf2e65432ef5f8a",
+   "payload@1024": "5cd3ccf4e12a1332e7d771b4f385ec5a5a0772855510d1f9328c413fbf761fe7",
+   "payload@4096": "ee540023f9208d6d4b417e686f53ff128c6835167fa552297cb8e65bf9ebf273"
+  },
+  "seconds": 0.10760197450144915,
+  "hint_paths": [
+   "xarray/core/computation.py",
+   "xarray/core/variable.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-2905",
+  "split": "heldout",
+  "corpus": "pydata__xarray@7c4e2ac83f7b",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 151,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.8,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.994141,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997314,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/utils.py",
+    "lines": [
+     295,
+     335
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 33,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     180,
+     256
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 62,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     218,
+     224
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     339,
+     373
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     849,
+     878
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 307,
+   "fanout_truncations": 18,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 56,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1018,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 56,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4085,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 20,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 44,
+     "selection: container": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "e1f69d0a55ab29a42b2c643bc7a26d18bb12ab08ddb2b8a9c75f06a3f61aaa4d",
+   "routed": "561b8f9481c15d14d9714ac52d1a111b3c186728492f104abd7b05cb7a00ffa1",
+   "payload@256": "f906d15ee3c8c994036087df49c0248388414c4a534b8a854991f8149e1cfe07",
+   "payload@1024": "516b1938bdf07cc243d2448940d231803a309ef161416940348a495a7cc4d6c5",
+   "payload@4096": "296bd12adda783b27425dfc3275306002b6d7f438d35a769c1f6307e6382b391"
+  },
+  "seconds": 0.10407201099951635,
+  "hint_paths": [
+   "xarray/core/utils.py",
+   "xarray/core/variable.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-6744",
+  "split": "heldout",
+  "corpus": "pydata__xarray@7cc6cc991e58",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 354,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.75,
+    "entry_recall@20": 0.875,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.977539,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.00565,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.99585,
+    "gold_unit_share@4096": 0.019367
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     70,
+     121
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     225,
+     270
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     267,
+     282
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     359,
+     399
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     399,
+     478
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 69,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     479,
+     499
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/rolling.py",
+    "lines": [
+     501,
+     542
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     2210,
+     2320
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 103,
+    "module_lines": 0,
+    "entry_rank": 17,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 249,
+   "fanout_truncations": 17,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 251,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 50,
+     "packing: too large": 2,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1001,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4079,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 11,
+    "omissions": {
+     "packing: budget": 36,
+     "selection: container": 6,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "050a6598d7b73c30c1ca6da69b30ad08be1035d4e1f288882eec665267aed32d",
+   "routed": "57eff529de901a4ad66af28ee33838ab73817fee36797b14681733a2060b5dd5",
+   "payload@256": "182890100e3388d59fa208c47b53abf2071d0711f45a08a0a4603d7428ef9f0f",
+   "payload@1024": "b43d64722277504b9c8d26917e2cf3c448b18ae5411310990ae01b5970f4374a",
+   "payload@4096": "8ea376f8b158012f3c7a96b0e334bd8aeeeeef02ee5eb1d8e0ad4882d9e09789"
+  },
+  "seconds": 0.11400206650432665,
+  "hint_paths": [
+   "xarray/core/rolling.py",
+   "xarray/core/variable.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-6461",
+  "split": "heldout",
+  "corpus": "pydata__xarray@851dadeb0338",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 102,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.333333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1743,
+     1844
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 90,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1825,
+     1835
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/options.py",
+    "lines": [
+     96,
+     113
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 208,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 49,
+     "packing: too large": 2,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4092,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 42,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "309bbbd6daea78823066570883070411686a44681358c716d3e5b1e0e3fb7cbb",
+   "routed": "b73f058c3cfc585e12572970695cd28944024be04084533759ccb1d3e2fb5b13",
+   "payload@256": "c46af31f216a20f936f8d2a2ce72da00fed3db96071ae4a5b5cf2dda443c99c2",
+   "payload@1024": "28fe1ec3481a50ff744372232c8029ae08db14d17911083aa641ff9db40b6436",
+   "payload@4096": "f565806f2793e448f46bbb7978a3fca04fcbc97229725c7f719ebec8c052eee1"
+  },
+  "seconds": 0.08821999449719442,
+  "hint_paths": [
+   "xarray/core/computation.py",
+   "xarray/core/options.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-3993",
+  "split": "heldout",
+  "corpus": "pydata__xarray@8cc34cb412ba",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 42,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.994141,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.4,
+    "line_recall@4096": 0.619048,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.318115
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 38,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.994141,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.578947,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.318115
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     3481,
+     3501
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     3481,
+     3508
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     3503,
+     3508
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataarray.py",
+    "lines": [
+     3528,
+     3534
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     5963,
+     5970
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     5963,
+     5982
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     5972,
+     5982
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 233,
+   "fanout_truncations": 13,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 0,
+    "omissions": {
+     "packing: budget": 42,
+     "packing: too large": 2,
+     "selection: container": 14,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1018,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 43,
+     "selection: container": 14,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 21,
+    "header_entities": 12,
+    "omissions": {
+     "packing: budget": 30,
+     "selection: container": 14,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ab6ae691effbfc212137e9bd07534b9e09af4fdef95e4755cd0fcdaa58a84bd8",
+   "routed": "a460f78dcfa41dd85940885232f8f1f4672de853295d78ad1c97aa7c64767b98",
+   "payload@256": "c07947925c33d92b049f0a85875b17163a94eddfd40450987bd0f61f4aae9bd6",
+   "payload@1024": "b34eceb1a96da8cc7db37cc0daa10559f6f93ffb7144ea8c0f4e34c7a4085e3e",
+   "payload@4096": "346a1caca59848179341bf7ec75ad17a79d34a0bc671127bc2086379902d9bc0"
+  },
+  "seconds": 0.10242180600107531,
+  "hint_paths": [
+   "xarray/core/dataarray.py",
+   "xarray/core/dataset.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4629",
+  "split": "heldout",
+  "corpus": "pydata__xarray@a41edc7bf530",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 7,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.894531,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.098901
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 31,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.166667,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.894531,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999756,
+    "gold_unit_share@4096": 0.098901
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/merge.py",
+    "lines": [
+     495,
+     526
+    ],
+    "class": "revision",
+    "verified": false,
+    "code_lines": 31,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/merge.py",
+    "lines": [
+     501,
+     507
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 237,
+   "fanout_truncations": 13,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 229,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 52,
+     "packing: too large": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4095,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 17,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c6406164b69ab381f13fd76294178c4e64e1130ebd93944074c1cd30c15c34bd",
+   "routed": "8fcfa659fb1ec7ae7e536f8fe01acc4a560437ca671255b8e42ee35aa8e19f9a",
+   "payload@256": "1d8ef56ce6f7931b9782ff464cfda0f8d3f72596d9a977fb419c215c66dd3858",
+   "payload@1024": "d9dbb97b5870083cca03843cc5d6d9c068a7d0e6a7a2261cafd83f5b9379b8e5",
+   "payload@4096": "910c592373690073090242163b724063162b58220a4597f75029dc79491f0596"
+  },
+  "seconds": 0.08793200150103075,
+  "hint_paths": [
+   "xarray/core/merge.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-6721",
+  "split": "heldout",
+  "corpus": "pydata__xarray@cc183652bf6e",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 103,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.058824,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.666667,
+    "utilization@1024": 0.987305,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.009709,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.007818
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/common.py",
+    "lines": [
+     2020,
+     2034
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 17,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/common.py",
+    "lines": [
+     2023,
+     2029
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 17,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/dataset.py",
+    "lines": [
+     2123,
+     2155
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/variable.py",
+    "lines": [
+     285,
+     352
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 61,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 250,
+   "fanout_truncations": 14,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 52,
+     "packing: too large": 3,
+     "selection: container": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1011,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 1,
+     "selection: container": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4093,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 16,
+    "omissions": {
+     "packing: budget": 44,
+     "selection: container": 6
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f292a2fdb5072a3f8f13ef4d569445c060aab8ebd874135b2af5a3d9b4cf3252",
+   "routed": "e590a16cb699f531245744b5b4f3debf5f651d582aa8b69c6ec123d3c6000a87",
+   "payload@256": "901b0531f287d4542e8448e4b765c42195e993c15eff9982b1c6b9bf02f9b0ed",
+   "payload@1024": "89e718fabfdd187220f0654f5c4b08e6c4243cb857828d63142484dc497939de",
+   "payload@4096": "65d8632ed1a87557df2325c57fea42bf34bd7b0b5f84c7f8f170063cefb61ffc"
+  },
+  "seconds": 0.11367926149978302,
+  "hint_paths": [
+   "xarray/core/common.py",
+   "xarray/core/dataset.py",
+   "xarray/core/variable.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4687",
+  "split": "heldout",
+  "corpus": "pydata__xarray@d3b6aa6d8b99",
+  "verified": {
+   "counts": {
+    "spans": 11,
+    "lines": 155,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.090909,
+    "entry_mrr": 0.0625,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.363636,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.25,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.75,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 37,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.052632,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.9375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "xarray/core/common.py",
+    "lines": [
+     1254,
+     1291
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     286,
+     307
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     452,
+     463
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     749,
+     783
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 31,
+    "module_lines": 0,
+    "entry_rank": 16,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1116,
+     1155
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1727,
+     1733
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1743,
+     1748
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1808,
+     1813
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/computation.py",
+    "lines": [
+     1817,
+     1822
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/ops.py",
+    "lines": [
+     157,
+     185
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/options.py",
+    "lines": [
+     94,
+     108
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "xarray/core/options.py",
+    "lines": [
+     166,
+     173
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 215,
+   "fanout_truncations": 10,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 240,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 57,
+     "packing: too large": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 59,
+     "packing: too large": 1
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 15,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 56
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "dd0cd5eb723606afd1a19146eabc2de7448b6f6a3a7c486b0c3c3313954d0f5c",
+   "routed": "70e4f6c7d4e72bee5fd7b363f7ed18fd0ee7e1d427dfd0e059660ebb0af6c065",
+   "payload@256": "1a3ed25dbdeda0414ef2e27c8830aa497c647813d79879b799637231cfae9c69",
+   "payload@1024": "02c7b6d5c81d10d84bf560eaf12aaa6bf6520015643dbc8b707f37324fda55bf",
+   "payload@4096": "d717d7a2f7c66e7c00835311a7420d76bb31b1801ae2df88d3b8cfbe3bfbda03"
+  },
+  "seconds": 0.06758824000280583,
+  "hint_paths": [
+   "xarray/core/common.py",
+   "xarray/core/computation.py",
+   "xarray/core/ops.py",
+   "xarray/core/options.py"
+  ]
+ },
+ {
+  "task": "pydata__xarray-4356",
+  "split": "heldout",
+  "corpus": "pydata__xarray@e05fddea852d",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 50,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.24,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.902344,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 0.8,
+    "line_recall@1024": 0.86,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.986328,
+    "gold_unit_share@1024": 0.664356,
+    "span_recall@4096": 0.8,
+    "line_recall@4096": 0.86,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.164219
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "xarray/core/nanops.py",
+    "lines": [
+     1,
+     23
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 10,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "lines": [
+     25,
+     46
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "lines": [
+     26,
+     38
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "lines": [
+     111,
+     117
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "xarray/core/nanops.py",
+    "lines": [
+     181,
+     187
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 221,
+   "fanout_truncations": 12,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 231,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1010,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 43,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4086,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: item cap N": 5,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c915e80d9f36eb403365f05dbf7ae72cf84fc45d2cdbe1ca137f63d3e54447c9",
+   "routed": "a5fa91719f60f692ba50115c4eb1e2a369c051dae3275616d8bd01448b7a7144",
+   "payload@256": "ad4dd2ceea974009ffdbb56f354037836147f1c0c1d6b8024b37e08bc75a3bab",
+   "payload@1024": "2bd9efc6a5fe37c30aeb08b71a4b5ef7abcc59585671a68899947e71d9151df7",
+   "payload@4096": "6fc7694806b92b9884d00c07bd5a1170152ffe359062584ed77cedd5a6403780"
+  },
+  "seconds": 0.06750279600237263,
+  "hint_paths": [
+   "xarray/core/nanops.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-7324",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@19ad5889353c",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 132,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.375,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.976562,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.125,
+    "line_recall@1024": 0.212121,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.510913,
+    "span_recall@4096": 0.125,
+    "line_recall@4096": 0.212121,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.996826,
+    "gold_unit_share@4096": 0.126133
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     1,
+     17
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 13,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, too large"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     36,
+     57
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 4,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     74,
+     110
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     127,
+     132
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     130,
+     165
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     161,
+     167
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     168,
+     218
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/expression.py",
+    "lines": [
+     172,
+     178
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 171,
+   "fanout_truncations": 8,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 250,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 38,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1008,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 33,
+     "selection: container": 1,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4083,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 32,
+    "header_entities": 14,
+    "omissions": {
+     "packing: budget": 11,
+     "selection: container": 1,
+     "selection: item cap N": 9,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4fe972b6f792826f450f398be409d8039f95529eb2858646ac239c3ed6a98df6",
+   "routed": "3c7468ba92f92af17e556f94b4b93d02d39150758be4d5abf7ca698915ac543d",
+   "payload@256": "0758be244ca2a84802d51b4214479a88a57fe2ac082231e137b59a0d3feda0b0",
+   "payload@1024": "70749da02daddec403581f5b90be46b6ac80eb563103b6e918e68cff176905e7",
+   "payload@4096": "09c40ab91d12d02fd48bbb44bab71cdce6b2857b888e37b24e5bae8541f60be4"
+  },
+  "seconds": 0.062277572502352996,
+  "hint_paths": [
+   "src/_pytest/mark/expression.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-10356",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@3c1534944cbd",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 13,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.5,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.902344,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.076923,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.094768,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.076923,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.929199,
+    "gold_unit_share@4096": 0.025223
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 19,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.902344,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.929199,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "lines": [
+     355,
+     366
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "lines": [
+     366,
+     388
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/mark/structures.py",
+    "lines": [
+     388,
+     394
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 1,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 163,
+   "fanout_truncations": 6,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 231,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 52,
+     "packing: too large": 1,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1013,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3806,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 36,
+    "header_entities": 15,
+    "omissions": {
+     "selection: item cap N": 33,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c38cdaa309f2d081eba474db03368b14ceddcbd7342d9d8daa477b60aebcdd56",
+   "routed": "8e8f1542e96d56077249e88be20920516eba2d2b18572af512032e321a719da4",
+   "payload@256": "17c09b1327116f0d4ecc4630b79f8176fe3304055ee84addecd7db12231f5058",
+   "payload@1024": "3e3dac454917cfbb5f560fb6edf04f5e23ddd89e50cbccf51844fdc773c4f826",
+   "payload@4096": "7ba324a6f5f410b23b85e38c2f61ed4a6a2d5056038fbd01ac30357650bec82d"
+  },
+  "seconds": 0.05206033899958129,
+  "hint_paths": [
+   "src/_pytest/mark/structures.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-7571",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@422685d0bdc1",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.333333,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.25,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.269344,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.25,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.981201,
+    "gold_unit_share@4096": 0.068425
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 34,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.029412,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.25498,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.411765,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.269344,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.411765,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.981201,
+    "gold_unit_share@4096": 0.068425
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     345,
+     350
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     353,
+     358
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     419,
+     457
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     434,
+     439
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 67,
+   "fanout_truncations": 1,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 251,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 34,
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 3,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4019,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 8,
+    "omissions": {
+     "selection: container": 3,
+     "selection: item cap N": 16,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "6390b54269e6d558671bf1f029d5e2536061109242ae2a6119a988f2531412b2",
+   "routed": "a34f3dacfa33937d902583a9a8cb6c2770813359253a54156891f02bc0b32610",
+   "payload@256": "423385538b761a977daa7096ee9519c4645580ee19c46ae9bd0799d3dfeb4a34",
+   "payload@1024": "94b107a95e7cca863ff7b91f607122f69dd6c2102f04593370c4cd04088b4820",
+   "payload@4096": "80a19e564623b9c76a0795de5738d37e37defb4204b8585e795fb07f863de706"
+  },
+  "seconds": 0.045828493501176126,
+  "hint_paths": [
+   "src/_pytest/logging.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-5262",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@58e6a09db49f",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 68,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.666667,
+    "entry_recall@20": 0.666667,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.014706,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.136719,
+    "span_recall@1024": 0.333333,
+    "line_recall@1024": 0.323529,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.300686,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.323529,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.070132
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/_pytest/capture.py",
+    "lines": [
+     406,
+     451
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/capture.py",
+    "lines": [
+     447,
+     452
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/capture.py",
+    "lines": [
+     541,
+     572
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 29,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 217,
+   "fanout_truncations": 9,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 51,
+     "selection: container": 1,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 1,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4078,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 31,
+    "header_entities": 10,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 30,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "efe6af7bf61c886d8437645fcadcbf56784cce23418aded25cb671419565c11c",
+   "routed": "1df7be1a53b0da2567f8e3fe6bf299879608e963aa389cb9e83a968df411afae",
+   "payload@256": "b1ed1a6d41fb70553618ad597c8454a5c3753d4be5f36f34b6576db5a9c34ec4",
+   "payload@1024": "cf6ffc7a59f0288fbf97f7649a43558570b1663958165c9a0bcf279dc4f90467",
+   "payload@4096": "db06e513f47c47920f523374cd775e1dcfb7f58dd9a12eb9f60385f2035a4ac9"
+  },
+  "seconds": 0.051556717000494245,
+  "hint_paths": [
+   "src/_pytest/capture.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-7205",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@5e7f1ab4bf58",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 79,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.625,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.012658,
+    "file_recall@256": 0.666667,
+    "utilization@256": 0.90625,
+    "gold_unit_share@256": 0.12931,
+    "span_recall@1024": 0.125,
+    "line_recall@1024": 0.151899,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.982422,
+    "gold_unit_share@1024": 0.671968,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.632911,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 1.0,
+    "gold_unit_share@4096": 0.294189
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/_pytest/_io/saferepr.py",
+    "lines": [
+     75,
+     82
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/python.py",
+    "lines": [
+     24,
+     33
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 10,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, too large"
+    }
+   },
+   {
+    "file": "src/_pytest/python.py",
+    "lines": [
+     1029,
+     1041
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 2,
+    "module_lines": 1,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "lines": [
+     20,
+     35
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "lines": [
+     37,
+     44
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "lines": [
+     46,
+     75
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/_pytest/setuponly.py",
+    "lines": [
+     66,
+     72
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 131,
+   "fanout_truncations": 4,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 232,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 54,
+     "packing: too large": 1,
+     "selection: container": 2,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1006,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: container": 2,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4096,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 19,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 2,
+     "selection: value N below floor": 2
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "372e8a25a8a6eacfd4e031e01870b8da850f678d956a3be5f731c2c33e32f215",
+   "routed": "555e70756b4b609bb966bac2f33a684d54e47a449529ad7a34e895873d951859",
+   "payload@256": "591f32099a7428dc2a157e1157dabdcbaaaff6bdb63bf0080c6f10337ed91876",
+   "payload@1024": "7004662cdc413424fd1ef1d9ed6798d80b0d9d5a4d7dca970595f46a0b17732c",
+   "payload@4096": "308a01506c57049843cf6b6e28f1ae2515b9bbf85b40070cdb1477ff3cf33ea6"
+  },
+  "seconds": 0.05519122200348647,
+  "hint_paths": [
+   "src/_pytest/_io/saferepr.py",
+   "src/_pytest/python.py",
+   "src/_pytest/setuponly.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-7490",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@7f7a36478abe",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 124,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.166667,
+    "entry_recall@20": 0.166667,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.5,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.040323,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.105882,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.040323,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.026387
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 54,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.996094,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     190,
+     229
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 32,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     231,
+     247
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     248,
+     307
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 54,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     250,
+     261
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "lines": [
+     400,
+     427
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "lines": [
+     548,
+     577
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 27,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "testing/test_skipping.py",
+    "lines": [
+     983,
+     1001
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 120,
+   "fanout_truncations": 5,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 57,
+     "selection: container": 1,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1020,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 52,
+     "selection: container": 1,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4093,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 9,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: container": 1,
+     "selection: no module-level source": 2,
+     "selection: value N below floor": 3
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "28f14c38c6508d1afa1f30bb663fe1e7cc8a039bc7f53c960c60eda5623a81de",
+   "routed": "6fc53a52f06cf3f5fe43e049b0b2884b36e22e2b5f36d36464f70f4fe2099f0b",
+   "payload@256": "4941e96f7a77c45a189ce3e6c71c7ccf8503ddde78ed62b90c65bb5e2089048a",
+   "payload@1024": "c1416aa3104bb71f4dedc9086d3aa3f0dc373fdc5aed7bc01fe7a135c8996032",
+   "payload@4096": "117593d352b38294ef4b0f8173dc582e23c57c9de07d497354875e20e0ad431e"
+  },
+  "seconds": 0.06118281400267733,
+  "hint_paths": [
+   "src/_pytest/skipping.py",
+   "testing/test_skipping.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-5809",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@8aba863a634f",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 34,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.076923,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.986328,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.411765,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.95459,
+    "gold_unit_share@4096": 0.082864
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 17,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.076923,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.986328,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.95459,
+    "gold_unit_share@4096": 0.082864
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/pastebin.py",
+    "lines": [
+     65,
+     84
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 17,
+    "module_lines": 0,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/pastebin.py",
+    "lines": [
+     77,
+     87
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/pastebin.py",
+    "lines": [
+     84,
+     114
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": 13,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 148,
+   "fanout_truncations": 5,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 43,
+     "selection: container": 1,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1010,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 1,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3910,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 33,
+    "header_entities": 14,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 22,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ac548feff5f114d250f6c23d5e16a964bd23ec706263c206a092df7bd0284c42",
+   "routed": "f9348c1ab1ee755a87051f443afeed9d87b261bc89a07dab75715fe6edc43aea",
+   "payload@256": "af2d57c02ecc5d88df2e97053e8756a5e75e73ef07e5101fec8f4213575a5736",
+   "payload@1024": "cb6214a08f80a4fb17f894b0f534ed16c48809e2e61a12edc10b0ef94b7e90a4",
+   "payload@4096": "62d6623b017d54c7b43926b68c715f794c60bf9e888ce4f2a5dbdb1c58e721f0"
+  },
+  "seconds": 0.04825011849970906,
+  "hint_paths": [
+   "src/_pytest/pastebin.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-5787",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@955e54221008",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 92,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.25,
+    "line_recall@256": 0.043478,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.941406,
+    "gold_unit_share@256": 0.821577,
+    "span_recall@1024": 0.25,
+    "line_recall@1024": 0.043478,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.992188,
+    "gold_unit_share@1024": 0.194882,
+    "span_recall@4096": 0.25,
+    "line_recall@4096": 0.043478,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.959473,
+    "gold_unit_share@4096": 0.050382
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 4,
+    "lines": 521,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.25,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.026871,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.941406,
+    "gold_unit_share@256": 0.821577,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.026871,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.992188,
+    "gold_unit_share@1024": 0.194882,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.028791,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.959473,
+    "gold_unit_share@4096": 0.05827
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/_code/code.py",
+    "lines": [
+     1,
+     220
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 174,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     1,
+     120
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 95,
+    "module_lines": 14,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     3,
+     8
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 4,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     121,
+     240
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 98,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     160,
+     205
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     211,
+     265
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     241,
+     460
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 154,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/reports.py",
+    "lines": [
+     424,
+     426
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 173,
+   "fanout_truncations": 9,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 241,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 3,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1016,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 3,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3930,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 11,
+    "omissions": {
+     "selection: container": 3,
+     "selection: item cap N": 16,
+     "selection: no module-level source": 1,
+     "selection: value N below floor": 20
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3188453ae468294a97aa4ed6f0cd8abf3a3bd5d2c19eb41b8a7928e34b1b5fdf",
+   "routed": "3cd1469ad6fc2b036f523868af5942939d6086e73cacae45dda0dc361c219b8f",
+   "payload@256": "8ede4cb387fd95cf040a0ed04ec6cee36ee8041e0062b713bf494934a1d22fb6",
+   "payload@1024": "4c0142b5edf6da1f3e39a1cf249143f35597a6de9e40a0d7415919c1d07f5925",
+   "payload@4096": "3270b2601b4d042a0e90b858065184319f0ba49d564244e97f30c706f12b18ea"
+  },
+  "seconds": 0.048777320498629706,
+  "hint_paths": [
+   "src/_pytest/reports.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-10051",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@aa55975c7d3f",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 19,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.5,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.25,
+    "line_recall@1024": 0.368421,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.551863,
+    "span_recall@4096": 0.25,
+    "line_recall@4096": 0.684211,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.983643,
+    "gold_unit_share@4096": 0.18615
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 29,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.666667,
+    "entry_mrr": 0.142857,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.882812,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.969727,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.37931,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.983643,
+    "gold_unit_share@4096": 0.083147
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     40,
+     46
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, too large"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     44,
+     52
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     331,
+     350
+    ],
+    "class": "revision",
+    "verified": false,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 7,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     345,
+     350
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     437,
+     445
+    ],
+    "class": "revision",
+    "verified": false,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     440,
+     446
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/logging.py",
+    "lines": [
+     696,
+     702
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 84,
+   "fanout_truncations": 3,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 226,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 43,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 993,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: container": 1,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4029,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 35,
+    "header_entities": 14,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 22,
+     "selection: value N below floor": 17
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2f9f5710f00dbbcea83fa5cf2030bfeef154d6ebf5c3fd3fdd3f837534bed120",
+   "routed": "6805f8110493fd06ac96d70e78b85f861222f8f77e2702987e95daa9f3148fd5",
+   "payload@256": "d34c26c98009d58c65e13bb731fee49b90c76b253df876cf83d20e7d979a627b",
+   "payload@1024": "e54b16cc899e35a6c96510800bf378de01841d7585a61d11a6f7bb8d4b22baa1",
+   "payload@4096": "ade8b61f8d50c70493179e952ceb4a38502e93ca070a6ea948afb8ac19c3b443"
+  },
+  "seconds": 0.05444897050256259,
+  "hint_paths": [
+   "src/_pytest/logging.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-5631",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@cb828ebe70b4",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0625,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.161702,
+    "span_recall@1024": 0.5,
+    "line_recall@1024": 0.8125,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.237537,
+    "span_recall@4096": 0.5,
+    "line_recall@4096": 0.875,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999512,
+    "gold_unit_share@4096": 0.205911
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/_pytest/compat.py",
+    "lines": [
+     58,
+     78
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/compat.py",
+    "lines": [
+     64,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 167,
+   "fanout_truncations": 5,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 235,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 52,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4094,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 10,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "6ddd49da6098a4471ee30a151a6af9a3981ef78d4229620473049083d6d2ff4c",
+   "routed": "0103ae60be4c58d7b36f4b854ab21700d850d7fd5e5c274971a8d47f23af533d",
+   "payload@256": "9aee4d6a7d9a6b52dd9120d933ff45939175251d5a7ddd00dcc72440b7890766",
+   "payload@1024": "32df2060b83f0f15771d3e066675c66f91902248694cdff313d3e03822dea7d7",
+   "payload@4096": "0f5f0b78c76f559b247dbd4ce95d12538c0e3bdfea2e05be0e47a13c20ec7282"
+  },
+  "seconds": 0.05919998500030488,
+  "hint_paths": [
+   "src/_pytest/compat.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-10081",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@da9a2b584eb7",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 77,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.6,
+    "entry_mrr": 0.125,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.025974,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.074437,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.116883,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.984619,
+    "gold_unit_share@4096": 0.051079
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 73,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.992188,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.984619,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     65,
+     88
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 20,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     96,
+     120
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 23,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     122,
+     179
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 53,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     183,
+     212
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     301,
+     330
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     316,
+     322
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "src/_pytest/unittest.py",
+    "lines": [
+     412,
+     415
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 3,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 107,
+   "fanout_truncations": 5,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 254,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 45,
+     "packing: too large": 1,
+     "selection: container": 1,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 1,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4033,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 31,
+    "header_entities": 11,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 26,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "69e4f778ba20b163593df02d33c484d7195b40e0977b8efeb563389ed688f991",
+   "routed": "04a35f7381921367c9af5b0ccedb74c121737e2c0050fef23668a0e708e2e950",
+   "payload@256": "fa87df8dffd89652e00a62f11a7cb80afa16c9c911e5592d113ad04c1a4737a6",
+   "payload@1024": "f337272e295fe574d7222d6b6b47826a91830b7b6c60ac8f51c0213c56a10b86",
+   "payload@4096": "7974d7c466a25af7fc2d0d71a82aad0bbb38d193118e2e2a545ad9574ba781d1"
+  },
+  "seconds": 0.05719641150062671,
+  "hint_paths": [
+   "src/_pytest/unittest.py"
+  ]
+ },
+ {
+  "task": "pytest-dev__pytest-7432",
+  "split": "heldout",
+  "corpus": "pytest-dev__pytest@e6e300e729dd",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 153,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.142857,
+    "entry_recall@5": 0.428571,
+    "entry_recall@20": 0.857143,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.285714,
+    "line_recall@1024": 0.333333,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.702148,
+    "span_recall@4096": 0.571429,
+    "line_recall@4096": 0.75817,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.997559,
+    "gold_unit_share@4096": 0.409692
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     30,
+     62
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 26,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     152,
+     187
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 29,
+    "module_lines": 0,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     190,
+     222
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 27,
+    "module_lines": 0,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     225,
+     245
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 16,
+    "module_lines": 5,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     247,
+     257
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 0,
+    "entry_rank": 11,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     260,
+     305
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/_pytest/skipping.py",
+    "lines": [
+     291,
+     297
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 95,
+   "fanout_truncations": 4,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 1,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 1,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 32,
+     "selection: container": 1,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4086,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 21,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 15,
+     "selection: container": 1,
+     "selection: value N below floor": 28
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v3",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:a173b433f4e5d841ed0f47934b0737c260cf7635a29b5758b4a419059a8ba19d",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "74ad3a16b09231fdcbc83c6761d9eaaca8b635f2fef0fc2ebdd29c3b4e3c1de5",
+   "routed": "cdd701d008ef84e0a5f063644add6061c6d89b1ce86b12db0fbd0ef3ba6fe33b",
+   "payload@256": "4e80ef68188747480d6d3ea19386ce6ed6a0abc336fc2ca793a0904a403aa6e3",
+   "payload@1024": "34641180bb1c4a242f60fd0d28505c3a0aa7067ac590321649cd291c24649427",
+   "payload@4096": "cd46854cc77af603906693a6fec10f7954fdc70a1c0932e02b0ae16a35c6bb3b"
+  },
+  "seconds": 0.04327298249700107,
+  "hint_paths": [
+   "src/_pytest/skipping.py"
+  ]
+ }
+]

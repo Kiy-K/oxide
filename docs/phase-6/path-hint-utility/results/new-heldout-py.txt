@@ -1,0 +1,10 @@
+
+== prod.H == frozen compat 0/29; deterministic+within True; median build_context 68.0 ms
+  [ALL n=29] span_recall@1024=0.183 line_recall@256=0.035 line_recall@1024=0.213 line_recall@4096=0.545 file_recall@4096=1.000 gold_unit_share@4096=0.254
+  [pydata__xarray n=17] span_recall@1024=0.144 line_recall@256=0.038 line_recall@1024=0.146 line_recall@4096=0.384 file_recall@4096=1.000 gold_unit_share@4096=0.170
+  [pytest-dev__pytest n=12] span_recall@1024=0.239 line_recall@256=0.032 line_recall@1024=0.308 line_recall@4096=0.772 file_recall@4096=1.000 gold_unit_share@4096=0.374
+
+== prod.U == frozen compat 29/29; deterministic+within True; median build_context 81.3 ms
+  [ALL n=29] span_recall@1024=0.109 line_recall@256=0.033 line_recall@1024=0.129 line_recall@4096=0.235 file_recall@4096=0.621 gold_unit_share@4096=0.075
+  [pydata__xarray n=17] span_recall@1024=0.106 line_recall@256=0.011 line_recall@1024=0.099 line_recall@4096=0.183 file_recall@4096=0.510 gold_unit_share@4096=0.058
+  [pytest-dev__pytest n=12] span_recall@1024=0.114 line_recall@256=0.066 line_recall@1024=0.170 line_recall@4096=0.309 file_recall@4096=0.778 gold_unit_share@4096=0.099

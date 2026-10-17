@@ -34,8 +34,8 @@ protocol (splits, gate rules, how to freeze a new version) and each later README
 its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated.
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
-`docs/phase-6/typescript-v1/`, latest frozen baseline and its corpora amendment in
-`typescript-v2/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+`docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
+baseline `typescript-v3/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,

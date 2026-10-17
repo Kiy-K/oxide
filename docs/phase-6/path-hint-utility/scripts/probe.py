@@ -20,7 +20,11 @@ def score(repo, lines, task):
     b = repo.build_context(task["query"], 4096, symbols=task["symbols"], paths=gold)
     for i in b.items:
         r = i.entities[0].reason
-        kind = "ancestor header" if r.startswith("header of") else re.sub(r"[\d.]+", "N", r.split(",")[-1].strip())
+        kind = (
+            "ancestor header"
+            if r.startswith("header of")
+            else re.sub(r"[\d.]+", "N", r.split(",")[-1].strip())
+        )
         where = "goldfile" if i.source.path in gold else "other"
         spend[(where, kind)] += i.units
         items_by[(where, kind)] += 1
