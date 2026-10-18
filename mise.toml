@@ -31,7 +31,7 @@ description = "pytest: every test and subprocess uses a private data location"
 run = "uv run --locked pytest"
 
 [tasks.contextbench-ts]
-description = "TypeScript context-quality gate (docs/phase-6/typescript-v4): ~1.2 GB of pinned corpora, not part of verify"
+description = "TypeScript context-quality gate (docs/phase-6/typescript-v5): ~1.2 GB of pinned corpora, not part of verify"
 run = [
   "uv run --locked python tests/python/contextbench_ts.py fetch",
   "OXIDE_CONTEXTBENCH_TS=1 uv run --locked pytest tests/python/test_contextbench_ts.py",

@@ -4,6 +4,7 @@ resolution, JSX, test discovery, coverage, and context over the fixture."""
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -12,7 +13,7 @@ from conftest import REPO, write
 
 import oxide
 from oxide.capture import capture
-from oxide.core import tsconfig, typescript
+from oxide.core import python, tsconfig, typescript
 from oxide.core.indexing import Derived, derive, validate
 
 TS_FIXTURE = REPO / "fixtures" / "ts_repo"
@@ -372,6 +373,31 @@ def test_coverage_is_explicit_for_partial_unsupported_and_declaration_files(tmp_
     )
     entities = {e.key for e in found.entities}
     assert {"symbol:broken.ts#ok", "symbol:types.d.ts#typed", "module:typescript:types"} <= entities
+
+
+def test_declarations_deep_in_chains_parse_fast_and_deeper_syntax_is_unsupported(
+    tmp_path: Path,
+) -> None:
+    link = "\n.then(() => { function g() {} })"
+    member = "\n.then(class { @d m() {} })"
+    source = "export const a = p" + link * 4_000 + member * 4_000 + ";\n"
+    started = time.perf_counter()
+    parsed = typescript.parse(source.encode(), "typescript")
+    assert time.perf_counter() - started < 10  # was quadratic: Node.parent is O(depth)
+    assert isinstance(parsed, typescript.Parsed)
+    decls = [s.decl for s in parsed.scopes[1:] if s.decl is not None]
+    assert [d.name for d in decls].count("g") == 4_000
+    methods = [d for d in decls if d.name == "m"]
+    assert len(methods) == 4_000
+    assert all(source[d.start : d.start + 3] == "@d " for d in methods)  # ASCII: bytes
+    deep = "f(" + "()=>{f(" * 20_000 + ")}" * 20_000 + ");\n"
+    found = derived(write(tmp_path, {"deep.ts": deep, "ok.ts": "export const x = 1;\n"}))
+    files = {f.path: f for f in found.files}
+    assert (files["deep.ts"].coverage, files["deep.ts"].diagnostics) == (
+        "unsupported",
+        (python.TOO_DEEP,),
+    )
+    assert files["ok.ts"].coverage == "complete"
 
 
 def test_module_names_follow_the_path_convention() -> None:

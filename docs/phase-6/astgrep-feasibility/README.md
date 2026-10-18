@@ -258,7 +258,8 @@ ast-grep bundles that grammar (it does for all five).
   more than 120 s for 100k. A file under the 1 MiB capture limit (about 130k
   `.then(f)` links) can therefore stall `oxide index` for minutes. The cause is not
   diagnosed; the same pattern timed out the tree-sitter arm here. This needs a fix
-  before release *(not done here: out of scope)*.
+  before release *(not done here: out of scope)*. *Later: diagnosed and fixed in
+  [../../parser-limits.md](../../parser-limits.md).*
 
 ## What this can't establish
 

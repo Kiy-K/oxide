@@ -1,4 +1,4 @@
-# TypeScript language slice (`oxide-typescript-v2`)
+# TypeScript language slice (`oxide-typescript-v3`)
 
 The second language slice (BOOTSTRAP § Remaining, item 3), in `src/oxide/core/typescript.py`.
 It has the same shape as the Python slice: one compiled tree-sitter query per dialect
@@ -19,8 +19,9 @@ beside `tree-sitter-python`, and named in the derivation components (`typescript
 | `*.tsx` | `tsx` | JSX elements are parsed; the dialect is chosen by extension only |
 | `*.js`, `*.jsx`, `*.mjs`, `*.cjs`, JSON, … | — | Not parsed: file evidence with `unsupported` coverage, as before |
 
-Every TypeScript file is `FileInfo.language == "typescript"`. A file that is not UTF-8 is
-`unsupported` with a diagnostic. A file with syntax errors is `partial`, with bounded
+Every TypeScript file is `FileInfo.language == "typescript"`. A file that is not UTF-8,
+or whose syntax nests deeper than 65,535 levels ([parser-limits.md](parser-limits.md)),
+is `unsupported` with a diagnostic. A file with syntax errors is `partial`, with bounded
 diagnostics as for Python, and keeps everything the grammar recovered.
 
 ## Identity and kinds

@@ -21,8 +21,13 @@ from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
 from oxide.models import Basis, Entity, RelationKind, Resolution, SourceRef
 
-VERSION = "oxide-python-v2"
+VERSION = "oxide-python-v3"
 MAX_DIAGNOSTICS = 16
+# tree-sitter's query cursor keeps node depth in 16 bits: it drops matches below this
+# depth and its time turns super-linear (docs/parser-limits.md), so a file whose syntax
+# nests deeper is unsupported rather than silently incomplete.
+MAX_DEPTH = 65_535
+TOO_DEEP = f"syntax nests deeper than {MAX_DEPTH:,} levels"
 
 LANGUAGE = Language(tree_sitter_python.language())
 _QUERY = Query(
@@ -30,7 +35,7 @@ _QUERY = Query(
     """
     (function_definition) @def
     (class_definition) @def
-    (call function: (_) @callee)
+    (call) @call
     (import_statement) @import
     (import_from_statement) @import
     (global_statement) @rebind
@@ -45,10 +50,11 @@ _QUERY = Query(
     (delete_statement) @bind
     (case_pattern) @bind
     (lambda parameters: (_) @bind)
-    (ERROR) @error
-    (MISSING) @missing
     """,
 )
+# Run only on trees with errors: ``(MISSING)`` inspects every node, which costs seconds
+# on deeply nested source.
+_BROKEN = Query(LANGUAGE, "(ERROR) @error (MISSING) @missing")
 
 
 @dataclass(slots=True)
@@ -98,28 +104,54 @@ class Parsed:
     diagnostics: list[str]
 
 
+class Nesting:
+    """The innermost scope whose body holds a byte, in O(log depth).
+
+    Scope 0 is the whole file. Bodies nest, so the innermost scope holding a byte is an
+    ancestor-or-self of the last body starting at or before it, and ancestors' bodies
+    end no earlier. ``jumps[k][j]`` is the 2**j-th ancestor of ``k``: skipping the
+    ancestors that end at or before the byte takes O(log depth), where one parent at
+    a time is quadratic after a deep nest.
+    """
+
+    def __init__(self, size: int) -> None:
+        self.bodies: list[tuple[int, int]] = []  # (body start, scope), sorted
+        self.ends = [size]
+        self.parents = [0]
+        self.jumps: list[list[int]] = [[]]
+
+    def add(self, parent: int, body: tuple[int, int]) -> None:
+        own = len(self.ends)
+        up = [parent]
+        while len(self.jumps[up[-1]]) >= len(up):
+            up.append(self.jumps[up[-1]][len(up) - 1])
+        self.ends.append(body[1])
+        self.parents.append(parent)
+        self.jumps.append(up)
+        bisect.insort(self.bodies, (body[0], own))
+
+    def scope_at(self, at: int) -> int:
+        i = bisect.bisect_right(self.bodies, (at, len(self.ends))) - 1
+        k = self.bodies[i][1] if i >= 0 else 0
+        if not k or at < self.ends[k]:
+            return k
+        for j in range(len(self.jumps[k]) - 1, -1, -1):
+            if j < len(self.jumps[k]) and (up := self.jumps[k][j]) and self.ends[up] <= at:
+                k = up
+        return self.parents[k]
+
+
 class _Facts:
     def __init__(self, data: bytes) -> None:
         self.data = data
         self.scopes = [Scope(None, None, (0, len(data)))]
-        # (body start, scope) sorted, so the innermost scope holding a byte is an
-        # ancestor-or-self of the last body starting at or before it.
-        self.bodies: list[tuple[int, int]] = []
+        self.nesting = Nesting(len(data))
+        self.scope_at = self.nesting.scope_at
 
     def text(self, node: Node | None) -> str:
         if node is None:
             return ""
         return self.data[node.start_byte : node.end_byte].decode("utf-8", "replace")
-
-    def scope_at(self, at: int) -> int:
-        i = bisect.bisect_right(self.bodies, (at, len(self.scopes))) - 1
-        k: int | None = self.bodies[i][1] if i >= 0 else 0
-        while k:
-            start, end = self.scopes[k].body
-            if start <= at < end:
-                return k
-            k = self.scopes[k].parent
-        return 0
 
     def bind(self, scope: int, node: Node | None) -> None:
         if node is not None:
@@ -155,8 +187,9 @@ class _Facts:
         )
         own = len(self.scopes)
         span = (body.start_byte, body.end_byte) if body is not None else (node.end_byte,) * 2
-        self.scopes.append(Scope(self.scope_at(node.start_byte), decl, span))
-        bisect.insort(self.bodies, (span[0], own))
+        enclosing = self.scope_at(node.start_byte)
+        self.scopes.append(Scope(enclosing, decl, span))
+        self.nesting.add(enclosing, span)
         if decl.cls:
             arguments = node.child_by_field_name("superclasses")
             for base in arguments.named_children if arguments is not None else []:
@@ -234,15 +267,19 @@ def parse(data: bytes) -> Parsed | str:
     except UnicodeDecodeError:
         return "Python source is not UTF-8"
     root = Parser(LANGUAGE).parse(data).root_node
+    if too_deep(root):
+        return TOO_DEEP
     captures = QueryCursor(_QUERY).captures(root)
     facts = _Facts(data)
     for node in sorted(captures.get("def", []), key=lambda n: n.start_byte):
         facts.declaration(node)
     scopes = facts.scopes
-    for callee in captures.get("callee", []):
-        call = callee.parent
-        name = facts.dotted(callee)
-        if call is not None and name is not None:
+    for call in captures.get("call", []):
+        # Down from the call, never ``callee.parent``: tree-sitter finds a parent by
+        # descending from the root, which is quadratic over a long method chain.
+        callee = call.child_by_field_name("function")
+        name = facts.dotted(callee) if callee is not None else None
+        if name is not None:
             use = Use(name, call.start_byte, call.end_byte)
             scopes[facts.scope_at(call.start_byte)].calls.append(use)
     for node in captures.get("import", []):
@@ -253,15 +290,32 @@ def parse(data: bytes) -> Parsed | str:
     for scope in scopes:
         scope.calls.sort(key=lambda u: (u.start, u.end))
         scope.imports.sort(key=lambda i: (i.start, i.end, i.item))
-    return Parsed(scopes, rebound, syntax_diagnostics(root, captures))
+    return Parsed(scopes, rebound, syntax_diagnostics(root, _BROKEN))
 
 
-def syntax_diagnostics(root: Node, captures: dict[str, list[Node]]) -> list[str]:
-    """Bounded diagnostics from a query's ``@error`` and ``@missing`` captures."""
+def too_deep(root: Node) -> bool:
+    """Whether any node lies deeper than ``MAX_DEPTH``. A subtree is no taller than its
+    node count, so only subtrees large enough to reach that depth are entered."""
+    stack = [(root, 0)]
+    while stack:
+        node, depth = stack.pop()
+        if depth > MAX_DEPTH:
+            return True
+        stack.extend(
+            (child, depth + 1)
+            for child in node.children
+            if depth + child.descendant_count > MAX_DEPTH
+        )
+    return False
+
+
+def syntax_diagnostics(root: Node, broken: Query) -> list[str]:
+    """Bounded diagnostics from ``broken``'s ``@error`` and ``@missing`` captures."""
     diagnostics: list[str] = []
     if root.has_error:
-        broken = [*captures.get("error", []), *captures.get("missing", [])]
-        for node in sorted(broken, key=lambda n: (n.start_byte, -n.end_byte, n.is_missing)):
+        captures = QueryCursor(broken).captures(root)
+        nodes = [*captures.get("error", []), *captures.get("missing", [])]
+        for node in sorted(nodes, key=lambda n: (n.start_byte, -n.end_byte, n.is_missing)):
             if node.is_missing:
                 diagnostics.append(f"missing {node.type} at byte {node.start_byte}")
             else:
@@ -273,7 +327,7 @@ def syntax_diagnostics(root: Node, captures: dict[str, list[Node]]) -> list[str]
 
 
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-python-facts-v1"
+FACTS_VERSION = "oxide-python-facts-v2"
 
 
 def encode(parsed: Parsed) -> list[Any]:

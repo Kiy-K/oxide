@@ -11,7 +11,6 @@ rebound or reached through an unresolvable module stays unresolved.
 
 from __future__ import annotations
 
-import bisect
 import posixpath
 import re
 from collections.abc import Mapping
@@ -23,7 +22,9 @@ from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
 from oxide.core import tsconfig
 from oxide.core.python import (
+    TOO_DEEP,
     Edge,
+    Nesting,
     Res,
     Use,
     as_list,
@@ -31,12 +32,13 @@ from oxide.core.python import (
     structural,
     symbol_keys,
     syntax_diagnostics,
+    too_deep,
 )
 from oxide.models import Entity, RelationKind, SourceRef
 
-VERSION = "oxide-typescript-v2"
+VERSION = "oxide-typescript-v3"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-typescript-facts-v1"
+FACTS_VERSION = "oxide-typescript-facts-v2"
 
 Dialect = Literal["typescript", "tsx"]
 _COMMON = """
@@ -62,11 +64,15 @@ _COMMON = """
   (ambient_declaration [
     (lexical_declaration (variable_declarator) @def)
     (variable_declaration (variable_declarator) @def)])])
-(call_expression function: (_) @callee)
-(new_expression constructor: (_) @callee)
+(call_expression) @call
+(new_expression) @call
 (import_statement) @import
 (export_statement) @export
-(variable_declarator name: (_) @bind)
+(lexical_declaration) @wrapper
+(variable_declaration) @wrapper
+(ambient_declaration) @wrapper
+(class_body) @members
+(variable_declarator) @declarator
 (required_parameter pattern: (_) @bind)
 (optional_parameter pattern: (_) @bind)
 (arrow_function parameter: (_) @bind)
@@ -76,16 +82,23 @@ _COMMON = """
 (assignment_expression left: (identifier) @rebind)
 (augmented_assignment_expression left: (identifier) @rebind)
 (update_expression argument: (identifier) @rebind)
-(ERROR) @error
-(MISSING) @missing
 """
 _JSX = """
-(jsx_opening_element name: (_) @callee)
-(jsx_self_closing_element name: (_) @callee)
+(jsx_opening_element) @call
+(jsx_self_closing_element) @call
 """
+_CALLEE = {
+    "call_expression": "function",
+    "new_expression": "constructor",
+    "jsx_opening_element": "name",
+    "jsx_self_closing_element": "name",
+}
 _LANGUAGES: dict[Dialect, Language] = {
     "typescript": Language(tree_sitter_typescript.language_typescript()),
     "tsx": Language(tree_sitter_typescript.language_tsx()),
+}
+_BROKEN = {
+    d: Query(language, "(ERROR) @error (MISSING) @missing") for d, language in _LANGUAGES.items()
 }
 _QUERIES: dict[Dialect, Query] = {
     "typescript": Query(_LANGUAGES["typescript"], _COMMON),
@@ -199,28 +212,24 @@ class _Facts:
     def __init__(self, data: bytes) -> None:
         self.data = data
         self.scopes = [Scope(None, None, (0, len(data)))]
-        self.bodies: list[tuple[int, int]] = []  # as in the Python slice
+        self.nesting = Nesting(len(data))
+        self.scope_at = self.nesting.scope_at
         self.declarators: set[tuple[int, int]] = set()  # those that are declarations
+        # Parents that matter, by node id: a declaration's wrapping statement, and the
+        # program for top-level statements (``Node.parent`` is O(depth), see ``parse``).
+        self.parents: dict[int, Node] = {}
+        self.decorated: dict[int, int] = {}  # member id -> start of its decorators
+
+    def top(self, node: Node) -> bool:
+        parent = self.parents.get(node.id)
+        return parent is not None and parent.type == "program"
 
     def text(self, node: Node | None) -> str:
         if node is None:
             return ""
         return self.data[node.start_byte : node.end_byte].decode("utf-8", "replace")
 
-    def scope_at(self, at: int) -> int:
-        i = bisect.bisect_right(self.bodies, (at, len(self.scopes))) - 1
-        k: int | None = self.bodies[i][1] if i >= 0 else 0
-        while k:
-            start, end = self.scopes[k].body
-            if start <= at < end:
-                return k
-            k = self.scopes[k].parent
-        return 0
-
     def bind(self, scope: int, node: Node) -> None:
-        parent = node.parent
-        if parent is not None and _span(parent) in self.declarators:
-            return  # ``const f = () => ...`` declares f
         self.scopes[scope].bound.update(self.text(n) for n in _targets(node))
 
     def dotted(self, node: Node) -> str | None:
@@ -277,24 +286,21 @@ class _Facts:
         # The statement holding the declaration (``declare``, ``export``); its range is
         # the declaration's unless it declares several. Exports count only at module level.
         outer, export = node, None
-        parent = node.parent
+        parent = self.parents.get(node.id)
         lone = True
         if parent is not None and parent.type in ("lexical_declaration", "variable_declaration"):
             lone = parent.named_child_count == 1
-            outer, parent = parent, parent.parent
+            outer, parent = parent, self.parents.get(parent.id)
         if parent is not None and parent.type == "ambient_declaration":
-            outer, parent = parent, parent.parent
+            outer, parent = parent, self.parents.get(parent.id)
         if parent is not None and parent.type == "export_statement":
             outer = parent
-            if parent.parent is not None and parent.parent.type == "program":
+            if self.top(parent):
                 default = any(c.type == "default" for c in parent.children)
                 export = "default" if default else name
         if not lone:
             outer = node
-        start = outer.start_byte
-        sibling = outer.prev_named_sibling
-        while sibling is not None and sibling.type == "decorator":  # member decorators
-            start, sibling = sibling.start_byte, sibling.prev_named_sibling
+        start = self.decorated.get(outer.id, outer.start_byte)
         # The header: from the first keyword (past decorators) to the body or value.
         body = fn.child_by_field_name("body")
         tail = body or (value if kind in ("type", "variable") else None)
@@ -312,8 +318,9 @@ class _Facts:
             first = params or body
             span = (first.start_byte, fn.end_byte) if first is not None else (node.end_byte,) * 2
         own = len(self.scopes)
-        self.scopes.append(Scope(self.scope_at(node.start_byte), decl, span))
-        bisect.insort(self.bodies, (span[0], own))
+        enclosing = self.scope_at(node.start_byte)
+        self.scopes.append(Scope(enclosing, decl, span))
+        self.nesting.add(enclosing, span)
         if kind == "class":
             for heritage in (c for c in node.named_children if c.type == "class_heritage"):
                 for clause in heritage.named_children:
@@ -402,38 +409,58 @@ def parse(data: bytes, language: Dialect) -> Parsed | str:
     except UnicodeDecodeError:
         return "TypeScript source is not UTF-8"
     root = Parser(_LANGUAGES[language]).parse(data).root_node
+    if too_deep(root):
+        return TOO_DEEP
     captures = QueryCursor(_QUERIES[language]).captures(root)
     facts = _Facts(data)
+    for parent in (root, *captures.get("wrapper", []), *captures.get("export", [])):
+        facts.parents.update((child.id, parent) for child in parent.named_children)
+    for members in captures.get("members", []):  # siblings are O(depth) too
+        run = None
+        for child in members.named_children:
+            if child.type == "decorator":
+                run = child.start_byte if run is None else run
+            elif run is not None:
+                facts.decorated[child.id], run = run, None
     # A function-valued exported declarator matches two patterns: declared once.
     defs = {(n.start_byte, -n.end_byte, n.type): n for n in captures.get("def", [])}
     for _, node in sorted(defs.items()):
         facts.declaration(node)
     scopes = facts.scopes
-    for callee in captures.get("callee", []):
-        at = callee.parent
+    # Calls and declarators are captured whole and read downwards, never through
+    # ``Node.parent``: tree-sitter finds a parent by descending from the root, which is
+    # quadratic over a long method chain.
+    for at in captures.get("call", []):
+        callee = at.child_by_field_name(_CALLEE[at.type])
+        if callee is None:
+            continue
         # ``await f<T>(x)`` parses as a call of the await expression; ``f!(x)`` similarly.
         while callee.type in ("await_expression", "non_null_expression") and callee.named_children:
             callee = callee.named_children[0]
         name = facts.dotted(callee)
-        if name is None or at is None:
+        if name is None:
             continue
         if at.type.startswith("jsx") and "." not in name and not name[0].isupper():
             continue  # an intrinsic element such as <div>, not a component
         scopes[facts.scope_at(at.start_byte)].calls.append(Use(name, *_span(at)))
     imports: list[Import] = []
     for node in captures.get("import", []):
-        if node.parent is not None and node.parent.type == "program":
+        if facts.top(node):
             imports.extend(facts.imports(node))
     for node in captures.get("export", []):
-        if node.parent is not None and node.parent.type == "program":
+        if facts.top(node):
             imports.extend(facts.exports(node))
+    for node in captures.get("declarator", []):
+        target = node.child_by_field_name("name")
+        if target is not None and _span(node) not in facts.declarators:  # not ``f = () =>``
+            facts.bind(facts.scope_at(target.start_byte), target)
     for node in captures.get("bind", []):
         facts.bind(facts.scope_at(node.start_byte), node)
     rebound = {facts.text(n) for n in captures.get("rebind", [])}
     for scope in scopes:
         scope.calls.sort(key=lambda u: (u.start, u.end, u.name))
     imports.sort(key=lambda i: (i.start, i.end))
-    return Parsed(scopes, imports, rebound, syntax_diagnostics(root, captures))
+    return Parsed(scopes, imports, rebound, syntax_diagnostics(root, _BROKEN[language]))
 
 
 def encode(parsed: Parsed) -> list[Any]:
