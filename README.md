@@ -1,27 +1,24 @@
-<p align="center">
-  <img src="logo.png" alt="OXIDE" width="140">
-</p>
+# OXIDE
 
-<h1 align="center">OXIDE</h1>
-<p align="center"><strong>A structural context engine for coding agents</strong></p>
+A structural context engine for coding agents.
 
-OXIDE v2 captures a repository and derives a typed graph of its files, modules,
-symbols and relations. It persists that graph in LadybugDB and answers
-"what code matters for this task?" with a bounded, source-backed context bundle.
-Retrieval is vectorless: BM25 over code-aware terms plus structural seeds from
-typed hints, then TreeRouter and deterministic selection and packing. There are
-no embeddings, model runners or network access on the query path.
+OXIDE captures a repository, derives a typed graph of its files, modules, symbols, and
+relations, persists that graph in LadybugDB, and answers "what code matters for this
+task?" with a bounded, source-backed context bundle. Retrieval is vectorless: BM25 over
+code-aware terms plus structural seeds from typed hints, then TreeRouter and
+deterministic selection and packing. No embeddings, model runners, or network access on
+the query path.
 
-> **Status:** pre-release, on branch `rewrite/v2`. Python and TypeScript (with TSX)
-> have parser slices ([docs/typescript.md](docs/typescript.md)). Other files are kept
-> as unsupported file evidence. The public
-> Python API is the product boundary ([docs/public-api.md](docs/public-api.md)).
-> The legacy v1 implementation and its README live on `main`; a copy of that README
-> is kept as history in [docs/legacy/README-v1.md](docs/legacy/README-v1.md).
+Status: pre-release, on branch `rewrite/v2`. Python and TypeScript (with TSX) have
+parser slices ([docs/typescript.md](docs/typescript.md)); other files are kept as
+unsupported file evidence. The public Python API is the product boundary
+([docs/public-api.md](docs/public-api.md)). The legacy v1 implementation and its README
+live on `main`; a copy is kept as history in
+[docs/legacy/README-v1.md](docs/legacy/README-v1.md).
 
 ## Install
 
-OXIDE needs CPython 3.12–3.14. Development uses [mise](https://mise.jdx.dev) and
+OXIDE needs CPython 3.12-3.14. Development uses [mise](https://mise.jdx.dev) and
 [uv](https://docs.astral.sh/uv/):
 
 ```bash
@@ -29,17 +26,16 @@ git clone https://github.com/Kiy-K/oxide && cd oxide && git checkout rewrite/v2
 mise run bootstrap        # uv sync --locked + `oxide prepare`
 ```
 
-Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare`
-is the only network access OXIDE ever makes. It downloads the pinned LadybugDB FTS
-extension for your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
+Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare` is
+the only network access OXIDE makes. It downloads the pinned LadybugDB FTS extension for
+your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
 [docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
-the lexical channel reports `unavailable` and structural seeds and routing still
-work.
+the lexical channel reports `unavailable` and structural seeds and routing still work.
 
 OXIDE is not on PyPI yet. To use it outside the checkout, build it with `uv build` and
 install the wheel into any environment (`pip install dist/oxide-*.whl`), then run
 `oxide prepare`. That needs only Python and the native wheels. It does not need Rust,
-Node.js or a compiler. On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the
+Node.js, or a compiler. On Windows, LadybugDB also needs the OpenSSL 3 x64 DLLs in the
 system directory. It opens only ASCII paths there, so with a non-ASCII user name, set
 `OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` ([docs/platforms.md](docs/platforms.md)).
 
@@ -52,8 +48,8 @@ uv run oxide context path/to/repo "where are failed requests retried" --budget 1
     --symbol RetryPolicy --file src/http/client.py
 ```
 
-Every command takes `--json` (the typed result) and `--data-dir`. `context`
-prints the payload on stdout and `used/budget units` on stderr. Errors print
+Every command takes `--json` (the typed result) and `--data-dir`. `context` prints
+the payload on stdout and `used/budget units` on stderr. Errors print
 `error[<code>]: <message>` and exit 2.
 
 ```python
