@@ -82,9 +82,9 @@ when it sits inside the repository.
 - One owner per store, across processes. A `Repository` is not thread-safe.
 - Indexing is a full rebuild per change, and capture holds the captured bytes in
   memory (at most 1 GiB in scope, 1 MiB per file).
-- Verified on Linux x86_64 and macOS 15+ (x86_64, arm64) by the Platforms workflow.
-  Windows x86_64 needs the OpenSSL 3 DLLs installed; see
-  [docs/platforms.md](docs/platforms.md) for status and prerequisites.
+- Verified on Linux x86_64, macOS 15+ (x86_64, arm64) and Windows x86_64 by the
+  Platforms workflow. Windows needs the OpenSSL 3 DLLs and ASCII store paths; see
+  [docs/platforms.md](docs/platforms.md).
 
 [docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
 recovery behavior.

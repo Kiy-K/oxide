@@ -9,7 +9,7 @@ and checked by `.github/workflows/platforms.yml`.
 | Platform | Runner | Native wheels (CPython 3.12–3.14) | FTS 0.21.0 build | Status |
 | --- | --- | --- | --- | --- |
 | Linux x86_64 (glibc ≥ 2.28) | `ubuntu-24.04` | ladybug, tree-sitter, grammars | `linux_amd64` | supported; verified |
-| Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | `win_amd64` | supported; hosted run pending |
+| Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | `win_amd64` | supported; verified |
 | macOS 15+ Intel | `macos-15-intel` | yes (ladybug needs macOS 15) | `osx_amd64` | supported; verified |
 | macOS 15+ Apple silicon | `macos-15` | yes (ladybug needs macOS 15) | `osx_arm64` | supported; verified |
 | Linux arm64, musl, Windows arm64 | none | wheels exist | not pinned | unsupported: not tested; the lexical channel reports `unavailable` |
