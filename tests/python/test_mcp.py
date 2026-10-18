@@ -79,25 +79,11 @@ async def test_one_tool_is_discoverable_with_bounded_schemas(indexed: Path) -> N
     assert tool.description and tool.output_schema
     assert tool.input_schema["required"] == ["query"]
     schema = tool.input_schema["properties"]
-    assert schema["mode"]["enum"] == ["search", "context", "structural"]
+    assert schema["mode"]["enum"] == ["search", "context"]
     assert schema["mode"]["default"] == "search"
     assert {o.get("maximum") for o in schema["limit"]["anyOf"]} >= {mcp_server.MAX_RESULTS}
     assert {o.get("maximum") for o in schema["budget"]["anyOf"]} >= {mcp_server.MAX_BUDGET}
     assert schema["query"]["maxLength"] == 2000 and schema["symbols"]["maxItems"] == 32
-
-
-async def test_without_the_extra_structural_mode_is_not_offered(
-    indexed: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    monkeypatch.setitem(sys.modules, "ast_grep_py", None)
-    async with Client(server([str(indexed)])) as client:
-        (tool,) = await client.list_tools()
-        refused = await call(
-            client, "oxide_search", query="f($A)", mode="structural", language="python"
-        )
-    assert tool.input_schema["properties"]["mode"]["enum"] == ["search", "context"]
-    assert "structural" not in str(tool.description) + str(tool.input_schema)
-    assert refused.is_error
 
 
 async def test_search_and_context_return_structured_evidence(indexed: Path) -> None:
@@ -117,35 +103,6 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     payload = "".join(item["text"] for item in data["items"])
     assert text(bundle).startswith("# oxide context: ") and text(bundle).endswith(payload)
     assert "### oxidepy/retry.py:" in payload
-
-
-async def test_structural_mode_lists_pattern_matches(indexed: Path) -> None:
-    async with Client(server([str(indexed)])) as client:
-        found = await call(
-            client, "oxide_search", query="time.sleep($T)", mode="structural", language="python"
-        )
-        scoped = await call(
-            client,
-            "oxide_search",
-            query="$F($$$A)",
-            mode="structural",
-            language="python",
-            paths=["oxidepy/http_client.py"],
-            rule={"has": {"kind": "keyword_argument", "stopBy": "end"}},
-            limit=1,
-        )
-    assert not found.is_error
-    (match,) = found.structured_content["matches"]
-    assert match["source"]["path"] == "oxidepy/retry.py" and match["start_line"] == 45
-    assert match["entity"] == "symbol:oxidepy/retry.py#RetryPolicy.wait"
-    assert text(found).splitlines()[1] == (
-        "oxidepy/retry.py:45: time.sleep(self.backoff_ms(attempt) / 1000.0)"
-    )
-    data = scoped.structured_content
-    assert data["files"] == 1 and not data["truncated"]
-    assert [m["preview"].strip() for m in data["matches"]] == [
-        "with urllib.request.urlopen(url, timeout=5.0) as response:"
-    ]
 
 
 async def test_empty_results_are_successes(indexed: Path) -> None:
@@ -174,13 +131,8 @@ async def test_bad_arguments_and_repositories_are_tool_errors(
             ({"mode": "context", "budget": mcp_server.MAX_BUDGET + 1}, "budget"),
             ({"mode": "nearest"}, "mode"),
             ({"budget": 10}, "`budget` applies to mode=context only"),
-            ({"mode": "context", "limit": 3}, "`limit` applies to"),
-            ({"language": "python"}, "apply to mode=structural only"),
-            ({"mode": "structural"}, "needs `language`"),
-            ({"mode": "structural", "language": "python", "symbols": ["f"]}, "`symbols`"),
-            ({"mode": "structural", "language": "python", "rule": {"pattern": "g"}}, "pattern"),
-            ({"mode": "structural", "language": "python", "rule": {"kind": 3}}, "invalid"),
-            ({"mode": "structural", "language": "rust"}, "language"),
+            ({"mode": "context", "limit": 3}, "`limit` applies to mode=search only"),
+            ({"mode": "structural", "language": "python"}, "mode"),
         ]
         for arguments, expected in cases:
             result = await call(served, "oxide_search", query="f($A)", **arguments)

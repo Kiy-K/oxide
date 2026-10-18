@@ -106,7 +106,8 @@ them. Matches come in path order, then source order, at most `limit` (default 10
 most 1000), with `truncated` set when more existed. It is read-only, deterministic, and
 never part of retrieval, ranking or packing.
 
-It needs the optional `structural` extra (`pip install 'oxide[structural]'`, which
+It is a Python API only; the MCP server does not offer it (§ MCP). It needs the
+optional `structural` extra (`pip install 'oxide[structural]'`, which
 pins `ast-grep-py` 0.51.0 and adds ~46 MB); without it the call raises
 `native_unavailable`. ast-grep parses with its own bundled grammars. They are the same
 `tree-sitter-python` 0.25.0 and `tree-sitter-typescript` 0.23.2 OXIDE pins, so
@@ -228,10 +229,24 @@ they never leave an empty store behind.
 (`src/oxide/mcp_server.py`, FastMCP 4.1) is another client of this API: it never
 parses, routes, selects or packs.
 
-| Tool | Arguments (bounds) | Result |
+It serves exactly one tool, `oxide_search`. Its `mode` picks one API operation:
+
+| `mode` | Arguments (bounds) | Result |
 | --- | --- | --- |
-| `oxide_search` | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `SearchResult` as structured content and JSON text: locations, never source |
-| `oxide_context` | `query`, `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `ContextBundle` as structured content; the text is a one-line summary, any degradations, then `payload` |
+| `search` (default) | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and JSON text, locations, never source |
+| `context` | `query`, `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations, then `payload` |
+
+`limit` with `mode="context"` and `budget` with `mode="search"` are `invalid_argument`
+errors, never silently ignored. The output schema is either result type (`anyOf`).
+
+**Migration (2026-10-18, intentional break).** `oxide_context` is gone. Call
+`oxide_search` with `mode="context"`: the arguments, text and structured result are
+the old tool's, byte for byte. A call without `mode` is the old `oxide_search`, with
+the same arguments, defaults and output. Clients that list tools now see one.
+
+Structural search (`Repository.structural_search`) is **not** an MCP mode. In a
+preregistered agent trial, agents given it matched what they already found with grep
+(shape-task F1 0.994 vs 0.978) ([phase-6/structural-mcp-trial](phase-6/structural-mcp-trial/README.md)).
 
 - **Stateless.** Every call opens the repository, reads and closes it, inside a
   `with`; no handle, connection or lock outlives a call, and nothing depends on an
@@ -252,3 +267,7 @@ parses, routes, selects or packs.
   this machine.
 - **No side effects.** Calls open with `create=False`: naming an unindexed
   directory is `not_indexed` and leaves nothing under the data location.
+- **Launch it with the `oxide` command.** `python -m oxide` puts the working
+  directory first on `sys.path`. Started inside a Python checkout, that checkout's
+  top-level packages can shadow OXIDE's dependencies: FastMCP imports `requests`, and
+  inside a checkout of requests it loaded that checkout's package (measured).

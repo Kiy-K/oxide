@@ -7,27 +7,28 @@ and the native binding is not thread-safe. Nothing is indexed or created here: a
 unindexed repository is a ``not_indexed`` tool error and leaves no store behind.
 """
 
+from __future__ import annotations
+
 import dataclasses
 import logging
 import os
 import threading
 from collections.abc import Callable, Sequence
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
 import anyio.from_thread
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
-from fastmcp.tools import Tool, ToolResult
-from fastmcp.tools.tool_transform import ArgTransform
+from fastmcp.tools import ToolResult
 from mcp.types import ToolAnnotations
 from pydantic import Field, TypeAdapter
 
 from oxide.api import Repository, open_repository
-from oxide.models import ContextBundle, OxideError, SearchResult, StructuralResult
+from oxide.models import ContextBundle, OxideError, SearchResult
 
 log = logging.getLogger(__name__)
 
-# Output bounds: entries or matches per call, and units per bundle (the API's are larger).
+# Output bounds: entries per search, and units per bundle (api.MAX_BUDGET is far larger).
 MAX_RESULTS = 100
 MAX_BUDGET = 32_768
 DEFAULT_LIMIT = 20
@@ -71,12 +72,11 @@ Symbols = Annotated[
     tuple[Hint, ...],
     Field(description="Symbol names or dotted suffixes (`Class.method`).", max_length=32),
 ]
-Rule = Annotated[
-    dict[str, Any] | None,
+Mode = Annotated[
+    Literal["search", "context"],
     Field(
-        description="structural: ast-grep rule keys added to the `query` pattern, e.g. "
-        '`{"not": {"inside": {"kind": "try_statement", "stopBy": "end"}}}` '
-        "(inside, has, not, any, all, kind, regex, ...).",
+        description="search: ranked locations, never source (default). context: a "
+        "source bundle within `budget`."
     ),
 ]
 READ_ONLY = ToolAnnotations(read_only_hint=True, open_world_hint=False)
@@ -113,14 +113,6 @@ def _read[T](repository: str, data_dir: str | None, read: Callable[[Repository],
             raise ToolError(f"error[{error.code}]: {advice or 'request failed'}") from None
 
 
-def _structural_installed() -> bool:
-    try:
-        import ast_grep_py  # noqa: F401
-    except ImportError:
-        return False
-    return True
-
-
 def _invalid(message: str) -> ToolError:
     return ToolError(f"error[invalid_argument]: {message}")
 
@@ -129,52 +121,24 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
     """The MCP server; non-empty ``repos`` restricts which repositories calls may name.
 
     One tool, ``oxide_search``, whose ``mode`` picks one API operation: ``search``
-    (``Repository.search``), ``context`` (``build_context``) and, when the optional
-    ``structural`` extra is installed, ``structural`` (``structural_search``).
+    (``Repository.search``) or ``context`` (``build_context``). Structural search stays
+    a Python API: an agent trial found no benefit over grep (docs/phase-6/
+    structural-mcp-trial/).
     """
     resolve = _resolver(repos)
-    structural = _structural_installed()
-    modes: tuple[str, ...] = (
-        ("search", "context", "structural") if structural else ("search", "context")
-    )
-    results: tuple[type, ...] = (SearchResult, ContextBundle, StructuralResult)[: len(modes)]
-    adapters = [TypeAdapter(r).json_schema(ref_template="#/$defs/{model}") for r in results]
-    defs: dict[str, Any] = {}
-    for schema in adapters:
-        defs.update(schema.pop("$defs", {}))
-    output = {"type": "object", "anyOf": adapters, "$defs": defs}
     app = FastMCP(
         "oxide",
         instructions="Structural code context for an indexed repository (`oxide index` "
         "builds the index; this server never indexes). oxide_search finds where something "
-        "is defined (mode=search), builds a budgeted bundle of the relevant source with "
-        "provenance (mode=context)"
-        + (
-            ", or lists every node an ast-grep pattern matches (mode=structural)"
-            if structural
-            else ""
-        )
-        + ".",
+        "is defined (mode=search), or builds a budgeted bundle of the relevant source "
+        "with provenance (mode=context).",
         # Unexpected exceptions reach the client as a generic message, never their text.
         mask_error_details=True,
     )
-    Mode = Annotated[
-        Literal[modes],  # type: ignore[valid-type]
-        Field(
-            description="search: ranked locations (default). context: a source bundle "
-            "within `budget`."
-            + (
-                " structural: every node matching the ast-grep pattern in `query`, in "
-                "path order; needs `language`, and `paths` limits it to those files or "
-                "directories."
-                if structural
-                else ""
-            )
-        ),
-    ]
+    results = TypeAdapter(SearchResult | ContextBundle).json_schema()
+    output = {"type": "object", **results}
 
-    limited = "search and structural" if structural else "search"
-
+    @app.tool(annotations=READ_ONLY, output_schema=output)
     def oxide_search(
         query: Query,
         repository: Repo = None,
@@ -184,7 +148,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             Field(
                 ge=0,
                 le=MAX_RESULTS,
-                description=f"{limited}: at most this many results (default {DEFAULT_LIMIT}).",
+                description=f"search: lexical hits (default {DEFAULT_LIMIT}).",
             ),
         ] = None,
         budget: Annotated[
@@ -197,86 +161,43 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         ] = None,
         paths: Paths = (),
         symbols: Symbols = (),
-        language: Annotated[
-            Literal["python", "typescript"] | None,
-            Field(description="structural: the grammar to match (typescript includes .tsx)."),
-        ] = None,
-        rule: Rule = None,
     ) -> SearchResult | ToolResult:
         """Search an indexed repository. mode=search (default) finds candidate symbols,
         files and modules: hint seeds first, then BM25 rank; locations (path, byte range,
         digest) and symbol metadata, never source text. mode=context builds a bounded,
         source-backed bundle: relevant declarations and their enclosing headers, each
-        under a `### path:first-last` heading, within `budget` units. `paths` and
+        under a `### path:first-last` heading, within `budget` units; the structured
+        result adds omissions, routing, degradations and the snapshot. `paths` and
         `symbols` are hints that seed both."""
         target = resolve(repository)
-        if mode != "context" and budget is not None:
-            raise _invalid("`budget` applies to mode=context only")
-        if mode == "context" and limit is not None:
-            raise _invalid("`limit` applies to mode=search and mode=structural only")
-        if mode != "structural" and (language is not None or rule is not None):
-            raise _invalid("`language` and `rule` apply to mode=structural only")
         if mode == "search":
+            if budget is not None:
+                raise _invalid("`budget` applies to mode=context only")
             count = DEFAULT_LIMIT if limit is None else limit
             return _read(
                 target,
                 data_dir,
                 lambda repo: repo.search(query, limit=count, paths=paths, symbols=symbols),
             )
-        if mode == "context":
-            size = DEFAULT_BUDGET if budget is None else budget
-            bundle = _read(
-                target,
-                data_dir,
-                lambda repo: repo.build_context(query, size, paths=paths, symbols=symbols),
-            )
-            head = (
-                f"# oxide context: {bundle.used}/{bundle.budget} {bundle.units}, "
-                f"{len(bundle.items)} items, {len(bundle.omissions)} omitted, "
-                f"snapshot {bundle.snapshot.snapshot_id}\n"
-            )
-            head += "".join(f"# degraded: {d}\n" for d in bundle.degradations)
-            # The model reads the payload as text; applications get the whole bundle.
-            return ToolResult(
-                content=head + bundle.payload, structured_content=dataclasses.asdict(bundle)
-            )
-        if language is None:
-            raise _invalid("mode=structural needs `language`")
-        if symbols:
-            raise _invalid("`symbols` does not apply to mode=structural")
-        if rule is not None and "pattern" in rule:
-            raise _invalid("`rule` adds to the `query` pattern; it must not set `pattern`")
-        config = {"rule": {"pattern": query, **(rule or {})}}
-        count = DEFAULT_LIMIT if limit is None else limit
-        found = _read(
+        if limit is not None:
+            raise _invalid("`limit` applies to mode=search only")
+        size = DEFAULT_BUDGET if budget is None else budget
+        bundle = _read(
             target,
             data_dir,
-            lambda repo: repo.structural_search(
-                config, language=language, paths=paths, limit=count
-            ),
+            lambda repo: repo.build_context(query, size, paths=paths, symbols=symbols),
         )
-        lines = [
-            f"# oxide structural: {len(found.matches)} matches"
-            + (" (truncated)" if found.truncated else "")
-            + f" in {found.files} {language} files, snapshot {found.snapshot.snapshot_id}"
-        ]
-        lines += [f"# partial (syntax errors): {p}" for p in found.partial]
-        lines += [f"# skipped (not UTF-8): {p}" for p in found.skipped]
-        lines += [
-            f"{m.source.path}:{m.start_line}"
-            + (f"-{m.end_line}" if m.end_line != m.start_line else "")
-            + f": {m.preview.strip()}"
-            for m in found.matches
-        ]
+        head = (
+            f"# oxide context: {bundle.used}/{bundle.budget} {bundle.units}, "
+            f"{len(bundle.items)} items, {len(bundle.omissions)} omitted, "
+            f"snapshot {bundle.snapshot.snapshot_id}\n"
+        )
+        head += "".join(f"# degraded: {d}\n" for d in bundle.degradations)
+        # The model reads the payload as text; applications get the whole bundle.
         return ToolResult(
-            content="\n".join(lines) + "\n", structured_content=dataclasses.asdict(found)
+            content=head + bundle.payload, structured_content=dataclasses.asdict(bundle)
         )
 
-    tool: Tool = Tool.from_function(oxide_search, annotations=READ_ONLY, output_schema=output)
-    if not structural:  # its arguments are not offered either
-        hidden = {name: ArgTransform(hide=True) for name in ("language", "rule")}
-        tool = Tool.from_tool(tool, transform_args=hidden)
-    app.add_tool(tool)
     return app
 
 

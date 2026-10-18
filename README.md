@@ -64,9 +64,11 @@ with oxide.open_repository("path/to/repo") as repo:   # owns the store until clo
 
 ### MCP
 
-`oxide mcp` serves two read-only tools, `oxide_search` and `oxide_context`, over
-stdio (FastMCP). It never indexes: run `oxide index` first, and again whenever you
-want fresher results, even while the server runs.
+`oxide mcp` serves one read-only tool, `oxide_search`, over stdio (FastMCP). Its
+`mode` is `search` (ranked locations, the default) or `context` (a budgeted source
+bundle); `oxide_context` was folded into it on 2026-10-18. It never indexes: run
+`oxide index` first, and again whenever you want fresher results, even while the
+server runs.
 
 ```bash
 uv run oxide mcp --repo path/to/repo                      # stdio, for a local agent
