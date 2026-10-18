@@ -17,12 +17,13 @@ from __future__ import annotations
 
 import os
 import time
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from types import TracebackType
+from typing import Any
 
 from oxide.capture import capture
-from oxide.core import packing, retrieval, routing
+from oxide.core import packing, retrieval, routing, structural
 from oxide.core.indexing import components, derive, dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
@@ -38,6 +39,7 @@ from oxide.models import (
     RouteSummary,
     SearchResult,
     Snapshot,
+    StructuralResult,
 )
 from oxide.storage.ladybug import (
     Store,
@@ -234,6 +236,26 @@ class Repository:
             EntryPoint(entities[e.key], e.rank, e.score, tuple(e.seeds)) for e in found.entries
         )
         return SearchResult(view.snapshot, query, entries, found.lexical, tuple(found.issues))
+
+    def structural_search(
+        self,
+        rule: str | Mapping[str, Any],
+        *,
+        language: str,
+        paths: Iterable[str] = (),
+        limit: int = 100,
+    ) -> StructuralResult:
+        """Nodes of the published snapshot an ast-grep ``rule`` matches: a pattern string
+        or a rule config (``{"rule": ..., "constraints": ...}``). Explicit and read-only;
+        never ranked or packed. Needs the ``structural`` extra."""
+        if language not in structural.GRAMMARS:
+            raise InvalidArgument(f"language must be python or typescript, got {language!r}")
+        if not (isinstance(rule, Mapping) or (isinstance(rule, str) and rule.strip())):
+            raise InvalidArgument(f"rule must be a pattern string or a rule config, got {rule!r}")
+        scope = _texts("paths", paths)
+        return structural.search(
+            self._view(), rule, language, scope, _count("limit", limit, MAX_LIMIT)
+        )
 
     def build_context(
         self,

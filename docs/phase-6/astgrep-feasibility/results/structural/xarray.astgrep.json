@@ -1,0 +1,48 @@
+{
+ "corpus": "xarray",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pydata__xarray@1757dffac2fa",
+ "lang": "python",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "astgrep": 31
+  },
+  "py-bare-except": {
+   "astgrep": 0
+  },
+  "py-isinstance-tuple": {
+   "astgrep": 59
+  },
+  "py-mutable-default": {
+   "astgrep": 5
+  },
+  "py-open-no-encoding": {
+   "astgrep": 29
+  },
+  "py-eq-none": {
+   "astgrep": 0
+  },
+  "py-raise-from-none": {
+   "astgrep": 0
+  },
+  "py-return-in-finally": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 135,
+  "bytes": 2563151,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.005,
+  "decode": 0.001,
+  "astgrep_parse": 0.274,
+  "astgrep_query": 0.249
+ },
+ "peak_rss_mib": 69.6
+}

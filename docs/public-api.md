@@ -36,6 +36,7 @@ once.
 | `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python and TypeScript files whose bytes the current generation parsed reuse their parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
+| `Repository.structural_search(rule, *, language, paths, limit=100)` | `StructuralResult` | Explicit structural search (§ Structural search). Never ranked, packed or used by `search`/`build_context` |
 | `Repository.entity(key)` / `relations(key)` / `files()` | `Entity \| None`, `list[Relation]`, `list[FileInfo]` | Typed graph and coverage inspection |
 | `Repository.snapshot` | `Snapshot` | `repo_id`, `snapshot_id`, `derivation_id` of the published generation |
 | `index_repository(path, *, data_dir=None)` | `IndexReport` | Open, index, close |
@@ -81,6 +82,45 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   that file's module-level source, never `complete`), `payload`, `budget`, `used`,
   `units` (`oxide-units-v1`), `omissions` (stage and reason), `route`
   (`RouteSummary`), `lexical`, `hints`, `degradations`, `versions`.
+- `StructuralResult`: `language`, `matches` (`StructuralMatch`: `source`
+  `SourceRef`, 1-based `start_line`/`end_line`, `entity` the innermost declaration
+  key or None at module level, `preview` the line the match starts on), `truncated`,
+  `files` searched, `partial` (searched files whose index parse had errors, so matches
+  inside them may be missing) and `skipped` (not UTF-8, not searched).
+
+## Structural search
+
+`structural_search` runs one [ast-grep](https://ast-grep.github.io) rule over the
+retained source of the published generation, the same bytes every other result names,
+never the worktree. `rule` is either a pattern string (`"open($$$ARGS)"`) or a rule
+config mapping (`{"rule": {...}, "constraints": {...}, "utils": {...}}`). Rule configs
+add what patterns and grep can't express: `not`, `inside`/`has` with `stopBy`, `kind`,
+`regex` and constraints on metavariables. `language` is `python` or `typescript`; a
+TypeScript rule also runs on `.tsx` with the TSX grammar. `paths` keeps files equal to,
+or under, any given repository path.
+
+It answers code-shape questions OXIDE has no stored fact for: arguments, keyword
+arguments, `except` bodies, a call that isn't inside a `try`, or an `await` inside a
+loop. Callers, implementors, imports and tests are relations; use `relations(key)` for
+them. Matches come in path order, then source order, at most `limit` (default 100, at
+most 1000), with `truncated` set when more existed. It is read-only, deterministic, and
+never part of retrieval, ranking or packing.
+
+It needs the optional `structural` extra (`pip install 'oxide[structural]'`, which
+pins `ast-grep-py` 0.51.0 and adds ~46 MB); without it the call raises
+`native_unavailable`. ast-grep parses with its own bundled grammars. They are the same
+`tree-sitter-python` 0.25.0 and `tree-sitter-typescript` 0.23.2 OXIDE pins, so
+upgrading the extra must re-check that. The binding has no timeout and holds the GIL,
+so `paths` and `limit` are the bounds. ast-grep alone took about 1 s per rule over VS
+Code's 3,902 TypeScript files; through this API, with entity lookups,
+0.35–0.81 s per rule on xarray and vue core (measured). Pattern pitfalls, measured in
+[docs/phase-6/astgrep-feasibility/](phase-6/astgrep-feasibility/README.md):
+
+- a pattern matches the syntax it spells: `new Promise($E)` misses
+  `new Promise<T>(...)`;
+- comments are named nodes: an `except` with a comment before its block isn't "a
+  block first";
+- relational `has` also visits unnamed tokens like `{` and `}`.
 
 ## Arguments
 
@@ -88,6 +128,8 @@ Checked before any query is built. A violation is `InvalidArgument`, which is bo
 an `OxideError` (`invalid_argument`) and a `ValueError`:
 
 - `limit`: an `int` in `[0, 1000]` (`api.MAX_LIMIT`); `0` returns seeds only.
+- `rule`: a non-blank pattern `str` or a mapping that ast-grep accepts for every grammar
+  of `language` (`python`, or `typescript` and `tsx`); `language`: `python` or `typescript`.
 - `budget`: an `int` in `[0, 1048576]` units (`api.MAX_BUDGET`).
 - `query`: a `str`. `paths`, `symbols`, `changed`: iterables of `str`, never a
   bare `str`. `selection`: a `(str, int, int)` tuple with
@@ -107,7 +149,7 @@ an `OxideError` (`invalid_argument`) and a `ValueError`:
 | `store_corrupt` | Damage (below). Reads fail closed |
 | `capture_conflict` | The worktree kept changing during capture, or a `.gitignore` is unreadable |
 | `capture_limit` | More than 1 GiB in scope |
-| `native_unavailable` | LadybugDB's native library cannot load (on Windows: OpenSSL 3 DLLs missing, docs/platforms.md). Nothing is touched |
+| `native_unavailable` | LadybugDB's native library cannot load (on Windows: OpenSSL 3 DLLs missing, docs/platforms.md), or `structural_search` without the `structural` extra. Nothing is touched |
 | `closed` | Use after `close()` |
 
 Damage is classified like this:

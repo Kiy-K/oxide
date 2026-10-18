@@ -1,0 +1,3204 @@
+[
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+  "pattern": "only_relation_agnostic_fields|deconstruction\\[2\\]\\['to'\\]",
+  "paths": [
+   "django/db/migrations/autodetector.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^only_relation_agnostic_fields$"
+     },
+     {
+      "all": [
+       {
+        "kind": "subscript",
+        "has": {
+         "field": "value",
+         "regex": "^deconstruction\\[2\\]$"
+        }
+       },
+       {
+        "has": {
+         "field": "subscript",
+         "regex": "'to'"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "name; subscript deconstruction[2]['to']"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5",
+  "pattern": "Pipeline.*len|len\\(.*pipeline|len\\(.*pipe",
+  "paths": [
+   "sklearn/pipeline.py",
+   "sklearn/pipeline/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^len$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^(?i).*pipe.*$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^len$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "attribute",
+          "has": {
+           "field": "attribute",
+           "regex": "^(?i).*pipe.*$"
+          },
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "len() over a pipeline object"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def _binary_op|keep_attrs|OPTIONS\\[\"keep_attrs\"\\]",
+  "paths": [
+   "xarray/core/dataarray.py",
+   "xarray/core/variable.py",
+   "xarray/core/ops.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^_binary_op$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^keep_attrs$"
+     },
+     {
+      "all": [
+       {
+        "kind": "subscript",
+        "has": {
+         "field": "value",
+         "regex": "^OPTIONS$"
+        }
+       },
+       {
+        "has": {
+         "field": "subscript",
+         "regex": "keep_attrs"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "definition; name; OPTIONS['keep_attrs']"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "def where|where\\s*=|apply_ufunc\\(",
+  "paths": [
+   "xarray/core/computation.py",
+   "xarray/core"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^where$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)where$"
+      }
+     },
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)apply_ufunc$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "definition; where= / where = ; apply_ufunc calls"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs=True",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "keep_attrs=True"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "keep_attrs|OPTIONS\\[.*keep_attrs",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^keep_attrs$"
+     },
+     {
+      "all": [
+       {
+        "kind": "subscript",
+        "has": {
+         "field": "value",
+         "regex": "^OPTIONS$"
+        }
+       },
+       {
+        "has": {
+         "field": "subscript",
+         "regex": "keep_attrs"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "name; OPTIONS[...keep_attrs]"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+  "pattern": "xr.where|where\\(.*attrs|keep_attrs.*where",
+  "paths": [
+   "xarray/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^where$"
+      }
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)where$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^keep_attrs|attrs$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)keep_attrs$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "xr.where; where(..attrs..)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e",
+  "pattern": "MigrationWriter|imports.*sort|sorted\\(.*import|migration.*import",
+  "paths": [
+   "django/db/migrations"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^MigrationWriter$"
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^sorted$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^(?i).*import.*$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)(?i).*import.*$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "name; sorted(imports); imports assignment"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+  "paths": [
+   "sklearn"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^fowlkes_mallows_score$"
+      }
+     },
+     {
+      "pattern": "tk / np.sqrt($$$)"
+     }
+    ]
+   }
+  },
+  "note": "definition; tk / np.sqrt(...)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "fowlkes_mallows_score|tk / np.sqrt",
+  "paths": [
+   "sklearn/metrics/cluster/supervised.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^fowlkes_mallows_score$"
+     },
+     {
+      "pattern": "tk / np.sqrt($$$)"
+     }
+    ]
+   }
+  },
+  "note": "name; tk / np.sqrt(...)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+  "pattern": "sqrt\\(.* / .*\\).*sqrt|np.sqrt\\(.* /",
+  "paths": [
+   "sklearn/metrics"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)sqrt$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "binary_operator",
+          "regex": "/",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "sqrt(a / b): a division inside sqrt"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "_enforce_prediction_order|isinstance\\(predictions, list\\)|estimators_\\[i_label\\]",
+  "paths": [
+   "sklearn/model_selection/_validation.py",
+   "sklearn"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^_enforce_prediction_order$"
+     },
+     {
+      "pattern": "isinstance(predictions, list)"
+     },
+     {
+      "all": [
+       {
+        "kind": "subscript",
+        "has": {
+         "field": "value",
+         "regex": "(^|\\.)estimators_$"
+        }
+       },
+       {
+        "has": {
+         "field": "subscript",
+         "regex": "^i_label$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "name; literal call; subscript"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "estimators_\\[i_label\\]\\.classes_|_enforce_prediction_order",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "pattern": "$E.estimators_[i_label].classes_"
+     },
+     {
+      "kind": "identifier",
+      "regex": "^_enforce_prediction_order$"
+     }
+    ]
+   }
+  },
+  "note": "literal attribute chain; name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "isinstance\\(predictions, list\\)|_enforce_prediction_order",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "pattern": "isinstance(predictions, list)"
+     },
+     {
+      "kind": "identifier",
+      "regex": "^_enforce_prediction_order$"
+     }
+    ]
+   }
+  },
+  "note": "literal call; name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+  "pattern": "predictions = \\[_enforce_prediction_order|isinstance\\(predictions, list\\)",
+  "paths": [
+   "sklearn/model_selection/_validation.py"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "assignment",
+      "all": [
+       {
+        "has": {
+         "field": "left",
+         "regex": "^predictions$"
+        }
+       },
+       {
+        "has": {
+         "field": "right",
+         "regex": "^\\[_enforce_prediction_order"
+        }
+       }
+      ]
+     },
+     {
+      "pattern": "isinstance(predictions, list)"
+     }
+    ]
+   }
+  },
+  "note": "assignment; literal call"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "FutureWarning.*stacklevel|stacklevel=2",
+  "paths": [
+   "astropy"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)warn$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^FutureWarning$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^stacklevel$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^2$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^stacklevel$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^2$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^stacklevel$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^2$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "warn(..FutureWarning..); stacklevel=2"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "deprecated.*FutureWarning|warn.*FutureWarning|since='5\\.1|version='5\\.1|5\\.2",
+  "paths": [
+   "astropy"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)deprecated$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^FutureWarning$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)warn$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^FutureWarning$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^since$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^since$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^since$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^version$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^version$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^version$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "5\\.1"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "string",
+      "regex": "5\\.2"
+     }
+    ]
+   }
+  },
+  "note": "deprecated/warn with FutureWarning; since=/version= '5.1'; '5.2'"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|5\\.1",
+  "paths": [
+   "astropy/__init__.py",
+   "setup.cfg",
+   "pyproject.toml"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)version$"
+      }
+     },
+     {
+      "kind": "string",
+      "regex": "5\\.1"
+     }
+    ]
+   }
+  },
+  "note": "version assignment; '5.1' (non-.py files unseen)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "version =|__version__|5\\.1|5\\.2",
+  "paths": [
+   "astropy/version.py",
+   "setup.cfg",
+   "pyproject.toml",
+   "CHANGES.rst"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)version$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^__version__$"
+     },
+     {
+      "kind": "string",
+      "regex": "5\\.[12]"
+     }
+    ]
+   }
+  },
+  "note": "version assignment; __version__; '5.1'/'5.2'"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings.warn\\(.*FutureWarning|category=FutureWarning",
+  "paths": [
+   "astropy/table",
+   "astropy"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)warn$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^FutureWarning$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "warn(..FutureWarning); category="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+  "pattern": "warnings\\.warn\\(.*FutureWarning|category=FutureWarning",
+  "paths": [
+   "astropy"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)warn$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^FutureWarning$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^category$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^FutureWarning$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "warn(..FutureWarning); category="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "attrs =|keep_attrs",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)attrs$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^keep_attrs$"
+     }
+    ]
+   }
+  },
+  "note": "attrs assignment; name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context=",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)combine_attrs$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^context$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "combine_attrs(..context..); context="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "combine_attrs.*context|context\\[|context=",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)combine_attrs$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^context$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "subscript",
+      "has": {
+       "field": "value",
+       "regex": "^context$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "combine_attrs(..context..); context[...]; context="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context.*coordinate|context=|combine_attrs\\(",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)combine_attrs$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "combine_attrs calls; context="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "context="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "context=.*variable|context=.*coord|context",
+  "paths": [
+   "xarray/core/merge.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^context$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^context$"
+     }
+    ]
+   }
+  },
+  "note": "context= ; name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "keep_attrs.*context|merge_attrs\\(|keep_attrs=",
+  "paths": [
+   "xarray/core/computation.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)merge_attrs$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^keep_attrs$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^keep_attrs$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^keep_attrs$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "merge_attrs calls; keep_attrs="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "merge_attrs\\(|combine_attrs=",
+  "paths": [
+   "xarray/core/merge.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)merge_attrs$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^combine_attrs$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^combine_attrs$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^combine_attrs$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "merge_attrs calls; combine_attrs="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where.*keep_attrs|keep_attrs=True",
+  "paths": [
+   "xarray/tests/test_computation.py",
+   "xarray/tests/test_dataarray.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)where$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^keep_attrs$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^keep_attrs$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "where(..keep_attrs..); keep_attrs=True"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\(.*keep_attrs|keep_attrs=True.*where|where.*attrs",
+  "paths": [
+   "xarray/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)where$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^keep_attrs|attrs$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "where(..keep_attrs/attrs..)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+  "pattern": "where\\s*=|where,",
+  "paths": [
+   "xarray/core/computation.py",
+   "xarray/core/dataarray.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^where$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)where$"
+      }
+     },
+     {
+      "kind": "argument_list",
+      "has": {
+       "kind": "identifier",
+       "regex": "^where$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "where= ; where = ; where as an argument"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "%(distinct)s|template = .*function",
+  "paths": [
+   "django"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "%\\(distinct\\)s"
+     },
+     {
+      "kind": "assignment",
+      "all": [
+       {
+        "has": {
+         "field": "left",
+         "regex": "(^|\\.)template$"
+        }
+       },
+       {
+        "has": {
+         "field": "right",
+         "regex": "function"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "'%(distinct)s'; template = ...function"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(%(distinct|function)|%(distinct)s|class Aggregate",
+  "paths": [
+   "django/db/models"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "COUNT\\(%\\((distinct|function)"
+     },
+     {
+      "kind": "string",
+      "regex": "%\\(distinct\\)s"
+     },
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": "^Aggregate$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "SQL text in strings; class Aggregate"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(DISTINCT|DISTINCT %\\(expressions\\)|distinct=True",
+  "paths": [
+   "tests",
+   "django/db"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "COUNT\\(DISTINCT"
+     },
+     {
+      "kind": "string",
+      "regex": "DISTINCT %\\(expressions\\)"
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "SQL text in strings; distinct=True"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|Count|distinct=True|class Count|def as_sql",
+  "paths": [
+   "django/db/models",
+   "django/db/backends/base"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "COUNT\\("
+     },
+     {
+      "kind": "identifier",
+      "regex": "^Count$"
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": "^Count$"
+      }
+     },
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^as_sql$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "SQL text; name; distinct=True; class; def"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "COUNT\\(|DISTINCT|distinct=True|class Count|as_sql\\(",
+  "paths": [
+   "django/db/models",
+   "django/db/backends/base"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "COUNT\\("
+     },
+     {
+      "kind": "string",
+      "regex": "DISTINCT"
+     },
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^distinct$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^True$"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": "^Count$"
+      }
+     },
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)as_sql$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "SQL text; distinct=True; class; as_sql calls"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "distinct.*CASE|COUNT\\(DISTINCT",
+  "paths": [],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "(?s)distinct.*CASE"
+     },
+     {
+      "kind": "string",
+      "regex": "COUNT\\(DISTINCT"
+     }
+    ]
+   }
+  },
+  "note": "SQL text only"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "extra_context\\['distinct'\\]|DISTINCT ' if",
+  "paths": [
+   "django"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "subscript",
+        "has": {
+         "field": "value",
+         "regex": "(^|\\.)extra_context$"
+        }
+       },
+       {
+        "has": {
+         "field": "subscript",
+         "regex": "'distinct'"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "string",
+      "regex": "DISTINCT ' if"
+     }
+    ]
+   }
+  },
+  "note": "extra_context['distinct']; SQL text"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+  "pattern": "template =|%(distinct)s",
+  "paths": [
+   "django/db/models"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "assignment",
+      "has": {
+       "field": "left",
+       "regex": "(^|\\.)template$"
+      }
+     },
+     {
+      "kind": "string",
+      "regex": "%\\(distinct\\)s"
+     }
+    ]
+   }
+  },
+  "note": "template = ; '%(distinct)s'"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "NotImplemented|except ValueError",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^NotImplemented$"
+     },
+     {
+      "kind": "except_clause",
+      "regex": "^except\\s+ValueError\\b"
+     }
+    ]
+   }
+  },
+  "note": "name; except ValueError"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converter\\(input_\\)|__array_ufunc__",
+  "paths": [
+   "astropy/units/tests/test_quantity.py"
+  ],
+  "flags": [],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^converter$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^input_$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^__array_ufunc__$"
+     }
+    ]
+   }
+  },
+  "note": "converter(input_); name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "converters_and_unit|except UnitConversionError|def converters",
+  "paths": [
+   "astropy/units"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^converters_and_unit$"
+     },
+     {
+      "kind": "except_clause",
+      "regex": "^except\\s+UnitConversionError\\b"
+     },
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^converters"
+      }
+     }
+    ]
+   }
+  },
+  "note": "name; except UnitConversionError; def converters*"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_\\)|arrays.append",
+  "paths": [
+   "astropy/units/quantity.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^__array_ufunc__$"
+      }
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^converter$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^input_$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "call",
+      "has": {
+       "field": "function",
+       "regex": "(^|\\.)arrays\\.append$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "def; converter(input_); arrays.append calls"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def __array_ufunc__|converter\\(input_|_condition_arg|NotImplemented",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^__array_ufunc__$"
+      }
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^converter$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^input_$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^_condition_arg$"
+     },
+     {
+      "kind": "identifier",
+      "regex": "^NotImplemented$"
+     }
+    ]
+   }
+  },
+  "note": "def; converter(input_); names"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|converter\\(input_|def get_converter",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units/core.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^converters_and_unit$"
+      }
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "^converter$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^input_$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^get_converter$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "defs; converter(input_)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+  "pattern": "def converters_and_unit|def get_converter|__array_ufunc__.*NotImplemented|return NotImplemented",
+  "paths": [
+   "astropy/units/quantity.py",
+   "astropy/units"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^converters_and_unit$"
+      }
+     },
+     {
+      "kind": "function_definition",
+      "has": {
+       "field": "name",
+       "regex": "^get_converter$"
+      }
+     },
+     {
+      "kind": "return_statement",
+      "regex": "^return\\s+NotImplemented\\b"
+     },
+     {
+      "kind": "function_definition",
+      "all": [
+       {
+        "has": {
+         "field": "name",
+         "regex": "^__array_ufunc__$"
+        }
+       },
+       {
+        "has": {
+         "stopBy": "end",
+         "kind": "identifier",
+         "regex": "^NotImplemented$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "defs; return NotImplemented; __array_ufunc__ containing NotImplemented"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+  "pattern": "urllib3.*parse_url|parse_url\\(.*auth|get_auth_from_url",
+  "paths": [
+   "HISTORY.md"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)parse_url$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "kind": "identifier",
+          "regex": "^(?i).*auth.*$",
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^get_auth_from_url$"
+     }
+    ]
+   }
+  },
+  "note": "parse_url(..auth..); name (HISTORY.md unseen by AST)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|\\.loc|method=",
+  "paths": [
+   "xarray"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "Invalid fill method"
+     },
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "message string; .loc; method="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "Invalid fill method|class .*Loc|\\.loc|method=",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "string",
+      "regex": "Invalid fill method"
+     },
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": ".*Loc"
+      }
+     },
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "message string; class *Loc; .loc; method="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=",
+  "paths": [
+   "xarray/core",
+   "xarray/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^LocIndexer$"
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": ".loc; name; method="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|LocIndexer|method=|fill method|Invalid fill method",
+  "paths": [
+   "xarray"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^LocIndexer$"
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "string",
+      "regex": "fill method"
+     }
+    ]
+   }
+  },
+  "note": ".loc; name; method= ; message string"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|class .*Loc|method=",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": ".*Loc"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": ".loc; class *Loc; method="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "\\.loc|method=|method\\b",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^method$"
+     }
+    ]
+   }
+  },
+  "note": ".loc; method= ; name"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class .*Loc|\\.loc|method=|method",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": ".*Loc"
+      }
+     },
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "identifier",
+      "regex": "^.*method.*$"
+     }
+    ]
+   }
+  },
+  "note": "class *Loc; .loc; method= ; names containing method"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|LocIndexer|loc\\[",
+  "paths": [
+   "xarray"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": "^_LocIndexer$"
+      }
+     },
+     {
+      "kind": "identifier",
+      "regex": "^.*LocIndexer.*$"
+     },
+     {
+      "kind": "subscript",
+      "has": {
+       "field": "value",
+       "regex": "(^|\\.)loc$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "class; name; .loc[...]"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class _LocIndexer|def __getitem__\\(self, key\\).*",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": "^_LocIndexer$"
+      }
+     },
+     {
+      "kind": "function_definition",
+      "regex": "^def __getitem__\\(self, key\\)"
+     }
+    ]
+   }
+  },
+  "note": "class; def __getitem__(self, key)"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "class.*Loc|\\.loc|method=|method\\)",
+  "paths": [
+   "xarray/core"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "class_definition",
+      "has": {
+       "field": "name",
+       "regex": ".*Loc.*"
+      }
+     },
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     },
+     {
+      "kind": "argument_list",
+      "has": {
+       "kind": "identifier",
+       "regex": "^method$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "class *Loc*; .loc; method= ; method as an argument"
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "method=\"nearest\"|method=",
+  "paths": [
+   "xarray/core/dataset.py"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "any": [
+       {
+        "all": [
+         {
+          "kind": "keyword_argument",
+          "has": {
+           "field": "name",
+           "regex": "^method$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^\"nearest\"$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^method$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^\"nearest\"$"
+          }
+         }
+        ]
+       },
+       {
+        "all": [
+         {
+          "kind": "typed_default_parameter",
+          "has": {
+           "field": "name",
+           "regex": "^method$"
+          }
+         },
+         {
+          "has": {
+           "field": "value",
+           "regex": "^\"nearest\"$"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "any": [
+       {
+        "kind": "keyword_argument",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       },
+       {
+        "kind": "typed_default_parameter",
+        "has": {
+         "field": "name",
+         "regex": "^method$"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "note": "method=\"nearest\"; method="
+ },
+ {
+  "task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+  "pattern": "remap_label_indexers|\\.sel\\(.*method|\\.loc",
+  "paths": [
+   "xarray/tests/test_dataarray.py",
+   "xarray/tests"
+  ],
+  "flags": [
+   "-n"
+  ],
+  "rule": {
+   "rule": {
+    "any": [
+     {
+      "kind": "identifier",
+      "regex": "^remap_label_indexers$"
+     },
+     {
+      "all": [
+       {
+        "kind": "call",
+        "has": {
+         "field": "function",
+         "regex": "(^|\\.)sel$"
+        }
+       },
+       {
+        "has": {
+         "field": "arguments",
+         "has": {
+          "any": [
+           {
+            "kind": "keyword_argument",
+            "has": {
+             "field": "name",
+             "regex": "^method$"
+            }
+           },
+           {
+            "kind": "default_parameter",
+            "has": {
+             "field": "name",
+             "regex": "^method$"
+            }
+           },
+           {
+            "kind": "typed_default_parameter",
+            "has": {
+             "field": "name",
+             "regex": "^method$"
+            }
+           }
+          ],
+          "stopBy": "end"
+         }
+        }
+       }
+      ]
+     },
+     {
+      "kind": "attribute",
+      "has": {
+       "field": "attribute",
+       "regex": "^loc$"
+      }
+     }
+    ]
+   }
+  },
+  "note": "name; .sel(..method=..); .loc"
+ }
+]

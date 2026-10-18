@@ -1,0 +1,48 @@
+{
+ "corpus": "seaborn",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/mwaskom__seaborn@54cab15bdacf",
+ "lang": "python",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 9
+  },
+  "py-bare-except": {
+   "treesitter": 0
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 17
+  },
+  "py-mutable-default": {
+   "treesitter": 11
+  },
+  "py-open-no-encoding": {
+   "treesitter": 15
+  },
+  "py-eq-none": {
+   "treesitter": 0
+  },
+  "py-raise-from-none": {
+   "treesitter": 0
+  },
+  "py-return-in-finally": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 150,
+  "bytes": 1801569,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.005,
+  "decode": 0.0,
+  "treesitter_parse": 0.188,
+  "treesitter_query": 0.394
+ },
+ "peak_rss_mib": 49.7
+}

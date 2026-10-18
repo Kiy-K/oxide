@@ -1,0 +1,256 @@
+{
+ "corpus": "flask",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+ "lang": "python",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 12,
+   "astgrep": 12,
+   "regex": 14,
+   "agree": 12,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 14,
+   "regex_precision": 0.7857142857142857,
+   "regex_recall": 0.9166666666666666,
+   "regex_false_count": 3,
+   "regex_missed_count": 1,
+   "regex_false": [
+    {
+     "path": "tests/test_subclassing.py",
+     "line": 8,
+     "text": "        def log_exception(self, exc_info):"
+    },
+    {
+     "path": "src/flask/scaffold.py",
+     "line": 829,
+     "text": "    except (ImportError, ValueError):"
+    },
+    {
+     "path": "tests/test_helpers.py",
+     "line": 190,
+     "text": "    class MyAborter(werkzeug.exceptions.Aborter):"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "src/flask/config.py",
+     "line": 138,
+     "text": "            except Exception:"
+    }
+   ]
+  },
+  "py-bare-except": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 1,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 1,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/flask/app.py",
+     "line": 2209,
+     "text": "            except:  # noqa: B001"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 8,
+   "astgrep": 8,
+   "regex": 7,
+   "agree": 8,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 7,
+   "regex_precision": 1.0,
+   "regex_recall": 0.875,
+   "regex_false_count": 0,
+   "regex_missed_count": 1,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "src/flask/testing.py",
+     "line": 199,
+     "text": "        if args and isinstance("
+    }
+   ]
+  },
+  "py-mutable-default": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-open-no-encoding": {
+   "treesitter": 6,
+   "astgrep": 6,
+   "regex": 7,
+   "agree": 6,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 7,
+   "regex_precision": 0.8571428571428571,
+   "regex_recall": 1.0,
+   "regex_false_count": 1,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/flask/testing.py",
+     "line": 192,
+     "text": "    def open("
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-eq-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-raise-from-none": {
+   "treesitter": 16,
+   "astgrep": 16,
+   "regex": 5,
+   "agree": 16,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 5,
+   "regex_precision": 1.0,
+   "regex_recall": 0.3125,
+   "regex_false_count": 0,
+   "regex_missed_count": 11,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "src/flask/app.py",
+     "line": 1587,
+     "text": "            raise RuntimeError("
+    },
+    {
+     "path": "src/flask/cli.py",
+     "line": 744,
+     "text": "            raise click.BadParameter("
+    },
+    {
+     "path": "src/flask/cli.py",
+     "line": 223,
+     "text": "            raise NoAppException("
+    },
+    {
+     "path": "src/flask/debughelpers.py",
+     "line": 88,
+     "text": "                raise DebugFilesKeyError(request, key).with_traceback("
+    },
+    {
+     "path": "src/flask/scaffold.py",
+     "line": 745,
+     "text": "                raise ValueError("
+    },
+    {
+     "path": "src/flask/app.py",
+     "line": 1842,
+     "text": "                    raise TypeError("
+    },
+    {
+     "path": "src/flask/signals.py",
+     "line": 29,
+     "text": "            raise RuntimeError("
+    },
+    {
+     "path": "src/flask/cli.py",
+     "line": 457,
+     "text": "        raise click.BadParameter("
+    },
+    {
+     "path": "src/flask/cli.py",
+     "line": 759,
+     "text": "                    raise click.BadParameter("
+    },
+    {
+     "path": "src/flask/cli.py",
+     "line": 146,
+     "text": "            raise NoAppException("
+    }
+   ]
+  },
+  "py-return-in-finally": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  }
+ },
+ "stats": {
+  "files": 80,
+  "bytes": 555846,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.009,
+  "decode": 0.0,
+  "treesitter_parse": 0.049,
+  "treesitter_query": 0.104,
+  "astgrep_parse": 0.057,
+  "astgrep_query": 0.054,
+  "regex": 0.047
+ },
+ "peak_rss_mib": 48.1
+}

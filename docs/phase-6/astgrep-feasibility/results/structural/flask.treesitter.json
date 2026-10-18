@@ -1,0 +1,48 @@
+{
+ "corpus": "flask",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+ "lang": "python",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 12
+  },
+  "py-bare-except": {
+   "treesitter": 0
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 8
+  },
+  "py-mutable-default": {
+   "treesitter": 0
+  },
+  "py-open-no-encoding": {
+   "treesitter": 6
+  },
+  "py-eq-none": {
+   "treesitter": 0
+  },
+  "py-raise-from-none": {
+   "treesitter": 16
+  },
+  "py-return-in-finally": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 80,
+  "bytes": 555846,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.003,
+  "decode": 0.0,
+  "treesitter_parse": 0.046,
+  "treesitter_query": 0.102
+ },
+ "peak_rss_mib": 41.3
+}

@@ -20,6 +20,8 @@ from oxide.models import (
     Skip,
     Snapshot,
     SourceRef,
+    StructuralMatch,
+    StructuralResult,
 )
 
 __all__ = [
@@ -42,6 +44,8 @@ __all__ = [
     "Skip",
     "Snapshot",
     "SourceRef",
+    "StructuralMatch",
+    "StructuralResult",
     "index_repository",
     "open_repository",
 ]

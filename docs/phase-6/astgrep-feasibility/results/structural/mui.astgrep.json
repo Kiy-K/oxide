@@ -1,0 +1,48 @@
+{
+ "corpus": "mui",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/mui__material-ui@03b616a1e015",
+ "lang": "typescript",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "astgrep": 18
+  },
+  "ts-json-parse-unguarded": {
+   "astgrep": 1
+  },
+  "ts-as-any": {
+   "astgrep": 209
+  },
+  "ts-non-null-member": {
+   "astgrep": 92
+  },
+  "ts-await-in-loop": {
+   "astgrep": 2
+  },
+  "ts-async-promise-executor": {
+   "astgrep": 0
+  },
+  "ts-console-log": {
+   "astgrep": 20
+  },
+  "ts-useeffect-empty-deps": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 2905,
+  "bytes": 6555770,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.08,
+  "decode": 0.003,
+  "astgrep_parse": 0.668,
+  "astgrep_query": 0.832
+ },
+ "peak_rss_mib": 70.3
+}

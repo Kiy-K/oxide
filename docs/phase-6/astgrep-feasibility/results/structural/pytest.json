@@ -1,0 +1,297 @@
+{
+ "corpus": "pytest",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pytest-dev__pytest@19ad5889353c",
+ "lang": "python",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 39,
+   "astgrep": 39,
+   "regex": 47,
+   "agree": 39,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 47,
+   "regex_precision": 0.8085106382978723,
+   "regex_recall": 0.9743589743589743,
+   "regex_false_count": 9,
+   "regex_missed_count": 1,
+   "regex_false": [
+    {
+     "path": "testing/code/test_source.py",
+     "line": 241,
+     "text": "                except SomeThing:"
+    },
+    {
+     "path": "testing/code/test_source.py",
+     "line": 264,
+     "text": "            except:"
+    },
+    {
+     "path": "src/_pytest/_code/code.py",
+     "line": 177,
+     "text": "            except KeyError:"
+    },
+    {
+     "path": "testing/code/test_excinfo.py",
+     "line": 135,
+     "text": "                except somenoname:"
+    },
+    {
+     "path": "testing/test_debugging.py",
+     "line": 1147,
+     "text": "            except SystemExit:"
+    },
+    {
+     "path": "testing/test_runner.py",
+     "line": 513,
+     "text": "                except ValueError:"
+    },
+    {
+     "path": "src/_pytest/monkeypatch.py",
+     "line": 313,
+     "text": "                except KeyError:"
+    },
+    {
+     "path": "testing/test_debugging.py",
+     "line": 659,
+     "text": "            except NameError:"
+    },
+    {
+     "path": "testing/python/fixtures.py",
+     "line": 771,
+     "text": "            def test_first(something, excepts):"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "src/_pytest/main.py",
+     "line": 626,
+     "text": "                except StopIteration:"
+    }
+   ]
+  },
+  "py-bare-except": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 2,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 2,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 2,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "testing/code/test_source.py",
+     "line": 264,
+     "text": "            except:"
+    },
+    {
+     "path": "testing/test_unittest.py",
+     "line": 338,
+     "text": "                except:"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 17,
+   "astgrep": 17,
+   "regex": 16,
+   "agree": 17,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 16,
+   "regex_precision": 1.0,
+   "regex_recall": 0.9411764705882353,
+   "regex_false_count": 0,
+   "regex_missed_count": 1,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "src/_pytest/doctest.py",
+     "line": 312,
+     "text": "        if isinstance("
+    }
+   ]
+  },
+  "py-mutable-default": {
+   "treesitter": 1,
+   "astgrep": 1,
+   "regex": 3,
+   "agree": 1,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 3,
+   "regex_precision": 0.3333333333333333,
+   "regex_recall": 1.0,
+   "regex_false_count": 2,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "src/_pytest/nodes.py",
+     "line": 163,
+     "text": "        self._name2pseudofixturedef = {}  # type: Dict[str, FixtureDef]"
+    },
+    {
+     "path": "testing/python/fixtures.py",
+     "line": 2269,
+     "text": "            def dynamic_fixture(calls=[]):"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-open-no-encoding": {
+   "treesitter": 26,
+   "astgrep": 26,
+   "regex": 33,
+   "agree": 26,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 33,
+   "regex_precision": 0.7878787878787878,
+   "regex_recall": 1.0,
+   "regex_false_count": 7,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "testing/test_capture.py",
+     "line": 1430,
+     "text": "                    with open(\"caplog\", \"w\") as f:"
+    },
+    {
+     "path": "doc/en/example/multipython.py",
+     "line": 54,
+     "text": "                f = open({!r}, 'rb')"
+    },
+    {
+     "path": "src/_pytest/config/__init__.py",
+     "line": 322,
+     "text": "                err = open("
+    },
+    {
+     "path": "testing/test_assertrewrite.py",
+     "line": 1075,
+     "text": "                with open(__file__, 'w') as self:"
+    },
+    {
+     "path": "doc/en/example/multipython.py",
+     "line": 38,
+     "text": "                f = open({!r}, 'wb')"
+    },
+    {
+     "path": "testing/test_skipping.py",
+     "line": 428,
+     "text": "                with open('foo_executed', 'w'): pass  # make sure test executes"
+    },
+    {
+     "path": "testing/test_capture.py",
+     "line": 1432,
+     "text": "                    with open(\"capstdout\", \"w\") as f:"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-eq-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-raise-from-none": {
+   "treesitter": 4,
+   "astgrep": 4,
+   "regex": 1,
+   "agree": 4,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 1,
+   "regex_precision": 1.0,
+   "regex_recall": 0.25,
+   "regex_false_count": 0,
+   "regex_missed_count": 3,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "src/_pytest/fixtures.py",
+     "line": 908,
+     "text": "            raise ValueError("
+    },
+    {
+     "path": "src/_pytest/mark/__init__.py",
+     "line": 196,
+     "text": "        raise UsageError("
+    },
+    {
+     "path": "src/_pytest/mark/__init__.py",
+     "line": 241,
+     "text": "        raise UsageError("
+    }
+   ]
+  },
+  "py-return-in-finally": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  }
+ },
+ "stats": {
+  "files": 212,
+  "bytes": 2298272,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.034,
+  "decode": 0.001,
+  "treesitter_parse": 0.188,
+  "treesitter_query": 0.373,
+  "astgrep_parse": 0.248,
+  "astgrep_query": 0.201,
+  "regex": 0.194
+ },
+ "peak_rss_mib": 54.9
+}

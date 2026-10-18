@@ -1,0 +1,292 @@
+{
+ "corpus": "xarray",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pydata__xarray@1757dffac2fa",
+ "lang": "python",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 31,
+   "astgrep": 31,
+   "regex": 32,
+   "agree": 31,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 32,
+   "regex_precision": 0.84375,
+   "regex_recall": 0.8709677419354839,
+   "regex_false_count": 5,
+   "regex_missed_count": 4,
+   "regex_false": [
+    {
+     "path": "xarray/core/computation.py",
+     "line": 136,
+     "text": "        except AttributeError:"
+    },
+    {
+     "path": "versioneer.py",
+     "line": 932,
+     "text": "    except NotThisMethod:"
+    },
+    {
+     "path": "versioneer.py",
+     "line": 938,
+     "text": "    except NotThisMethod:"
+    },
+    {
+     "path": "versioneer.py",
+     "line": 913,
+     "text": "    except NotThisMethod:"
+    },
+    {
+     "path": "versioneer.py",
+     "line": 579,
+     "text": "    except EnvironmentError:"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "xarray/coding/times.py",
+     "line": 316,
+     "text": "    except OutOfBoundsDatetime:"
+    },
+    {
+     "path": "xarray/backends/api.py",
+     "line": 60,
+     "text": "    except ImportError:  # pragma: no cover"
+    },
+    {
+     "path": "xarray/tests/test_duck_array_ops.py",
+     "line": 347,
+     "text": "            except (TypeError, AttributeError, ZeroDivisionError):"
+    },
+    {
+     "path": "xarray/backends/api.py",
+     "line": 55,
+     "text": "    except ImportError:  # pragma: no cover"
+    }
+   ]
+  },
+  "py-bare-except": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 59,
+   "astgrep": 59,
+   "regex": 58,
+   "agree": 59,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 58,
+   "regex_precision": 0.9827586206896551,
+   "regex_recall": 0.9661016949152542,
+   "regex_false_count": 1,
+   "regex_missed_count": 2,
+   "regex_false": [
+    {
+     "path": "xarray/core/utils.py",
+     "line": 233,
+     "text": "        isinstance(value, (Iterable, ) + dask_array_type))"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "xarray/tests/test_indexing.py",
+     "line": 223,
+     "text": "                assert isinstance("
+    },
+    {
+     "path": "xarray/tests/test_indexing.py",
+     "line": 244,
+     "text": "                assert isinstance(actual._data,"
+    }
+   ]
+  },
+  "py-mutable-default": {
+   "treesitter": 5,
+   "astgrep": 5,
+   "regex": 2,
+   "agree": 5,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 2,
+   "regex_precision": 0.5,
+   "regex_recall": 0.4,
+   "regex_false_count": 1,
+   "regex_missed_count": 3,
+   "regex_false": [
+    {
+     "path": "xarray/plot/facetgrid.py",
+     "line": 370,
+     "text": "    def set_titles(self, template=\"{coord} = {value}\", maxchar=30,"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "xarray/core/groupby.py",
+     "line": 200,
+     "text": "                 restore_coord_dims=None, cut_kwargs={}):"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 3330,
+     "text": "                       transform_args=[5000, 80000, 1000, 2000.],"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 3331,
+     "text": "                       crs={'units': 'm', 'no_defs': True, 'ellps': 'WGS84',"
+    }
+   ]
+  },
+  "py-open-no-encoding": {
+   "treesitter": 29,
+   "astgrep": 29,
+   "regex": 37,
+   "agree": 29,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 37,
+   "regex_precision": 0.7837837837837838,
+   "regex_recall": 1.0,
+   "regex_false_count": 8,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "xarray/backends/netCDF4_.py",
+     "line": 300,
+     "text": "    def open(cls, filename, mode='r', format='NETCDF4', group=None,"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 216,
+     "text": "    def open(self, path, **kwargs):"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 3066,
+     "text": "    def open(self, path, **kwargs):"
+    },
+    {
+     "path": "versioneer.py",
+     "line": 564,
+     "text": "        f = open(versionfile_abs, \"r\")"
+    },
+    {
+     "path": "xarray/backends/pseudonetcdf_.py",
+     "line": 44,
+     "text": "    def open(cls, filename, lock=None, mode=None, **format_kwargs):"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 1404,
+     "text": "    def open(self, store_target, **kwargs):"
+    },
+    {
+     "path": "xarray/tests/test_backends.py",
+     "line": 3117,
+     "text": "    def open(self, path, **kwargs):"
+    },
+    {
+     "path": "xarray/backends/pydap_.py",
+     "line": 71,
+     "text": "    def open(cls, url, session=None):"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-eq-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-raise-from-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-return-in-finally": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  }
+ },
+ "stats": {
+  "files": 135,
+  "bytes": 2563151,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.027,
+  "decode": 0.001,
+  "treesitter_parse": 0.262,
+  "treesitter_query": 0.541,
+  "astgrep_parse": 0.286,
+  "astgrep_query": 0.268,
+  "regex": 0.212
+ },
+ "peak_rss_mib": 79.3
+}

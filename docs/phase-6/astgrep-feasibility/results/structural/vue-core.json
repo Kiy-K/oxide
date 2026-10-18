@@ -1,0 +1,307 @@
+{
+ "corpus": "vue-core",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/vuejs__core@0275dd329d24",
+ "lang": "typescript",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "treesitter": 12,
+   "astgrep": 12,
+   "regex": 11,
+   "agree": 12,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 11,
+   "regex_precision": 0.9090909090909091,
+   "regex_recall": 0.8333333333333334,
+   "regex_false_count": 1,
+   "regex_missed_count": 2,
+   "regex_false": [
+    {
+     "path": "packages/compiler-core/src/babelUtils.ts",
+     "line": 378,
+     "text": "    // no: try {} catch (NODE) {}"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "packages/compiler-sfc/src/script/resolveType.ts",
+     "line": 1634,
+     "text": "  } catch (e) {"
+    },
+    {
+     "path": "packages/runtime-core/__tests__/apiSetupHelpers.spec.ts",
+     "line": 794,
+     "text": "          } catch (e: any) {"
+    }
+   ]
+  },
+  "ts-json-parse-unguarded": {
+   "treesitter": 1,
+   "astgrep": 1,
+   "regex": 3,
+   "agree": 1,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 3,
+   "regex_precision": 0.3333333333333333,
+   "regex_recall": 1.0,
+   "regex_false_count": 2,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/compiler-sfc/src/style/preprocessors.ts",
+     "line": 41,
+     "text": "        map: merge(map, JSON.parse(result.map.toString())),"
+    },
+    {
+     "path": "packages/template-explorer/src/index.ts",
+     "line": 54,
+     "text": "    persistedState = JSON.parse("
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-as-any": {
+   "treesitter": 431,
+   "astgrep": 431,
+   "regex": 434,
+   "agree": 431,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 434,
+   "regex_precision": 0.9815668202764977,
+   "regex_recall": 1.0,
+   "regex_false_count": 8,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/vue-compat/__tests__/instance.spec.ts",
+     "line": 64,
+     "text": "      spy.apply(this, arguments as unknown as any[])"
+    },
+    {
+     "path": "packages/compiler-sfc/src/index.ts",
+     "line": 30,
+     "text": "// technically internal but we want it in @vue/repl, cast it as any to avoid"
+    },
+    {
+     "path": "packages/vue-compat/__tests__/instance.spec.ts",
+     "line": 77,
+     "text": "      spy.apply(this, arguments as unknown as any[])"
+    },
+    {
+     "path": "packages/runtime-core/src/compat/renderFn.ts",
+     "line": 273,
+     "text": "      const slot = slots[slotName] || (slots[slotName] = [] as any[])"
+    },
+    {
+     "path": "packages/compiler-sfc/src/compileScript.ts",
+     "line": 745,
+     "text": "    // mark as any and only cast on assignment"
+    },
+    {
+     "path": "packages/runtime-core/src/apiWatch.ts",
+     "line": 352,
+     "text": "          ? (newValue as any[]).some((v, i) => hasChanged(v, oldValue[i]))"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/defineProps.spec.ts",
+     "line": 325,
+     "text": "      defineProps(['foo'])! as any"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/defineOptions.spec.ts",
+     "line": 100,
+     "text": "      defineOptions({ props: [] } as any)"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-non-null-member": {
+   "treesitter": 460,
+   "astgrep": 460,
+   "regex": 419,
+   "agree": 460,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 419,
+   "regex_precision": 1.0,
+   "regex_recall": 0.9934782608695653,
+   "regex_false_count": 0,
+   "regex_missed_count": 2,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+     "line": 1292,
+     "text": "          return document"
+    },
+    {
+     "path": "packages/vue/__tests__/e2e/Transition.spec.ts",
+     "line": 1043,
+     "text": "              return document"
+    }
+   ]
+  },
+  "ts-await-in-loop": {
+   "treesitter": 12,
+   "astgrep": 12,
+   "agree": 12,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  },
+  "ts-async-promise-executor": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "ts-console-log": {
+   "treesitter": 9,
+   "astgrep": 9,
+   "regex": 40,
+   "agree": 9,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 40,
+   "regex_precision": 0.225,
+   "regex_recall": 1.0,
+   "regex_false_count": 31,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/reactivity/src/reactive.ts",
+     "line": 176,
+     "text": " *   console.log(copy.count)"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+     "line": 57,
+     "text": "        console.log(bar)"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+     "line": 273,
+     "text": "    console.log(foo)"
+    },
+    {
+     "path": "packages/compiler-dom/__tests__/transforms/ignoreSideEffectTags.spec.ts",
+     "line": 6,
+     "text": "    const { code } = compile(`<script>console.log(1)</script>`, {"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+     "line": 63,
+     "text": "    expect(content).toMatch(`console.log(__props.bar)`)"
+    },
+    {
+     "path": "packages/compiler-core/src/parser.ts",
+     "line": 456,
+     "text": "          // console.log(tokenizer.state)"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+     "line": 18,
+     "text": "      console.log(foo)"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/parse.spec.ts",
+     "line": 416,
+     "text": "          `<script setup>console.log(1)</script><script>console.log(1)</script>`,"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/compileScript/definePropsDestructure.spec.ts",
+     "line": 278,
+     "text": "    expect(content).toMatch(`console.log(__props.foo)`)"
+    },
+    {
+     "path": "packages/compiler-sfc/__tests__/parse.spec.ts",
+     "line": 398,
+     "text": "        parse(`<script>console.log(1)</script><script>console.log(1)</script>`)"
+    }
+   ],
+   "regex_missed": []
+  },
+  "ts-useeffect-empty-deps": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 2,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 2,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 2,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "packages/dts-test/h.test-d.ts",
+     "line": 259,
+     "text": "  h(sampleComponent, {}, [])"
+    },
+    {
+     "path": "packages/runtime-core/src/h.ts",
+     "line": 45,
+     "text": "h('div', {}, []) // array"
+    }
+   ],
+   "regex_missed": []
+  }
+ },
+ "stats": {
+  "files": 464,
+  "bytes": 3425891,
+  "invalid_utf8": 0,
+  "error_trees": 2,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.056,
+  "decode": 0.001,
+  "treesitter_parse": 0.359,
+  "treesitter_query": 0.796,
+  "astgrep_parse": 0.395,
+  "astgrep_query": 0.41,
+  "regex": 0.227
+ },
+ "peak_rss_mib": 60.7
+}

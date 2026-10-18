@@ -1,0 +1,610 @@
+[
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+"pattern": "only_relation_agnostic_fields|deconstruction\\[2\\]\\['to'\\]",
+"paths": [
+"django/db/migrations/autodetector.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__17aff6c5",
+"pattern": "Pipeline.*len|len\\(.*pipeline|len\\(.*pipe",
+"paths": [
+"sklearn/pipeline.py",
+"sklearn/pipeline/tests"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+"pattern": "def _binary_op|keep_attrs|OPTIONS\\[\"keep_attrs\"\\]",
+"paths": [
+"xarray/core/dataarray.py",
+"xarray/core/variable.py",
+"xarray/core/ops.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+"pattern": "def where|where\\s*=|apply_ufunc\\(",
+"paths": [
+"xarray/core/computation.py",
+"xarray/core"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+"pattern": "keep_attrs=True",
+"paths": [
+"xarray/core/computation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+"pattern": "keep_attrs|OPTIONS\\[.*keep_attrs",
+"paths": [
+"xarray/core/computation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__2607643c",
+"pattern": "xr.where|where\\(.*attrs|keep_attrs.*where",
+"paths": [
+"xarray/tests"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__4cac510e",
+"pattern": "MigrationWriter|imports.*sort|sorted\\(.*import|migration.*import",
+"paths": [
+"django/db/migrations"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+"pattern": "def fowlkes_mallows_score|tk / np.sqrt",
+"paths": [
+"sklearn"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+"pattern": "fowlkes_mallows_score|tk / np.sqrt",
+"paths": [
+"sklearn/metrics/cluster/supervised.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__4f130690",
+"pattern": "sqrt\\(.* / .*\\).*sqrt|np.sqrt\\(.* /",
+"paths": [
+"sklearn/metrics"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+"pattern": "_enforce_prediction_order|isinstance\\(predictions, list\\)|estimators_\\[i_label\\]",
+"paths": [
+"sklearn/model_selection/_validation.py",
+"sklearn"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+"pattern": "estimators_\\[i_label\\]\\.classes_|_enforce_prediction_order",
+"paths": [
+"sklearn/model_selection/_validation.py"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+"pattern": "isinstance\\(predictions, list\\)|_enforce_prediction_order",
+"paths": [
+"sklearn/model_selection/_validation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__512ce46c",
+"pattern": "predictions = \\[_enforce_prediction_order|isinstance\\(predictions, list\\)",
+"paths": [
+"sklearn/model_selection/_validation.py"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "FutureWarning.*stacklevel|stacklevel=2",
+"paths": [
+"astropy"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "deprecated.*FutureWarning|warn.*FutureWarning|since='5\\.1|version='5\\.1|5\\.2",
+"paths": [
+"astropy"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "version =|5\\.1",
+"paths": [
+"astropy/__init__.py",
+"setup.cfg",
+"pyproject.toml"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "version =|__version__|5\\.1|5\\.2",
+"paths": [
+"astropy/version.py",
+"setup.cfg",
+"pyproject.toml",
+"CHANGES.rst"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "warnings.warn\\(.*FutureWarning|category=FutureWarning",
+"paths": [
+"astropy/table",
+"astropy"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__6ed8d38b",
+"pattern": "warnings\\.warn\\(.*FutureWarning|category=FutureWarning",
+"paths": [
+"astropy"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "attrs =|keep_attrs",
+"paths": [
+"xarray/core/computation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "combine_attrs.*context|context=",
+"paths": [
+"xarray/core/computation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "combine_attrs.*context|context\\[|context=",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "context.*coordinate|context=|combine_attrs\\(",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "context=",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "context=.*variable|context=.*coord|context",
+"paths": [
+"xarray/core/merge.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "keep_attrs.*context|merge_attrs\\(|keep_attrs=",
+"paths": [
+"xarray/core/computation.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "merge_attrs\\(|combine_attrs=",
+"paths": [
+"xarray/core/merge.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "where.*keep_attrs|keep_attrs=True",
+"paths": [
+"xarray/tests/test_computation.py",
+"xarray/tests/test_dataarray.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "where\\(.*keep_attrs|keep_attrs=True.*where|where.*attrs",
+"paths": [
+"xarray/tests"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__88c1fd27",
+"pattern": "where\\s*=|where,",
+"paths": [
+"xarray/core/computation.py",
+"xarray/core/dataarray.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "%(distinct)s|template = .*function",
+"paths": [
+"django"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "COUNT\\(%(distinct|function)|%(distinct)s|class Aggregate",
+"paths": [
+"django/db/models"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "COUNT\\(DISTINCT|DISTINCT %\\(expressions\\)|distinct=True",
+"paths": [
+"tests",
+"django/db"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "COUNT\\(|Count|distinct=True|class Count|def as_sql",
+"paths": [
+"django/db/models",
+"django/db/backends/base"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "COUNT\\(|DISTINCT|distinct=True|class Count|as_sql\\(",
+"paths": [
+"django/db/models",
+"django/db/backends/base"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "distinct.*CASE|COUNT\\(DISTINCT",
+"paths": [],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "extra_context\\['distinct'\\]|DISTINCT ' if",
+"paths": [
+"django"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__93721db4",
+"pattern": "template =|%(distinct)s",
+"paths": [
+"django/db/models"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "NotImplemented|except ValueError",
+"paths": [
+"astropy/units/quantity.py",
+"astropy/units/tests"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "converter\\(input_\\)|__array_ufunc__",
+"paths": [
+"astropy/units/tests/test_quantity.py"
+],
+"flags": []
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "converters_and_unit|except UnitConversionError|def converters",
+"paths": [
+"astropy/units"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "def __array_ufunc__|converter\\(input_\\)|arrays.append",
+"paths": [
+"astropy/units/quantity.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "def __array_ufunc__|converter\\(input_|_condition_arg|NotImplemented",
+"paths": [
+"astropy/units/quantity.py",
+"astropy/units"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "def converters_and_unit|converter\\(input_|def get_converter",
+"paths": [
+"astropy/units/quantity.py",
+"astropy/units/core.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__bfcf7192",
+"pattern": "def converters_and_unit|def get_converter|__array_ufunc__.*NotImplemented|return NotImplemented",
+"paths": [
+"astropy/units/quantity.py",
+"astropy/units"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__e989ba2d",
+"pattern": "urllib3.*parse_url|parse_url\\(.*auth|get_auth_from_url",
+"paths": [
+"HISTORY.md"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "Invalid fill method|\\.loc|method=",
+"paths": [
+"xarray"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "Invalid fill method|class .*Loc|\\.loc|method=",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "\\.loc|LocIndexer|method=",
+"paths": [
+"xarray/core",
+"xarray/tests"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "\\.loc|LocIndexer|method=|fill method|Invalid fill method",
+"paths": [
+"xarray"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "\\.loc|class .*Loc|method=",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "\\.loc|method=|method\\b",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "class .*Loc|\\.loc|method=|method",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "class _LocIndexer|LocIndexer|loc\\[",
+"paths": [
+"xarray"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "class _LocIndexer|def __getitem__\\(self, key\\).*",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "class.*Loc|\\.loc|method=|method\\)",
+"paths": [
+"xarray/core"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "method=\"nearest\"|method=",
+"paths": [
+"xarray/core/dataset.py"
+],
+"flags": [
+"-n"
+]
+},
+{
+"task": "SWE-Bench-Verified__python__maintenance__bugfix__ec975b6c",
+"pattern": "remap_label_indexers|\\.sel\\(.*method|\\.loc",
+"paths": [
+"xarray/tests/test_dataarray.py",
+"xarray/tests"
+],
+"flags": [
+"-n"
+]
+}
+]

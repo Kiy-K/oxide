@@ -1,0 +1,27 @@
+{
+ "corpus": "darkreader",
+ "files": 210,
+ "counts": {
+  "astgrep:garbage:error_trees": 195,
+  "astgrep:garbage:prefix_lost": 0,
+  "astgrep:garbage:prefix_matches": 15,
+  "astgrep:truncate:error_trees": 203,
+  "astgrep:truncate:prefix_lost": 0,
+  "astgrep:truncate:prefix_matches": 15,
+  "astgrep:unclosed:error_trees": 193,
+  "astgrep:unclosed:prefix_lost": 0,
+  "astgrep:unclosed:prefix_matches": 16,
+  "astgrep:variants": 622,
+  "treesitter:garbage:error_trees": 195,
+  "treesitter:garbage:prefix_lost": 0,
+  "treesitter:garbage:prefix_matches": 16,
+  "treesitter:truncate:error_trees": 203,
+  "treesitter:truncate:prefix_lost": 0,
+  "treesitter:truncate:prefix_matches": 16,
+  "treesitter:unclosed:error_trees": 193,
+  "treesitter:unclosed:prefix_lost": 0,
+  "treesitter:unclosed:prefix_matches": 17,
+  "treesitter:variants": 622
+ },
+ "examples": []
+}

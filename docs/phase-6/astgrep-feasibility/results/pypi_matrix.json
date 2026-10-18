@@ -1,0 +1,74 @@
+{
+ "ast-grep-py": {
+  "version": "0.51.0",
+  "license": "MIT",
+  "wheels": 29,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 5661051,
+  "sdist": true
+ },
+ "tree-sitter": {
+  "version": "0.26.0",
+  "license": null,
+  "wheels": 40,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 667487,
+  "sdist": true
+ },
+ "tree-sitter-python": {
+  "version": "0.25.0",
+  "license": "MIT",
+  "wheels": 8,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 108133,
+  "sdist": true
+ },
+ "tree-sitter-typescript": {
+  "version": "0.23.2",
+  "license": "MIT",
+  "wheels": 7,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 344960,
+  "sdist": true
+ },
+ "tree-sitter-javascript": {
+  "version": "0.25.0",
+  "license": "MIT",
+  "wheels": 8,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 99728,
+  "sdist": true
+ },
+ "tree-sitter-java": {
+  "version": "0.23.5",
+  "license": "MIT",
+  "wheels": 7,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 84033,
+  "sdist": true
+ },
+ "tree-sitter-go": {
+  "version": "0.25.0",
+  "license": "MIT",
+  "wheels": 8,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 66418,
+  "sdist": true
+ },
+ "tree-sitter-c": {
+  "version": "0.24.2",
+  "license": "MIT",
+  "wheels": 8,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 94264,
+  "sdist": true
+ },
+ "tree-sitter-cpp": {
+  "version": "0.23.4",
+  "license": "MIT",
+  "wheels": 7,
+  "missing_targets": [],
+  "linux_x86_64_cp312_wheel_bytes": 316110,
+  "sdist": true
+ }
+}

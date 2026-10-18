@@ -1,0 +1,48 @@
+{
+ "corpus": "flask",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+ "lang": "python",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "astgrep": 12
+  },
+  "py-bare-except": {
+   "astgrep": 0
+  },
+  "py-isinstance-tuple": {
+   "astgrep": 8
+  },
+  "py-mutable-default": {
+   "astgrep": 0
+  },
+  "py-open-no-encoding": {
+   "astgrep": 6
+  },
+  "py-eq-none": {
+   "astgrep": 0
+  },
+  "py-raise-from-none": {
+   "astgrep": 16
+  },
+  "py-return-in-finally": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 80,
+  "bytes": 555846,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.003,
+  "decode": 0.0,
+  "astgrep_parse": 0.055,
+  "astgrep_query": 0.052
+ },
+ "peak_rss_mib": 44.3
+}

@@ -158,6 +158,33 @@ class SearchResult:
 
 
 @dataclass(frozen=True, slots=True)
+class StructuralMatch:
+    """One node a structural rule matched: its exact source, 1-based lines, the innermost
+    declaration containing it (None at module level) and the line it starts on."""
+
+    source: SourceRef
+    start_line: int
+    end_line: int
+    entity: str | None
+    preview: str
+
+
+@dataclass(frozen=True, slots=True)
+class StructuralResult:
+    """Explicit structural matches in path then source order; never ranked or packed.
+    ``partial`` files have syntax errors (matches inside them may be missing);
+    ``skipped`` files are not UTF-8 and were not searched."""
+
+    snapshot: Snapshot
+    language: str
+    matches: tuple[StructuralMatch, ...]
+    truncated: bool
+    files: int
+    partial: tuple[str, ...]
+    skipped: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class ItemEntity:
     key: str
     name: str

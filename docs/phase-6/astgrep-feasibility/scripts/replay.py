@@ -64,7 +64,8 @@ def rg(root: Path, pattern: str, flags: list[str], paths: list[str]) -> list[tup
 def code_files(root: Path, paths: list[str]) -> list[str]:
     args = ["rg", "--files", "-t", "py", "--", *(paths or ["."])]
     done = subprocess.run(args, cwd=root, capture_output=True, text=True)
-    return [str(Path(p)) for p in done.stdout.splitlines()]
+    # rg lists explicitly named files whatever their type (deviation fix, see README)
+    return [str(Path(p)) for p in done.stdout.splitlines() if p.endswith(".py")]
 
 
 def main() -> None:

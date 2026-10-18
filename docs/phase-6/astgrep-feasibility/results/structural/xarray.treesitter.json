@@ -1,0 +1,48 @@
+{
+ "corpus": "xarray",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pydata__xarray@1757dffac2fa",
+ "lang": "python",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 31
+  },
+  "py-bare-except": {
+   "treesitter": 0
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 59
+  },
+  "py-mutable-default": {
+   "treesitter": 5
+  },
+  "py-open-no-encoding": {
+   "treesitter": 29
+  },
+  "py-eq-none": {
+   "treesitter": 0
+  },
+  "py-raise-from-none": {
+   "treesitter": 0
+  },
+  "py-return-in-finally": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 135,
+  "bytes": 2563151,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.005,
+  "decode": 0.0,
+  "treesitter_parse": 0.251,
+  "treesitter_query": 0.516
+ },
+ "peak_rss_mib": 60.5
+}

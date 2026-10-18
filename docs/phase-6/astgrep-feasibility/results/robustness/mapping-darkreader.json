@@ -1,0 +1,14 @@
+{
+ "corpus": "darkreader",
+ "counts": {
+  "matches": 32,
+  "module_level": 12,
+  "symbol": 20
+ },
+ "innermost_kinds": {
+  "method": 5,
+  "function": 10,
+  "class": 1,
+  "variable": 4
+ }
+}

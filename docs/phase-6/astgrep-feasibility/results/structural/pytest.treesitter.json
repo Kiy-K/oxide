@@ -1,0 +1,48 @@
+{
+ "corpus": "pytest",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/pytest-dev__pytest@19ad5889353c",
+ "lang": "python",
+ "arms": [
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 39
+  },
+  "py-bare-except": {
+   "treesitter": 0
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 17
+  },
+  "py-mutable-default": {
+   "treesitter": 1
+  },
+  "py-open-no-encoding": {
+   "treesitter": 26
+  },
+  "py-eq-none": {
+   "treesitter": 0
+  },
+  "py-raise-from-none": {
+   "treesitter": 4
+  },
+  "py-return-in-finally": {
+   "treesitter": 0
+  }
+ },
+ "stats": {
+  "files": 212,
+  "bytes": 2298272,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.008,
+  "decode": 0.001,
+  "treesitter_parse": 0.18,
+  "treesitter_query": 0.367
+ },
+ "peak_rss_mib": 45.9
+}

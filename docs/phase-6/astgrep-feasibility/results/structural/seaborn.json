@@ -1,0 +1,224 @@
+{
+ "corpus": "seaborn",
+ "root": "/home/khoi/.cache/oxide/contextbench/corpora/mwaskom__seaborn@54cab15bdacf",
+ "lang": "python",
+ "arms": [
+  "astgrep",
+  "regex",
+  "treesitter"
+ ],
+ "queries": {
+  "py-except-pass": {
+   "treesitter": 9,
+   "astgrep": 9,
+   "regex": 8,
+   "agree": 9,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 8,
+   "regex_precision": 0.875,
+   "regex_recall": 0.7777777777777778,
+   "regex_false_count": 1,
+   "regex_missed_count": 2,
+   "regex_false": [
+    {
+     "path": "seaborn/external/docscrape.py",
+     "line": 686,
+     "text": "                        except AttributeError:"
+    }
+   ],
+   "regex_missed": [
+    {
+     "path": "seaborn/_core/subplots.py",
+     "line": 164,
+     "text": "                except AttributeError:  # SubFigure added in mpl 3.4"
+    },
+    {
+     "path": "seaborn/_core/plot.py",
+     "line": 887,
+     "text": "        except TypeError:"
+    }
+   ]
+  },
+  "py-bare-except": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 2,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 2,
+   "regex_precision": 0.0,
+   "regex_recall": null,
+   "regex_false_count": 2,
+   "regex_missed_count": 0,
+   "regex_false": [
+    {
+     "path": "tests/test_rcmod.py",
+     "line": 26,
+     "text": "    except:  # noqa"
+    },
+    {
+     "path": "tests/test_rcmod.py",
+     "line": 18,
+     "text": "    except:  # noqa"
+    }
+   ],
+   "regex_missed": []
+  },
+  "py-isinstance-tuple": {
+   "treesitter": 17,
+   "astgrep": 17,
+   "regex": 17,
+   "agree": 17,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 17,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-mutable-default": {
+   "treesitter": 11,
+   "astgrep": 11,
+   "regex": 5,
+   "agree": 11,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 5,
+   "regex_precision": 1.0,
+   "regex_recall": 0.45454545454545453,
+   "regex_false_count": 0,
+   "regex_missed_count": 6,
+   "regex_false": [],
+   "regex_missed": [
+    {
+     "path": "seaborn/categorical.py",
+     "line": 59,
+     "text": "        variables={},"
+    },
+    {
+     "path": "seaborn/categorical.py",
+     "line": 1842,
+     "text": "                color=[255. / 256., 185. / 256., 0.],"
+    },
+    {
+     "path": "seaborn/external/docscrape.py",
+     "line": 639,
+     "text": "                 config={}):"
+    },
+    {
+     "path": "seaborn/distributions.py",
+     "line": 110,
+     "text": "        variables={},"
+    },
+    {
+     "path": "seaborn/widgets.py",
+     "line": 357,
+     "text": "        center=[\"light\", \"dark\"]"
+    },
+    {
+     "path": "seaborn/relational.py",
+     "line": 353,
+     "text": "        data=None, variables={},"
+    }
+   ]
+  },
+  "py-open-no-encoding": {
+   "treesitter": 15,
+   "astgrep": 15,
+   "regex": 15,
+   "agree": 15,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 15,
+   "regex_precision": 1.0,
+   "regex_recall": 1.0,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-eq-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-raise-from-none": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "regex": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": [],
+   "regex_hits": 0,
+   "regex_precision": null,
+   "regex_recall": null,
+   "regex_false_count": 0,
+   "regex_missed_count": 0,
+   "regex_false": [],
+   "regex_missed": []
+  },
+  "py-return-in-finally": {
+   "treesitter": 0,
+   "astgrep": 0,
+   "agree": 0,
+   "jaccard": 1.0,
+   "astgrep_only_count": 0,
+   "treesitter_only_count": 0,
+   "astgrep_only": [],
+   "treesitter_only": []
+  }
+ },
+ "stats": {
+  "files": 150,
+  "bytes": 1801569,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.019,
+  "decode": 0.0,
+  "treesitter_parse": 0.196,
+  "treesitter_query": 0.403,
+  "astgrep_parse": 0.204,
+  "astgrep_query": 0.203,
+  "regex": 0.15
+ },
+ "peak_rss_mib": 58.9
+}

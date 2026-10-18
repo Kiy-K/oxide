@@ -1,0 +1,48 @@
+{
+ "corpus": "vscode",
+ "root": "/home/khoi/.cache/oxide/contextbench-ts/corpora-v2/microsoft__vscode@1a599e2d1792",
+ "lang": "typescript",
+ "arms": [
+  "astgrep"
+ ],
+ "queries": {
+  "ts-empty-catch": {
+   "astgrep": 355
+  },
+  "ts-json-parse-unguarded": {
+   "astgrep": 248
+  },
+  "ts-as-any": {
+   "astgrep": 351
+  },
+  "ts-non-null-member": {
+   "astgrep": 2821
+  },
+  "ts-await-in-loop": {
+   "astgrep": 592
+  },
+  "ts-async-promise-executor": {
+   "astgrep": 0
+  },
+  "ts-console-log": {
+   "astgrep": 270
+  },
+  "ts-useeffect-empty-deps": {
+   "astgrep": 0
+  }
+ },
+ "stats": {
+  "files": 3902,
+  "bytes": 41469080,
+  "invalid_utf8": 0,
+  "error_trees": 0,
+  "astgrep_errors": 0
+ },
+ "seconds": {
+  "capture": 0.154,
+  "decode": 0.01,
+  "astgrep_parse": 4.033,
+  "astgrep_query": 4.204
+ },
+ "peak_rss_mib": 200.2
+}
