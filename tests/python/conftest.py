@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from oxide.storage.ladybug import default_data_dir, fts_location, fts_unavailable
+from oxide.storage.ladybug import _fts_build, default_data_dir, fts_location, fts_unavailable
 
 REPO = Path(__file__).resolve().parents[2]
 FIXTURE = REPO / "fixtures" / "py_repo"
@@ -49,6 +49,8 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 @pytest.fixture
 def fts() -> Path:
+    if _fts_build() is None:
+        pytest.skip("no pinned FTS build for this platform (docs/platforms.md)")
     reason = fts_unavailable(FTS)
     assert reason is None, f"{reason} (lexical tests need the pinned extension)"
     return FTS

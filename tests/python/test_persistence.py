@@ -79,7 +79,7 @@ def test_another_store_schema_requires_a_rebuild(private_data: Path) -> None:
         with pytest.raises(IncompatibleIndex):
             repo.search("x")
         assert repo.index().status == "built"
-        assert repo.search("RetryPolicy").entries
+        assert repo.search("RetryPolicy", symbols=["RetryPolicy"]).entries
 
 
 def test_one_owner_per_store_in_process_and_across_processes(private_data: Path) -> None:

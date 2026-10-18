@@ -9,7 +9,7 @@ and checked by `.github/workflows/platforms.yml`.
 | Platform | Runner | Native wheels (CPython 3.12–3.14) | FTS 0.21.0 build | Status |
 | --- | --- | --- | --- | --- |
 | Linux x86_64 (glibc ≥ 2.28) | `ubuntu-24.04` | ladybug, tree-sitter, grammars | `linux_amd64` | supported; verified |
-| Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | `win_amd64` | supported; hosted run pending |
+| Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | none (below): lexical channel `unavailable` | supported; hosted run pending |
 | macOS 15+ Intel | `macos-15-intel` | yes (ladybug needs macOS 15) | `osx_amd64` | supported; verified |
 | macOS 15+ Apple silicon | `macos-15` | yes (ladybug needs macOS 15) | `osx_arm64` | supported; verified |
 | Linux arm64, musl, Windows arm64 | none | wheels exist | not pinned | unsupported: not tested; the lexical channel reports `unavailable` |
@@ -32,13 +32,25 @@ directory" option. Without them every store operation fails with
 `native_unavailable` before anything is touched. The Windows job installs them the
 same way.
 
+## Windows: no FTS extension
+
+The only published Windows FTS build is `v0.21.0/win_amd64`. Its compiled-in version
+table ends at 0.21.0, while ladybug 0.21.2's ends at 0.21.1, and there is no 0.21.1 or
+0.21.2 build on the extension host (checked 2026-10-18). Upstream has seen this kind of
+patch-level ABI mismatch crash Windows extensions before (LadybugDB/ladybug#971). Here
+it was an access violation inside an FTS query, after a second generation was
+published in the same process (Platforms run 39104738648). Linux and macOS ran the same
+tests cleanly. So Windows has no pin: `oxide prepare` refuses, and search and context
+run with the lexical channel `unavailable`. The lexical tests skip there. Pin a
+`win_amd64` build again once one matches the ladybug version.
+
 ## FTS extension pins
 
 `oxide prepare` downloads the platform's build of the LadybugDB FTS extension 0.21.0
 from `extension.ladybugdb.com` and checks it against the SHA-256 pinned in
 `ladybug.FTS_BUILDS`. The engine checks it again before every load. Each digest was
 taken from one download on 2026-10-17 (file types: ELF x86-64, Mach-O x86_64, Mach-O
-arm64, PE32+ x86-64). On a platform without a pin, `fts_unavailable` names the
+arm64). On a platform without a pin, `fts_unavailable` names the
 platform, `oxide prepare` fails with the same message without touching the network,
 and search and context still run with the lexical channel `unavailable`. That is a
 supported degraded mode, not a failure.

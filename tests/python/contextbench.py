@@ -30,6 +30,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import warnings
 from collections import Counter
 from collections.abc import Iterable, Mapping
@@ -344,7 +345,15 @@ def fetch(corpora: dict[str, dict[str, str]]) -> None:
         if not bare.is_dir():
             _git("init", "-q", "--bare", bare)
         print(f"fetching {name}", file=sys.stderr)
-        _git("-C", bare, "fetch", "-q", "--depth", "1", corpus["url"], corpus["commit"])
+        for attempt in range(3):  # GitHub sometimes refuses a pinned-commit fetch once
+            try:
+                _git("-C", bare, "fetch", "-q", "--depth", "1", corpus["url"], corpus["commit"])
+                break
+            except subprocess.CalledProcessError as error:
+                print(error.stderr.decode(errors="replace").strip(), file=sys.stderr)
+                if attempt == 2:
+                    raise
+                time.sleep(15)
         archive = _git("-C", bare, "archive", "--format=tar", corpus["commit"], "--", "*.py")
         partial = target.with_name(target.name + ".partial")
         shutil.rmtree(partial, ignore_errors=True)

@@ -59,7 +59,8 @@ jobs:
       - name: Install the locked environment and the FTS extension
         run: |
           uv sync --locked
-          uv run --locked oxide prepare
+          # Windows has no pinned FTS build (docs/platforms.md); prepare would refuse.
+          [ "$RUNNER_OS" = Windows ] || uv run --locked oxide prepare
           uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
       - name: mypy --strict (this platform's branches)
         run: uv run --locked mypy

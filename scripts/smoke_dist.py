@@ -51,7 +51,10 @@ MESSAGES = [
         "jsonrpc": "2.0",
         "id": 2,
         "method": "tools/call",
-        "params": {"name": "oxide_search", "arguments": {"query": "TTLCache"}},
+        "params": {
+            "name": "oxide_search",
+            "arguments": {"query": "TTLCache", "symbols": ["TTLCache"]},
+        },
     },
 ]
 HOLD = (
@@ -103,9 +106,13 @@ def main(fixtures: Path) -> None:
         def result(*args: str) -> Any:
             return json.loads(oxide(*args, "--json").stdout)
 
+        from oxide.storage.ladybug import _fts_build
+
+        pinned = _fts_build() is not None  # unpinned platforms run without FTS
         built = result("index", str(root))
         check(built["status"] == "built", f"first index: {built['status']}")
-        check(built["lexical"] == "available", f"FTS unavailable: {built['lexical']}")
+        if pinned:
+            check(built["lexical"] == "available", f"FTS unavailable: {built['lexical']}")
         check(not built["partial"], f"partial parses: {built['partial']}")
         check(result("index", str(root))["status"] == "unchanged", "reopened store rebuilt")
         (root / "oxidepy" / "retry.py").write_text("# emptied\n", encoding="utf-8")
@@ -115,11 +122,14 @@ def main(fixtures: Path) -> None:
         print(f"smoke: indexed {edited['files']} files, {edited['entities']} entities")
 
         found = result("search", str(root), "RetryPolicy")
-        check(found["lexical"]["state"] == "ran", f"lexical channel: {found['lexical']}")
+        state = "ran" if pinned else "unavailable"
+        check(found["lexical"]["state"] == state, f"lexical channel: {found['lexical']}")
         keys = [e["entity"]["key"] for e in found["entries"]]
         check(not any(k.startswith("symbol:oxidepy/retry.py#") for k in keys), "stale search")
-        keys = [e["entity"]["key"] for e in result("search", str(root), "café total")["entries"]]
-        check("symbol:naïve_ünicode.py#café_total" in keys, f"non-ASCII entity: {keys}")
+        if pinned:
+            found = result("search", str(root), "café total")
+            keys = [e["entity"]["key"] for e in found["entries"]]
+            check("symbol:naïve_ünicode.py#café_total" in keys, f"non-ASCII entity: {keys}")
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
