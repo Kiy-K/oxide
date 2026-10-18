@@ -71,13 +71,19 @@ binary built from `main` / `ac985b28` and are not part of `mise run verify`.
 They stay as evidence until v2 evaluation harnesses replace them (BOOTSTRAP
 Phase 3).
 
-### Local embedder and fixtures
-
-- Start/stop the local llama.cpp server with `scripts/embedder.sh start|stop`
-  (~0.3 GB RSS with the capped profile; Q4_K_M third-party quants are broken,
-  stick to official Q8_0).
-- `fixtures/py_repo` and `fixtures/ts_repo` are committed benchmark fixtures —
-  they double as manual smoke-test repos (copy to /tmp before indexing).
+What stays on this branch is the reference set SPEC § Historical evidence
+names: `fixtures/benchmark.json`, `fixtures/structural_benchmark.json`, the
+language/relation conformance fixtures (`fixtures/conformance/`) with
+`tests/language_conformance.rs` and `tests/precomputed_relations_conformance.rs`,
+`tests/benchmark_gate.rs`, the embedding-staleness/recovery/parity regressions
+(the remaining `tests/*.rs`), `eval-agent/`, `scripts/agent_eval/`,
+`scripts/perf.sh` (with `scripts/gen_bench_repo.py`) and the reports under
+`docs/`. None of it builds here: there is no Cargo manifest. Everything else from
+v1 and the Rust/Bun v2 runtime (sources, the other Rust tests and `examples/`,
+v1 CLI/MCP/protocol goldens, the embedder and corpus-load scripts, the Claude Code
+suggestion hook, `TELEMETRY.md`, now `docs/legacy/TELEMETRY-v1.md`) was removed
+and is recoverable at `f79808a`; reports that cite those paths refer to that tree.
+`fixtures/py_repo` and `fixtures/ts_repo` are active v2 fixtures, not legacy.
 
 ### Eval harnesses (eval-agent/, scripts/agent_eval/)
 

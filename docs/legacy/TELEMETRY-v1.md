@@ -1,5 +1,10 @@
 # Telemetry
 
+> **Legacy v1 reference.** This describes the retired v1 implementation's opt-in crash
+> reporting (`src/telemetry.rs`), removed from `rewrite/v2` and recoverable from `main` /
+> `ac985b28`. OXIDE v2 has no telemetry; `oxide prepare` is its only network access
+> ([README](../../README.md)).
+
 OXIDE is local-first. It does not send usage data, and it does not report
 crashes unless you ask it to. This document is the complete description of
 what "unless you ask" means. The implementation it describes is

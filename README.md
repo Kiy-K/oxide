@@ -12,8 +12,9 @@ Retrieval is vectorless: BM25 over code-aware terms plus structural seeds from
 typed hints, then TreeRouter and deterministic selection and packing. There are
 no embeddings, model runners or network access on the query path.
 
-> **Status:** pre-release, on branch `rewrite/v2`. Python is the only language with
-> a parser slice. Other files are kept as unsupported file evidence. The public
+> **Status:** pre-release, on branch `rewrite/v2`. Python and TypeScript (with TSX)
+> have parser slices ([docs/typescript.md](docs/typescript.md)). Other files are kept
+> as unsupported file evidence. The public
 > Python API is the product boundary ([docs/public-api.md](docs/public-api.md)).
 > The legacy v1 implementation and its README live on `main`; a copy of that README
 > is kept as history in [docs/legacy/README-v1.md](docs/legacy/README-v1.md).
