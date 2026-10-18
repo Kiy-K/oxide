@@ -272,7 +272,7 @@ Spike and test findings at `ladybug==0.21.2`:
   baseline is a test oracle (`tests/python/test_baseline.py`). Retrieval and
   routing reproduce it exactly on all 7 tasks: entities, lexical ranks, BM25
   scores to 1e-12 relative, routed entities and depths. Payload bytes are not
-  compared; the payload format is `oxide-payload-v2`.
+  compared; the payload format is `oxide-payload-v3 (selector oxide-select-greedy-v4)`.
 - **Removed from production** (recoverable at `f79808a`): the Rust kernel and
   runtime crates, contract cases, LadybugDB spike crate, native preparation,
   Bun control plane, NDJSON transport and supervisor, embedding-runner seam,

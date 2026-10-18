@@ -1,7 +1,7 @@
 """The frozen Rust Phase 3/4 baselines as read-only oracles (docs/phase-3, docs/phase-4).
 
 Retrieval and routing are expected to reproduce the Rust results exactly on the
-fixture. Context packing changed format (``oxide-payload-v2``), so only its
+fixture. Context packing changed format (``oxide-payload-v3``), so only its
 quality floor is compared, never payload bytes.
 """
 
