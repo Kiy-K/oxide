@@ -648,6 +648,9 @@ class Store:
             if target.exists():
                 # The unreadable generation this rebuild replaces. A crash between the two
                 # renames is undone on the next open (_recover); a failure, just below.
+                # Close our own view of it first: Windows can't rename a directory with
+                # open files.
+                self._drop_view()
                 os.rename(target, self.generations / f"{name}.replaced")
             os.rename(staging, target)
             _fsync(self.generations)
