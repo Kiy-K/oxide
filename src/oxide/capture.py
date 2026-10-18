@@ -109,7 +109,8 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
                 listing.skipped.append(Skip(raw, "invalid_name"))
                 continue
             try:
-                st = entry.stat(follow_symlinks=False)
+                # Not entry.stat(): on Windows it reports st_dev and st_ino as zero.
+                st = os.lstat(entry.path)
             except OSError:
                 listing.skipped.append(Skip(path, "unreadable"))
                 continue

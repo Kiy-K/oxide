@@ -58,6 +58,7 @@ def test_the_fts_literal_only_ever_holds_oxide_terms(fts: Path) -> None:
                 view.lexical(text, 3)
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="backslash is a path separator")
 def test_literals_escape_quotes_and_backslashes() -> None:
     assert _literal(Path("/a/o'brien\\x")) == "'/a/o\\'brien\\\\x'"
     with pytest.raises(oxide.OxideError):
@@ -67,8 +68,9 @@ def test_literals_escape_quotes_and_backslashes() -> None:
 def test_paths_with_quotes_and_backslashes_work_end_to_end(
     tmp_path: Path, fts: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    odd = tmp_path / "o'brien \\ data"
-    extension = odd / "ext'\\" / "libfts.lbug_extension"
+    slash = "" if sys.platform == "win32" else "\\"  # a separator on Windows
+    odd = tmp_path / f"o'brien {slash} data"
+    extension = odd / f"ext'{slash}" / "libfts.lbug_extension"
     extension.parent.mkdir(parents=True)
     shutil.copyfile(fts, extension)
     monkeypatch.setenv("OXIDE_FTS_EXTENSION", str(extension))
