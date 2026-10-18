@@ -71,25 +71,39 @@ def assert_unlocked(repo: Path, data: Path | None = None) -> None:
         pass
 
 
-async def test_tools_are_discoverable_with_bounded_schemas(indexed: Path) -> None:
+async def test_one_tool_is_discoverable_with_bounded_schemas(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
-        tools = {t.name: t for t in await client.list_tools()}
-    assert set(tools) == {"oxide_search", "oxide_context"}
-    for tool in tools.values():
-        assert tool.annotations is not None and tool.annotations.read_only_hint
-        assert tool.description and tool.output_schema
-        assert tool.input_schema["required"] == ["query"]
-    search = tools["oxide_search"].input_schema["properties"]
-    assert search["limit"]["maximum"] == mcp_server.MAX_RESULTS
-    assert search["query"]["maxLength"] == 2000 and search["symbols"]["maxItems"] == 32
-    budget = tools["oxide_context"].input_schema["properties"]["budget"]
-    assert budget["maximum"] == mcp_server.MAX_BUDGET
+        (tool,) = await client.list_tools()
+    assert tool.name == "oxide_search"
+    assert tool.annotations is not None and tool.annotations.read_only_hint
+    assert tool.description and tool.output_schema
+    assert tool.input_schema["required"] == ["query"]
+    schema = tool.input_schema["properties"]
+    assert schema["mode"]["enum"] == ["search", "context", "structural"]
+    assert schema["mode"]["default"] == "search"
+    assert {o.get("maximum") for o in schema["limit"]["anyOf"]} >= {mcp_server.MAX_RESULTS}
+    assert {o.get("maximum") for o in schema["budget"]["anyOf"]} >= {mcp_server.MAX_BUDGET}
+    assert schema["query"]["maxLength"] == 2000 and schema["symbols"]["maxItems"] == 32
+
+
+async def test_without_the_extra_structural_mode_is_not_offered(
+    indexed: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(sys.modules, "ast_grep_py", None)
+    async with Client(server([str(indexed)])) as client:
+        (tool,) = await client.list_tools()
+        refused = await call(
+            client, "oxide_search", query="f($A)", mode="structural", language="python"
+        )
+    assert tool.input_schema["properties"]["mode"]["enum"] == ["search", "context"]
+    assert "structural" not in str(tool.description) + str(tool.input_schema)
+    assert refused.is_error
 
 
 async def test_search_and_context_return_structured_evidence(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         found = await call(client, "oxide_search", query="RetryPolicy", limit=5)
-        bundle = await call(client, "oxide_context", query="RetryPolicy", budget=300)
+        bundle = await call(client, "oxide_search", mode="context", query="RetryPolicy", budget=300)
     assert not found.is_error
     entry = found.structured_content["entries"][0]
     assert entry["entity"]["key"] == RETRY
@@ -105,10 +119,39 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     assert "### oxidepy/retry.py:" in payload
 
 
+async def test_structural_mode_lists_pattern_matches(indexed: Path) -> None:
+    async with Client(server([str(indexed)])) as client:
+        found = await call(
+            client, "oxide_search", query="time.sleep($T)", mode="structural", language="python"
+        )
+        scoped = await call(
+            client,
+            "oxide_search",
+            query="$F($$$A)",
+            mode="structural",
+            language="python",
+            paths=["oxidepy/http_client.py"],
+            rule={"has": {"kind": "keyword_argument", "stopBy": "end"}},
+            limit=1,
+        )
+    assert not found.is_error
+    (match,) = found.structured_content["matches"]
+    assert match["source"]["path"] == "oxidepy/retry.py" and match["start_line"] == 45
+    assert match["entity"] == "symbol:oxidepy/retry.py#RetryPolicy.wait"
+    assert text(found).splitlines()[1] == (
+        "oxidepy/retry.py:45: time.sleep(self.backoff_ms(attempt) / 1000.0)"
+    )
+    data = scoped.structured_content
+    assert data["files"] == 1 and not data["truncated"]
+    assert [m["preview"].strip() for m in data["matches"]] == [
+        "with urllib.request.urlopen(url, timeout=5.0) as response:"
+    ]
+
+
 async def test_empty_results_are_successes(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         found = await call(client, "oxide_search", query="zzqqxxvv")
-        bundle = await call(client, "oxide_context", query="zzqqxxvv")
+        bundle = await call(client, "oxide_search", mode="context", query="zzqqxxvv")
     assert not found.is_error and found.structured_content["entries"] == []
     assert not bundle.is_error and bundle.structured_content["items"] == []
 
@@ -127,8 +170,21 @@ async def test_bad_arguments_and_repositories_are_tool_errors(
         ):
             result = await call(served, "oxide_search", **arguments)
             assert result.is_error, arguments
-        result = await call(served, "oxide_context", query="x", budget=mcp_server.MAX_BUDGET + 1)
-        assert result.is_error
+        cases: list[tuple[dict[str, Any], str]] = [
+            ({"mode": "context", "budget": mcp_server.MAX_BUDGET + 1}, "budget"),
+            ({"mode": "nearest"}, "mode"),
+            ({"budget": 10}, "`budget` applies to mode=context only"),
+            ({"mode": "context", "limit": 3}, "`limit` applies to"),
+            ({"language": "python"}, "apply to mode=structural only"),
+            ({"mode": "structural"}, "needs `language`"),
+            ({"mode": "structural", "language": "python", "symbols": ["f"]}, "`symbols`"),
+            ({"mode": "structural", "language": "python", "rule": {"pattern": "g"}}, "pattern"),
+            ({"mode": "structural", "language": "python", "rule": {"kind": 3}}, "invalid"),
+            ({"mode": "structural", "language": "rust"}, "language"),
+        ]
+        for arguments, expected in cases:
+            result = await call(served, "oxide_search", query="f($A)", **arguments)
+            assert result.is_error and expected in text(result), (arguments, text(result))
     async with Client(server()) as open_server:
         for arguments, expected in (
             ({}, "`repository` is required"),
@@ -145,7 +201,7 @@ async def test_bad_arguments_and_repositories_are_tool_errors(
 async def test_output_is_bounded(indexed: Path) -> None:
     async with Client(server([str(indexed)])) as client:
         found = await call(client, "oxide_search", query="retry token auth http", limit=3)
-        bundle = await call(client, "oxide_context", query="retry", budget=40)
+        bundle = await call(client, "oxide_search", mode="context", query="retry", budget=40)
     assert len(found.structured_content["entries"]) <= 3
     assert bundle.structured_content["used"] <= 40
 
@@ -166,16 +222,18 @@ async def test_concurrent_calls_are_serialized_and_identical(indexed: Path) -> N
     results: list[tuple[str, Any]] = []
     async with Client(server([str(indexed)])) as client:
 
-        async def one(tool: str, arguments: dict[str, Any]) -> None:
-            results.append((tool, await call(client, tool, **arguments)))
+        async def one(kind: str, arguments: dict[str, Any]) -> None:
+            results.append((kind, await call(client, "oxide_search", **arguments)))
 
         async with anyio.create_task_group() as group:
             for _ in range(6):
-                group.start_soon(one, "oxide_search", {"query": "RetryPolicy"})
-                group.start_soon(one, "oxide_context", {"query": "RetryPolicy", "budget": 200})
+                group.start_soon(one, "search", {"query": "RetryPolicy"})
+                group.start_soon(
+                    one, "context", {"query": "RetryPolicy", "mode": "context", "budget": 200}
+                )
     assert len(results) == 12 and not any(r.is_error for _, r in results)
-    for tool in ("oxide_search", "oxide_context"):
-        assert len({json.dumps(r.structured_content) for t, r in results if t == tool}) == 1
+    for kind in ("search", "context"):
+        assert len({json.dumps(r.structured_content) for k, r in results if k == kind}) == 1
     assert_unlocked(indexed)
 
 
@@ -240,19 +298,19 @@ async def test_stdio_server_releases_the_store_between_calls(
         sys.executable, mcp_command(repo_copy, data), env=env(data), keep_alive=False
     )
     async with Client(transport) as client:
-        assert {t.name for t in await client.list_tools()} == {"oxide_search", "oxide_context"}
+        assert [t.name for t in await client.list_tools()] == ["oxide_search"]
         found = await call(client, "oxide_search", query="RetryPolicy")
         assert found.structured_content["entries"][0]["entity"]["key"] == RETRY
         # The server is alive and idle: the CLI can index (it needs the store's lock).
         assert cli(data, "index", str(repo_copy)).returncode == 0
         (graph,) = data.glob("repos/*/generations/*/graph.lbug")
         graph.write_bytes(b"\0" * graph.stat().st_size)
-        damaged = await call(client, "oxide_context", query="RetryPolicy")
+        damaged = await call(client, "oxide_search", mode="context", query="RetryPolicy")
         assert damaged.is_error and "error[store_corrupt]" in text(damaged)
         assert str(data) not in text(damaged)
         rebuilt = cli(data, "index", str(repo_copy))
         assert rebuilt.returncode == 0 and rebuilt.stdout.startswith("built:")
-        again = await call(client, "oxide_context", query="RetryPolicy", budget=300)
+        again = await call(client, "oxide_search", mode="context", query="RetryPolicy", budget=300)
         assert not again.is_error and again.structured_content["used"] <= 300
 
 
@@ -332,7 +390,7 @@ async def test_stateless_http_answers_independent_clients(http_server: str) -> N
             keys.append(found.structured_content["entries"][0]["entity"]["key"])
     assert keys == [RETRY, RETRY]
     async with Client(http_server) as client:
-        bundle = await call(client, "oxide_context", query="RetryPolicy", budget=200)
+        bundle = await call(client, "oxide_search", mode="context", query="RetryPolicy", budget=200)
     assert not bundle.is_error and bundle.structured_content["used"] <= 200
 
 

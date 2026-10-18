@@ -77,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="oxide", description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("prepare", help="fetch and verify the pinned LadybugDB FTS extension")
-    serve = commands.add_parser("mcp", help="serve oxide_search and oxide_context over MCP")
+    serve = commands.add_parser("mcp", help="serve the oxide_search tool over MCP")
     serve.add_argument(
         "--repo", action="append", default=[], help="serve only this repository (repeatable)"
     )
