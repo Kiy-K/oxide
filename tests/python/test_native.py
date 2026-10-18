@@ -99,3 +99,19 @@ def test_fts_builds_are_pinned_per_platform_and_others_are_explicitly_unsupporte
     assert ladybug.fts_unavailable(tmp_path / "absent") == reason
     with pytest.raises(oxide.OxideError, match=reason):
         ladybug.prepare_fts(tmp_path / "absent")  # never reaches the network
+
+
+def test_a_native_library_that_cannot_load_is_typed_and_touches_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def missing() -> str:
+        raise RuntimeError("Could not find lbug C API shared library.")
+
+    monkeypatch.setattr("ladybug.Database.get_version", missing)
+    with (
+        pytest.raises(oxide.OxideError, match="OpenSSL") as caught,
+        oxide.open_repository(FIXTURE, data_dir=tmp_path / "data") as repo,
+    ):
+        repo.index()
+    assert caught.value.code == "native_unavailable"
+    assert not (tmp_path / "data" / "repos").exists()

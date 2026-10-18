@@ -82,8 +82,9 @@ when it sits inside the repository.
 - One owner per store, across processes. A `Repository` is not thread-safe.
 - Indexing is a full rebuild per change, and capture holds the captured bytes in
   memory (at most 1 GiB in scope, 1 MiB per file).
-- FTS and atomic publication are verified on Linux x86_64. macOS and Windows run in
-  the Platforms workflow; see [docs/platforms.md](docs/platforms.md) for their status.
+- Verified on Linux x86_64 and macOS 15+ (x86_64, arm64) by the Platforms workflow.
+  Windows x86_64 needs the OpenSSL 3 DLLs installed; see
+  [docs/platforms.md](docs/platforms.md) for status and prerequisites.
 
 [docs/public-api.md](docs/public-api.md) has the full list, with errors, bounds and
 recovery behavior.

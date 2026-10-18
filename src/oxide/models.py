@@ -248,6 +248,10 @@ class CaptureLimit(OxideError):
     code = "capture_limit"
 
 
+class NativeUnavailable(OxideError):
+    code = "native_unavailable"
+
+
 class Closed(OxideError):
     code = "closed"
 

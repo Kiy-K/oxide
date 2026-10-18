@@ -45,6 +45,7 @@ from oxide.models import (
     FileInfo,
     IncompatibleIndex,
     InvalidPath,
+    NativeUnavailable,
     NotIndexed,
     OwnershipConflict,
     OxideError,
@@ -478,6 +479,13 @@ class Store:
     """
 
     def __init__(self, root: Path, data: Path, create: bool = True) -> None:
+        try:  # before anything is touched, or a missing library reads as damage
+            ladybug.Database.get_version()
+        except (ImportError, OSError, RuntimeError) as error:
+            raise NativeUnavailable(
+                f"LadybugDB native library failed to load ({error}); on Windows it needs "
+                "the OpenSSL 3 x64 DLLs (docs/platforms.md)"
+            ) from error
         self.root = root
         self.data = data
         self.dir = data / "repos" / hashlib.sha256(os.fsencode(root)).hexdigest()[:32]

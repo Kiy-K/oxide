@@ -66,10 +66,8 @@ def write(root: Path, files: Mapping[str, str | bytes]) -> Path:
     for name, content in files.items():
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        if isinstance(content, bytes):
-            path.write_bytes(content)
-        else:
-            path.write_text(content, encoding="utf-8")
+        # Exact bytes: write_text would turn "\n" into "\r\n" on Windows.
+        path.write_bytes(content if isinstance(content, bytes) else content.encode())
     return root
 
 

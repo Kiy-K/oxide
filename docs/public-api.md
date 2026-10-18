@@ -107,6 +107,7 @@ an `OxideError` (`invalid_argument`) and a `ValueError`:
 | `store_corrupt` | Damage (below). Reads fail closed |
 | `capture_conflict` | The worktree kept changing during capture, or a `.gitignore` is unreadable |
 | `capture_limit` | More than 1 GiB in scope |
+| `native_unavailable` | LadybugDB's native library cannot load (on Windows: OpenSSL 3 DLLs missing, docs/platforms.md). Nothing is touched |
 | `closed` | Use after `close()` |
 
 Damage is classified like this:

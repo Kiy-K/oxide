@@ -41,6 +41,16 @@ jobs:
         with:
           version: 2026.9.14
           install_args: uv
+      # Windows prerequisite (docs/platforms.md): ladybug's wheel excludes OpenSSL 3.
+      - name: OpenSSL 3 DLLs in the system directory
+        if: runner.os == 'Windows'
+        run: |
+          dll=$(ls /c/Program\ Files/OpenSSL*/bin/libssl-3-x64.dll 2>/dev/null | head -n 1 || true)
+          if [ -z "$dll" ]; then
+            choco install -y --no-progress openssl
+            dll=$(ls /c/Program\ Files/OpenSSL*/bin/libssl-3-x64.dll | head -n 1)
+          fi
+          cp "$dll" "$(dirname "$dll")/libcrypto-3-x64.dll" /c/Windows/System32/
       - name: Restore the pinned FTS extension
         uses: actions/cache@v6
         with:

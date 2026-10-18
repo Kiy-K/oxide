@@ -9,9 +9,9 @@ and checked by `.github/workflows/platforms.yml`.
 | Platform | Runner | Native wheels (CPython 3.12–3.14) | FTS 0.21.0 build | Status |
 | --- | --- | --- | --- | --- |
 | Linux x86_64 (glibc ≥ 2.28) | `ubuntu-24.04` | ladybug, tree-sitter, grammars | `linux_amd64` | supported; verified |
-| Windows x86_64 | `windows-2025` | yes | `win_amd64` | supported; hosted run pending |
-| macOS 15+ Intel | `macos-15-intel` | yes (ladybug needs macOS 15) | `osx_amd64` | supported; hosted run pending |
-| macOS 15+ Apple silicon | `macos-15` | yes (ladybug needs macOS 15) | `osx_arm64` | supported; hosted run pending |
+| Windows x86_64 | `windows-2025` | yes, plus OpenSSL 3 (below) | `win_amd64` | supported; hosted run pending |
+| macOS 15+ Intel | `macos-15-intel` | yes (ladybug needs macOS 15) | `osx_amd64` | supported; verified |
+| macOS 15+ Apple silicon | `macos-15` | yes (ladybug needs macOS 15) | `osx_arm64` | supported; verified |
 | Linux arm64, musl, Windows arm64 | none | wheels exist | not pinned | unsupported: not tested; the lexical channel reports `unavailable` |
 | macOS < 15 | none | no ladybug wheel | — | unsupported: does not install |
 
@@ -20,6 +20,17 @@ job has run green; nothing here is claimed from local runs on another OS.
 
 Python is the project's `requires-python` (3.12–3.14; ladybug 0.21.2 has wheels for
 3.10–3.14). The jobs use the pinned `.python-version` (3.13).
+
+## Windows prerequisite: OpenSSL 3
+
+ladybug's Windows wheel links `libssl-3-x64.dll` and `libcrypto-3-x64.dll` but
+deliberately leaves them out (its `DELVEWHEEL` record passes `--exclude` for both, in
+0.21.2 and the 0.22 dev builds as of 2026-10-18). Python does not search `PATH` for an
+extension's DLLs, so the OpenSSL 3 x64 DLLs must be in the Windows system directory,
+for example from the Win64 OpenSSL installer with its "copy DLLs to the Windows system
+directory" option. Without them every store operation fails with
+`native_unavailable` before anything is touched. The Windows job installs them the
+same way.
 
 ## FTS extension pins
 
