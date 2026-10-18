@@ -26,7 +26,7 @@ jobs:
         include:
           - { os: ubuntu-24.04, label: linux-x86_64 }
           - { os: windows-2025, label: windows-x86_64 }
-          # ladybug 0.21.2's macOS wheels need macOS 15 or later.
+          # ladybug 0.21.0's macOS wheels need macOS 15 or later.
           - { os: macos-15-intel, label: macos-x86_64 }
           - { os: macos-15, label: macos-arm64 }
     defaults:
@@ -59,8 +59,7 @@ jobs:
       - name: Install the locked environment and the FTS extension
         run: |
           uv sync --locked
-          # Windows has no pinned FTS build (docs/platforms.md); prepare would refuse.
-          [ "$RUNNER_OS" = Windows ] || uv run --locked oxide prepare
+          uv run --locked oxide prepare
           uv run --locked python scripts/smoke_dist.py --environment | tee environment.json
       - name: mypy --strict (this platform's branches)
         run: uv run --locked mypy

@@ -83,8 +83,10 @@ FTS_BUILDS = {
         "osx_amd64",
         "c86f427503555a3ccdc55eb66a8d82793a206aac599a6092f7d1d4eb50c21403",
     ),
-    # No win_amd64: its only build, 0.21.0, is ABI-mismatched with ladybug 0.21.2 and
-    # crashes the process (docs/platforms.md); Windows runs without the lexical channel.
+    ("win32", "AMD64"): (
+        "win_amd64",
+        "7b6132ae6a554e3eeb3c4b0da7e2eb5c483b258b31e848a0e3d6000ac29885ee",
+    ),
 }
 FTS_SCORER = "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive"
 FTS_COMPONENT = "ladybug-fts-0.21.0;stemmer=porter;stopwords=default"

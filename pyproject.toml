@@ -5,11 +5,11 @@ version = "0.0.0"
 description = "OXIDE v2: a structural context engine for agents"
 readme = "README.md"
 license = "MIT"
-# ladybug 0.21.2 ships wheels for CPython 3.10-3.14 only.
+# ladybug 0.21.0 ships wheels for CPython 3.10-3.14 only.
 requires-python = ">=3.12,<3.15"
 dependencies = [
     "fastmcp==4.1.0",
-    "ladybug==0.21.2",
+    "ladybug==0.21.0",
     "pathspec>=0.12",
     "tree-sitter>=0.25,<0.27",
     "tree-sitter-python==0.25.0",

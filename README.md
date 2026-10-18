@@ -30,7 +30,7 @@ mise run bootstrap        # uv sync --locked + `oxide prepare`
 
 Without mise, run `uv sync --locked`, then `uv run oxide prepare`. `oxide prepare`
 is the only network access OXIDE ever makes. It downloads the pinned LadybugDB FTS
-extension for your platform (Linux x86_64, macOS 15+ x86_64/arm64; none yet on Windows,
+extension for your platform (Linux x86_64, macOS 15+ x86_64/arm64, Windows x86_64;
 [docs/platforms.md](docs/platforms.md)) and checks its SHA-256. Without that extension,
 the lexical channel reports `unavailable` and structural seeds and routing still
 work.

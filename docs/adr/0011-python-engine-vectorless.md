@@ -69,7 +69,8 @@ speed and maintainability over peak low-level performance.
    and future MCP and editor integrations are Python clients of that API. They
    present results and do not contain repository intelligence.
 3. **LadybugDB stays**, through its Python wheel (`ladybug==0.21.2`, the same
-   release and on-disk storage format 47 as the Rust pin). ADR-0002's rules
+   release and on-disk storage format 47 as the Rust pin; amended 2026-10-18 to
+   0.21.0, the same storage format, to match the FTS build: docs/platforms.md). ADR-0002's rules
    carry over unchanged in substance: OXIDE's own exclusive lock, one database
    per generation, an atomic `CURRENT` pointer, `COPY` bulk load with exact
    read-back, read-only sealed generations, and the pinned FTS extension loaded
