@@ -1,37 +1,39 @@
-> **Legacy v1 reference.** This describes the retired v1 implementation (root Rust crate, SQLite index, legacy CLI/MCP/`packages/*`), removed from `rewrite/v2` and recoverable from `main` / `ac985b28`. It is historical evidence, not instructions for OXIDE v2: see `docs/spec/SPEC.md`, `docs/BOOTSTRAP.md` and the root `AGENTS.md`.
-
-# OXIDE review policy
+# OXIDE review policy (v2)
 
 For a reviewer (Codex, Claude, or human) looking at a diff against this repo.
-Generic Rust/style feedback is not the point — clippy/rustfmt already gate
-that (`docs/agents/workflow.md`). This policy exists because OXIDE has invariants a
-competent reviewer cannot reliably infer from the diff alone: frozen
-benchmark-affecting constants, an index-compatibility contract keyed off a
-struct most providers don't override, a deliberately bounded structural-
-search cost model, and a benchmark-gated ranking pipeline. Read the relevant
-file below before reviewing a change in that area.
+Generic Python/style feedback is not the point — Ruff and mypy `--strict` already
+gate that (`docs/agents/workflow.md`). This policy exists because OXIDE v2 has
+invariants a competent reviewer cannot reliably infer from the diff alone:
+one-owner storage, published generations, deterministic core policy over a
+pinned read view, a vectorless retrieval/routing/packing pipeline, and a
+stable typed public API. Read the relevant file below before reviewing a
+change in that area.
+
+OXIDE v2 is one Python package (`oxide`, ADR-0011): `oxide.api`/`oxide.models`
+are the public boundary; `oxide.core` holds pure repository intelligence and
+policy (no database or filesystem access); `oxide.capture` and
+`oxide.storage` own worktree capture and LadybugDB; the CLI and `oxide mcp`
+are clients of the public API only. Architecture authority is
+`docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. When they disagree with this
+file, they win.
 
 ## Rule files
 
 | File | Covers |
 |---|---|
-| `retrieval-and-config.md` | Fusion/context weights, `RetrievalMode` default and scope, lexical/semantic concurrency |
-| `embeddings-and-index.md` | Fingerprint compatibility, provider selection (no silent fallback/download), degradation on provider failure |
-| `structural-and-language.md` | Bounded structural-relation lookups, `structural_relations.rs` attribution tie-breaks, declarative vs. bespoke language extractors |
-| `evidence-and-benchmarks.md` | Benchmark provenance, incomplete/cancelled runs, what a passing test actually proves |
-| `api-surface.md` | MCP/CLI surface growth, JSON output contract stability |
+| `api-surface.md` | Public API stability, integration boundaries, MCP/CLI as clients only, JSON/output contracts |
+| `storage-and-generations.md` | LadybugDB ownership, locks, published generations, capture identity, damage classification |
+| `core-and-retrieval.md` | Pure core, read view, retrieval/routing/packing, budgets, deterministic ordering, FTS availability |
+| `capture-and-language.md` | Worktree capture, symlinks/special files, language extraction, coverage diagnostics |
+| `evidence-and-benchmarks.md` | Benchmark provenance, frozen baselines, incomplete runs, what a passing test proves |
 
-## Load-bearing invariants (docs/agents/invariants.md)
+## Load-bearing invariants
 
-`docs/agents/invariants.md`'s "Load-bearing invariants" section (symbol id composition, the
-`i64` bit-casts, first-wins definition dedup, expansion-ordering, the
-`std::thread::scope` rationale, `RetrievalMode`'s gating scope, lexical body
-weighting, the embedding cache-invalidation key, the cross-file staleness
-gap, read-only SQLite semantics, atomic meta writes) is not restated here —
-read it directly, since duplicating it risks drifting out of sync as it's
-edited. Treat every entry in that list as **BLOCKER** severity under this
-policy: these are exactly the invariants that "look fine until a benchmark
-or a targeted regression test fails."
+The v2 invariants live in `docs/agents/invariants.md` (legacy v1 reference)
+and, for v2, in `docs/spec/SPEC.md` ("Core invariants", "Engine resources
+and ownership", "Failure contract") and `docs/BOOTSTRAP.md`. Read those
+directly rather than relying on this policy's summary; duplicating them risks
+drift. Treat every entry there as **BLOCKER** severity under this policy.
 
 ## Severity
 
@@ -39,22 +41,20 @@ or a targeted regression test fails."
   load-bearing invariant, a regression in a benchmark-gated property, or
   unconsented network/model-download activity.
 - **MAJOR** — a real functional or contract regression that isn't silently
-  catastrophic: unbounded structural search, unscoped API/MCP surface
-  growth, a benchmark claim with no reproducible provenance.
+  catastrophic: unbounded traversal, an integration reimplementing repository
+  intelligence, a benchmark claim with no reproducible provenance.
 - **MINOR** — a real deviation from stated design intent with limited blast
-  radius (e.g. a degradation path that used to be explicit becoming
-  implicit, without changing observable behavior yet).
-- **NIT** — cosmetic drift that doesn't change behavior (e.g. a rationale
-  comment removed without the value it explains changing).
+  radius.
+- **NIT** — cosmetic drift that doesn't change behavior.
 
 ## Reporting a finding
 
 - Point to concrete code: file, and line or function name.
 - State the realistic failure path — what input or sequence of operations
-  actually reaches the bug, not just that the code "could" be wrong.
+  actually reaches the bug.
 - Name the violated rule (its stable ID) or invariant.
 - Gather the "evidence required" listed under the rule before reporting it.
-  A rule you can't find the required evidence for is a question to ask
-  ("does X change Y's fingerprint?"), not a finding to file.
+  A rule you can't find the required evidence for is a question to ask, not
+  a finding to file.
 - A possibility that isn't tied to a concrete reachable path is speculation.
   Ask it as a question in the review; don't file it as a bug.

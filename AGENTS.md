@@ -40,7 +40,8 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 | Python engine, storage, removed/retained features | `docs/adr/0011-python-engine-vectorless.md`, `docs/public-api.md` |
 | Build, test, lint, commit format | `docs/agents/workflow.md` |
 | Issues, triage labels, domain docs | `docs/agents/` (`issue-tracker.md`, `triage-labels.md`, `domain.md`) |
-| Legacy v1 reference only (evidence, not instructions) | `docs/agents/invariants.md`, `docs/review/`, `docs/canonical-baseline.md`, `docs/agent-usage-policy.md`, `skills/oxide-code-context/`, `docs/legacy/README-v1.md`, eval reports under `docs/`. They describe the retired implementation (root Rust crate, SQLite, legacy CLI/MCP); port lessons and semantic assertions, never their layout or APIs |
+| Legacy v1 reference only (evidence, not instructions) | `docs/agents/invariants.md`, `docs/canonical-baseline.md`, `docs/agent-usage-policy.md`, `skills/oxide-code-context/`, `docs/legacy/README-v1.md`, eval reports under `docs/`. They describe the retired implementation (root Rust crate, SQLite, legacy CLI/MCP); port lessons and semantic assertions, never their layout or APIs |
+| v2 review policy | `docs/review/` — reviewer-facing invariants for the Python engine (public API, storage/generations, core/retrieval, capture/language, evidence/benchmarks). Architecture authority remains `docs/spec/SPEC.md` and `docs/BOOTSTRAP.md`. |
 
 ## Always-on rules
 
@@ -48,3 +49,14 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers such as `docs/canonical-baseline.md` are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
 - Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries); Python holds bounded policy.
+
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+
+- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
+- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
+
+If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+<!-- CODEGRAPH_END -->
