@@ -284,7 +284,7 @@ def test_bare_specifiers_resolve_through_their_project_paths(tmp_path: Path) -> 
     assert imports("src/vs/app.ts") == {
         strings: "resolved",  # vs/* and the exact vs/exact both name it
         util: "resolved",  # @x/*: the first substitution is missing, the second exists
-        "js/thing:thing": "unresolved",  # TypeScript stops at the JavaScript file
+        "symbol:src/js/thing.js#thing": "resolved",  # now a modeled JS source
         "vs/missing:missing": "unresolved",
         "react:useState": "unresolved",
     }
@@ -369,7 +369,7 @@ def test_coverage_is_explicit_for_partial_unsupported_and_declaration_files(tmp_
     assert files["broken.ts"].diagnostics and files["latin.ts"].language == "typescript"
     assert (files["types.d.ts"].coverage, files["script.js"].coverage) == (
         "complete",
-        "unsupported",
+        "complete",
     )
     entities = {e.key for e in found.entities}
     assert {"symbol:broken.ts#ok", "symbol:types.d.ts#typed", "module:typescript:types"} <= entities
@@ -405,7 +405,7 @@ def test_module_names_follow_the_path_convention() -> None:
     assert typescript.module_name("src/a.d.ts") == "src/a"
     assert typescript.module_name("src/ui/index.tsx") == "src/ui"
     assert typescript.module_name("index.ts") is None
-    assert typescript.module_name("src/a.js") is None
+    assert typescript.module_name("src/a.js") == "\0javascript:src/a.js"
     assert typescript.dialect("a.mts") == "typescript" and typescript.dialect("a.tsx") == "tsx"
 
 
@@ -448,3 +448,17 @@ def test_legacy_fixture_tasks_pack_their_gold(
     bundle = ts_repo.build_context(task["text"], 1024)
     assert bundle.used <= 1024 and bundle == ts_repo.build_context(task["text"], 1024)
     assert gold <= {e.key for item in bundle.items for e in item.entities}
+
+
+def test_js_bridge_does_not_expand_typescript_only_path_rules(tmp_path: Path) -> None:
+    found = derived(
+        write(
+            tmp_path,
+            {
+                "a.d.ts": "export declare function f(): void;",
+                "use.ts": 'import {f} from "./a.d.ts"; export function run() { f(); }',
+            },
+        )
+    )
+    # The pre-JS resolver does not map explicit declaration-file specifiers.
+    assert not resolved(found, "calls", "symbol:use.ts#run")

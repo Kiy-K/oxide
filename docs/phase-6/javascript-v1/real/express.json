@@ -1,0 +1,357 @@
+{
+ "repository": "/tmp/oxide-js/express",
+ "commit": "0dee2c52c7c873498f8ed7d8ee4ddd0a04d3ada8",
+ "snapshot": "sha256:6a5226f1fb800bab260060b707e3d842c349a12dc753b27875e634584e06b786",
+ "files": 214,
+ "js_files": 141,
+ "coverage": {
+  "complete": 141
+ },
+ "entities": 512,
+ "js_symbol_kinds": {
+  "function": 156
+ },
+ "graph_sha256": "b6517654882b03acd4c65d729e1a27756ed54cb251fdcf3ff0cd26d669fab9ab",
+ "relations": 9932,
+ "resolution": {
+  "calls:resolved": 331,
+  "calls:unresolved": 8440,
+  "contains:resolved": 511,
+  "contains_logical:resolved": 141,
+  "defines:resolved": 147,
+  "imports:resolved": 45,
+  "imports:unresolved": 317
+ },
+ "derive_cold_s": 0.17824455500522163,
+ "derive_reused_s": 0.035278665003716014,
+ "facts_reused": 141,
+ "derive_parity": true,
+ "index_cold_s": 0.4478906279982766,
+ "index_unchanged_s": 0.014632517995778471,
+ "index_edit_s": 0.2656079260050319,
+ "edit_reused": 140,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 221.15234375,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:examples/content-negotiation/index.js",
+   "targets": [
+    "module:javascript:examples/content-negotiation/db.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/content-negotiation/index.js",
+    "start": 89,
+    "end": 112,
+    "digest": "sha256:fadf6827e28bcb0271c03bb8059a67d2dca3d051f4243f6bd507ee036612a3b7"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/content-negotiation/users.js",
+   "targets": [
+    "module:javascript:examples/content-negotiation/db.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/content-negotiation/users.js",
+    "start": 18,
+    "end": 41,
+    "digest": "sha256:9943db10754f61f8cee9488649e73b9a244a7f940ff0c3596af97924bcfcd234"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/mvc/controllers/pet/index.js",
+   "targets": [
+    "module:javascript:examples/mvc/db.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/mvc/controllers/pet/index.js",
+    "start": 51,
+    "end": 75,
+    "digest": "sha256:f4798e50906220321f0a0d7a0c97532802903c1089b4dba8228ec4e0364d177c"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/mvc/controllers/user-pet/index.js",
+   "targets": [
+    "module:javascript:examples/mvc/db.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/mvc/controllers/user-pet/index.js",
+    "start": 51,
+    "end": 75,
+    "digest": "sha256:397ff04667f5c7e564b1e6a55e5e9245761051565afa2f869bb6560deb2fd125"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/mvc/controllers/user/index.js",
+   "targets": [
+    "module:javascript:examples/mvc/db.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/mvc/controllers/user/index.js",
+    "start": 51,
+    "end": 75,
+    "digest": "sha256:462e5a7457f7f73673adef1e878eb87ec66d8baf6f9fde9785264bb81a36e2ba"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/route-map/index.js",
+   "targets": [
+    "module:javascript:lib/express.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/route-map/index.js",
+    "start": 91,
+    "end": 129,
+    "digest": "sha256:4b921380a34e14e3da551e74520e3807a068fefd7adf2013df5caf5fc8b7a0f4"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/route-middleware/index.js",
+   "targets": [
+    "module:javascript:lib/express.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/route-middleware/index.js",
+    "start": 51,
+    "end": 89,
+    "digest": "sha256:8bbd84ce25e3be1e943d83d2dfe4a8fddc99358c0b7dc454a4df39b7597c26bb"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/route-separation/index.js",
+   "targets": [
+    "module:javascript:examples/route-separation/site.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/route-separation/index.js",
+    "start": 263,
+    "end": 287,
+    "digest": "sha256:65c2270263e0c0bc1725c0a17232ea7359b52e3edb868d64557a7ded87c56669"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/route-separation/index.js",
+   "targets": [
+    "module:javascript:examples/route-separation/post.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/route-separation/index.js",
+    "start": 293,
+    "end": 317,
+    "digest": "sha256:65c2270263e0c0bc1725c0a17232ea7359b52e3edb868d64557a7ded87c56669"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/route-separation/index.js",
+   "targets": [
+    "module:javascript:examples/route-separation/user.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/route-separation/index.js",
+    "start": 323,
+    "end": 347,
+    "digest": "sha256:65c2270263e0c0bc1725c0a17232ea7359b52e3edb868d64557a7ded87c56669"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/view-constructor/index.js",
+   "targets": [
+    "symbol:examples/view-constructor/github-view.js#GithubView"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/view-constructor/index.js",
+    "start": 84,
+    "end": 121,
+    "digest": "sha256:eaeb509d4eb6afec5585f341315d7db08bfbd548db58ad09ee047e6cdbe0fd40"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:examples/view-locals/index.js",
+   "targets": [
+    "symbol:examples/view-locals/user.js#User"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "examples/view-locals/index.js",
+    "start": 116,
+    "end": 140,
+    "digest": "sha256:a49cdf21100cb68afec4020e12715b329fc34c4ee4c1f259ff3102e684e8cfb9"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:lib/application.js",
+   "targets": [
+    "symbol:lib/view.js#View"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "lib/application.js",
+    "start": 327,
+    "end": 351,
+    "digest": "sha256:6d7e08355025786982d17042fc0355b6a5e9339545dc27e2782b3aaa28a7bc04"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:lib/express.js",
+   "targets": [
+    "module:javascript:lib/application.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "lib/express.js",
+    "start": 356,
+    "end": 388,
+    "digest": "sha256:4f35e8273a5e78c35e778d14e4a8c80a81ca3e1fc8047dc87d2077b860404572"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:lib/express.js",
+   "targets": [
+    "module:javascript:lib/request.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "lib/express.js",
+    "start": 426,
+    "end": 452,
+    "digest": "sha256:4f35e8273a5e78c35e778d14e4a8c80a81ca3e1fc8047dc87d2077b860404572"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:lib/express.js",
+   "targets": [
+    "module:javascript:lib/response.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "lib/express.js",
+    "start": 458,
+    "end": 485,
+    "digest": "sha256:4f35e8273a5e78c35e778d14e4a8c80a81ca3e1fc8047dc87d2077b860404572"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:test/acceptance/auth.js",
+   "targets": [
+    "module:javascript:examples/auth/index.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "test/acceptance/auth.js",
+    "start": 4,
+    "end": 40,
+    "digest": "sha256:788ee64833f7bf18c7c8d6236e2423f5f2f94d62ea750c7c456ece6fea92ed29"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:test/acceptance/content-negotiation.js",
+   "targets": [
+    "module:javascript:examples/content-negotiation/index.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "test/acceptance/content-negotiation.js",
+    "start": 40,
+    "end": 91,
+    "digest": "sha256:aeb415791ce1c7675401f3d41433900145620a191b6ad4e107a0b41f798c1446"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:test/acceptance/cookie-sessions.js",
+   "targets": [
+    "module:javascript:examples/cookie-sessions/index.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "test/acceptance/cookie-sessions.js",
+    "start": 5,
+    "end": 52,
+    "digest": "sha256:65f79320983cb4dff1efcd03d9546cdf36635dde7a4b361eaa9501b7b95cd00c"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:test/acceptance/cookies.js",
+   "targets": [
+    "module:javascript:examples/cookies/index.js"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "test/acceptance/cookies.js",
+    "start": 5,
+    "end": 44,
+    "digest": "sha256:02525d8572520090b040f5d00edfc224638430147af94a67894909b6d5ab5e47"
+   }
+  }
+ ]
+}

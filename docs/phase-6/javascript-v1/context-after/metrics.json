@@ -1,0 +1,187 @@
+{
+ "dev": {},
+ "heldout": {
+  "verified": {
+   "tasks": 3,
+   "spans": 22,
+   "lines": 151,
+   "files": 7,
+   "entry_recall@1": 0.222222,
+   "entry_recall@5": 0.388889,
+   "entry_recall@20": 0.388889,
+   "entry_mrr": 0.4,
+   "entry_file_recall": 0.333333,
+   "routed_coverage": 0.444444,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.006173,
+   "file_recall@256": 0.166667,
+   "utilization@256": 0.9375,
+   "gold_unit_share@256": 0.073059,
+   "span_recall@1024": 0.222222,
+   "line_recall@1024": 0.234568,
+   "file_recall@1024": 0.166667,
+   "utilization@1024": 0.985026,
+   "gold_unit_share@1024": 0.154714,
+   "span_recall@4096": 0.388889,
+   "line_recall@4096": 0.421076,
+   "file_recall@4096": 0.333333,
+   "utilization@4096": 0.998291,
+   "gold_unit_share@4096": 0.148316,
+   "classes": {
+    "contained": 2,
+    "exact": 20
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 8,
+     "entry": 14
+    },
+    "1024": {
+     "budget": 4,
+     "complete": 4,
+     "entry": 14
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 7,
+     "entry": 14
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 2,
+   "spans": 2,
+   "lines": 50,
+   "files": 2,
+   "entry_recall@1": 0.5,
+   "entry_recall@5": 1.0,
+   "entry_recall@20": 1.0,
+   "entry_mrr": 0.6,
+   "entry_file_recall": 1.0,
+   "routed_coverage": 1.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.5,
+   "utilization@256": 0.914062,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.5,
+   "line_recall@1024": 0.5,
+   "file_recall@1024": 0.5,
+   "utilization@1024": 0.978516,
+   "gold_unit_share@1024": 0.232071,
+   "span_recall@4096": 1.0,
+   "line_recall@4096": 1.0,
+   "file_recall@4096": 1.0,
+   "utilization@4096": 0.997559,
+   "gold_unit_share@4096": 0.166674,
+   "classes": {
+    "drift": 1,
+    "range": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2
+    },
+    "1024": {
+     "budget": 1,
+     "complete": 1
+    },
+    "4096": {
+     "complete": 2
+    }
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 3,
+   "spans": 22,
+   "lines": 151,
+   "files": 7,
+   "entry_recall@1": 0.222222,
+   "entry_recall@5": 0.388889,
+   "entry_recall@20": 0.388889,
+   "entry_mrr": 0.4,
+   "entry_file_recall": 0.333333,
+   "routed_coverage": 0.444444,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.006173,
+   "file_recall@256": 0.166667,
+   "utilization@256": 0.9375,
+   "gold_unit_share@256": 0.073059,
+   "span_recall@1024": 0.222222,
+   "line_recall@1024": 0.234568,
+   "file_recall@1024": 0.166667,
+   "utilization@1024": 0.985026,
+   "gold_unit_share@1024": 0.154714,
+   "span_recall@4096": 0.388889,
+   "line_recall@4096": 0.421076,
+   "file_recall@4096": 0.333333,
+   "utilization@4096": 0.998291,
+   "gold_unit_share@4096": 0.148316,
+   "classes": {
+    "contained": 2,
+    "exact": 20
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 8,
+     "entry": 14
+    },
+    "1024": {
+     "budget": 4,
+     "complete": 4,
+     "entry": 14
+    },
+    "4096": {
+     "budget": 1,
+     "complete": 7,
+     "entry": 14
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 2,
+   "spans": 2,
+   "lines": 50,
+   "files": 2,
+   "entry_recall@1": 0.5,
+   "entry_recall@5": 1.0,
+   "entry_recall@20": 1.0,
+   "entry_mrr": 0.6,
+   "entry_file_recall": 1.0,
+   "routed_coverage": 1.0,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.0,
+   "file_recall@256": 0.5,
+   "utilization@256": 0.914062,
+   "gold_unit_share@256": 0.0,
+   "span_recall@1024": 0.5,
+   "line_recall@1024": 0.5,
+   "file_recall@1024": 0.5,
+   "utilization@1024": 0.978516,
+   "gold_unit_share@1024": 0.232071,
+   "span_recall@4096": 1.0,
+   "line_recall@4096": 1.0,
+   "file_recall@4096": 1.0,
+   "utilization@4096": 0.997559,
+   "gold_unit_share@4096": 0.166674,
+   "classes": {
+    "drift": 1,
+    "range": 1
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 2
+    },
+    "1024": {
+     "budget": 1,
+     "complete": 1
+    },
+    "4096": {
+     "complete": 2
+    }
+   }
+  }
+ }
+}

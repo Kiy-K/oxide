@@ -24,10 +24,13 @@ from oxide.models import Coverage, Entity, FileInfo, OxideError, SourceRef
 ID_NAMESPACE = "oxide-id-v2"
 TREE_PROJECTION = "1"
 # ``facts.json``: one section of encoded facts by digest per dialect (the same bytes
-# parse differently as .py, .ts and .tsx); bump with either slice's facts version.
-FACTS_FORMAT = f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION}"
+# parse differently across grammars); include each slice's facts version.
+FACTS_FORMAT = (
+    f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
+    f"{typescript.JAVASCRIPT_FACTS_VERSION}"
+)
 
-Dialect = Literal["python", "typescript", "tsx"]
+Dialect = Literal["python", "typescript", "tsx", "javascript"]
 
 
 def dialect(path: str) -> Dialect | None:
@@ -55,6 +58,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "python-parser": f"{parser} tree-sitter-python={version('tree-sitter-python')}",
         "typescript": typescript.VERSION,
         "typescript-parser": f"{parser} tree-sitter-typescript={version('tree-sitter-typescript')}",
+        "javascript": typescript.JAVASCRIPT_VERSION,
+        "javascript-parser": f"{parser} tree-sitter-javascript={version('tree-sitter-javascript')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -123,7 +128,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             continue
         section = cached.get(lang)
         raw = section.get(f.digest) if isinstance(section, dict) else None
-        language = "python" if lang == "python" else "typescript"
+        language = lang if lang in ("python", "javascript") else "typescript"
         diagnostics: list[str] | str
         if lang == "python":
             py, hit = _reuse(raw, f.data, python.decode, python.parse)

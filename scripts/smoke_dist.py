@@ -93,6 +93,7 @@ def main(fixtures: Path) -> None:
         root, data = Path(temp) / "repo ü", Path(temp) / f"data dir{accent}"
         shutil.copytree(fixtures / "py_repo", root)
         shutil.copytree(fixtures / "ts_repo", root / "web")
+        shutil.copytree(fixtures / "js_repo", root / "javascript")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         env = {**os.environ, "OXIDE_DATA_DIR": str(data)}
 
@@ -131,6 +132,18 @@ def main(fixtures: Path) -> None:
             found = result("search", str(root), "café total")
             keys = [e["entity"]["key"] for e in found["entries"]]
             check("symbol:naïve_ünicode.py#café_total" in keys, f"non-ASCII entity: {keys}")
+        js = result("search", str(root), "normalize", "--symbol", "normalize")
+        check(
+            any(
+                e["entity"]["key"] == "symbol:javascript/src/use.cjs#normalize"
+                for e in js["entries"]
+            ),
+            "installed JavaScript extraction unavailable",
+        )
+        js_context = result(
+            "context", str(root), "normalize", "--symbol", "normalize", "--budget", "1024"
+        )
+        check("function normalize" in js_context["payload"], "installed JS context unavailable")
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -186,7 +199,10 @@ def environment() -> dict[str, Any]:
         "platform": f"{sys.platform}-{platform.machine()}",
         "os": platform.platform(),
         "python": platform.python_version(),
-        "packages": {p: version(p) for p in ("oxide", "ladybug", "tree-sitter", "fastmcp")},
+        "packages": {
+            p: version(p)
+            for p in ("oxide", "ladybug", "tree-sitter", "tree-sitter-javascript", "fastmcp")
+        },
         "fts": fts_unavailable(fts_location()) or "available",
     }
 

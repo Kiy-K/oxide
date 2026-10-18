@@ -137,7 +137,7 @@ class Repository:
 
     def index(self, *, progress: Callable[[str], None] | None = None) -> IndexReport:
         """Captures the worktree and publishes a new generation, or reports ``unchanged``
-        when the capture and derivation equal the current one. Python and TypeScript
+        when the capture and derivation equal the current one. Supported source
         files whose bytes the current generation already parsed reuse its facts;
         resolution and publication always cover the whole capture, so the result equals
         a full rebuild. ``progress`` receives a line as each stage starts."""

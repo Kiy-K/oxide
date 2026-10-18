@@ -1,0 +1,1010 @@
+[
+ {
+  "task": "mui__material-ui-11858",
+  "split": "heldout",
+  "corpus": "mui__material-ui@4acfb8da9fb5",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 54,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.166667,
+    "entry_recall@20": 0.166667,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.166667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.84375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.29248,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 16,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.84375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.29248,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": ".size-limit.js",
+    "lines": [
+     27,
+     33
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     37,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 38,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     42,
+     48
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     54,
+     59
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     69,
+     74
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     78,
+     93
+    ],
+    "class": "range",
+    "verified": false,
+    "code_lines": 16,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+    "lines": [
+     123,
+     132
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 9,
+    "module_lines": 9,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 80,
+   "fanout_truncations": 4,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 216,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 7,
+     "selection: container": 14,
+     "selection: value N below floor": 41
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.js",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/index.js",
+     "incomplete parse: pages/api/list-item-text.js",
+     "incomplete parse: pages/api/mui-theme-provider.js",
+     "incomplete parse: test/regressions/tests/List/PrimaryActionCheckboxListItem.js",
+     "incomplete parse: test/regressions/tests/List/SecondaryActionCheckboxListItem.js"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 4,
+    "omissions": {
+     "selection: container": 14,
+     "selection: value N below floor": 41
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.js",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/index.js",
+     "incomplete parse: pages/api/list-item-text.js",
+     "incomplete parse: pages/api/mui-theme-provider.js",
+     "incomplete parse: test/regressions/tests/List/PrimaryActionCheckboxListItem.js",
+     "incomplete parse: test/regressions/tests/List/SecondaryActionCheckboxListItem.js"
+    ]
+   },
+   "4096": {
+    "used": 1198,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 3,
+    "omissions": {
+     "selection: container": 14,
+     "selection: value N below floor": 41
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.js",
+     "incomplete parse: packages/material-ui/src/ListItem/ListItem.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/ListItemText.test.js",
+     "incomplete parse: packages/material-ui/src/ListItemText/index.js",
+     "incomplete parse: pages/api/list-item-text.js",
+     "incomplete parse: pages/api/mui-theme-provider.js",
+     "incomplete parse: test/regressions/tests/List/PrimaryActionCheckboxListItem.js",
+     "incomplete parse: test/regressions/tests/List/SecondaryActionCheckboxListItem.js"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:f73b6aed9b6c5fc7bdcd1d785798638342716ca7bb79416a6c8842f52473065a",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "206f1f0da817828204a6e43474e234ef6d010a3a31b412d0ab603f9a23d88075",
+   "routed": "97b706acf902c5378416c243c01f9e0ee182424ff3ed75690ea3455f7e3b13ed",
+   "payload@256": "22353ca065e46234d2ba674c94eb58262c4450df2910ef6fc6346f5fc0e0a8e4",
+   "payload@1024": "dcddb7fdef130fccb617e01b18ea8f7bf1920e6ea5b7e431b615b9299d349615",
+   "payload@4096": "e457c597133b386d9b4a1b53abc36cf1f1565e093a38cd433644a0791d66f622"
+  }
+ },
+ {
+  "task": "mui__material-ui-11987",
+  "split": "heldout",
+  "corpus": "mui__material-ui@09896d42e620",
+  "verified": {
+   "counts": {
+    "spans": 10,
+    "lines": 69,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.845703,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.211426,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": ".size-limit.js",
+    "lines": [
+     27,
+     33
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "lines": [
+     2,
+     7
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 4,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "docs/src/pages/style/icons/SvgIcons.js",
+    "lines": [
+     39,
+     44
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     40,
+     75
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     43,
+     48
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     60,
+     66
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     68,
+     76
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     77,
+     81
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     93,
+     98
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+    "lines": [
+     118,
+     125
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 77,
+   "fanout_truncations": 4,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 6,
+     "selection: container": 15,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: docs/src/pages/customization/css-in-js/RenderProps.js",
+     "incomplete parse: docs/src/pages/customization/overrides/ClassNames.js",
+     "incomplete parse: docs/src/pages/customization/themes/FontSizeTheme.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.test.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.test.js",
+     "incomplete parse: packages/material-ui-icons/src/Gradient.js",
+     "incomplete parse: packages/material-ui-icons/src/Star.js",
+     "incomplete parse: packages/material-ui-icons/src/StarHalf.js",
+     "incomplete parse: packages/material-ui-icons/src/Stars.js",
+     "incomplete parse: packages/material-ui-icons/src/Stop.js"
+    ]
+   },
+   "1024": {
+    "used": 866,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 15,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: docs/src/pages/customization/css-in-js/RenderProps.js",
+     "incomplete parse: docs/src/pages/customization/overrides/ClassNames.js",
+     "incomplete parse: docs/src/pages/customization/themes/FontSizeTheme.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.test.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.test.js",
+     "incomplete parse: packages/material-ui-icons/src/Gradient.js",
+     "incomplete parse: packages/material-ui-icons/src/Star.js",
+     "incomplete parse: packages/material-ui-icons/src/StarHalf.js",
+     "incomplete parse: packages/material-ui-icons/src/Stars.js",
+     "incomplete parse: packages/material-ui-icons/src/Stop.js"
+    ]
+   },
+   "4096": {
+    "used": 866,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 15,
+     "selection: value N below floor": 40
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: docs/src/pages/customization/css-in-js/RenderProps.js",
+     "incomplete parse: docs/src/pages/customization/overrides/ClassNames.js",
+     "incomplete parse: docs/src/pages/customization/themes/FontSizeTheme.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/color-imports.test.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.js",
+     "incomplete parse: packages/material-ui-codemod/src/v1.0.0/svg-icon-imports.test.js",
+     "incomplete parse: packages/material-ui-icons/src/Gradient.js",
+     "incomplete parse: packages/material-ui-icons/src/Star.js",
+     "incomplete parse: packages/material-ui-icons/src/StarHalf.js",
+     "incomplete parse: packages/material-ui-icons/src/Stars.js",
+     "incomplete parse: packages/material-ui-icons/src/Stop.js"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:f73b6aed9b6c5fc7bdcd1d785798638342716ca7bb79416a6c8842f52473065a",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "42851837c4a201e1dd101a6bc8d0bd5894bebf4ae8a918a98c9fefaafd837223",
+   "routed": "d8b1efc1ca37f1735594b3f65f8a2209f1d1b5669d9abd8de22ad8aabd941a13",
+   "payload@256": "d4e9c90e2c3338bc2c0ac82c491f463c6a7809182fe6940e0b0054aca97fcc06",
+   "payload@1024": "c027e55084ed925bb4d7e05f5ae47ff3fc7f67b580f69177fd0edb9603a2a645",
+   "payload@4096": "c027e55084ed925bb4d7e05f5ae47ff3fc7f67b580f69177fd0edb9603a2a645"
+  }
+ },
+ {
+  "task": "mui__material-ui-12236",
+  "split": "heldout",
+  "corpus": "mui__material-ui@18aa6293ad8b",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 28,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.975586,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.532227,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 34,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.980469,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.975586,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.532227,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 4,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     44,
+     53
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/styles/withTheme.js",
+    "lines": [
+     44,
+     53
+    ],
+    "class": "contained",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     95,
+     135
+    ],
+    "class": "drift",
+    "verified": false,
+    "code_lines": 34,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     98,
+     104
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     127,
+     133
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "packages/material-ui/src/withWidth/withWidth.js",
+    "lines": [
+     144,
+     149
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 138,
+   "fanout_truncations": 6,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 251,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 26,
+     "selection: container": 11,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui-icons/fixtures/material-design-icons/expected/Accessibility.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/withWidth/withWidth.js",
+     "incomplete parse: pages/api/mui-theme-provider.js"
+    ]
+   },
+   "1024": {
+    "used": 999,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 19,
+     "selection: container": 11,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui-icons/fixtures/material-design-icons/expected/Accessibility.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/withWidth/withWidth.js",
+     "incomplete parse: pages/api/mui-theme-provider.js"
+    ]
+   },
+   "4096": {
+    "used": 2180,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 2,
+    "omissions": {
+     "selection: container": 11,
+     "selection: item cap N": 5,
+     "selection: value N below floor": 24
+    },
+    "degradations": [
+     "routing stopped by its depth bound",
+     "incomplete parse: packages/material-ui-icons/fixtures/material-design-icons/expected/Accessibility.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.js",
+     "incomplete parse: packages/material-ui/src/styles/MuiThemeProvider.test.js",
+     "incomplete parse: packages/material-ui/src/withWidth/withWidth.js",
+     "incomplete parse: pages/api/mui-theme-provider.js"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:f73b6aed9b6c5fc7bdcd1d785798638342716ca7bb79416a6c8842f52473065a",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "50e3f54dd4c058e5087323f4256a9031629c3345a8ff6e9508c8aef3ff979a49",
+   "routed": "afe0b607343a3653cd36c3e1d3def1ab3f2ba52ca2b57536b6717acfe61bca4e",
+   "payload@256": "d3b04f5bed71d57b52329470a8341199092bffa29261e7090f45fceb4adc3c13",
+   "payload@1024": "a9a70d87055b26c33ba1ee5e175f571b483a8c725b8f5915ebd89b4f92cf6510",
+   "payload@4096": "304fc6bf8eab98208ae8fc5e00efbd39de47d75ec9a0e853fd04d205e27afcb2"
+  }
+ }
+]

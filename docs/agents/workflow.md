@@ -37,7 +37,7 @@ its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
 `docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
-baseline `typescript-v5/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+baseline `typescript-v6/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
@@ -122,3 +122,7 @@ directory with a recorded comparison, never a regenerated old one.
 `docs/phase-4/` and `docs/phase-5/` artifacts and the DecisionBench/JEV
 harnesses documented there were produced by the Rust runtime, which was removed
 in ADR-0011. They are evidence, reproducible only at commit `f79808a`.
+
+JavaScript/JSX conformance runs in `mise run verify` (`test_javascript.py`). The bounded
+real-repository and ContextBench diagnostic is reproducible via
+`scripts/eval_javascript.py`; protocol and results: `docs/phase-6/javascript-v1/`.

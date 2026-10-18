@@ -1,0 +1,201 @@
+{
+ "historical_tasks_sha256": "5fc16fa6b0b68542caeb4a5a98a28dc404da1266bec08466c5a97e8e9f1589e2",
+ "tasks": [
+  {
+   "task": "mui__material-ui-11858",
+   "corpus": "mui__material-ui@4acfb8da9fb5",
+   "javascript_spans": 7
+  },
+  {
+   "task": "mui__material-ui-11987",
+   "corpus": "mui__material-ui@09896d42e620",
+   "javascript_spans": 10
+  },
+  {
+   "task": "mui__material-ui-12236",
+   "corpus": "mui__material-ui@18aa6293ad8b",
+   "javascript_spans": 7
+  },
+  {
+   "task": "mui__material-ui-12303",
+   "corpus": "mui__material-ui@f432f8a73351",
+   "javascript_spans": 12
+  },
+  {
+   "task": "mui__material-ui-13534",
+   "corpus": "mui__material-ui@20cd3e33ae60",
+   "javascript_spans": 7
+  },
+  {
+   "task": "mui__material-ui-18141",
+   "corpus": "mui__material-ui@13b3a0d31947",
+   "javascript_spans": 8
+  },
+  {
+   "task": "mui__material-ui-18796",
+   "corpus": "mui__material-ui@c4c5a03e143f",
+   "javascript_spans": 8
+  },
+  {
+   "task": "mui__material-ui-20657",
+   "corpus": "mui__material-ui@72a477f3ca67",
+   "javascript_spans": 8
+  },
+  {
+   "task": "mui__material-ui-23229",
+   "corpus": "mui__material-ui@56520e757e00",
+   "javascript_spans": 7
+  },
+  {
+   "task": "mui__material-ui-23806",
+   "corpus": "mui__material-ui@21b4e266d576",
+   "javascript_spans": 4
+  },
+  {
+   "task": "mui__material-ui-24857",
+   "corpus": "mui__material-ui@e24280973174",
+   "javascript_spans": 6
+  },
+  {
+   "task": "mui__material-ui-25149",
+   "corpus": "mui__material-ui@fca2ddf44ce5",
+   "javascript_spans": 13
+  },
+  {
+   "task": "mui__material-ui-25390",
+   "corpus": "mui__material-ui@ea2bd5aa822d",
+   "javascript_spans": 2
+  },
+  {
+   "task": "mui__material-ui-25637",
+   "corpus": "mui__material-ui@d2e00769d032",
+   "javascript_spans": 11
+  },
+  {
+   "task": "mui__material-ui-25874",
+   "corpus": "mui__material-ui@a4d8c4ffadca",
+   "javascript_spans": 12
+  },
+  {
+   "task": "mui__material-ui-26480",
+   "corpus": "mui__material-ui@d81caa37668a",
+   "javascript_spans": 6
+  },
+  {
+   "task": "mui__material-ui-26623",
+   "corpus": "mui__material-ui@f336e03acfad",
+   "javascript_spans": 24
+  },
+  {
+   "task": "mui__material-ui-26746",
+   "corpus": "mui__material-ui@9acf8be6d2fd",
+   "javascript_spans": 5
+  },
+  {
+   "task": "mui__material-ui-26807",
+   "corpus": "mui__material-ui@567e6cf97dce",
+   "javascript_spans": 7
+  },
+  {
+   "task": "mui__material-ui-28813",
+   "corpus": "mui__material-ui@182d4dc7726f",
+   "javascript_spans": 10
+  },
+  {
+   "task": "mui__material-ui-29023",
+   "corpus": "mui__material-ui@d11ef0f82f1e",
+   "javascript_spans": 4
+  },
+  {
+   "task": "mui__material-ui-29880",
+   "corpus": "mui__material-ui@0d94283959a3",
+   "javascript_spans": 3
+  },
+  {
+   "task": "mui__material-ui-29898",
+   "corpus": "mui__material-ui@38ac830eedf6",
+   "javascript_spans": 4
+  },
+  {
+   "task": "mui__material-ui-30345",
+   "corpus": "mui__material-ui@7767fb8f46ab",
+   "javascript_spans": 5
+  },
+  {
+   "task": "mui__material-ui-30524",
+   "corpus": "mui__material-ui@bbedbf79e07c",
+   "javascript_spans": 1
+  },
+  {
+   "task": "mui__material-ui-31998",
+   "corpus": "mui__material-ui@5b53f5efe691",
+   "javascript_spans": 13
+  },
+  {
+   "task": "mui__material-ui-33312",
+   "corpus": "mui__material-ui@03b616a1e015",
+   "javascript_spans": 1
+  },
+  {
+   "task": "mui__material-ui-34138",
+   "corpus": "mui__material-ui@67073cc35a74",
+   "javascript_spans": 11
+  },
+  {
+   "task": "mui__material-ui-34207",
+   "corpus": "mui__material-ui@1a4263a50af0",
+   "javascript_spans": 12
+  },
+  {
+   "task": "mui__material-ui-34337",
+   "corpus": "mui__material-ui@b3548fabeab1",
+   "javascript_spans": 6
+  },
+  {
+   "task": "mui__material-ui-34401",
+   "corpus": "mui__material-ui@d35d22994887",
+   "javascript_spans": 23
+  },
+  {
+   "task": "mui__material-ui-34610",
+   "corpus": "mui__material-ui@1e09429e1804",
+   "javascript_spans": 9
+  },
+  {
+   "task": "mui__material-ui-35410",
+   "corpus": "mui__material-ui@1e4dd5f0837c",
+   "javascript_spans": 1
+  },
+  {
+   "task": "mui__material-ui-36971",
+   "corpus": "mui__material-ui@be6b6e2bc479",
+   "javascript_spans": 4
+  },
+  {
+   "task": "mui__material-ui-39196",
+   "corpus": "mui__material-ui@75404f9ff099",
+   "javascript_spans": 2
+  },
+  {
+   "task": "mui__material-ui-39962",
+   "corpus": "mui__material-ui@553cf822f650",
+   "javascript_spans": 5
+  },
+  {
+   "task": "vuejs__core-8535",
+   "corpus": "vuejs__core@6277cb994ace",
+   "javascript_spans": 1
+  },
+  {
+   "task": "vuejs__core-9572",
+   "corpus": "vuejs__core@f6babf323631",
+   "javascript_spans": 1
+  }
+ ],
+ "total_spans": 280,
+ "scored": [
+  "mui__material-ui-11858",
+  "mui__material-ui-11987",
+  "mui__material-ui-12236"
+ ]
+}

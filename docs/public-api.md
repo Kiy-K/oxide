@@ -59,10 +59,11 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
 - `Entity`: `key`, `category` (`repository`/`module`/`file`/`symbol`), `kind`,
   `name`, `signature`, `source: SourceRef | None`, `test`. Keys are
   deterministic and snapshot-local (ADR-0010): `repo`, `module:python:a.b`,
-  `module:typescript:src/a` ([docs/typescript.md](typescript.md)), `file:<path>`,
+  `module:typescript:src/a` ([docs/typescript.md](typescript.md)),
+  `module:javascript:src/a.js` ([docs/javascript.md](javascript.md)), `file:<path>`,
   `symbol:<path>#Outer.inner~1`. Symbol kinds are the slice's: Python `class`,
   `function`, `method`; TypeScript also `interface`, `type`, `enum`, `namespace`,
-  `variable`. `FileInfo.language` is `python`, `typescript` or `unknown`.
+  `variable`. `FileInfo.language` is `python`, `typescript`, `javascript` or `unknown`.
 - `SourceRef`: `path`, half-open byte `start`/`end`, file `digest`
   (`sha256:` of the captured bytes).
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,

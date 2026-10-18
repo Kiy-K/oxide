@@ -1,0 +1,62 @@
+[
+ {
+  "source": "test/res.send.js",
+  "expression": "utils.shouldNotHaveHeader('ETag')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ },
+ {
+  "source": "test/res.send.js",
+  "expression": "utils.shouldNotHaveHeader('Transfer-Encoding')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ },
+ {
+  "source": "test/res.redirect.js",
+  "expression": "utils.shouldNotHaveHeader('Content-Type')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ },
+ {
+  "source": "test/res.send.js",
+  "expression": "utils.shouldNotHaveBody()",
+  "target": "symbol:test/support/utils.js#shouldNotHaveBody",
+  "signature": "function shouldNotHaveBody ()"
+ },
+ {
+  "source": "lib/application.js",
+  "expression": "new View(name, {\n      defaultEngine: this.get('view engine'),\n      root: this.get('views'),\n      engines: engines\n    })",
+  "target": "symbol:lib/view.js#View",
+  "signature": "function View(name, options)"
+ },
+ {
+  "source": "test/res.download.js",
+  "expression": "utils.shouldHaveBody(Buffer.from('tobi'))",
+  "target": "symbol:test/support/utils.js#shouldHaveBody",
+  "signature": "function shouldHaveBody (buf)"
+ },
+ {
+  "source": "test/express.static.js",
+  "expression": "utils.shouldNotHaveHeader('Last-Modified')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ },
+ {
+  "source": "test/express.static.js",
+  "expression": "utils.shouldNotHaveHeader('Cache-Control')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ },
+ {
+  "source": "test/res.send.js",
+  "expression": "utils.shouldHaveBody(Buffer.from('hello'))",
+  "target": "symbol:test/support/utils.js#shouldHaveBody",
+  "signature": "function shouldHaveBody (buf)"
+ },
+ {
+  "source": "test/res.sendFile.js",
+  "expression": "utils.shouldNotHaveHeader('Cache-Control')",
+  "target": "symbol:test/support/utils.js#shouldNotHaveHeader",
+  "signature": "function shouldNotHaveHeader(header)"
+ }
+]

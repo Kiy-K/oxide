@@ -24,7 +24,6 @@ import json
 import os
 import posixpath
 import re
-import resource
 import shutil
 import subprocess
 import sys
@@ -34,6 +33,9 @@ import time
 from collections import Counter
 from pathlib import Path
 from typing import Any
+
+if sys.platform != "win32":
+    import resource
 
 import contextbench as cb
 import tree_sitter_typescript
@@ -45,7 +47,7 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v5"
+BASELINE = cb.PHASE6 / "typescript-v6"
 PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
 TASKS = PROTOCOL / "tasks.json"
 AUDIT = PROTOCOL / "gold-audit.json"
@@ -744,8 +746,10 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
     base = cb.manifest(evaluated)
     return {
         **base,
-        "baseline": "contextbench-ts-v4",
-        "protocol": "docs/phase-6/typescript-v1/README.md, amended by typescript-v2, v3, v4 and v5",
+        "baseline": "contextbench-ts-v6",
+        "protocol": (
+            "docs/phase-6/typescript-v1/README.md, amended by typescript-v2, v3, v4, v5 and v6"
+        ),
         "scorer": SCORER,
         "tasks": f"{TASKS_VERSION} sha256 {cb._sha(TASKS.read_bytes())}",
         "audit": f"{AUDIT_VERSION} sha256 {cb._sha(AUDIT.read_bytes())}",

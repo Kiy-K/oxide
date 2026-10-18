@@ -1,0 +1,180 @@
+{
+ "mui__material-ui-11858": [
+  {
+   "file": ".size-limit.js",
+   "start": 27,
+   "end": 33,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 37,
+   "end": 76,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 42,
+   "end": 48,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 54,
+   "end": 59,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 69,
+   "end": 74,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 78,
+   "end": 93,
+   "class": "range",
+   "detail": "content verbatim at lines 78-94",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/ListItemText/ListItemText.js",
+   "start": 123,
+   "end": 132,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "mui__material-ui-11987": [
+  {
+   "file": ".size-limit.js",
+   "start": 27,
+   "end": 33,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "docs/src/pages/style/icons/SvgIcons.js",
+   "start": 2,
+   "end": 7,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "docs/src/pages/style/icons/SvgIcons.js",
+   "start": 39,
+   "end": 44,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 40,
+   "end": 75,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 43,
+   "end": 48,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 60,
+   "end": 66,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 68,
+   "end": 76,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 77,
+   "end": 81,
+   "class": "contained",
+   "detail": "1 of 5 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 93,
+   "end": 98,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/SvgIcon/SvgIcon.js",
+   "start": 118,
+   "end": 125,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "mui__material-ui-12236": [
+  {
+   "file": "packages/material-ui/src/styles/withTheme.js",
+   "start": 1,
+   "end": 4,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/styles/withTheme.js",
+   "start": 44,
+   "end": 53,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/styles/withTheme.js",
+   "start": 44,
+   "end": 53,
+   "class": "contained",
+   "detail": "2 of 7 range lines not in the content",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/withWidth/withWidth.js",
+   "start": 95,
+   "end": 135,
+   "class": "drift",
+   "detail": "2 of 16 content lines are not in the file",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/withWidth/withWidth.js",
+   "start": 98,
+   "end": 104,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/withWidth/withWidth.js",
+   "start": 127,
+   "end": 133,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "packages/material-ui/src/withWidth/withWidth.js",
+   "start": 144,
+   "end": 149,
+   "class": "exact",
+   "numbered": false
+  }
+ ]
+}

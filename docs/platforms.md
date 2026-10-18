@@ -160,3 +160,15 @@ CRLF checkout would change their digests and offsets.
         --artifact-server-path /tmp/act-artifacts
 
 - **Windows and macOS** can only run on the hosted runners. act cannot emulate them.
+
+## JavaScript grammar compatibility
+
+`tree-sitter-javascript==0.23.1` ships CPython `cp39-abi3` wheels covering all
+four supported OS/architecture rows above, usable on Python 3.12–3.14. Its grammar
+ABI is 14; the locked tree-sitter 0.26.0 accepts ABI 13–15. Published wheel metadata
+and local runtime checks are recorded in
+[phase-6/javascript-v1](phase-6/javascript-v1/README.md). The existing platform
+workflow automatically includes the new conformance fixtures and distribution smoke.
+New JavaScript execution on Windows/macOS is pending those hosted jobs; wheel
+availability does not establish runtime verification. Existing platform limitations
+still apply. No Node or Bun runtime dependency is introduced.

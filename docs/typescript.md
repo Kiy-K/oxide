@@ -17,7 +17,8 @@ beside `tree-sitter-python`, and named in the derivation components (`typescript
 | --- | --- | --- |
 | `*.ts`, `*.mts`, `*.cts` | `typescript` | Declaration files (`*.d.ts`, `*.d.mts`, `*.d.cts`) are TypeScript sources too |
 | `*.tsx` | `tsx` | JSX elements are parsed; the dialect is chosen by extension only |
-| `*.js`, `*.jsx`, `*.mjs`, `*.cjs`, JSON, … | — | Not parsed: file evidence with `unsupported` coverage, as before |
+| `*.js`, `*.jsx`, `*.mjs`, `*.cjs` | `javascript` | Native JavaScript grammar through the shared pipeline; see [javascript.md](javascript.md) |
+| JSON, … | — | Unsupported file evidence |
 
 Every TypeScript file is `FileInfo.language == "typescript"`. A file that is not UTF-8,
 or whose syntax nests deeper than 65,535 levels ([parser-limits.md](parser-limits.md)),
@@ -102,8 +103,7 @@ name), none or unknowable is `unresolved` with the name it used.
     Each candidate is looked up as TypeScript does: the file (TypeScript extensions
     first), then the directory's `package.json`, then `index`.
   - **Stops:** a lookup ends unresolved, never at a later candidate, if the first
-    thing TypeScript would load is something OXIDE doesn't model: a JavaScript file,
-    a source that didn't parse, a JSON file, or a directory with a `package.json`.
+    thing TypeScript would load is something OXIDE doesn't model: a source that didn't parse, a JSON file, or a directory with a `package.json`.
   - **Unknowable projects resolve nothing:** a config that doesn't parse as JSONC, an
     `extends` of a package or a missing file, a cycle, or a key of the wrong type.
     Packages (`node_modules`, `package.json` `exports`/`types`, workspace links) are
@@ -136,15 +136,15 @@ name), none or unknowable is `unresolved` with the name it used.
   scope: the test file itself for calls in `describe`/`it` callbacks.
 
 Not modeled: type annotations and other type references (only heritage is), `this`/instance
-member calls, decorators as relations, dynamic `import()`, CommonJS `require` calls,
-`export =`, `declare global` augmentation (its declarations belong to the file), and
-cross-language relations.
+member calls, decorators as relations, dynamic `import()`, CommonJS `require` calls in TypeScript,
+`export =`, `declare global` augmentation (its declarations belong to the file), and Python cross-language relations. JavaScript interoperability is documented in
+[javascript.md](javascript.md); TypeScript-only identities and resolution stay unchanged.
 
 ## Incremental indexing
 
 The facts of each parsed file are cached in `facts.json` like Python's
-(`oxide-typescript-facts-v1`), in one section per dialect (`python`, `typescript`,
-`tsx`; container format `oxide-facts-v2`), because the same bytes parse differently
+(`oxide-typescript-facts-v2`), in one section per dialect (`python`, `typescript`,
+`tsx`, `javascript`; the container also names `oxide-javascript-facts-v1`), because the same bytes parse differently
 as `.py`, `.ts` and `.tsx`. `decode` checks cached facts as strictly as the Python
 slice. Anything `parse` could not have produced is parsed again, never trusted. Resolution
 and publication cover the whole snapshot, so an incremental index equals a full
