@@ -127,4 +127,10 @@ def test_windows_store_and_extension_paths_must_be_ascii(
         ladybug.Store(FIXTURE, data)
     assert caught.value.code == "invalid_path"
     assert not data.exists()
-    assert "ASCII" in (ladybug.fts_unavailable(tmp_path / "é" / "libfts.lbug_extension") or "")
+    assert "OXIDE_DATA_DIR" in str(caught.value)
+    extension = tmp_path / "é" / "libfts.lbug_extension"
+    assert "OXIDE_FTS_EXTENSION" in (ladybug.fts_unavailable(extension) or "")
+    with pytest.raises(oxide.OxideError, match="OXIDE_FTS_EXTENSION") as caught:
+        ladybug.prepare_fts(extension)  # never reaches the network
+    assert caught.value.code == "invalid_path"
+    assert not extension.parent.exists()

@@ -29,6 +29,11 @@ jobs:
           # ladybug 0.21.0's macOS wheels need macOS 15 or later.
           - { os: macos-15-intel, label: macos-x86_64 }
           - { os: macos-15, label: macos-arm64 }
+          # The ends of requires-python; the rows above use .python-version (3.13).
+          - { os: ubuntu-24.04, label: linux-x86_64-py3.12, python: "3.12", fts: linux-x86_64 }
+          - { os: ubuntu-24.04, label: linux-x86_64-py3.14, python: "3.14", fts: linux-x86_64 }
+    env:
+      UV_PYTHON: ${{ matrix.python }}  # empty: .python-version
     defaults:
       run:
         shell: bash
@@ -55,7 +60,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.cache/oxide
-          key: oxide-fts-${{ matrix.label }}-${{ hashFiles('src/oxide/storage/ladybug.py') }}
+          key: oxide-fts-${{ matrix.fts || matrix.label }}-${{ hashFiles('src/oxide/storage/ladybug.py') }}
       - name: Install the locked environment and the FTS extension
         run: |
           uv sync --locked

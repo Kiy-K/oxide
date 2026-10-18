@@ -122,10 +122,11 @@ def _fts_build() -> tuple[str, str] | None:
     return url, sha256
 
 
-def _native_path_issue(text: str) -> str | None:
-    """Why LadybugDB cannot open this path, or None (docs/platforms.md)."""
+def _native_path_issue(text: str, variable: str) -> str | None:
+    """Why LadybugDB cannot open this path, or None (docs/platforms.md). ``variable``
+    names the environment variable that moves it."""
     if sys.platform == "win32" and not text.isascii():
-        return f"{text!r}: on Windows LadybugDB opens only ASCII paths; set OXIDE_DATA_DIR"
+        return f"{text!r}: on Windows LadybugDB opens only ASCII paths; set {variable}"
     return None
 
 
@@ -134,7 +135,7 @@ def fts_unavailable(path: Path) -> str | None:
     loading native code is a trust boundary (ADR-0002 § 3)."""
     if (build := _fts_build()) is None:
         return f"no pinned FTS extension for {sys.platform}/{platform.machine()}"
-    if issue := _native_path_issue(str(path)):
+    if issue := _native_path_issue(str(path), "OXIDE_FTS_EXTENSION"):
         return issue
     try:
         data = path.read_bytes()
@@ -153,6 +154,8 @@ def prepare_fts(path: Path | None = None) -> Path:
         return path
     if (build := _fts_build()) is None:
         raise OxideError(f"no pinned FTS extension for {sys.platform}/{platform.machine()}")
+    if issue := _native_path_issue(str(path), "OXIDE_FTS_EXTENSION"):
+        raise InvalidPath(issue)  # never download what could not be loaded
     url, sha256 = build
     path.parent.mkdir(parents=True, exist_ok=True)
     # The extension host refuses urllib's default User-Agent (HTTP 403, measured).
@@ -194,7 +197,7 @@ def _literal(path: Path) -> str:
         text.encode("utf-8")
     except UnicodeEncodeError as error:
         raise InvalidPath(f"{text!r}: store and extension paths must be UTF-8") from error
-    if issue := _native_path_issue(text):
+    if issue := _native_path_issue(text, "OXIDE_DATA_DIR"):
         raise InvalidPath(issue)
     return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
 

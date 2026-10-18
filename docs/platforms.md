@@ -15,6 +15,12 @@ and checked by `.github/workflows/platforms.yml`.
 | Linux arm64, musl, Windows arm64 | none | wheels exist | not pinned | unsupported: not tested; the lexical channel reports `unavailable` |
 | macOS < 15 | none | no ladybug wheel | — | unsupported: does not install |
 
+The Linux job also runs on CPython 3.12 and 3.14, the ends of `requires-python`
+(rows `linux-x86_64-py3.12` and `linux-x86_64-py3.14`). Their status is pending until
+those jobs have run green on the hosted runners. Locally on Linux x86_64 (2026-10-18), the wheel
+installed from its own metadata, without the lock, and passed `smoke_dist.py` on
+3.12.15, 3.13.16 and 3.14.8.
+
 "Verified" means the platform job has passed. A row stays "pending" until its hosted
 job has run green; nothing here is claimed from local runs on another OS.
 
@@ -38,9 +44,25 @@ On Windows, ladybug cannot open a database or extension path with non-ASCII
 characters. On the hosted runner it failed with "Cannot open file ... Error 3" for a
 path containing `é` (Platforms run 39108643199). OXIDE checks this before creating
 anything: a non-ASCII store path is `invalid_path`, and a non-ASCII FTS extension
-path makes the lexical channel `unavailable`. With a non-ASCII user name, set
-`OXIDE_DATA_DIR` (and `OXIDE_FTS_EXTENSION`) to an ASCII location. Repository paths
-and file names may be anything; the smoke run indexes a non-ASCII repository there.
+path makes the lexical channel `unavailable` (and `oxide prepare` refuses it before
+downloading). Each error names the variable to set. With a non-ASCII user name, set
+`OXIDE_DATA_DIR` and `OXIDE_FTS_EXTENSION` to an ASCII location. Repository paths and
+file names may be anything; the smoke run indexes a non-ASCII repository there.
+
+No automatic fallback is safe, so OXIDE fails closed instead of choosing a location
+(investigated 2026-10-18):
+
+- 8.3 short names (`GetShortPathNameW`) exist only if the volume creates them. That is
+  a per-volume setting, and Dev Drive/ReFS has none. They also exist only for paths
+  that already exist, so the store's identity would depend on volume configuration.
+- `%LOCALAPPDATA%` is under the same non-ASCII profile directory.
+- A machine-wide ASCII directory (`%ProgramData%`, `C:\oxide`) is shared between users,
+  so other accounts could read or plant store contents.
+- The UTF-8 active code page is a process manifest or system-wide setting, not
+  something a library can switch on.
+
+The fix belongs upstream: LadybugDB opening paths with the wide-character Windows
+APIs.
 
 ## Why ladybug is pinned at 0.21.0
 
