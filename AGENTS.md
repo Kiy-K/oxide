@@ -18,6 +18,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 
 ## How to work
 
+- For fully-autonomous tasks, don't poll background tasks; they will send you their output once they're done.
 - Keep it simple. Build only what the current phase needs: no speculative abstractions, flags or features.
 - Don't duplicate logic, policy or docs. Still, don't add an abstraction just to remove a few repeated lines.
 - Keep changes small and cohesive. Don't clean up unrelated code during a focused task.
