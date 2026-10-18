@@ -122,11 +122,20 @@ def _fts_build() -> tuple[str, str] | None:
     return url, sha256
 
 
+def _native_path_issue(text: str) -> str | None:
+    """Why LadybugDB cannot open this path, or None (docs/platforms.md)."""
+    if sys.platform == "win32" and not text.isascii():
+        return f"{text!r}: on Windows LadybugDB opens only ASCII paths; set OXIDE_DATA_DIR"
+    return None
+
+
 def fts_unavailable(path: Path) -> str | None:
     """Why the pinned FTS extension cannot be used, or None. Checked on every use:
     loading native code is a trust boundary (ADR-0002 § 3)."""
     if (build := _fts_build()) is None:
         return f"no pinned FTS extension for {sys.platform}/{platform.machine()}"
+    if issue := _native_path_issue(str(path)):
+        return issue
     try:
         data = path.read_bytes()
     except OSError:
@@ -185,6 +194,8 @@ def _literal(path: Path) -> str:
         text.encode("utf-8")
     except UnicodeEncodeError as error:
         raise InvalidPath(f"{text!r}: store and extension paths must be UTF-8") from error
+    if issue := _native_path_issue(text):
+        raise InvalidPath(issue)
     return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 

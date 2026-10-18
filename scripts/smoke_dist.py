@@ -88,8 +88,9 @@ def main(fixtures: Path) -> None:
     )
     print(f"smoke: oxide at {origin}")
 
-    with tempfile.TemporaryDirectory(prefix="oxide smoke ü ") as temp:
-        root, data = Path(temp) / "repo ü", Path(temp) / "data dir é"
+    accent = "" if sys.platform == "win32" else " é"  # LadybugDB there opens only ASCII
+    with tempfile.TemporaryDirectory(prefix=f"oxide smoke{accent} ") as temp:
+        root, data = Path(temp) / "repo ü", Path(temp) / f"data dir{accent}"
         shutil.copytree(fixtures / "py_repo", root)
         shutil.copytree(fixtures / "ts_repo", root / "web")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")

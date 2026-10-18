@@ -115,3 +115,16 @@ def test_a_native_library_that_cannot_load_is_typed_and_touches_nothing(
         repo.index()
     assert caught.value.code == "native_unavailable"
     assert not (tmp_path / "data" / "repos").exists()
+
+
+def test_windows_store_and_extension_paths_must_be_ascii(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setattr(platform, "machine", lambda: "AMD64")
+    data = tmp_path / "dätä"
+    with pytest.raises(oxide.OxideError, match="ASCII") as caught:
+        ladybug.Store(FIXTURE, data)
+    assert caught.value.code == "invalid_path"
+    assert not data.exists()
+    assert "ASCII" in (ladybug.fts_unavailable(tmp_path / "é" / "libfts.lbug_extension") or "")

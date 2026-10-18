@@ -149,6 +149,8 @@ Damage is classified like this:
 
 ## Platform and native limitations
 
+- On Windows, store and FTS extension paths must be ASCII (LadybugDB opens no other):
+  a non-ASCII store path is `invalid_path`; see [platforms.md](platforms.md).
 - The FTS extension is pinned for Linux x86_64, macOS x86_64/arm64 and Windows
   x86_64 ([platforms.md](platforms.md)). Elsewhere the lexical channel reports
   `unavailable`. Atomic publication and the crash tests run on all four in the

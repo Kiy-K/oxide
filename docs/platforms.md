@@ -32,6 +32,16 @@ directory" option. Without them every store operation fails with
 `native_unavailable` before anything is touched. The Windows job installs them the
 same way.
 
+## Windows limitation: ASCII store paths
+
+On Windows, ladybug cannot open a database or extension path with non-ASCII
+characters. On the hosted runner it failed with "Cannot open file ... Error 3" for a
+path containing `é` (Platforms run 39108643199). OXIDE checks this before creating
+anything: a non-ASCII store path is `invalid_path`, and a non-ASCII FTS extension
+path makes the lexical channel `unavailable`. With a non-ASCII user name, set
+`OXIDE_DATA_DIR` (and `OXIDE_FTS_EXTENSION`) to an ASCII location. Repository paths
+and file names may be anything; the smoke run indexes a non-ASCII repository there.
+
 ## Why ladybug is pinned at 0.21.0
 
 The FTS extension must match the ladybug core it loads into. The host publishes FTS
