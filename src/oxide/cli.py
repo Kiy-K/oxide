@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import io
 import json
 import sys
 from typing import Any
@@ -70,6 +71,9 @@ def _index_summary(report: IndexReport) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI code page
+        if isinstance(stream, io.TextIOWrapper):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(prog="oxide", description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("prepare", help="fetch and verify the pinned LadybugDB FTS extension")

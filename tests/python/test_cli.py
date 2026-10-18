@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -10,9 +11,14 @@ from pathlib import Path
 from conftest import FIXTURE, env
 
 
-def oxide(data: Path, *args: str) -> subprocess.CompletedProcess[str]:
+def oxide(
+    data: Path, *args: str, extra: dict[str, str] | None = None
+) -> subprocess.CompletedProcess[str]:
     command = [sys.executable, "-m", "oxide", *args]
-    return subprocess.run(command, env=env(data), capture_output=True, text=True, check=False)
+    environment = env(data) | (extra or {})
+    return subprocess.run(
+        command, env=environment, capture_output=True, encoding="utf-8", check=False
+    )
 
 
 def test_index_search_context_round_trip(tmp_path: Path, fts: Path) -> None:
@@ -86,3 +92,15 @@ def test_index_reports_progress_changes_and_reuse(tmp_path: Path, repo_copy: Pat
     assert lines[2] == "sources: 0 parsed, 7 reused"
     assert second.stderr.splitlines()[0].startswith("oxide: capturing ")
     assert "oxide: publishing" in second.stderr
+
+
+def test_output_is_utf_8_whatever_the_stream_encoding(tmp_path: Path) -> None:
+    # Windows pipes default to the ANSI code page; latin-1 stands in for it here.
+    repo = tmp_path / "東京 café"
+    shutil.copytree(FIXTURE, repo)
+    data = tmp_path / "data"
+    run = oxide(
+        data, "index", str(repo), "--data-dir", str(data), extra={"PYTHONIOENCODING": "latin-1"}
+    )
+    assert run.returncode == 0, run.stderr
+    assert f"oxide: capturing {repo}" in run.stderr
