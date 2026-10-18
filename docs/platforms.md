@@ -44,8 +44,8 @@ on 2026-10-17; parallel downloads were fast), so the workflow caches
    FTS state (`environment.json` artifact).
 3. `mypy --strict`: type-checks the platform's own branches (`msvcrt` on Windows,
    `fcntl` elsewhere).
-4. `pytest`, without `test_contextbench.py` (its corpora gate runs on Linux in
-   `ci.yml`):
+4. `pytest`, without the ContextBench gates (`test_contextbench.py`,
+   `test_contextbench_ts.py`; they run on Linux in `ci.yml` and `mise run contextbench-ts`):
    - indexing, reopening and incremental parity;
    - FTS queries;
    - search, context, the CLI and MCP over stdio and HTTP;

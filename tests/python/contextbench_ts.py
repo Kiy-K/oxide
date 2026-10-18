@@ -691,10 +691,13 @@ def evaluate(tasks: dict[str, Any], data: Path) -> dict[str, Any]:
                     attribute(view, result, [e.entity.key for e in found.entries], extra)
                     result["outside"] = task["outside"]
                     results.append(result)
+            rss: int | None = None
+            if sys.platform != "win32":  # the gates run on POSIX
+                rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss // 1024
             performance[name] = {
                 "index_s": round(report.seconds, 3),
                 "score_s": seconds,  # search, route, 3 budgets x 2 builds
-                "max_rss_mb": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss // 1024,
+                "max_rss_mb": rss,
             }
         finally:
             ladybug.BUFFER_POOL = DEFAULT_BUFFER_POOL

@@ -56,6 +56,7 @@ jobs:
       - name: pytest (without the ContextBench corpora gate)
         run: >
           uv run --locked pytest --ignore=tests/python/test_contextbench.py
+          --ignore=tests/python/test_contextbench_ts.py
           --junitxml=pytest.xml
       - name: Build the wheel and sdist
         run: uv build --out-dir dist
@@ -66,7 +67,7 @@ jobs:
             venv="$RUNNER_TEMP/smoke-$(basename "$artifact")"
             uv venv -q "$venv"
             uv pip install -q --python "$venv" "$artifact" -r "$RUNNER_TEMP/requirements.txt"
-            python=$(ls "$venv"/bin/python "$venv"/Scripts/python.exe 2>/dev/null | head -n 1)
+            python="$venv/bin/python"; [ -x "$python" ] || python="$venv/Scripts/python.exe"
             echo "== $artifact"
             (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")
           done

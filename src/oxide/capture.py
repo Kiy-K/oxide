@@ -140,7 +140,10 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
 
 def _read(root: Path, path: str, expected: StatKey) -> bytes | None:
     """The file's bytes, or None when it changed since it was listed."""
-    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | getattr(os, "O_CLOEXEC", 0)
+    # Windows lacks O_NOFOLLOW/O_NONBLOCK (the identity check below catches a swapped
+    # path) and needs O_BINARY, or CRLF reads come back short.
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
+    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
     try:
         fd = os.open(root / path, flags)
     except OSError:

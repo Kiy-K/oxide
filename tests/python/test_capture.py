@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,8 @@ from oxide.models import CaptureConflict
 
 
 def test_scope_follows_gitignore_and_reports_every_skip(tmp_path: Path) -> None:
+    if sys.platform == "win32":
+        pytest.skip("no FIFOs; symlinks need privileges")
     root = write(
         tmp_path / "repo",
         {
@@ -61,6 +64,8 @@ def test_undecodable_ignore_rules_fail_closed(tmp_path: Path) -> None:
 
 def test_case_fold_collisions_are_diagnostics(tmp_path: Path) -> None:
     root = write(tmp_path, {"Readme.md": "a", "README.md": "b"})
+    if len(os.listdir(root)) < 2:
+        pytest.skip("case-insensitive filesystem: the two names are one file")
     assert capture(root).case_collisions == (("README.md", "Readme.md"),)
 
 
