@@ -1,0 +1,157 @@
+{
+ "totals": {
+  "B": {
+   "required": 63,
+   "found": 49,
+   "unexpected": 3
+  },
+  "C": {
+   "required": 63,
+   "found": 45,
+   "unexpected": 5
+  }
+ },
+ "files": {
+  "shapes.py": {
+   "B": {
+    "failure": null,
+    "required": 19,
+    "found": 18,
+    "missing": [
+     "import OrderedDict L4"
+    ],
+    "unexpected": [],
+    "rendering": "### shapes.py (63 lines) outline\nL2 module: import os\nL3 module: import sys as system\nL8 module: from . import sibling as alias\nL10 constant: LIMIT = 10\nL11 variable: names: list[str] = []\nL16-20 function: async def fetch(url: str, *, retries: int = 3) -> bytes:\nL23-41 class: class Store(Base, metaclass=Meta):\n  L26 field: capacity\n  L27 field: label\n  L29-30 method: __init__\n  L33-34 method: size\n  L37-38 method: load\n  L40-41 class: Error\nL45 function: def convert(x: int) -> int: ...\nL47 function: def convert(x: str) -> str: ...\nL48-49 function: def convert(x):\nL53-54 function: def compat() -> None:\nL57 module: import fast as speedups\nL59 variable: speedups = None\nL62-63 function: def emoji_ñame(β: int) -> str:\n"
+   },
+   "C": {
+    "failure": null,
+    "required": 19,
+    "found": 13,
+    "missing": [
+     "import system L3",
+     "import OrderedDict L4",
+     "item LIMIT L10",
+     "item names L11",
+     "member Store.capacity L26",
+     "member Store.label L27"
+    ],
+    "unexpected": [
+     "import imports collections.OrderedDict,collections.defaultdict L5-6"
+    ],
+    "rendering": "### shapes.py (63 lines) outline\nL2-3 imports: os, sys\nL5-6 imports: collections.OrderedDict, collections.defaultdict\nL8 imports: .sibling\nL14-20 function: async def fetch(url: str, *, retries: int = 3) -> bytes\n  L17-18 function: def inner() -> None\nL23-41 class: class Store(Base, metaclass=Meta)\n  L29-30 method: def __init__(self, path)\n  L32-34 method: def size(self) -> int\n  L36-38 method: async def load(path) -> \"Store\"\n  L40-41 class: class Error(Exception)\nL44-45 function: def convert(x: int) -> int\nL46-47 function: def convert(x: str) -> str\nL48-49 function: def convert(x)\nL53-54 function: def compat() -> None\nL57 imports: fast\nL62-63 function: def emoji_ñame(β: int) -> str\n"
+   }
+  },
+  "shapes.ts": {
+   "B": {
+    "failure": null,
+    "required": 27,
+    "found": 17,
+    "missing": [
+     "item parse L13",
+     "item parse L14",
+     "item Base L31",
+     "member Base.count L32",
+     "member Base.name L33",
+     "member Base.constructor L35",
+     "member Base.area L36",
+     "member Base.label L37",
+     "member Base.refresh L40",
+     "member Geometry.unit L44"
+    ],
+    "unexpected": [
+     "item module exports L59-59",
+     "item module \"./reexport\" L60-60"
+    ],
+    "rendering": "### shapes.ts (60 lines) outline\nL2 module: import { a, b as c } from \"./a\";\nL3 module: import type { T } from \"./types\";\nL4 module: import * as ns from \"./ns\";\nL5-8 module: } from \"./multi\";\nL10 constant: export const LIMIT = 10;\nL11 function: local = (n: number): number => n + 1\nL15-17 function: export function parse(input: string | Buffer): T {\nL19-22 interface: export interface Shape {\n  L20 method: area\n  L21 field: name\nL24 struct: export type Id = string | number;\nL26-29 enum: export enum Color {\n  L27 enumMember: Red\n  L28 enumMember: Green\nL43-47 module: export namespace Geometry {\nL49-51 module: declare module \"external\" {\nL53-57 class: export default class Widget extends Base<string> {\n  L54-56 method: area\nL59 module: export { local as increment };\nL60 module: export * from \"./reexport\";\n"
+   },
+   "C": {
+    "failure": null,
+    "required": 27,
+    "found": 19,
+    "missing": [
+     "import T L3",
+     "import ns L4",
+     "import def L5",
+     "member Shape.name L21",
+     "member Color.Red L27",
+     "member Color.Green L28",
+     "member Base.count L32",
+     "member Base.name L33"
+    ],
+    "unexpected": [
+     "item namespace <module> L49-51",
+     "member function ext L50-50",
+     "import imports ./reexport L60-60"
+    ],
+    "rendering": "### shapes.ts (60 lines) outline\nL2-7 imports: ./a:a, ./a:b, ./types:T, ./ns, ./multi:default, ./multi:x, ./multi:y\nL10 variable: export const LIMIT\nL11 function: const local = (n: number): number =>\nL13 function: export function parse(input: string): T\nL14 function: export function parse(input: Buffer): T\nL15-17 function: export function parse(input: string | Buffer): T\nL19-22 interface: export interface Shape\n  L20 method: area(): number\nL24 type: export type Id\nL26-29 enum: export enum Color\nL31-41 class: export abstract class Base<K> implements Shape\n  L35 method: constructor(private readonly key: K)\n  L36 method: abstract area(): number\n  L37-39 method: get label(): string\n  L40 method: async refresh(this: Base<K>, force?: boolean): Promise<void>\nL43-47 namespace: export namespace Geometry\n  L44-46 function: export function unit(): number\nL49-51 namespace: declare module \"external\"\n  L50 function: export function ext(): void\nL53-57 class: export default class Widget extends Base<string>\n  L54-56 method: area(): number\nL60 imports: ./reexport\n"
+   }
+  },
+  "view.tsx": {
+   "B": {
+    "failure": null,
+    "required": 4,
+    "found": 4,
+    "missing": [],
+    "unexpected": [],
+    "rendering": "### view.tsx (12 lines) outline\nL1 module: import React, { useState } from \"react\";\nL3 struct: type Props = { title: string };\nL5-8 function: export function Panel({ title }: Props) {\nL10 constant: export const Badge = ({ n }: { n: number }) => <span>{n}</span>;\n"
+   },
+   "C": {
+    "failure": null,
+    "required": 4,
+    "found": 4,
+    "missing": [],
+    "unexpected": [],
+    "rendering": "### view.tsx (12 lines) outline\nL1 imports: react:default, react:useState\nL3 type: type Props\nL5-8 function: export function Panel({ title }: Props)\nL10 function: export const Badge = ({ n }: { n: number }) =>\n"
+   }
+  },
+  "legacy.js": {
+   "B": {
+    "failure": null,
+    "required": 9,
+    "found": 6,
+    "missing": [
+     "import path L2",
+     "import join L3",
+     "item helper L23"
+    ],
+    "unexpected": [
+     "item constant path L2-2"
+    ],
+    "rendering": "### legacy.js (26 lines) outline\nL2 constant: path = require('path')\nL5 constant: DEFAULTS = { depth: 2 }\nL7-9 function: function walk(root, depth) {\nL11-20 class: class Walker {\n  L12 field: instances\n  L13 field: #seen\n  L14-16 constructor: constructor\n  L17-19 method: visit\n"
+   },
+   "C": {
+    "failure": null,
+    "required": 9,
+    "found": 5,
+    "missing": [
+     "import join L3",
+     "item DEFAULTS L5",
+     "member Walker.instances L12",
+     "item helper L23"
+    ],
+    "unexpected": [
+     "item function <export:helper> L24-26"
+    ],
+    "rendering": "### legacy.js (26 lines) outline\nL2-3 imports: path\nL7-9 function: function walk(root, depth)\nL11-20 class: class Walker\n  L14-16 method: constructor(root)\n  L17-19 method: visit(node)\nL24-26 function: exports.helper = function helper(x)\n"
+   }
+  },
+  "card.jsx": {
+   "B": {
+    "failure": null,
+    "required": 4,
+    "found": 4,
+    "missing": [],
+    "unexpected": [],
+    "rendering": "### card.jsx (13 lines) outline\nL1 module: import { twice } from \"./math.mjs\";\nL3-5 function: export function Card({ count }) {\nL7-9 constant: export const List = ({ items }) => (\nL11-13 function: export default function App() {\n"
+   },
+   "C": {
+    "failure": null,
+    "required": 4,
+    "found": 4,
+    "missing": [],
+    "unexpected": [],
+    "rendering": "### card.jsx (13 lines) outline\nL1 imports: ./math.mjs:twice\nL3-5 function: export function Card({ count })\nL7-9 function: export const List = ({ items }) =>\nL11-13 function: export default function App()\n"
+   }
+  }
+ }
+}

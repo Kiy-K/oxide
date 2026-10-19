@@ -25,9 +25,12 @@ def mean(xs):
 
 
 def per_task(rows, metric):
-    """{(arm, task): mean over repetitions}; a failed or invalid call scores 0."""
+    """{(arm, task): mean over repetitions}; a failed or invalid call scores 0. A task
+    without verified gold lines has no score (its metric is None) and is left out."""
     found = defaultdict(list)
     for r in rows:
+        if r[metric] is None:
+            continue
         value = 0.0 if r["failed"] or not r["valid"] else r[metric]
         found[(r["arm"], r["task"])].append(value)
     return {k: sum(v) / len(v) for k, v in found.items()}
@@ -50,14 +53,18 @@ def navigation(rows) -> dict:
     # Rep-to-rep noise of A on dev: mean |r1 - r2| per task.
     reps = defaultdict(dict)
     for r in rows:
-        if r["arm"] == "A" and r["split"] == "dev":
+        if r["arm"] == "A" and r["split"] == "dev" and r["recall@4096"] is not None:
             reps[r["task"]][r["rep"]] = 0.0 if r["failed"] or not r["valid"] else r["recall@4096"]
     pairs = [abs(v["r1"] - v["r2"]) for v in reps.values() if {"r1", "r2"} <= set(v)]
     out["noise_A_dev"] = mean(pairs)
     scores = per_task(rows, "recall@4096")
     dev = sorted({t for t, _, s in tasks if s == "dev"})
     out["dev_task_deltas"] = {
-        arm: {t: round(scores[(arm, t)] - scores[("A", t)], 6) for t in dev if (arm, t) in scores}
+        arm: {
+            t: round(scores[(arm, t)] - scores[("A", t)], 6)
+            for t in dev
+            if (arm, t) in scores and ("A", t) in scores
+        }
         for arm in ARMS
     }
     out["failures"] = {

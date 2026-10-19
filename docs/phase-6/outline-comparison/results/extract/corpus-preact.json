@@ -1,0 +1,253 @@
+{
+ "corpus": "preact",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 243,
+  "compared": 243,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "B only: member field": 1591,
+  "C only: member method": 1095,
+  "C only: item function": 1023,
+  "matched, same bytes": 838,
+  "C only: item class": 489,
+  "B only: item constant": 249,
+  "C only: member function": 71,
+  "B only: item variable": 54,
+  "matched, start differs": 43,
+  "B only: item module": 30,
+  "C only: item method": 29,
+  "C only: member interface": 22,
+  "C only: item variable": 13,
+  "C only: member variable": 12,
+  "C only: member type": 11,
+  "B only: member enumMember": 11,
+  "C only: member class": 7,
+  "C only: item namespace": 1,
+  "C only: member namespace": 1
+ },
+ "examples": {
+  "C only: item function": [
+   "compat/client.d.ts: createRoot L3-6 in None",
+   "compat/client.d.ts: hydrateRoot L8-11 in None",
+   "compat/client.js: <export:hydrateRoot> L18-21 in None",
+   "compat/scheduler.d.ts: unstable_runWithPriority L7-10 in None",
+   "compat/scheduler.d.ts: unstable_now L12-12 in None",
+   "compat/src/suspense.d.ts: lazy L6-8 in None",
+   "compat/test/browser/Children.test.jsx: Foo L24-27 in None",
+   "compat/test/browser/Children.test.jsx: Foo L48-51 in None"
+  ],
+  "C only: member method": [
+   "compat/client.d.ts: render L4-4 in createRoot",
+   "compat/client.d.ts: unmount L5-5 in createRoot",
+   "compat/src/Children.js: count L12-14 in Children",
+   "compat/src/Children.js: only L15-19 in Children",
+   "compat/src/index.d.ts: map L412-416 in React",
+   "compat/src/index.d.ts: forEach L417-421 in React",
+   "compat/src/suspense.d.ts: render L16-16 in Suspense",
+   "compat/test/browser/PureComponent.test.jsx: constructor L29-32 in Foo"
+  ],
+  "B only: item module": [
+   "compat/jsx-dev-runtime.mjs: 'preact/jsx-runtime' L3-3 in None",
+   "compat/jsx-runtime.mjs: 'preact/jsx-runtime' L3-3 in None",
+   "compat/server.browser.mjs: 'preact-render-to-string' L3-6 in None",
+   "compat/server.mjs: 'preact-render-to-string' L5-8 in None",
+   "compat/server.mjs: 'preact-render-to-string/stream-node' L10-10 in None",
+   "compat/server.mjs: 'preact-render-to-string/stream' L11-11 in None",
+   "compat/src/index.js: 'preact/hooks' L166-166 in None",
+   "compat/src/index.js: exports L167-203 in None"
+  ],
+  "C only: item variable": [
+   "compat/scheduler.d.ts: unstable_ImmediatePriority L1-1 in None",
+   "compat/scheduler.d.ts: unstable_UserBlockingPriority L2-2 in None",
+   "compat/scheduler.d.ts: unstable_NormalPriority L3-3 in None",
+   "compat/scheduler.d.ts: unstable_LowPriority L4-4 in None",
+   "compat/scheduler.d.ts: unstable_IdlePriority L5-5 in None",
+   "compat/scheduler.mjs: unstable_ImmediatePriority L9-9 in None",
+   "compat/scheduler.mjs: unstable_UserBlockingPriority L10-10 in None",
+   "compat/scheduler.mjs: unstable_NormalPriority L11-11 in None"
+  ],
+  "C only: member variable": [
+   "compat/server.d.ts: renderToString L11-11 in ReactDOMServer",
+   "compat/server.d.ts: renderToStaticMarkup L12-12 in ReactDOMServer",
+   "compat/server.d.ts: renderToPipeableStream L13-13 in ReactDOMServer",
+   "compat/server.d.ts: renderToReadableStream L14-14 in ReactDOMServer",
+   "compat/src/index.d.ts: version L166-166 in React",
+   "compat/src/index.d.ts: Children L411-425 in React",
+   "compat/src/index.d.ts: unstable_ImmediatePriority L428-428 in React",
+   "compat/src/index.d.ts: unstable_UserBlockingPriority L429-429 in React"
+  ],
+  "matched, start differs": [
+   "compat/src/Children.js: mapFn B L3 C L3",
+   "compat/src/index.js: flushSync B L134 C L134",
+   "compat/src/render.js: onChangeInputType B L89 C L89",
+   "compat/test/ts/forward-ref.tsx: MyInput B L3 C L3",
+   "compat/test/ts/memo.tsx: ComponentExceptDefaults B L15 C L15",
+   "compat/test/ts/memo.tsx: ReadonlyBaseComponent B L17 C L17",
+   "compat/test/ts/memo.tsx: BaseComponent B L22 C L22",
+   "compat/test/ts/scheduler.ts: noop B L12 C L12"
+  ],
+  "C only: member function": [
+   "compat/src/PureComponent.js: PureComponent L9-12 in createPureComponent",
+   "compat/src/forwardRef.js: Forwarded L13-17 in forwardRef",
+   "compat/src/index.d.ts: useTransition L127-127 in React",
+   "compat/src/index.d.ts: useDeferredValue L128-128 in React",
+   "compat/src/index.d.ts: useSyncExternalStore L129-133 in React",
+   "compat/src/index.d.ts: useEffectEvent L134-134 in React",
+   "compat/src/index.d.ts: use L136-136 in React",
+   "compat/src/index.d.ts: startTransition L167-167 in React"
+  ],
+  "C only: member interface": [
+   "compat/src/index.d.ts: FunctionComponent L7-14 in preact",
+   "compat/src/index.d.ts: ComponentClass L16-26 in preact",
+   "compat/src/index.d.ts: Component L29-52 in preact",
+   "compat/src/index.d.ts: HTMLAttributes L170-172 in React",
+   "compat/src/index.d.ts: HTMLProps L173-174 in React",
+   "compat/src/index.d.ts: AllHTMLAttributes L175-177 in React",
+   "compat/src/index.d.ts: SVGProps L181-182 in React",
+   "compat/src/index.d.ts: SVGAttributes L184-186 in React"
+  ],
+  "C only: member class": [
+   "compat/src/index.d.ts: Component L54-97 in preact",
+   "compat/src/index.d.ts: PureComponent L315-321 in React",
+   "compat/test/browser/suspense-utils.js: Suspender L92-103 in createSuspender",
+   "compat/test/browser/suspense.test.jsx: Suspender L2126-2144 in createSuspender",
+   "test/browser/components.test.jsx: C L1475-1482 in createComponent",
+   "test/browser/placeholders.test.jsx: Nullable L30-51 in createStatefulNullable",
+   "test/shared/isValidElementTests.jsx: Bar L30-34 in isValidElementTests"
+  ],
+  "C only: member type": [
+   "compat/src/index.d.ts: MemoExoticComponent L323-326 in React",
+   "compat/src/index.d.ts: PropsWithoutRef L359-359 in React",
+   "compat/src/index.d.ts: ForwardedRef L365-368 in React",
+   "compat/src/index.d.ts: ElementType L370-375 in React",
+   "compat/src/index.d.ts: ComponentPropsWithoutRef L377-379 in React",
+   "compat/src/index.d.ts: ComponentPropsWithRef L381-385 in React",
+   "compat/src/index.d.ts: ElementRef L387-399 in React",
+   "compat/src/index.d.ts: PropsWithChildren L407-409 in React"
+  ],
+  "B only: item constant": [
+   "compat/src/index.js: version L46-46 in None",
+   "compat/src/render.js: MODE_HYDRATE L26-26 in None",
+   "compat/src/render.js: CAMEL_PROPS L29-30 in None",
+   "compat/src/render.js: CAMEL_REPLACE L31-31 in None",
+   "compat/src/render.js: IS_DOM L32-32 in None",
+   "compat/src/render.js: classNameDescriptorNonEnumberable L162-167 in None",
+   "compat/test/browser/memo.test.jsx: h L16-16 in None",
+   "compat/test/browser/suspense-utils.js: h L4-4 in None"
+  ],
+  "B only: member field": [
+   "compat/src/internal.d.ts: isReactComponent L14-14 in Component",
+   "compat/src/internal.d.ts: isPureReactComponent L15-15 in Component",
+   "compat/src/internal.d.ts: _patchedLifecycles L16-16 in Component",
+   "compat/src/internal.d.ts: _suspended L20-20 in Component",
+   "compat/src/internal.d.ts: _temp L24-24 in Component",
+   "compat/src/internal.d.ts: _container L25-25 in Component",
+   "compat/src/internal.d.ts: _patchedLifecycles L30-30 in FunctionComponent",
+   "compat/src/internal.d.ts: $$typeof L34-34 in VNode"
+  ],
+  "B only: item variable": [
+   "compat/src/render.js: currentComponent L27-27 in None",
+   "compat/src/render.js: hydrationRoot L27-27 in None",
+   "compat/src/render.js: renderTrackingInitialized L27-27 in None",
+   "compat/src/render.js: oldEventHook L148-148 in None",
+   "compat/src/render.js: oldVNodeHook L284-284 in None",
+   "config/compat-entries.js: missing L9-9 in None",
+   "debug/src/check-props.js: loggedTypeFailures L3-3 in None",
+   "debug/src/component-stack.js: renderStack L25-25 in None"
+  ],
+  "C only: item method": [
+   "compat/src/render.js: get L108-110 in None",
+   "compat/src/render.js: set L111-117 in None",
+   "compat/src/render.js: get L164-166 in None",
+   "compat/test/browser/events.test.jsx: onChange L205-205 in None",
+   "compat/test/browser/useSyncExternalStore.test.jsx: log L29-31 in None",
+   "compat/test/ts/forward-ref.tsx: focus L4-4 in None",
+   "debug/test/browser/debug-compat.test.jsx: ref L98-104 in None",
+   "debug/test/browser/fakeDevTools.js: attachPreact L3-5 in None"
+  ],
+  "C only: item class": [
+   "compat/test/browser/PureComponent.test.jsx: Foo L28-33 in None",
+   "compat/test/browser/PureComponent.test.jsx: Foo L44-56 in None",
+   "compat/test/browser/PureComponent.test.jsx: Pure L78-83 in None",
+   "compat/test/browser/PureComponent.test.jsx: C L103-107 in None",
+   "compat/test/browser/PureComponent.test.jsx: App L141-146 in None",
+   "compat/test/browser/compat.options.test.jsx: ClassApp L37-54 in None",
+   "compat/test/browser/component.test.jsx: Demo L30-35 in None",
+   "compat/test/browser/component.test.jsx: Child L56-63 in None"
+  ],
+  "B only: member enumMember": [
+   "src/internal.d.ts: useState L4-4 in HookType",
+   "src/internal.d.ts: useReducer L5-5 in HookType",
+   "src/internal.d.ts: useEffect L6-6 in HookType",
+   "src/internal.d.ts: useLayoutEffect L7-7 in HookType",
+   "src/internal.d.ts: useRef L8-8 in HookType",
+   "src/internal.d.ts: useImperativeHandle L9-9 in HookType",
+   "src/internal.d.ts: useMemo L10-10 in HookType",
+   "src/internal.d.ts: useCallback L11-11 in HookType"
+  ],
+  "C only: item namespace": [
+   "test/ts/custom-elements.tsx: <module> L9-30 in None"
+  ],
+  "C only: member namespace": [
+   "test/ts/custom-elements.tsx: createElement L10-29 in <module>"
+  ]
+ },
+ "imports": {
+  "B lines": 1165,
+  "C lines": 1067,
+  "both": 1032
+ },
+ "provenance": {
+  "B": {
+   "entries": 3480,
+   "inside": 3480,
+   "named": 2803,
+   "name in range": 2794
+  },
+  "C": {
+   "entries": 3979,
+   "inside": 3979,
+   "named": 3653,
+   "name in range": 3653
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 5.649,
+   "p50": 0.021761,
+   "p95": 0.033144
+  },
+  "C": {
+   "sum": 2.193,
+   "p50": 0.008048,
+   "p95": 0.016319
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 58543,
+   "p50": 123.0
+  },
+  "C": {
+   "sum": 74216,
+   "p50": 150.0
+  },
+  "A": {
+   "sum": 58684,
+   "p50": 165.0
+  },
+  "file": {
+   "sum": 609448,
+   "p50": 702.0
+  }
+ },
+ "index_seconds": 1.376,
+ "astgrep_max_rss_mb": 171
+}

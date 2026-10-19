@@ -1,0 +1,1753 @@
+{
+ "navigation": {
+  "recall@4096": {
+   "dev/py": {
+    "N": 0.557218,
+    "A": 0.627131,
+    "F": 0.4,
+    "B": 0.458377,
+    "C": 0.473395
+   },
+   "dev/ts": {
+    "N": 0.535388,
+    "A": 0.473838,
+    "F": 0.2399,
+    "B": 0.378839,
+    "C": 0.403547
+   },
+   "dev/all": {
+    "N": 0.543574,
+    "A": 0.531323,
+    "F": 0.299938,
+    "B": 0.408666,
+    "C": 0.42974
+   },
+   "heldout/py": {
+    "N": 0.29388,
+    "A": 0.308773,
+    "F": null,
+    "B": 0.092149,
+    "C": 0.115583
+   },
+   "heldout/ts": {
+    "N": 0.444552,
+    "A": 0.435051,
+    "F": null,
+    "B": 0.396125,
+    "C": 0.45191
+   },
+   "heldout/all": {
+    "N": 0.393146,
+    "A": 0.391968,
+    "F": null,
+    "B": 0.292415,
+    "C": 0.337163
+   }
+  },
+  "recall@2048": {
+   "dev/py": {
+    "N": 0.557218,
+    "A": 0.490553,
+    "F": 0.136,
+    "B": 0.4,
+    "C": 0.4
+   },
+   "dev/ts": {
+    "N": 0.485283,
+    "A": 0.346583,
+    "F": 0.193746,
+    "B": 0.252,
+    "C": 0.293646
+   },
+   "dev/all": {
+    "N": 0.512259,
+    "A": 0.400572,
+    "F": 0.172091,
+    "B": 0.3075,
+    "C": 0.333528
+   },
+   "heldout/py": {
+    "N": 0.293007,
+    "A": 0.186147,
+    "F": null,
+    "B": 0.0,
+    "C": 0.0
+   },
+   "heldout/ts": {
+    "N": 0.434069,
+    "A": 0.288242,
+    "F": null,
+    "B": 0.245354,
+    "C": 0.354656
+   },
+   "heldout/all": {
+    "N": 0.385942,
+    "A": 0.253409,
+    "F": null,
+    "B": 0.161645,
+    "C": 0.233655
+   }
+  },
+  "recall": {
+   "dev/py": {
+    "N": 0.557218,
+    "A": 0.658074,
+    "F": 0.66284,
+    "B": 0.72915,
+    "C": 0.724485
+   },
+   "dev/ts": {
+    "N": 0.535388,
+    "A": 0.544333,
+    "F": 0.576205,
+    "B": 0.643075,
+    "C": 0.644142
+   },
+   "dev/all": {
+    "N": 0.543574,
+    "A": 0.586986,
+    "F": 0.608693,
+    "B": 0.675354,
+    "C": 0.674271
+   },
+   "heldout/py": {
+    "N": 0.29388,
+    "A": 0.320282,
+    "F": null,
+    "B": 0.555911,
+    "C": 0.578387
+   },
+   "heldout/ts": {
+    "N": 0.444666,
+    "A": 0.442126,
+    "F": null,
+    "B": 0.455902,
+    "C": 0.484941
+   },
+   "heldout/all": {
+    "N": 0.393221,
+    "A": 0.400556,
+    "F": null,
+    "B": 0.490023,
+    "C": 0.516823
+   }
+  },
+  "gold_file_hit": {
+   "dev/py": {
+    "N": 0.855556,
+    "A": 0.85,
+    "F": 0.877778,
+    "B": 0.844444,
+    "C": 0.811111
+   },
+   "dev/ts": {
+    "N": 0.775,
+    "A": 0.855,
+    "F": 0.843333,
+    "B": 0.816667,
+    "C": 0.851667
+   },
+   "dev/all": {
+    "N": 0.805208,
+    "A": 0.853125,
+    "F": 0.85625,
+    "B": 0.827083,
+    "C": 0.836458
+   },
+   "heldout/py": {
+    "N": 0.810345,
+    "A": 0.827586,
+    "F": null,
+    "B": 0.818966,
+    "C": 0.818966
+   },
+   "heldout/ts": {
+    "N": 0.706192,
+    "A": 0.627148,
+    "F": null,
+    "B": 0.645898,
+    "C": 0.709081
+   },
+   "heldout/all": {
+    "N": 0.741727,
+    "A": 0.695533,
+    "F": null,
+    "B": 0.704945,
+    "C": 0.746571
+   }
+  },
+  "precision": {
+   "dev/py": {
+    "N": 0.127986,
+    "A": 0.146248,
+    "F": 0.321277,
+    "B": 0.262882,
+    "C": 0.286338
+   },
+   "dev/ts": {
+    "N": 0.160426,
+    "A": 0.179107,
+    "F": 0.294376,
+    "B": 0.243677,
+    "C": 0.22845
+   },
+   "dev/all": {
+    "N": 0.148558,
+    "A": 0.167085,
+    "F": 0.304218,
+    "B": 0.250703,
+    "C": 0.249629
+   },
+   "heldout/py": {
+    "N": 0.167738,
+    "A": 0.183512,
+    "F": null,
+    "B": 0.364614,
+    "C": 0.39122
+   },
+   "heldout/ts": {
+    "N": 0.247214,
+    "A": 0.300212,
+    "F": null,
+    "B": 0.309231,
+    "C": 0.316661
+   },
+   "heldout/all": {
+    "N": 0.222162,
+    "A": 0.263426,
+    "F": null,
+    "B": 0.326689,
+    "C": 0.340163
+   }
+  },
+  "noise_A_dev": 0.106481,
+  "dev_task_deltas": {
+   "B": {
+    "coder__code-server-4923": 0.097221,
+    "coder__code-server-6278": -0.486111,
+    "darkreader__darkreader-6747": -0.114156,
+    "darkreader__darkreader-7241": -0.466666,
+    "microsoft__vscode-106767": -0.271186,
+    "microsoft__vscode-109750": 0.980769,
+    "microsoft__vscode-110094": 0.0,
+    "microsoft__vscode-135197": 0.0,
+    "microsoft__vscode-136347": -0.157407,
+    "microsoft__vscode-148971": -0.5,
+    "microsoft__vscode-149380": -0.5,
+    "microsoft__vscode-153121": 0.116279,
+    "microsoft__vscode-153857": 0.73913,
+    "microsoft__vscode-160342": 0.0,
+    "microsoft__vscode-164396": -0.011905,
+    "microsoft__vscode-177084": 0.0,
+    "microsoft__vscode-189223": -0.100961,
+    "mwaskom__seaborn-3069": 0.0,
+    "pallets__flask-5014": -0.5,
+    "psf__requests-1142": -0.181818,
+    "psf__requests-1766": -1.0,
+    "psf__requests-2317": 0.0,
+    "psf__requests-2931": -0.125,
+    "psf__requests-5414": -0.72449,
+    "psf__requests-6028": 0.0,
+    "py-callers-should-retry": 0.0,
+    "py-crossfile-token-refresh": 0.0,
+    "py-exact-retrypolicy": 0.0,
+    "py-implementors-notifier": 0.0,
+    "py-related-test-gives-up": 0.0,
+    "py-semantic-http-retries": 0.0,
+    "py-ttl-cache-expiry": 0.0,
+    "ts-callers-shouldretry": -1.0,
+    "ts-crossfile-decode-jwt": 0.0,
+    "ts-default-policy-const": 0.0,
+    "ts-exact-versionedstore": 0.0,
+    "ts-implementors-retrypolicy": -0.7,
+    "ts-related-test-button-click": 0.0,
+    "ts-semantic-backoff": 0.0,
+    "tsx-button-component": 0.0
+   },
+   "C": {
+    "coder__code-server-4923": 0.180555,
+    "coder__code-server-6278": -0.356481,
+    "darkreader__darkreader-6747": -0.207763,
+    "darkreader__darkreader-7241": -0.466666,
+    "microsoft__vscode-106767": -0.118644,
+    "microsoft__vscode-109750": 0.980769,
+    "microsoft__vscode-110094": 0.0,
+    "microsoft__vscode-135197": 0.0,
+    "microsoft__vscode-136347": -0.157407,
+    "microsoft__vscode-148971": -0.489131,
+    "microsoft__vscode-149380": -0.5,
+    "microsoft__vscode-153121": 0.418605,
+    "microsoft__vscode-153857": 0.271738,
+    "microsoft__vscode-160342": 0.0,
+    "microsoft__vscode-164396": -0.011905,
+    "microsoft__vscode-177084": 0.0,
+    "microsoft__vscode-189223": -0.100961,
+    "mwaskom__seaborn-3069": 0.0,
+    "pallets__flask-5014": -0.5,
+    "psf__requests-1142": -0.181818,
+    "psf__requests-1766": -0.928571,
+    "psf__requests-2317": 0.0,
+    "psf__requests-2931": -0.125,
+    "psf__requests-5414": -0.72449,
+    "psf__requests-6028": 0.153846,
+    "py-callers-should-retry": 0.0,
+    "py-crossfile-token-refresh": 0.0,
+    "py-exact-retrypolicy": 0.0,
+    "py-implementors-notifier": 0.0,
+    "py-related-test-gives-up": 0.0,
+    "py-semantic-http-retries": 0.0,
+    "py-ttl-cache-expiry": 0.0,
+    "ts-callers-shouldretry": -1.0,
+    "ts-crossfile-decode-jwt": 0.0,
+    "ts-default-policy-const": 0.0,
+    "ts-exact-versionedstore": 0.0,
+    "ts-implementors-retrypolicy": -0.2,
+    "ts-related-test-button-click": 0.0,
+    "ts-semantic-backoff": 0.0,
+    "tsx-button-component": 0.0
+   }
+  },
+  "failures": {
+   "N": 0.0,
+   "A": 0.0,
+   "F": 0.0,
+   "B": 0.0,
+   "C": 0.0
+  },
+  "units": {
+   "N": {
+    "overview_p50": 106.5,
+    "read_p50": 2002.5,
+    "cost_usd": 0
+   },
+   "A": {
+    "overview_p50": 1263.0,
+    "read_p50": 1724.0,
+    "cost_usd": 0
+   },
+   "F": {
+    "overview_p50": 17323,
+    "read_p50": 833,
+    "cost_usd": 0
+   },
+   "B": {
+    "overview_p50": 2522.0,
+    "read_p50": 1293.0,
+    "cost_usd": 0
+   },
+   "C": {
+    "overview_p50": 2060.0,
+    "read_p50": 1291.5,
+    "cost_usd": 0
+   }
+  }
+ },
+ "N": {
+  "B": {
+   "N1 dev gain >= 0.10, no benchmark below A": {
+    "value": [
+     -0.122657,
+     -0.168754,
+     -0.094999
+    ],
+    "pass": false
+   },
+   "N2 held-out gain >= 0.05, no benchmark below A - 0.02": {
+    "value": [
+     -0.099553,
+     -0.216624,
+     -0.038926
+    ],
+    "pass": false
+   },
+   "N3 dev breadth: >= 3 tasks up by 0.10 and up >= 2 x down": {
+    "value": [
+     3,
+     15
+    ],
+    "pass": false
+   },
+   "N4 dev gain > 2 x A repetition noise": {
+    "value": [
+     -0.122657,
+     0.212962
+    ],
+    "pass": false
+   },
+   "N5 recall@2048 >= A - 0.05 (dev and held-out)": {
+    "value": [
+     -0.093072,
+     -0.091764
+    ],
+    "pass": false
+   },
+   "V technical failures <= 10%": {
+    "value": 0.0,
+    "pass": true
+   }
+  },
+  "C": {
+   "N1 dev gain >= 0.10, no benchmark below A": {
+    "value": [
+     -0.101583,
+     -0.153736,
+     -0.070291
+    ],
+    "pass": false
+   },
+   "N2 held-out gain >= 0.05, no benchmark below A - 0.02": {
+    "value": [
+     -0.054805,
+     -0.19319,
+     0.016859
+    ],
+    "pass": false
+   },
+   "N3 dev breadth: >= 3 tasks up by 0.10 and up >= 2 x down": {
+    "value": [
+     5,
+     15
+    ],
+    "pass": false
+   },
+   "N4 dev gain > 2 x A repetition noise": {
+    "value": [
+     -0.101583,
+     0.212962
+    ],
+    "pass": false
+   },
+   "N5 recall@2048 >= A - 0.05 (dev and held-out)": {
+    "value": [
+     -0.067044,
+     -0.019754
+    ],
+    "pass": false
+   },
+   "V technical failures <= 10%": {
+    "value": 0.0,
+    "pass": true
+   }
+  }
+ },
+ "context": {
+  "py-dev": {
+   "A.U equals frozen compat": "15/15",
+   "A0.U": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": 0.003333,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.033333,
+    "tasks losing line_recall@256": 0,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "median seconds ratio to A": 1.014
+   },
+   "B.U": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": -0.003922,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.033333,
+    "tasks losing line_recall@256": 1,
+    "pointer_recall@256": 0.1,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "pointer_recall@1024": 0.266667,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "pointer_recall@4096": 0.4,
+    "median seconds ratio to A": 1.022
+   },
+   "C.U": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": -0.003922,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 1,
+    "pointer_recall@256": 0.1,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "pointer_recall@1024": 0.2,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "pointer_recall@4096": 0.4,
+    "median seconds ratio to A": 1.087
+   },
+   "A0.H": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": 0.038,
+    "delta span_recall@256": 0.033333,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "delta line_recall@1024": 0.060331,
+    "delta span_recall@1024": 0.062222,
+    "delta file_recall@1024": 0.044444,
+    "tasks losing line_recall@1024": 1,
+    "delta line_recall@4096": -0.006813,
+    "delta span_recall@4096": -0.027778,
+    "delta file_recall@4096": -0.022222,
+    "tasks losing line_recall@4096": 2,
+    "median seconds ratio to A": 0.999
+   },
+   "B.H": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": -0.208033,
+    "delta span_recall@256": -0.2,
+    "delta file_recall@256": -0.066667,
+    "tasks losing line_recall@256": 6,
+    "pointer_recall@256": 0.466667,
+    "delta line_recall@1024": -0.004499,
+    "delta span_recall@1024": -0.025556,
+    "delta file_recall@1024": 0.011111,
+    "tasks losing line_recall@1024": 2,
+    "pointer_recall@1024": 0.803333,
+    "delta line_recall@4096": -0.053766,
+    "delta span_recall@4096": -0.082222,
+    "delta file_recall@4096": -0.066667,
+    "tasks losing line_recall@4096": 3,
+    "pointer_recall@4096": 0.961111,
+    "median seconds ratio to A": 1.034
+   },
+   "C.H": {
+    "entries+routing identical to A": "15/15",
+    "delta line_recall@256": -0.243316,
+    "delta span_recall@256": -0.211111,
+    "delta file_recall@256": -0.122222,
+    "tasks losing line_recall@256": 7,
+    "pointer_recall@256": 0.444444,
+    "delta line_recall@1024": 0.012848,
+    "delta span_recall@1024": -0.003333,
+    "delta file_recall@1024": -0.033333,
+    "tasks losing line_recall@1024": 2,
+    "pointer_recall@1024": 0.763333,
+    "delta line_recall@4096": -0.05004,
+    "delta span_recall@4096": -0.065556,
+    "delta file_recall@4096": -0.044444,
+    "tasks losing line_recall@4096": 3,
+    "pointer_recall@4096": 0.961111,
+    "median seconds ratio to A": 0.939
+   },
+   "A.U absolute": {
+    "line_recall@256": 0.179688,
+    "line_recall@1024": 0.548437,
+    "line_recall@4096": 0.658641
+   },
+   "A.H absolute": {
+    "line_recall@256": 0.357416,
+    "line_recall@1024": 0.538481,
+    "line_recall@4096": 0.785401
+   }
+  },
+  "py-heldout": {
+   "A.U equals frozen compat": "29/29",
+   "A0.U": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "median seconds ratio to A": 0.927
+   },
+   "B.U": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "pointer_recall@256": 0.0,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "pointer_recall@1024": 0.0,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "pointer_recall@4096": 0.0,
+    "median seconds ratio to A": 0.961
+   },
+   "C.U": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "pointer_recall@256": 0.0,
+    "delta line_recall@1024": 0.0,
+    "delta span_recall@1024": 0.0,
+    "delta file_recall@1024": 0.0,
+    "tasks losing line_recall@1024": 0,
+    "pointer_recall@1024": 0.0,
+    "delta line_recall@4096": 0.0,
+    "delta span_recall@4096": 0.0,
+    "delta file_recall@4096": 0.0,
+    "tasks losing line_recall@4096": 0,
+    "pointer_recall@4096": 0.0,
+    "median seconds ratio to A": 0.948
+   },
+   "A0.H": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.022017,
+    "delta span_recall@256": 0.017241,
+    "delta file_recall@256": -0.025862,
+    "tasks losing line_recall@256": 4,
+    "delta line_recall@1024": 0.037234,
+    "delta span_recall@1024": 0.037069,
+    "delta file_recall@1024": -0.112069,
+    "tasks losing line_recall@1024": 7,
+    "delta line_recall@4096": -0.001398,
+    "delta span_recall@4096": 0.007759,
+    "delta file_recall@4096": -0.097701,
+    "tasks losing line_recall@4096": 7,
+    "median seconds ratio to A": 0.941
+   },
+   "B.H": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.022017,
+    "delta span_recall@256": 0.017241,
+    "delta file_recall@256": -0.037356,
+    "tasks losing line_recall@256": 4,
+    "pointer_recall@256": 0.056034,
+    "delta line_recall@1024": -0.063427,
+    "delta span_recall@1024": -0.068473,
+    "delta file_recall@1024": -0.158046,
+    "tasks losing line_recall@1024": 9,
+    "pointer_recall@1024": 0.451411,
+    "delta line_recall@4096": -0.098288,
+    "delta span_recall@4096": -0.105434,
+    "delta file_recall@4096": -0.16092,
+    "tasks losing line_recall@4096": 14,
+    "pointer_recall@4096": 0.955172,
+    "median seconds ratio to A": 0.981
+   },
+   "C.H": {
+    "entries+routing identical to A": "29/29",
+    "delta line_recall@256": 0.022017,
+    "delta span_recall@256": 0.017241,
+    "delta file_recall@256": -0.025862,
+    "tasks losing line_recall@256": 4,
+    "pointer_recall@256": 0.056034,
+    "delta line_recall@1024": -0.021003,
+    "delta span_recall@1024": -0.021552,
+    "delta file_recall@1024": -0.140805,
+    "tasks losing line_recall@1024": 10,
+    "pointer_recall@1024": 0.45768,
+    "delta line_recall@4096": -0.124776,
+    "delta span_recall@4096": -0.126698,
+    "delta file_recall@4096": -0.103448,
+    "tasks losing line_recall@4096": 11,
+    "pointer_recall@4096": 0.824138,
+    "median seconds ratio to A": 0.994
+   },
+   "A.U absolute": {
+    "line_recall@256": 0.033463,
+    "line_recall@1024": 0.128702,
+    "line_recall@4096": 0.235438
+   },
+   "A.H absolute": {
+    "line_recall@256": 0.035318,
+    "line_recall@1024": 0.213157,
+    "line_recall@4096": 0.54468
+   }
+  },
+  "ts-dev": {
+   "A.U equals frozen compat": "26/26",
+   "A0.U": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "delta line_recall@1024": -0.04,
+    "delta span_recall@1024": -0.04,
+    "delta file_recall@1024": -0.04,
+    "tasks losing line_recall@1024": 1,
+    "delta line_recall@4096": -0.04,
+    "delta span_recall@4096": -0.04,
+    "delta file_recall@4096": -0.05,
+    "tasks losing line_recall@4096": 1,
+    "median seconds ratio to A": 1.02
+   },
+   "B.U": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "pointer_recall@256": 0.08,
+    "delta line_recall@1024": -0.04,
+    "delta span_recall@1024": -0.04,
+    "delta file_recall@1024": -0.04,
+    "tasks losing line_recall@1024": 1,
+    "pointer_recall@1024": 0.14,
+    "delta line_recall@4096": -0.04,
+    "delta span_recall@4096": -0.04,
+    "delta file_recall@4096": -0.05,
+    "tasks losing line_recall@4096": 1,
+    "pointer_recall@4096": 0.26,
+    "median seconds ratio to A": 1.003
+   },
+   "C.U": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": 0.0,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": 0.0,
+    "tasks losing line_recall@256": 0,
+    "pointer_recall@256": 0.08,
+    "delta line_recall@1024": -0.04,
+    "delta span_recall@1024": -0.04,
+    "delta file_recall@1024": -0.04,
+    "tasks losing line_recall@1024": 1,
+    "pointer_recall@1024": 0.14,
+    "delta line_recall@4096": -0.04,
+    "delta span_recall@4096": -0.04,
+    "delta file_recall@4096": -0.05,
+    "tasks losing line_recall@4096": 1,
+    "pointer_recall@4096": 0.26,
+    "median seconds ratio to A": 0.984
+   },
+   "A0.H": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": 0.009198,
+    "delta span_recall@256": 0.005,
+    "delta file_recall@256": 0.02,
+    "tasks losing line_recall@256": 1,
+    "delta line_recall@1024": -0.054688,
+    "delta span_recall@1024": -0.061,
+    "delta file_recall@1024": -0.07,
+    "tasks losing line_recall@1024": 7,
+    "delta line_recall@4096": 0.074641,
+    "delta span_recall@4096": 0.058556,
+    "delta file_recall@4096": -0.1,
+    "tasks losing line_recall@4096": 6,
+    "median seconds ratio to A": 0.916
+   },
+   "B.H": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": -0.090787,
+    "delta span_recall@256": -0.108333,
+    "delta file_recall@256": -0.01,
+    "tasks losing line_recall@256": 5,
+    "pointer_recall@256": 0.291111,
+    "delta line_recall@1024": -0.058971,
+    "delta span_recall@1024": -0.061,
+    "delta file_recall@1024": -0.07,
+    "tasks losing line_recall@1024": 7,
+    "pointer_recall@1024": 0.641667,
+    "delta line_recall@4096": -0.111104,
+    "delta span_recall@4096": -0.109667,
+    "delta file_recall@4096": -0.13,
+    "tasks losing line_recall@4096": 8,
+    "pointer_recall@4096": 0.92,
+    "median seconds ratio to A": 0.915
+   },
+   "C.H": {
+    "entries+routing identical to A": "26/26",
+    "delta line_recall@256": -0.094767,
+    "delta span_recall@256": -0.108333,
+    "delta file_recall@256": -0.13,
+    "tasks losing line_recall@256": 6,
+    "pointer_recall@256": 0.394444,
+    "delta line_recall@1024": -0.075776,
+    "delta span_recall@1024": -0.068,
+    "delta file_recall@1024": -0.163333,
+    "tasks losing line_recall@1024": 6,
+    "pointer_recall@1024": 0.736111,
+    "delta line_recall@4096": -0.021568,
+    "delta span_recall@4096": -0.025222,
+    "delta file_recall@4096": -0.126667,
+    "tasks losing line_recall@4096": 6,
+    "pointer_recall@4096": 0.927778,
+    "median seconds ratio to A": 0.927
+   },
+   "A.U absolute": {
+    "line_recall@256": 0.195339,
+    "line_recall@1024": 0.330098,
+    "line_recall@4096": 0.369967
+   },
+   "A.H absolute": {
+    "line_recall@256": 0.206629,
+    "line_recall@1024": 0.379572,
+    "line_recall@4096": 0.62608
+   }
+  },
+  "ts-heldout": {
+   "A.U equals frozen compat": "63/63",
+   "A0.U": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": 0.012524,
+    "delta span_recall@256": 0.002976,
+    "delta file_recall@256": 0.000298,
+    "tasks losing line_recall@256": 0,
+    "delta line_recall@1024": -0.000651,
+    "delta span_recall@1024": -0.035714,
+    "delta file_recall@1024": 0.026361,
+    "tasks losing line_recall@1024": 5,
+    "delta line_recall@4096": -0.019124,
+    "delta span_recall@4096": -0.063095,
+    "delta file_recall@4096": 0.010119,
+    "tasks losing line_recall@4096": 8,
+    "median seconds ratio to A": 0.944
+   },
+   "B.U": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": -0.003324,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": -0.025298,
+    "tasks losing line_recall@256": 3,
+    "pointer_recall@256": 0.044643,
+    "delta line_recall@1024": -0.026814,
+    "delta span_recall@1024": -0.053571,
+    "delta file_recall@1024": 0.002976,
+    "tasks losing line_recall@1024": 6,
+    "pointer_recall@1024": 0.096599,
+    "delta line_recall@4096": -0.01947,
+    "delta span_recall@4096": -0.063095,
+    "delta file_recall@4096": 0.002976,
+    "tasks losing line_recall@4096": 8,
+    "pointer_recall@4096": 0.163435,
+    "median seconds ratio to A": 0.989
+   },
+   "C.U": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": -0.002077,
+    "delta span_recall@256": 0.0,
+    "delta file_recall@256": -0.002976,
+    "tasks losing line_recall@256": 3,
+    "pointer_recall@256": 0.05119,
+    "delta line_recall@1024": -0.008804,
+    "delta span_recall@1024": -0.035714,
+    "delta file_recall@1024": 0.002551,
+    "tasks losing line_recall@1024": 5,
+    "pointer_recall@1024": 0.098384,
+    "delta line_recall@4096": -0.019505,
+    "delta span_recall@4096": -0.063095,
+    "delta file_recall@4096": 0.003571,
+    "tasks losing line_recall@4096": 8,
+    "pointer_recall@4096": 0.162415,
+    "median seconds ratio to A": 0.987
+   },
+   "A0.H": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": 0.030391,
+    "delta span_recall@256": -0.016974,
+    "delta file_recall@256": -0.047484,
+    "tasks losing line_recall@256": 19,
+    "delta line_recall@1024": 0.001433,
+    "delta span_recall@1024": -0.083216,
+    "delta file_recall@1024": -0.117384,
+    "tasks losing line_recall@1024": 22,
+    "delta line_recall@4096": -0.081325,
+    "delta span_recall@4096": -0.15334,
+    "delta file_recall@4096": -0.091226,
+    "tasks losing line_recall@4096": 28,
+    "median seconds ratio to A": 0.966
+   },
+   "B.H": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": -0.045336,
+    "delta span_recall@256": -0.046736,
+    "delta file_recall@256": -0.199907,
+    "tasks losing line_recall@256": 29,
+    "pointer_recall@256": 0.362859,
+    "delta line_recall@1024": -0.101319,
+    "delta span_recall@1024": -0.110172,
+    "delta file_recall@1024": -0.177844,
+    "tasks losing line_recall@1024": 32,
+    "pointer_recall@1024": 0.83248,
+    "delta line_recall@4096": -0.116173,
+    "delta span_recall@4096": -0.15334,
+    "delta file_recall@4096": -0.118225,
+    "tasks losing line_recall@4096": 32,
+    "pointer_recall@4096": 0.953025,
+    "median seconds ratio to A": 0.98
+   },
+   "C.H": {
+    "entries+routing identical to A": "63/63",
+    "delta line_recall@256": -0.033345,
+    "delta span_recall@256": -0.028879,
+    "delta file_recall@256": -0.160324,
+    "tasks losing line_recall@256": 30,
+    "pointer_recall@256": 0.578178,
+    "delta line_recall@1024": -0.067238,
+    "delta span_recall@1024": -0.112553,
+    "delta file_recall@1024": -0.136602,
+    "tasks losing line_recall@1024": 32,
+    "pointer_recall@1024": 0.868568,
+    "delta line_recall@4096": -0.099016,
+    "delta span_recall@4096": -0.157804,
+    "delta file_recall@4096": -0.119245,
+    "tasks losing line_recall@4096": 32,
+    "pointer_recall@4096": 0.952612,
+    "median seconds ratio to A": 0.973
+   },
+   "A.U absolute": {
+    "line_recall@256": 0.039861,
+    "line_recall@1024": 0.139227,
+    "line_recall@4096": 0.239354
+   },
+   "A.H absolute": {
+    "line_recall@256": 0.087529,
+    "line_recall@1024": 0.383548,
+    "line_recall@4096": 0.727855
+   }
+  }
+ },
+ "P": {
+  "B": {
+   "value": {
+    "max gain": 0.0,
+    "min": -0.111104
+   },
+   "pass": false
+  },
+  "C": {
+   "value": {
+    "max gain": 0.012848,
+    "min": -0.075776
+   },
+   "pass": false
+  }
+ },
+ "extraction": {
+  "conformance": {
+   "B": {
+    "required": 63,
+    "found": 49,
+    "unexpected": 3
+   },
+   "C": {
+    "required": 63,
+    "found": 45,
+    "unexpected": 5
+   }
+  },
+  "code-server": {
+   "totals": {
+    "files": 72,
+    "compared": 72,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 380,
+    "C lines": 378,
+    "both": 378
+   },
+   "provenance": {
+    "B": {
+     "entries": 797,
+     "inside": 797,
+     "named": 427,
+     "name in range": 427
+    },
+    "C": {
+     "entries": 420,
+     "inside": 420,
+     "named": 347,
+     "name in range": 347
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 1.614,
+     "p50": 0.020663,
+     "p95": 0.031878
+    },
+    "C": {
+     "sum": 0.283,
+     "p50": 0.003666,
+     "p95": 0.005914
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 15173,
+     "p50": 154.5
+    },
+    "C": {
+     "sum": 11885,
+     "p50": 103.0
+    },
+    "A": {
+     "sum": 40170,
+     "p50": 187.0
+    },
+    "file": {
+     "sum": 104482,
+     "p50": 815.5
+    }
+   },
+   "index_seconds": 0.399,
+   "astgrep_max_rss_mb": 143,
+   "top classes": {
+    "matched, same bytes": 223,
+    "B only: member field": 154,
+    "C only: item function": 67,
+    "C only: item variable": 29,
+    "B only: member enumMember": 23,
+    "B only: item constant": 19,
+    "C only: member function": 14,
+    "C only: member method": 8,
+    "matched, start differs": 6,
+    "C only: member interface": 1,
+    "C only: item class": 1,
+    "B only: item variable": 1
+   }
+  },
+  "darkreader": {
+   "totals": {
+    "files": 201,
+    "compared": 201,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 785,
+    "C lines": 785,
+    "both": 785
+   },
+   "provenance": {
+    "B": {
+     "entries": 2245,
+     "inside": 2245,
+     "named": 1460,
+     "name in range": 1457
+    },
+    "C": {
+     "entries": 1244,
+     "inside": 1244,
+     "named": 1068,
+     "name in range": 1068
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 4.441,
+     "p50": 0.020979,
+     "p95": 0.030797
+    },
+    "C": {
+     "sum": 1.158,
+     "p50": 0.005297,
+     "p95": 0.009131
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 50530,
+     "p50": 184.0
+    },
+    "C": {
+     "sum": 33612,
+     "p50": 115.0
+    },
+    "A": {
+     "sum": 77561,
+     "p50": 115.0
+    },
+    "file": {
+     "sum": 255216,
+     "p50": 625.0
+    }
+   },
+   "index_seconds": 0.674,
+   "astgrep_max_rss_mb": 150,
+   "top classes": {
+    "matched, same bytes": 824,
+    "B only: member field": 463,
+    "C only: member function": 208,
+    "B only: item constant": 123,
+    "B only: item variable": 27,
+    "C only: member method": 18,
+    "B only: member enumMember": 14,
+    "C only: item function": 7,
+    "matched, start differs": 5,
+    "B only: item module": 4,
+    "C only: member interface": 3,
+    "C only: item method": 3
+   }
+  },
+  "express": {
+   "totals": {
+    "files": 141,
+    "compared": 141,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 0,
+    "C lines": 362,
+    "both": 0
+   },
+   "provenance": {
+    "B": {
+     "entries": 57,
+     "inside": 57,
+     "named": 57,
+     "name in range": 57
+    },
+    "C": {
+     "entries": 314,
+     "inside": 314,
+     "named": 127,
+     "name in range": 127
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 3.174,
+     "p50": 0.020809,
+     "p95": 0.031794
+    },
+    "C": {
+     "sum": 0.439,
+     "p50": 0.002711,
+     "p95": 0.00565
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 3940,
+     "p50": 21.0
+    },
+    "C": {
+     "sum": 8451,
+     "p50": 44.0
+    },
+    "A": {
+     "sum": 150203,
+     "p50": 593.0
+    },
+    "file": {
+     "sum": 214327,
+     "p50": 704.0
+    }
+   },
+   "index_seconds": 0.578,
+   "astgrep_max_rss_mb": 147,
+   "top classes": {
+    "C only: item function": 92,
+    "matched, same bytes": 55,
+    "C only: member function": 9,
+    "B only: item constant": 2
+   }
+  },
+  "flask": {
+   "totals": {
+    "files": 80,
+    "compared": 80,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 555,
+    "C lines": 555,
+    "both": 555
+   },
+   "provenance": {
+    "B": {
+     "entries": 1659,
+     "inside": 1659,
+     "named": 1104,
+     "name in range": 1104
+    },
+    "C": {
+     "entries": 1631,
+     "inside": 1631,
+     "named": 1451,
+     "name in range": 1451
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 1.748,
+     "p50": 0.020204,
+     "p95": 0.030071
+    },
+    "C": {
+     "sum": 0.408,
+     "p50": 0.00468,
+     "p95": 0.007797
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 28074,
+     "p50": 216.5
+    },
+    "C": {
+     "sum": 32210,
+     "p50": 176.0
+    },
+    "A": {
+     "sum": 12063,
+     "p50": 75.0
+    },
+    "file": {
+     "sum": 188910,
+     "p50": 943.5
+    }
+   },
+   "index_seconds": 0.544,
+   "astgrep_max_rss_mb": 149,
+   "top classes": {
+    "matched, same bytes": 709,
+    "C only: member function": 467,
+    "matched, start differs": 186,
+    "B only: item variable": 129,
+    "C only: member class": 89,
+    "B only: member field": 77,
+    "B only: item constant": 3
+   }
+  },
+  "js-fixture": {
+   "totals": {
+    "files": 7,
+    "compared": 7,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 3,
+    "C lines": 7,
+    "both": 3
+   },
+   "provenance": {
+    "B": {
+     "entries": 18,
+     "inside": 18,
+     "named": 13,
+     "name in range": 13
+    },
+    "C": {
+     "entries": 18,
+     "inside": 18,
+     "named": 12,
+     "name in range": 12
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 0.141,
+     "p50": 0.019692,
+     "p95": 0.025805
+    },
+    "C": {
+     "sum": 0.03,
+     "p50": 0.002859,
+     "p95": 0.018897
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 503,
+     "p50": 70.0
+    },
+    "C": {
+     "sum": 365,
+     "p50": 47.0
+    },
+    "A": {
+     "sum": 263,
+     "p50": 37.0
+    },
+    "file": {
+     "sum": 455,
+     "p50": 74.0
+    }
+   },
+   "index_seconds": 0.192,
+   "astgrep_max_rss_mb": 133,
+   "top classes": {
+    "matched, same bytes": 12,
+    "B only: item module": 2,
+    "C only: item function": 1,
+    "B only: item constant": 1
+   }
+  },
+  "preact": {
+   "totals": {
+    "files": 243,
+    "compared": 243,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 1165,
+    "C lines": 1067,
+    "both": 1032
+   },
+   "provenance": {
+    "B": {
+     "entries": 3480,
+     "inside": 3480,
+     "named": 2803,
+     "name in range": 2794
+    },
+    "C": {
+     "entries": 3979,
+     "inside": 3979,
+     "named": 3653,
+     "name in range": 3653
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 5.649,
+     "p50": 0.021761,
+     "p95": 0.033144
+    },
+    "C": {
+     "sum": 2.193,
+     "p50": 0.008048,
+     "p95": 0.016319
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 58543,
+     "p50": 123.0
+    },
+    "C": {
+     "sum": 74216,
+     "p50": 150.0
+    },
+    "A": {
+     "sum": 58684,
+     "p50": 165.0
+    },
+    "file": {
+     "sum": 609448,
+     "p50": 702.0
+    }
+   },
+   "index_seconds": 1.376,
+   "astgrep_max_rss_mb": 171,
+   "top classes": {
+    "B only: member field": 1591,
+    "C only: member method": 1095,
+    "C only: item function": 1023,
+    "matched, same bytes": 838,
+    "C only: item class": 489,
+    "B only: item constant": 249,
+    "C only: member function": 71,
+    "B only: item variable": 54,
+    "matched, start differs": 43,
+    "B only: item module": 30,
+    "C only: item method": 29,
+    "C only: member interface": 22
+   }
+  },
+  "py-fixture": {
+   "totals": {
+    "files": 8,
+    "compared": 8,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 19,
+    "C lines": 19,
+    "both": 19
+   },
+   "provenance": {
+    "B": {
+     "entries": 65,
+     "inside": 65,
+     "named": 46,
+     "name in range": 46
+    },
+    "C": {
+     "entries": 56,
+     "inside": 56,
+     "named": 45,
+     "name in range": 45
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 0.159,
+     "p50": 0.019237,
+     "p95": 0.026964
+    },
+    "C": {
+     "sum": 0.029,
+     "p50": 0.002455,
+     "p95": 0.017075
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 1045,
+     "p50": 131.5
+    },
+    "C": {
+     "sum": 1202,
+     "p50": 143.0
+    },
+    "A": {
+     "sum": 546,
+     "p50": 67.0
+    },
+    "file": {
+     "sum": 2888,
+     "p50": 345.5
+    }
+   },
+   "index_seconds": 0.263,
+   "astgrep_max_rss_mb": 134,
+   "top classes": {
+    "matched, same bytes": 44,
+    "B only: item variable": 1,
+    "matched, start differs": 1
+   }
+  },
+  "requests": {
+   "totals": {
+    "files": 70,
+    "compared": 70,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 273,
+    "C lines": 306,
+    "both": 273
+   },
+   "provenance": {
+    "B": {
+     "entries": 1122,
+     "inside": 1122,
+     "named": 850,
+     "name in range": 850
+    },
+    "C": {
+     "entries": 637,
+     "inside": 637,
+     "named": 518,
+     "name in range": 518
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 1.67,
+     "p50": 0.021719,
+     "p95": 0.037645
+    },
+    "C": {
+     "sum": 0.243,
+     "p50": 0.003272,
+     "p95": 0.005816
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 17507,
+     "p50": 183.5
+    },
+    "C": {
+     "sum": 13489,
+     "p50": 142.5
+    },
+    "A": {
+     "sum": 219956,
+     "p50": 525.0
+    },
+    "file": {
+     "sum": 285265,
+     "p50": 1446.0
+    }
+   },
+   "index_seconds": 0.509,
+   "astgrep_max_rss_mb": 143,
+   "top classes": {
+    "matched, same bytes": 501,
+    "B only: item variable": 242,
+    "B only: item constant": 72,
+    "B only: member field": 20,
+    "matched, start differs": 15,
+    "C only: member function": 2
+   }
+  },
+  "seaborn": {
+   "totals": {
+    "files": 150,
+    "compared": 150,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 806,
+    "C lines": 998,
+    "both": 806
+   },
+   "provenance": {
+    "B": {
+     "entries": 3973,
+     "inside": 3973,
+     "named": 3167,
+     "name in range": 3167
+    },
+    "C": {
+     "entries": 2913,
+     "inside": 2913,
+     "named": 2541,
+     "name in range": 2541
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 3.721,
+     "p50": 0.023322,
+     "p95": 0.037135
+    },
+    "C": {
+     "sum": 0.989,
+     "p50": 0.006331,
+     "p95": 0.012509
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 56532,
+     "p50": 192.0
+    },
+    "C": {
+     "sum": 58575,
+     "p50": 117.5
+    },
+    "A": {
+     "sum": 82364,
+     "p50": 211.0
+    },
+    "file": {
+     "sum": 629446,
+     "p50": 769.5
+    }
+   },
+   "index_seconds": 1.078,
+   "astgrep_max_rss_mb": 168,
+   "top classes": {
+    "matched, same bytes": 2179,
+    "B only: member field": 340,
+    "B only: item variable": 316,
+    "matched, start differs": 316,
+    "C only: member function": 42,
+    "B only: item constant": 16,
+    "C only: member class": 4
+   }
+  },
+  "ts-fixture": {
+   "totals": {
+    "files": 8,
+    "compared": 8,
+    "partial": 0
+   },
+   "failures": {},
+   "imports": {
+    "B lines": 5,
+    "C lines": 9,
+    "both": 5
+   },
+   "provenance": {
+    "B": {
+     "entries": 57,
+     "inside": 57,
+     "named": 48,
+     "name in range": 48
+    },
+    "C": {
+     "entries": 38,
+     "inside": 38,
+     "named": 33,
+     "name in range": 33
+    }
+   },
+   "nondeterministic": {
+    "B": [],
+    "C": []
+   },
+   "seconds": {
+    "B": {
+     "sum": 0.153,
+     "p50": 0.019152,
+     "p95": 0.019927
+    },
+    "C": {
+     "sum": 0.038,
+     "p50": 0.002909,
+     "p95": 0.024487
+    }
+   },
+   "units": {
+    "B": {
+     "sum": 1045,
+     "p50": 130.0
+    },
+    "C": {
+     "sum": 1020,
+     "p50": 147.0
+    },
+    "A": {
+     "sum": 562,
+     "p50": 43.0
+    },
+    "file": {
+     "sum": 1935,
+     "p50": 250.0
+    }
+   },
+   "index_seconds": 0.219,
+   "astgrep_max_rss_mb": 134,
+   "top classes": {
+    "matched, same bytes": 33,
+    "B only: member field": 15,
+    "B only: item module": 4
+   }
+  }
+ },
+ "E": {
+  "B": {
+   "E1 conformance recall >= 0.90": {
+    "value": 0.777778,
+    "pass": false
+   },
+   "E2 ranges inside file 100%, name in range >= 99%": {
+    "value": [
+     13473,
+     13473,
+     9963,
+     9975
+    ],
+    "pass": true
+   },
+   "E3 deterministic": {
+    "value": 0,
+    "pass": true
+   },
+   "E4 failures <= 1% of parsed files": {
+    "value": [
+     0,
+     980
+    ],
+    "pass": true
+   }
+  },
+  "C": {
+   "E1 conformance recall >= 0.90": {
+    "value": 0.714286,
+    "pass": false
+   },
+   "E2 ranges inside file 100%, name in range >= 99%": {
+    "value": [
+     11250,
+     11250,
+     9795,
+     9795
+    ],
+    "pass": true
+   },
+   "E3 deterministic": {
+    "value": 0,
+    "pass": true
+   },
+   "E4 failures <= 1% of parsed files": {
+    "value": [
+     0,
+     980
+    ],
+    "pass": true
+   }
+  }
+ },
+ "O": {
+  "C": {
+   "O1 per-file p95 <= 0.050 s": {
+    "value": 0.024487,
+    "pass": true
+   },
+   "O2 context latency median <= 1.25 x A": {
+    "value": 1.087,
+    "pass": true
+   }
+  },
+  "B": {
+   "O1 per-file p95 <= 0.100 s": {
+    "value": 0.037645,
+    "pass": true
+   },
+   "O2 context latency median <= 1.25 x A": {
+    "value": 1.034,
+    "pass": true
+   },
+   "O3 ast-grep peak RSS <= 256 MB": {
+    "value": 171,
+    "pass": true
+   }
+  }
+ },
+ "arms": {
+  "B": "FAIL",
+  "C": "FAIL"
+ }
+}

@@ -1,0 +1,176 @@
+{
+ "corpus": "code-server",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 72,
+  "compared": 72,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 223,
+  "B only: member field": 154,
+  "C only: item function": 67,
+  "C only: item variable": 29,
+  "B only: member enumMember": 23,
+  "B only: item constant": 19,
+  "C only: member function": 14,
+  "C only: member method": 8,
+  "matched, start differs": 6,
+  "C only: member interface": 1,
+  "C only: item class": 1,
+  "B only: item variable": 1,
+  "B only: item module": 1,
+  "C only: item namespace": 1
+ },
+ "examples": {
+  "B only: member field": [
+   "ci/dev/watch.ts: vscode L7-7 in DevelopmentCompilers",
+   "ci/dev/watch.ts: vscodeWebExtensions L8-8 in DevelopmentCompilers",
+   "ci/dev/watch.ts: codeServer L9-9 in DevelopmentCompilers",
+   "ci/dev/watch.ts: plugins L10-10 in DevelopmentCompilers",
+   "ci/dev/watch.ts: rootPath L14-14 in Watcher",
+   "ci/dev/watch.ts: paths L15-19 in Watcher",
+   "ci/dev/watch.ts: webServer L24-24 in Watcher",
+   "ci/dev/watch.ts: compilers L45-50 in Watcher"
+  ],
+  "B only: member enumMember": [
+   "src/common/http.ts: Ok L2-2 in HttpCode",
+   "src/common/http.ts: Redirect L3-3 in HttpCode",
+   "src/common/http.ts: NotFound L4-4 in HttpCode",
+   "src/common/http.ts: BadRequest L5-5 in HttpCode",
+   "src/common/http.ts: Unauthorized L6-6 in HttpCode",
+   "src/common/http.ts: LargePayload L7-7 in HttpCode",
+   "src/common/http.ts: ServerError L8-8 in HttpCode",
+   "src/common/http.ts: Session L23-23 in CookieKeys"
+  ],
+  "C only: item function": [
+   "src/common/util.ts: split L5-8 in None",
+   "src/common/util.ts: plural L14-14 in None",
+   "src/common/util.ts: generateUuid L16-22 in None",
+   "src/common/util.ts: normalize L33-35 in None",
+   "src/common/util.ts: trimSlashes L40-42 in None",
+   "src/common/util.ts: arrayify L48-56 in None",
+   "src/node/app.ts: createApp L55-77 in None",
+   "src/node/app.ts: ensureAddress L85-98 in None"
+  ],
+  "matched, start differs": [
+   "src/node/app.ts: listen B L25 C L25",
+   "src/node/routes/domainProxy.ts: maybeProxy B L17 C L17",
+   "src/node/routes/login.ts: getRoot B L29 C L29",
+   "src/node/routes/pathProxy.ts: getProxyTarget B L9 C L9",
+   "test/utils/wtfnode.ts: write B L6 C L6",
+   "typings/pluginapi.d.ts: HttpError B L95 C L95"
+  ],
+  "C only: member function": [
+   "src/node/app.ts: onListen L29-35 in listen",
+   "src/node/cli.ts: error L288-294 in parse",
+   "src/node/routes/index.ts: common L55-69 in register",
+   "src/node/util.ts: append L62-62 in getEnvPaths",
+   "src/node/wrapper.ts: cleanup L24-29 in onMessage",
+   "src/node/wrapper.ts: onError L36-39 in onMessage",
+   "src/node/wrapper.ts: onExit L41-44 in onMessage",
+   "src/node/wrapper.ts: onMessage L46-52 in onMessage"
+  ],
+  "B only: item constant": [
+   "src/node/cli.ts: DEFAULT_SOCKET_PATH L8-8 in None",
+   "src/node/cli.ts: options L126-234 in None",
+   "src/node/coder_cloud.ts: coderCloudAgent L7-7 in None",
+   "src/node/constants.ts: pkg L19-19 in None",
+   "src/node/constants.ts: codePkg L20-20 in None",
+   "src/node/plugin.ts: fsp L13-13 in None",
+   "src/node/plugin.ts: originalLoad L22-22 in None",
+   "src/node/routes/errors.ts: notFoundCodes L29-29 in None"
+  ],
+  "C only: item variable": [
+   "src/node/constants.ts: WORKBENCH_WEB_CONFIG_ID L6-6 in None",
+   "src/node/constants.ts: pkgName L22-22 in None",
+   "src/node/constants.ts: version L23-23 in None",
+   "src/node/constants.ts: commit L24-24 in None",
+   "src/node/constants.ts: rootPath L25-25 in None",
+   "src/node/constants.ts: vsRootPath L26-26 in None",
+   "src/node/constants.ts: codeVersion L27-27 in None",
+   "src/node/constants.ts: tmpdir L28-28 in None"
+  ],
+  "C only: member interface": [
+   "src/node/http.ts: Request L31-36 in Express"
+  ],
+  "C only: item class": [
+   "src/node/wrapper.ts: Process L91-144 in None"
+  ],
+  "C only: member method": [
+   "src/node/wrapper.ts: constructor L107-121 in Process",
+   "src/node/wrapper.ts: preventExit L126-130 in Process",
+   "src/node/wrapper.ts: exit L137-143 in Process",
+   "test/unit/node/test-plugin/src/index.ts: init L10-12 in plugin",
+   "test/unit/node/test-plugin/src/index.ts: router L14-26 in plugin",
+   "test/unit/node/test-plugin/src/index.ts: wsRouter L28-37 in plugin",
+   "test/unit/node/test-plugin/src/index.ts: applications L39-51 in plugin",
+   "typings/pluginapi.d.ts: constructor L96-96 in HttpError"
+  ],
+  "B only: item variable": [
+   "test/utils/wtfnode.ts: active L15-15 in None"
+  ],
+  "B only: item module": [
+   "typings/httpolyglot/index.d.ts: httpolyglot L1-10 in None"
+  ],
+  "C only: item namespace": [
+   "typings/httpolyglot/index.d.ts: <module> L1-10 in None"
+  ]
+ },
+ "imports": {
+  "B lines": 380,
+  "C lines": 378,
+  "both": 378
+ },
+ "provenance": {
+  "B": {
+   "entries": 797,
+   "inside": 797,
+   "named": 427,
+   "name in range": 427
+  },
+  "C": {
+   "entries": 420,
+   "inside": 420,
+   "named": 347,
+   "name in range": 347
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 1.614,
+   "p50": 0.020663,
+   "p95": 0.031878
+  },
+  "C": {
+   "sum": 0.283,
+   "p50": 0.003666,
+   "p95": 0.005914
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 15173,
+   "p50": 154.5
+  },
+  "C": {
+   "sum": 11885,
+   "p50": 103.0
+  },
+  "A": {
+   "sum": 40170,
+   "p50": 187.0
+  },
+  "file": {
+   "sum": 104482,
+   "p50": 815.5
+  }
+ },
+ "index_seconds": 0.399,
+ "astgrep_max_rss_mb": 143
+}

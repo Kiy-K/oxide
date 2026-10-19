@@ -1,0 +1,88 @@
+{
+ "corpus": "ts-fixture",
+ "tool": "ast-grep 0.51.0",
+ "totals": {
+  "files": 8,
+  "compared": 8,
+  "partial": 0
+ },
+ "failures": {},
+ "classes": {
+  "matched, same bytes": 33,
+  "B only: member field": 15,
+  "B only: item module": 4
+ },
+ "examples": {
+  "B only: member field": [
+   "src/auth/service.ts: sessionId L4-4 in Session",
+   "src/auth/service.ts: token L5-5 in Session",
+   "src/cache/versioned_store.ts: value L2-2 in StoreEntry",
+   "src/cache/versioned_store.ts: version L3-3 in StoreEntry",
+   "src/cache/versioned_store.ts: entries L7-7 in VersionedStore",
+   "src/net/client.ts: path L4-4 in RequestOptions",
+   "src/net/client.ts: method L5-5 in RequestOptions",
+   "src/net/client.ts: body L6-6 in RequestOptions"
+  ],
+  "B only: item module": [
+   "src/index.ts: './auth/service' L1-1 in None",
+   "src/index.ts: './cache/versioned_store' L2-2 in None",
+   "src/index.ts: './net/client' L3-3 in None",
+   "src/index.ts: './net/retry' L4-4 in None"
+  ]
+ },
+ "imports": {
+  "B lines": 5,
+  "C lines": 9,
+  "both": 5
+ },
+ "provenance": {
+  "B": {
+   "entries": 57,
+   "inside": 57,
+   "named": 48,
+   "name in range": 48
+  },
+  "C": {
+   "entries": 38,
+   "inside": 38,
+   "named": 33,
+   "name in range": 33
+  }
+ },
+ "nondeterministic": {
+  "B": [],
+  "C": []
+ },
+ "seconds": {
+  "B": {
+   "sum": 0.153,
+   "p50": 0.019152,
+   "p95": 0.019927
+  },
+  "C": {
+   "sum": 0.038,
+   "p50": 0.002909,
+   "p95": 0.024487
+  }
+ },
+ "units": {
+  "B": {
+   "sum": 1045,
+   "p50": 130.0
+  },
+  "C": {
+   "sum": 1020,
+   "p50": 147.0
+  },
+  "A": {
+   "sum": 562,
+   "p50": 43.0
+  },
+  "file": {
+   "sum": 1935,
+   "p50": 250.0
+  }
+ },
+ "index_seconds": 0.219,
+ "astgrep_max_rss_mb": 134
+}
