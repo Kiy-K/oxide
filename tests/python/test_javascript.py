@@ -13,9 +13,9 @@ from test_typescript import derived, resolved
 
 import oxide
 from oxide.capture import capture
-from oxide.core import python
-from oxide.core import typescript as js
 from oxide.core.indexing import derive
+from oxide.core.languages import python
+from oxide.core.languages import typescript as js
 
 FIXTURE = REPO / "fixtures/js_repo"
 

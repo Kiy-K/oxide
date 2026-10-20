@@ -13,8 +13,8 @@ from conftest import REPO, write
 
 import oxide
 from oxide.capture import capture
-from oxide.core import python, tsconfig, typescript
 from oxide.core.indexing import Derived, derive, validate
+from oxide.core.languages import python, tsconfig, typescript
 
 TS_FIXTURE = REPO / "fixtures" / "ts_repo"
 

@@ -13,8 +13,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from oxide.core.go import Parsed
-from oxide.core.python import Edge, Res, Use, edge_target, structural
+from oxide.core.languages.go import Parsed
+from oxide.core.languages.python import Edge, Res, Use, edge_target, structural
 from oxide.models import Entity, RelationKind, SourceRef
 
 _MODULE = re.compile(rb"^\s*module\s+\"?([^\s\"]+?)\"?\s*(?://.*)?$", re.MULTILINE)

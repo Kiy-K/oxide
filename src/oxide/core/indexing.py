@@ -16,8 +16,8 @@ from importlib.metadata import version
 from typing import Any, Literal
 
 from oxide.capture import Capture
-from oxide.core import go, go_resolve, python, typescript
-from oxide.core.python import Edge
+from oxide.core.languages import go, go_resolve, python, typescript
+from oxide.core.languages.python import Edge
 from oxide.core.retrieval import TERMS_VERSION
 from oxide.models import Coverage, Entity, FileInfo, OxideError, SourceRef
 

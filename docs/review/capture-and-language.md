@@ -1,7 +1,7 @@
 # Capture and language review rules (v2)
 
-Scope: `src/oxide/capture.py`, `src/oxide/core/python.py`,
-`src/oxide/core/typescript.py`, `src/oxide/core/indexing.py`.
+Scope: `src/oxide/capture.py`, `src/oxide/core/languages/python.py`,
+`src/oxide/core/languages/typescript.py`, `src/oxide/core/indexing.py`.
 
 ---
 

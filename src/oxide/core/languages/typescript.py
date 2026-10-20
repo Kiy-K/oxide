@@ -20,8 +20,8 @@ import tree_sitter_javascript
 import tree_sitter_typescript
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
-from oxide.core import tsconfig
-from oxide.core.python import (
+from oxide.core.languages import tsconfig
+from oxide.core.languages.python import (
     TOO_DEEP,
     Edge,
     Nesting,

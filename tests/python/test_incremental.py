@@ -13,8 +13,8 @@ from conftest import FIXTURE, write
 
 import oxide
 from oxide.capture import capture, digest
-from oxide.core import python, typescript
 from oxide.core.indexing import derive, dialect, validate
+from oxide.core.languages import python, typescript
 
 Edits = dict[str, str | bytes | None]
 BASE: dict[str, str | bytes] = {

@@ -10,8 +10,8 @@ from conftest import FIXTURE, write
 
 import oxide
 from oxide.capture import capture
-from oxide.core import python
 from oxide.core.indexing import derive, validate
+from oxide.core.languages import python
 
 
 def keys(root: Path) -> dict[str, oxide.Entity]:

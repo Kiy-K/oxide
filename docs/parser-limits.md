@@ -1,7 +1,7 @@
 # Parser limits: long chains and deep syntax
 
 The ast-grep evaluation ([phase-6/astgrep-feasibility](phase-6/astgrep-feasibility/README.md))
-found `oxide.core.python.parse` super-linear on long method chains: 3.0 s for 10k
+found `oxide.core.languages.python.parse` super-linear on long method chains: 3.0 s for 10k
 `.then(f)` links, 29.6 s for 30k, over 120 s for 100k. This records the diagnosis, the
 fix and the one explicit limit left (measured 2026-10-18, py-tree-sitter 0.26.0,
 tree-sitter-python 0.25.0, tree-sitter-typescript 0.23.2, Linux x86_64).
@@ -35,7 +35,7 @@ Two causes, both independent of the language slices' semantics.
   (`child_by_field_name`), never through `Node.parent`. Wrapper parents and member
   decorators come from a node-id map built from the captured `export_statement`,
   declaration and `class_body` nodes.
-- `Nesting` (`src/oxide/core/python.py`) finds the innermost scope with ancestor jump
+- `Nesting` (`src/oxide/core/languages/python.py`) finds the innermost scope with ancestor jump
   pointers in O(log depth). A randomized test checks it against the parent walk it
   replaced.
 - `(ERROR)` and `(MISSING)` run as a second query, only when the tree has an error.

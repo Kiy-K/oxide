@@ -18,7 +18,7 @@ from typing import Any
 import tree_sitter_go
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
-from oxide.core.python import TOO_DEEP, Use, as_list, syntax_diagnostics, too_deep
+from oxide.core.languages.python import TOO_DEEP, Use, as_list, syntax_diagnostics, too_deep
 
 VERSION = "oxide-go-v1"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.

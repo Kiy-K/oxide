@@ -1,7 +1,7 @@
 # JavaScript and JSX source support
 
 `oxide-javascript-v1` extends the existing ECMAScript pipeline in
-`core/typescript.py`. It uses `tree-sitter-javascript==0.23.1`, rather than accepting
+`core/languages/typescript.py`. It uses `tree-sitter-javascript==0.23.1`, rather than accepting
 TypeScript syntax in JavaScript. No Node, Bun, compiler, package manager or
 repository code runs during indexing or querying. The ordinary Python API, CLI,
 retrieval, graph, router and context packer serve these files. MCP remains exactly

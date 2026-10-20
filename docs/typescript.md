@@ -1,6 +1,6 @@
 # TypeScript language slice (`oxide-typescript-v3`)
 
-The second language slice (BOOTSTRAP § Remaining, item 3), in `src/oxide/core/typescript.py`.
+The second language slice (BOOTSTRAP § Remaining, item 3), in `src/oxide/core/languages/typescript.py`.
 It has the same shape as the Python slice: one compiled tree-sitter query per dialect
 collects every fact in C; Python only assigns captured nodes to their innermost declaration
 scope (a bisect over body ranges) and resolves names conservatively. It produces the same
@@ -85,7 +85,7 @@ name), none or unknowable is `unresolved` with the name it used.
   directory. They may carry a `.js`/`.jsx`/`.mjs`/`.cjs`/`.ts`/`.tsx`/`.mts`/`.cts`
   extension (ESM `./a.js` names `a.ts`), and fall back to `<dir>/index`.
 - **Bare specifiers** resolve through the importing file's project
-  (`oxide-typescript-v2`, `src/oxide/core/tsconfig.py`), as TypeScript resolves them
+  (`oxide-typescript-v2`, `src/oxide/core/languages/tsconfig.py`), as TypeScript resolves them
   before it looks in packages. Everything is read from the captured `tsconfig.json`
   bytes:
   - **The project** is the nearest `tsconfig.json` above the file whose `files`, or

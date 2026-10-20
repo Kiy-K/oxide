@@ -76,7 +76,7 @@ DEFAULT_BUFFER_POOL = ladybug.BUFFER_POOL
 EVAL_BUFFER_POOL = 512 << 20
 FIXTURE = "fixture:ts_repo"
 # The documented symbol rules (docs/typescript.md § Identity and kinds), written
-# against the grammar independently of oxide.core.typescript.
+# against the grammar independently of oxide.core.languages.typescript.
 DECLARATIONS = {
     "function_declaration",
     "generator_function_declaration",

@@ -13,8 +13,8 @@ from test_typescript import derived, resolved
 
 import oxide
 from oxide.capture import capture
-from oxide.core import go, python
 from oxide.core.indexing import Derived, derive, dialect, validate
+from oxide.core.languages import go, python
 
 FIXTURE = REPO / "fixtures/go_repo"
 MOD = "module example.com/m\n\ngo 1.22\n"

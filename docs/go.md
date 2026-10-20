@@ -1,7 +1,7 @@
 # Go source support
 
-`oxide-go-v1` adds Go as a language slice of the existing engine: `core/go.py`
-extracts syntax facts with `tree-sitter-go==0.25.0`, `core/go_resolve.py` resolves
+`oxide-go-v1` adds Go as a language slice of the existing engine: `core/languages/go.py`
+extracts syntax facts with `tree-sitter-go==0.25.0`, `core/languages/go_resolve.py` resolves
 them over the whole capture. No Go toolchain, `go list`, `gopls`, module download
 or repository code runs during indexing or querying. The ordinary Python API, CLI,
 retrieval, graph, router and context packer serve these files unchanged, and MCP
