@@ -1,0 +1,369 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-go-eval/real/prometheus",
+ "commit": "df0d3cc5bde0a153586897fa443e72b5b79c9064",
+ "snapshot": "sha256:ed706f0320de8f5a4583abfb70dd4bf56d549b58d83329d40b0547672492fe7c",
+ "files": 1704,
+ "go_files": 746,
+ "coverage": {
+  "complete": 746
+ },
+ "entities": 17720,
+ "go_symbol_kinds": {
+  "variable": 600,
+  "function": 5000,
+  "constant": 1696,
+  "struct": 1309,
+  "method": 5604,
+  "type": 191,
+  "interface": 173
+ },
+ "graph_sha256": "06d83508f69cfe769871e30eda4c4e351209af4d8150a0e92c0abc31bdeaae22",
+ "relations": 194214,
+ "resolution": {
+  "calls:ambiguous": 4275,
+  "calls:resolved": 22894,
+  "calls:unresolved": 91607,
+  "contains:resolved": 17719,
+  "contains_logical:resolved": 1014,
+  "defines:resolved": 14929,
+  "imports:ambiguous": 9,
+  "imports:resolved": 2739,
+  "imports:unresolved": 6742,
+  "references:ambiguous": 294,
+  "references:resolved": 17078,
+  "references:unresolved": 3487,
+  "tested_by:resolved": 11427
+ },
+ "derive_cold_s": 3.254268636999768,
+ "derive_reused_s": 1.013295583999934,
+ "facts_reused": 1014,
+ "derive_parity": true,
+ "index_cold_s": 6.86876299800133,
+ "index_unchanged_s": 0.11852607999935572,
+ "index_edit_s": 4.312719632998778,
+ "edit_reused": 1013,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 962.7109375,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/query/QueryPage.tsx#QueryPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1031,
+    "end": 1040,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/AlertsPage.tsx#AlertsPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1080,
+    "end": 1090,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/RulesPage.tsx#RulesPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1125,
+    "end": 1134,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/targets/TargetsPage.tsx#TargetsPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1168,
+    "end": 1179,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/StatusPage.tsx#StatusPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1223,
+    "end": 1233,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/TSDBStatusPage.tsx#TSDBStatusPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1268,
+    "end": 1282,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/FlagsPage.tsx#FlagsPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1321,
+    "end": 1330,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/ConfigPage.tsx#ConfigPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1364,
+    "end": 1374,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/AgentPage.tsx#AgentPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1409,
+    "end": 1418,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/ErrorBoundary.tsx#ResettingErrorBoundary"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1486,
+    "end": 1499,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/ThemeSelector.tsx#ThemeSelector"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1544,
+    "end": 1557,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/state/settingsSlice.ts#useSettings"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1660,
+    "end": 1671,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/SettingsMenu.tsx#SettingsMenu"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1711,
+    "end": 1723,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/ReadinessWrapper.tsx#ReadinessWrapper"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1765,
+    "end": 1781,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/NotificationsProvider.tsx#NotificationsProvider"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1827,
+    "end": 1848,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/components/NotificationsIcon.tsx#NotificationsIcon"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 1899,
+    "end": 1916,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/service-discovery/ServiceDiscoveryPage.tsx#ServiceDiscoveryPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 2098,
+    "end": 2118,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/pages/AlertmanagerDiscoveryPage.tsx#AlertmanagerDiscoveryPage"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 2181,
+    "end": 2206,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/styles.ts#actionIconStyle"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 2258,
+    "end": 2273,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:web/ui/mantine-ui/src/App.tsx",
+   "targets": [
+    "symbol:web/ui/mantine-ui/src/styles.ts#navIconStyle"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "web/ui/mantine-ui/src/App.tsx",
+    "start": 2275,
+    "end": 2287,
+    "digest": "sha256:9c42213db1c696c1351860566e451770b6061c45c744c94757f43528d788c085"
+   }
+  }
+ ]
+}

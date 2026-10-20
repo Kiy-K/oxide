@@ -16,7 +16,7 @@ from importlib.metadata import version
 from typing import Any, Literal
 
 from oxide.capture import Capture
-from oxide.core import python, typescript
+from oxide.core import go, go_resolve, python, typescript
 from oxide.core.python import Edge
 from oxide.core.retrieval import TERMS_VERSION
 from oxide.models import Coverage, Entity, FileInfo, OxideError, SourceRef
@@ -27,14 +27,16 @@ TREE_PROJECTION = "1"
 # parse differently across grammars); include each slice's facts version.
 FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
-    f"{typescript.JAVASCRIPT_FACTS_VERSION}"
+    f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION}"
 )
 
-Dialect = Literal["python", "typescript", "tsx", "javascript"]
+Dialect = Literal["python", "typescript", "tsx", "javascript", "go"]
 
 
 def dialect(path: str) -> Dialect | None:
     """The language slice and grammar that parse ``path``, None when none does."""
+    if path.endswith(".go"):
+        return "go"
     return "python" if path.endswith(".py") else typescript.dialect(path)
 
 
@@ -60,6 +62,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "typescript-parser": f"{parser} tree-sitter-typescript={version('tree-sitter-typescript')}",
         "javascript": typescript.JAVASCRIPT_VERSION,
         "javascript-parser": f"{parser} tree-sitter-javascript={version('tree-sitter-javascript')}",
+        "go": go.VERSION,
+        "go-parser": f"{parser} tree-sitter-go={version('tree-sitter-go')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -116,6 +120,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     edges: list[Edge] = []
     py_sources: list[tuple[str, str, python.Parsed]] = []
     ts_sources: list[tuple[str, str, typescript.Parsed]] = []
+    go_sources: list[tuple[str, str, go.Parsed]] = []
     for f in capture.files:
         key = f"file:{f.path}"
         name = f.path.rsplit("/", 1)[-1]
@@ -128,7 +133,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             continue
         section = cached.get(lang)
         raw = section.get(f.digest) if isinstance(section, dict) else None
-        language = lang if lang in ("python", "javascript") else "typescript"
+        language = lang if lang in ("python", "javascript", "go") else "typescript"
         diagnostics: list[str] | str
         if lang == "python":
             py, hit = _reuse(raw, f.data, python.decode, python.parse)
@@ -136,6 +141,12 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 py_sources.append((f.path, f.digest, py))
                 encoded = raw if hit else python.encode(py)
             diagnostics = py if isinstance(py, str) else py.diagnostics
+        elif lang == "go":
+            gp, hit = _reuse(raw, f.data, go.decode, go.parse)
+            if not isinstance(gp, str):
+                go_sources.append((f.path, f.digest, gp))
+                encoded = raw if hit else go.encode(gp)
+            diagnostics = gp if isinstance(gp, str) else gp.diagnostics
         else:
             parse = partial(typescript.parse, language=lang)
             ts, hit = _reuse(raw, f.data, typescript.decode, parse)
@@ -155,4 +166,6 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     parsed = {path for path, _, _ in ts_sources}
     others = {f.path: f.data for f in capture.files if f.path not in parsed}
     typescript.Resolver(ts_sources, others).derive(entities, edges)
+    mods = {p: d for p, d in others.items() if p.rpartition("/")[2] == "go.mod"}
+    go_resolve.Resolver(go_sources, mods).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

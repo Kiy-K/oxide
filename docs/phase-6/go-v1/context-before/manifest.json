@@ -1,0 +1,176 @@
+{
+ "source_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "rows_sha256": "3fdaeb33f815c3da07cd1100762fcb1e1c48dbbc3f1e35f1db3187cd650ecafd",
+ "selection": [
+  "cli__cli-10048",
+  "cli__cli-10363",
+  "cli__cli-1155",
+  "grpc__grpc-go-2371",
+  "grpc__grpc-go-2932",
+  "grpc__grpc-go-2951",
+  "instance_flipt-io__flipt-05d7234fa582df632f70a7cd10194d61bd7043b9",
+  "instance_flipt-io__flipt-3d5a345f94c2adc8a0eaa102c189c08ad4c0f8e8",
+  "instance_flipt-io__flipt-56a620b8fc9ef7a0819b47709aa541cdfdbba00b",
+  "instance_future-architect__vuls-1832b4ee3a20177ad313d806983127cb6e53f5cf",
+  "instance_future-architect__vuls-4c04acbd9ea5b073efe999e33381fa9f399d6f27",
+  "instance_future-architect__vuls-6eff6a9329a65cc412e79b8f82444dfa3d0f0b5a",
+  "instance_gravitational__teleport-8302d467d160f869b77184e262adbe2fbc95d9ba-vce94f93ad1030e3136852817f2423c1b3ac37bc4",
+  "instance_navidrome__navidrome-28389fb05e1523564dfc61fa43ed8eb8a10f938c",
+  "instance_navidrome__navidrome-31799662706fedddf5bcc1a76b50409d1f91d327",
+  "instance_navidrome__navidrome-5001518260732e36d9a42fb8d4c054b28afab310",
+  "zeromicro__go-zero-1969",
+  "zeromicro__go-zero-2463"
+ ],
+ "corpora": {
+  "cli__cli@8288011149e7": {
+   "snapshot": "sha256:471e7764dbd1dc806f717d53d167e6d7888ecd11b2b73e63b1adb7a57895958d",
+   "commit": "8288011149e71d5658b80ebef393522ba2d0e7cc",
+   "files": 719,
+   "entities": 720,
+   "relations": 719,
+   "partial": []
+  },
+  "cli__cli@4f80400a896a": {
+   "snapshot": "sha256:d51a21e311471522771842d5bf82a4f68f0457e24bbd0796fa31e2b7ce13045c",
+   "commit": "4f80400a896ac10037090a6f7c78751adebd2e2c",
+   "files": 733,
+   "entities": 734,
+   "relations": 733,
+   "partial": []
+  },
+  "cli__cli@adc7aa794cea": {
+   "snapshot": "sha256:3f04a9e85a1b26f6a0fed502e1966e6ba1ec2219282c3f1dd06fc7b99b5eaf8c",
+   "commit": "adc7aa794cea8e9a80502bb247ae6aa78739d440",
+   "files": 93,
+   "entities": 94,
+   "relations": 93,
+   "partial": []
+  },
+  "grpc__grpc@c1fc9faff611": {
+   "snapshot": "sha256:004a552d4f3b1c19d8b758edcb05be90ee672b37c72cc7815217eada232ef8b6",
+   "commit": "c1fc9faff6114b92549bd2145ac77cabff68740d",
+   "files": 251,
+   "entities": 252,
+   "relations": 251,
+   "partial": []
+  },
+  "grpc__grpc@61f27c14152c": {
+   "snapshot": "sha256:8cf2125ac566ead14c6bfb02ea4f3f1948882bf968f19102cf18252654c2eec2",
+   "commit": "61f27c14152c7551d5cc657c31e81a3597c82e48",
+   "files": 334,
+   "entities": 335,
+   "relations": 334,
+   "partial": []
+  },
+  "grpc__grpc@aa4eae656c81": {
+   "snapshot": "sha256:58ebddf569a47486228f4ecd5d96181858c70aa4f50fb2e5c6e56c5aeb68ac11",
+   "commit": "aa4eae656c8137762f4cb0065e80178b77acf2dc",
+   "files": 345,
+   "entities": 346,
+   "relations": 345,
+   "partial": []
+  },
+  "flipt-io__flipt@b64891e57df7": {
+   "snapshot": "sha256:a9d8182979f1d3f695ad47e519b4293175cb6ae6716cd060b61ce534c3f0474d",
+   "commit": "b64891e57df74861e89ebcfa81394e4bc096f8c7",
+   "files": 391,
+   "entities": 392,
+   "relations": 391,
+   "partial": []
+  },
+  "flipt-io__flipt@91cc1b9fc382": {
+   "snapshot": "sha256:5436d45cc57bdc452d248354a9d078e0d9b7788c9364e1b61b971ef383793f10",
+   "commit": "91cc1b9fc38280a53a36e1e9543d87d7306144b2",
+   "files": 328,
+   "entities": 329,
+   "relations": 328,
+   "partial": []
+  },
+  "flipt-io__flipt@32864671f44b": {
+   "snapshot": "sha256:76f839738529d30187ec24c2cee3d70f5fc57e5e9b256c572e85dbe1f8f1c1d6",
+   "commit": "32864671f44b7bbd9edc8e2bc1d6255906c31f5b",
+   "files": 258,
+   "entities": 259,
+   "relations": 258,
+   "partial": []
+  },
+  "future-architect__vuls@78b52d6a7f48": {
+   "snapshot": "sha256:bff2a81a9402e10ece0554a3ec94eb6cf2acb2426b1ea507a90039b1991bdc0e",
+   "commit": "78b52d6a7f480bd610b692de9bf0c86f57332f23",
+   "files": 177,
+   "entities": 178,
+   "relations": 177,
+   "partial": []
+  },
+  "future-architect__vuls@1c4f2315727a": {
+   "snapshot": "sha256:42da2bcef4bd3f1c426c39e2edad3f3bcbae060fa9b44fd423423e7b722c4b37",
+   "commit": "1c4f2315727ae4370177b9c1a540fc8b0c0a7c91",
+   "files": 144,
+   "entities": 145,
+   "relations": 144,
+   "partial": []
+  },
+  "future-architect__vuls@69d32d45116a": {
+   "snapshot": "sha256:21dd5e1e6d14ed7f5d617cda32501a58fe9dd70d457ecac3aa6b23012f0ea682",
+   "commit": "69d32d45116aefd871327b9254977015a57995b8",
+   "files": 127,
+   "entities": 128,
+   "relations": 127,
+   "partial": []
+  },
+  "gravitational__teleport@c2ace99b1c8b": {
+   "snapshot": "sha256:1a68733a3e73fe9cfd3afcb1a47c61a8755faeff6e8986a00b76ad62e3c949c4",
+   "commit": "c2ace99b1c8bc141c43730352107f6848cd4ca4c",
+   "files": 1272,
+   "entities": 1273,
+   "relations": 1272,
+   "partial": []
+  },
+  "navidrome__navidrome@5d8318f7b362": {
+   "snapshot": "sha256:371cf6593d7253d7b06d9a87359583268ff4486afe8b0dd7418c2013d5180dee",
+   "commit": "5d8318f7b362c5b044f892f775d264a5d40e4e24",
+   "files": 327,
+   "entities": 328,
+   "relations": 327,
+   "partial": []
+  },
+  "navidrome__navidrome@537e2fc033b7": {
+   "snapshot": "sha256:05ea1eb425b55cc089972a02dc72b111cbee787293955534a036ff46c37f3790",
+   "commit": "537e2fc033b71a4a69190b74f755ebc352bb4196",
+   "files": 424,
+   "entities": 425,
+   "relations": 424,
+   "partial": []
+  },
+  "navidrome__navidrome@265f33ed9da1": {
+   "snapshot": "sha256:5f2a132c4a3e69c49c204699b6f392fda6a4575b6f35c63a66eee2d8bf8b8ef1",
+   "commit": "265f33ed9da106cd2c926a243d564ad93c04df0e",
+   "files": 276,
+   "entities": 277,
+   "relations": 276,
+   "partial": []
+  },
+  "zeromicro__go@af05219b70c5": {
+   "snapshot": "sha256:400dbf31458dd8c1fd56563303c40290acbf57d20cdea90cd3865c8a1af6d987",
+   "commit": "af05219b70c5e18542ebb499b18a1dff6ffacc6d",
+   "files": 859,
+   "entities": 860,
+   "relations": 859,
+   "partial": []
+  },
+  "zeromicro__go@63cfe60f1a75": {
+   "snapshot": "sha256:4ac5a69a15a52a8d559e3a780a976d435222dfb919eea6664cfd8811b25aacd0",
+   "commit": "63cfe60f1a7583865757780ebfe2a5309a542134",
+   "files": 903,
+   "entities": 904,
+   "relations": 903,
+   "partial": []
+  }
+ },
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "scorer": "contextbench-py-scorer with Go module projection v1"
+}

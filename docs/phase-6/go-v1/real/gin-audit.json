@@ -1,0 +1,146 @@
+{
+ "calls": [
+  {
+   "source": "symbol:gin_test.go#TestEngineHandleContextNoRouteWithEngineMiddleware",
+   "target": "symbol:gin.go#New",
+   "text": "New",
+   "target_name": "New",
+   "target_signature": "func New(opts ...OptionFunc) *Engine"
+  },
+  {
+   "source": "file:response_writer_test.go",
+   "target": "symbol:response_writer.go#ResponseWriter",
+   "text": "ResponseWriter",
+   "target_name": "ResponseWriter",
+   "target_signature": "type ResponseWriter interface"
+  },
+  {
+   "source": "symbol:context.go#Context.HandlerName",
+   "target": "symbol:utils.go#nameOfFunction",
+   "text": "nameOfFunction",
+   "target_name": "nameOfFunction",
+   "target_signature": "func nameOfFunction(f any) string"
+  },
+  {
+   "source": "symbol:context_test.go#TestSaveUploadedCreateFailed",
+   "target": "symbol:test_helpers.go#CreateTestContext",
+   "text": "CreateTestContext",
+   "target_name": "CreateTestContext",
+   "target_signature": "func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine)"
+  },
+  {
+   "source": "symbol:middleware_test.go#TestMiddlewareAbort",
+   "target": "symbol:routes_test.go#PerformRequest",
+   "text": "PerformRequest",
+   "target_name": "PerformRequest",
+   "target_signature": "func PerformRequest(r http.Handler, method, path string, headers ...header) *httptest.ResponseRecorder"
+  },
+  {
+   "source": "symbol:context_test.go#TestContextRenderNoContentJSON",
+   "target": "symbol:test_helpers.go#CreateTestContext",
+   "text": "CreateTestContext",
+   "target_name": "CreateTestContext",
+   "target_signature": "func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine)"
+  },
+  {
+   "source": "symbol:gin_test.go#TestUpdateRouteTreesCalledOnce",
+   "target": "symbol:gin.go#New",
+   "text": "New",
+   "target_name": "New",
+   "target_signature": "func New(opts ...OptionFunc) *Engine"
+  },
+  {
+   "source": "symbol:context_test.go#TestContextSetGetAnyKey",
+   "target": "symbol:test_helpers.go#CreateTestContext",
+   "text": "CreateTestContext",
+   "target_name": "CreateTestContext",
+   "target_signature": "func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine)"
+  },
+  {
+   "source": "symbol:benchmarks_test.go#BenchmarkOneRouteJSON",
+   "target": "symbol:gin.go#New",
+   "text": "New",
+   "target_name": "New",
+   "target_signature": "func New(opts ...OptionFunc) *Engine"
+  },
+  {
+   "source": "symbol:render/json.go#JsonpJSON.WriteContentType",
+   "target": "symbol:render/render.go#writeContentType",
+   "text": "writeContentType",
+   "target_name": "writeContentType",
+   "target_signature": "func writeContentType(w http.ResponseWriter, value []string)"
+  }
+ ],
+ "imports": [
+  {
+   "source": "file:deprecated.go",
+   "target": "module:go:binding/binding",
+   "text": "\"github.com/gin-gonic/gin/binding\"",
+   "target_name": "github.com/gin-gonic/gin/binding",
+   "target_signature": null
+  },
+  {
+   "source": "file:binding/json.go",
+   "target": "module:go:codec/json/json",
+   "text": "\"github.com/gin-gonic/gin/codec/json\"",
+   "target_name": "github.com/gin-gonic/gin/codec/json",
+   "target_signature": null
+  },
+  {
+   "source": "file:mode.go",
+   "target": "module:go:binding/binding",
+   "text": "\"github.com/gin-gonic/gin/binding\"",
+   "target_name": "github.com/gin-gonic/gin/binding",
+   "target_signature": null
+  },
+  {
+   "source": "file:gin.go",
+   "target": "module:go:internal/fs/fs",
+   "text": "filesystem \"github.com/gin-gonic/gin/internal/fs\"",
+   "target_name": "github.com/gin-gonic/gin/internal/fs",
+   "target_signature": null
+  },
+  {
+   "source": "file:context.go",
+   "target": "module:go:render/render",
+   "text": "\"github.com/gin-gonic/gin/render\"",
+   "target_name": "github.com/gin-gonic/gin/render",
+   "target_signature": null
+  },
+  {
+   "source": "file:gin.go",
+   "target": "module:go:internal/bytesconv/bytesconv",
+   "text": "\"github.com/gin-gonic/gin/internal/bytesconv\"",
+   "target_name": "github.com/gin-gonic/gin/internal/bytesconv",
+   "target_signature": null
+  },
+  {
+   "source": "file:render/html.go",
+   "target": "module:go:internal/fs/fs",
+   "text": "\"github.com/gin-gonic/gin/internal/fs\"",
+   "target_name": "github.com/gin-gonic/gin/internal/fs",
+   "target_signature": null
+  },
+  {
+   "source": "file:binding/form_mapping.go",
+   "target": "module:go:internal/bytesconv/bytesconv",
+   "text": "\"github.com/gin-gonic/gin/internal/bytesconv\"",
+   "target_name": "github.com/gin-gonic/gin/internal/bytesconv",
+   "target_signature": null
+  },
+  {
+   "source": "file:binding/form_mapping.go",
+   "target": "module:go:codec/json/json",
+   "text": "\"github.com/gin-gonic/gin/codec/json\"",
+   "target_name": "github.com/gin-gonic/gin/codec/json",
+   "target_signature": null
+  },
+  {
+   "source": "file:binding/json_test.go",
+   "target": "module:go:codec/json/json",
+   "text": "\"github.com/gin-gonic/gin/codec/json\"",
+   "target_name": "github.com/gin-gonic/gin/codec/json",
+   "target_signature": null
+  }
+ ]
+}

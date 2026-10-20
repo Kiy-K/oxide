@@ -172,3 +172,12 @@ workflow automatically includes the new conformance fixtures and distribution sm
 New JavaScript execution on Windows/macOS is pending those hosted jobs; wheel
 availability does not establish runtime verification. Existing platform limitations
 still apply. No Node or Bun runtime dependency is introduced.
+
+## Go grammar compatibility
+
+`tree-sitter-go==0.25.0` ships CPython `cp310-abi3` wheels for Linux x86_64/aarch64,
+macOS x86_64/arm64 and Windows amd64/arm64. Its grammar ABI is 15; the locked
+tree-sitter 0.26.0 accepts ABI 13–15. Fixture conformance and Linux distribution
+smoke evidence are recorded in [phase-6/go-v1](phase-6/go-v1/README.md). Runtime
+verification on Windows and macOS is pending hosted CI; wheel availability alone
+does not establish runtime verification. Existing platform limitations still apply.

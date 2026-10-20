@@ -19,6 +19,7 @@ import tarfile
 import tempfile
 import time
 from collections import Counter
+from collections.abc import Callable
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tests/python"))
@@ -36,7 +37,7 @@ def save(path: Path, value: object) -> None:
     path.write_text(json.dumps(value, indent=1, ensure_ascii=False) + "\n")
 
 
-def real(root: Path, out: Path) -> None:
+def real(root: Path, out: Path, language: str = "javascript") -> None:
     from test_incremental import dump
 
     snap = capture(root)
@@ -48,13 +49,15 @@ def real(root: Path, out: Path) -> None:
     warm = derive(snap, "evaluation", full.facts)
     reused = time.perf_counter() - started
     assert warm == full
-    js_files = [f for f in full.files if f.language == "javascript"]
+    js_files = [f for f in full.files if f.language == language]
+    paths = {f.path for f in js_files}
+    prefix = "js" if language == "javascript" else language
     resolutions = Counter((e.kind, e.resolution) for e in full.edges)
     sample = [e for e in full.edges if e.kind == "imports" and e.resolution == "resolved"][:20]
     # Only the owned temporary corpus is edited; restore its exact bytes on exit.
     edit = next(root / f.path for f in js_files if f.coverage == "complete")
     original = edit.read_bytes()
-    with tempfile.TemporaryDirectory(prefix="oxide-js-eval-") as temporary:
+    with tempfile.TemporaryDirectory(prefix=f"oxide-{prefix}-eval-") as temporary:
         data = Path(temporary)
         copy = data / "repo"
         for f in snap.files:
@@ -84,16 +87,14 @@ def real(root: Path, out: Path) -> None:
             ).strip(),
             "snapshot": snap.snapshot_id,
             "files": len(full.files),
-            "js_files": len(js_files),
+            f"{prefix}_files": len(js_files),
             "coverage": dict(Counter(f.coverage for f in js_files)),
             "entities": len(full.entities),
-            "js_symbol_kinds": dict(
+            f"{prefix}_symbol_kinds": dict(
                 Counter(
                     e.kind
                     for e in full.entities
-                    if e.category == "symbol"
-                    and e.source is not None
-                    and e.source.path.endswith((".js", ".jsx", ".mjs", ".cjs"))
+                    if e.category == "symbol" and e.source is not None and e.source.path in paths
                 )
             ),
             "graph_sha256": hashlib.sha256(
@@ -191,7 +192,15 @@ def context(rows_path: Path, corpora: Path, out: Path) -> None:
 SELECTED = ("mui__material-ui-11858", "mui__material-ui-11987", "mui__material-ui-12236")
 
 
-def fetch(rows_path: Path, directory: Path) -> None:
+def _ecmascript(name: str) -> bool:
+    return (
+        name.endswith((".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"))
+        or Path(name).name == "package.json"
+        or ts.is_config(name)
+    )
+
+
+def fetch(rows_path: Path, directory: Path, keep: Callable[[str], bool] = _ecmascript) -> None:
     """Owned evaluation directory only; never change the historical corpus/cache."""
     for row in json.loads(rows_path.read_text()):
         commit = row["base_commit"]
@@ -210,23 +219,14 @@ def fetch(rows_path: Path, directory: Path) -> None:
                     "-q",
                     "--depth",
                     "1",
-                    "https://github.com/" + row["repo"],
+                    row["repo_url"],  # "repo" is truncated for some rows
                     commit,
                 ],
                 check=True,
             )
             archive = subprocess.check_output(["git", "-C", temporary, "archive", commit])
         with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-            members = [
-                m
-                for m in tar
-                if m.isfile()
-                and (
-                    m.name.endswith((".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"))
-                    or Path(m.name).name == "package.json"
-                    or ts.is_config(m.name)
-                )
-            ]
+            members = [m for m in tar if m.isfile() and keep(m.name)]
             if len(members) > 7500:
                 raise SystemExit(f"{name}: more than 7500 source/config files")
             for member in members:

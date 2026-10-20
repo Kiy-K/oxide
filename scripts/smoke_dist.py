@@ -94,6 +94,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "py_repo", root)
         shutil.copytree(fixtures / "ts_repo", root / "web")
         shutil.copytree(fixtures / "js_repo", root / "javascript")
+        shutil.copytree(fixtures / "go_repo", root / "golang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         env = {**os.environ, "OXIDE_DATA_DIR": str(data)}
 
@@ -144,6 +145,13 @@ def main(fixtures: Path) -> None:
             "context", str(root), "normalize", "--symbol", "normalize", "--budget", "1024"
         )
         check("function normalize" in js_context["payload"], "installed JS context unavailable")
+        go = result("search", str(root), "must get", "--symbol", "MustGet")
+        check(
+            go["entries"][0]["entity"]["key"] == "symbol:golang/store/store.go#Store.MustGet",
+            "installed Go extraction unavailable",
+        )
+        go_context = result("context", str(root), "open", "--symbol", "Open", "--budget", "1024")
+        check("func Open(mode int)" in go_context["payload"], "installed Go context unavailable")
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -201,7 +209,14 @@ def environment() -> dict[str, Any]:
         "python": platform.python_version(),
         "packages": {
             p: version(p)
-            for p in ("oxide", "ladybug", "tree-sitter", "tree-sitter-javascript", "fastmcp")
+            for p in (
+                "oxide",
+                "ladybug",
+                "tree-sitter",
+                "tree-sitter-javascript",
+                "tree-sitter-go",
+                "fastmcp",
+            )
         },
         "fts": fts_unavailable(fts_location()) or "available",
     }
