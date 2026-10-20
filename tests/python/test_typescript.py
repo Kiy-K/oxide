@@ -14,7 +14,7 @@ from conftest import REPO, write
 import oxide
 from oxide.capture import capture
 from oxide.core.indexing import Derived, derive, validate
-from oxide.core.languages import python, tsconfig, typescript
+from oxide.core.languages import python, tsconfig, typescript, typescript_resolve, typescript_syntax
 
 TS_FIXTURE = REPO / "fixtures" / "ts_repo"
 
@@ -350,7 +350,9 @@ def test_test_files_are_discovered_by_name_and_directory(tmp_path: Path) -> None
         "file:src/lib.test.ts",
         "symbol:src/__tests__/helpers.ts#g",
     }
-    assert typescript.is_test_file("a/b.spec.tsx") and not typescript.is_test_file("a/spec.ts")
+    assert typescript_resolve.is_test_file("a/b.spec.tsx") and not typescript_resolve.is_test_file(
+        "a/spec.ts"
+    )
 
 
 def test_coverage_is_explicit_for_partial_unsupported_and_declaration_files(tmp_path: Path) -> None:
@@ -384,7 +386,7 @@ def test_declarations_deep_in_chains_parse_fast_and_deeper_syntax_is_unsupported
     started = time.perf_counter()
     parsed = typescript.parse(source.encode(), "typescript")
     assert time.perf_counter() - started < 10  # was quadratic: Node.parent is O(depth)
-    assert isinstance(parsed, typescript.Parsed)
+    assert isinstance(parsed, typescript_syntax.Parsed)
     decls = [s.decl for s in parsed.scopes[1:] if s.decl is not None]
     assert [d.name for d in decls].count("g") == 4_000
     methods = [d for d in decls if d.name == "m"]
@@ -401,12 +403,15 @@ def test_declarations_deep_in_chains_parse_fast_and_deeper_syntax_is_unsupported
 
 
 def test_module_names_follow_the_path_convention() -> None:
-    assert typescript.module_name("src/a.ts") == "src/a"
-    assert typescript.module_name("src/a.d.ts") == "src/a"
-    assert typescript.module_name("src/ui/index.tsx") == "src/ui"
-    assert typescript.module_name("index.ts") is None
-    assert typescript.module_name("src/a.js") == "\0javascript:src/a.js"
-    assert typescript.dialect("a.mts") == "typescript" and typescript.dialect("a.tsx") == "tsx"
+    assert typescript_resolve.module_name("src/a.ts") == "src/a"
+    assert typescript_resolve.module_name("src/a.d.ts") == "src/a"
+    assert typescript_resolve.module_name("src/ui/index.tsx") == "src/ui"
+    assert typescript_resolve.module_name("index.ts") is None
+    assert typescript_resolve.module_name("src/a.js") == "\0javascript:src/a.js"
+    assert (
+        typescript_syntax.dialect("a.mts") == "typescript"
+        and typescript_syntax.dialect("a.tsx") == "tsx"
+    )
 
 
 def test_python_and_typescript_coexist(tmp_path: Path) -> None:

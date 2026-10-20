@@ -11,7 +11,7 @@ from conftest import FIXTURE, write
 import oxide
 from oxide.capture import capture
 from oxide.core.indexing import derive, validate
-from oxide.core.languages import python
+from oxide.core.languages import python, python_resolve
 
 
 def keys(root: Path) -> dict[str, oxide.Entity]:
@@ -136,8 +136,8 @@ def _walk(bodies: list[tuple[int, int]], parents: list[int], at: int) -> int:
 
 
 def test_module_names_follow_the_path_convention() -> None:
-    assert python.module_name("a/b.py") == "a.b"
-    assert python.module_name("a/b/__init__.py") == "a.b"
-    assert python.module_name("__init__.py") is None
-    assert python.module_name("my-tool/x.py") is None
-    assert python.module_name("README.md") is None
+    assert python_resolve.module_name("a/b.py") == "a.b"
+    assert python_resolve.module_name("a/b/__init__.py") == "a.b"
+    assert python_resolve.module_name("__init__.py") is None
+    assert python_resolve.module_name("my-tool/x.py") is None
+    assert python_resolve.module_name("README.md") is None

@@ -14,7 +14,7 @@ from test_typescript import derived, resolved
 import oxide
 from oxide.capture import capture
 from oxide.core.indexing import derive
-from oxide.core.languages import python
+from oxide.core.languages import python, typescript_syntax
 from oxide.core.languages import typescript as js
 
 FIXTURE = REPO / "fixtures/js_repo"
@@ -301,7 +301,7 @@ def test_javascript_long_chains_keep_parser_hardening() -> None:
     started = time.perf_counter()
     parsed = js.parse(data, "javascript")
     assert time.perf_counter() - started < 10
-    assert isinstance(parsed, js.Parsed)
+    assert isinstance(parsed, typescript_syntax.Parsed)
     assert sum(s.decl is not None and s.decl.name == "inner" for s in parsed.scopes) == 4000
     deep = ("f(" + "()=>{f(" * 20000 + ")}" * 20000 + ");").encode()
     assert js.parse(deep, "javascript") == python.TOO_DEEP
@@ -361,13 +361,13 @@ export class C { static { this.x = 1; } #x = 1; f = () => this.#x; }
 export const App = () => <label for="id" class="x" data-id="q" aria-hidden={true}/>;
 """
     parsed = js.parse(source, "javascript")
-    assert isinstance(parsed, js.Parsed) and parsed.diagnostics == []
+    assert isinstance(parsed, typescript_syntax.Parsed) and parsed.diagnostics == []
 
 
 def test_unicode_commonjs_export_facts_round_trip() -> None:
     data = "exports.f\u200c = () => 1;".encode()
     parsed = js.parse(data, "javascript")
-    assert isinstance(parsed, js.Parsed) and parsed.diagnostics == []
+    assert isinstance(parsed, typescript_syntax.Parsed) and parsed.diagnostics == []
     assert js.decode(js.encode(parsed), len(data)) == parsed
 
 

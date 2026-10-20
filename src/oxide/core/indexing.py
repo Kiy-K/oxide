@@ -16,8 +16,16 @@ from importlib.metadata import version
 from typing import Any, Literal
 
 from oxide.capture import Capture
-from oxide.core.languages import go, go_resolve, python, typescript
-from oxide.core.languages.python import Edge
+from oxide.core.languages import (
+    go,
+    go_resolve,
+    python,
+    python_resolve,
+    typescript,
+    typescript_resolve,
+    typescript_syntax,
+)
+from oxide.core.languages.python_resolve import Edge
 from oxide.core.retrieval import TERMS_VERSION
 from oxide.models import Coverage, Entity, FileInfo, OxideError, SourceRef
 
@@ -37,7 +45,7 @@ def dialect(path: str) -> Dialect | None:
     """The language slice and grammar that parse ``path``, None when none does."""
     if path.endswith(".go"):
         return "go"
-    return "python" if path.endswith(".py") else typescript.dialect(path)
+    return "python" if path.endswith(".py") else typescript_syntax.dialect(path)
 
 
 @dataclass(frozen=True, slots=True)
@@ -119,7 +127,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     entities = [Entity("repo", "repository", "repository", repo_id, None, None, False)]
     edges: list[Edge] = []
     py_sources: list[tuple[str, str, python.Parsed]] = []
-    ts_sources: list[tuple[str, str, typescript.Parsed]] = []
+    ts_sources: list[tuple[str, str, typescript_syntax.Parsed]] = []
     go_sources: list[tuple[str, str, go.Parsed]] = []
     for f in capture.files:
         key = f"file:{f.path}"
@@ -162,10 +170,10 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
             coverage: Coverage = "partial" if diagnostics else "complete"
             info = FileInfo(f.path, f.digest, len(f.data), language, coverage, tuple(diagnostics))
         files.append(info)
-    python.Resolver(py_sources).derive(entities, edges)
+    python_resolve.Resolver(py_sources).derive(entities, edges)
     parsed = {path for path, _, _ in ts_sources}
     others = {f.path: f.data for f in capture.files if f.path not in parsed}
-    typescript.Resolver(ts_sources, others).derive(entities, edges)
+    typescript_resolve.Resolver(ts_sources, others).derive(entities, edges)
     mods = {p: d for p, d in others.items() if p.rpartition("/")[2] == "go.mod"}
     go_resolve.Resolver(go_sources, mods).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)
