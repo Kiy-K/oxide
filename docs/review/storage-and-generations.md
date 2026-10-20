@@ -1,6 +1,6 @@
 # Storage and generations review rules (v2)
 
-Scope: `src/oxide/storage/__init__.py`, `src/oxide/storage/ladybug.py`,
+Scope: `src/oxide/storage/__init__.py`, `src/oxide/storage/ladybug.py`, `src/oxide/storage/store.py`,
 `src/oxide/capture.py`, `src/oxide/api.py` (ownership).
 
 ---

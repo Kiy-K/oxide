@@ -14,7 +14,7 @@ import pytest
 from conftest import FIXTURE, python
 
 import oxide
-from oxide.storage import ladybug
+from oxide.storage import ladybug, store
 from oxide.storage.ladybug import _literal
 
 STRESS = textwrap.dedent(
@@ -124,7 +124,7 @@ def test_windows_store_and_extension_paths_must_be_ascii(
     monkeypatch.setattr(platform, "machine", lambda: "AMD64")
     data = tmp_path / "dätä"
     with pytest.raises(oxide.OxideError, match="ASCII") as caught:
-        ladybug.Store(FIXTURE, data)
+        store.Store(FIXTURE, data)
     assert caught.value.code == "invalid_path"
     assert not data.exists()
     assert "OXIDE_DATA_DIR" in str(caught.value)

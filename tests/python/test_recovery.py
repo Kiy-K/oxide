@@ -176,7 +176,7 @@ def test_missing_retained_source_is_never_reported_unchanged(
 CRASH = textwrap.dedent(
     """
     import os, sys, oxide
-    import oxide.storage.ladybug as storage
+    import oxide.storage.store as storage
     root, data, step = sys.argv[1], sys.argv[2], sys.argv[3]
     real_rename, real_write = os.rename, storage._write_atomic
     def rename(src, dst):

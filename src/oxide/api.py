@@ -42,13 +42,13 @@ from oxide.models import (
     StructuralResult,
 )
 from oxide.storage.ladybug import (
-    Store,
     View,
     default_data_dir,
     fts_location,
     fts_unavailable,
     storage_components,
 )
+from oxide.storage.store import Store
 
 # Upper bounds of caller-chosen sizes, checked before any query is built.
 MAX_LIMIT = 1000
