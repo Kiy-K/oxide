@@ -140,7 +140,7 @@ CRLF checkout would change their digests and offsets.
 ## Running it
 
 - **Linux:** `mise run verify`, plus the artifact smoke:
-  `uv build --out-dir DIST`, a fresh `uv venv`, `uv pip install DIST/*.whl -r
+  `uv build --out-dir DIST`, a fresh `uv venv VENV`, `uv pip install --python VENV DIST/*.whl -r
   <(uv export --locked --no-dev --no-emit-project --no-hashes)`, then
   `VENV/bin/python -I scripts/smoke_dist.py fixtures`.
 - **The Linux leg under act** (Linux containers only). With podman 5 and act 0.2.89
