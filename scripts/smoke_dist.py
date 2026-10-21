@@ -10,6 +10,7 @@ its locked dependencies installed, after ``oxide prepare``. It drives the instal
 path has spaces and non-ASCII characters:
 
 - the package is imported from the environment, never the source tree;
+- child processes have only the installed environment's scripts on PATH;
 - ``oxide index`` builds, a second run reopens the persisted store as ``unchanged``,
   and an edit is published as a new generation;
 - ``search`` runs the FTS lexical channel and finds a non-ASCII declaration, and
@@ -47,6 +48,7 @@ MESSAGES = [
         },
     },
     {"jsonrpc": "2.0", "method": "notifications/initialized"},
+    {"jsonrpc": "2.0", "id": 3, "method": "tools/list"},
     {
         "jsonrpc": "2.0",
         "id": 2,
@@ -96,7 +98,8 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "js_repo", root / "javascript")
         shutil.copytree(fixtures / "go_repo", root / "golang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
-        env = {**os.environ, "OXIDE_DATA_DIR": str(data)}
+        # Exclude host toolchains: parsing source must never execute its runtimes.
+        env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
 
         def oxide(*args: str, ok: bool = True) -> subprocess.CompletedProcess[str]:
             run = subprocess.run(
@@ -171,17 +174,21 @@ def main(fixtures: Path) -> None:
         assert server.stdin is not None and server.stdout is not None
         server.stdin.write("".join(json.dumps(m) + "\n" for m in MESSAGES))
         server.stdin.flush()
-        replies = [json.loads(server.stdout.readline()) for _ in range(2)]
+        replies = [json.loads(server.stdout.readline()) for _ in range(3)]
         # Closing stdin is how a host shuts the server down.
         rest, stderr = server.communicate(timeout=60)
         check(server.returncode == 0 and rest == "", f"mcp exit {server.returncode}: {stderr}")
-        check([r.get("id") for r in replies] == [1, 2], f"mcp replies: {replies}")
-        entries = replies[1]["result"]["structuredContent"]["entries"]
+        responses = {r.get("id"): r for r in replies}
+        check(set(responses) == {1, 2, 3}, f"mcp replies: {replies}")
+        tools = responses[3]["result"]["tools"]
+        check([t["name"] for t in tools] == ["oxide_search"], f"mcp tools: {tools}")
+        entries = responses[2]["result"]["structuredContent"]["entries"]
         check(entries[0]["entity"]["key"].endswith("#TTLCache"), f"mcp search: {entries[:1]}")
         print("smoke: mcp stdio ok")
 
         holder = subprocess.Popen(
             [sys.executable, "-I", "-c", HOLD, str(root), str(data)],
+            env=env,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             text=True,

@@ -81,7 +81,10 @@ jobs:
           for artifact in dist/*.whl dist/*.tar.gz; do
             venv="$RUNNER_TEMP/smoke-$(basename "$artifact")"
             uv venv -q "$venv"
-            uv pip install -q --python "$venv" "$artifact" -r "$RUNNER_TEMP/requirements.txt"
+            # Third-party dependencies must ship wheels; only OXIDE's sdist is built.
+            uv pip install -q --python "$venv" --only-binary :all: -r "$RUNNER_TEMP/requirements.txt"
+            uv pip install -q --python "$venv" --no-deps "$artifact"
+            uv pip check --python "$venv"
             python="$venv/bin/python"; [ -x "$python" ] || python="$venv/Scripts/python.exe"
             echo "== $artifact"
             (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")

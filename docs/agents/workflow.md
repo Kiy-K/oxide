@@ -22,7 +22,7 @@ mise run test          #   pytest (tests/python/)
 ```
 
 Use `uv run …` for anything else (`uv run oxide index <path>`, `uv run pytest -k name`).
-`uv run oxide mcp --repo <path>` serves the MCP tools over stdio (`--http` for
+`uv run oxide mcp --repo <path>` serves the single `oxide_search` tool over stdio (`--http` for
 stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
 `uv run python scripts/bench.py <corpus>` is the reproducible latency and
 peak-RSS benchmark: fresh processes and private data, cold and warm definitions
@@ -45,6 +45,19 @@ resolution, routing or packing change.
 Dependencies live in `pyproject.toml` with a committed `uv.lock`; add them
 with `uv add`, never by hand-editing the lock. Keep heavy local runs within
 `CPUQuota=200%`/`MemoryMax=3G` (`systemd-run --user --scope`).
+To verify another supported Python, set `UV_PYTHON` and a separate
+`UV_PROJECT_ENVIRONMENT` for the entire check. `uv sync --python` alone does not
+carry that interpreter choice into a later `uv run`.
+
+OXIDE's engine, CLI, MCP server and distribution need no Node.js, Bun or Rust
+toolchain. Native Python dependencies are installed as wheels; the Platforms
+workflow enforces wheel-only third-party installation and runs the installed
+smoke with only the environment's scripts on `PATH`. That smoke also checks
+that MCP advertises exactly `oxide_search`. Optional agent tooling (CodeGraph,
+Context7, archify, external MCP servers) and GitHub Actions have their own runtimes;
+they are not OXIDE dependencies. See the
+[legacy infrastructure audit](../migration-audit/legacy-infrastructure.md) for
+the inventory and process ancestry.
 
 Tests never write to real user data: `tests/python/conftest.py` gives every
 test a private `OXIDE_DATA_DIR` and XDG locations, fails the session if the
