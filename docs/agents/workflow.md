@@ -81,8 +81,8 @@ lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 The sections below describe tooling for the retired v1 implementation. Its
 code is no longer on this branch; these harnesses need the legacy `oxide`
 binary built from `main` / `ac985b28` and are not part of `mise run verify`.
-They stay as evidence until v2 evaluation harnesses replace them (BOOTSTRAP
-Phase 3).
+They remain historical reproducibility evidence per SPEC § Historical evidence;
+the current Python quality gates are described above.
 
 What stays on this branch is the reference set SPEC § Historical evidence
 names: `fixtures/benchmark.json`, `fixtures/structural_benchmark.json`, the
@@ -91,8 +91,8 @@ language/relation conformance fixtures (`fixtures/conformance/`) with
 `tests/benchmark_gate.rs`, the embedding-staleness/recovery/parity regressions
 (the remaining `tests/*.rs`), `eval-agent/`, `scripts/agent_eval/`,
 `scripts/perf.sh` (with `scripts/gen_bench_repo.py`) and the reports under
-`docs/`. None of it builds here: there is no Cargo manifest. Everything else from
-v1 and the Rust/Bun v2 runtime (sources, the other Rust tests and `examples/`,
+`docs/`. These v1 harnesses do not build here: there is no root Cargo manifest.
+Everything else from v1 and the Rust/Bun v2 runtime (sources, the other Rust tests and `examples/`,
 v1 CLI/MCP/protocol goldens, the embedder and corpus-load scripts, the Claude Code
 suggestion hook, `TELEMETRY.md`, now `docs/legacy/TELEMETRY-v1.md`) was removed
 and is recoverable at `f79808a`; reports that cite those paths refer to that tree.

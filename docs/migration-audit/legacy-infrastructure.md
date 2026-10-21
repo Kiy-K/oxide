@@ -164,3 +164,117 @@ artifact inventories, native runtime wheel inventory, dependency requirements), 
 `/tmp/oxide-audit-ts-gate.log`. They are temporary audit artifacts, not new frozen
 research baselines. The locked dependency tree and import graph are
 `/tmp/oxide-audit-dependency-tree.txt` and `/tmp/oxide-audit-import-graph.json`.
+
+## Authorized generated-artifact removal (follow-up)
+
+Starting from `905102de`, the user authorized removal of the two previously
+preserved generated directories. This supersedes only the earlier inventory's
+decision to leave those two artifacts on disk; historical evidence remains intact.
+
+Removed exactly:
+
+- `/home/khoi/Projects/oxide/target/`
+- `/home/khoi/Projects/oxide/node_modules/`
+
+Both were ignored, contained no tracked paths, resolved to real directories
+directly under the main checkout, and had no nested mounts or cross-device entries.
+The Cargo directory had 8,437 descendant entries and no symlinks. The npm directory
+had 1,146 entries and two symlinks (`.bin/biome`, `.bin/tsc`), both pointing within it.
+Device/inode identities were checked again immediately before descriptor-relative,
+symlink-safe deletion. No recursive operation targeted another directory.
+
+Before deletion, repeated same-user `/proc` inspection checked executables, working
+directories, open descriptors, mapped files, arguments and environment references.
+`lsof +D` also found no open users of either target. The only references were nine
+npm-launched tools' inherited `PATH` entries for the root `node_modules/.bin`;
+there was no open file, mapped library, executable, working directory, launch
+argument or dedicated configuration selecting either target. Current development,
+CI, packaging and Python benchmark scripts do not use those retired Biome/tsc/Cargo
+outputs. The two protected processes that could not be fully inspected were the
+user systemd manager and its PAM helper, not development/research workers. This is
+a bounded process snapshot, not a claim about future commands in other sessions.
+
+All six registered worktrees were rechecked read-only. Research worktrees,
+CodeGraph, external MCP servers, optional agent tools, existing user edits/deletions
+and untracked files were preserved. The 725 tracked files under
+`eval-agent/tasks/tsx_feat_button/node_modules/` remain present and unchanged.
+
+### Disk accounting
+
+| Measurement | Bytes |
+| --- | ---: |
+| `target/` allocated blocks represented by removed entries | 2,236,022,784 |
+| Root `node_modules/` allocated blocks represented by removed entries | 168,534,016 |
+| Filesystem available space immediately before deletion | 326,822,391,808 |
+| Filesystem available space immediately after deletion and sync | 327,848,165,376 |
+| Observed free-space increase | **1,025,773,568 (about 978 MiB)** |
+
+The removed paths represented about 2.24 GiB of allocated blocks, which is not the
+same as physical space recovered on Btrfs. Cargo's multiple hard links were all
+within its removed directory. All 1,066 regular-file inodes under root
+`node_modules/` had surviving hard links outside it (168,525,824 allocated bytes),
+so their cached data was not reclaimed or deleted. Btrfs shared/compressed extents
+and metadata also affect accounting. The free-space delta is the observed net
+filesystem change during the deletion window; concurrent filesystem activity can
+affect it. No claim of reclaiming the entire directory allocation is made.
+
+### Post-deletion verification and retained debt
+
+Verification runs with only Python workflow tools on `PATH`, without Node, npm,
+npx, Bun, Cargo, rustc/rustup or native compilers. Every runner step asserts that
+both deleted directories remain absent. Tests use private data locations; the
+pinned FTS extension and existing corpora are read-only prerequisites.
+
+| Check | Follow-up result |
+| --- | --- |
+| Fresh `mise run bootstrap` and `mise run verify`, CPython 3.13.16 | Passed: Ruff, strict mypy, 265 tests passed and seven opt-in TS cases skipped; 189.87 s |
+| Frozen Phase 3/4 and Python ContextBench gates | Passed inside canonical verification |
+| Separate frozen TypeScript gate | All 17 passed, including the seven opt-in corpus-gate cases; 941.61 s under two-core/3 GB limits |
+| Fresh wheel/sdist build and dependency checks | Passed; third-party runtime dependencies installed as wheels; all six environments passed `uv pip check` |
+| Installed CLI/index/query/context/MCP/lock smoke on Python 3.12.15, 3.13.16 and 3.14.8 | All six wheel/sdist smokes passed; MCP advertises exactly `oxide_search` |
+| Preserved CodeGraph tooling | CLI exploration still works after deletion, using its own bundled Node |
+| User changes and historical fixture preservation | Tracked user diff byte-identical after deletion; no fixture/source/dependency changes |
+
+The active Python documentation/scripts review found no command using the removed
+outputs. `docs/agents/workflow.md` had an obsolete future-Phase-3 sentence about
+retiring evidence and an imprecise Cargo-manifest statement; these now describe
+continued historical retention and the absent **root** Cargo manifest. No code,
+dependency, baseline, derivation version or public MCP contract changed.
+
+Remaining Rust/Node-related files retain the purposes in the inventory above:
+11 Rust files and the migration parity Cargo manifest are historical fixtures,
+regressions or reproduction probes; the historical npm fixture and Bun runners
+are evidence; `fixtures/ts_repo/package.json` is parser input; Archify, CodeGraph,
+external MCPs and agent hosts are optional tools; JavaScript GitHub actions and
+Claude's Bun action are CI orchestration. Native Python libraries are retained.
+These are not outstanding obsolete production infrastructure. Hosted Windows/macOS
+reruns and a new FTS download remain outside this local follow-up's verification.
+
+Retained source/manifests, explicitly:
+
+- `tests/benchmark_gate.rs`, `tests/embedding_staleness.rs`,
+  `tests/full_incremental_parity.rs`, `tests/interrupted_index_recovery.rs`,
+  `tests/language_conformance.rs`, `tests/precomputed_relations_conformance.rs`,
+  `tests/provider_migration_recovery.rs`: historical semantic regression evidence.
+- `fixtures/conformance/rust/src/backend.rs`, `broken.rs`, `store.rs`: preserved
+  conformance source inputs, not a current compiled Rust implementation.
+- `docs/migration-audit/parity/Cargo.toml` and `main.rs`: historical migration
+  reproduction probe, requiring the pinned old kernel checkout.
+- `eval-agent/tasks/tsx_feat_button/package.json`, `bun.lock`, `node_modules/**`
+  and the TS/TSX task `verify.sh` scripts: historical evaluation task reproduction.
+- `fixtures/ts_repo/package.json` and `tsconfig.json`, plus JS/TS fixture source:
+  active parser/resolution input, never installed or executed by OXIDE.
+- `.agents/skills/archify/package.json`, `package-lock.json`, `.mjs` tooling and
+  `.claude/skills/archify`: optional third-party diagram tooling and its symlink.
+- `.claude/skills/jev-model-router/`: third-party TypeScript agent plugin;
+  the user's related `.agents/` deletions remain untouched.
+- `.codex/config.toml`, `.claude/settings.json`, `.mcp.json`, `opencode.jsonc`
+  and `.github/workflows/*.yml`: preserved external-agent or CI configuration.
+
+Deletion/path/process/hard-link receipts are under
+`/tmp/oxide-generated-cleanup/`; post-deletion verification logs and artifacts are
+under its `verification/` subdirectory; `summary.json` records successful command
+receipts and built-artifact SHA-256 digests. Both removed directories remained
+absent through all checks. The auditable local runners are
+`/tmp/oxide-cleanup-inspect.py`, `/tmp/oxide-cleanup-delete.py` and
+`/tmp/oxide-cleanup-verify.py`. Nothing was pushed, published or released.
