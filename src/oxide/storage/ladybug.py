@@ -48,11 +48,6 @@ from oxide.models import (
     StoreCorrupt,
 )
 
-if sys.platform == "win32":
-    pass
-else:
-    pass
-
 SCHEMA_VERSION = "oxide-ladybug-py-v1"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies

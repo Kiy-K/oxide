@@ -360,7 +360,7 @@ Deterministic code owns confidence thresholds, routing, deadlines, and inclusion
 
 Remote escalation and hosted JEV are disabled in offline/local-only mode. Local-only mode may use an explicitly configured local judge/stronger local runner, but the mandatory offline path needs neither. It MUST NOT send source remotely because confidence is low unless remote inference is explicitly configured for the repository. A timeout consumes the declared escalation allowance and falls back; it does not stall indefinitely. Routing judgments and final candidate judgments share end-to-end request limits; retries/backoff may not exceed the remaining deadline.
 
-Calibration is fitted on held-out calibration data separate from training, model selection, and final test sets. Publish risk-coverage curves and accuracy at declared coverage, plus actual routed fraction, fallback rate, latency, and cost. Thresholds are versioned Rust policy and are never hidden in a model prompt.
+Calibration is fitted on held-out calibration data separate from training, model selection, and final test sets. Publish risk-coverage curves and accuracy at declared coverage, plus actual routed fraction, fallback rate, latency, and cost. Thresholds are versioned deterministic policy and are never hidden in a model prompt.
 
 ## Selection
 
