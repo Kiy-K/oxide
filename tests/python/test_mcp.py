@@ -96,6 +96,15 @@ async def test_search_and_context_return_structured_evidence(indexed: Path) -> N
     assert entry["entity"]["source"]["path"] == "oxidepy/retry.py"
     assert found.structured_content["lexical"]["state"] == "ran"
     assert "self.max_attempts = max_attempts" not in text(found)  # locations, not bodies
+    # The status leads the text and the structured content, and the text is that JSON.
+    assert list(found.structured_content)[:2] == ["entries_returned", "more_available"]
+    assert found.structured_content["entries_returned"] == len(found.structured_content["entries"])
+    assert (
+        found.structured_content["more_available"]
+        == found.structured_content["lexical"]["truncated"]
+    )  # no hints here, so only the lexical limit counts
+    assert json.loads(text(found)) == found.structured_content
+    assert text(found).startswith('{"entries_returned":')
     assert not bundle.is_error
     data = bundle.structured_content
     assert data["used"] <= data["budget"] == 300 and data["items"]

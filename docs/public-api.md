@@ -235,7 +235,7 @@ It serves exactly one tool, `oxide_search`. Its `mode` picks one API operation:
 
 | `mode` | Arguments (bounds) | Result |
 | --- | --- | --- |
-| `search` (default) | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and JSON text, locations, never source |
+| `search` (default) | `query` (≤ 2000 chars), `repository`, `limit` (0–100, default 20), `paths`, `symbols` (≤ 32 × ≤ 1024 chars) | `Repository.search`: `SearchResult` as structured content and compact JSON text, led by `entries_returned` and `more_available` (the lexical limit was hit or a symbol hint was capped); locations, never source |
 | `context` | `query`, `repository`, `budget` (0–32768 units, default 2048), `paths`, `symbols` | `Repository.build_context`: `ContextBundle` as structured content; the text is a one-line summary, any degradations, then `payload` |
 
 `limit` with `mode="context"` and `budget` with `mode="search"` are `invalid_argument`

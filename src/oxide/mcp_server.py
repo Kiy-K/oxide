@@ -10,6 +10,7 @@ unindexed repository is a ``not_indexed`` tool error and leaves no store behind.
 from __future__ import annotations
 
 import dataclasses
+import json
 import logging
 import os
 import threading
@@ -161,7 +162,7 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
         ] = None,
         paths: Paths = (),
         symbols: Symbols = (),
-    ) -> SearchResult | ToolResult:
+    ) -> ToolResult:
         """Search an indexed repository. mode=search (default) finds candidate symbols,
         files and modules: hint seeds first, then BM25 rank; locations (path, byte range,
         digest) and symbol metadata, never source text. mode=context builds a bounded,
@@ -174,11 +175,18 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             if budget is not None:
                 raise _invalid("`budget` applies to mode=context only")
             count = DEFAULT_LIMIT if limit is None else limit
-            return _read(
+            found = _read(
                 target,
                 data_dir,
                 lambda repo: repo.search(query, limit=count, paths=paths, symbols=symbols),
             )
+            # The status leads: clients that clip the tail (OpenCode code mode) keep it
+            # (docs/phase-6/output-integrity/).
+            more = found.lexical.truncated or any(h.issue == "truncated" for h in found.hints)
+            value = {"entries_returned": len(found.entries), "more_available": more}
+            value |= dataclasses.asdict(found)
+            text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+            return ToolResult(content=text, structured_content=value)
         if limit is not None:
             raise _invalid("`limit` applies to mode=search only")
         size = DEFAULT_BUDGET if budget is None else budget
