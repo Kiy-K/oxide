@@ -1,0 +1,395 @@
+{
+ "summary": {
+  "community_share": 0.4679,
+  "directory_share": 0.4038,
+  "community_files": 146.3077,
+  "directory_files": 9.3077,
+  "tasks": 26
+ },
+ "rows": [
+  {
+   "task": "coder__code-server-6278",
+   "corpus": "coder__code-server@5d3c9edce436",
+   "anchor": "src/node/cli.ts",
+   "gold": [
+    "src/node/app.ts",
+    "src/node/main.ts",
+    "src/node/util.ts",
+    "src/node/vscodeSocket.ts"
+   ],
+   "community_share": 0.5,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 16,
+   "corpus_files": 87,
+   "communities": 18
+  },
+  {
+   "task": "coder__code-server-4923",
+   "corpus": "coder__code-server@78658f1cf48a",
+   "anchor": "src/node/main.ts",
+   "gold": [
+    "src/node/app.ts",
+    "src/node/cli.ts"
+   ],
+   "community_share": 0.5,
+   "directory_share": 1.0,
+   "community_files": 7,
+   "directory_files": 16,
+   "corpus_files": 76,
+   "communities": 17
+  },
+  {
+   "task": "darkreader__darkreader-7241",
+   "corpus": "darkreader__darkreader@991883df4d59",
+   "anchor": "src/utils/url.ts",
+   "gold": [
+    "src/generators/utils/parse.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 9,
+   "directory_files": 21,
+   "corpus_files": 216,
+   "communities": 24
+  },
+  {
+   "task": "darkreader__darkreader-6747",
+   "corpus": "darkreader__darkreader@a787eb511f45",
+   "anchor": "src/generators/utils/parse.ts",
+   "gold": [
+    "src/generators/dynamic-theme.ts",
+    "src/generators/utils/parse.ts",
+    "src/utils/url.ts"
+   ],
+   "community_share": 0.6666666666666666,
+   "directory_share": 0.3333333333333333,
+   "community_files": 19,
+   "directory_files": 3,
+   "corpus_files": 207,
+   "communities": 24
+  },
+  {
+   "task": "ts-exact-versionedstore",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/cache/versioned_store.ts",
+   "gold": [
+    "src/cache/versioned_store.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 1,
+   "directory_files": 1,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-semantic-backoff",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/net/retry.ts",
+   "gold": [
+    "src/net/client.ts",
+    "src/net/retry.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 3,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-crossfile-decode-jwt",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/auth/service.ts",
+   "gold": [
+    "src/auth/service.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 1,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "tsx-button-component",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/ui/Button.tsx",
+   "gold": [
+    "src/ui/Button.tsx"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 2,
+   "directory_files": 1,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-related-test-button-click",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/ui/__tests__/Button.test.tsx",
+   "gold": [
+    "src/ui/__tests__/Button.test.tsx"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 2,
+   "directory_files": 1,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-default-policy-const",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/net/retry.ts",
+   "gold": [
+    "src/net/retry.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 3,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-implementors-retrypolicy",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/net/retry.ts",
+   "gold": [
+    "src/net/policies.ts",
+    "src/net/retry.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 3,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "ts-callers-shouldretry",
+   "corpus": "fixture:ts_repo",
+   "anchor": "src/net/retry.ts",
+   "gold": [
+    "src/net/policies.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 5,
+   "directory_files": 3,
+   "corpus_files": 11,
+   "communities": 6
+  },
+  {
+   "task": "microsoft__vscode-153121",
+   "corpus": "microsoft__vscode@1a599e2d1792",
+   "anchor": "src/vs/editor/test/browser/viewModel/modelLineProjection.test.ts",
+   "gold": [
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 0.0,
+   "community_files": 459,
+   "directory_files": 4,
+   "corpus_files": 3960,
+   "communities": 319
+  },
+  {
+   "task": "microsoft__vscode-148971",
+   "corpus": "microsoft__vscode@2dff5deef71f",
+   "anchor": "src/vs/code/electron-sandbox/issue/issueReporterModel.ts",
+   "gold": [
+    "src/vs/base/browser/markdownRenderer.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 486,
+   "directory_files": 3,
+   "corpus_files": 3870,
+   "communities": 318
+  },
+  {
+   "task": "microsoft__vscode-177084",
+   "corpus": "microsoft__vscode@384b03f26310",
+   "anchor": "src/vs/code/electron-sandbox/issue/issueReporterMain.ts",
+   "gold": [
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 387,
+   "directory_files": 3,
+   "corpus_files": 4300,
+   "communities": 344
+  },
+  {
+   "task": "microsoft__vscode-160342",
+   "corpus": "microsoft__vscode@440e61ffab2b",
+   "anchor": "src/vs/code/electron-sandbox/issue/issueReporterMain.ts",
+   "gold": [
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 377,
+   "directory_files": 3,
+   "corpus_files": 4047,
+   "communities": 334
+  },
+  {
+   "task": "microsoft__vscode-136347",
+   "corpus": "microsoft__vscode@4bbec283c36a",
+   "anchor": "src/vs/editor/test/common/viewLayout/viewLineRenderer.test.ts",
+   "gold": [
+    "src/vs/base/common/charCode.ts",
+    "src/vs/editor/common/config/editorOptions.ts",
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+    "src/vs/monaco.d.ts"
+   ],
+   "community_share": 0.5,
+   "directory_share": 0.0,
+   "community_files": 280,
+   "directory_files": 4,
+   "corpus_files": 3560,
+   "communities": 278
+  },
+  {
+   "task": "microsoft__vscode-149380",
+   "corpus": "microsoft__vscode@5b8bd1c45ca3",
+   "anchor": "src/vs/platform/terminal/node/terminalEnvironment.ts",
+   "gold": [
+    "src/vs/workbench/contrib/debug/node/terminals.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 157,
+   "directory_files": 9,
+   "corpus_files": 3846,
+   "communities": 318
+  },
+  {
+   "task": "microsoft__vscode-135805",
+   "corpus": "microsoft__vscode@7d8f55ebb1b7",
+   "anchor": "src/vs/base/common/codicons.ts",
+   "gold": [
+    "src/vs/editor/common/config/editorOptions.ts",
+    "src/vs/editor/contrib/multicursor/multicursor.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 327,
+   "directory_files": 78,
+   "corpus_files": 3560,
+   "communities": 278
+  },
+  {
+   "task": "microsoft__vscode-153857",
+   "corpus": "microsoft__vscode@88ffbc7a7a81",
+   "anchor": "src/vs/code/electron-sandbox/issue/issueReporterMain.ts",
+   "gold": [
+    "src/vs/editor/common/languages/linkComputer.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 513,
+   "directory_files": 3,
+   "corpus_files": 3966,
+   "communities": 324
+  },
+  {
+   "task": "microsoft__vscode-110094",
+   "corpus": "microsoft__vscode@8c76afad6ccf",
+   "anchor": "src/vs/editor/common/modes/languageConfiguration.ts",
+   "gold": [
+    "src/vs/editor/common/controller/cursor.ts",
+    "src/vs/editor/common/controller/cursorCommon.ts",
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+    "src/vs/editor/common/controller/cursorTypeOperations.ts",
+    "src/vs/editor/common/controller/cursorWordOperations.ts",
+    "src/vs/editor/common/modes/languageConfiguration.ts"
+   ],
+   "community_share": 1.0,
+   "directory_share": 0.16666666666666666,
+   "community_files": 177,
+   "directory_files": 11,
+   "corpus_files": 3043,
+   "communities": 258
+  },
+  {
+   "task": "microsoft__vscode-106767",
+   "corpus": "microsoft__vscode@8ce35fa28ded",
+   "anchor": "src/vs/code/electron-sandbox/issue/issueReporterMain.ts",
+   "gold": [
+    "src/vs/editor/contrib/suggest/completionModel.ts",
+    "src/vs/editor/contrib/suggest/suggestModel.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 307,
+   "directory_files": 3,
+   "corpus_files": 2988,
+   "communities": 255
+  },
+  {
+   "task": "microsoft__vscode-189223",
+   "corpus": "microsoft__vscode@9a281018181d",
+   "anchor": "extensions/github/src/commands.ts",
+   "gold": [
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 16,
+   "directory_files": 13,
+   "corpus_files": 4472,
+   "communities": 380
+  },
+  {
+   "task": "microsoft__vscode-135197",
+   "corpus": "microsoft__vscode@a993ada9300a",
+   "anchor": "build/lib/eslint/vscode-dts-literal-or-types.ts",
+   "gold": [
+    "src/vs/editor/common/controller/cursorCommon.ts",
+    "src/vs/editor/common/controller/cursorTypeOperations.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 1,
+   "directory_files": 17,
+   "corpus_files": 3560,
+   "communities": 278
+  },
+  {
+   "task": "microsoft__vscode-109750",
+   "corpus": "microsoft__vscode@cf4b5a703f58",
+   "anchor": "extensions/typescript-language-features/src/languageFeatures/codeLens/baseCodeLensProvider.ts",
+   "gold": [
+    "src/vs/platform/configuration/common/configurationRegistry.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 117,
+   "directory_files": 3,
+   "corpus_files": 3033,
+   "communities": 256
+  },
+  {
+   "task": "microsoft__vscode-164396",
+   "corpus": "microsoft__vscode@f5fdf679b8d2",
+   "anchor": "extensions/typescript-language-features/src/tsServer/bufferSyncSupport.ts",
+   "gold": [
+    "src/vs/editor/common/services/modelService.ts"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 130,
+   "directory_files": 16,
+   "corpus_files": 4089,
+   "communities": 333
+  }
+ ]
+}

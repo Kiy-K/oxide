@@ -1,0 +1,506 @@
+[
+ {
+  "path": "src",
+  "files": 118,
+  "entities": 548,
+  "relations": 3829,
+  "index_s": 0.47,
+  "maxrss_mb": 146,
+  "mix": {
+   "calls/resolved/resolved": 731,
+   "calls/unresolved/syntactic": 1892,
+   "contains/resolved/syntactic": 547,
+   "contains_logical/resolved/syntactic": 30,
+   "defines/resolved/syntactic": 220,
+   "imports/resolved/resolved": 196,
+   "imports/unresolved/syntactic": 201,
+   "references/resolved/resolved": 10,
+   "references/unresolved/syntactic": 2
+  },
+  "ambiguous_fanout": {},
+  "unresolved_call_shape": {
+   "py:bare": 719,
+   "py:qualified": 891,
+   "py:self/this": 282
+  },
+  "top_unresolved_bare": [
+   [
+    "len",
+    132
+   ],
+   [
+    "sorted",
+    59
+   ],
+   [
+    "dataclass",
+    58
+   ],
+   [
+    "tuple",
+    47
+   ],
+   [
+    "isinstance",
+    46
+   ],
+   [
+    "type",
+    34
+   ],
+   [
+    "set",
+    33
+   ],
+   [
+    "all",
+    25
+   ],
+   [
+    "enumerate",
+    24
+   ],
+   [
+    "any",
+    23
+   ],
+   [
+    "field",
+    20
+   ],
+   [
+    "str",
+    20
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:oxide/core/languages/python.py#as_list",
+    53
+   ],
+   [
+    "symbol:oxide/core/languages/python.py#Use",
+    21
+   ],
+   [
+    "symbol:oxide/core/languages/typescript_syntax.py#_span",
+    20
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [],
+  "file_dep_scc_count": 0,
+  "file_dep_nodes": 27
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pallets__flask@7ee9ceb71e86",
+  "files": 80,
+  "entities": 1731,
+  "relations": 7328,
+  "index_s": 0.49,
+  "maxrss_mb": 155,
+  "mix": {
+   "calls/resolved/resolved": 644,
+   "calls/unresolved/syntactic": 3088,
+   "contains/resolved/syntactic": 1730,
+   "contains_logical/resolved/syntactic": 80,
+   "defines/resolved/syntactic": 579,
+   "imports/resolved/resolved": 217,
+   "imports/unresolved/syntactic": 411,
+   "references/resolved/resolved": 70,
+   "references/unresolved/syntactic": 44,
+   "tested_by/resolved/heuristic": 465
+  },
+  "ambiguous_fanout": {},
+  "unresolved_call_shape": {
+   "py:bare": 666,
+   "py:qualified": 2217,
+   "py:self/this": 205
+  },
+  "top_unresolved_bare": [
+   [
+    "isinstance",
+    103
+   ],
+   [
+    "str",
+    59
+   ],
+   [
+    "len",
+    40
+   ],
+   [
+    "super",
+    31
+   ],
+   [
+    "sorted",
+    23
+   ],
+   [
+    "getattr",
+    22
+   ],
+   [
+    "type",
+    17
+   ],
+   [
+    "RuntimeError",
+    14
+   ],
+   [
+    "dict",
+    13
+   ],
+   [
+    "ValueError",
+    12
+   ],
+   [
+    "TypeError",
+    12
+   ],
+   [
+    "Markup",
+    11
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:src/flask/app.py#Flask",
+    104
+   ],
+   [
+    "symbol:src/flask/blueprints.py#Blueprint",
+    70
+   ],
+   [
+    "symbol:src/flask/helpers.py#url_for",
+    49
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [
+   15
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 69
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/psf__requests@0192aac24123",
+  "files": 35,
+  "entities": 780,
+  "relations": 4406,
+  "index_s": 0.33,
+  "maxrss_mb": 155,
+  "mix": {
+   "calls/ambiguous/syntactic": 16,
+   "calls/resolved/resolved": 655,
+   "calls/unresolved/syntactic": 1706,
+   "contains/resolved/syntactic": 779,
+   "contains_logical/resolved/syntactic": 35,
+   "defines/resolved/syntactic": 199,
+   "imports/ambiguous/syntactic": 2,
+   "imports/resolved/resolved": 181,
+   "imports/unresolved/syntactic": 304,
+   "references/resolved/resolved": 35,
+   "references/unresolved/syntactic": 34,
+   "tested_by/resolved/heuristic": 469
+  },
+  "ambiguous_fanout": {
+   "2": 9
+  },
+  "unresolved_call_shape": {
+   "py:bare": 670,
+   "py:qualified": 906,
+   "py:self/this": 130
+  },
+  "top_unresolved_bare": [
+   [
+    "httpbin",
+    148
+   ],
+   [
+    "isinstance",
+    85
+   ],
+   [
+    "len",
+    50
+   ],
+   [
+    "list",
+    32
+   ],
+   [
+    "str",
+    31
+   ],
+   [
+    "hasattr",
+    23
+   ],
+   [
+    "urlparse",
+    22
+   ],
+   [
+    "getattr",
+    18
+   ],
+   [
+    "int",
+    16
+   ],
+   [
+    "iter",
+    15
+   ],
+   [
+    "open",
+    14
+   ],
+   [
+    "frozenset",
+    13
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:requests/api.py#get",
+    82
+   ],
+   [
+    "symbol:requests/models.py#Request",
+    60
+   ],
+   [
+    "symbol:requests/sessions.py#Session",
+    50
+   ]
+  ],
+  "call_scc_sizes_top": [],
+  "call_scc_count": 0,
+  "file_dep_scc_sizes_top": [],
+  "file_dep_scc_count": 0,
+  "file_dep_nodes": 23
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pydata__xarray@51d37d1be955",
+  "files": 173,
+  "entities": 6728,
+  "relations": 63238,
+  "index_s": 2.5,
+  "maxrss_mb": 221,
+  "mix": {
+   "calls/ambiguous/syntactic": 945,
+   "calls/resolved/resolved": 13782,
+   "calls/unresolved/syntactic": 26532,
+   "contains/resolved/syntactic": 6727,
+   "contains_logical/resolved/syntactic": 171,
+   "defines/resolved/syntactic": 2311,
+   "imports/ambiguous/syntactic": 178,
+   "imports/resolved/resolved": 1490,
+   "imports/unresolved/syntactic": 1749,
+   "references/resolved/resolved": 241,
+   "references/unresolved/syntactic": 18,
+   "tested_by/resolved/heuristic": 9905
+  },
+  "ambiguous_fanout": {
+   "2": 45,
+   "3": 172,
+   "4": 20,
+   "5": 13,
+   "6": 62
+  },
+  "unresolved_call_shape": {
+   "py:bare": 8182,
+   "py:qualified": 16095,
+   "py:self/this": 2255
+  },
+  "top_unresolved_bare": [
+   [
+    "isinstance",
+    1185
+   ],
+   [
+    "len",
+    590
+   ],
+   [
+    "ValueError",
+    503
+   ],
+   [
+    "slice",
+    440
+   ],
+   [
+    "set",
+    328
+   ],
+   [
+    "dict",
+    327
+   ],
+   [
+    "range",
+    320
+   ],
+   [
+    "list",
+    315
+   ],
+   [
+    "getattr",
+    314
+   ],
+   [
+    "assert_array_equal",
+    302
+   ],
+   [
+    "func",
+    247
+   ],
+   [
+    "type",
+    246
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:xarray/core/dataarray.py#DataArray",
+    2172
+   ],
+   [
+    "symbol:xarray/tests/__init__.py#assert_identical",
+    1608
+   ],
+   [
+    "symbol:xarray/core/dataset.py#Dataset",
+    1287
+   ]
+  ],
+  "call_scc_sizes_top": [
+   2,
+   2
+  ],
+  "call_scc_count": 2,
+  "file_dep_scc_sizes_top": [
+   50
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 156
+ },
+ {
+  "path": "/home/khoi/.cache/oxide/contextbench/corpora/pytest-dev__pytest@da9a2b584eb7",
+  "files": 245,
+  "entities": 5884,
+  "relations": 30593,
+  "index_s": 1.54,
+  "maxrss_mb": 221,
+  "mix": {
+   "calls/ambiguous/syntactic": 1376,
+   "calls/resolved/resolved": 2771,
+   "calls/unresolved/syntactic": 15302,
+   "contains/resolved/syntactic": 5883,
+   "contains_logical/resolved/syntactic": 240,
+   "defines/resolved/syntactic": 1999,
+   "imports/ambiguous/syntactic": 45,
+   "imports/resolved/resolved": 1088,
+   "imports/unresolved/syntactic": 1448,
+   "references/resolved/resolved": 92,
+   "references/unresolved/syntactic": 75,
+   "tested_by/resolved/heuristic": 1218
+  },
+  "ambiguous_fanout": {
+   "2": 10,
+   "3": 467
+  },
+  "unresolved_call_shape": {
+   "py:bare": 3492,
+   "py:qualified": 10598,
+   "py:self/this": 1212
+  },
+  "top_unresolved_bare": [
+   [
+    "str",
+    565
+   ],
+   [
+    "len",
+    493
+   ],
+   [
+    "isinstance",
+    327
+   ],
+   [
+    "getattr",
+    160
+   ],
+   [
+    "print",
+    102
+   ],
+   [
+    "Path",
+    95
+   ],
+   [
+    "hasattr",
+    94
+   ],
+   [
+    "repr",
+    85
+   ],
+   [
+    "super",
+    78
+   ],
+   [
+    "list",
+    75
+   ],
+   [
+    "type",
+    68
+   ],
+   [
+    "range",
+    63
+   ]
+  ],
+  "resolved_call_max_indegree": [
+   [
+    "symbol:src/_pytest/python_api.py#approx",
+    161
+   ],
+   [
+    "symbol:src/_pytest/mark/__init__.py#param",
+    113
+   ],
+   [
+    "symbol:testing/test_assertion.py#callequal",
+    52
+   ]
+  ],
+  "call_scc_sizes_top": [
+   3,
+   2,
+   2
+  ],
+  "call_scc_count": 3,
+  "file_dep_scc_sizes_top": [
+   18
+  ],
+  "file_dep_scc_count": 1,
+  "file_dep_nodes": 141
+ }
+]

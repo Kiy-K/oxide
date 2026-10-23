@@ -1,0 +1,17 @@
+
+py (verified, n=15)
+  line_recall@256        B=0.180 D=0.180 P=0.180
+  line_recall@1024       B=0.548 D=0.548 P=0.548
+  line_recall@4096       B=0.659 D=0.659 P=0.659
+  span_recall@4096       B=0.623 D=0.623 P=0.623
+  gold_unit_share@4096   B=0.189 D=0.144 P=0.139
+  P-D=+0.000 P-B=+0.000 D-B=+0.000
+ts B == frozen dev: True
+
+ts (verified, n=25)
+  line_recall@256        B=0.195 D=0.195 P=0.195
+  line_recall@1024       B=0.330 D=0.330 P=0.330
+  line_recall@4096       B=0.370 D=0.370 P=0.370
+  span_recall@4096       B=0.358 D=0.358 P=0.358
+  gold_unit_share@4096   B=0.177 D=0.152 P=0.153
+  P-D=+0.000 P-B=+0.000 D-B=+0.000

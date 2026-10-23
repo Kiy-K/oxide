@@ -1,0 +1,233 @@
+{
+ "summary": {
+  "community_share": 0.7,
+  "directory_share": 0.6444,
+  "community_files": 8.6,
+  "directory_files": 12.4,
+  "tasks": 15
+ },
+ "rows": [
+  {
+   "task": "py-exact-retrypolicy",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/retry.py",
+   "gold": [
+    "oxidepy/retry.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-semantic-http-retries",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/http_client.py",
+   "gold": [
+    "oxidepy/http_client.py",
+    "oxidepy/retry.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-crossfile-token-refresh",
+   "corpus": "fixture:py_repo",
+   "anchor": "tests/test_auth.py",
+   "gold": [
+    "oxidepy/auth.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 0.0,
+   "community_files": 4,
+   "directory_files": 2,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-related-test-gives-up",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/retry.py",
+   "gold": [
+    "tests/test_retry.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 0.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-ttl-cache-expiry",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/cache.py",
+   "gold": [
+    "oxidepy/cache.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-implementors-notifier",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/notifiers.py",
+   "gold": [
+    "oxidepy/notifiers.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "py-callers-should-retry",
+   "corpus": "fixture:py_repo",
+   "anchor": "oxidepy/retry.py",
+   "gold": [
+    "oxidepy/notifiers.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 4,
+   "directory_files": 6,
+   "corpus_files": 11,
+   "communities": 5
+  },
+  {
+   "task": "mwaskom__seaborn-3069",
+   "corpus": "mwaskom__seaborn@54cab15bdacf",
+   "anchor": "seaborn/_core/plot.py",
+   "gold": [
+    "seaborn/_core/plot.py",
+    "seaborn/_core/properties.py",
+    "seaborn/_core/scales.py",
+    "seaborn/categorical.py",
+    "seaborn/distributions.py",
+    "tests/test_distributions.py"
+   ],
+   "community_share": 0.16666666666666666,
+   "directory_share": 0.5,
+   "community_files": 21,
+   "directory_files": 10,
+   "corpus_files": 150,
+   "communities": 80
+  },
+  {
+   "task": "pallets__flask-5014",
+   "corpus": "pallets__flask@7ee9ceb71e86",
+   "anchor": "tests/test_basic.py",
+   "gold": [
+    "src/flask/blueprints.py"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 11,
+   "directory_files": 22,
+   "corpus_files": 80,
+   "communities": 19
+  },
+  {
+   "task": "psf__requests-6028",
+   "corpus": "psf__requests@0192aac24123",
+   "anchor": "requests/__init__.py",
+   "gold": [
+    "requests/adapters.py",
+    "requests/utils.py",
+    "tests/test_utils.py"
+   ],
+   "community_share": 0.3333333333333333,
+   "directory_share": 0.6666666666666666,
+   "community_files": 3,
+   "directory_files": 18,
+   "corpus_files": 35,
+   "communities": 17
+  },
+  {
+   "task": "psf__requests-2317",
+   "corpus": "psf__requests@091991be0da1",
+   "anchor": "requests/packages/chardet/chardistribution.py",
+   "gold": [
+    "requests/compat.py",
+    "requests/sessions.py",
+    "requests/utils.py"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.0,
+   "community_files": 23,
+   "directory_files": 38,
+   "corpus_files": 83,
+   "communities": 27
+  },
+  {
+   "task": "psf__requests-1142",
+   "corpus": "psf__requests@22623bd8c265",
+   "anchor": "requests/models.py",
+   "gold": [
+    "requests/models.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 11,
+   "directory_files": 14,
+   "corpus_files": 70,
+   "communities": 26
+  },
+  {
+   "task": "psf__requests-5414",
+   "corpus": "psf__requests@39d0fdd9096f",
+   "anchor": "requests/exceptions.py",
+   "gold": [
+    "requests/models.py",
+    "tests/test_requests.py"
+   ],
+   "community_share": 0.0,
+   "directory_share": 0.5,
+   "community_files": 3,
+   "directory_files": 18,
+   "corpus_files": 35,
+   "communities": 17
+  },
+  {
+   "task": "psf__requests-2931",
+   "corpus": "psf__requests@5f7a3a74aab1",
+   "anchor": "requests/utils.py",
+   "gold": [
+    "requests/models.py",
+    "requests/utils.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 14,
+   "directory_files": 14,
+   "corpus_files": 84,
+   "communities": 27
+  },
+  {
+   "task": "psf__requests-1766",
+   "corpus": "psf__requests@847735553aed",
+   "anchor": "requests/auth.py",
+   "gold": [
+    "requests/auth.py"
+   ],
+   "community_share": 1.0,
+   "directory_share": 1.0,
+   "community_files": 15,
+   "directory_files": 14,
+   "corpus_files": 76,
+   "communities": 27
+  }
+ ]
+}
