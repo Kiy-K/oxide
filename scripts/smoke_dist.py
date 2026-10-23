@@ -97,6 +97,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "ts_repo", root / "web")
         shutil.copytree(fixtures / "js_repo", root / "javascript")
         shutil.copytree(fixtures / "go_repo", root / "golang")
+        shutil.copytree(fixtures / "rust_repo", root / "rustlang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         # Exclude host toolchains: parsing source must never execute its runtimes.
         env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
@@ -155,6 +156,19 @@ def main(fixtures: Path) -> None:
         )
         go_context = result("context", str(root), "open", "--symbol", "Open", "--budget", "1024")
         check("func Open(mode int)" in go_context["payload"], "installed Go context unavailable")
+        rust = result("search", str(root), "must get", "--symbol", "must_get")
+        check(
+            rust["entries"][0]["entity"]["key"]
+            == "symbol:rustlang/crates/shop/src/store/mod.rs#<impl Store>.must_get",
+            "installed Rust extraction unavailable",
+        )
+        rust_context = result(
+            "context", str(root), "must get", "--symbol", "must_get", "--budget", "1024"
+        )
+        check(
+            "pub fn must_get(&self, key: &Key) -> String" in rust_context["payload"],
+            "installed Rust context unavailable",
+        )
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -222,6 +236,7 @@ def environment() -> dict[str, Any]:
                 "tree-sitter",
                 "tree-sitter-javascript",
                 "tree-sitter-go",
+                "tree-sitter-rust",
                 "fastmcp",
             )
         },

@@ -37,7 +37,7 @@ its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
 `docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
-baseline `typescript-v7/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+baseline `typescript-v8/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
@@ -143,3 +143,7 @@ real-repository and ContextBench diagnostic is reproducible via
 Go conformance runs in `mise run verify` (`test_go.py`). The bounded real-repository
 and ContextBench diagnostic is reproducible via `scripts/eval_go.py`; protocol and
 results: `docs/phase-6/go-v1/`.
+
+Rust conformance runs in `mise run verify` (`test_rust.py`). The bounded real-repository,
+oracle and ContextBench diagnostic is reproducible via `scripts/eval_rust.py`; protocol and
+results: `docs/phase-6/rust-v1/`.

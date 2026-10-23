@@ -1,0 +1,6658 @@
+[
+ {
+  "task": "BurntSushi__ripgrep-1367",
+  "split": "heldout",
+  "corpus": "BurntSushi__ripgrep@4858267f3b97",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 33,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.25,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.25,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     193,
+     199
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     193,
+     222
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 29,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     214,
+     222
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     328,
+     331
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 1,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 2,
+   "candidates": 2,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2
+    },
+    "degradations": [
+     "incomplete parse: grep-cli/src/pattern.rs",
+     "incomplete parse: grep-regex/src/literal.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2
+    },
+    "degradations": [
+     "incomplete parse: grep-cli/src/pattern.rs",
+     "incomplete parse: grep-regex/src/literal.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 2
+    },
+    "degradations": [
+     "incomplete parse: grep-cli/src/pattern.rs",
+     "incomplete parse: grep-regex/src/literal.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b961cd999dba6e5af66eef812b5ff95b31ab42cd2ced61cabd328e4267bb75cf",
+   "routed": "ab7cf34cf287a183218ffb69af4d0997248d097f50343b58a6f637fb4311b5a9",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "BurntSushi__ripgrep-2488",
+  "split": "heldout",
+  "corpus": "BurntSushi__ripgrep@041544853c86",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 1725,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.125,
+    "entry_recall@5": 0.125,
+    "entry_recall@20": 0.125,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.166667,
+    "routed_coverage": 0.125,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 319,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     1,
+     452
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 415,
+    "module_lines": 65,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     666,
+     705
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     716,
+     752
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "crates/core/main.rs",
+    "lines": [
+     1,
+     345
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 316,
+    "module_lines": 54,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/core/search.rs",
+    "lines": [
+     1,
+     474
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/grep/src/lib.rs",
+    "lines": [
+     1,
+     24
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 18,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/config.rs",
+    "lines": [
+     1,
+     319
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 319,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/regex/src/matcher.rs",
+    "lines": [
+     1,
+     382
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 356,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/regex/src/multi.rs",
+    "lines": [
+     1,
+     126
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 110,
+    "module_lines": 15,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 6,
+   "candidates": 6,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: crates/cli/src/pattern.rs",
+     "incomplete parse: crates/core/args.rs",
+     "incomplete parse: crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.rs",
+     "incomplete parse: crates/pcre2/src/error.rs",
+     "incomplete parse: crates/regex/src/error.rs",
+     "incomplete parse: crates/regex/src/non_matching.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: crates/cli/src/pattern.rs",
+     "incomplete parse: crates/core/args.rs",
+     "incomplete parse: crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.rs",
+     "incomplete parse: crates/pcre2/src/error.rs",
+     "incomplete parse: crates/regex/src/error.rs",
+     "incomplete parse: crates/regex/src/non_matching.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 6
+    },
+    "degradations": [
+     "incomplete parse: crates/cli/src/pattern.rs",
+     "incomplete parse: crates/core/args.rs",
+     "incomplete parse: crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.rs",
+     "incomplete parse: crates/pcre2/src/error.rs",
+     "incomplete parse: crates/regex/src/error.rs",
+     "incomplete parse: crates/regex/src/non_matching.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "58f475b470c15108627688cc2f631babecfa0ccef51c1a24edac847db2b0c24f",
+   "routed": "ffbcda14029d0fee681bb2bba86606b4382ccd0545ac5c0ffaa3075e8cd9d239",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "clap-rs__clap-1869",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@deb14c853740",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 395,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 207,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/parse/validator.rs",
+    "lines": [
+     1,
+     417
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 395,
+    "module_lines": 10,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/clap-rs__clap__0.1/tests/conflicts.rs",
+    "lines": [
+     1,
+     207
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 207,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: benches/01_default.rs",
+     "incomplete parse: clap_derive/Cargo.toml",
+     "incomplete parse: clap_derive/tests/doc-comments-help.rs",
+     "incomplete parse: clap_derive/tests/issues.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/Cargo.toml",
+     "incomplete parse: clap_generate/tests/version-numbers.rs",
+     "incomplete parse: examples/10_default_values.rs",
+     "incomplete parse: examples/11_only_specific_values.rs",
+     "incomplete parse: examples/12_typed_values.rs",
+     "incomplete parse: examples/13_enum_values.rs",
+     "incomplete parse: src/parse/features/mod.rs",
+     "incomplete parse: src/parse/features/suggestions.rs",
+     "incomplete parse: src/util/termcolor.rs",
+     "incomplete parse: tests/cargo.rs",
+     "incomplete parse: tests/conflicts.rs",
+     "incomplete parse: tests/possible_values.rs",
+     "incomplete parse: tests/version-numbers.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: benches/01_default.rs",
+     "incomplete parse: clap_derive/Cargo.toml",
+     "incomplete parse: clap_derive/tests/doc-comments-help.rs",
+     "incomplete parse: clap_derive/tests/issues.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/Cargo.toml",
+     "incomplete parse: clap_generate/tests/version-numbers.rs",
+     "incomplete parse: examples/10_default_values.rs",
+     "incomplete parse: examples/11_only_specific_values.rs",
+     "incomplete parse: examples/12_typed_values.rs",
+     "incomplete parse: examples/13_enum_values.rs",
+     "incomplete parse: src/parse/features/mod.rs",
+     "incomplete parse: src/parse/features/suggestions.rs",
+     "incomplete parse: src/util/termcolor.rs",
+     "incomplete parse: tests/cargo.rs",
+     "incomplete parse: tests/conflicts.rs",
+     "incomplete parse: tests/possible_values.rs",
+     "incomplete parse: tests/version-numbers.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: benches/01_default.rs",
+     "incomplete parse: clap_derive/Cargo.toml",
+     "incomplete parse: clap_derive/tests/doc-comments-help.rs",
+     "incomplete parse: clap_derive/tests/issues.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/Cargo.toml",
+     "incomplete parse: clap_generate/tests/version-numbers.rs",
+     "incomplete parse: examples/10_default_values.rs",
+     "incomplete parse: examples/11_only_specific_values.rs",
+     "incomplete parse: examples/12_typed_values.rs",
+     "incomplete parse: examples/13_enum_values.rs",
+     "incomplete parse: src/parse/features/mod.rs",
+     "incomplete parse: src/parse/features/suggestions.rs",
+     "incomplete parse: src/util/termcolor.rs",
+     "incomplete parse: tests/cargo.rs",
+     "incomplete parse: tests/conflicts.rs",
+     "incomplete parse: tests/possible_values.rs",
+     "incomplete parse: tests/version-numbers.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c2b2a44a41fb84bc9345ea33542c8761fcbfad1df064dded334932107d461db8",
+   "routed": "2bf7860e9f9cb3d1d2b6bdd4a5cb0c3bef37732c7bf2a98b238153519fe87b7e",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "clap-rs__clap-1975",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@81457178fa7e",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 634,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.25,
+    "entry_mrr": 0.0625,
+    "entry_file_recall": 0.333333,
+    "routed_coverage": 0.25,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     1,
+     484
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 419,
+    "module_lines": 45,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     145,
+     159
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     145,
+     161
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 41,
+    "module_lines": 10,
+    "entry_rank": 16,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     50,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 43,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     100,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     150,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 1,
+    "entry_rank": 16,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/build/arg/mod.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/arg_enum.rs",
+     "incomplete parse: clap_derive/src/derives/from_arg_matches.rs",
+     "incomplete parse: clap_derive/src/parse.rs",
+     "incomplete parse: clap_derive/tests/argument_naming.rs",
+     "incomplete parse: clap_derive/tests/arguments.rs",
+     "incomplete parse: clap_derive/tests/custom-string-parsers.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/parse_not_zero_args.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/src/macros.rs",
+     "incomplete parse: examples/18_builder_macro.rs",
+     "incomplete parse: src/build/macros.rs",
+     "incomplete parse: src/macros.rs",
+     "incomplete parse: src/parse/arg_matcher.rs",
+     "incomplete parse: src/parse/matches/arg_matches.rs",
+     "incomplete parse: src/parse/matches/matched_arg.rs",
+     "incomplete parse: tests/arg_aliases_short.rs",
+     "incomplete parse: tests/macros.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/arg_enum.rs",
+     "incomplete parse: clap_derive/src/derives/from_arg_matches.rs",
+     "incomplete parse: clap_derive/src/parse.rs",
+     "incomplete parse: clap_derive/tests/argument_naming.rs",
+     "incomplete parse: clap_derive/tests/arguments.rs",
+     "incomplete parse: clap_derive/tests/custom-string-parsers.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/parse_not_zero_args.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/src/macros.rs",
+     "incomplete parse: examples/18_builder_macro.rs",
+     "incomplete parse: src/build/macros.rs",
+     "incomplete parse: src/macros.rs",
+     "incomplete parse: src/parse/arg_matcher.rs",
+     "incomplete parse: src/parse/matches/arg_matches.rs",
+     "incomplete parse: src/parse/matches/matched_arg.rs",
+     "incomplete parse: tests/arg_aliases_short.rs",
+     "incomplete parse: tests/macros.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/arg_enum.rs",
+     "incomplete parse: clap_derive/src/derives/from_arg_matches.rs",
+     "incomplete parse: clap_derive/src/parse.rs",
+     "incomplete parse: clap_derive/tests/argument_naming.rs",
+     "incomplete parse: clap_derive/tests/arguments.rs",
+     "incomplete parse: clap_derive/tests/custom-string-parsers.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_methods.rs",
+     "incomplete parse: clap_derive/tests/ui/flatten_and_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/parse_not_zero_args.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_and_methods.rs",
+     "incomplete parse: clap_generate/src/macros.rs",
+     "incomplete parse: examples/18_builder_macro.rs",
+     "incomplete parse: src/build/macros.rs",
+     "incomplete parse: src/macros.rs",
+     "incomplete parse: src/parse/arg_matcher.rs",
+     "incomplete parse: src/parse/matches/arg_matches.rs",
+     "incomplete parse: src/parse/matches/matched_arg.rs",
+     "incomplete parse: tests/arg_aliases_short.rs",
+     "incomplete parse: tests/macros.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "146a1154e6c52c92f6d2a7c37ca5c4e003c45488e89bb88e2243fb3204b4aedf",
+   "routed": "d50a6a5b0dde7f207d03468b07962503afe79086bfba8c2db5b872656550ef35",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "clap-rs__clap-2008",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@1dd3fcb95435",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 877,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.090909,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/build/app/mod.rs",
+    "lines": [
+     1,
+     473
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 435,
+    "module_lines": 57,
+    "entry_rank": 11,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/output/help.rs",
+    "lines": [
+     1,
+     483
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 442,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 13,
+   "candidates": 13,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 13
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/into_app.rs",
+     "incomplete parse: clap_derive/tests/ui/arg_enum_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_subcommand.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/tuple_struct.rs",
+     "incomplete parse: examples/02_apps.rs",
+     "incomplete parse: examples/16_app_settings.rs",
+     "incomplete parse: src/build/app/mod.rs",
+     "incomplete parse: src/build/app/settings.rs",
+     "incomplete parse: src/build/app/tests.rs",
+     "incomplete parse: tests/app_from_crate.rs",
+     "incomplete parse: tests/app_settings.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 13
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/into_app.rs",
+     "incomplete parse: clap_derive/tests/ui/arg_enum_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_subcommand.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/tuple_struct.rs",
+     "incomplete parse: examples/02_apps.rs",
+     "incomplete parse: examples/16_app_settings.rs",
+     "incomplete parse: src/build/app/mod.rs",
+     "incomplete parse: src/build/app/settings.rs",
+     "incomplete parse: src/build/app/tests.rs",
+     "incomplete parse: tests/app_from_crate.rs",
+     "incomplete parse: tests/app_settings.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 13
+    },
+    "degradations": [
+     "incomplete parse: clap_derive/src/derives/into_app.rs",
+     "incomplete parse: clap_derive/tests/ui/arg_enum_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_parse.rs",
+     "incomplete parse: clap_derive/tests/ui/struct_subcommand.rs",
+     "incomplete parse: clap_derive/tests/ui/subcommand_on_struct.rs",
+     "incomplete parse: clap_derive/tests/ui/tuple_struct.rs",
+     "incomplete parse: examples/02_apps.rs",
+     "incomplete parse: examples/16_app_settings.rs",
+     "incomplete parse: src/build/app/mod.rs",
+     "incomplete parse: src/build/app/settings.rs",
+     "incomplete parse: src/build/app/tests.rs",
+     "incomplete parse: tests/app_from_crate.rs",
+     "incomplete parse: tests/app_settings.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "229eb2f0bd81aad47c706a8880c943bae1f959d505f3c2c9f5affed2526d6f58",
+   "routed": "08dcc2bc19cc9ce005cdc99ea6098076aa90bfe2b2605c149c336cb6b10d81b2",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "nushell__nushell-10405",
+  "split": "heldout",
+  "corpus": "nushell__nushell@bc7736bc9965",
+  "verified": {
+   "counts": {
+    "spans": 18,
+    "lines": 913,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "crates/nu-parser/src/lex.rs",
+    "lines": [
+     310,
+     351
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/lex.rs",
+    "lines": [
+     344,
+     361
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     337,
+     381
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     380,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     430,
+     481
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     1,
+     477
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 427,
+    "module_lines": 32,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     776,
+     821
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2760,
+     2887
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 111,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2760,
+     2887
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 111,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2770,
+     2851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 71,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2850,
+     2901
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2917,
+     2936
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2917,
+     2944
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2935,
+     2951
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3201,
+     3265
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 50,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3201,
+     3271
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 56,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3328,
+     3371
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3362,
+     3401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/menus/description_menu.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/core_commands/return_.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/datetime.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/record.rs",
+     "incomplete parse: crates/nu-command/src/database/values/definitions/db_table.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_listen.rs",
+     "incomplete parse: crates/nu-command/src/strings/parse.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_datetime.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-protocol/src/signature.rs",
+     "incomplete parse: crates/nu-protocol/src/value/record.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_signatures.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/menus/description_menu.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/core_commands/return_.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/datetime.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/record.rs",
+     "incomplete parse: crates/nu-command/src/database/values/definitions/db_table.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_listen.rs",
+     "incomplete parse: crates/nu-command/src/strings/parse.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_datetime.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-protocol/src/signature.rs",
+     "incomplete parse: crates/nu-protocol/src/value/record.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_signatures.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/menus/description_menu.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/core_commands/return_.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/datetime.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/src/conversions/into/record.rs",
+     "incomplete parse: crates/nu-command/src/database/values/definitions/db_table.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_.rs",
+     "incomplete parse: crates/nu-command/src/platform/input/input_listen.rs",
+     "incomplete parse: crates/nu-command/src/strings/parse.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_datetime.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-protocol/src/signature.rs",
+     "incomplete parse: crates/nu-protocol/src/value/record.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_signatures.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "23ec003e8920444a6e0b034813ad756800004137854ee9c6dca2f8f9369112be",
+   "routed": "aa63404e6701094049c81d66b94ac0834b80461632832f73f5a4428d7d53ce58",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "nushell__nushell-10629",
+  "split": "heldout",
+  "corpus": "nushell__nushell@399319476aa4",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 996,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 28,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     359,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 38,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     400,
+     501
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 89,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     500,
+     601
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 87,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_shape_specs.rs",
+    "lines": [
+     1,
+     306
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 271,
+    "module_lines": 17,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs",
+    "lines": [
+     279,
+     306
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 33,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2948,
+     3051
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 84,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3075,
+     3151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 64,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3150,
+     3251
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 97,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/ty.rs",
+    "lines": [
+     1,
+     246
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 227,
+    "module_lines": 19,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cmd-extra/src/extra/bits/bits_.rs",
+     "incomplete parse: crates/nu-cmd-extra/src/extra/strings/format/command.rs",
+     "incomplete parse: crates/nu-command/src/filesystem/ls.rs",
+     "incomplete parse: crates/nu-command/src/strings/split/column.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/def.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/ls.rs",
+     "incomplete parse: crates/nu-command/tests/commands/nu_check.rs",
+     "incomplete parse: crates/nu-command/tests/commands/random/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/reduce.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-command/tests/commands/wrap.rs",
+     "incomplete parse: crates/nu-parser/src/type_check.rs",
+     "incomplete parse: crates/nu-plugin/src/plugin/declaration.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_type_check.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cmd-extra/src/extra/bits/bits_.rs",
+     "incomplete parse: crates/nu-cmd-extra/src/extra/strings/format/command.rs",
+     "incomplete parse: crates/nu-command/src/filesystem/ls.rs",
+     "incomplete parse: crates/nu-command/src/strings/split/column.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/def.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/ls.rs",
+     "incomplete parse: crates/nu-command/tests/commands/nu_check.rs",
+     "incomplete parse: crates/nu-command/tests/commands/random/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/reduce.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-command/tests/commands/wrap.rs",
+     "incomplete parse: crates/nu-parser/src/type_check.rs",
+     "incomplete parse: crates/nu-plugin/src/plugin/declaration.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_type_check.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cmd-extra/src/extra/bits/bits_.rs",
+     "incomplete parse: crates/nu-cmd-extra/src/extra/strings/format/command.rs",
+     "incomplete parse: crates/nu-command/src/filesystem/ls.rs",
+     "incomplete parse: crates/nu-command/src/strings/split/column.rs",
+     "incomplete parse: crates/nu-command/tests/commands/conversions/into/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/def.rs",
+     "incomplete parse: crates/nu-command/tests/commands/into_int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/ls.rs",
+     "incomplete parse: crates/nu-command/tests/commands/nu_check.rs",
+     "incomplete parse: crates/nu-command/tests/commands/random/int.rs",
+     "incomplete parse: crates/nu-command/tests/commands/reduce.rs",
+     "incomplete parse: crates/nu-command/tests/commands/return_.rs",
+     "incomplete parse: crates/nu-command/tests/commands/wrap.rs",
+     "incomplete parse: crates/nu-parser/src/type_check.rs",
+     "incomplete parse: crates/nu-plugin/src/plugin/declaration.rs",
+     "incomplete parse: crates/nu-table/src/types/collapse.rs",
+     "incomplete parse: crates/nu-table/src/types/expanded.rs",
+     "incomplete parse: crates/nu-table/src/types/general.rs",
+     "incomplete parse: crates/nu-table/src/types/mod.rs",
+     "incomplete parse: src/tests/test_type_check.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "a77095345ff56954ebc5fa0951c4649fa704873b1cbaf9236d75762f0281b8fa",
+   "routed": "4976e93fcc7ce1dc155a1eeb73914560c8f89ba1231e851726205215d46120dd",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "nushell__nushell-11292",
+  "split": "heldout",
+  "corpus": "nushell__nushell@ecb3b3a364b3",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 1166,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 28,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/nu-cli/src/menus/help_completions.rs",
+    "lines": [
+     1,
+     122
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 106,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-engine/src/documentation.rs",
+    "lines": [
+     1,
+     454
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 416,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     1,
+     477
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 455,
+    "module_lines": 39,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     650,
+     701
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 48,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     700,
+     751
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     750,
+     826
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 72,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     825,
+     851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/nushell__nushell__0.1/src/tests/test_help.rs",
+    "lines": [
+     1,
+     28
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/commands/default_context.rs",
+     "incomplete parse: crates/nu-cli/src/commands/keybindings_default.rs",
+     "incomplete parse: crates/nu-cli/src/completions/completion_options.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace_all.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/bytes/remove.rs",
+     "incomplete parse: crates/nu-command/src/bytes/replace.rs",
+     "incomplete parse: crates/nu-command/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/filters/default.rs",
+     "incomplete parse: crates/nu-command/src/network/http/options.rs",
+     "incomplete parse: crates/nu-command/src/removed/format.rs",
+     "incomplete parse: crates/nu-command/src/removed/removed_commands.rs",
+     "incomplete parse: crates/nu-command/src/strings/str_/replace.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_env_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_nu_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/network/http/options.rs",
+     "incomplete parse: crates/nu-command/tests/commands/str_/into_string.rs",
+     "incomplete parse: crates/nu-explore/src/default_context.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/commands/default_context.rs",
+     "incomplete parse: crates/nu-cli/src/commands/keybindings_default.rs",
+     "incomplete parse: crates/nu-cli/src/completions/completion_options.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace_all.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/bytes/remove.rs",
+     "incomplete parse: crates/nu-command/src/bytes/replace.rs",
+     "incomplete parse: crates/nu-command/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/filters/default.rs",
+     "incomplete parse: crates/nu-command/src/network/http/options.rs",
+     "incomplete parse: crates/nu-command/src/removed/format.rs",
+     "incomplete parse: crates/nu-command/src/removed/removed_commands.rs",
+     "incomplete parse: crates/nu-command/src/strings/str_/replace.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_env_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_nu_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/network/http/options.rs",
+     "incomplete parse: crates/nu-command/tests/commands/str_/into_string.rs",
+     "incomplete parse: crates/nu-explore/src/default_context.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: crates/nu-cli/src/commands/default_context.rs",
+     "incomplete parse: crates/nu-cli/src/commands/keybindings_default.rs",
+     "incomplete parse: crates/nu-cli/src/completions/completion_options.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace.rs",
+     "incomplete parse: crates/nu-cmd-dataframe/src/dataframe/series/string/replace_all.rs",
+     "incomplete parse: crates/nu-cmd-lang/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/bytes/remove.rs",
+     "incomplete parse: crates/nu-command/src/bytes/replace.rs",
+     "incomplete parse: crates/nu-command/src/default_context.rs",
+     "incomplete parse: crates/nu-command/src/filters/default.rs",
+     "incomplete parse: crates/nu-command/src/network/http/options.rs",
+     "incomplete parse: crates/nu-command/src/removed/format.rs",
+     "incomplete parse: crates/nu-command/src/removed/removed_commands.rs",
+     "incomplete parse: crates/nu-command/src/strings/str_/replace.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_env_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/config_nu_default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/default.rs",
+     "incomplete parse: crates/nu-command/tests/commands/network/http/options.rs",
+     "incomplete parse: crates/nu-command/tests/commands/str_/into_string.rs",
+     "incomplete parse: crates/nu-explore/src/default_context.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "e003126bbf2cbe2de058a9e3e4250889151b549dd1e26a7d2aed16142309a4c1",
+   "routed": "823f0ce4f502770b71ec3f1b53e96ce832d98415244be3258143cba07a8b95a5",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "rayon-rs__rayon-986",
+  "split": "heldout",
+  "corpus": "rayon-rs__rayon@2de810e97d5c",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 73,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     91,
+     150
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     151,
+     172
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     152,
+     174
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 3,
+   "candidates": 3,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/iter/empty.rs",
+     "incomplete parse: src/range.rs",
+     "incomplete parse: src/range_inclusive.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/iter/empty.rs",
+     "incomplete parse: src/range.rs",
+     "incomplete parse: src/range_inclusive.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/iter/empty.rs",
+     "incomplete parse: src/range.rs",
+     "incomplete parse: src/range_inclusive.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c9ca69f4255414636e1586279db848243cdf87311781808c58f091d9f8062563",
+   "routed": "9d7f6c064383eab26c682d0f609ed38bdf05f169c6daa07be992cab828457505",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "sharkdp__bat-2896",
+  "split": "heldout",
+  "corpus": "sharkdp__bat@d00e05643ff6",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 1094,
+    "files": 5
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.4,
+    "entry_recall@20": 0.6,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 0.6,
+    "routed_coverage": 0.6,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/assets.rs",
+    "lines": [
+     1,
+     473
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 410,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/bin/bat/app.rs",
+    "lines": [
+     1,
+     411
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 25,
+    "entry_rank": 16,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bin/bat/config.rs",
+    "lines": [
+     1,
+     216
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 179,
+    "module_lines": 16,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/lib.rs",
+    "lines": [
+     1,
+     63
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 57,
+    "module_lines": 57,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/terminal.rs",
+    "lines": [
+     1,
+     83
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 77,
+    "module_lines": 3,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: assets/theme_preview.rs",
+     "incomplete parse: build/main.rs",
+     "incomplete parse: examples/list_syntaxes_and_themes.rs",
+     "incomplete parse: src/assets/lazy_theme_set.rs",
+     "incomplete parse: src/bin/bat/app.rs",
+     "incomplete parse: src/bin/bat/assets.rs",
+     "incomplete parse: src/bin/bat/clap_app.rs",
+     "incomplete parse: src/bin/bat/config.rs",
+     "incomplete parse: src/bin/bat/directories.rs",
+     "incomplete parse: src/bin/bat/input.rs",
+     "incomplete parse: src/bin/bat/main.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/controller.rs",
+     "incomplete parse: src/line_range.rs",
+     "incomplete parse: src/output.rs",
+     "incomplete parse: src/terminal.rs",
+     "incomplete parse: tests/github-actions.rs",
+     "incomplete parse: tests/syntax-tests/highlighted/Rust/output.rs",
+     "incomplete parse: tests/syntax-tests/source/Rust/output.rs",
+     "incomplete parse: tests/system_wide_config.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: assets/theme_preview.rs",
+     "incomplete parse: build/main.rs",
+     "incomplete parse: examples/list_syntaxes_and_themes.rs",
+     "incomplete parse: src/assets/lazy_theme_set.rs",
+     "incomplete parse: src/bin/bat/app.rs",
+     "incomplete parse: src/bin/bat/assets.rs",
+     "incomplete parse: src/bin/bat/clap_app.rs",
+     "incomplete parse: src/bin/bat/config.rs",
+     "incomplete parse: src/bin/bat/directories.rs",
+     "incomplete parse: src/bin/bat/input.rs",
+     "incomplete parse: src/bin/bat/main.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/controller.rs",
+     "incomplete parse: src/line_range.rs",
+     "incomplete parse: src/output.rs",
+     "incomplete parse: src/terminal.rs",
+     "incomplete parse: tests/github-actions.rs",
+     "incomplete parse: tests/syntax-tests/highlighted/Rust/output.rs",
+     "incomplete parse: tests/syntax-tests/source/Rust/output.rs",
+     "incomplete parse: tests/system_wide_config.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: assets/theme_preview.rs",
+     "incomplete parse: build/main.rs",
+     "incomplete parse: examples/list_syntaxes_and_themes.rs",
+     "incomplete parse: src/assets/lazy_theme_set.rs",
+     "incomplete parse: src/bin/bat/app.rs",
+     "incomplete parse: src/bin/bat/assets.rs",
+     "incomplete parse: src/bin/bat/clap_app.rs",
+     "incomplete parse: src/bin/bat/config.rs",
+     "incomplete parse: src/bin/bat/directories.rs",
+     "incomplete parse: src/bin/bat/input.rs",
+     "incomplete parse: src/bin/bat/main.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/controller.rs",
+     "incomplete parse: src/line_range.rs",
+     "incomplete parse: src/output.rs",
+     "incomplete parse: src/terminal.rs",
+     "incomplete parse: tests/github-actions.rs",
+     "incomplete parse: tests/syntax-tests/highlighted/Rust/output.rs",
+     "incomplete parse: tests/syntax-tests/source/Rust/output.rs",
+     "incomplete parse: tests/system_wide_config.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "e399d34643f6bb1a5ee8bb3f9ae9d3cd0bcbeddfc6a2081f7e6bd1d21bd1e1a3",
+   "routed": "fb8f124d52f87d0050137dc77c454462f7556662ee2c39c2fc36dd3ff2439304",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "sharkdp__fd-1162",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@cbd11d8a45dc",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 748,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.25,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     1,
+     404
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 30,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main.rs",
+    "lines": [
+     1,
+     300
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 273,
+    "module_lines": 52,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tests/testenv/mod.rs",
+    "lines": [
+     270,
+     291
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tests/tests.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 85,
+    "module_lines": 30,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": true,
+   "regions": 17,
+   "candidates": 17,
+   "deferred": 0,
+   "fanout_truncations": 1,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 17
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: build.rs",
+     "incomplete parse: src/cli.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/dir_entry.rs",
+     "incomplete parse: src/error.rs",
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs",
+     "incomplete parse: src/exit_codes.rs",
+     "incomplete parse: src/filesystem.rs",
+     "incomplete parse: src/filetypes.rs",
+     "incomplete parse: src/filter/mod.rs",
+     "incomplete parse: src/filter/owner.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 17
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: build.rs",
+     "incomplete parse: src/cli.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/dir_entry.rs",
+     "incomplete parse: src/error.rs",
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs",
+     "incomplete parse: src/exit_codes.rs",
+     "incomplete parse: src/filesystem.rs",
+     "incomplete parse: src/filetypes.rs",
+     "incomplete parse: src/filter/mod.rs",
+     "incomplete parse: src/filter/owner.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 17
+    },
+    "degradations": [
+     "incomplete parse: Cargo.toml",
+     "incomplete parse: build.rs",
+     "incomplete parse: src/cli.rs",
+     "incomplete parse: src/config.rs",
+     "incomplete parse: src/dir_entry.rs",
+     "incomplete parse: src/error.rs",
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs",
+     "incomplete parse: src/exit_codes.rs",
+     "incomplete parse: src/filesystem.rs",
+     "incomplete parse: src/filetypes.rs",
+     "incomplete parse: src/filter/mod.rs",
+     "incomplete parse: src/filter/owner.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+   "routed": "a54fd2de17a5b29b1b77abbe6b7a1d2896c360392e8f38cbbdccbe10910f8c9b",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "sharkdp__fd-1394",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@93cdb2628e89",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 503,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     1,
+     451
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 412,
+    "module_lines": 27,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     20,
+     36
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 11,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     450,
+     551
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     510,
+     526
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 5,
+   "candidates": 5,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 5
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 5
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 5
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/exec/input.rs",
+     "incomplete parse: src/exec/job.rs",
+     "incomplete parse: src/exec/mod.rs",
+     "incomplete parse: src/exec/token.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5500ed13f9cceb46aee65d8f2b2981d5f08699358b9230b021c1cc33c56cce26",
+   "routed": "f539799fafefc916e9fb76e06ecfae51d3453a5b815674f31ca59891e7b1a4cf",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "sharkdp__fd-555",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@ee673c92d375",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 1320,
+    "files": 5
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 108,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/app.rs",
+    "lines": [
+     1,
+     428
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 420,
+    "module_lines": 24,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/internal/mod.rs",
+    "lines": [
+     1,
+     198
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 177,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/internal/opts.rs",
+    "lines": [
+     1,
+     85
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 63,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/main.rs",
+    "lines": [
+     1,
+     302
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 275,
+    "module_lines": 34,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/sharkdp__fd__0.1/src/output.rs",
+    "lines": [
+     1,
+     108
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 108,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/walk.rs",
+    "lines": [
+     1,
+     427
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 375,
+    "module_lines": 33,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/walk.rs",
+    "lines": [
+     400,
+     441
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 3,
+   "candidates": 3,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/internal/file_types.rs",
+     "incomplete parse: src/internal/filter/time.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/internal/file_types.rs",
+     "incomplete parse: src/internal/filter/time.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 3
+    },
+    "degradations": [
+     "incomplete parse: src/exec/command.rs",
+     "incomplete parse: src/internal/file_types.rs",
+     "incomplete parse: src/internal/filter/time.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ca41e7bc8afd2434ddd8da3651856b5d4dca07ce274c8df739f7c0f37a1a1448",
+   "routed": "d02a93f2c5fcc400650162f71f421d76f6ff44c13fdc523823bc7da37244b942",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-543",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@f514bd38dac8",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 727,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.777778,
+    "entry_mrr": 0.125,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.777778,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1,
+     591
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 534,
+    "module_lines": 97,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     804,
+     816
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     811,
+     831
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     830,
+     851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 1,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     880,
+     921
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 35,
+    "module_lines": 5,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     942,
+     971
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 10,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     970,
+     991
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 5,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1000,
+     1041
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 1,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1080,
+     1121
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 7,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 10,
+   "candidates": 10,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 10
+    },
+    "degradations": [
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/vec_deque.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 10
+    },
+    "degradations": [
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/vec_deque.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 10
+    },
+    "degradations": [
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/vec_deque.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "147f68b5dd2e0a1d0b08d09a6da19c0d694ac704a921a59e9b86fb90eac91c74",
+   "routed": "e3b9182c40bc11d5d475540b4e1f8030149a1943c1ce3a712f494208d178baa7",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-721",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@9965a04b5684",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 11,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/bytes_mut.rs",
+    "lines": [
+     1780,
+     1786
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "src/bytes_mut.rs",
+    "lines": [
+     1843,
+     1848
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/loom.rs",
+     "incomplete parse: tests/test_buf.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs",
+     "incomplete parse: tests/test_chain.rs",
+     "incomplete parse: tests/test_debug.rs",
+     "incomplete parse: tests/test_iter.rs",
+     "incomplete parse: tests/test_reader.rs",
+     "incomplete parse: tests/test_serde.rs",
+     "incomplete parse: tests/test_take.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/loom.rs",
+     "incomplete parse: tests/test_buf.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs",
+     "incomplete parse: tests/test_chain.rs",
+     "incomplete parse: tests/test_debug.rs",
+     "incomplete parse: tests/test_iter.rs",
+     "incomplete parse: tests/test_reader.rs",
+     "incomplete parse: tests/test_serde.rs",
+     "incomplete parse: tests/test_take.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/loom.rs",
+     "incomplete parse: tests/test_buf.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs",
+     "incomplete parse: tests/test_chain.rs",
+     "incomplete parse: tests/test_debug.rs",
+     "incomplete parse: tests/test_iter.rs",
+     "incomplete parse: tests/test_reader.rs",
+     "incomplete parse: tests/test_serde.rs",
+     "incomplete parse: tests/test_take.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "d3c85edfc23cd8ce9e2bca25b6130af65919eee1b5d58085cb3e57e24575fe3a",
+   "routed": "44c99460db13cb771c976d474fbd4ed2f31ae02f9b4e232364d909120136d9b4",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-732",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@291df5acc94b",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 597,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.666667,
+    "entry_mrr": 0.1,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.666667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     1,
+     555
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 521,
+    "module_lines": 80,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     40,
+     68
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 23,
+    "module_lines": 23,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     55,
+     67
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 11,
+    "entry_rank": 10,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     920,
+     951
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/buf/buf_mut.rs",
+    "lines": [
+     1040,
+     1051
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/buf/mod.rs",
+    "lines": [
+     1,
+     40
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 36,
+    "entry_rank": 16,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/chain.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/buf/limit.rs",
+     "incomplete parse: src/buf/mod.rs",
+     "incomplete parse: src/buf/reader.rs",
+     "incomplete parse: src/buf/take.rs",
+     "incomplete parse: src/buf/uninit_slice.rs",
+     "incomplete parse: src/buf/writer.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/lib.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/chain.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/buf/limit.rs",
+     "incomplete parse: src/buf/mod.rs",
+     "incomplete parse: src/buf/reader.rs",
+     "incomplete parse: src/buf/take.rs",
+     "incomplete parse: src/buf/uninit_slice.rs",
+     "incomplete parse: src/buf/writer.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/lib.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/buf.rs",
+     "incomplete parse: benches/bytes.rs",
+     "incomplete parse: benches/bytes_mut.rs",
+     "incomplete parse: src/buf/buf_impl.rs",
+     "incomplete parse: src/buf/buf_mut.rs",
+     "incomplete parse: src/buf/chain.rs",
+     "incomplete parse: src/buf/iter.rs",
+     "incomplete parse: src/buf/limit.rs",
+     "incomplete parse: src/buf/mod.rs",
+     "incomplete parse: src/buf/reader.rs",
+     "incomplete parse: src/buf/take.rs",
+     "incomplete parse: src/buf/uninit_slice.rs",
+     "incomplete parse: src/buf/writer.rs",
+     "incomplete parse: src/bytes.rs",
+     "incomplete parse: src/bytes_mut.rs",
+     "incomplete parse: src/lib.rs",
+     "incomplete parse: tests/test_buf_mut.rs",
+     "incomplete parse: tests/test_bytes.rs",
+     "incomplete parse: tests/test_bytes_odd_alloc.rs",
+     "incomplete parse: tests/test_bytes_vec_alloc.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "694b2fd40748512705a64fe5791f3075c12e12864255364383e8f51b08562131",
+   "routed": "491130d55902caf63c8110ef1948827d79070791d11b51a7cfb3546087483f80",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-4519",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@43c224ff47e4",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 60,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 198,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     391,
+     454
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 55,
+    "module_lines": 55,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     606,
+     804
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 198,
+    "module_lines": 198,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     801,
+     806
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tests-build/tests/fail/macros_core_no_default.rs",
+     "incomplete parse: tests-build/tests/fail/macros_dead_code.rs",
+     "incomplete parse: tests-build/tests/fail/macros_invalid_input.rs",
+     "incomplete parse: tests-build/tests/fail/macros_type_mismatch.rs",
+     "incomplete parse: tests-integration/tests/macros_select.rs",
+     "incomplete parse: tokio-macros/src/select.rs",
+     "incomplete parse: tokio/src/macros/select.rs",
+     "incomplete parse: tokio/src/runtime/handle.rs",
+     "incomplete parse: tokio/src/runtime/task/error.rs",
+     "incomplete parse: tokio/src/sync/mpsc/error.rs",
+     "incomplete parse: tokio/src/time/driver/handle.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/util/error.rs",
+     "incomplete parse: tokio/tests/join_handle_panic.rs",
+     "incomplete parse: tokio/tests/macros_select.rs",
+     "incomplete parse: tokio/tests/process_arg0.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_raw_handle.rs",
+     "incomplete parse: tokio/tests/rt_handle_block_on.rs",
+     "incomplete parse: tokio/tests/sync_errors.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tests-build/tests/fail/macros_core_no_default.rs",
+     "incomplete parse: tests-build/tests/fail/macros_dead_code.rs",
+     "incomplete parse: tests-build/tests/fail/macros_invalid_input.rs",
+     "incomplete parse: tests-build/tests/fail/macros_type_mismatch.rs",
+     "incomplete parse: tests-integration/tests/macros_select.rs",
+     "incomplete parse: tokio-macros/src/select.rs",
+     "incomplete parse: tokio/src/macros/select.rs",
+     "incomplete parse: tokio/src/runtime/handle.rs",
+     "incomplete parse: tokio/src/runtime/task/error.rs",
+     "incomplete parse: tokio/src/sync/mpsc/error.rs",
+     "incomplete parse: tokio/src/time/driver/handle.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/util/error.rs",
+     "incomplete parse: tokio/tests/join_handle_panic.rs",
+     "incomplete parse: tokio/tests/macros_select.rs",
+     "incomplete parse: tokio/tests/process_arg0.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_raw_handle.rs",
+     "incomplete parse: tokio/tests/rt_handle_block_on.rs",
+     "incomplete parse: tokio/tests/sync_errors.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tests-build/tests/fail/macros_core_no_default.rs",
+     "incomplete parse: tests-build/tests/fail/macros_dead_code.rs",
+     "incomplete parse: tests-build/tests/fail/macros_invalid_input.rs",
+     "incomplete parse: tests-build/tests/fail/macros_type_mismatch.rs",
+     "incomplete parse: tests-integration/tests/macros_select.rs",
+     "incomplete parse: tokio-macros/src/select.rs",
+     "incomplete parse: tokio/src/macros/select.rs",
+     "incomplete parse: tokio/src/runtime/handle.rs",
+     "incomplete parse: tokio/src/runtime/task/error.rs",
+     "incomplete parse: tokio/src/sync/mpsc/error.rs",
+     "incomplete parse: tokio/src/time/driver/handle.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/util/error.rs",
+     "incomplete parse: tokio/tests/join_handle_panic.rs",
+     "incomplete parse: tokio/tests/macros_select.rs",
+     "incomplete parse: tokio/tests/process_arg0.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_raw_handle.rs",
+     "incomplete parse: tokio/tests/rt_handle_block_on.rs",
+     "incomplete parse: tokio/tests/sync_errors.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "049f2e6414007b4d87f232bcd12dda89a87546d775c237dfda437cc437a96feb",
+   "routed": "6af86dc28746fedf95199cdb7aa21abb3bfd07758d29afcfcbb225d61f02678e",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-5200",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@a66802015043",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 377,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.2,
+    "entry_mrr": 0.055556,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.2,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 110,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     80,
+     131
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 43,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     200,
+     251
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     250,
+     301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     350,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/time/clock.rs",
+    "lines": [
+     1,
+     244
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 207,
+    "module_lines": 207,
+    "entry_rank": 18,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/mod.rs",
+    "lines": [
+     1,
+     110
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 110,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tokio-stream/tests/time_throttle.rs",
+     "incomplete parse: tokio-test/src/io.rs",
+     "incomplete parse: tokio-test/tests/io.rs",
+     "incomplete parse: tokio-util/tests/time_delay_queue.rs",
+     "incomplete parse: tokio/src/runtime/scheduler/current_thread.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_current_thread_scheduler.rs",
+     "incomplete parse: tokio/src/runtime/time/tests/mod.rs",
+     "incomplete parse: tokio/src/time/clock.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/time/instant.rs",
+     "incomplete parse: tokio/src/time/sleep.rs",
+     "incomplete parse: tokio/tests/io_take.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_issue_42.rs",
+     "incomplete parse: tokio/tests/time_interval.rs",
+     "incomplete parse: tokio/tests/time_panic.rs",
+     "incomplete parse: tokio/tests/time_pause.rs",
+     "incomplete parse: tokio/tests/time_rt.rs",
+     "incomplete parse: tokio/tests/time_sleep.rs",
+     "incomplete parse: tokio/tests/time_timeout.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tokio-stream/tests/time_throttle.rs",
+     "incomplete parse: tokio-test/src/io.rs",
+     "incomplete parse: tokio-test/tests/io.rs",
+     "incomplete parse: tokio-util/tests/time_delay_queue.rs",
+     "incomplete parse: tokio/src/runtime/scheduler/current_thread.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_current_thread_scheduler.rs",
+     "incomplete parse: tokio/src/runtime/time/tests/mod.rs",
+     "incomplete parse: tokio/src/time/clock.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/time/instant.rs",
+     "incomplete parse: tokio/src/time/sleep.rs",
+     "incomplete parse: tokio/tests/io_take.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_issue_42.rs",
+     "incomplete parse: tokio/tests/time_interval.rs",
+     "incomplete parse: tokio/tests/time_panic.rs",
+     "incomplete parse: tokio/tests/time_pause.rs",
+     "incomplete parse: tokio/tests/time_rt.rs",
+     "incomplete parse: tokio/tests/time_sleep.rs",
+     "incomplete parse: tokio/tests/time_timeout.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: tokio-stream/tests/time_throttle.rs",
+     "incomplete parse: tokio-test/src/io.rs",
+     "incomplete parse: tokio-test/tests/io.rs",
+     "incomplete parse: tokio-util/tests/time_delay_queue.rs",
+     "incomplete parse: tokio/src/runtime/scheduler/current_thread.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_current_thread_scheduler.rs",
+     "incomplete parse: tokio/src/runtime/time/tests/mod.rs",
+     "incomplete parse: tokio/src/time/clock.rs",
+     "incomplete parse: tokio/src/time/error.rs",
+     "incomplete parse: tokio/src/time/instant.rs",
+     "incomplete parse: tokio/src/time/sleep.rs",
+     "incomplete parse: tokio/tests/io_take.rs",
+     "incomplete parse: tokio/tests/process_issue_2174.rs",
+     "incomplete parse: tokio/tests/process_issue_42.rs",
+     "incomplete parse: tokio/tests/time_interval.rs",
+     "incomplete parse: tokio/tests/time_panic.rs",
+     "incomplete parse: tokio/tests/time_pause.rs",
+     "incomplete parse: tokio/tests/time_rt.rs",
+     "incomplete parse: tokio/tests/time_sleep.rs",
+     "incomplete parse: tokio/tests/time_timeout.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "bf9072bd8dd4bb72ada7bec54a32c30b60622979e4957a9be0b8360746341745",
+   "routed": "8510d41c6b672d5776d3a3202e914cb855d90d5b19b26679ec1f619249f883fe",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-6742",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@338e13b04baa",
+  "verified": {
+   "counts": {
+    "spans": 14,
+    "lines": 1527,
+    "files": 10
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.071429,
+    "entry_recall@20": 0.071429,
+    "entry_mrr": 0.333333,
+    "entry_file_recall": 0.1,
+    "routed_coverage": 0.071429,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 44,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     1,
+     488
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 119,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     690,
+     751
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 59,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     1260,
+     1301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 35,
+    "module_lines": 35,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/config.rs",
+    "lines": [
+     1,
+     44
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 44,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/handle.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 95,
+    "module_lines": 26,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 101,
+    "module_lines": 101,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/runtime.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 96,
+    "module_lines": 92,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+    "lines": [
+     1,
+     75
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 59,
+    "module_lines": 22,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 80,
+    "module_lines": 37,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 84,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+    "lines": [
+     148,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 41,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/list.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 86,
+    "module_lines": 48,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/list.rs",
+    "lines": [
+     90,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 58,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 101,
+    "module_lines": 101,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/task/spawn.rs",
+    "lines": [
+     1,
+     208
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 202,
+    "module_lines": 202,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/spawn.rs",
+     "incomplete parse: tokio-util/src/task/spawn_pinned.rs",
+     "incomplete parse: tokio-util/tests/spawn_pinned.rs",
+     "incomplete parse: tokio/src/fs/set_permissions.rs",
+     "incomplete parse: tokio/src/future/maybe_done.rs",
+     "incomplete parse: tokio/src/io/util/vec_with_initialized.rs",
+     "incomplete parse: tokio/src/runtime/id.rs",
+     "incomplete parse: tokio/src/runtime/io/registration_set.rs",
+     "incomplete parse: tokio/src/runtime/task/id.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_join_set.rs",
+     "incomplete parse: tokio/src/runtime/thread_id.rs",
+     "incomplete parse: tokio/src/task/join_set.rs",
+     "incomplete parse: tokio/src/task/spawn.rs",
+     "incomplete parse: tokio/src/util/idle_notified_set.rs",
+     "incomplete parse: tokio/src/util/rand/rt_unstable.rs",
+     "incomplete parse: tokio/tests/process_change_of_runtime.rs",
+     "incomplete parse: tokio/tests/rt_unstable_metrics.rs",
+     "incomplete parse: tokio/tests/task_id.rs",
+     "incomplete parse: tokio/tests/task_join_set.rs",
+     "incomplete parse: tokio/tests/task_local_set.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/spawn.rs",
+     "incomplete parse: tokio-util/src/task/spawn_pinned.rs",
+     "incomplete parse: tokio-util/tests/spawn_pinned.rs",
+     "incomplete parse: tokio/src/fs/set_permissions.rs",
+     "incomplete parse: tokio/src/future/maybe_done.rs",
+     "incomplete parse: tokio/src/io/util/vec_with_initialized.rs",
+     "incomplete parse: tokio/src/runtime/id.rs",
+     "incomplete parse: tokio/src/runtime/io/registration_set.rs",
+     "incomplete parse: tokio/src/runtime/task/id.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_join_set.rs",
+     "incomplete parse: tokio/src/runtime/thread_id.rs",
+     "incomplete parse: tokio/src/task/join_set.rs",
+     "incomplete parse: tokio/src/task/spawn.rs",
+     "incomplete parse: tokio/src/util/idle_notified_set.rs",
+     "incomplete parse: tokio/src/util/rand/rt_unstable.rs",
+     "incomplete parse: tokio/tests/process_change_of_runtime.rs",
+     "incomplete parse: tokio/tests/rt_unstable_metrics.rs",
+     "incomplete parse: tokio/tests/task_id.rs",
+     "incomplete parse: tokio/tests/task_join_set.rs",
+     "incomplete parse: tokio/tests/task_local_set.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: benches/spawn.rs",
+     "incomplete parse: tokio-util/src/task/spawn_pinned.rs",
+     "incomplete parse: tokio-util/tests/spawn_pinned.rs",
+     "incomplete parse: tokio/src/fs/set_permissions.rs",
+     "incomplete parse: tokio/src/future/maybe_done.rs",
+     "incomplete parse: tokio/src/io/util/vec_with_initialized.rs",
+     "incomplete parse: tokio/src/runtime/id.rs",
+     "incomplete parse: tokio/src/runtime/io/registration_set.rs",
+     "incomplete parse: tokio/src/runtime/task/id.rs",
+     "incomplete parse: tokio/src/runtime/tests/loom_join_set.rs",
+     "incomplete parse: tokio/src/runtime/thread_id.rs",
+     "incomplete parse: tokio/src/task/join_set.rs",
+     "incomplete parse: tokio/src/task/spawn.rs",
+     "incomplete parse: tokio/src/util/idle_notified_set.rs",
+     "incomplete parse: tokio/src/util/rand/rt_unstable.rs",
+     "incomplete parse: tokio/tests/process_change_of_runtime.rs",
+     "incomplete parse: tokio/tests/rt_unstable_metrics.rs",
+     "incomplete parse: tokio/tests/task_id.rs",
+     "incomplete parse: tokio/tests/task_join_set.rs",
+     "incomplete parse: tokio/tests/task_local_set.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "0698ebc5f5f12cfdf8b321010a7eb5ef2eb9131324fdede62125cdf0f3b26b65",
+   "routed": "97460b7d551181bd7ab4ec30578d7c50238c48eeeeecefb2181ad0f426028063",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1017",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@cb1dd95b8a67",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 151,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.055556,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 449,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/reproduce/src/main.rs",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-core/src/dispatcher.rs",
+    "lines": [
+     1,
+     445
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 445,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing/src/dispatcher.rs",
+    "lines": [
+     1,
+     153
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 151,
+    "module_lines": 151,
+    "entry_rank": 18,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "unsupported: no view of a container",
+     "1024": "unsupported: no view of a container",
+     "4096": "unsupported: no view of a container"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/thread-info.rs",
+     "incomplete parse: tracing-core/src/callsite.rs",
+     "incomplete parse: tracing-core/src/dispatcher.rs",
+     "incomplete parse: tracing-core/src/lazy_static/core_lazy.rs",
+     "incomplete parse: tracing-core/src/lazy_static/mod.rs",
+     "incomplete parse: tracing-core/src/spin/mutex.rs",
+     "incomplete parse: tracing-core/tests/dispatch.rs",
+     "incomplete parse: tracing-core/tests/global_dispatch.rs",
+     "incomplete parse: tracing-futures/tests/std_future.rs",
+     "incomplete parse: tracing-log/tests/reexport_log_crate.rs",
+     "incomplete parse: tracing-subscriber/src/thread.rs",
+     "incomplete parse: tracing-subscriber/tests/registry_with_subscriber.rs",
+     "incomplete parse: tracing-tower/src/http.rs",
+     "incomplete parse: tracing/src/dispatcher.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_activity_filtered_separately.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_can_be_enabled.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_defaults_off.rs",
+     "incomplete parse: tracing/test_static_max_level_features/Cargo.toml",
+     "incomplete parse: tracing/test_static_max_level_features/tests/test.rs",
+     "incomplete parse: tracing/tests/filter_caching_is_lexically_scoped.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/thread-info.rs",
+     "incomplete parse: tracing-core/src/callsite.rs",
+     "incomplete parse: tracing-core/src/dispatcher.rs",
+     "incomplete parse: tracing-core/src/lazy_static/core_lazy.rs",
+     "incomplete parse: tracing-core/src/lazy_static/mod.rs",
+     "incomplete parse: tracing-core/src/spin/mutex.rs",
+     "incomplete parse: tracing-core/tests/dispatch.rs",
+     "incomplete parse: tracing-core/tests/global_dispatch.rs",
+     "incomplete parse: tracing-futures/tests/std_future.rs",
+     "incomplete parse: tracing-log/tests/reexport_log_crate.rs",
+     "incomplete parse: tracing-subscriber/src/thread.rs",
+     "incomplete parse: tracing-subscriber/tests/registry_with_subscriber.rs",
+     "incomplete parse: tracing-tower/src/http.rs",
+     "incomplete parse: tracing/src/dispatcher.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_activity_filtered_separately.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_can_be_enabled.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_defaults_off.rs",
+     "incomplete parse: tracing/test_static_max_level_features/Cargo.toml",
+     "incomplete parse: tracing/test_static_max_level_features/tests/test.rs",
+     "incomplete parse: tracing/tests/filter_caching_is_lexically_scoped.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/thread-info.rs",
+     "incomplete parse: tracing-core/src/callsite.rs",
+     "incomplete parse: tracing-core/src/dispatcher.rs",
+     "incomplete parse: tracing-core/src/lazy_static/core_lazy.rs",
+     "incomplete parse: tracing-core/src/lazy_static/mod.rs",
+     "incomplete parse: tracing-core/src/spin/mutex.rs",
+     "incomplete parse: tracing-core/tests/dispatch.rs",
+     "incomplete parse: tracing-core/tests/global_dispatch.rs",
+     "incomplete parse: tracing-futures/tests/std_future.rs",
+     "incomplete parse: tracing-log/tests/reexport_log_crate.rs",
+     "incomplete parse: tracing-subscriber/src/thread.rs",
+     "incomplete parse: tracing-subscriber/tests/registry_with_subscriber.rs",
+     "incomplete parse: tracing-tower/src/http.rs",
+     "incomplete parse: tracing/src/dispatcher.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_activity_filtered_separately.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_can_be_enabled.rs",
+     "incomplete parse: tracing/test-log-support/tests/span_lifecycle_defaults_off.rs",
+     "incomplete parse: tracing/test_static_max_level_features/Cargo.toml",
+     "incomplete parse: tracing/test_static_max_level_features/tests/test.rs",
+     "incomplete parse: tracing/tests/filter_caching_is_lexically_scoped.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b81a4fc3ed18be938d806338a927c7f6b0171b9371eb930ef74b80dbeec429a5",
+   "routed": "4ec32b2e1f77773445c7172247ec91e59bac8e9f4e8576a180e00b0b4f641bdb",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1233",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@881091a1dd5d",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 288,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.166667,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.666667,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 564,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/reproduce_bug/src/main.rs",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+    "lines": [
+     1,
+     476
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 476,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     465,
+     486
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     465,
+     496
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 31,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     50,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 1,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     69,
+     152
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 84,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     100,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 47,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     150,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 42,
+    "module_lines": 1,
+    "entry_rank": 15,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/err.rs",
+    "lines": [
+     1,
+     140
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 127,
+    "module_lines": 20,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: examples/examples/map-traced-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: examples/examples/map-traced-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: examples/examples/map-traced-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3e51b4877572bd452bd4699658e2d6322c7af21a93aaa9e2e9bf059abbf66e9a",
+   "routed": "7edc489e82347f5bf58b16b9f573d5f382f991e6d57888c831c6d0b7538f3921",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1236",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@4609f22aff1a",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 14,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.0,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     653,
+     666
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 20,
+   "candidates": 20,
+   "deferred": 0,
+   "fanout_truncations": 0,
+   "stopped_by": null
+  },
+  "bundles": {
+   "256": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/attrs-literal-field-names.rs",
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   },
+   "1024": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/attrs-literal-field-names.rs",
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   },
+   "4096": {
+    "used": 0,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 0,
+    "header_entities": 0,
+    "omissions": {
+     "selection: container": 20
+    },
+    "degradations": [
+     "incomplete parse: examples/examples/attrs-literal-field-names.rs",
+     "incomplete parse: examples/examples/custom-error.rs",
+     "incomplete parse: examples/examples/instrumented-error.rs",
+     "incomplete parse: tracing-attributes/Cargo.toml",
+     "incomplete parse: tracing-attributes/tests/async_fn.rs",
+     "incomplete parse: tracing-attributes/tests/destructuring.rs",
+     "incomplete parse: tracing-attributes/tests/err.rs",
+     "incomplete parse: tracing-attributes/tests/fields.rs",
+     "incomplete parse: tracing-attributes/tests/instrument.rs",
+     "incomplete parse: tracing-attributes/tests/levels.rs",
+     "incomplete parse: tracing-attributes/tests/names.rs",
+     "incomplete parse: tracing-attributes/tests/support.rs",
+     "incomplete parse: tracing-attributes/tests/targets.rs",
+     "incomplete parse: tracing-error/Cargo.toml",
+     "incomplete parse: tracing-error/src/backtrace.rs",
+     "incomplete parse: tracing-error/src/error.rs",
+     "incomplete parse: tracing-error/src/layer.rs",
+     "incomplete parse: tracing-error/src/lib.rs",
+     "incomplete parse: tracing-flame/src/error.rs",
+     "incomplete parse: tracing/src/instrument.rs"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:0b15e6052dc84111a848d7bc5d0262e84a55490899426bc3bb4a9536e83b8bb2",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b022853563106ebb4225cb1a6571a5bbc4fec56eb11976611e46cc36a76721d9",
+   "routed": "6fc68ef85d3c1e1bc1963b1296802d9ac1fc6f7c7d49319541ad70b6e5ee6a00",
+   "payload@256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@1024": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "payload@4096": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ }
+]

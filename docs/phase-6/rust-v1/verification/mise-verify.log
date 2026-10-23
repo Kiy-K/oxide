@@ -1,0 +1,46 @@
+[verify] $ # Sequential on purpose: stop at the first failure.
+[lint] $ uv run --locked ruff check src tests/python
+All checks passed!
+[lint] $ uv run --locked ruff format --check src tests/python
+54 files already formatted
+[typecheck] $ uv run --locked mypy
+Success: no issues found in 54 source files
+[test] $ uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/khoi/Projects/oxide
+configfile: pyproject.toml
+testpaths: tests/python
+plugins: platformdirs-4.13.3, anyio-4.15.1
+collected 301 items
+
+tests/python/test_baseline.py ........                                   [  2%]
+tests/python/test_capture.py .......                                     [  4%]
+tests/python/test_cli.py ......                                          [  6%]
+tests/python/test_context.py ...................                         [ 13%]
+tests/python/test_contextbench.py ....................                   [ 19%]
+tests/python/test_contextbench_ts.py ..........sssssss                   [ 25%]
+tests/python/test_go.py ...............                                  [ 30%]
+tests/python/test_graph.py .....                                         [ 32%]
+tests/python/test_incremental.py .............                           [ 36%]
+tests/python/test_indexing.py ........                                   [ 39%]
+tests/python/test_javascript.py ........................................ [ 52%]
+.....                                                                    [ 54%]
+tests/python/test_lifecycle.py ....                                      [ 55%]
+tests/python/test_mcp.py .............                                   [ 59%]
+tests/python/test_native.py .......                                      [ 62%]
+tests/python/test_persistence.py ........                                [ 64%]
+tests/python/test_recovery.py .......................                    [ 72%]
+tests/python/test_retrieval.py .....................                     [ 79%]
+tests/python/test_rust.py .............................                  [ 89%]
+tests/python/test_structural.py .............                            [ 93%]
+tests/python/test_typescript.py ....................                     [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/python/test_contextbench_ts.py:196: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:205: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:215: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:225: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [2] tests/python/test_contextbench_ts.py:236: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:250: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+================== 294 passed, 7 skipped in 223.33s (0:03:43) ==================

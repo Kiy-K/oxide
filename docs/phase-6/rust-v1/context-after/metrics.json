@@ -1,0 +1,203 @@
+{
+ "dev": {},
+ "heldout": {
+  "verified": {
+   "tasks": 22,
+   "spans": 125,
+   "lines": 14229,
+   "files": 62,
+   "entry_recall@1": 0.048864,
+   "entry_recall@5": 0.199729,
+   "entry_recall@20": 0.323178,
+   "entry_mrr": 0.296073,
+   "entry_file_recall": 0.57803,
+   "routed_coverage": 0.626804,
+   "span_recall@256": 0.005682,
+   "line_recall@256": 0.00245,
+   "file_recall@256": 0.277273,
+   "utilization@256": 0.963778,
+   "gold_unit_share@256": 0.129471,
+   "span_recall@1024": 0.005682,
+   "line_recall@1024": 0.008174,
+   "file_recall@1024": 0.466667,
+   "utilization@1024": 0.988858,
+   "gold_unit_share@1024": 0.103449,
+   "span_recall@4096": 0.104167,
+   "line_recall@4096": 0.096705,
+   "file_recall@4096": 0.598485,
+   "utilization@4096": 0.912331,
+   "gold_unit_share@4096": 0.186016,
+   "classes": {
+    "exact": 11,
+    "path": 114
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 22,
+     "complete": 1,
+     "entry": 56,
+     "routing": 37,
+     "selection": 9
+    },
+    "1024": {
+     "budget": 22,
+     "complete": 1,
+     "entry": 56,
+     "routing": 37,
+     "selection": 9
+    },
+    "4096": {
+     "budget": 10,
+     "complete": 8,
+     "entry": 56,
+     "routing": 37,
+     "selection": 14
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 13,
+   "lines": 2055,
+   "files": 13,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.1,
+   "entry_mrr": 0.025,
+   "entry_file_recall": 0.1,
+   "routed_coverage": 0.1,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.000505,
+   "file_recall@256": 0.1,
+   "utilization@256": 0.959375,
+   "gold_unit_share@256": 0.01405,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.000505,
+   "file_recall@1024": 0.1,
+   "utilization@1024": 0.987891,
+   "gold_unit_share@1024": 0.003356,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.09798,
+   "file_recall@4096": 0.1,
+   "utilization@4096": 0.968848,
+   "gold_unit_share@4096": 0.067418,
+   "classes": {
+    "unresolved": 13
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 12,
+     "selection": 1
+    },
+    "1024": {
+     "entry": 12,
+     "selection": 1
+    },
+    "4096": {
+     "entry": 12,
+     "selection": 1
+    }
+   }
+  }
+ },
+ "all": {
+  "verified": {
+   "tasks": 22,
+   "spans": 125,
+   "lines": 14229,
+   "files": 62,
+   "entry_recall@1": 0.048864,
+   "entry_recall@5": 0.199729,
+   "entry_recall@20": 0.323178,
+   "entry_mrr": 0.296073,
+   "entry_file_recall": 0.57803,
+   "routed_coverage": 0.626804,
+   "span_recall@256": 0.005682,
+   "line_recall@256": 0.00245,
+   "file_recall@256": 0.277273,
+   "utilization@256": 0.963778,
+   "gold_unit_share@256": 0.129471,
+   "span_recall@1024": 0.005682,
+   "line_recall@1024": 0.008174,
+   "file_recall@1024": 0.466667,
+   "utilization@1024": 0.988858,
+   "gold_unit_share@1024": 0.103449,
+   "span_recall@4096": 0.104167,
+   "line_recall@4096": 0.096705,
+   "file_recall@4096": 0.598485,
+   "utilization@4096": 0.912331,
+   "gold_unit_share@4096": 0.186016,
+   "classes": {
+    "exact": 11,
+    "path": 114
+   },
+   "spans_by_stage": {
+    "256": {
+     "budget": 22,
+     "complete": 1,
+     "entry": 56,
+     "routing": 37,
+     "selection": 9
+    },
+    "1024": {
+     "budget": 22,
+     "complete": 1,
+     "entry": 56,
+     "routing": 37,
+     "selection": 9
+    },
+    "4096": {
+     "budget": 10,
+     "complete": 8,
+     "entry": 56,
+     "routing": 37,
+     "selection": 14
+    }
+   }
+  },
+  "unverified": {
+   "tasks": 10,
+   "spans": 13,
+   "lines": 2055,
+   "files": 13,
+   "entry_recall@1": 0.0,
+   "entry_recall@5": 0.1,
+   "entry_recall@20": 0.1,
+   "entry_mrr": 0.025,
+   "entry_file_recall": 0.1,
+   "routed_coverage": 0.1,
+   "span_recall@256": 0.0,
+   "line_recall@256": 0.000505,
+   "file_recall@256": 0.1,
+   "utilization@256": 0.959375,
+   "gold_unit_share@256": 0.01405,
+   "span_recall@1024": 0.0,
+   "line_recall@1024": 0.000505,
+   "file_recall@1024": 0.1,
+   "utilization@1024": 0.987891,
+   "gold_unit_share@1024": 0.003356,
+   "span_recall@4096": 0.0,
+   "line_recall@4096": 0.09798,
+   "file_recall@4096": 0.1,
+   "utilization@4096": 0.968848,
+   "gold_unit_share@4096": 0.067418,
+   "classes": {
+    "unresolved": 13
+   },
+   "spans_by_stage": {
+    "256": {
+     "entry": 12,
+     "selection": 1
+    },
+    "1024": {
+     "entry": 12,
+     "selection": 1
+    },
+    "4096": {
+     "entry": 12,
+     "selection": 1
+    }
+   }
+  }
+ }
+}

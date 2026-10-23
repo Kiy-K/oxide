@@ -1,0 +1,214 @@
+{
+ "source_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "rows_sha256": "92f4a2cdab49cb6c53f5fe9021c35edfa3c212c00b1fe14d6f36e61c19551011",
+ "selection": [
+  "BurntSushi__ripgrep-1367",
+  "BurntSushi__ripgrep-2488",
+  "clap-rs__clap-1869",
+  "clap-rs__clap-1975",
+  "clap-rs__clap-2008",
+  "nushell__nushell-10405",
+  "nushell__nushell-10629",
+  "nushell__nushell-11292",
+  "rayon-rs__rayon-986",
+  "sharkdp__bat-2896",
+  "sharkdp__fd-1162",
+  "sharkdp__fd-1394",
+  "sharkdp__fd-555",
+  "tokio-rs__bytes-543",
+  "tokio-rs__bytes-721",
+  "tokio-rs__bytes-732",
+  "tokio-rs__tokio-4519",
+  "tokio-rs__tokio-5200",
+  "tokio-rs__tokio-6742",
+  "tokio-rs__tracing-1017",
+  "tokio-rs__tracing-1233",
+  "tokio-rs__tracing-1236"
+ ],
+ "corpora": {
+  "BurntSushi__ripgrep@4858267f3b97": {
+   "snapshot": "sha256:0d97170ba2a646abcc99c7f78e6f2bef5f2c2ca161083be35048d948ecc3490b",
+   "commit": "4858267f3b97fe2823d2ce104c1f90ec93eee8d7",
+   "files": 93,
+   "entities": 2540,
+   "relations": 16123,
+   "partial": []
+  },
+  "BurntSushi__ripgrep@041544853c86": {
+   "snapshot": "sha256:5631398ab115d76df0030d09f76fba36a319c076b51a4aa63e32ae0c75e739bd",
+   "commit": "041544853c86dde91c49983e5ddd0aa799bd2831",
+   "files": 95,
+   "entities": 2655,
+   "relations": 16986,
+   "partial": []
+  },
+  "clap-rs__clap@deb14c853740": {
+   "snapshot": "sha256:8f6621c2528bb169b9cf86332396d2251a998f34525e69bb3a27ef26980493e8",
+   "commit": "deb14c853740ebc82feb12a9af61c30726627622",
+   "files": 204,
+   "entities": 2480,
+   "relations": 16647,
+   "partial": []
+  },
+  "clap-rs__clap@81457178fa7e": {
+   "snapshot": "sha256:1934de13b312655776b953c4249bcde6a6c5173c873cdfb55de4fcb41e385486",
+   "commit": "81457178fa7e055775867ca659b37798b5ae9584",
+   "files": 215,
+   "entities": 2577,
+   "relations": 17293,
+   "partial": []
+  },
+  "clap-rs__clap@1dd3fcb95435": {
+   "snapshot": "sha256:e92fb3cf9b3c1bee48fb6ac15357b82e4ad4e49ce9a5c7d7e152e7731be331b9",
+   "commit": "1dd3fcb954355198193a793d2983db383829ec2f",
+   "files": 218,
+   "entities": 2648,
+   "relations": 17793,
+   "partial": []
+  },
+  "nushell__nushell@bc7736bc9965": {
+   "snapshot": "sha256:da21a3734fca8f61921fb1d8260f0f127fce0bdaf95b617ef41449dcc23fdbe5",
+   "commit": "bc7736bc9965d2df2e406f0e4fe9f4fe0d8c29f7",
+   "files": 1140,
+   "entities": 14554,
+   "relations": 110228,
+   "partial": []
+  },
+  "nushell__nushell@399319476aa4": {
+   "snapshot": "sha256:d009554b850c4945b4035c38c7c6c48f6e839e77965a08547d13a9a8090dc70b",
+   "commit": "399319476aa4decd7cced93488180d96e56bad64",
+   "files": 1152,
+   "entities": 14715,
+   "relations": 111443,
+   "partial": []
+  },
+  "nushell__nushell@ecb3b3a364b3": {
+   "snapshot": "sha256:b8ec26152880f208a91fcf0a3cc8c819712433af9dfd2a89638a57e48ec82d8f",
+   "commit": "ecb3b3a364b3332ac9df51dbecd780f1f73e21e8",
+   "files": 1179,
+   "entities": 15223,
+   "relations": 115625,
+   "partial": []
+  },
+  "rayon-rs__rayon@2de810e97d5c": {
+   "snapshot": "sha256:b8f866224b2d0b2905684b43ecb6bf15ff148e674bb69edcc60150211f2f3601",
+   "commit": "2de810e97d5ce832ff98023a4a9cf215a86244ea",
+   "files": 183,
+   "entities": 3659,
+   "relations": 18525,
+   "partial": []
+  },
+  "sharkdp__bat@d00e05643ff6": {
+   "snapshot": "sha256:881f292e05813e925d3d3d326bd166d192b055c5a7167865b83d8aeede8aa3e1",
+   "commit": "d00e05643ff6ef00de1aa8da90c869db993c93e2",
+   "files": 68,
+   "entities": 957,
+   "relations": 5860,
+   "partial": [
+    "tests/syntax-tests/highlighted/Rust/output.rs"
+   ]
+  },
+  "sharkdp__fd@cbd11d8a45dc": {
+   "snapshot": "sha256:b24ca3b74af472203f27a18dc0c23f2c39449622428809ff0243d5c91d4a060e",
+   "commit": "cbd11d8a45dc80392c5f1be9679051085e6a3376",
+   "files": 24,
+   "entities": 386,
+   "relations": 2468,
+   "partial": []
+  },
+  "sharkdp__fd@93cdb2628e89": {
+   "snapshot": "sha256:9fd26aa9cb5817413d841aff7a56448fedc45c0908be72b73c20f59c151d5f0d",
+   "commit": "93cdb2628e89dd5831eee22b8df697aea00eca3b",
+   "files": 24,
+   "entities": 401,
+   "relations": 2526,
+   "partial": []
+  },
+  "sharkdp__fd@ee673c92d375": {
+   "snapshot": "sha256:13e4475866862b16f126c8f458cd07b88142b5f8e7140e6a12ebc67b7d6ca430",
+   "commit": "ee673c92d375d9e5a6c126480a0383bbe3042b96",
+   "files": 21,
+   "entities": 238,
+   "relations": 1512,
+   "partial": []
+  },
+  "tokio-rs__bytes@f514bd38dac8": {
+   "snapshot": "sha256:1c17c4fa841d084f93561ddefda799f3d33bc7a98800a8f8e4932f6dfe62abbd",
+   "commit": "f514bd38dac85695e9053d990b251643e9e4ef92",
+   "files": 34,
+   "entities": 788,
+   "relations": 3317,
+   "partial": []
+  },
+  "tokio-rs__bytes@9965a04b5684": {
+   "snapshot": "sha256:e64759df036bcf95471cc49aae264ebc7b2926cec99743bc9ad466371f851457",
+   "commit": "9965a04b5684079bb614addd750340ffc165a9f5",
+   "files": 34,
+   "entities": 900,
+   "relations": 4049,
+   "partial": []
+  },
+  "tokio-rs__bytes@291df5acc94b": {
+   "snapshot": "sha256:dc4636d43dbce6212efd29e426563895644bc0a67a44f737a82d071a8e4bd93d",
+   "commit": "291df5acc94b82a48765e67eeb1c1a2074539e68",
+   "files": 34,
+   "entities": 903,
+   "relations": 4068,
+   "partial": []
+  },
+  "tokio-rs__tokio@43c224ff47e4": {
+   "snapshot": "sha256:b3939a7f4491a91024e3e9f2931902bece262ba14bcd72e2e86b358bcaca29f0",
+   "commit": "43c224ff47e41628ca787d116080d69bd7030c3f",
+   "files": 575,
+   "entities": 8261,
+   "relations": 50971,
+   "partial": []
+  },
+  "tokio-rs__tokio@a66802015043": {
+   "snapshot": "sha256:3ecca645b7f9b7205831ef445b87a16e9d5465933a3b6d37aafb2acf0475c11c",
+   "commit": "a66802015043a2bd94b15d17c4131bc3431c8e14",
+   "files": 603,
+   "entities": 8916,
+   "relations": 55028,
+   "partial": []
+  },
+  "tokio-rs__tokio@338e13b04baa": {
+   "snapshot": "sha256:2b6fc4842f7cadbe7ff57867579ecef73945958988c817e4ccc7ec1d86c8046e",
+   "commit": "338e13b04baa3cf8db3feb1ba2266c0070a9efdf",
+   "files": 726,
+   "entities": 11032,
+   "relations": 68278,
+   "partial": []
+  },
+  "tokio-rs__tracing@cb1dd95b8a67": {
+   "snapshot": "sha256:7d2d894397a2943bb0ec34acc27183c7996e7362418a4368a5465ce059f452c7",
+   "commit": "cb1dd95b8a67c3c69450882e8f8818546330a8ff",
+   "files": 193,
+   "entities": 3522,
+   "relations": 19536,
+   "partial": []
+  },
+  "tokio-rs__tracing@881091a1dd5d": {
+   "snapshot": "sha256:60bf778df297dce14bcf86eeec2f0046ab5405fbb58be89bf0af477331b840f3",
+   "commit": "881091a1dd5d3126faeabbca9e3779f1d16c3cce",
+   "files": 200,
+   "entities": 3606,
+   "relations": 20278,
+   "partial": []
+  },
+  "tokio-rs__tracing@4609f22aff1a": {
+   "snapshot": "sha256:77574c43b9084f0d1234ec959c8db576f61d2426a42cd347c4e70032aa97ded0",
+   "commit": "4609f22aff1ad88b81e749e2536761d6ee364d1f",
+   "files": 201,
+   "entities": 3614,
+   "relations": 20345,
+   "partial": []
+  }
+ },
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "scorer": "contextbench-py-scorer with Rust module projection v1"
+}

@@ -1,0 +1,44 @@
+b128a906bdfbefab2de359fd61483c8e04c1aa73
+ D .agents/skills/jev-model-router/.claude-plugin/plugin.json
+ D .agents/skills/jev-model-router/README.md
+ D .agents/skills/jev-model-router/hooks/hooks.json
+ D .agents/skills/jev-model-router/hooks/jev-model-router.ts
+ D .agents/skills/jev-model-router/hooks/policy.ts
+ D .agents/skills/jev-model-router/tests/policy.test.ts
+ M .claude/settings.json
+ M .codex/config.toml
+ M README.md
+ M docs/agents/workflow.md
+ M docs/phase-6/go-v1/README.md
+ M docs/phase-6/go-v1/verification/README.md
+ M docs/platforms.md
+ M docs/public-api.md
+ D logo.png
+ M mise.toml
+ M pyproject.toml
+ M scripts/smoke_dist.py
+ M skills-lock.json
+ M src/oxide/core/indexing.py
+ M tests/python/contextbench.py
+ M tests/python/contextbench_ts.py
+ M uv.lock
+?? .agents/skills/security-audit/
+?? .claude/CLAUDE.md
+?? .claude/skills/security-audit
+?? .mcp.json
+?? docs/oxide-architecture.html
+?? docs/phase-6/baseline-v11/
+?? docs/phase-6/go-v1/oracle/
+?? docs/phase-6/rust-v1/
+?? docs/phase-6/typescript-v8/
+?? docs/rust.md
+?? fixtures/rust_repo/
+?? opencode.jsonc
+?? scripts/eval_rust.py
+?? src/oxide/core/languages/rust.py
+?? src/oxide/core/languages/rust_cargo.py
+?? src/oxide/core/languages/rust_facts.py
+?? src/oxide/core/languages/rust_macros.py
+?? src/oxide/core/languages/rust_resolve.py
+?? tests/python/test_rust.py
+/home/khoi/Projects/oxide/src/oxide/__init__.py

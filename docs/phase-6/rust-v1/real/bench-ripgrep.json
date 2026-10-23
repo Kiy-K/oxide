@@ -1,0 +1,87 @@
+{
+  "corpus": {
+    "path": "/home/khoi/Projects/oxide-eval-data/oxide-rust-eval/real/ripgrep",
+    "snapshot_id": "sha256:0952030b67cb867a9a16ccfe6c7d210dc95c3495a20e49d775fb8c16af8e6cd3",
+    "files": 236,
+    "bytes": 3255965,
+    "skipped": 1
+  },
+  "environment": {
+    "python": "3.13.17",
+    "platform": "Linux-7.2.10-200.fc44.x86_64-x86_64-with-glibc2.43",
+    "cpus_available": 16,
+    "packages": {
+      "oxide": "0.0.0",
+      "ladybug": "0.21.0",
+      "tree-sitter": "0.26.0",
+      "tree-sitter-python": "0.25.0",
+      "pathspec": "1.1.1"
+    },
+    "oxide_commit": "b128a906bdfbefab2de359fd61483c8e04c1aa73",
+    "oxide_dirty": true,
+    "fts": "available"
+  },
+  "method": {
+    "iterations": 3,
+    "warm_repeats": 3,
+    "budget": 1024,
+    "queries": [
+      "SearcherBuilder",
+      "Matcher"
+    ],
+    "units": "seconds, except peak_rss_mib"
+  },
+  "counts": {
+    "status": "built",
+    "unchanged": "unchanged",
+    "entities": 4292,
+    "relations": 24707
+  },
+  "summary": {
+    "import": {
+      "min": 0.20641410400003224,
+      "median": 0.20752829399998518,
+      "max": 0.2085890500000005
+    },
+    "index_cold": {
+      "min": 1.9676591579999467,
+      "median": 2.001773053000079,
+      "max": 2.0126551270000164
+    },
+    "index_unchanged": {
+      "min": 0.03384747400002652,
+      "median": 0.03408283700002812,
+      "max": 0.03442501400002129
+    },
+    "reopen": {
+      "min": 0.016469999000037205,
+      "median": 0.01716418800003794,
+      "max": 0.018119445000024825
+    },
+    "search_cold": {
+      "min": 0.012999437499956912,
+      "median": 0.01316256299998031,
+      "max": 0.014119364499947551
+    },
+    "search_warm": {
+      "min": 0.005668402999958744,
+      "median": 0.00587375200001361,
+      "max": 0.006564368999988801
+    },
+    "context_cold": {
+      "min": 0.09573255899994138,
+      "median": 0.09589104750000388,
+      "max": 0.09930845300004876
+    },
+    "context_warm": {
+      "min": 0.08812192950000508,
+      "median": 0.09305173899997499,
+      "max": 0.09648600199994917
+    },
+    "peak_rss_mib": {
+      "min": 172.93359375,
+      "median": 172.93359375,
+      "max": 173.0078125
+    }
+  }
+}

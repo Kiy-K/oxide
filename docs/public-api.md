@@ -61,10 +61,13 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   deterministic and snapshot-local (ADR-0010): `repo`, `module:python:a.b`,
   `module:typescript:src/a` ([docs/typescript.md](typescript.md)),
   `module:javascript:src/a.js` ([docs/javascript.md](javascript.md)),
-  `module:go:src/store/store` ([docs/go.md](go.md)), `file:<path>`,
+  `module:go:src/store/store` ([docs/go.md](go.md)),
+  `module:rust:crates/a/src/lib.rs::store` ([docs/rust.md](rust.md)), `file:<path>`,
   `symbol:<path>#Outer.inner~1`. Symbol kinds are the slice's: Python `class`,
   `function`, `method`; TypeScript also `interface`, `type`, `enum`, `namespace`,
-  `variable`. `FileInfo.language` is `python`, `typescript`, `javascript`, `go` or `unknown`.
+  `variable`; Rust also `struct`, `enum`, `union`, `trait`, `impl` (named
+  `<impl Trait for Type>`, holding its methods), `constant`, `variable`, `macro`.
+  `FileInfo.language` is `python`, `typescript`, `javascript`, `go`, `rust` or `unknown`.
 - `SourceRef`: `path`, half-open byte `start`/`end`, file `digest`
   (`sha256:` of the captured bytes).
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,

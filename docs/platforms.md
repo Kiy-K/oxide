@@ -181,3 +181,15 @@ tree-sitter 0.26.0 accepts ABI 13–15. Fixture conformance and Linux distributi
 smoke evidence are recorded in [phase-6/go-v1](phase-6/go-v1/README.md). Runtime
 verification on Windows and macOS is pending hosted CI; wheel availability alone
 does not establish runtime verification. Existing platform limitations still apply.
+
+## Rust grammar compatibility
+
+`tree-sitter-rust==0.24.2` ships CPython `cp39-abi3` wheels for Linux x86_64/aarch64
+(manylinux and musllinux), macOS x86_64/arm64 and Windows amd64/arm64. Its grammar ABI is
+15; the locked tree-sitter 0.26.0 accepts ABI 13–15. Cargo layout is read with the standard
+library's `tomllib`, so no Rust toolchain, `cargo` or `rust-analyzer` is needed or run
+(the installed-artifact smoke runs with host toolchains off `PATH`). Fixture
+conformance and Linux distribution smoke evidence are recorded in
+[phase-6/rust-v1](phase-6/rust-v1/README.md). Runtime verification on Windows and macOS is
+pending hosted CI; wheel availability alone does not establish runtime verification.
+Existing platform limitations still apply.

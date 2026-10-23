@@ -47,7 +47,7 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v7"
+BASELINE = cb.PHASE6 / "typescript-v8"
 PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
 TASKS = PROTOCOL / "tasks.json"
 AUDIT = PROTOCOL / "gold-audit.json"
@@ -746,9 +746,10 @@ def manifest(evaluated: dict[str, Any]) -> dict[str, Any]:
     base = cb.manifest(evaluated)
     return {
         **base,
-        "baseline": "contextbench-ts-v7",
+        "baseline": "contextbench-ts-v8",
         "protocol": (
-            "docs/phase-6/typescript-v1/README.md, amended by typescript-v2, v3, v4, v5, v6 and v7"
+            "docs/phase-6/typescript-v1/README.md, "
+            "amended by typescript-v2, v3, v4, v5, v6, v7 and v8"
         ),
         "scorer": SCORER,
         "tasks": f"{TASKS_VERSION} sha256 {cb._sha(TASKS.read_bytes())}",

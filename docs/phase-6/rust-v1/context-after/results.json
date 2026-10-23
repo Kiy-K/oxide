@@ -1,0 +1,5806 @@
+[
+ {
+  "task": "BurntSushi__ripgrep-1367",
+  "split": "heldout",
+  "corpus": "BurntSushi__ripgrep@4858267f3b97",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 33,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.083333,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.933594,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.986328,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.030303,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.998535,
+    "gold_unit_share@4096": 0.006846
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     193,
+     199
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 7,
+    "module_lines": 0,
+    "entry_rank": 20,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     193,
+     222
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 29,
+    "module_lines": 0,
+    "entry_rank": 20,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     214,
+     222
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 8,
+    "module_lines": 0,
+    "entry_rank": 20,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "grep-regex/src/literal.rs",
+    "lines": [
+     328,
+     331
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 4,
+    "module_lines": 1,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 192,
+   "fanout_truncations": 13,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 239,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 38,
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1010,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 35,
+     "selection: container": 3,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4090,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 26,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 23,
+     "selection: container": 3,
+     "selection: value N below floor": 18
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3c3d385f0be02be70bcf8416490bf62f4e46c5fea89ac5079f56a1a8a82d85ed",
+   "routed": "36004783eaa14e9d571dc0082068acb1ff2a972d411e71d7853c79bd18f4c99e",
+   "payload@256": "a618c53244bad18ce3621277c73adc16c4bf8ffd4f4f235118eafa87aeabc9f5",
+   "payload@1024": "0408108a3156a362ce4166ae375705814be71247a1c7423d94ece6f1e7a76022",
+   "payload@4096": "895e8e9624104ea373681999521800b442ed8fce0f6487147fc522a03e2c1545"
+  }
+ },
+ {
+  "task": "BurntSushi__ripgrep-2488",
+  "split": "heldout",
+  "corpus": "BurntSushi__ripgrep@041544853c86",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 1725,
+    "files": 6
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.166667,
+    "routed_coverage": 0.375,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.166667,
+    "utilization@256": 0.894531,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.166667,
+    "utilization@1024": 0.987305,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.166667,
+    "utilization@4096": 0.85498,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 319,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.894531,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.987305,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.85498,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     1,
+     452
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 415,
+    "module_lines": 65,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     666,
+     705
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "crates/core/args.rs",
+    "lines": [
+     716,
+     752
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "crates/core/main.rs",
+    "lines": [
+     1,
+     345
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 316,
+    "module_lines": 54,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/core/search.rs",
+    "lines": [
+     1,
+     474
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/grep/src/lib.rs",
+    "lines": [
+     1,
+     24
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 18,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/BurntSushi__ripgrep__0.1/crates/regex/src/config.rs",
+    "lines": [
+     1,
+     319
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 319,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/regex/src/matcher.rs",
+    "lines": [
+     1,
+     382
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 356,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/regex/src/multi.rs",
+    "lines": [
+     1,
+     126
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 110,
+    "module_lines": 15,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 175,
+   "fanout_truncations": 14,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 229,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 54,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1011,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3502,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 4,
+    "omissions": {
+     "selection: item cap N": 35,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "f184a6fde200c5c3ac0ad17200d29a3752837b9a2f716c899bb8bac96ba61928",
+   "routed": "c0c3facdeec9f149bc72dd67c5bddfbee957f320d9a8019f9d47d2645b6def1a",
+   "payload@256": "fecad2f5fa6fc87b6677b9e200a5079b406d949fd295ad055b3abf7d6356f34e",
+   "payload@1024": "a69a8fda01a0ca71da074d0f3c322704be874c0c33edf4e9516f853ab21e4479",
+   "payload@4096": "4a8c226984f96d03e348b537a882d096d78302cb7de4b230534ed7af410a49c5"
+  }
+ },
+ {
+  "task": "clap-rs__clap-1869",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@deb14c853740",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 395,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.974609,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.986328,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 207,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.974609,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.986328,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/parse/validator.rs",
+    "lines": [
+     1,
+     417
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 395,
+    "module_lines": 10,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/clap-rs__clap__0.1/tests/conflicts.rs",
+    "lines": [
+     1,
+     207
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 207,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 278,
+   "fanout_truncations": 25,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 235,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 51,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 998,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 49,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4040,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 5,
+    "omissions": {
+     "selection: item cap N": 31,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "534e81ce1b13eb3b2cece00b3a33da34ff438fe753592142475d9096f79de66b",
+   "routed": "28b43ec7cdebe92f07e39ec336f84b22e6e6a16023f8532b16e1b814b24de0df",
+   "payload@256": "f44b5c49f346f110959414e915b2cc817260fe088df6d13715fbbeade00cc825",
+   "payload@1024": "3804e5b045badc6c1b1dbe4e8b84c385465b170c6ddb2d10775a7108cf7d2b9f",
+   "payload@4096": "93a03199d8403d0083bb43542339ca841ef577dda8c1d56d7a29f0a1e53b4848"
+  }
+ },
+ {
+  "task": "clap-rs__clap-1975",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@81457178fa7e",
+  "verified": {
+   "counts": {
+    "spans": 8,
+    "lines": 634,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.375,
+    "entry_recall@5": 0.375,
+    "entry_recall@20": 0.375,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.625,
+    "span_recall@256": 0.125,
+    "line_recall@256": 0.020505,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.96875,
+    "gold_unit_share@256": 1.0,
+    "span_recall@1024": 0.125,
+    "line_recall@1024": 0.033123,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.990234,
+    "gold_unit_share@1024": 0.33925,
+    "span_recall@4096": 0.125,
+    "line_recall@4096": 0.078864,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.99707,
+    "gold_unit_share@4096": 0.18046
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     1,
+     484
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 419,
+    "module_lines": 45,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     145,
+     159
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "complete",
+     "1024": "complete",
+     "4096": "complete"
+    },
+    "lost": {}
+   },
+   {
+    "file": "clap_derive/src/attrs.rs",
+    "lines": [
+     145,
+     161
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 13,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 41,
+    "module_lines": 10,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     50,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 43,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     100,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "clap_derive/src/parse.rs",
+    "lines": [
+     150,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/build/arg/mod.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 289,
+   "fanout_truncations": 28,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 248,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 55,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1014,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4084,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 1,
+     "selection: item cap N": 34,
+     "selection: value N below floor": 5
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ea811df6e91ed44a0db3c9460c220b1519cee90a78c6f3cd99577eb25059daef",
+   "routed": "54d621fb4ff33f22e0eeb42ec824d64a59feaaa020746d79136caa9ddfdf9602",
+   "payload@256": "54019904c392b3a2b86c2b4afb1f8cca7df50f38ea1cf23604032fe1531832c2",
+   "payload@1024": "27114ab1428e3f03ded2a3f5064ed2513e2a3fe50d78fa8933b6fc25928b7303",
+   "payload@4096": "1d00f976d199d19b6e88b9b239870861a923553e029fa8c34525568642aa205a"
+  }
+ },
+ {
+  "task": "clap-rs__clap-2008",
+  "split": "heldout",
+  "corpus": "clap-rs__clap@1dd3fcb95435",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 877,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 0.2,
+    "entry_file_recall": 0.5,
+    "routed_coverage": 0.5,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.917969,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.006842,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.972656,
+    "gold_unit_share@1024": 0.160643,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.051311,
+    "file_recall@4096": 0.5,
+    "utilization@4096": 0.882812,
+    "gold_unit_share@4096": 0.256084
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/build/app/mod.rs",
+    "lines": [
+     1,
+     473
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 435,
+    "module_lines": 57,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/output/help.rs",
+    "lines": [
+     1,
+     483
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 442,
+    "module_lines": 44,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 267,
+   "fanout_truncations": 19,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 235,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: value N below floor": 21
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 996,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 30,
+     "selection: value N below floor": 21
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3616,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 28,
+    "header_entities": 5,
+    "omissions": {
+     "selection: item cap N": 19,
+     "selection: value N below floor": 21
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "4c4a4aa6e89cb605cf0e63003a00d6d10a084145efe343e81dada9e273d177d4",
+   "routed": "9595330d1f2dfcd5dda34f7ca0711cbb38fccc614580a64aafd0104ed60c6053",
+   "payload@256": "773f196057655593175d18484b587d25df7e11808734416001c6bf8583650237",
+   "payload@1024": "02bbad9fafa391cc52065a09ea7ef5d5fac421ab2f3b242c959d7847f4e2c8ee",
+   "payload@4096": "6e8164ee096d7dbc209772286b204450be47ef692e84359b8d49e299df2ac982"
+  }
+ },
+ {
+  "task": "nushell__nushell-10405",
+  "split": "heldout",
+  "corpus": "nushell__nushell@bc7736bc9965",
+  "verified": {
+   "counts": {
+    "spans": 18,
+    "lines": 913,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.890625,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.946777,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "crates/nu-parser/src/lex.rs",
+    "lines": [
+     310,
+     351
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/lex.rs",
+    "lines": [
+     344,
+     361
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     337,
+     381
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     380,
+     431
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 46,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     430,
+     481
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     1,
+     477
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 427,
+    "module_lines": 32,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     776,
+     821
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2760,
+     2887
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 111,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2760,
+     2887
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 111,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2770,
+     2851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 71,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2850,
+     2901
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2917,
+     2936
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 18,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2917,
+     2944
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2935,
+     2951
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3201,
+     3265
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 50,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3201,
+     3271
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 56,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3328,
+     3371
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3362,
+     3401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 242,
+   "fanout_truncations": 22,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 228,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 36,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 31,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3878,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 26,
+    "header_entities": 3,
+    "omissions": {
+     "selection: item cap N": 15,
+     "selection: value N below floor": 25
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "5052f0911ea7007b8a65681b7dd7e34296f026346abcb8648a6c709aaae6c3c2",
+   "routed": "601bfae3749713bd0895ccb260b2c4da6d49caf3858d9ba7d72a41cfd19db01f",
+   "payload@256": "c603df63c85dadae64b5aebfd649a74d5225fc7d4dc554a6d3856422c69e7315",
+   "payload@1024": "0d12156abf4da2c0f7f4f181185e044adbbf1baf87f9a4dbea3e7c0275823eff",
+   "payload@4096": "74c0d008bcd2dbf981be44c0c7f48baeb3e6ff7b64227d36652b188a2336685d"
+  }
+ },
+ {
+  "task": "nushell__nushell-10629",
+  "split": "heldout",
+  "corpus": "nushell__nushell@399319476aa4",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 996,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.555556,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.001004,
+    "file_recall@4096": 0.25,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.009293
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 28,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.988281,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998291,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     359,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 38,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     400,
+     501
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 89,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_keywords.rs",
+    "lines": [
+     500,
+     601
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 87,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parse_shape_specs.rs",
+    "lines": [
+     1,
+     306
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 271,
+    "module_lines": 17,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/nushell__nushell__0.1/crates/nu-parser/src/parse_shape_specs.rs",
+    "lines": [
+     279,
+     306
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     1,
+     51
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 33,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     2948,
+     3051
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 84,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3075,
+     3151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 64,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-parser/src/parser.rs",
+    "lines": [
+     3150,
+     3251
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 97,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/ty.rs",
+    "lines": [
+     1,
+     246
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 227,
+    "module_lines": 19,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 326,
+   "fanout_truncations": 31,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 253,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 3,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 2,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: container": 2,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4089,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 22,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 27,
+     "selection: container": 2,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "2cbb757102ca81243f313c261f902684fd29b03dcde1c03bf8b9e773f7a34948",
+   "routed": "6adbb2ec19871553eae7ec8927cacdf5de8523a7d50c5da791fda53129fba6f8",
+   "payload@256": "0dc5df5ce020f1de2a974ebc7158392cf05819070833d6a55568a8be69a3a65c",
+   "payload@1024": "ab199ad59a557666d76b33ca62dca0c614ea4cbf5b9f4879330fe8f3313a2e93",
+   "payload@4096": "93c3e62a05fcc466e2275539ed5cd9566bfe6c1d0e9aefc7e900391365060739"
+  }
+ },
+ {
+  "task": "nushell__nushell-11292",
+  "split": "heldout",
+  "corpus": "nushell__nushell@ecb3b3a364b3",
+  "verified": {
+   "counts": {
+    "spans": 7,
+    "lines": 1166,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.285714,
+    "entry_recall@20": 0.285714,
+    "entry_mrr": 0.5,
+    "entry_file_recall": 0.333333,
+    "routed_coverage": 0.714286,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.001715,
+    "file_recall@256": 0.333333,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.423529,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.020583,
+    "file_recall@1024": 0.333333,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.398629,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.020583,
+    "file_recall@4096": 0.333333,
+    "utilization@4096": 0.99707,
+    "gold_unit_share@4096": 0.099657
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 28,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.99707,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "crates/nu-cli/src/menus/help_completions.rs",
+    "lines": [
+     1,
+     122
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 106,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-engine/src/documentation.rs",
+    "lines": [
+     1,
+     454
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 416,
+    "module_lines": 13,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     1,
+     477
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 455,
+    "module_lines": 39,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     650,
+     701
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 48,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     700,
+     751
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     750,
+     826
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 72,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "crates/nu-protocol/src/value/mod.rs",
+    "lines": [
+     825,
+     851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 24,
+    "module_lines": 0,
+    "entry_rank": 2,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "selection: item cap N"
+    }
+   },
+   {
+    "file": "/workspace/nushell__nushell__0.1/src/tests/test_help.rs",
+    "lines": [
+     1,
+     28
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 28,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 317,
+   "fanout_truncations": 25,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 51,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 8,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 47,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4084,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 4,
+     "selection: item cap N": 27,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "1a969cf3abd01cccb1a33a20931f926388efca8dd6d8f020fc2569fc10212d6b",
+   "routed": "e22ba4fcaedfde60d93207794d62d7d5081a4380f10b8478b213128c94708a26",
+   "payload@256": "d24eb6c525ddf910e73422fac4c339c389aa5a03b7c2249aaa9715fdecd6f6a3",
+   "payload@1024": "58afced0d2b75bf3c57f78105ca605984e628e68c6ba374b0069fb49406ef769",
+   "payload@4096": "b416c74fb160d2c15cef445e32792781affcf701a4cee552e835cf37f0a3321b"
+  }
+ },
+ {
+  "task": "rayon-rs__rayon-986",
+  "split": "heldout",
+  "corpus": "rayon-rs__rayon@2de810e97d5c",
+  "verified": {
+   "counts": {
+    "spans": 3,
+    "lines": 73,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.666667,
+    "entry_mrr": 0.052632,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.666667,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.287671,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.577881,
+    "gold_unit_share@4096": 0.143642
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     91,
+     150
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 51,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     151,
+     172
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 21,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget"
+    }
+   },
+   {
+    "file": "src/vec.rs",
+    "lines": [
+     152,
+     174
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 201,
+   "fanout_truncations": 14,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 39,
+     "packing: too large": 1,
+     "selection: container": 3,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 34,
+     "selection: container": 3,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 2367,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 4,
+    "omissions": {
+     "selection: container": 3,
+     "selection: item cap N": 21,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "087b0846350e9f8415172c46226eaf36c919eaf875553f2da371e8459839573b",
+   "routed": "cdf4d9c542cb3542782965fde651018df32c2887b4c5ed9cca90727074da1ee7",
+   "payload@256": "fde242a8b066bbeb55031ccf43618d8f49316ed414ac97faf6b741ca8a039535",
+   "payload@1024": "6b2e1e98cda4dcda580fc46bb55a9315c534099b04c743b445f894b9b90411f9",
+   "payload@4096": "eae95f93a535bb25fb942a79ffc2fb2783b71621c4f597ac1c11ea9eddca4206"
+  }
+ },
+ {
+  "task": "sharkdp__bat-2896",
+  "split": "heldout",
+  "corpus": "sharkdp__bat@d00e05643ff6",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 1094,
+    "files": 5
+   },
+   "metrics": {
+    "entry_recall@1": 0.2,
+    "entry_recall@5": 0.4,
+    "entry_recall@20": 0.6,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.6,
+    "routed_coverage": 0.8,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.001828,
+    "file_recall@256": 0.4,
+    "utilization@256": 0.996094,
+    "gold_unit_share@256": 0.27451,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.043876,
+    "file_recall@1024": 0.4,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.646825,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.110603,
+    "file_recall@4096": 0.8,
+    "utilization@4096": 0.999268,
+    "gold_unit_share@4096": 0.447593
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/assets.rs",
+    "lines": [
+     1,
+     473
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 410,
+    "module_lines": 44,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bin/bat/app.rs",
+    "lines": [
+     1,
+     411
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 25,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/bin/bat/config.rs",
+    "lines": [
+     1,
+     216
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 179,
+    "module_lines": 16,
+    "entry_rank": 6,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/lib.rs",
+    "lines": [
+     1,
+     63
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 57,
+    "module_lines": 57,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/terminal.rs",
+    "lines": [
+     1,
+     83
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 77,
+    "module_lines": 3,
+    "entry_rank": 3,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: item cap N"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 176,
+   "fanout_truncations": 17,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 255,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: container": 1,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1008,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: container": 1,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4093,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 8,
+     "selection: container": 1,
+     "selection: item cap N": 12,
+     "selection: value N below floor": 19
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "c2ba144904d07f30172338ef8a49bea62b2087a94fa4443cb2acb536844f41af",
+   "routed": "d54c554a72dceb1ebc8310482420c8053fff3a4ab63cafdb0339886bfaa59f9c",
+   "payload@256": "e8341e4cb2c5034be994fe2ffd4f71486d39cf7572170446e034f1696d1e799d",
+   "payload@1024": "5689eea9257d6cd30883b3ab59b61bea13b5bf9512e286e79fd17554cbe12397",
+   "payload@4096": "ff89b229b80f42c74b6118434332c77f69f40f3cc82f7a1c614aadb166d4223e"
+  }
+ },
+ {
+  "task": "sharkdp__fd-1162",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@cbd11d8a45dc",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 748,
+    "files": 4
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.75,
+    "routed_coverage": 0.75,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.984375,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.5,
+    "utilization@1024": 0.980469,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.75,
+    "utilization@4096": 0.996826,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     1,
+     404
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 371,
+    "module_lines": 30,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/main.rs",
+    "lines": [
+     1,
+     300
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 273,
+    "module_lines": 52,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tests/testenv/mod.rs",
+    "lines": [
+     270,
+     291
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tests/tests.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 85,
+    "module_lines": 30,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 123,
+   "fanout_truncations": 9,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 252,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 44,
+     "selection: container": 2,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1004,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 7,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: container": 2,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4083,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 27,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 5,
+     "selection: container": 2,
+     "selection: item cap N": 17,
+     "selection: value N below floor": 16
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "873994422718f6d01675e412123e2c17222a65e59d92d7c4d6e4539d9984318d",
+   "routed": "f117ecbdaa1d0c9a5b2804ef3c6f69f6952ccfe4023adc3f924130a1e686a64f",
+   "payload@256": "ca8716f8110a10da3ef33a03c8a2eccc3f6de0c33e328bef35249a2b41bc9cbe",
+   "payload@1024": "297b8a5756e82a8706b0a4358b2240c6dd8ab94b8c1290e7fccaf4243aa290f8",
+   "payload@4096": "b75cb42bdf8df58cea13433413004f239661b4f75a1035924a84dcc277ff1985"
+  }
+ },
+ {
+  "task": "sharkdp__fd-1394",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@93cdb2628e89",
+  "verified": {
+   "counts": {
+    "spans": 4,
+    "lines": 503,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.921875,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.983398,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.990723,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     1,
+     451
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 412,
+    "module_lines": 27,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     20,
+     36
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 11,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     450,
+     551
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/cli.rs",
+    "lines": [
+     510,
+     526
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 15,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 102,
+   "fanout_truncations": 8,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 236,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1007,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 10,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 39,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4058,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 8,
+    "omissions": {
+     "packing: budget": 3,
+     "selection: item cap N": 22,
+     "selection: value N below floor": 15
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "b9ffbe20d93b07ad3fe606cbcb15274e2a7e186373a2a1c69cd859a23eb4c927",
+   "routed": "0a1adeae1a48b3714aed355661b4700a2155bdcce282c3c88acd5b06cbdf7819",
+   "payload@256": "e6e327e354fe865a9b9f0f1d952add40050aecdda7be9eec137aee25ef814769",
+   "payload@1024": "e9903970a95170773d353e75ae415269e4ad7c472c5ee816c14e7da26a001a7c",
+   "payload@4096": "7c187ffc8aee539adeb57cdea7973abfcf64cc81dbe82983ad9ab331e275a908"
+  }
+ },
+ {
+  "task": "sharkdp__fd-555",
+  "split": "heldout",
+  "corpus": "sharkdp__fd@ee673c92d375",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 1320,
+    "files": 5
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.666667,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.6,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.000758,
+    "file_recall@256": 0.2,
+    "utilization@256": 0.957031,
+    "gold_unit_share@256": 0.146939,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.002273,
+    "file_recall@1024": 0.6,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.092955,
+    "span_recall@4096": 0.166667,
+    "line_recall@4096": 0.15303,
+    "file_recall@4096": 0.6,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.661535
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 108,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.957031,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.998047,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999023,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "src/app.rs",
+    "lines": [
+     1,
+     428
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 420,
+    "module_lines": 24,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/internal/mod.rs",
+    "lines": [
+     1,
+     198
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 177,
+    "module_lines": 44,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/internal/opts.rs",
+    "lines": [
+     1,
+     85
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 63,
+    "module_lines": 9,
+    "entry_rank": 12,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/main.rs",
+    "lines": [
+     1,
+     302
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 275,
+    "module_lines": 34,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "/workspace/sharkdp__fd__0.1/src/output.rs",
+    "lines": [
+     1,
+     108
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 108,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "src/walk.rs",
+    "lines": [
+     1,
+     427
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 375,
+    "module_lines": 33,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/walk.rs",
+    "lines": [
+     400,
+     441
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 72,
+   "fanout_truncations": 6,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 245,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: container": 7,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1022,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 35,
+     "selection: container": 7,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4092,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 29,
+     "selection: container": 7,
+     "selection: value N below floor": 13
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "315c4c59bfefcdde08b6c8c9f70e74e1157287259969aff7413437d977c5502e",
+   "routed": "63e8281e12d7ce6bbfc09006bfb29dbb366fe773e4ee191ca86aa66ab12289ab",
+   "payload@256": "9e08a3bc26357b37a395cf52c7da670bcf0c046a00755c3048252deee03422db",
+   "payload@1024": "c9eaf62890c8a49e997706a9f5e0d330b809ed0ef69e7b90a5385f87bb5604c7",
+   "payload@4096": "3e5da43af5707f44f269e0d1d35832c66b8f02b21f9658fed12df32aedd00386"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-543",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@f514bd38dac8",
+  "verified": {
+   "counts": {
+    "spans": 9,
+    "lines": 727,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.111111,
+    "entry_mrr": 0.052632,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.888889,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 1.0,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.008253,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.542969,
+    "gold_unit_share@4096": 0.043615
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1,
+     591
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 534,
+    "module_lines": 97,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     804,
+     816
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 12,
+    "module_lines": 0,
+    "entry_rank": 19,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     811,
+     831
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     830,
+     851
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 19,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     880,
+     921
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 35,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     942,
+     971
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 25,
+    "module_lines": 10,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     970,
+     991
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 17,
+    "module_lines": 5,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1000,
+     1041
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 37,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes.rs",
+    "lines": [
+     1080,
+     1121
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 39,
+    "module_lines": 7,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 104,
+   "fanout_truncations": 11,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 4,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1024,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 41,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 2224,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 23,
+    "header_entities": 1,
+    "omissions": {
+     "selection: item cap N": 28,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "3e6c673d912927ded64b7e77b8bad2abc8471e1ca5c8b67acc3beb5c1e1a5e89",
+   "routed": "0cf2aef842d8fa4f6a0467ba65a67cd5a9f2534cd2e327498fbd4bfb2183ba37",
+   "payload@256": "fbfd9146d9a8f93506d84c379ef856ada16da592ae38307f5967ae8118c098c0",
+   "payload@1024": "747e89acb1f0b61016570be4b29471b6e9bc2b9afc5b1fc40d0695bf35dd95dd",
+   "payload@4096": "a567e19e1744630bcf2c12f867f079d6c1f32c4c362c75a7940fc58f898f1b8e"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-721",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@9965a04b5684",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 11,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.993164,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.894287,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/bytes_mut.rs",
+    "lines": [
+     1780,
+     1786
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 6,
+    "module_lines": 6,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "src/bytes_mut.rs",
+    "lines": [
+     1843,
+     1848
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 187,
+   "fanout_truncations": 17,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 2,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1017,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 6,
+    "omissions": {
+     "packing: budget": 40,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 3663,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 7,
+    "omissions": {
+     "selection: item cap N": 28,
+     "selection: value N below floor": 12
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "9a4787e3dd70257e6af571c54042d33d181bb8f235cbcf0c1eb02c70daa84bda",
+   "routed": "879005a3f6533be2bf606d3c87ed70a1c46cd1668311906f173025540d5e28bb",
+   "payload@256": "bf99eb3295fef2ccd22c90d2806652d9240d7672c81480ebf08deab8a10e7da2",
+   "payload@1024": "2950a0eebde6569e22a93b6850dbd7b5ede058d765a85fa1e03c8fe2419f8d90",
+   "payload@4096": "c769aefd50ec607d1b6745cf4ed1bffb534506947abdc7813ac66d7f2f96b69e"
+  }
+ },
+ {
+  "task": "tokio-rs__bytes-732",
+  "split": "heldout",
+  "corpus": "tokio-rs__bytes@291df5acc94b",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 597,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.333333,
+    "entry_recall@20": 0.333333,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 0.666667,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.011725,
+    "file_recall@256": 0.666667,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.566406,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.023451,
+    "file_recall@1024": 0.666667,
+    "utilization@1024": 0.988281,
+    "gold_unit_share@1024": 0.273715,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.102178,
+    "file_recall@4096": 0.666667,
+    "utilization@4096": 0.558594,
+    "gold_unit_share@4096": 0.42701
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     1,
+     555
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 521,
+    "module_lines": 80,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     40,
+     68
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 23,
+    "module_lines": 23,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     55,
+     67
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 11,
+    "module_lines": 11,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "src/buf/buf_impl.rs",
+    "lines": [
+     920,
+     951
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 30,
+    "module_lines": 0,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/buf/buf_mut.rs",
+    "lines": [
+     1040,
+     1051
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 10,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: reduced view",
+     "4096": "budget: reduced view"
+    }
+   },
+   {
+    "file": "src/buf/mod.rs",
+    "lines": [
+     1,
+     40
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 36,
+    "module_lines": 36,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 70,
+   "fanout_truncations": 6,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 22,
+     "selection: value N below floor": 36
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1012,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 13,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 15,
+     "selection: value N below floor": 36
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 2288,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 24,
+    "header_entities": 2,
+    "omissions": {
+     "selection: item cap N": 4,
+     "selection: value N below floor": 36
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "0d37da5da98404e77621f1e0c8c061d2c2b1bcdf41cd8080a184f98e94e316c2",
+   "routed": "1405663da8377c7e4bc5a61e289786019af8429b3c1fdcf6f8038c5d58e18ef2",
+   "payload@256": "4ebad48e7cd7088aa848a7deb4423c8cde99e9091b2e4a35b50fe0ffd2ebef72",
+   "payload@1024": "c9d71cb04069049b48245aaec708569b92d92f5310817f3adf4c608ca3dbc2d9",
+   "payload@4096": "e1b5e87d0dd180c749d2957d739bf284b3c7ff62659c814bbd94e84e76a780c1"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-4519",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@43c224ff47e4",
+  "verified": {
+   "counts": {
+    "spans": 2,
+    "lines": 60,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.945312,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.016667,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.033564,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.066667,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.996582,
+    "gold_unit_share@4096": 0.674179
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 198,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.005051,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.945312,
+    "gold_unit_share@256": 0.140496,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.005051,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.989258,
+    "gold_unit_share@1024": 0.033564,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.979798,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.996582,
+    "gold_unit_share@4096": 0.674179
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     391,
+     454
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 55,
+    "module_lines": 55,
+    "entry_rank": 9,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     606,
+     804
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 198,
+    "module_lines": 198,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   },
+   {
+    "file": "tokio/src/macros/select.rs",
+    "lines": [
+     801,
+     806
+    ],
+    "class": "exact",
+    "verified": true,
+    "code_lines": 5,
+    "module_lines": 5,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 63,
+   "fanout_truncations": 4,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 242,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: container": 4,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1013,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 4,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 4082,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 44,
+     "selection: container": 4,
+     "selection: value N below floor": 10
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ccafa0e2d35e0838123c249df519cb8efee39980d6533f339eb6995de847ae8c",
+   "routed": "5be42e481ad32ca1c64dcaae7a98cbdf37834331743309c3a7e3297563adf42e",
+   "payload@256": "8690c2aa055dc466ccd77292529c814ff402dd3dc56a401e743e57fc4bb47edf",
+   "payload@1024": "59763755dc19a1acf70c8d34db352ae07be3d7ec1469e69a60f68fe6f1071fb5",
+   "payload@4096": "9422e548009375f3baeeee7f60d013cae45fd94f5e30f4ed48728bada37cb272"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-5200",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@a66802015043",
+  "verified": {
+   "counts": {
+    "spans": 5,
+    "lines": 377,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.2,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.974609,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 110,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.974609,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.998047,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     80,
+     131
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 43,
+    "module_lines": 9,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     200,
+     251
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 45,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     250,
+     301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 40,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/time/mod.rs",
+    "lines": [
+     350,
+     401
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/time/clock.rs",
+    "lines": [
+     1,
+     244
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 207,
+    "module_lines": 207,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/time/mod.rs",
+    "lines": [
+     1,
+     110
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 110,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 265,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: container": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 998,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 9,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 1,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4088,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 48,
+    "header_entities": 8,
+    "omissions": {
+     "selection: container": 1,
+     "selection: item cap N": 31,
+     "selection: value N below floor": 8
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "ffef7e81965f1649abf84ec99b8d93cce19dd7bea4f54f38efbb0fc79d5b98ff",
+   "routed": "9ebcb9f1df74d3197289a4ea3f39314e74ea93c24702f2f9311e189de582c852",
+   "payload@256": "661ae3e381baced1bab2d07482fb287048e6c1463394c94dd9429cdbab3039b9",
+   "payload@1024": "8bb562ac9aebb6780156af9ab27f1c87752ee48b8f0721000fddb9732f447fd8",
+   "payload@4096": "83ebde5d5f3a5229a8d2abcfc9eb9c37ef779e17bc3b701294a62936f0f087fa"
+  }
+ },
+ {
+  "task": "tokio-rs__tokio-6742",
+  "split": "heldout",
+  "corpus": "tokio-rs__tokio@338e13b04baa",
+  "verified": {
+   "counts": {
+    "spans": 14,
+    "lines": 1527,
+    "files": 10
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.071429,
+    "entry_mrr": 0.125,
+    "entry_file_recall": 0.1,
+    "routed_coverage": 0.214286,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.964844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.005239,
+    "file_recall@1024": 0.1,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.177579,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.005239,
+    "file_recall@4096": 0.1,
+    "utilization@4096": 0.863037,
+    "gold_unit_share@4096": 0.050636
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 1,
+    "lines": 44,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.964844,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.984375,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.863037,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     1,
+     488
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 434,
+    "module_lines": 119,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     690,
+     751
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 59,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/builder.rs",
+    "lines": [
+     1260,
+     1301
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 35,
+    "module_lines": 35,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tokio__0.1/tokio/src/runtime/config.rs",
+    "lines": [
+     1,
+     44
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 44,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/handle.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 95,
+    "module_lines": 26,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 101,
+    "module_lines": 101,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/runtime.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 96,
+    "module_lines": 92,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/handle.rs",
+    "lines": [
+     1,
+     75
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 59,
+    "module_lines": 22,
+    "entry_rank": 8,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 80,
+    "module_lines": 37,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 92,
+    "module_lines": 84,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/scheduler/multi_thread/worker.rs",
+    "lines": [
+     148,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 41,
+    "module_lines": 2,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/list.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 86,
+    "module_lines": 48,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/list.rs",
+    "lines": [
+     90,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 58,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/runtime/task/mod.rs",
+    "lines": [
+     1,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 101,
+    "module_lines": 101,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tokio/src/task/spawn.rs",
+    "lines": [
+     1,
+     208
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 202,
+    "module_lines": 202,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 324,
+   "fanout_truncations": 27,
+   "stopped_by": "depth"
+  },
+  "bundles": {
+   "256": {
+    "used": 247,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 50,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "1024": {
+    "used": 1008,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 43,
+     "selection: container": 2,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   },
+   "4096": {
+    "used": 3535,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 29,
+    "header_entities": 8,
+    "omissions": {
+     "selection: container": 2,
+     "selection: item cap N": 31,
+     "selection: value N below floor": 7
+    },
+    "degradations": [
+     "routing stopped by its depth bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "47cd0dc8d79493c2c533bce032b26fd06c1f559b055bc200d7b12f2342af9c6a",
+   "routed": "9857e1848ebdca3b538e0f7008bc1d2e238abd7f55fa2ac4a291a0a483f2a4a1",
+   "payload@256": "456186c7aea08f56173b0bb52eefa9e9b0c8ddc15e4c18145f7ee8e3284c5474",
+   "payload@1024": "4fb2de43b6d97bac5f067007c0201b054bed8594fbbe69562ea282bf28e4a639",
+   "payload@4096": "7ebe2eb555dd5ddfe3fda7a14271e9fcc70f5dd51f59c7d4345a073a6c5b1965"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1017",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@cb1dd95b8a67",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 151,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 2,
+    "lines": 449,
+    "files": 2
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.999023,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.995605,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/reproduce/src/main.rs",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-core/src/dispatcher.rs",
+    "lines": [
+     1,
+     445
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 445,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing/src/dispatcher.rs",
+    "lines": [
+     1,
+     153
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 151,
+    "module_lines": 151,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "selection: value N below floor",
+     "1024": "selection: value N below floor",
+     "4096": "selection: value N below floor"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 265,
+   "fanout_truncations": 13,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 48,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1023,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4078,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 25,
+    "header_entities": 7,
+    "omissions": {
+     "packing: budget": 20,
+     "selection: item cap N": 9,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "10287984806eeefe4ecc9fa42e44e3c0ccf9cd2439d1fbf45df7553babd16953",
+   "routed": "04bf19ee4bccc128ade13ef74e3e8981b478675de541fed4b3f0568a26120e9e",
+   "payload@256": "8a5ed11b11b25bebd3a612fb19e05ab357b61217d3d3ba8826cbf1df8779b738",
+   "payload@1024": "f1535fec00705b73e3707862918f7368c5e00eb5af9b320888a35b2a8375db27",
+   "payload@4096": "f4787ecb0dc0687ad9d8b855bd006cc2098ff2807072d76625c0a5ad9f9a82d3"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1233",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@881091a1dd5d",
+  "verified": {
+   "counts": {
+    "spans": 6,
+    "lines": 288,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.166667,
+    "entry_recall@5": 0.5,
+    "entry_recall@20": 0.5,
+    "entry_mrr": 1.0,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 0.833333,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.017361,
+    "file_recall@256": 1.0,
+    "utilization@256": 0.929688,
+    "gold_unit_share@256": 0.436975,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.027778,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.991211,
+    "gold_unit_share@1024": 0.152709,
+    "span_recall@4096": 0.333333,
+    "line_recall@4096": 0.211806,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.999512,
+    "gold_unit_share@4096": 0.604299
+   }
+  },
+  "unverified": {
+   "counts": {
+    "spans": 3,
+    "lines": 564,
+    "files": 3
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 0.0,
+    "entry_recall@20": 0.0,
+    "entry_mrr": 0.0,
+    "entry_file_recall": 0.0,
+    "routed_coverage": 0.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 0.0,
+    "utilization@256": 0.929688,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 0.0,
+    "utilization@1024": 0.991211,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 0.0,
+    "line_recall@4096": 0.0,
+    "file_recall@4096": 0.0,
+    "utilization@4096": 0.999512,
+    "gold_unit_share@4096": 0.0
+   }
+  },
+  "gold": [
+   {
+    "file": "/workspace/reproduce_bug/src/main.rs",
+    "lines": [
+     1,
+     4
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 4,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/src/lib.rs",
+    "lines": [
+     1,
+     476
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 476,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     465,
+     486
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 22,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     465,
+     496
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 31,
+    "module_lines": 0,
+    "entry_rank": 5,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     50,
+     101
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 44,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "/workspace/tokio-rs__tracing__0.1/tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     69,
+     152
+    ],
+    "class": "unresolved",
+    "verified": false,
+    "code_lines": 84,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "entry: no entry point in its file",
+     "1024": "entry: no entry point in its file",
+     "4096": "entry: no entry point in its file"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     100,
+     151
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 47,
+    "module_lines": 0,
+    "entry_rank": null,
+    "routed": false,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/async_fn.rs",
+    "lines": [
+     150,
+     201
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 42,
+    "module_lines": 1,
+    "entry_rank": null,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "missed"
+    },
+    "lost": {
+     "256": "routing: not routed",
+     "1024": "routing: not routed",
+     "4096": "routing: not routed"
+    }
+   },
+   {
+    "file": "tracing-attributes/tests/err.rs",
+    "lines": [
+     1,
+     140
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 127,
+    "module_lines": 20,
+    "entry_rank": 1,
+    "routed": true,
+    "packed": {
+     "256": "partial",
+     "1024": "partial",
+     "4096": "partial"
+    },
+    "lost": {
+     "256": "budget: omitted, budget",
+     "1024": "budget: omitted, budget",
+     "4096": "budget: omitted, budget"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 187,
+   "fanout_truncations": 15,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 238,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 5,
+    "header_entities": 4,
+    "omissions": {
+     "packing: budget": 46,
+     "selection: container": 2,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1015,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: container": 2,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4094,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 12,
+    "header_entities": 2,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 2,
+     "selection: value N below floor": 11
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "fbd2522bda472010abf74e595096a14b9d7a7f040de569867c54315b878b4e49",
+   "routed": "a3fb7cca32f86b521ead28fe1491b53ac6d5b774da47529dd61f178434364ae1",
+   "payload@256": "531661b01749351f6059edcc592c79377826383cfb6109728bab80a82144e309",
+   "payload@1024": "37a443442320bfbc00e37c1a4ebdad70ef40c4358b9039b568fcb0f6c5b9a280",
+   "payload@4096": "62767a86ba1e1e71315dab344bf88c5018754415f2762652ab60a9e99584645e"
+  }
+ },
+ {
+  "task": "tokio-rs__tracing-1236",
+  "split": "heldout",
+  "corpus": "tokio-rs__tracing@4609f22aff1a",
+  "verified": {
+   "counts": {
+    "spans": 1,
+    "lines": 14,
+    "files": 1
+   },
+   "metrics": {
+    "entry_recall@1": 0.0,
+    "entry_recall@5": 1.0,
+    "entry_recall@20": 1.0,
+    "entry_mrr": 0.25,
+    "entry_file_recall": 1.0,
+    "routed_coverage": 1.0,
+    "span_recall@256": 0.0,
+    "line_recall@256": 0.0,
+    "file_recall@256": 1.0,
+    "utilization@256": 1.0,
+    "gold_unit_share@256": 0.0,
+    "span_recall@1024": 0.0,
+    "line_recall@1024": 0.0,
+    "file_recall@1024": 1.0,
+    "utilization@1024": 0.99707,
+    "gold_unit_share@1024": 0.0,
+    "span_recall@4096": 1.0,
+    "line_recall@4096": 1.0,
+    "file_recall@4096": 1.0,
+    "utilization@4096": 0.99707,
+    "gold_unit_share@4096": 0.487512
+   }
+  },
+  "unverified": null,
+  "gold": [
+   {
+    "file": "tracing-attributes/src/lib.rs",
+    "lines": [
+     653,
+     666
+    ],
+    "class": "path",
+    "verified": true,
+    "code_lines": 14,
+    "module_lines": 0,
+    "entry_rank": 4,
+    "routed": true,
+    "packed": {
+     "256": "missed",
+     "1024": "missed",
+     "4096": "complete"
+    },
+    "lost": {
+     "256": "budget: reduced view",
+     "1024": "budget: reduced view"
+    }
+   }
+  ],
+  "route": {
+   "root_fallback": false,
+   "regions": 64,
+   "candidates": 64,
+   "deferred": 152,
+   "fanout_truncations": 11,
+   "stopped_by": "regions"
+  },
+  "bundles": {
+   "256": {
+    "used": 256,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 5,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: container": 4,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "1024": {
+    "used": 1021,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 6,
+    "header_entities": 3,
+    "omissions": {
+     "packing: budget": 45,
+     "selection: container": 4,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   },
+   "4096": {
+    "used": 4084,
+    "within_budget": true,
+    "deterministic": true,
+    "items": 11,
+    "header_entities": 1,
+    "omissions": {
+     "packing: budget": 38,
+     "selection: container": 4,
+     "selection: value N below floor": 9
+    },
+    "degradations": [
+     "routing stopped by its regions bound"
+    ]
+   }
+  },
+  "versions": {
+   "retrieval": "oxide-retrieval-v2",
+   "router": "oxide-router-bfs-v2",
+   "selector": "oxide-select-greedy-v4",
+   "payload": "oxide-payload-v3",
+   "derivation": "sha256:92088ff7b036404c90a61d316d011cc34f503fd985ed4dbee83f9dbcc0a5d5ab",
+   "units": "oxide-units-v1"
+  },
+  "compat": {
+   "entries": "fc5ca2a820747c342ac248facaf018adaf85d8add4407b78214957df7c8a2e24",
+   "routed": "559c268cdfe71bf2fb6cc25031c323ebe1337097a99f9caf3092ffcb9f7d6ca9",
+   "payload@256": "567968b0a58eebb1aed2c848473046c6e313924f1645d941184fde3c1025c978",
+   "payload@1024": "1cb48fbf6711d2d3d6edb10f8c03c043b6db823c2514ea6b7eb9c707be56e091",
+   "payload@4096": "c7de6e1dd4e8244e1ebc60a9a75d8915cab0147fdcdfd15c29307d6246a4a672"
+  }
+ }
+]
