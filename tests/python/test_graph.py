@@ -91,3 +91,72 @@ def test_bases_imports_containment_and_tests_are_typed(repo: oxide.Repository) -
     module = repo.relations("module:python:pkg.use")
     assert any(r.kind == "contains_logical" and r.target == "file:pkg/use.py" for r in module)
     assert any(r.kind == "defines" and r.target == "symbol:pkg/use.py#Child" for r in module)
+
+
+ROOTED = {
+    "src/pkg/__init__.py": "from .core import Client\nfrom . import util\nfrom .loop import a\n",
+    "src/pkg/core.py": "class Client:\n    def get(self):\n        return self.send()\n",
+    "src/pkg/util.py": "def helper():\n    return 2\n",
+    "src/pkg/loop.py": "from . import b as a\n",
+    "src/pkg/b.py": "from .loop import a as b\n",
+    "src/pkg/star.py": "from .core import *\n",
+    "pkg/__init__.py": "",  # a root-level package of the same name wins
+    "pkg/core.py": "",
+    "tools/other/__init__.py": "",
+    "tools/other/mod.py": "def run():\n    pass\n",
+    "tests/test_a.py": (
+        "from other import mod\n"
+        "import pkg.util\n"
+        "def test_x():\n"
+        "    mod.run()\n"
+        "    mod.missing()\n"
+        "    pkg.util.helper()\n"
+    ),
+    "app.py": (
+        "from src.pkg import Client, util, a\n"
+        "from src.pkg.star import Client as Starred\n"
+        "import src.pkg as p\n"
+        "def main():\n"
+        "    Client()\n"
+        "    util.helper()\n"
+        "    p.core.Client.get()\n"
+        "    p.core.Client.post()\n"
+        "    p.util()\n"
+        "    a()\n"
+        "    Starred()\n"
+    ),
+}
+
+
+@pytest.fixture
+def rooted(tmp_path: Path) -> Iterator[oxide.Repository]:
+    with oxide.open_repository(write(tmp_path / "src", ROOTED)) as repository:
+        repository.index()
+        yield repository
+
+
+def resolved(repo: oxide.Repository, key: str) -> dict[str, str | None]:
+    return {r.name or r.target or "": r.target for r in calls(repo, key)}
+
+
+def test_re_exports_and_module_attributes_resolve(rooted: oxide.Repository) -> None:
+    found = {r.target for r in calls(rooted, "symbol:app.py#main") if r.resolution == "resolved"}
+    assert found == {
+        "symbol:src/pkg/core.py#Client",
+        "symbol:src/pkg/util.py#helper",
+        "symbol:src/pkg/core.py#Client.get",
+    }
+    unresolved = {r.name for r in calls(rooted, "symbol:app.py#main") if r.target is None}
+    # not a class member, a module, a re-export cycle, a star re-export
+    assert unresolved == {"p.core.Client.post", "p.util", "a", "Starred"}
+
+
+def test_nested_import_roots_resolve_only_inside_packages(rooted: oxide.Repository) -> None:
+    targets = {r.target for r in calls(rooted, "symbol:tests/test_a.py#test_x")}
+    assert "symbol:tools/other/mod.py#run" in targets
+    # ``pkg`` is the repository-root package first, which has no ``util``.
+    assert "symbol:src/pkg/util.py#helper" not in targets
+    assert {r.name for r in calls(rooted, "symbol:tests/test_a.py#test_x") if not r.target} == {
+        "mod.missing",
+        "pkg.util.helper",
+    }

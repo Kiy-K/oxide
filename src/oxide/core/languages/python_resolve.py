@@ -45,6 +45,25 @@ def module_key(name: str) -> str:
     return f"module:python:{name}"
 
 
+def import_root_names(paths: list[str]) -> dict[str, str]:
+    """Module names of files inside a package whose import root is a nested directory
+    (``src/pkg/a.py`` -> ``pkg.a``): the root is the first ancestor without an
+    ``__init__.py``, as pytest's ``prepend`` mode puts on ``sys.path``. Files outside a
+    package, and packages rooted at the repository, have no second name."""
+    packages = {p.rpartition("/")[0] for p in paths if p.rpartition("/")[2] == "__init__.py"}
+    names = {}
+    for path in paths:
+        directory = path.rpartition("/")[0]
+        if directory not in packages:
+            continue
+        root = directory
+        while root and root in packages:
+            root = root.rpartition("/")[0]
+        if root and (name := module_name(path[len(root) + 1 :])) is not None:
+            names[path] = name
+    return names
+
+
 @dataclass(slots=True)
 class _File:
     path: str
@@ -140,14 +159,22 @@ class Resolver:
         self.files: list[_File] = []
         self.modules: dict[str, list[int]] = {}
         self.tests: set[str] = set()
+        # Import-root names (``import_root_names``) to the repository-relative ones.
+        self.rooted: dict[str, list[str]] = {}
+        self.resolving: set[tuple[str, str]] = set()  # ``_from`` calls in progress
+        self.scopes: dict[str, tuple[int, int]] = {}  # key -> (file, scope)
+        rooted = import_root_names([path for path, _, _ in files])
         for path, file_digest, parsed in files:
             keys, children = symbol_keys(path, _decls(parsed))
             module = module_name(path)
             if module is not None:
                 self.modules.setdefault(module, []).append(len(self.files))
+                if path in rooted:
+                    self.rooted.setdefault(rooted[path], []).append(module)
             init = path.rsplit("/", 1)[-1] == "__init__.py"
             file = _File(path, file_digest, parsed, keys, children, module, init)
             self.tests.update(keys[k] for k in range(1, len(parsed.scopes)) if _is_test(file, k))
+            self.scopes.update((key, (len(self.files), k)) for k, key in enumerate(keys))
             self.files.append(file)
 
     def derive(self, entities: list[Entity], edges: list[Edge]) -> None:
@@ -229,7 +256,10 @@ class Resolver:
 
     def _lookup(self, i: int, bindings: list[list[tuple[str, Res]]], k: int, name: str) -> Res:
         file = self.files[i]
-        if "." in name or name in file.parsed.rebound:
+        head, *members = name.split(".")
+        if members:
+            return self._member(self._lookup(i, bindings, k, head), members)
+        if name in file.parsed.rebound:
             return None
         scopes = file.parsed.scopes
         current: int | None = k
@@ -243,10 +273,31 @@ class Resolver:
             current = scopes[current].parent
         return None
 
+    def _member(self, res: Res, members: list[str]) -> Res:
+        """``a.b.c`` once ``a`` is known: attributes of one in-repo module (its
+        submodules and module-level names) or one class (its own body only; inherited
+        and instance attributes stay unresolved)."""
+        for member in members:
+            if not res or len(res) != 1:
+                return None
+            if res[0].startswith("module:python:"):
+                res = self._from(res[0].removeprefix("module:python:"), member)
+                continue
+            if res[0] not in self.scopes:
+                return None
+            i, k = self.scopes[res[0]]
+            decl = self.files[i].parsed.scopes[k].decl
+            if decl is None or not decl.cls:
+                return None
+            found = self._in_scope(i, k, member, [])
+            res = None if found is False else found
+        return res
+
     def _in_scope(
         self, i: int, s: int, name: str, bindings: list[tuple[str, Res]] | None
     ) -> Res | Literal[False]:
-        """Candidates bound to ``name`` in scope ``s``; False when ``s`` does not bind it."""
+        """Candidates bound to ``name`` in scope ``s``; False when ``s`` does not bind it.
+        Without ``bindings``, names bound by import resolve through the import."""
         file = self.files[i]
         scope = file.parsed.scopes[s]
         if any(m.item == "star" for m in scope.imports) or name in scope.bound:
@@ -257,15 +308,18 @@ class Resolver:
             if (decl := file.parsed.scopes[c].decl) is not None and decl.name == name
         ]
         bound = bool(found)
-        if bindings is not None:
-            for bound_name, res in bindings:
-                if bound_name == name:
-                    if res is None:
-                        return None
-                    bound = True
-                    found.extend(res)
-        elif any(_bound_name(m) == name for m in scope.imports):
-            return None
+        if bindings is None:
+            bindings = [
+                (name, binding)
+                for item in scope.imports
+                if _bound_name(item) == name and (binding := self._import(i, item)[1]) is not False
+            ]
+        for bound_name, res in bindings:
+            if bound_name == name:
+                if res is None:
+                    return None
+                bound = True
+                found.extend(res)
         return sorted(set(found)) if bound else False
 
     def _import(self, i: int, item: Import) -> tuple[Res, Res | Literal[False]]:
@@ -281,22 +335,34 @@ class Resolver:
             return found, found
         return module, False
 
+    def _names(self, name: str) -> list[str]:
+        """Repository-relative module names ``name`` imports: itself when it is one,
+        else the modules it names from a nested import root."""
+        return [name] if name in self.modules else self.rooted.get(name, [])
+
     def _module(self, name: str) -> Res:
-        return [module_key(name)] if name in self.modules else None
+        return [module_key(n) for n in self._names(name)] or None
 
     def _from(self, module: str, name: str) -> Res:
-        found: list[str] = []
-        if f"{module}.{name}" in self.modules:
-            found.append(module_key(f"{module}.{name}"))
-        for j in self.modules.get(module, []):
-            if name in self.files[j].parsed.rebound:
-                return None
-            res = self._in_scope(j, 0, name, None)
-            if res is None:
-                return None
-            if res is not False:
-                found.extend(res)
-        return sorted(set(found)) or None
+        """What ``from module import name`` binds. A name the module itself imports
+        resolves through that import; a cycle of such re-exports adds nothing."""
+        if (module, name) in self.resolving:
+            return []
+        self.resolving.add((module, name))
+        try:
+            names = self._names(module)
+            found = [module_key(f"{m}.{name}") for m in names if f"{m}.{name}" in self.modules]
+            for j in (j for m in names for j in self.modules[m]):
+                if name in self.files[j].parsed.rebound:
+                    return None
+                res = self._in_scope(j, 0, name, None)
+                if res is None:
+                    return None
+                if res is not False:
+                    found.extend(res)
+            return sorted(set(found)) or None
+        finally:
+            self.resolving.discard((module, name))
 
     def _absolute(self, i: int, item: Import) -> str | None:
         if item.level == 0:

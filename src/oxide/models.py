@@ -185,6 +185,38 @@ class StructuralResult:
 
 
 @dataclass(frozen=True, slots=True)
+class ImpactHop:
+    """One reached entity. ``depth`` counts hops over every followed relation;
+    ``proven_depth`` over resolved, non-heuristic ones only (None: no proven path within
+    the bound). ``via`` is ``kind:in|out:key`` of a first shallowest step; ``cyclic``
+    marks a dependency cycle with another reached entity."""
+
+    entity: Entity
+    depth: int
+    proven_depth: int | None
+    via: str
+    cyclic: bool
+
+
+@dataclass(frozen=True, slots=True)
+class Impact:
+    """What depends on ``root`` (``upstream``) or what it depends on (``downstream``),
+    within ``depth`` hops and ``limit`` entities; ``roots`` are the entities standing for
+    it (itself, what it contains, a file's modules). ``unresolved`` (upstream only) counts
+    unresolved sites matching a root's name: dependents OXIDE may have missed, though for a
+    common name most of them target something else.
+    ``stopped_by`` names the bound that cut the walk (``depth``, ``limit``, ``edges``)."""
+
+    snapshot: Snapshot
+    root: Entity
+    direction: Literal["upstream", "downstream"]
+    roots: tuple[str, ...]
+    hops: tuple[ImpactHop, ...]
+    unresolved: int
+    stopped_by: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class ItemEntity:
     key: str
     name: str

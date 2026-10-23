@@ -37,6 +37,7 @@ once.
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
 | `Repository.structural_search(rule, *, language, paths, limit=100)` | `StructuralResult` | Explicit structural search (§ Structural search). Never ranked, packed or used by `search`/`build_context` |
+| `Repository.impact(key, *, direction="upstream", depth=3, limit=200)` | `Impact` | Bounded dependents (`upstream`) or dependencies (`downstream`) of one entity, with proven and unproven depths (§ Impact). Never ranked or packed |
 | `Repository.entity(key)` / `relations(key)` / `files()` | `Entity \| None`, `list[Relation]`, `list[FileInfo]` | Typed graph and coverage inspection |
 | `Repository.snapshot` | `Snapshot` | `repo_id`, `snapshot_id`, `derivation_id` of the published generation |
 | `index_repository(path, *, data_dir=None)` | `IndexReport` | Open, index, close |
@@ -87,11 +88,49 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   that file's module-level source, never `complete`), `payload`, `budget`, `used`,
   `units` (`oxide-units-v1`), `omissions` (stage and reason), `route`
   (`RouteSummary`), `lexical`, `hints`, `degradations`, `versions`.
+- `Impact`: `root` entity, `direction`, `roots` (the keys standing for it), `hops`
+  (`ImpactHop`: `entity`, `depth`, `proven_depth`, `via`, `cyclic`), `unresolved`,
+  `stopped_by` (§ Impact).
 - `StructuralResult`: `language`, `matches` (`StructuralMatch`: `source`
   `SourceRef`, 1-based `start_line`/`end_line`, `entity` the innermost declaration
   key or None at module level, `preview` the line the match starts on), `truncated`,
   `files` searched, `partial` (searched files whose index parse had errors, so matches
   inside them may be missing) and `skipped` (not UTF-8, not searched).
+
+## Impact
+
+`impact(key)` walks typed relations from one entity, breadth-first, nearest first:
+
+- `upstream` (default): what depends on it. Callers, referrers and importers (incoming
+  `calls`, `references`, `imports`) and the tests that exercise it (outgoing
+  `tested_by`).
+- `downstream`: what it depends on (outgoing `calls`, `references`, `imports`).
+
+The root stands for itself and everything it physically contains (a class's methods, a
+file's declarations) and, for a file, the modules that logically contain it, because
+imports name modules; `roots` lists them. Each `ImpactHop` has two depths: `depth` over
+every followed relation, `proven_depth` over relations that are `resolved` with a
+non-heuristic basis only (`None` when no such path exists within `depth`). Ambiguous
+candidates and the `tested_by` heuristic are reachable but never proven. `via` is
+`kind:in|out:key`, the step a shallowest path took; `cyclic` marks an entity in a
+dependency cycle with another reached entity (a strongly connected component of the
+walk). Order is (`depth`, key).
+
+`unresolved` (upstream only) counts unresolved `calls`/`references` sites whose text is
+a root's name or ends with `.name`/`::name`. It is a by-name signal, not a bound: for a
+common name (`get`) most of those sites target something else, and an aliased import is
+not counted. Zero means no unresolved site even names it; a small upstream set with a
+large `unresolved` is incomplete, not safe. Method calls through an instance
+(`self.save()`, `client.get()`) are the main source, because OXIDE resolves no instance
+or inherited attribute.
+
+Bounds: `depth` in `[0, 8]`, `limit` reached entities in `[0, 1000]`, and 20,000
+adjacency rows per pass; `stopped_by` names the one that cut the walk (`depth`,
+`limit`, `edges`), `None` when the walk was exhausted. An unknown `key` is
+`invalid_argument`. Measured cost (p50, 40 random symbols): 3–35 ms on requests,
+xarray, pytest, ripgrep and gh-cli; 330 ms upstream on VS Code
+([phase-6/graph-v1](phase-6/graph-v1/README.md)).
+It is a Python API only; the MCP tool is unchanged (§ MCP).
 
 ## Structural search
 
@@ -134,6 +173,8 @@ Checked before any query is built. A violation is `InvalidArgument`, which is bo
 an `OxideError` (`invalid_argument`) and a `ValueError`:
 
 - `limit`: an `int` in `[0, 1000]` (`api.MAX_LIMIT`); `0` returns seeds only.
+- `impact`: `key` a `str` naming an entity of the snapshot; `direction` `upstream` or
+  `downstream`; `depth` an `int` in `[0, 8]` (`api.MAX_DEPTH`).
 - `rule`: a non-blank pattern `str` or a mapping that ast-grep accepts for every grammar
   of `language` (`python`, or `typescript` and `tsx`); `language`: `python` or `typescript`.
 - `budget`: an `int` in `[0, 1048576]` units (`api.MAX_BUDGET`).

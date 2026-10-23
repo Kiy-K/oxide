@@ -19,7 +19,7 @@ from typing import Any, Literal
 import tree_sitter_python
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
-VERSION = "oxide-python-v3"
+VERSION = "oxide-python-v4"
 MAX_DIAGNOSTICS = 16
 # tree-sitter's query cursor keeps node depth in 16 bits: it drops matches below this
 # depth and its time turns super-linear (docs/parser-limits.md), so a file whose syntax

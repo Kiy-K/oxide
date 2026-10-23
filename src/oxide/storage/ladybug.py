@@ -78,6 +78,8 @@ FTS_BUILDS = {
 }
 FTS_SCORER = "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive"
 FTS_COMPONENT = "ladybug-fts-0.21.0;stemmer=porter;stopwords=default"
+# (kind, other end, proven): proven is ``resolved`` with a non-heuristic basis.
+type Adjacent = list[tuple[str, str, bool]]
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 _TERMS_TEXT = re.compile(r"[a-z0-9]+( [a-z0-9]+)*")
 
@@ -417,24 +419,35 @@ class View:
                 raise StoreCorrupt(f"invalid lexical score {score!r} for {key}")
         return [(r[0], r[1]) for r in rows[:limit]], len(rows) > limit
 
-    def adjacency(
-        self, keys: list[str]
-    ) -> dict[str, tuple[list[tuple[str, str]], list[tuple[str, str]]]]:
+    def adjacency(self, keys: list[str]) -> dict[str, tuple[Adjacent, Adjacent]]:
         """Resolved and ambiguous edges of every key as ``(outgoing, incoming)`` lists of
-        ``(kind, other end)``: two queries for any number of keys."""
-        found: dict[str, tuple[list[tuple[str, str]], list[tuple[str, str]]]] = {
-            key: ([], []) for key in keys
-        }
+        ``(kind, other end, proven)``: two queries for any number of keys."""
+        found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         if not keys:
             return found
         params = {"keys": sorted(set(keys))}
         match = "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE "
-        out = match + "a.key IN $keys RETURN a.key, r.kind, b.key"
-        into = match + "b.key IN $keys RETURN b.key, r.kind, a.key"
+        proven = "r.resolution = 'resolved' AND r.basis <> 'heuristic'"
+        out = match + f"a.key IN $keys RETURN a.key, r.kind, b.key, {proven}"
+        into = match + f"b.key IN $keys RETURN b.key, r.kind, a.key, {proven}"
         for direction, query in enumerate((out, into)):
-            for key, kind, other in self._query(query, params):
-                found[key][direction].append((kind, other))
+            for key, kind, other, certain in self._query(query, params):
+                found[key][direction].append((kind, other, certain))
         return found
+
+    def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:
+        """Unresolved relations of ``kinds`` whose text is one of ``names`` or ends with
+        ``.name`` or ``::name``: sites that may target them, never resolved to them."""
+        if not names:
+            return 0
+        suffixes = sorted({f"{sep}{n}" for n in names for sep in (".", "::")})
+        rows = self._query(
+            "MATCH (:Entity)-[r:Opaque]->(:Unresolved) WHERE r.kind IN $kinds AND "
+            "(r.name IN $names OR any(s IN $suffixes WHERE r.name ENDS WITH s)) "
+            "RETURN count(*)",
+            {"kinds": list(kinds), "names": sorted(set(names)), "suffixes": suffixes},
+        )
+        return int(rows[0][0])
 
     def relations(self, key: str) -> list[Relation]:
         """Every relation touching ``key``, unresolved ones included, in derivation order."""

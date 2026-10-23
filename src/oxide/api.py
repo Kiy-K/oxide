@@ -20,10 +20,10 @@ import time
 from collections.abc import Callable, Iterable, Mapping
 from pathlib import Path
 from types import TracebackType
-from typing import Any
+from typing import Any, Literal
 
 from oxide.capture import capture
-from oxide.core import packing, retrieval, routing, structural
+from oxide.core import navigation, packing, retrieval, routing, structural
 from oxide.core.indexing import components, derive, dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
@@ -32,6 +32,8 @@ from oxide.models import (
     Entity,
     EntryPoint,
     FileInfo,
+    Impact,
+    ImpactHop,
     IndexReport,
     InvalidArgument,
     InvalidPath,
@@ -53,6 +55,7 @@ from oxide.storage.store import Store
 # Upper bounds of caller-chosen sizes, checked before any query is built.
 MAX_LIMIT = 1000
 MAX_BUDGET = 1 << 20
+MAX_DEPTH = 8
 _MAX_OFFSET = (1 << 63) - 1  # LadybugDB INT64
 
 
@@ -216,6 +219,42 @@ class Repository:
     def relations(self, key: str) -> list[Relation]:
         return self._view().relations(key)
 
+    def impact(
+        self,
+        key: str,
+        *,
+        direction: Literal["upstream", "downstream"] = "upstream",
+        depth: int = 3,
+        limit: int = 200,
+    ) -> Impact:
+        """Bounded dependents (``upstream``) or dependencies (``downstream``) of the entity
+        ``key``, nearest first, each with its proven depth. Read-only; never ranked or
+        packed into context."""
+        if direction not in ("upstream", "downstream"):
+            raise InvalidArgument(f"direction must be upstream or downstream, got {direction!r}")
+        _texts("key", [key])
+        depth = _count("depth", depth, MAX_DEPTH)
+        limit = _count("limit", limit, MAX_LIMIT)
+        view = self._view()
+        root = view.entities([key]).get(key)
+        if root is None:
+            raise InvalidArgument(f"no entity {key!r} in this snapshot")
+        found = navigation.walk(view, key, direction, depth, limit)
+        known = view.entities(h.key for h in found.hops)
+        names = [e.name for e in view.entities(found.roots).values() if e.category == "symbol"]
+        return Impact(
+            view.snapshot,
+            root,
+            direction,
+            found.roots,
+            tuple(
+                ImpactHop(known[h.key], h.depth, h.proven_depth, h.via, h.cyclic)
+                for h in found.hops
+            ),
+            view.mentions(names, ("calls", "references")) if direction == "upstream" else 0,
+            found.stopped_by,
+        )
+
     def search(
         self,
         query: str,
@@ -301,11 +340,13 @@ class Repository:
             and view.files[c.entity.source.path].coverage != "unsupported"
         ]
         children = view.adjacency(files)
-        tops = view.entities(b for k in files for kind, b in children[k][0] if kind == "contains")
+        tops = view.entities(
+            b for k in files for kind, b, _ in children[k][0] if kind == "contains"
+        )
         declarations = {
             k: [
                 (s.start, s.end)
-                for kind, b in children[k][0]
+                for kind, b, _ in children[k][0]
                 if kind == "contains" and b in tops and (s := tops[b].source) is not None
             ]
             for k in files

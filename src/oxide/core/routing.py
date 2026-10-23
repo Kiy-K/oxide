@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from oxide.storage.ladybug import View
+    from oxide.storage.ladybug import Adjacent, View
 
 ROUTER_VERSION = "oxide-router-bfs-v2"
 MAX_REGIONS = 64
@@ -45,15 +45,13 @@ class Route:
     stopped_by: str | None
 
 
-def _region(
-    key: str, out: list[tuple[str, str]], into: list[tuple[str, str]]
-) -> tuple[list[tuple[str, str]], bool, int]:
+def _region(key: str, out: Adjacent, into: Adjacent) -> tuple[list[tuple[str, str]], bool, int]:
     """(neighbor, origin) in expansion order, whether a list was cut, edges examined."""
-    children = sorted({b for kind, b in out if kind == "contains"})
-    scopes = sorted({a for kind, a in into if kind == "contains" and a != "repo"})
+    children = sorted({b for kind, b, _ in out if kind == "contains"})
+    scopes = sorted({a for kind, a, _ in into if kind == "contains" and a != "repo"})
     cross = sorted(
-        {(b, f"{kind}:out:{key}") for kind, b in out if kind in FOLLOW}
-        | {(a, f"{kind}:in:{key}") for kind, a in into if kind in FOLLOW}
+        {(b, f"{kind}:out:{key}") for kind, b, _ in out if kind in FOLLOW}
+        | {(a, f"{kind}:in:{key}") for kind, a, _ in into if kind in FOLLOW}
     )
     cut = len(children) > MAX_FANOUT or len(cross) > MAX_FANOUT
     children, cross = children[:MAX_FANOUT], cross[:MAX_FANOUT]
