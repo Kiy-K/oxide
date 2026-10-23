@@ -1,0 +1,1 @@
+{"corpus": "microsoft__vscode@384b03f26310", "opaque_rows": 254238, "walk_ms": {"p50": 25.7, "p95": 108.5}, "entity_reads_ms": {"p50": 17.6, "p95": 40.9}, "mentions_ms": {"p50": 175.7, "p95": 228.9}, "impact_ms": {"p50": 236.8, "p95": 361.4}, "mentions_share_of_sum": 0.738}

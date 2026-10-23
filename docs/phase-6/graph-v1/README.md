@@ -138,8 +138,11 @@ Cost and shape, 40 random non-test symbols per corpus, default depth 3
 | gh-cli | 34.9 / 41.9 | 7.5 / 21.3 | 15/40 | 1.00 |
 | VS Code | 326.6 / 435.5 | 58.4 / 149.2 | 37/40 | 0.67 |
 
-The `unresolved` count's share of that cost was not isolated; the VS Code upstream
-time includes it.
+On VS Code the `unresolved` count dominates the upstream cost (`scripts/mentions_cost.py`,
+`results/mentions-cost.json`, same sample): it scans all 254,238 unresolved rows by name,
+176 ms p50 (229 ms p95), against 26 ms for the walk and 18 ms for entity reads, so 74% of
+the time. On the medium corpora the whole call is 3–35 ms, so no index was added; a name
+index on unresolved targets is the fix if large-repository latency matters.
 
 Most random symbols have no resolved dependents: they are methods reached only through
 instances (`obj.m()`), which OXIDE does not resolve. `unresolved` makes that visible
@@ -233,6 +236,7 @@ release; nothing in `src/`.
     uv run python docs/phase-6/graph-v1/scripts/edge_sets.py x OUT.json REPO...   # per version
     uv run python docs/phase-6/graph-v1/scripts/edge_diff.py AFTER.json BEFORE.json
     uv run python docs/phase-6/graph-v1/scripts/impact_perf.py REPO...
+    uv run python docs/phase-6/graph-v1/scripts/mentions_cost.py REPO
     uv run python docs/phase-6/graph-v1/scripts/algo_probe.py DIR
     uv run python docs/phase-6/graph-v1/scripts/jedi_extract.py EDGES.json REPO...    # per version
     JEDI_VENV/bin/python -I docs/phase-6/graph-v1/scripts/jedi_judge.py EDGES.json ROWS.json

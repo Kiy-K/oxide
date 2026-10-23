@@ -26,7 +26,10 @@ Precision = agree / (agree + disagree). The 4 disagreements, all new, are jedi e
   resolves the decorator rather than the method.
 
 Of the 92 sites where jedi finds nothing, 91 are names imported from pytest's `_pytest._io`
-package (`saferepr` 42, `TerminalWriter` 27, `wcswidth` 6, …); the remaining one is flask's
-`create_app`. Inspected: `from _pytest._io.saferepr import saferepr` with
+package (`saferepr` 42, `TerminalWriter` 27, `wcswidth` 6, …). The remaining one is flask's
+`examples/celery/make_celery.py`: `from task_app import create_app` → OXIDE
+`examples/celery/src/task_app/__init__.py#create_app` (`def create_app` at line 7). That
+is the example's own nested import root, which jedi was not given (only `<corpus>/src`),
+so OXIDE is correct by inspection. Inspected: `from _pytest._io.saferepr import saferepr` with
 `def saferepr` at `_io/saferepr.py:97`, which is OXIDE's target. The other `_io` sites
 are assumed to fail in jedi the same way (*inferred*, not inspected one by one).

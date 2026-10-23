@@ -128,8 +128,8 @@ Bounds: `depth` in `[0, 8]`, `limit` reached entities in `[0, 1000]`, and 20,000
 adjacency rows per pass; `stopped_by` names the one that cut the walk (`depth`,
 `limit`, `edges`), `None` when the walk was exhausted. An unknown `key` is
 `invalid_argument`. Measured cost (p50, 40 random symbols): 3–35 ms on requests,
-xarray, pytest, ripgrep and gh-cli; 330 ms upstream on VS Code
-([phase-6/graph-v1](phase-6/graph-v1/README.md)).
+xarray, pytest, ripgrep and gh-cli; 330 ms upstream on VS Code, about three quarters of it
+the unresolved count's scan of 254k unresolved rows ([phase-6/graph-v1](phase-6/graph-v1/README.md)).
 It is a Python API only; the MCP tool is unchanged (§ MCP).
 
 ## Structural search
