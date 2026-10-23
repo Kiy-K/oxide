@@ -89,7 +89,10 @@ Effect on resolved relations (`audit/python-v4.json`; `scripts/edge_sets.py`,
 - **Precision.** A hand review of 48 randomly sampled new edges (seed 20261023,
   12 per corpus) found 48 correct (`flask.abort(400)` → `helpers.abort`,
   `requests.Session()` → `sessions.Session`, `Dataset(...)` → `core/dataset.Dataset`, a
-  classmethod via `Server.basic_response_server`). An independent jedi oracle was planned but not run.
+  classmethod via `Server.basic_response_server`). Independent oracle ([results/jedi-summary.md](results/jedi-summary.md)): of 2,337 new
+  edges on flask, requests and pytest, jedi agrees with 2,241, finds nothing for 92 and
+  disagrees on 4. All 4 are jedi errors (it resolves a `@classmethod` to
+  `builtins.classmethod`), so precision is 0.998 by jedi and 1.000 after inspection.
 - **Ambiguity** grows (pytest 15 → 1,376 rows, xarray 238 → 945) only because newly
   reachable targets are `@overload` stubs: `pytest.raises` → `raises`, `raises~1`,
   `raises~2`. That is the existing overload policy (ADR-0010 ordinals), not a new guess.
@@ -231,5 +234,7 @@ release; nothing in `src/`.
     uv run python docs/phase-6/graph-v1/scripts/edge_diff.py AFTER.json BEFORE.json
     uv run python docs/phase-6/graph-v1/scripts/impact_perf.py REPO...
     uv run python docs/phase-6/graph-v1/scripts/algo_probe.py DIR
+    uv run python docs/phase-6/graph-v1/scripts/jedi_extract.py EDGES.json REPO...    # per version
+    JEDI_VENV/bin/python -I docs/phase-6/graph-v1/scripts/jedi_judge.py EDGES.json ROWS.json
     uv run python docs/phase-6/graph-v1/scripts/ppr_run.py {py|ts} {B|D|P} OUT
     uv run --with networkx==3.5 python docs/phase-6/graph-v1/scripts/community_probe.py {py|ts} OUT.json
