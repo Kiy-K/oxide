@@ -1,0 +1,1052 @@
+[
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 60170,
+  "o200k_base": 18565,
+  "o200k_base_per_question": 15155,
+  "cl100k_base": 18400,
+  "cl100k_base_per_question": 15021,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 58707,
+  "o200k_base": 18037,
+  "o200k_base_per_question": 14627,
+  "cl100k_base": 17936,
+  "cl100k_base_per_question": 14557,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-shared-v1",
+  "bytes": 49798,
+  "o200k_base": 13695,
+  "o200k_base_per_question": 10285,
+  "cl100k_base": 13530,
+  "cl100k_base_per_question": 10151,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 48335,
+  "o200k_base": 13167,
+  "o200k_base_per_question": 9757,
+  "cl100k_base": 13066,
+  "cl100k_base_per_question": 9687,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-compact-v1",
+  "bytes": 36142,
+  "o200k_base": 9212,
+  "o200k_base_per_question": 5802,
+  "cl100k_base": 9120,
+  "cl100k_base_per_question": 5741,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 35751,
+  "o200k_base": 9052,
+  "o200k_base_per_question": 5642,
+  "cl100k_base": 8960,
+  "cl100k_base_per_question": 5581,
+  "fits_default": true
+ },
+ {
+  "task": "py-exact-retrypolicy",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 49761,
+  "o200k_base": 13683,
+  "o200k_base_per_question": 10273,
+  "cl100k_base": 13518,
+  "cl100k_base_per_question": 10139,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 75672,
+  "o200k_base": 23489,
+  "o200k_base_per_question": 19089,
+  "cl100k_base": 23293,
+  "cl100k_base_per_question": 18933,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 73802,
+  "o200k_base": 22830,
+  "o200k_base_per_question": 18430,
+  "cl100k_base": 22716,
+  "cl100k_base_per_question": 18356,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-shared-v1",
+  "bytes": 61286,
+  "o200k_base": 16866,
+  "o200k_base_per_question": 12466,
+  "cl100k_base": 16670,
+  "cl100k_base_per_question": 12310,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 59416,
+  "o200k_base": 16207,
+  "o200k_base_per_question": 11807,
+  "cl100k_base": 16093,
+  "cl100k_base_per_question": 11733,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-compact-v1",
+  "bytes": 43671,
+  "o200k_base": 11094,
+  "o200k_base_per_question": 6694,
+  "cl100k_base": 10989,
+  "cl100k_base_per_question": 6629,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 43255,
+  "o200k_base": 10924,
+  "o200k_base_per_question": 6524,
+  "cl100k_base": 10819,
+  "cl100k_base_per_question": 6459,
+  "fits_default": true
+ },
+ {
+  "task": "py-semantic-http-retries",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 61249,
+  "o200k_base": 16854,
+  "o200k_base_per_question": 12454,
+  "cl100k_base": 16658,
+  "cl100k_base_per_question": 12298,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 46352,
+  "o200k_base": 14410,
+  "o200k_base_per_question": 11770,
+  "cl100k_base": 14297,
+  "cl100k_base_per_question": 11681,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 45204,
+  "o200k_base": 13975,
+  "o200k_base_per_question": 11335,
+  "cl100k_base": 13912,
+  "cl100k_base_per_question": 11296,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-shared-v1",
+  "bytes": 37590,
+  "o200k_base": 10365,
+  "o200k_base_per_question": 7725,
+  "cl100k_base": 10252,
+  "cl100k_base_per_question": 7636,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 36442,
+  "o200k_base": 9930,
+  "o200k_base_per_question": 7290,
+  "cl100k_base": 9867,
+  "cl100k_base_per_question": 7251,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-compact-v1",
+  "bytes": 27075,
+  "o200k_base": 6880,
+  "o200k_base_per_question": 4240,
+  "cl100k_base": 6817,
+  "cl100k_base_per_question": 4201,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 26661,
+  "o200k_base": 6710,
+  "o200k_base_per_question": 4070,
+  "cl100k_base": 6647,
+  "cl100k_base_per_question": 4031,
+  "fits_default": true
+ },
+ {
+  "task": "py-crossfile-token-refresh",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 37553,
+  "o200k_base": 10353,
+  "o200k_base_per_question": 7713,
+  "cl100k_base": 10240,
+  "cl100k_base_per_question": 7624,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 61290,
+  "o200k_base": 18928,
+  "o200k_base_per_question": 15518,
+  "cl100k_base": 18761,
+  "cl100k_base_per_question": 15382,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 59830,
+  "o200k_base": 18400,
+  "o200k_base_per_question": 14990,
+  "cl100k_base": 18297,
+  "cl100k_base_per_question": 14918,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-shared-v1",
+  "bytes": 49864,
+  "o200k_base": 13712,
+  "o200k_base_per_question": 10302,
+  "cl100k_base": 13545,
+  "cl100k_base_per_question": 10166,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 48404,
+  "o200k_base": 13184,
+  "o200k_base_per_question": 9774,
+  "cl100k_base": 13081,
+  "cl100k_base_per_question": 9702,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-compact-v1",
+  "bytes": 36236,
+  "o200k_base": 9235,
+  "o200k_base_per_question": 5825,
+  "cl100k_base": 9140,
+  "cl100k_base_per_question": 5761,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 35848,
+  "o200k_base": 9075,
+  "o200k_base_per_question": 5665,
+  "cl100k_base": 8980,
+  "cl100k_base_per_question": 5601,
+  "fits_default": true
+ },
+ {
+  "task": "py-related-test-gives-up",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 49827,
+  "o200k_base": 13700,
+  "o200k_base_per_question": 10290,
+  "cl100k_base": 13533,
+  "cl100k_base_per_question": 10154,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 18876,
+  "o200k_base": 5846,
+  "o200k_base_per_question": 4856,
+  "cl100k_base": 5817,
+  "cl100k_base_per_question": 4836,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 18422,
+  "o200k_base": 5681,
+  "o200k_base_per_question": 4691,
+  "cl100k_base": 5672,
+  "cl100k_base_per_question": 4691,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-shared-v1",
+  "bytes": 15703,
+  "o200k_base": 4350,
+  "o200k_base_per_question": 3360,
+  "cl100k_base": 4312,
+  "cl100k_base_per_question": 3331,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 15249,
+  "o200k_base": 4185,
+  "o200k_base_per_question": 3195,
+  "cl100k_base": 4167,
+  "cl100k_base_per_question": 3186,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-compact-v1",
+  "bytes": 12111,
+  "o200k_base": 3110,
+  "o200k_base_per_question": 2120,
+  "cl100k_base": 3091,
+  "cl100k_base_per_question": 2110,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 11992,
+  "o200k_base": 3060,
+  "o200k_base_per_question": 2070,
+  "cl100k_base": 3041,
+  "cl100k_base_per_question": 2060,
+  "fits_default": true
+ },
+ {
+  "task": "py-ttl-cache-expiry",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 15666,
+  "o200k_base": 4338,
+  "o200k_base_per_question": 3348,
+  "cl100k_base": 4300,
+  "cl100k_base_per_question": 3319,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 69299,
+  "o200k_base": 21267,
+  "o200k_base_per_question": 17307,
+  "cl100k_base": 21097,
+  "cl100k_base_per_question": 17173,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 67607,
+  "o200k_base": 20659,
+  "o200k_base_per_question": 16699,
+  "cl100k_base": 20563,
+  "cl100k_base_per_question": 16639,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-shared-v1",
+  "bytes": 55245,
+  "o200k_base": 15208,
+  "o200k_base_per_question": 11248,
+  "cl100k_base": 15038,
+  "cl100k_base_per_question": 11114,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 53553,
+  "o200k_base": 14600,
+  "o200k_base_per_question": 10640,
+  "cl100k_base": 14504,
+  "cl100k_base_per_question": 10580,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-compact-v1",
+  "bytes": 39677,
+  "o200k_base": 10088,
+  "o200k_base_per_question": 6128,
+  "cl100k_base": 9991,
+  "cl100k_base_per_question": 6067,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 39236,
+  "o200k_base": 9908,
+  "o200k_base_per_question": 5948,
+  "cl100k_base": 9811,
+  "cl100k_base_per_question": 5887,
+  "fits_default": true
+ },
+ {
+  "task": "py-implementors-notifier",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 55208,
+  "o200k_base": 15196,
+  "o200k_base_per_question": 11236,
+  "cl100k_base": 15026,
+  "cl100k_base_per_question": 11102,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 47051,
+  "o200k_base": 14427,
+  "o200k_base_per_question": 11787,
+  "cl100k_base": 14273,
+  "cl100k_base_per_question": 11657,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 45917,
+  "o200k_base": 14032,
+  "o200k_base_per_question": 11392,
+  "cl100k_base": 13928,
+  "cl100k_base_per_question": 11312,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-shared-v1",
+  "bytes": 37785,
+  "o200k_base": 10363,
+  "o200k_base_per_question": 7723,
+  "cl100k_base": 10234,
+  "cl100k_base_per_question": 7618,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 36651,
+  "o200k_base": 9968,
+  "o200k_base_per_question": 7328,
+  "cl100k_base": 9889,
+  "cl100k_base_per_question": 7273,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-compact-v1",
+  "bytes": 27410,
+  "o200k_base": 6942,
+  "o200k_base_per_question": 4302,
+  "cl100k_base": 6870,
+  "cl100k_base_per_question": 4254,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 27194,
+  "o200k_base": 6852,
+  "o200k_base_per_question": 4212,
+  "cl100k_base": 6780,
+  "cl100k_base_per_question": 4164,
+  "fits_default": true
+ },
+ {
+  "task": "py-callers-should-retry",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 37748,
+  "o200k_base": 10351,
+  "o200k_base_per_question": 7711,
+  "cl100k_base": 10222,
+  "cl100k_base_per_question": 7606,
+  "fits_default": true
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 279590,
+  "o200k_base": 77185,
+  "o200k_base_per_question": 70255,
+  "cl100k_base": 76548,
+  "cl100k_base_per_question": 69681,
+  "fits_default": false
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 276680,
+  "o200k_base": 76189,
+  "o200k_base_per_question": 69259,
+  "cl100k_base": 75680,
+  "cl100k_base_per_question": 68813,
+  "fits_default": false
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-shared-v1",
+  "bytes": 193155,
+  "o200k_base": 51536,
+  "o200k_base_per_question": 44606,
+  "cl100k_base": 51037,
+  "cl100k_base_per_question": 44170,
+  "fits_default": false
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 190245,
+  "o200k_base": 50540,
+  "o200k_base_per_question": 43610,
+  "cl100k_base": 50169,
+  "cl100k_base_per_question": 43302,
+  "fits_default": false
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-compact-v1",
+  "bytes": 91626,
+  "o200k_base": 23579,
+  "o200k_base_per_question": 16649,
+  "cl100k_base": 23345,
+  "cl100k_base_per_question": 16478,
+  "fits_default": true
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 91136,
+  "o200k_base": 23379,
+  "o200k_base_per_question": 16449,
+  "cl100k_base": 23145,
+  "cl100k_base_per_question": 16278,
+  "fits_default": true
+ },
+ {
+  "task": "mwaskom__seaborn-3069",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 193288,
+  "o200k_base": 51560,
+  "o200k_base_per_question": 44630,
+  "cl100k_base": 51061,
+  "cl100k_base_per_question": 44194,
+  "fits_default": false
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 163040,
+  "o200k_base": 48214,
+  "o200k_base_per_question": 41284,
+  "cl100k_base": 47803,
+  "cl100k_base_per_question": 40936,
+  "fits_default": false
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 160131,
+  "o200k_base": 47218,
+  "o200k_base_per_question": 40288,
+  "cl100k_base": 46935,
+  "cl100k_base_per_question": 40068,
+  "fits_default": false
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-shared-v1",
+  "bytes": 130392,
+  "o200k_base": 34849,
+  "o200k_base_per_question": 27919,
+  "cl100k_base": 34398,
+  "cl100k_base_per_question": 27531,
+  "fits_default": true
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 127483,
+  "o200k_base": 33853,
+  "o200k_base_per_question": 26923,
+  "cl100k_base": 33530,
+  "cl100k_base_per_question": 26663,
+  "fits_default": true
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-compact-v1",
+  "bytes": 78486,
+  "o200k_base": 19737,
+  "o200k_base_per_question": 12807,
+  "cl100k_base": 19490,
+  "cl100k_base_per_question": 12623,
+  "fits_default": true
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 77997,
+  "o200k_base": 19537,
+  "o200k_base_per_question": 12607,
+  "cl100k_base": 19290,
+  "cl100k_base_per_question": 12423,
+  "fits_default": true
+ },
+ {
+  "task": "pallets__flask-5014",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 130355,
+  "o200k_base": 34837,
+  "o200k_base_per_question": 27907,
+  "cl100k_base": 34386,
+  "cl100k_base_per_question": 27519,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 234104,
+  "o200k_base": 70805,
+  "o200k_base_per_question": 64315,
+  "cl100k_base": 70288,
+  "cl100k_base_per_question": 63857,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 231372,
+  "o200k_base": 69870,
+  "o200k_base_per_question": 63380,
+  "cl100k_base": 69473,
+  "cl100k_base_per_question": 63042,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-shared-v1",
+  "bytes": 145953,
+  "o200k_base": 38093,
+  "o200k_base_per_question": 31603,
+  "cl100k_base": 37695,
+  "cl100k_base_per_question": 31264,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 143221,
+  "o200k_base": 37158,
+  "o200k_base_per_question": 30668,
+  "cl100k_base": 36880,
+  "cl100k_base_per_question": 30449,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-compact-v1",
+  "bytes": 76898,
+  "o200k_base": 19125,
+  "o200k_base_per_question": 12635,
+  "cl100k_base": 19022,
+  "cl100k_base_per_question": 12591,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 76429,
+  "o200k_base": 18935,
+  "o200k_base_per_question": 12445,
+  "cl100k_base": 18832,
+  "cl100k_base_per_question": 12401,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-6028",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 146214,
+  "o200k_base": 38193,
+  "o200k_base_per_question": 31703,
+  "cl100k_base": 37796,
+  "cl100k_base_per_question": 31365,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 233731,
+  "o200k_base": 64610,
+  "o200k_base_per_question": 57790,
+  "cl100k_base": 64508,
+  "cl100k_base_per_question": 57750,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 230867,
+  "o200k_base": 63628,
+  "o200k_base_per_question": 56808,
+  "cl100k_base": 63652,
+  "cl100k_base_per_question": 56894,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-shared-v1",
+  "bytes": 159809,
+  "o200k_base": 41177,
+  "o200k_base_per_question": 34357,
+  "cl100k_base": 40834,
+  "cl100k_base_per_question": 34076,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 156945,
+  "o200k_base": 40195,
+  "o200k_base_per_question": 33375,
+  "cl100k_base": 39978,
+  "cl100k_base_per_question": 33220,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-compact-v1",
+  "bytes": 87234,
+  "o200k_base": 21479,
+  "o200k_base_per_question": 14659,
+  "cl100k_base": 21382,
+  "cl100k_base_per_question": 14624,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 86745,
+  "o200k_base": 21279,
+  "o200k_base_per_question": 14459,
+  "cl100k_base": 21182,
+  "cl100k_base_per_question": 14424,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2317",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 159772,
+  "o200k_base": 41165,
+  "o200k_base_per_question": 34345,
+  "cl100k_base": 40822,
+  "cl100k_base_per_question": 34064,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 186761,
+  "o200k_base": 51752,
+  "o200k_base_per_question": 44822,
+  "cl100k_base": 51226,
+  "cl100k_base_per_question": 44359,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 183852,
+  "o200k_base": 50756,
+  "o200k_base_per_question": 43826,
+  "cl100k_base": 50358,
+  "cl100k_base_per_question": 43491,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-shared-v1",
+  "bytes": 141891,
+  "o200k_base": 36303,
+  "o200k_base_per_question": 29373,
+  "cl100k_base": 35907,
+  "cl100k_base_per_question": 29040,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 138982,
+  "o200k_base": 35307,
+  "o200k_base_per_question": 28377,
+  "cl100k_base": 35039,
+  "cl100k_base_per_question": 28172,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-compact-v1",
+  "bytes": 77680,
+  "o200k_base": 18768,
+  "o200k_base_per_question": 11838,
+  "cl100k_base": 18624,
+  "cl100k_base_per_question": 11757,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 77191,
+  "o200k_base": 18568,
+  "o200k_base_per_question": 11638,
+  "cl100k_base": 18424,
+  "cl100k_base_per_question": 11557,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1142",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 141854,
+  "o200k_base": 36291,
+  "o200k_base_per_question": 29361,
+  "cl100k_base": 35895,
+  "cl100k_base_per_question": 29028,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 246280,
+  "o200k_base": 70869,
+  "o200k_base_per_question": 64159,
+  "cl100k_base": 70350,
+  "cl100k_base_per_question": 63701,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 243460,
+  "o200k_base": 69901,
+  "o200k_base_per_question": 63191,
+  "cl100k_base": 69506,
+  "cl100k_base_per_question": 62857,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-shared-v1",
+  "bytes": 158319,
+  "o200k_base": 40326,
+  "o200k_base_per_question": 33616,
+  "cl100k_base": 39929,
+  "cl100k_base_per_question": 33280,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 155499,
+  "o200k_base": 39358,
+  "o200k_base_per_question": 32648,
+  "cl100k_base": 39085,
+  "cl100k_base_per_question": 32436,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-compact-v1",
+  "bytes": 80203,
+  "o200k_base": 19630,
+  "o200k_base_per_question": 12920,
+  "cl100k_base": 19535,
+  "cl100k_base_per_question": 12886,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 79713,
+  "o200k_base": 19430,
+  "o200k_base_per_question": 12720,
+  "cl100k_base": 19335,
+  "cl100k_base_per_question": 12686,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-5414",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 158782,
+  "o200k_base": 40513,
+  "o200k_base_per_question": 33803,
+  "cl100k_base": 40116,
+  "cl100k_base_per_question": 33467,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 186639,
+  "o200k_base": 54017,
+  "o200k_base_per_question": 47087,
+  "cl100k_base": 53618,
+  "cl100k_base_per_question": 46751,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 183728,
+  "o200k_base": 53021,
+  "o200k_base_per_question": 46091,
+  "cl100k_base": 52750,
+  "cl100k_base_per_question": 45883,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-shared-v1",
+  "bytes": 148258,
+  "o200k_base": 38796,
+  "o200k_base_per_question": 31866,
+  "cl100k_base": 38403,
+  "cl100k_base_per_question": 31536,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 145347,
+  "o200k_base": 37800,
+  "o200k_base_per_question": 30870,
+  "cl100k_base": 37535,
+  "cl100k_base_per_question": 30668,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-compact-v1",
+  "bytes": 78317,
+  "o200k_base": 19568,
+  "o200k_base_per_question": 12638,
+  "cl100k_base": 19426,
+  "cl100k_base_per_question": 12559,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 77826,
+  "o200k_base": 19368,
+  "o200k_base_per_question": 12438,
+  "cl100k_base": 19226,
+  "cl100k_base_per_question": 12359,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-2931",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 148221,
+  "o200k_base": 38784,
+  "o200k_base_per_question": 31854,
+  "cl100k_base": 38391,
+  "cl100k_base_per_question": 31524,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-canonical-v1",
+  "bytes": 232427,
+  "o200k_base": 64305,
+  "o200k_base_per_question": 57375,
+  "cl100k_base": 63744,
+  "cl100k_base_per_question": 56877,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-canonical-v1-norank",
+  "bytes": 229519,
+  "o200k_base": 63309,
+  "o200k_base_per_question": 56379,
+  "cl100k_base": 62876,
+  "cl100k_base_per_question": 56009,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-shared-v1",
+  "bytes": 154104,
+  "o200k_base": 40699,
+  "o200k_base_per_question": 33769,
+  "cl100k_base": 40137,
+  "cl100k_base_per_question": 33270,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-shared-v1-norank",
+  "bytes": 151196,
+  "o200k_base": 39703,
+  "o200k_base_per_question": 32773,
+  "cl100k_base": 39269,
+  "cl100k_base_per_question": 32402,
+  "fits_default": false
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-compact-v1",
+  "bytes": 80504,
+  "o200k_base": 20041,
+  "o200k_base_per_question": 13111,
+  "cl100k_base": 19820,
+  "cl100k_base_per_question": 12953,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-compact-v1-norank",
+  "bytes": 80016,
+  "o200k_base": 19841,
+  "o200k_base_per_question": 12911,
+  "cl100k_base": 19620,
+  "cl100k_base_per_question": 12753,
+  "fits_default": true
+ },
+ {
+  "task": "psf__requests-1766",
+  "renderer": "ds1-shared-fullquery-v1",
+  "bytes": 154067,
+  "o200k_base": 40687,
+  "o200k_base_per_question": 33757,
+  "cl100k_base": 40125,
+  "cl100k_base_per_question": 33258,
+  "fits_default": false
+ }
+]

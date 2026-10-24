@@ -1,0 +1,1 @@
+selfcheck ok: hung request killed after 1.00s; valid reply parsed; wrong model rejected; manifest sha256:fb74d125ca2dbe7d20ac961038eb2233d136bad816896fd28da25a9f446cf51b

@@ -1,0 +1,26 @@
+split dev: 15 tasks with verified gold
+
+arm                              LR@256  LR@1024  LR@4096 share@4096 AUROC/task  AUROC   P@5  Brier   ECE fail
+heuristic                        0.1797   0.5484   0.6586     0.1891      0.716  0.724  0.20  0.235 0.408    0
+oracle_order                     0.4542   0.6821   0.7918     0.2711      0.898  0.921  0.48  0.227 0.426    0
+oracle_pick                      0.4603   0.7762   0.8858     0.2973      1.000  1.000  0.53  0.224 0.430    0
+random (mean of 5)               0.0853   0.2489   0.5026     0.0998      0.516  0.537  0.07  0.327 0.443    0
+perm-heuristic (mean of 5)       0.0642   0.2648   0.5447     0.1060      0.447  0.441  0.12  0.254 0.408    0
+
+rendered tokens per request, tiktoken estimate (JEV default 64k/request, 32k/question)
+renderer                       o200k med     max cl100k med per-q med   fits
+ds1-canonical-v1                   48214   77185      47803     41284   7/15
+ds1-canonical-v1-norank            47218   76189      46935     40288   7/15
+ds1-shared-v1                      34849   51536      34398     27919  11/15
+ds1-shared-v1-norank               33853   50540      33530     26923  11/15
+ds1-compact-v1                     18768   23579      18624     11838  15/15
+ds1-compact-v1-norank              18568   23379      18424     11638  15/15
+ds1-shared-fullquery-v1            34837   51560      34386     27907  11/15
+
+query truncation: 3 of 15 queries clipped
+gold holders named: {'within': 15, 'absent': 27}; other candidates: {'within': 93, 'beyond': 0, 'absent': 572}
+tasks with a holder named only beyond the clip: 0 []
+full-query diagnostic does not run (>= 2)
+
+
+NO MODEL ARMS: the gate is not evaluable (harness and controls only)
