@@ -83,7 +83,7 @@ jobs:
           "$python" -m pip install -q --dry-run --ignore-installed --report "$RUNNER_TEMP/pip.json" "$wheel"
           "$python" -I -c "
           import json, sys
-          report = json.load(open(sys.argv[1]))['install']
+          report = json.load(open(sys.argv[1], encoding='utf-8'))['install']
           built = [f\"{i['metadata']['name']} {i['metadata']['version']}\" for i in report
                    if not i['download_info']['url'].endswith('.whl')]
           sys.exit(f'pip would build from source: {built}' if built else 0)" "$RUNNER_TEMP/pip.json"
