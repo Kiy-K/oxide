@@ -151,10 +151,11 @@ Unknown:
 
 ## Remaining blockers and limits
 
-1. **Blocker (installation, all of OXIDE): replaced FTS builds.** Someone has to confirm
-   with LadybugDB why the `v0.21.0` artifacts changed and that the new ones are genuine.
-   Then either re-pin the three hashes or move to a release whose builds are stable. Until
-   then, three platforms cannot install from scratch.
+1. **Blocker (installation, all of OXIDE): replaced FTS builds.** Investigated in
+   [release-blockers](../release-blockers/README.md). The new files are genuine upstream
+   CI builds of a 0.22.0-dev core, and they fail to load into `ladybug==0.21.0`
+   (measured). They must not be pinned. The fix is to restore or mirror the
+   release-built files, keeping the same hashes.
 2. **Blocker (judge release): provider terms and retention.** Engineering cannot settle
    this. Releasing the opt-in means users send proprietary source under terms whose scope
    and retention are unstated. The maintainer can accept and document that, or get
@@ -171,10 +172,11 @@ Unknown:
 6. **Limit: scope.** As ADR-0009 states: Python, budgets 256 / 1,024 / 4,096, and
    repositories under 3,000 files. Live calls were measured from Linux only.
 
-**Smallest justified follow-up:** a maintainer decision on item 1, verifying and
-re-pinning the three FTS hashes (a three-line change once the provenance is confirmed),
-then a push so Platforms CI covers items 1 and 3. Item 2 needs no code. Changing the
-default stays out of scope.
+**Smallest justified follow-up** (superseded by
+[release-blockers](../release-blockers/README.md)): restore or mirror the pinned FTS
+builds with their hashes unchanged, never re-pin to the replaced ones. Then push, so
+cold Platforms CI covers items 1 and 3. Item 2 needs no code. Changing the default
+stays out of scope.
 
 ## Reproduce
 

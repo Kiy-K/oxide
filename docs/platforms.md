@@ -88,9 +88,19 @@ platform, `oxide prepare` fails with the same message without touching the netwo
 and search and context still run with the lexical channel `unavailable`. That is a
 supported degraded mode, not a failure.
 
-The extension host is slow (measured at about 80 KB/min for one sequential download
-on 2026-10-17; parallel downloads were fast), so the workflow caches
-`~/.cache/oxide` per platform.
+**Provenance (verified 2026-10-24):** all four pinned files are byte-identical to the
+artifacts of upstream CI run 36488319988, built at `d7225cea54`, the `v0.21.0` tag that
+`ladybug==0.21.0` is built from. The host's `v0.21.0` directory is not immutable,
+though. Since 2026-10-20 it serves a build of upstream main at `225bc28088` (core
+0.22.0-dev) for Linux x86-64, macOS x86-64 and Windows. That build fails to load into
+core 0.21.0 (undefined symbol, measured on Linux), so those three pins no longer
+download, and that is deliberate. A verified copy of the pinned files exists, and
+`OXIDE_FTS_EXTENSION` can point at one. See
+[docs/phase-6/release-blockers/](phase-6/release-blockers/README.md).
+
+The extension host is slow (measured at about 80 KB/min for one sequential download on
+2026-10-17; parallel downloads were fast). Even so, CI fetches the FTS build cold on
+every run, so a replaced upstream build fails CI instead of hiding behind a cache.
 
 ## What each platform job checks
 

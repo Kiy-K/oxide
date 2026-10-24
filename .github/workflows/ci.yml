@@ -22,11 +22,15 @@ jobs:
         with:
           version: 2026.9.14
           install_args: uv
-      - name: Restore pinned FTS extension and ContextBench corpora cache
+      - name: Restore the ContextBench corpora cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/oxide
           key: oxide-cache-linux-x86_64-${{ hashFiles('src/oxide/storage/ladybug.py', 'docs/phase-6/baseline-v1/tasks.json') }}
+      # The corpora stay cached; the FTS build is always fetched cold, so a replaced
+      # upstream build cannot hide behind the cache (docs/phase-6/release-blockers/).
+      - name: Drop the cached FTS extension
+        run: rm -f ~/.cache/oxide/ladybug-extensions-*/libfts.lbug_extension
       - name: Install locked environment, verify the FTS extension, fetch the corpora
         run: mise run bootstrap
       - name: mise run verify
