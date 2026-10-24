@@ -57,7 +57,7 @@ BUFFER_POOL = 128 << 20
 LOAD_POOL_PER_BYTE = 2
 FTS_VERSION = "0.21.0"
 # (sys.platform, platform.machine()) -> the extension host's platform and the build's
-# SHA-256, each downloaded and pinned from extension.ladybugdb.com.
+# SHA-256: LadybugDB's v0.21.0 builds, mirrored unmodified on an OXIDE release.
 FTS_BUILDS = {
     ("linux", "x86_64"): (
         "linux_amd64",
@@ -109,8 +109,8 @@ def _fts_build() -> tuple[str, str] | None:
     if build is None:
         return None
     host, sha256 = build
-    url = f"https://extension.ladybugdb.com/v{FTS_VERSION}/{host}/fts/libfts.lbug_extension"
-    return url, sha256
+    release = f"https://github.com/Kiy-K/oxide/releases/download/ladybug-fts-{FTS_VERSION}"
+    return f"{release}/libfts-{FTS_VERSION}-{host}.lbug_extension", sha256
 
 
 def _native_path_issue(text: str, variable: str) -> str | None:

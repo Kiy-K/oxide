@@ -6,7 +6,7 @@ unless marked *inferred*.
 
 | | Verdict |
 | --- | --- |
-| FTS extension integrity | **Provenance established, and the new builds are rejected.** They are genuine upstream CI builds, but of a different core, and they do not load into the core OXIDE ships. The pins are kept. CI now fetches the extension cold |
+| FTS extension integrity | **Provenance established, and the new builds are rejected.** They are genuine upstream CI builds, but of a different core, and they do not load into the core OXIDE ships. The pins are kept, CI fetches the extension cold, and an OXIDE mirror of the release builds is **prepared but not published** |
 | TypeSafe data handling | **Written clarification needed.** The draft inquiry is [typesafe-inquiry.md](typesafe-inquiry.md) (not sent) |
 | Release independence | Core OXIDE does not depend on the judge, but it is **still blocked on FTS** for 3 of 4 platforms. The opt-in judge is blocked on FTS (it ships inside core) **and** on TypeSafe's answer |
 
@@ -73,8 +73,9 @@ such machine here. They come from the same commit, so the same mismatch is *infe
 - **CI can no longer hide this.**
   - `platforms.yml` no longer caches the extension, so every platform fetches it cold.
   - `ci.yml` keeps its corpus cache but deletes the cached extension before bootstrap.
-  - Until the files are restored, Platforms will be red on linux-x86_64, macos-x86_64
-    and windows-x86_64. That is the true state of a fresh install there. Not yet run:
+  - Until the mirror is published, a push would leave every Platforms job red: the code
+    now points at the mirror. Without the mirror change, linux-x86_64, macos-x86_64 and
+    windows-x86_64 were red. That is the true state of a fresh install. Not yet run:
     nothing has been pushed.
 - **A verified copy of the pinned files exists.** All four upstream artifacts from run
   36488319988 (GitHub digest-verified) are in
@@ -84,19 +85,65 @@ such machine here. They come from the same commit, so the same mismatch is *infe
 - Until then, users on the three platforms can unblock themselves by placing a verified
   file and setting `OXIDE_FTS_EXTENSION`. The engine still checks the digest.
 
-### Smallest corrections, in order of preference
+### Correction: an OXIDE mirror of the release builds (prepared, not published)
 
-1. **Upstream restores** `v0.21.0/{linux_amd64,osx_amd64,win_amd64}/fts` to the run
-   36488319988 builds, and stops rebuilding a released directory from main. No OXIDE
-   change is needed, and cold CI turns green. Draft issue: [ladybug-issue.md](ladybug-issue.md)
-   (not posted).
-2. **OXIDE mirrors the four verified files**, for example as assets on an OXIDE GitHub
-   release, with the LadybugDB license. `prepare_fts` then fetches from that URL, and
-   the **hashes stay the same**. That is about a one-line URL change, but it needs the
-   maintainer to authorize publishing, and the change only makes sense once the assets
-   exist.
-3. Move to a core whose extensions are built from its own tag. None exists today:
-   0.21.1 and 0.21.2 share the `v0.21.0` directory, and 0.22.0 is unreleased.
+The maintainer chose the mirror on 2026-10-24. Upstream restoring its files would still
+help other users. The issue is drafted in [ladybug-issue.md](ladybug-issue.md), not posted.
+
+- **What it is.** One release, `ladybug-fts-0.21.0` on `Kiy-K/oxide`. It holds the four
+  files from run 36488319988, unmodified and renamed
+  `libfts-0.21.0-<platform>.lbug_extension`. It also carries `SHA256SUMS` and
+  `NOTICE.txt`, and its body is [fts-mirror/RELEASE.md](fts-mirror/RELEASE.md). The
+  notices are LadybugDB core and extensions (MIT), plus what the FTS extension links:
+  Snowball (BSD-3-Clause), RE2 (BSD-3-Clause), cppjieba and limonp (MIT). Each was read
+  at the pinned commits `d7225cea54` and `bf74ab654a`.
+- **What changed in OXIDE.** Only the URL in `ladybug._fts_build`. `FTS_BUILDS`, the
+  digest checks, `OXIDE_FTS_EXTENSION` and the error messages are unchanged. There is no
+  fallback host, and no path skips the digest.
+- **Immutability.** The pins are the guarantee: a replaced or tampered asset fails
+  `oxide prepare`, as upstream's did. GitHub immutable releases add to that. Assets
+  can't be changed after publishing, and the tag can't be moved or reused. The repo
+  setting is off today (`{"enabled":false}`), and turning it on affects every later
+  release of this repo.
+- **Checked locally (Linux x86-64).**
+  - The staged files match all four pins, and the four artifact zips match
+    GitHub's recorded digests.
+  - `prepare_fts` was run cold against a local server holding the staged mirror. It
+    accepted the file, and the full suite passed with it (381 passed, 7 skipped).
+  - Served under the same name, the incompatible upstream build was refused ("does not
+    match"), and no file was written.
+  - `LOAD EXTENSION` loads the mirrored file into `ladybug==0.21.0`. The upstream
+    replacement fails with the undefined symbol.
+- **Not yet checked:** the real download from GitHub, and cold installs on macOS and
+  Windows. Both need the release to be published and pushed (below).
+
+#### Publication steps (each needs the maintainer's authorization)
+
+Run them in this order. Pushing first would make `oxide prepare` 404 on every platform.
+
+```sh
+M=~/Projects/oxide-eval-data/fts-provenance/mirror   # the staged, verified files
+cp docs/phase-6/release-blockers/fts-mirror/{NOTICE.txt,SHA256SUMS} "$M"/
+(cd "$M" && sha256sum -c SHA256SUMS)
+# 1. Optional, repo-wide: make new releases immutable.
+gh api -X PUT -H "X-GitHub-Api-Version: 2026-03-10" repos/Kiy-K/oxide/immutable-releases
+# 2. Create it as a draft with every asset attached, then publish it. The tag targets a pushed commit.
+gh release create ladybug-fts-0.21.0 -R Kiy-K/oxide --draft --latest=false --target 0121d80453644f4542f66178d67598c8c15c80a8 \
+  --title "LadybugDB FTS extension 0.21.0 (mirror)" \
+  --notes-file docs/phase-6/release-blockers/fts-mirror/RELEASE.md \
+  "$M"/libfts-0.21.0-*.lbug_extension "$M"/SHA256SUMS "$M"/NOTICE.txt
+gh release edit ladybug-fts-0.21.0 -R Kiy-K/oxide --draft=false
+# 3. Check what GitHub serves, then fetch it cold through the real code path.
+D=$(mktemp -d ~/Projects/oxide-eval-data/fts-provenance/served.XXXX)
+gh release download ladybug-fts-0.21.0 -R Kiy-K/oxide -D "$D" && (cd "$D" && sha256sum -c SHA256SUMS)
+env -u OXIDE_FTS_EXTENSION XDG_CACHE_HOME="$D/cache" uv run oxide prepare
+# 4. Push rewrite/v2. CI and Platforms then fetch the asset cold on all four platforms.
+git push origin rewrite/v2
+```
+
+Done when every Platforms job is green, with `oxide prepare` downloading in each one:
+linux-x86_64 (and its py3.12 and py3.14 jobs), macos-arm64, macos-x86_64 and
+windows-x86_64.
 
 ## 2. TypeSafe data handling
 
@@ -137,10 +184,10 @@ training, no stated retention period, ZDR for enterprise only. It claims nothing
 
 - **Core OXIDE without the judge: yes in principle, but blocked now.** The judge is off
   by default, adds no dependency, and its consent check is one `stat`. Nothing in core
-  depends on it. Core is blocked by § 1: a fresh `oxide prepare` fails on Linux x86-64,
-  macOS x86-64 and Windows. Search still runs there, but the lexical channel is
-  `unavailable`, and every quality result was measured with it on. Once § 1 is fixed by
-  correction 1 or 2, core has no other known blocker from this work.
+  depends on it. Core is blocked by § 1 until the mirror is published: before it, a fresh `oxide
+  prepare` fails on Linux x86-64, macOS x86-64 and Windows. Search still runs there, but the lexical channel is
+  `unavailable`, and every quality result was measured with it on. Once the mirror is published and
+  cold CI passes, core has no other known blocker from this work.
 - **The judge ships inside the core package** (`Repository.judge`, `oxide judge`). It
   cannot be released ahead of core, and releasing core releases its opt-in surface too.
   The maintainer can either:
@@ -151,8 +198,7 @@ training, no stated retention period, ZDR for enterprise only. It claims nothing
   Withdrawing or hiding the surface would be a public-API change. This milestone did not
   make one.
 - **Concrete remaining blockers:**
-  1. Restored or mirrored FTS builds (an upstream action, or maintainer-authorized
-     hosting).
-  2. Push and a green cold Platforms run on all four platforms.
+  1. Publish the prepared `ladybug-fts-0.21.0` mirror (§ 1, publication steps).
+  2. Push, and get a green cold Platforms run on all four platforms.
   3. For the judge only: TypeSafe's written answer, or the maintainer's decision to
      ship under (a).

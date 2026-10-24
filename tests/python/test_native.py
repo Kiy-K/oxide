@@ -90,7 +90,8 @@ def test_fts_builds_are_pinned_per_platform_and_others_are_explicitly_unsupporte
         monkeypatch.setattr(sys, "platform", system)
         monkeypatch.setattr(platform, "machine", lambda m=machine: m)
         url, pinned = ladybug._fts_build() or ("", "")
-        assert url.endswith(f"/v{ladybug.FTS_VERSION}/{host}/fts/libfts.lbug_extension")
+        release = f"github.com/Kiy-K/oxide/releases/download/ladybug-fts-{ladybug.FTS_VERSION}"
+        assert url == f"https://{release}/libfts-{ladybug.FTS_VERSION}-{host}.lbug_extension"
         assert pinned == sha256 and len(sha256) == 64
         assert "missing" in (ladybug.fts_unavailable(tmp_path / "absent") or "")
     monkeypatch.setattr(sys, "platform", "linux")

@@ -80,27 +80,29 @@ together with a matching FTS build.
 ## FTS extension pins
 
 `oxide prepare` downloads the platform's build of the LadybugDB FTS extension 0.21.0
-from `extension.ladybugdb.com` and checks it against the SHA-256 pinned in
-`ladybug.FTS_BUILDS`. The engine checks it again before every load. Each digest was
-taken from one download on 2026-10-17 (file types: ELF x86-64, Mach-O x86_64, Mach-O
-arm64, PE32+ x86-64). On a platform without a pin, `fts_unavailable` names the
-platform, `oxide prepare` fails with the same message without touching the network,
-and search and context still run with the lexical channel `unavailable`. That is a
-supported degraded mode, not a failure.
+from the OXIDE release `ladybug-fts-0.21.0`
+(`github.com/Kiy-K/oxide/releases/download/ladybug-fts-0.21.0/libfts-0.21.0-<platform>.lbug_extension`).
+It checks the download against the SHA-256 pinned in `ladybug.FTS_BUILDS`, and the
+engine checks it again before every load. The release holds LadybugDB's own builds,
+unmodified, with LadybugDB's license and third-party notices
+([fts-mirror/](phase-6/release-blockers/fts-mirror/RELEASE.md)). The digests were taken
+on 2026-10-17 (file types: ELF x86-64, Mach-O x86_64, Mach-O arm64, PE32+ x86-64). On a
+platform without a pin, `fts_unavailable` names the platform, and `oxide prepare` fails
+with the same message without touching the network. Search and context still run with
+the lexical channel `unavailable`. That is a supported degraded mode, not a failure.
 
 **Provenance (verified 2026-10-24):** all four pinned files are byte-identical to the
 artifacts of upstream CI run 36488319988, built at `d7225cea54`, the `v0.21.0` tag that
-`ladybug==0.21.0` is built from. The host's `v0.21.0` directory is not immutable,
-though. Since 2026-10-20 it serves a build of upstream main at `225bc28088` (core
-0.22.0-dev) for Linux x86-64, macOS x86-64 and Windows. That build fails to load into
-core 0.21.0 (undefined symbol, measured on Linux), so those three pins no longer
-download, and that is deliberate. A verified copy of the pinned files exists, and
-`OXIDE_FTS_EXTENSION` can point at one. See
+`ladybug==0.21.0` is built from. OXIDE mirrors them because upstream's
+`extension.ladybugdb.com/v0.21.0/` is not immutable. Since 2026-10-20 it has served a
+build of upstream main at `225bc28088` (core 0.22.0-dev) for Linux x86-64, macOS x86-64
+and Windows. That build fails to load into core 0.21.0 (undefined symbol, measured on
+Linux). To move the pin forward, mirror the new version's release builds the same way,
+after checking that they load into the matching core. See
 [docs/phase-6/release-blockers/](phase-6/release-blockers/README.md).
 
-The extension host is slow (measured at about 80 KB/min for one sequential download on
-2026-10-17; parallel downloads were fast). Even so, CI fetches the FTS build cold on
-every run, so a replaced upstream build fails CI instead of hiding behind a cache.
+CI fetches the FTS build cold on every run, so a missing or replaced asset fails CI
+instead of hiding behind a cache.
 
 ## What each platform job checks
 
