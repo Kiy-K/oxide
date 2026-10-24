@@ -1,0 +1,7 @@
+POST HOC, not preregistered, not a verdict: held-out tasks split by whether the arm's JEV request succeeded
+compact~order            judged 19: Δ@1024 +0.1544 Δ@4096 +0.1908, task-budget losses 0; fell back 10: Δ@4096 +0.0000
+compact-norank~order     judged 19: Δ@1024 +0.2186 Δ@4096 +0.2312, task-budget losses 1; fell back 10: Δ@4096 +0.0000
+compact-repeat~order     judged 23: Δ@1024 +0.1805 Δ@4096 +0.2365, task-budget losses 0; fell back  6: Δ@4096 +0.0000
+compact-reversed~order   judged 26: Δ@1024 +0.2297 Δ@4096 +0.2380, task-budget losses 0; fell back  3: Δ@4096 +0.0000
+compact-repeat~order: median within-task Spearman over the 12 tasks all three arms judged: 0.976
+compact-reversed~order: median within-task Spearman over the 12 tasks all three arms judged: 0.915
