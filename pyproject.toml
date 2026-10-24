@@ -9,6 +9,9 @@ license-files = ["LICENSE"]
 # ladybug 0.21.0 ships wheels for CPython 3.10-3.14 only.
 requires-python = ">=3.12,<3.15"
 dependencies = [
+    # Not imported: fastmcp needs it, and 49+ ships no Intel macOS wheels (docs/platforms.md).
+    "cryptography<49; sys_platform == 'darwin' and platform_machine == 'x86_64'",
+    "cryptography>=50; sys_platform != 'darwin' or platform_machine != 'x86_64'",
     "fastmcp==4.1.1",
     "ladybug==0.21.0",
     "pathspec>=0.12",

@@ -121,7 +121,12 @@ instead of hiding behind a cache.
      `test_persistence.py`);
    - the cross-process store lock and resource release (`test_lifecycle.py`);
    - paths with quotes, spaces and non-ASCII characters (`test_native.py`).
-5. `uv build`, then `scripts/smoke_dist.py` against the wheel and the sdist, each
+5. `uv build`, then the wheel, resolved by pip from its own metadata alone (no lock,
+   pip's default settings). The job fails if pip would build any dependency from source.
+   Then pip installs it wheel-only, and the `smoke_dist.py` checks below run against
+   that install. A lock can hide what pip picks: pip takes the newest release even when
+   it has only an sdist.
+6. `scripts/smoke_dist.py` against the wheel and the sdist, each
    installed into a fresh environment with only the locked runtime dependencies:
    - the installed `oxide` console script indexes a copy of the Python and TypeScript
      fixtures plus a non-ASCII, CRLF file, from a data path with spaces and non-ASCII
@@ -134,6 +139,35 @@ instead of hiding behind a cache.
 
 Checkout turns off `core.autocrlf`. Fixtures and frozen spans are byte-exact, and a
 CRLF checkout would change their digests and offsets.
+
+## Intel macOS: cryptography below 49
+
+fastmcp needs `cryptography` (through authlib, joserfc and pyjwt), and pyca stopped
+shipping Intel macOS wheels in 49.0.0. On Intel macOS, a plain `pip install` would pick
+the 50.x sdist, and building it needs a Rust toolchain. So `pyproject.toml` declares two
+requirements with environment markers. Both are in the wheel's `Requires-Dist`, so pip
+follows them as well as uv:
+
+- `cryptography<49` on `darwin`/`x86_64`, which resolves to 48.0.1 (universal2
+  wheels);
+- `cryptography>=50` everywhere else, which resolves to 50.0.2.
+
+The lock forks on these markers. Every consumer accepts 48.x (the tightest bound is
+`>=45.0.1`).
+
+The cost is that Intel macOS runs an older `cryptography`. As of 2026-10-24, 48.0.1
+carries three pyca advisories:
+
+- GHSA-g6cj-pr64-35w5: PKCS#7 decryption (`pkcs7_decrypt_*`);
+- GHSA-jwv3-5hgf-82ww and GHSA-m2h6-j472-rp4c: the X.509 path verifier
+  (`cryptography.x509.verification`).
+
+Neither OXIDE nor any installed dependency calls those APIs (searched 2026-10-24). The
+wheel also bundles OpenSSL 4.0.1, against 4.0.3 in 50.0.2. The advisories fixed in
+4.0.3 are mostly in TLS, DTLS and QUIC, which `cryptography` does not expose.
+
+The floor elsewhere keeps every other platform on the patched release. Remove both
+lines when Intel macOS support is dropped, or if pyca ships x86_64 wheels again.
 
 ## Platform-specific behavior
 
