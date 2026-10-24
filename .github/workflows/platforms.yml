@@ -72,6 +72,24 @@ jobs:
           --junitxml=pytest.xml
       - name: Build the wheel and sdist
         run: uv build --out-dir dist
+      # A lock can hide what a user's pip picks from the wheel's own metadata:
+      # by default pip takes the newest release even when it has only an sdist.
+      - name: Install the wheel with pip from its own metadata
+        run: |
+          venv="$RUNNER_TEMP/pip-wheel"
+          uv venv -q --seed "$venv"
+          python="$venv/bin/python"; [ -x "$python" ] || python="$venv/Scripts/python.exe"
+          wheel=$(ls dist/*.whl)
+          "$python" -m pip install -q --dry-run --ignore-installed --report "$RUNNER_TEMP/pip.json" "$wheel"
+          "$python" -I -c "
+          import json, sys
+          report = json.load(open(sys.argv[1]))['install']
+          built = [f\"{i['metadata']['name']} {i['metadata']['version']}\" for i in report
+                   if not i['download_info']['url'].endswith('.whl')]
+          sys.exit(f'pip would build from source: {built}' if built else 0)" "$RUNNER_TEMP/pip.json"
+          "$python" -m pip install -q --only-binary :all: "$wheel"
+          "$python" -m pip check
+          (cd "$RUNNER_TEMP" && "$python" -I "$GITHUB_WORKSPACE/scripts/smoke_dist.py" "$GITHUB_WORKSPACE/fixtures")
       - name: Smoke-test each artifact in a fresh environment
         run: |
           uv export --locked --no-dev --no-emit-project --no-hashes -q -o "$RUNNER_TEMP/requirements.txt"
