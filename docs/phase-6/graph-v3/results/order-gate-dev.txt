@@ -1,0 +1,15 @@
+py: B reproduces baseline-v13 compat on 15 dev tasks
+ts: B reproduces typescript-v10 compat on 26 dev tasks
+metric                      py B      py R     R-B      ts B      ts R     R-B  pooled B  pooled R     R-B
+line_recall@256           0.1797    0.1797 +0.0000    0.1953    0.1953 +0.0000    0.1895    0.1895 +0.0000
+line_recall@1024          0.5484    0.5484 +0.0000    0.3301    0.3301 +0.0000    0.4120    0.4120 +0.0000
+line_recall@4096          0.6586    0.6586 +0.0000    0.3700    0.3700 +0.0000    0.4782    0.4782 +0.0000
+span_recall@256           0.0467    0.0467 +0.0000    0.1933    0.1933 +0.0000    0.1383    0.1383 +0.0000
+span_recall@1024          0.5078    0.5078 +0.0000    0.3200    0.3200 +0.0000    0.3904    0.3904 +0.0000
+span_recall@4096          0.6233    0.6233 +0.0000    0.3578    0.3578 +0.0000    0.4574    0.4574 +0.0000
+gold_unit_share@4096      0.1891    0.1886 -0.0004    0.1770    0.1769 -0.0001    0.1815    0.1813 -0.0002
+py: 7 of 15 tasks change: ['py-semantic-http-retries', 'py-implementors-notifier', 'pallets__flask-5014', 'psf__requests-1142', 'psf__requests-1766', 'psf__requests-2931', 'psf__requests-5414']
+ts: 7 of 25 tasks change: ['ts-default-policy-const', 'coder__code-server-6278', 'darkreader__darkreader-6747', 'microsoft__vscode-106767', 'microsoft__vscode-109750', 'microsoft__vscode-110094', 'microsoft__vscode-153121']
+pooled: 14 of 40 tasks change: ['py-semantic-http-retries', 'py-implementors-notifier', 'pallets__flask-5014', 'psf__requests-1142', 'psf__requests-1766', 'psf__requests-2931', 'psf__requests-5414', 'ts-default-policy-const', 'coder__code-server-6278', 'darkreader__darkreader-6747', 'microsoft__vscode-106767', 'microsoft__vscode-109750', 'microsoft__vscode-110094', 'microsoft__vscode-153121']
+pooled line_recall@4096 R-B +0.0000 (need >= +0.01); worst language line_recall R-B +0.0000 (>= -0.005)
+DEV GATE: FAIL

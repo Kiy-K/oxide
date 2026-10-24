@@ -1,0 +1,13 @@
+  mwaskom__seaborn-3069              symbol:seaborn/_core/plot.py#Plotter                    gold=86 p=0 u=9359 header worse=8
+  psf__requests-2317                 symbol:requests/sessions.py#Session                     gold=5 p=5 u=4686 header worse=2
+  psf__requests-2317                 ests/sessions.py#SessionRedirectMixin.resolve_redirects gold=30 p=1 u=1155 packing: budget worse=4
+  psf__requests-2931                 symbol:requests/models.py#PreparedRequest.prepare_url   gold=17 p=0 u=824 selection: item cap 24 worse=10
+  psf__requests-5414                 symbol:requests/models.py#PreparedRequest.prepare_url   gold=38 p=0 u=996 selection: item cap 24 worse=6
+  coder__code-server-6278            symbol:src/node/app.ts#createApp                        gold=10 p=5 u=365 header worse=4
+  darkreader__darkreader-6747        src/generators/dynamic-theme.ts#formatDynamicThemeFixes gold=19 p=2 u=330 packing: budget worse=2
+  darkreader__darkreader-6747        src/generators/dynamic-theme.ts#getDynamicThemeFixesFor gold=31 p=0 u=718 packing: budget worse=2
+  darkreader__darkreader-6747        :src/generators/dynamic-theme.ts#parseDynamicThemeFixes gold=12 p=5 u=169 packing: budget worse=2
+  microsoft__vscode-110094           ommon/controller/cursorTypeOperations.ts#TypeOperations gold=21 p=3 u=12501 header worse=4
+  microsoft__vscode-135197           src/vs/editor/common/controller/cursorCommon.ts#isQuote gold=3 p=4 u=80 packing: budget worse=3
+  microsoft__vscode-136347           ditor/common/viewLayout/viewLineRenderer.ts#_renderLine gold=48 p=9 u=2331 packing: budget worse=1
+affected tasks: 9
