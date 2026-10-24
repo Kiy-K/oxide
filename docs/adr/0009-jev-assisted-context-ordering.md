@@ -10,6 +10,9 @@ the judge remains a separate decision with its own validation.
 Amended 2026-10-24 by milestone M2 (§ M2), on the maintainer's instruction: an explicit,
 per-repository opt-in now exists. The default is unchanged and still judges nothing.
 
+Amended 2026-10-24 by milestone M3 (§ M3): release-readiness validation, with integration
+fixes only. The policy, manifest and default are unchanged.
+
 This is SPEC's candidate ADR-0009 ("DecisionProvider and optional JEV integration"), cut
 down to the one policy the evidence supports: ordering candidates for selection. Branch
 judgments inside TreeRouter, calibration heads and local judges are out of scope.
@@ -259,6 +262,32 @@ Before release, these remain open:
 - availability and fallback rates in real use;
 - the provider's data retention;
 - latency on large repositories over real networks.
+
+## Release-readiness validation (M3)
+
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m3](../phase-6/jev-order-m3/README.md)).
+The policy, manifest and default are unchanged, and no quality was measured.
+
+- **Long MCP sessions (offline).** 429 calls through one real `oxide mcp` stdio process,
+  cycling through every provider failure. Every outcome was named correctly, and every
+  fallback was the default bundle. After the warm-up, server RSS stayed flat, and
+  threads, fds and child processes held at their start values.
+- **Consent while the session runs.** Revoking, re-enabling, a record for another
+  manifest, an unreadable record, a re-index, another data location and a missing key
+  each took effect on the next request, and none of them sent anything.
+- **Large repositories, live.** 60 requests over three public code bases, under criteria
+  written before the run: 60/60 judged, no deadline hits, `build_context` through MCP
+  p50 1.00 s and p95 1.17 s, about 21.5k billed tokens ($0.0009) a request.
+- **Fixed.** The transport child now honours proxy and CA environment variables. The MCP
+  text names the judge when source was sent. Windows children get no console window.
+  The Windows transport test no longer relies on how fast a refused port is reported.
+- **Provider terms**, verified on 2026-10-24: no training on input, no stated retention
+  period, zero data retention for enterprise customers only, and a perpetual licence to
+  derive telemetry. Which terms govern a self-serve API key is unknown.
+
+Release remains blocked, outside this ADR's code, on two things:
+- the replaced upstream FTS builds, which break fresh installs on three platforms;
+- the maintainer's decision on the provider's terms.
 
 ## Reconsider if
 

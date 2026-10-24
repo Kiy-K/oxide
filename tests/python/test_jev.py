@@ -50,6 +50,9 @@ class Server:
                 if path == "hang":
                     owner.release.wait(10)
                     return
+                if path == "reset":
+                    self.connection.close()
+                    return
                 if path == "late":
                     time.sleep(1.5)
                 status = 529 if path == "busy" else 200
@@ -122,9 +125,26 @@ def test_every_failure_is_one_attempt_with_a_named_outcome(
     assert time.monotonic() - start < 1.5  # killed at the deadline, the late reply unread
 
 
-def test_unreachable_is_a_transport_failure() -> None:
+def test_the_request_goes_through_a_configured_proxy(
+    server: Server, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # judge.invalid never resolves: the request is answered only through the proxy.
+    monkeypatch.setenv("HTTP_PROXY", server.base.rstrip("/"))
+    monkeypatch.delenv("NO_PROXY", raising=False)
+    monkeypatch.delenv("no_proxy", raising=False)
+    caps = _capsules()
+    assert jev.Jev("k", "http://judge.invalid/ok")(caps) == {c.digest: 0.5 for c in caps}
+    # A proxy is sent the absolute URL.
+    assert [(path, auth) for path, _, auth in server.received] == [
+        ("http://judge.invalid/ok", "Bearer k")
+    ]
+
+
+def test_a_dropped_connection_is_a_transport_failure(server: Server) -> None:
+    # Not a refused port: Windows reports refusal only after ~2 s of retries, past the
+    # deadline, so that is a `deadline` there (Platforms CI, 2026-10-24).
     with pytest.raises(Unanswered) as raised:
-        jev.Jev("k", "http://127.0.0.1:9/", deadline=1.0)(_capsules())
+        jev.Jev("k", server.base + "reset", deadline=1.0)(_capsules())
     assert raised.value.outcome == "transport"
 
 

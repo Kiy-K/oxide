@@ -45,6 +45,8 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "xdg-data"))
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "xdg-cache"))
     monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)  # a real key never reaches a test
+    for name in [k for k in os.environ if k.lower().endswith("_proxy")]:
+        monkeypatch.delenv(name)  # localhost judges are reached directly
     return data
 
 

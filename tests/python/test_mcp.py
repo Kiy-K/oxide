@@ -3,6 +3,7 @@ HTTP, against actually indexed repositories with private data locations."""
 
 from __future__ import annotations
 
+import http.server
 import json
 import socket
 import subprocess
@@ -22,7 +23,7 @@ from fastmcp import Client
 from fastmcp.client.transports import StdioTransport
 
 import oxide
-from oxide import mcp_server
+from oxide import jev, mcp_server
 from oxide.mcp_server import server
 
 pytestmark = pytest.mark.anyio
@@ -375,3 +376,35 @@ def test_http_rejects_foreign_hosts_and_origins(http_server: str) -> None:
 def test_http_refuses_non_loopback_hosts(tmp_path: Path) -> None:
     result = cli(tmp_path / "http-data", "mcp", "--http", "--host", "0.0.0.0")
     assert result.returncode == 2 and "invalid choice" in result.stderr
+
+
+async def test_context_text_names_the_judge_when_source_was_sent(
+    indexed: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Judge(http.server.BaseHTTPRequestHandler):
+        def do_POST(self) -> None:
+            sent = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            answers = {q: {"type": "noul", "noul": 0.5} for q in sent["questions"]}
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps({"model": jev.MODEL, "answers": answers}).encode())
+
+        def log_message(self, *args: object) -> None:
+            pass
+
+    judge = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Judge)
+    threading.Thread(target=judge.serve_forever, daemon=True).start()
+    monkeypatch.setattr(jev, "ENDPOINT", f"http://127.0.0.1:{judge.server_port}/")
+    with oxide.open_repository(indexed) as repo:
+        repo.judge(True)
+    async with Client(server([str(indexed)])) as client:
+        bundle = await call(client, "oxide_search", mode="context", query="RetryPolicy")
+        monkeypatch.setenv(jev.KEY_ENV, "k")
+        judged = await call(client, "oxide_search", mode="context", query="RetryPolicy")
+    judge.shutdown()
+    assert "# judged by" not in text(bundle)
+    assert "# degraded: judge typesafe/jev-1.14.0@oxide-capsule-v1 fell back: no_credential\n" in (
+        text(bundle)
+    )
+    assert "# judged by typesafe/jev-1.14.0@oxide-capsule-v1\n" in text(judged)
+    assert "fell back" not in text(judged)

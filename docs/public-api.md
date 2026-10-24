@@ -185,8 +185,10 @@ only while `TYPESAFE_API_KEY` holds a key. A key alone never sends anything.
   each of up to 64 routed candidates, its category, kind, name, path, line range, test
   role, lexical rank and score, hints, route depth and origin keys, and up to 1,024
   bytes of its own source (else its signature). Excluded files and other entities'
-  source are never sent. `JudgeStatus.discloses` says the same. The provider's retention
-  of requests has not been verified.
+  source are never sent. `JudgeStatus.discloses` says the same. TypeSafe's published
+  policies (checked 2026-10-24) say input is not used to train models but set no
+  retention period. Zero data retention is offered to enterprise customers only
+  (`docs/phase-6/jev-order-m3/`).
 - **Where consent lives.** In this repository's store under the data location, naming
   the repository root and the judge's manifest digest, never inside the repository.
   Consent for another manifest (a new model or policy) or another root does not apply:
@@ -198,8 +200,13 @@ only while `TYPESAFE_API_KEY` holds a key. A key alone never sends anything.
   `transport`, `wrong_model`, `unparsable` or `incomplete`.
 - **Cost.** One request, killed at 2.0 s, with no retry. Measured on the fixture
   (`docs/phase-6/jev-order-m2/`): p50 0.70 s added and 3–12k billed tokens (about
-  $0.0003) a request. The study repositories billed about 24k tokens ($0.001) a request. Every client of the API judges once enabled, including `oxide context`
-  and `oxide mcp`.
+  $0.0003) a request. On three larger public code bases through `oxide mcp`
+  (`docs/phase-6/jev-order-m3/`): p50 1.00 s and about 21.5k billed tokens ($0.0009) a
+  request. Every client of the API judges once enabled, including `oxide context` and
+  `oxide mcp`. The MCP text header then includes `# judged by <identity>`.
+- **Network.** The request honours `HTTP(S)_PROXY`, `NO_PROXY`, `SSL_CERT_FILE` and
+  `SSL_CERT_DIR`. The key is read from the environment of the process that serves the
+  request, so a running `oxide mcp` needs a restart to see a new key.
 - **Disable**: `repo.judge(False)` or `oxide judge PATH --disable`.
 
 ## Arguments

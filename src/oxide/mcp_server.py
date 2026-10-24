@@ -200,6 +200,8 @@ def server(repos: Sequence[str] = (), data_dir: str | None = None) -> FastMCP:
             f"{len(bundle.items)} items, {len(bundle.omissions)} omitted, "
             f"snapshot {bundle.snapshot.snapshot_id}\n"
         )
+        if "judge" in bundle.versions:  # this repository's source went to the judge
+            head += f"# judged by {bundle.versions['judge']}\n"
         head += "".join(f"# degraded: {d}\n" for d in bundle.degradations)
         # The model reads the payload as text; applications get the whole bundle.
         return ToolResult(

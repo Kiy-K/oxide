@@ -45,7 +45,9 @@ DISCLOSES = (
     "each of up to 64 routed candidates, its category, kind, name, path, line range, "
     "test role, lexical rank and score, hints, route depth and origin keys, and up to "
     "1,024 bytes of its own source (else its signature). Excluded files and other "
-    "entities' source are never sent. The provider's retention of requests is not verified."
+    "entities' source are never sent. TypeSafe's published policies (checked 2026-10-24, "
+    "typesafe.ai/legal) say input is not used to train models but set no retention period; "
+    "zero data retention is offered to enterprise customers only."
 )
 RENDERER = "ds1-compact-v1"
 QUESTION = (
@@ -89,6 +91,7 @@ try:
 except urllib.error.HTTPError as e:
     print(json.dumps({"status": e.code, "body": e.read().decode(errors="replace")}))
 """
+_CHILD_ENV = ("PATH", "SYSTEMROOT", "SSL_CERT_FILE", "SSL_CERT_DIR")
 
 
 def questions(n: int) -> dict[str, Any]:
@@ -148,7 +151,9 @@ def body(capsules: Sequence[Capsule]) -> dict[str, Any]:
 def call(url: str, payload: dict[str, Any], key: str, deadline: float) -> dict[str, Any]:
     """One request in a child process killed at ``deadline``: status, latency, body."""
     job = json.dumps({"url": url, "body": payload, "key": key, "deadline": deadline})
-    env = {k: v for k in ("PATH", "SYSTEMROOT") if (v := os.environ.get(k)) is not None}
+    # SYSTEMROOT: Windows sockets need it; proxies and CA bundles: networks that require
+    # them. The key travels on stdin, never in the environment.
+    env = {k: v for k, v in os.environ.items() if k in _CHILD_ENV or k.lower().endswith("_proxy")}
     start = time.monotonic()
     try:
         done = subprocess.run(
@@ -157,7 +162,9 @@ def call(url: str, payload: dict[str, Any], key: str, deadline: float) -> dict[s
             capture_output=True,
             text=True,
             timeout=deadline,  # kills the child on expiry
-            env=env,  # SYSTEMROOT: Windows sockets need it
+            env=env,
+            # No console window per request under a windowless MCP host (Windows only).
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         )
     except subprocess.TimeoutExpired:
         return {"status": "killed", "latency_s": time.monotonic() - start}
