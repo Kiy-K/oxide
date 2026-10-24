@@ -16,7 +16,7 @@ import sys
 from typing import Any
 
 from oxide.api import open_repository
-from oxide.models import IndexReport, OxideError
+from oxide.models import IndexReport, JudgeStatus, OxideError
 from oxide.storage.ladybug import prepare_fts
 
 
@@ -70,6 +70,26 @@ def _index_summary(report: IndexReport) -> str:
     return "\n".join(lines)
 
 
+def _judge_summary(status: JudgeStatus, path: str) -> str:
+    if status.enabled:
+        state = "enabled: build_context sends this repository's source to it"
+    elif status.authorized:
+        state = "disabled: the stored authorization is for another manifest; re-run --enable"
+    else:
+        state = "disabled: nothing is sent"
+    key = "set" if status.credential_set else "not set (an enabled judge falls back)"
+    return "\n".join(
+        [
+            f"judge {status.provider}: {state}",
+            f"endpoint: {status.endpoint}",
+            f"manifest: {status.manifest}",
+            f"credential: {status.credential} {key}",
+            f"sends: {status.discloses}",
+            f"enable: oxide judge {path} --enable; disable: oxide judge {path} --disable",
+        ]
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     for stream in (sys.stdout, sys.stderr):  # Windows pipes default to the ANSI code page
         if isinstance(stream, io.TextIOWrapper):
@@ -87,6 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     serve.add_argument("--port", type=int, default=8765)
     for name, text in (
         ("index", "capture and index a repository"),
+        ("judge", "show, enable or disable the optional JEV judge (sends source)"),
         ("search", "show entry-point candidates for a query"),
         ("context", "build a bounded context bundle for a query"),
     ):
@@ -94,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("path")
         command.add_argument("--data-dir", help="data location (default: OXIDE_DATA_DIR or XDG)")
         command.add_argument("--json", action="store_true", help="print the typed result as JSON")
-        if name != "index":
+        if name not in ("index", "judge"):
             command.add_argument("query")
             command.add_argument("--symbol", action="append", default=[], help="symbol hint")
             command.add_argument("--file", action="append", default=[], help="path hint")
@@ -102,6 +123,10 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--limit", type=int, default=20)
         if name == "context":
             command.add_argument("--budget", type=int, default=2048)
+        if name == "judge":
+            switch = command.add_mutually_exclusive_group()
+            switch.add_argument("--enable", action="store_true", help="authorize sending")
+            switch.add_argument("--disable", action="store_true", help="revoke it")
     args = parser.parse_args(argv)
     try:
         if args.command == "prepare":
@@ -113,12 +138,17 @@ def main(argv: list[str] | None = None) -> int:
 
             serve_mcp(args.repo, args.data_dir, args.http, args.host, args.port)
             return 0
-        create = args.command == "index"  # reads never leave an empty store behind
+        # Reads never leave an empty store behind.
+        create = args.command == "index" or getattr(args, "enable", False)
         with open_repository(args.path, data_dir=args.data_dir, create=create) as repo:
             result: Any
             if args.command == "index":
                 result = repo.index(progress=lambda line: print(f"oxide: {line}", file=sys.stderr))
                 text = _index_summary(result)
+            elif args.command == "judge":
+                enable = True if args.enable else False if args.disable else None
+                result = repo.judge(enable)
+                text = _judge_summary(result, args.path)
             elif args.command == "search":
                 result = repo.search(
                     args.query, limit=args.limit, paths=args.file, symbols=args.symbol
@@ -134,6 +164,11 @@ def main(argv: list[str] | None = None) -> int:
                     args.query, args.budget, paths=args.file, symbols=args.symbol
                 )
                 print(f"{result.used}/{result.budget} {result.units}", file=sys.stderr)
+                if "judge" in result.versions:
+                    print(f"judged by {result.versions['judge']}", file=sys.stderr)
+                for line in result.degradations:
+                    if line.startswith("judge "):
+                        print(line, file=sys.stderr)
                 text = result.payload
             output = json.dumps(_plain(result), indent=2, ensure_ascii=False) if args.json else text
             print(output.rstrip("\n"))

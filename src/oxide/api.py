@@ -22,6 +22,7 @@ from pathlib import Path
 from types import TracebackType
 from typing import Any, Literal
 
+from oxide import jev
 from oxide.capture import capture
 from oxide.core import navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.indexing import components, derive, dialect, validate
@@ -37,6 +38,7 @@ from oxide.models import (
     IndexReport,
     InvalidArgument,
     InvalidPath,
+    JudgeStatus,
     Relation,
     RouteSummary,
     SearchResult,
@@ -306,8 +308,20 @@ class Repository:
         selection: tuple[str, int, int] | None = None,
         changed: Iterable[str] = (),
     ) -> ContextBundle:
-        """A bounded, source-backed context bundle: ``used <= budget`` units."""
-        return self._context(query, budget, paths, symbols, selection, changed, None)
+        """A bounded, source-backed context bundle: ``used <= budget`` units. Ordered by
+        the optional judge only when this repository authorized it (``judge``)."""
+        by = jev.configured(self)
+        return self._context(query, budget, paths, symbols, selection, changed, by)
+
+    def judge(self, enable: bool | None = None) -> JudgeStatus:
+        """The optional judge's status for this repository (ADR-0009). ``True`` authorizes
+        ``build_context`` to send this repository's source to it, ``False`` revokes that.
+        The authorization lives in this repository's store, never in the repository."""
+        if enable is not None and not isinstance(enable, bool):
+            raise InvalidArgument(f"enable must be True, False or None, got {enable!r}")
+        if enable is not None:
+            (jev.authorize if enable else jev.revoke)(self)
+        return jev.status(self)
 
     def _context(
         self,

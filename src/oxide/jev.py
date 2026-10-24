@@ -8,8 +8,10 @@ question per capsule. The call runs in a child process killed at the 2.0 s deadl
 no late reply is read and nothing outlives the request. There is no retry. Any failure
 raises ``ordering.Unanswered`` with its outcome, and the request keeps the heuristic.
 
-Source leaves the machine only for a repository the caller explicitly authorized
-(``order``). A credential is not consent: without that authorization nothing is sent.
+Source leaves the machine only for a repository explicitly authorized for this
+manifest: ``Repository.judge(True)`` stores that authorization in the repository's store
+under the data location, never in the repository itself (``configured``). A credential
+is not consent: a key without that authorization sends nothing.
 """
 
 from __future__ import annotations
@@ -27,7 +29,8 @@ from typing import TYPE_CHECKING, Any
 
 from oxide.core.capsule import DEADLINE, Capsule, CapsuleJudge
 from oxide.core.ordering import AdmittedOrder, Order, Unanswered
-from oxide.models import SourceRef
+from oxide.models import JudgeStatus, SourceRef
+from oxide.storage.ladybug import _write_atomic
 
 if TYPE_CHECKING:
     from oxide.api import Repository
@@ -35,6 +38,15 @@ if TYPE_CHECKING:
 ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 MODEL = "jev-1.14.0"
 NAME = f"typesafe/{MODEL}"
+KEY_ENV = "TYPESAFE_API_KEY"
+CONSENT = "judge.json"  # in the repository's store directory
+DISCLOSES = (
+    "Each build_context sends one request: the query (clipped to 1,024 bytes) and, for "
+    "each of up to 64 routed candidates, its category, kind, name, path, line range, "
+    "test role, lexical rank and score, hints, route depth and origin keys, and up to "
+    "1,024 bytes of its own source (else its signature). Excluded files and other "
+    "entities' source are never sent. The provider's retention of requests is not verified."
+)
 RENDERER = "ds1-compact-v1"
 QUESTION = (
     "The state describes one software task and candidate code regions found for it. "
@@ -197,8 +209,20 @@ class Jev:
         return decide(reply, capsules, self.deadline)
 
 
-def _refused(capsules: Sequence[Capsule]) -> Mapping[str, float | None]:
-    raise Unanswered("not_authorized")
+def _refused(outcome: str) -> Callable[[Sequence[Capsule]], Mapping[str, float | None]]:
+    def refuse(capsules: Sequence[Capsule]) -> Mapping[str, float | None]:
+        raise Unanswered(outcome)
+
+    return refuse
+
+
+def _order(adapter: Callable[[Sequence[Capsule]], Mapping[str, float | None]]) -> Order:
+    def build(query: str, derivation: str, source: Callable[[SourceRef], bytes]) -> AdmittedOrder:
+        return AdmittedOrder(
+            CapsuleJudge(NAME, query, derivation, source, adapter), MANIFEST_DIGEST
+        )
+
+    return build
 
 
 def order(
@@ -207,11 +231,54 @@ def order(
     """JEV ordering for ``repository``, sending its source only if ``authorized`` names
     its root; otherwise every request falls back as ``not_authorized``, unsent."""
     allowed = Path(authorized).resolve() == repository.root
-    adapter = Jev(key, url) if allowed else _refused
+    return _order(Jev(key, url) if allowed else _refused("not_authorized"))
 
-    def build(query: str, derivation: str, source: Callable[[SourceRef], bytes]) -> AdmittedOrder:
-        return AdmittedOrder(
-            CapsuleJudge(NAME, query, derivation, source, adapter), MANIFEST_DIGEST
-        )
 
-    return build
+def _authorized(repository: Repository) -> str | None:
+    """The manifest this repository's stored authorization names: None without one, ""
+    when it is unreadable or names another root (which never authorizes)."""
+    path = repository.store.dir / CONSENT
+    if not path.exists():
+        return None
+    try:
+        stored = json.loads(path.read_bytes())
+        manifest, root = stored["manifest"], stored["root"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return ""
+    return manifest if root == str(repository.root) and isinstance(manifest, str) else ""
+
+
+def configured(repository: Repository) -> Order | None:
+    """The ordering ``build_context`` uses: None (nothing judged, today's bundle) unless
+    the repository has a stored authorization. One for another manifest, or without a
+    key in ``KEY_ENV``, falls back visibly and sends nothing."""
+    manifest = _authorized(repository)
+    if manifest is None:
+        return None
+    key = os.environ.get(KEY_ENV, "")
+    if manifest != MANIFEST_DIGEST:
+        return _order(_refused("not_authorized"))
+    return _order(Jev(key, ENDPOINT) if key else _refused("no_credential"))
+
+
+def status(repository: Repository) -> JudgeStatus:
+    manifest = _authorized(repository)
+    return JudgeStatus(
+        enabled=manifest == MANIFEST_DIGEST,
+        provider=NAME,
+        endpoint=ENDPOINT,
+        manifest=MANIFEST_DIGEST,
+        authorized=manifest or None,
+        credential=KEY_ENV,
+        credential_set=bool(os.environ.get(KEY_ENV)),
+        discloses=DISCLOSES,
+    )
+
+
+def authorize(repository: Repository) -> None:
+    record = {"root": str(repository.root), "provider": NAME, "manifest": MANIFEST_DIGEST}
+    _write_atomic(repository.store.dir / CONSENT, json.dumps(record).encode())
+
+
+def revoke(repository: Repository) -> None:
+    (repository.store.dir / CONSENT).unlink(missing_ok=True)

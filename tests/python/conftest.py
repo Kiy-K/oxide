@@ -44,6 +44,7 @@ def private_data(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("OXIDE_DATA_DIR", str(data))
     monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path / "xdg-data"))
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "xdg-cache"))
+    monkeypatch.delenv("TYPESAFE_API_KEY", raising=False)  # a real key never reaches a test
     return data
 
 

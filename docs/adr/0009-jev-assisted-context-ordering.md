@@ -7,6 +7,9 @@ authorized milestone M1. Proposed earlier the same day (`f179471`). Accepting it
 public configuration and does not change the production default: exposing or enabling
 the judge remains a separate decision with its own validation.
 
+Amended 2026-10-24 by milestone M2 (§ M2), on the maintainer's instruction: an explicit,
+per-repository opt-in now exists. The default is unchanged and still judges nothing.
+
 This is SPEC's candidate ADR-0009 ("DecisionProvider and optional JEV integration"), cut
 down to the one policy the evidence supports: ordering candidates for selection. Branch
 judgments inside TreeRouter, calibration heads and local judges are out of scope.
@@ -74,8 +77,8 @@ network call does not (§ 3).
 - **Failure reporting.** Each judged request ends in exactly one outcome: `judged`, or a
   fallback from a closed set: `not_authorized` (nothing sent), `unsendable` (a member of A
   has no capsule), `deadline`, `http <status>` (including 529 and `400
-  max_tokens_exceeded`), `transport`, `wrong_model`, `unparsable`, `incomplete`. A
-  fallback packs the same spans and units as production. Item and omission reasons
+  max_tokens_exceeded`), `transport`, `wrong_model`, `unparsable`, `incomplete`, and
+  `no_credential` (M2). A fallback packs the same spans and units as production. Item and omission reasons
   carry `judged`'s existing suffix, and one `degradations` entry names the outcome.
   Success and fallback counts are observable per request and never silent.
 
@@ -215,6 +218,47 @@ claim.
 
 Out of M1: public configuration, CLI/MCP exposure, a default change, retries, a breaker,
 a different deadline, other models, renderers or languages, and router branch judgments.
+
+## Opt-in surface and live check (M2)
+
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m2](../phase-6/jev-order-m2/README.md)).
+This amends § 5: the adapter stays internal, and one opt-in is public.
+
+- **Authorization is the configuration.** `Repository.judge(True)` records consent for
+  exactly this repository root and the current manifest digest, in the repository's
+  store under the data location (`judge.json`), never in the repository, so a cloned
+  repository cannot authorize itself. `judge(False)` revokes it. `judge()` returns a
+  `JudgeStatus`: provider, endpoint, manifest, credential and what is sent. The CLI
+  wraps it as `oxide judge PATH [--enable | --disable]`.
+- **`build_context` judges only with that consent.** Without it, `build_context` passes
+  no judge and its bundle is unchanged. The cost is one `stat` of the consent file. With
+  it, every client of the API judges, including `oxide context` and `oxide mcp`.
+- **A key is a credential, not consent.** The key is read from `TYPESAFE_API_KEY` at
+  request time. A key without consent sends nothing. Consent without a key falls back as
+  `no_credential`, which is added to § 2's closed set.
+- **Identity changes never carry consent over.** Consent names the manifest digest. If
+  the stored manifest differs from the current one (a new model, renderer, questions or
+  deadline), or the stored record is unreadable or names another root, the request
+  falls back as `not_authorized`, unsent and reported. The user has to re-run
+  `--enable` for the new identity, which § 4 requires to pass its own confirmation
+  first. As in M1, a reply naming another model is `wrong_model`, and one that is not
+  the expected format is `unparsable`.
+- **Visible outcome.** `oxide context` prints `judged by <identity>` or the fallback
+  line to stderr. MCP already shows degradations.
+
+Measured live on the public fixture `fixtures/py_repo` (14 requests, $0.0028, under the
+maintainer's spend and corpus authorization):
+- every judged request answered with `jev-1.14.0`;
+- end-to-end judged `build_context` p50 0.70 s, max 1.20 s;
+- an invalid key fell back as `http 401`, and a 0.3 s deadline was killed at 0.32 s;
+- both fallbacks packed production's spans, and no judge thread survived.
+
+The study corpora were not touched, and no quality was measured.
+
+Before release, these remain open:
+- availability and fallback rates in real use;
+- the provider's data retention;
+- latency on large repositories over real networks.
 
 ## Reconsider if
 

@@ -174,3 +174,109 @@ def test_a_hung_judge_falls_back_and_leaves_nothing_running(
     while any(t.name == "oxide-judge" for t in threading.enumerate()):
         assert time.monotonic() < limit, "a judge thread outlived the request"
         time.sleep(0.05)
+
+
+# The opt-in surface (ADR-0009 M2): an authorization stored per repository and manifest.
+
+
+def _spans(bundle: oxide.ContextBundle) -> list[Any]:
+    return [(i.source, i.units) for i in bundle.items]
+
+
+def test_disabled_by_default_and_a_key_alone_sends_nothing(
+    repo: oxide.Repository, server: Server, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    before = repo.build_context(QUERY, 1024)
+    monkeypatch.setattr(jev, "ENDPOINT", server.base + "ok")
+    monkeypatch.setenv(jev.KEY_ENV, "k")
+    status = repo.judge()
+    assert not status.enabled and status.authorized is None and status.credential_set
+    assert repo.build_context(QUERY, 1024) == before
+    assert server.received == []
+
+
+def test_an_enabled_repository_is_judged_and_revoking_restores_production(
+    repo: oxide.Repository, server: Server, monkeypatch: pytest.MonkeyPatch, private_data: Path
+) -> None:
+    plain = repo.build_context(QUERY, 1024)
+    monkeypatch.setattr(jev, "ENDPOINT", server.base + "ok")
+    monkeypatch.setenv(jev.KEY_ENV, "k")
+    status = repo.judge(True)
+    assert status.enabled and status.authorized == jev.MANIFEST_DIGEST
+    assert status.endpoint == server.base + "ok" and "1,024 bytes" in status.discloses
+    # Stored under the data location, never in the repository.
+    assert (repo.store.dir / jev.CONSENT).is_relative_to(private_data)
+    assert not list(FIXTURE.rglob(jev.CONSENT))
+    judged = repo.build_context(QUERY, 1024)
+    assert len(server.received) == 1 and server.received[0][2] == "Bearer k"
+    assert judged.versions["judge_manifest"] == jev.MANIFEST_DIGEST
+    assert not repo.judge(False).enabled
+    assert repo.build_context(QUERY, 1024) == plain
+    assert len(server.received) == 1
+
+
+@pytest.mark.parametrize(
+    ("stored", "outcome"),
+    [
+        ({"manifest": "sha256:other"}, "not_authorized"),  # another model or policy
+        ({"manifest": jev.MANIFEST_DIGEST, "root": "/elsewhere"}, "not_authorized"),
+        (None, "not_authorized"),  # unreadable
+        ({"manifest": jev.MANIFEST_DIGEST}, "no_credential"),
+    ],
+)
+def test_a_stale_or_unusable_authorization_falls_back_visibly_and_unsent(
+    repo: oxide.Repository,
+    server: Server,
+    monkeypatch: pytest.MonkeyPatch,
+    stored: dict[str, str] | None,
+    outcome: str,
+) -> None:
+    plain = repo.build_context(QUERY, 1024)
+    monkeypatch.setattr(jev, "ENDPOINT", server.base + "ok")
+    if outcome != "no_credential":
+        monkeypatch.setenv(jev.KEY_ENV, "k")
+    path = repo.store.dir / jev.CONSENT
+    path.write_text("{" if stored is None else json.dumps({"root": str(repo.root)} | stored))
+    assert not repo.judge().enabled or outcome == "no_credential"
+    bundle = repo.build_context(QUERY, 1024)
+    assert server.received == []
+    assert bundle.degradations[-1].endswith(f"fell back: {outcome}")
+    assert _spans(bundle) == _spans(plain) and bundle.versions == plain.versions
+
+
+def test_judge_rejects_a_non_boolean(repo: oxide.Repository) -> None:
+    with pytest.raises(oxide.models.InvalidArgument):
+        repo.judge(1)  # type: ignore[arg-type]
+
+
+def test_an_authorization_covers_only_its_repository(
+    repo_copy: Path, fts: Path, server: Server, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(jev, "ENDPOINT", server.base + "ok")
+    monkeypatch.setenv(jev.KEY_ENV, "k")
+    with oxide.open_repository(FIXTURE) as a:
+        a.index()
+        a.judge(True)
+    with oxide.open_repository(repo_copy) as b:
+        b.index()
+        assert not b.judge().enabled
+        b.build_context(QUERY, 1024)
+    assert server.received == []
+
+
+def test_the_cli_shows_what_is_sent_and_how_to_disable(
+    repo_copy: Path, fts: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from oxide.cli import main
+
+    assert main(["index", str(repo_copy)]) == 0
+    assert main(["judge", str(repo_copy)]) == 0
+    shown = capsys.readouterr().out
+    assert "disabled: nothing is sent" in shown and jev.ENDPOINT in shown
+    assert f"oxide judge {repo_copy} --disable" in shown and "retention" in shown
+    assert main(["judge", str(repo_copy), "--enable"]) == 0
+    assert "enabled" in capsys.readouterr().out
+    assert main(["context", str(repo_copy), QUERY]) == 0  # no key: falls back, says so
+    assert "fell back: no_credential" in capsys.readouterr().err
+    assert main(["judge", str(repo_copy), "--disable", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["enabled"] is False

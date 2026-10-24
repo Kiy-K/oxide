@@ -36,6 +36,7 @@ once.
 | `Repository.index(*, progress=None)` | `IndexReport` | Capture → derive → publish a new generation atomically; `unchanged` when snapshot and derivation are already current. Incremental: Python and TypeScript files whose bytes the current generation parsed reuse their parse facts; resolution and publication always cover the whole snapshot, so the result equals a full rebuild. `progress(line)` is called as each stage starts |
 | `Repository.search(query, *, limit, paths, symbols, selection, changed)` | `SearchResult` | Entry points for inspection: seeds in hint order, then BM25 rank; never final context |
 | `Repository.build_context(query, budget, *, paths, symbols, selection, changed)` | `ContextBundle` | Retrieval → TreeRouter → deterministic selection → packing |
+| `Repository.judge(enable=None)` | `JudgeStatus` | The optional JEV judge for this repository (§ Optional judge). `True` authorizes `build_context` to send this repository's source to TypeSafe, `False` revokes it, `None` only reads. Off unless enabled |
 | `Repository.structural_search(rule, *, language, paths, limit=100)` | `StructuralResult` | Explicit structural search (§ Structural search). Never ranked, packed or used by `search`/`build_context` |
 | `Repository.impact(key, *, direction="upstream", depth=3, limit=200)` | `Impact` | Bounded dependents (`upstream`) or dependencies (`downstream`) of one entity, with proven and unproven depths (§ Impact). Never ranked or packed |
 | `Repository.entity(key)` / `relations(key)` / `files()` | `Entity \| None`, `list[Relation]`, `list[FileInfo]` | Typed graph and coverage inspection |
@@ -173,6 +174,34 @@ Code's 3,902 TypeScript files; through this API, with entity lookups,
   block first";
 - relational `has` also visits unnamed tokens like `{` and `}`.
 
+## Optional judge
+
+`build_context` can order its admitted candidates with TypeSafe JEV `jev-1.14.0`
+([ADR-0009](adr/0009-jev-assisted-context-ordering.md)). It is off by default. It is on
+for one repository only after `repo.judge(True)` (or `oxide judge PATH --enable`), and
+only while `TYPESAFE_API_KEY` holds a key. A key alone never sends anything.
+
+- **What is sent**, once per `build_context`: the query (clipped to 1,024 bytes) and, for
+  each of up to 64 routed candidates, its category, kind, name, path, line range, test
+  role, lexical rank and score, hints, route depth and origin keys, and up to 1,024
+  bytes of its own source (else its signature). Excluded files and other entities'
+  source are never sent. `JudgeStatus.discloses` says the same. The provider's retention
+  of requests has not been verified.
+- **Where consent lives.** In this repository's store under the data location, naming
+  the repository root and the judge's manifest digest, never inside the repository.
+  Consent for another manifest (a new model or policy) or another root does not apply:
+  such requests fall back as `not_authorized` and nothing is sent.
+- **What a judged bundle shows.** Its `versions` add `order`, `judge` and
+  `judge_manifest`. A request that falls back packs exactly the bundle of the default
+  path, plus one `degradations` entry, `judge … fell back: <outcome>`. The outcome is
+  one of `not_authorized`, `no_credential`, `unsendable`, `deadline`, `http <status>`,
+  `transport`, `wrong_model`, `unparsable` or `incomplete`.
+- **Cost.** One request, killed at 2.0 s, with no retry. Measured on the fixture
+  (`docs/phase-6/jev-order-m2/`): p50 0.70 s added and 3–12k billed tokens (about
+  $0.0003) a request. The study repositories billed about 24k tokens ($0.001) a request. Every client of the API judges once enabled, including `oxide context`
+  and `oxide mcp`.
+- **Disable**: `repo.judge(False)` or `oxide judge PATH --disable`.
+
 ## Arguments
 
 Checked before any query is built. A violation is `InvalidArgument`, which is both
@@ -266,11 +295,13 @@ Damage is classified like this:
 
 ## CLI
 
-`oxide index|search|context <path> [...] [--data-dir D] [--json]` and
-`oxide prepare`. `index` prints its progress to stderr and a summary to stdout:
+`oxide index|search|context|judge <path> [...] [--data-dir D] [--json]` and
+`oxide prepare`. `judge` shows the optional judge's status, what it sends and how to
+disable it. `--enable` and `--disable` switch it (§ Optional judge). `index` prints its progress to stderr and a summary to stdout:
 counts, changes since the last index, source files parsed and reused (`sources:`), then any
 partial parses, skips, unsupported files and case collisions. `context` prints the
-payload to stdout and `used/budget units` to stderr. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
+payload to stdout and `used/budget units` to stderr, plus `judged by …` or the
+judge's fallback line when a judge is enabled. OXIDE errors print `error[<code>]: <message>` to stderr and exit 2,
 and malformed command lines print argparse usage and also exit 2. Any exit 1
 with a traceback is a bug. `search` and `context` open with `create=False`, so
 they never leave an empty store behind.

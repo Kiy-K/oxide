@@ -273,6 +273,23 @@ class ContextBundle:
         return "".join(item.text for item in self.items)
 
 
+@dataclass(frozen=True, slots=True)
+class JudgeStatus:
+    """Whether ``build_context`` may send this repository's source to the optional judge
+    (ADR-0009), where, and what it sends. ``enabled`` needs an authorization stored for
+    exactly this repository and ``manifest``; ``authorized`` is the manifest a stored
+    authorization names, if any. A key in ``credential`` never enables it by itself."""
+
+    enabled: bool
+    provider: str
+    endpoint: str
+    manifest: str
+    authorized: str | None
+    credential: str
+    credential_set: bool
+    discloses: str
+
+
 class OxideError(Exception):
     """Base of every OXIDE failure; ``code`` is stable, the message is for humans."""
 
