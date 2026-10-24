@@ -1,0 +1,7 @@
+v2-dev: 15 request bodies identical to the study adapter's
+v2-dev compact: every task and budget equal to the study's arm; {'tasks': 15, 'fallback_bundles': 0, 'macro_line_recall': {256: 0.262, 1024: 0.6086, 4096: 0.7829}}
+v2-heldout: 29 request bodies identical to the study adapter's
+v2-heldout compact: every task and budget equal to the study's arm; {'tasks': 29, 'fallback_bundles': 30, 'macro_line_recall': {256: 0.0515, 1024: 0.2298, 4096: 0.3602}}
+v3: 52 request bodies identical to the study adapter's
+v3 compact: every task and budget equal to the study's arm; {'tasks': 52, 'fallback_bundles': 0, 'macro_line_recall': {256: 0.0334, 1024: 0.3026, 4096: 0.4755}}
+v3 compact-repeat: every task and budget equal to the study's arm; {'tasks': 52, 'fallback_bundles': 6, 'macro_line_recall': {256: 0.0318, 1024: 0.2977, 4096: 0.4686}}

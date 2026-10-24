@@ -23,7 +23,7 @@ from types import TracebackType
 from typing import Any, Literal
 
 from oxide.capture import capture
-from oxide.core import navigation, packing, retrieval, routing, structural
+from oxide.core import navigation, ordering, packing, retrieval, routing, structural
 from oxide.core.indexing import components, derive, dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
@@ -307,6 +307,19 @@ class Repository:
         changed: Iterable[str] = (),
     ) -> ContextBundle:
         """A bounded, source-backed context bundle: ``used <= budget`` units."""
+        return self._context(query, budget, paths, symbols, selection, changed, None)
+
+    def _context(
+        self,
+        query: str,
+        budget: int,
+        paths: Iterable[str],
+        symbols: Iterable[str],
+        selection: tuple[str, int, int] | None,
+        changed: Iterable[str],
+        by: ordering.Order | None,
+    ) -> ContextBundle:
+        """``build_context``, optionally ordered ``by`` a judge. Internal (ADR-0009 § 5)."""
         hints = _hints(query, paths, symbols, selection, changed)
         budget = _count("budget", budget, MAX_BUDGET)
         view = self._view()
@@ -354,7 +367,8 @@ class Repository:
             ]
             for k in files
         }
-        items, omissions = packing.pack(pool, known, budget, view.source, declarations)
+        judge = by(query, view.snapshot.derivation_id, view.source) if by else None
+        items, omissions = packing.pack(pool, known, budget, view.source, declarations, judge)
         degradations = []
         if found.lexical.state != "ran":
             degradations.append(f"lexical channel {found.lexical.state}: {found.lexical.detail}")
@@ -365,6 +379,8 @@ class Repository:
         incomplete = {f.path for f in view.files.values() if f.coverage != "complete"}
         used_paths = {c.entity.source.path for c in pool if c.entity.source is not None}
         degradations += [f"incomplete parse: {path}" for path in sorted(used_paths & incomplete)]
+        if judge is not None and judge.outcome not in (None, "judged"):
+            degradations.append(f"judge {judge.identity} fell back: {judge.outcome}")
         summary = RouteSummary(
             route.root_fallback,
             route.regions,
@@ -380,6 +396,8 @@ class Repository:
             "payload": packing.PAYLOAD_VERSION,
             "derivation": view.snapshot.derivation_id,
         }
+        if judge is not None and judge.outcome == "judged":
+            versions |= judge.versions
         return ContextBundle(
             snapshot=view.snapshot,
             query=query,
