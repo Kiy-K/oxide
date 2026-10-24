@@ -23,13 +23,19 @@ tokenizer. Payload ``oxide-payload-v3``: per item ``### <path>:<l1>-<l2> <names>
 then its source (a module-level run is named ``(module-level)``); files in
 first-selection order, spans in byte order, overlapping spans of one file merged and
 counted once.
+
+An optional ``DecisionProvider`` (SPEC § DecisionProvider) may replace ``value`` for
+the candidates it judges; floor, caps, tiers, order and budget stay deterministic. A
+missing, abstained, invalid or failed judgment keeps the heuristic value, with the
+reason. Without a provider the bundle is byte-identical to the heuristic path.
 """
 
 from __future__ import annotations
 
 import re
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
+from typing import Protocol
 
 from oxide.models import ContextItem, Entity, ItemEntity, Omission, SourceRef
 
@@ -72,6 +78,58 @@ def value(c: Candidate) -> tuple[float, str]:
     if c.rank is not None:
         return max(0.5, 0.85 - 0.025 * (c.rank - 1)), f"lexical rank {c.rank}"
     return (0.45 if c.depth == 1 else 0.3), f"routed depth {c.depth}"
+
+
+class DecisionProvider(Protocol):
+    """A request-scoped judge (it already holds the query): a relevance value in
+    [0, 1] per candidate key, or None to abstain. Keys it omits keep the heuristic."""
+
+    @property
+    def identity(self) -> str: ...
+
+    def judge(self, candidates: Sequence[Candidate]) -> Mapping[str, float | None]: ...
+
+
+@dataclass(frozen=True, slots=True)
+class Replay:
+    """Recorded judgments by candidate key: the deterministic fake, and the exact
+    replay of a captured judged run."""
+
+    identity: str
+    judgments: Mapping[str, float | None]
+
+    def judge(self, candidates: Sequence[Candidate]) -> Mapping[str, float | None]:
+        keys = {c.entity.key for c in candidates}
+        return {k: v for k, v in self.judgments.items() if k in keys}
+
+
+def judged(
+    provider: DecisionProvider, candidates: Sequence[Candidate]
+) -> dict[str, tuple[float, str]]:
+    """Value and basis per candidate: a valid judgment, else the heuristic with why."""
+    values = {c.entity.key: value(c) for c in candidates}
+    name = provider.identity
+    try:
+        found = provider.judge(tuple(candidates))
+        failure = None if isinstance(found, Mapping) else "returned no mapping"
+        if failure is None and not found.keys() <= values.keys():
+            failure = "judged an unknown candidate"
+    except Exception as error:  # any provider failure leaves the deterministic path
+        failure = f"failed ({type(error).__name__})"
+    if failure is not None:
+        return {k: (score, f"{basis}, {name} {failure}") for k, (score, basis) in values.items()}
+    out = {}
+    for key, (score, basis) in values.items():
+        got = found.get(key, ...)
+        if got is ...:
+            out[key] = (score, f"{basis}, {name} missing")
+        elif got is None:
+            out[key] = (score, f"{basis}, {name} abstained")
+        elif isinstance(got, (int, float)) and not isinstance(got, bool) and 0 <= got <= 1:
+            out[key] = (float(got), f"judged by {name}")  # NaN and infinities fail the range
+        else:
+            out[key] = (score, f"{basis}, {name} invalid")
+    return out
 
 
 def display(key: str) -> str:
@@ -224,25 +282,35 @@ def pack(
     budget: int,
     source: Callable[[SourceRef], bytes],
     declarations: Mapping[str, list[tuple[int, int]]],
+    judge: DecisionProvider | None = None,
 ) -> tuple[list[ContextItem], list[Omission]]:
     """``pool`` in graph order (entry points first); ``scopes`` holds every enclosing
     declaration of a pool symbol; ``declarations`` the top-level declaration byte
-    ranges of every parsed Python file in the pool. Returns packed items and every
-    omission."""
+    ranges of every parsed Python file in the pool; ``judge`` an optional provider,
+    asked once about the candidates that have a source and are not containers.
+    Returns packed items and every omission."""
     packer = _Packer(budget, source, declarations)
     omissions: list[Omission] = []
     scored = []
+
+    def container(c: Candidate) -> bool:
+        category = c.entity.category
+        return category not in ("symbol", "file") or (
+            category == "file" and c.entity.key not in declarations
+        )
+
+    asked = [c for c in pool if not container(c) and c.entity.source is not None]
+    values = judged(judge, asked) if judge is not None and asked else {}
     for position, candidate in enumerate(pool):
-        score, basis = value(candidate)
         key = candidate.entity.key
-        if candidate.entity.category not in ("symbol", "file") or (
-            candidate.entity.category == "file" and key not in declarations
-        ):
+        score, basis = values.get(key) or value(candidate)
+        if container(candidate):
             omissions.append(Omission(key, "selection", "container"))
         elif candidate.entity.source is None:
             omissions.append(Omission(key, "selection", "no source"))
         elif score < INCLUDE_FLOOR:
-            omissions.append(Omission(key, "selection", f"value {score:.2f} below floor"))
+            why = f"value {score:.2f} below floor" + (f", {basis}" if key in values else "")
+            omissions.append(Omission(key, "selection", why))
         elif not packer.view(candidate.entity, False, ""):
             omissions.append(Omission(key, "selection", "no module-level source"))
         else:
