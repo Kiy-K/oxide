@@ -1,12 +1,12 @@
 budget 1024: pool 48, with source 41
-  build_context            22620.3 us
-  pack, judge none          9723.8 us
-  pack, judge heuristic     9914.2 us
-  pack, judge reversed     15232.6 us
-  judged() alone              29.7 us
+  build_context            14494.2 us
+  pack, judge none          7588.2 us
+  pack, judge heuristic     7657.6 us
+  pack, judge reversed     12285.2 us
+  judged() alone              24.8 us
 budget 4096: pool 48, with source 41
-  build_context            20263.0 us
-  pack, judge none          7408.4 us
-  pack, judge heuristic     7453.7 us
-  pack, judge reversed      8719.9 us
-  judged() alone              30.0 us
+  build_context            12158.2 us
+  pack, judge none          5577.7 us
+  pack, judge heuristic     5680.2 us
+  pack, judge reversed      6410.1 us
+  judged() alone              25.1 us

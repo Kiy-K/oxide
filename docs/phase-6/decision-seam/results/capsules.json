@@ -1,0 +1,62 @@
+{
+ "requests": 15,
+ "capsules": 707,
+ "pool_per_request": {
+  "median": 64,
+  "p95": 64,
+  "max": 64
+ },
+ "asked_per_request": {
+  "median": 60,
+  "p95": 64,
+  "max": 64
+ },
+ "unsendable": 0,
+ "capsules_with_truncation": 245,
+ "truncated_fields": {
+  "query": 186,
+  "excerpt": 91,
+  "origins": 33,
+  "signature": 3
+ },
+ "build_ms_per_request": {
+  "median": 4.691355,
+  "p95": 13.500639,
+  "max": 13.500639
+ },
+ "judge_round_trip_ms_per_request": {
+  "median": 4.676375,
+  "p95": 10.952424,
+  "max": 10.952424
+ },
+ "bytes_per_capsule": {
+  "median": 2033,
+  "p95": 6169,
+  "max": 6655
+ },
+ "bytes_per_request": {
+  "median": 128919,
+  "p95": 245423,
+  "max": 245423
+ },
+ "o200k_base_per_capsule": {
+  "median": 597,
+  "p95": 1663,
+  "max": 2025
+ },
+ "cl100k_base_per_capsule": {
+  "median": 591,
+  "p95": 1643,
+  "max": 2007
+ },
+ "o200k_base_per_request": {
+  "median": 38349,
+  "p95": 67271,
+  "max": 67271
+ },
+ "cl100k_base_per_request": {
+  "median": 37890,
+  "p95": 66503,
+  "max": 66503
+ }
+}

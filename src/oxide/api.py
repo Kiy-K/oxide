@@ -327,6 +327,9 @@ class Repository:
                 entries[k].rank if k in entries else None,
                 bool(entries[k].seeds) if k in entries else False,
                 (source := known[k].source) is not None and source.path in hinted,
+                entries[k].score if k in entries else None,
+                tuple(f"{s.kind}:{s.hint}" for s in entries[k].seeds) if k in entries else (),
+                routed[k].origins,
             )
             for k in order
             if k in known

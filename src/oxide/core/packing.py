@@ -63,6 +63,10 @@ class Candidate:
     rank: int | None
     seeded: bool
     hinted: bool = False  # its file resolved from a ``paths`` hint
+    # Evidence for a judge's capsule only; selection never reads it.
+    score: float | None = None  # lexical score; None when not a lexical hit
+    seeds: tuple[str, ...] = ()  # ``kind:hint`` of each structural seed
+    origins: tuple[str, ...] = ()  # how routing reached it (``routing.Routed.origins``)
 
 
 def value(c: Candidate) -> tuple[float, str]:
