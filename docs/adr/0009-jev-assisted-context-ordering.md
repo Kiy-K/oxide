@@ -2,11 +2,10 @@
 
 ## Status
 
-**Proposed** — 2026-10-24. This proposes how an optional JEV judge would order context
-candidates, and the smallest milestone to implement it. It is not Accepted. Nothing is
-implemented, no public configuration is added and the production default does not
-change. Accepting it, implementing the milestone, and exposing or enabling the judge are
-three separate decisions.
+**Accepted** — 2026-10-24, by the maintainer's explicit instruction, which also
+authorized milestone M1. Proposed earlier the same day (`f179471`). Accepting it adds no
+public configuration and does not change the production default: exposing or enabling
+the judge remains a separate decision with its own validation.
 
 This is SPEC's candidate ADR-0009 ("DecisionProvider and optional JEV integration"), cut
 down to the one policy the evidence supports: ordering candidates for selection. Branch
@@ -174,7 +173,12 @@ child process, and a request costs about $0.0006 (~24k billed tokens) with p50 �
 | Public flag or environment toggle now | No public configuration before the integration is implemented and validated |
 | Default on | Discloses source and depends on a network service. Contrary to the local-first, offline default (SPEC) |
 
-## Smallest implementation milestone (M1, not started)
+## Smallest implementation milestone (M1)
+
+Delivered 2026-10-24 ([docs/phase-6/jev-order-m1](../phase-6/jev-order-m1/README.md)):
+the request bodies of v2 and v3 are byte-identical, and replaying the recorded
+judgments through the in-tree path reproduces v2's dev and held-out arms and v3's
+primary and repeat arms at every task and budget. No live call was made.
 
 Goal: show that an in-tree implementation is the validated policy. This uses offline
 parity against recorded evidence, with no new ranking experiment and no new quality
