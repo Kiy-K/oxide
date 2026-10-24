@@ -12,6 +12,7 @@ import oxide
 from oxide.capture import capture
 from oxide.core.indexing import derive, validate
 from oxide.core.languages import python, python_resolve
+from oxide.core.languages.nesting import Nesting
 
 
 def keys(root: Path) -> dict[str, oxide.Entity]:
@@ -22,8 +23,10 @@ def keys(root: Path) -> dict[str, oxide.Entity]:
 
 def test_fixture_derivation_matches_the_rust_slice_counts() -> None:
     # The Rust oxide-python-v1 slice recorded 65 entities / 194 relations (docs/phase-3.md).
+    # oxide-python-v5 adds two ``super().__init__`` sites, which were not call facts;
+    # receiver dispatch only changes how existing sites resolve.
     derived = derive(capture(FIXTURE), "test-repo")
-    assert (len(derived.entities), len(derived.edges)) == (65, 194)
+    assert (len(derived.entities), len(derived.edges)) == (65, 196)
 
 
 def test_symbols_get_nested_ordinal_identities_and_kinds(tmp_path: Path) -> None:
@@ -113,7 +116,7 @@ def test_nesting_finds_the_innermost_scope_like_a_parent_walk() -> None:
     rng = random.Random(7)
     for _ in range(200):
         size = 400
-        nesting = python.Nesting(size)
+        nesting = Nesting(size)
         bodies: list[tuple[int, int]] = [(0, size)]
         parents = [0]
         for start in sorted(rng.sample(range(1, size), 30)):

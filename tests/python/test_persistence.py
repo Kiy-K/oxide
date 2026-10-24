@@ -74,7 +74,7 @@ def test_another_store_schema_requires_a_rebuild(private_data: Path) -> None:
     oxide.index_repository(FIXTURE)
     directory = store_dir(private_data)
     (manifest,) = (directory / "generations").glob("*/MANIFEST.json")
-    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v1", "older-schema"))
+    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v2", "older-schema"))
     with oxide.open_repository(FIXTURE) as repo:
         with pytest.raises(IncompatibleIndex):
             repo.search("x")

@@ -48,7 +48,7 @@ from oxide.models import (
     StoreCorrupt,
 )
 
-SCHEMA_VERSION = "oxide-ladybug-py-v1"
+SCHEMA_VERSION = "oxide-ladybug-py-v2"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies
 # in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
@@ -78,10 +78,11 @@ FTS_BUILDS = {
 }
 FTS_SCORER = "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive"
 FTS_COMPONENT = "ladybug-fts-0.21.0;stemmer=porter;stopwords=default"
-# (kind, other end, proven): proven is ``resolved`` with a non-heuristic basis.
-type Adjacent = list[tuple[str, str, bool]]
+# (kind, other end, proven, heuristic): proven is ``resolved`` with a non-heuristic basis.
+type Adjacent = list[tuple[str, str, bool, bool]]
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 _TERMS_TEXT = re.compile(r"[a-z0-9]+( [a-z0-9]+)*")
+_SEGMENTS = re.compile(r"[^.:]+(?:(?:\.|::)[^.:]+)*")
 
 
 def default_data_dir() -> Path:
@@ -248,6 +249,11 @@ _ENTITY = (
     "e.key, e.category, e.kind, e.name, e.signature, e.path, e.start_byte, e.end_byte, "
     "e.digest, e.test"
 )
+
+
+def unresolved_key(name: str) -> str:
+    """One node per last ``.``/``::`` segment: ``mentions`` reads only its names' nodes."""
+    return "u:" + name[max(name.rfind(".") + 1, name.rfind("::") + 2 if "::" in name else 0) :]
 
 
 def _entity(row: list[Any]) -> Entity:
@@ -421,18 +427,18 @@ class View:
 
     def adjacency(self, keys: list[str]) -> dict[str, tuple[Adjacent, Adjacent]]:
         """Resolved and ambiguous edges of every key as ``(outgoing, incoming)`` lists of
-        ``(kind, other end, proven)``: two queries for any number of keys."""
+        ``(kind, other end, proven, heuristic)``: two queries for any number of keys."""
         found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         if not keys:
             return found
         params = {"keys": sorted(set(keys))}
         match = "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE "
-        proven = "r.resolution = 'resolved' AND r.basis <> 'heuristic'"
-        out = match + f"a.key IN $keys RETURN a.key, r.kind, b.key, {proven}"
-        into = match + f"b.key IN $keys RETURN b.key, r.kind, a.key, {proven}"
+        flags = "r.resolution = 'resolved' AND r.basis <> 'heuristic', r.basis = 'heuristic'"
+        out = match + f"a.key IN $keys RETURN a.key, r.kind, b.key, {flags}"
+        into = match + f"b.key IN $keys RETURN b.key, r.kind, a.key, {flags}"
         for direction, query in enumerate((out, into)):
-            for key, kind, other, certain in self._query(query, params):
-                found[key][direction].append((kind, other, certain))
+            for key, kind, other, certain, heuristic in self._query(query, params):
+                found[key][direction].append((kind, other, certain, heuristic))
         return found
 
     def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:
@@ -441,11 +447,14 @@ class View:
         if not names:
             return 0
         suffixes = sorted({f"{sep}{n}" for n in names for sep in (".", "::")})
+        keys = sorted({unresolved_key(n) for n in names})
+        params = {"kinds": list(kinds), "names": sorted(set(names)), "suffixes": suffixes}
+        # every match shares a name's key, unless a name has odd separators: scan them all
+        where = "u.key IN $keys AND " if all(_SEGMENTS.fullmatch(n) for n in names) else ""
         rows = self._query(
-            "MATCH (:Entity)-[r:Opaque]->(:Unresolved) WHERE r.kind IN $kinds AND "
-            "(r.name IN $names OR any(s IN $suffixes WHERE r.name ENDS WITH s)) "
-            "RETURN count(*)",
-            {"kinds": list(kinds), "names": sorted(set(names)), "suffixes": suffixes},
+            f"MATCH (:Entity)-[r:Opaque]->(u:Unresolved) WHERE {where}r.kind IN $kinds AND "
+            "(r.name IN $names OR any(s IN $suffixes WHERE r.name ENDS WITH s)) RETURN count(*)",
+            {**params, "keys": keys},
         )
         return int(rows[0][0])
 

@@ -28,6 +28,12 @@ MAX_EDGES = 2048
 FOLLOW = ("calls", "references", "imports", "tested_by", "contains_logical")
 
 
+def follows(kind: str, heuristic: bool) -> bool:
+    """Cross-edges the router walks: ``tested_by`` is its one heuristic kind; heuristic
+    calls and references (Python receiver dispatch) are not followed (graph-v2)."""
+    return kind in FOLLOW and (kind == "tested_by" or not heuristic)
+
+
 @dataclass(frozen=True, slots=True)
 class Routed:
     key: str
@@ -47,11 +53,11 @@ class Route:
 
 def _region(key: str, out: Adjacent, into: Adjacent) -> tuple[list[tuple[str, str]], bool, int]:
     """(neighbor, origin) in expansion order, whether a list was cut, edges examined."""
-    children = sorted({b for kind, b, _ in out if kind == "contains"})
-    scopes = sorted({a for kind, a, _ in into if kind == "contains" and a != "repo"})
+    children = sorted({b for kind, b, *_ in out if kind == "contains"})
+    scopes = sorted({a for kind, a, *_ in into if kind == "contains" and a != "repo"})
     cross = sorted(
-        {(b, f"{kind}:out:{key}") for kind, b, _ in out if kind in FOLLOW}
-        | {(a, f"{kind}:in:{key}") for kind, a, _ in into if kind in FOLLOW}
+        {(b, f"{kind}:out:{key}") for kind, b, _, h in out if follows(kind, h)}
+        | {(a, f"{kind}:in:{key}") for kind, a, _, h in into if follows(kind, h)}
     )
     cut = len(children) > MAX_FANOUT or len(cross) > MAX_FANOUT
     children, cross = children[:MAX_FANOUT], cross[:MAX_FANOUT]

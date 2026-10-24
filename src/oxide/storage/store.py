@@ -45,6 +45,7 @@ from oxide.storage.ladybug import (
     _write_csv,
     fts_location,
     load_pool,
+    unresolved_key,
 )
 
 
@@ -266,16 +267,22 @@ class Store:
             entities.append((*row, src.end, src.digest, e.test, document(e)))
         rels: list[tuple[object, ...]] = []
         opaque: list[tuple[object, ...]] = []
-        unresolved: list[tuple[object, ...]] = []
+        unresolved: dict[str, tuple[object, ...]] = {}
         for site, edge in enumerate(derived.edges):
             ev = edge.evidence or SourceRef("", -1, -1, "")
             tail = (edge.name or "", site, ev.path, ev.start, ev.end)
             if edge.resolution == "unresolved":
-                unresolved.append((f"u:{site}", edge.name or ""))
-                opaque.append((edge.source, f"u:{site}", edge.kind, edge.basis, *tail))
+                node = unresolved_key(edge.name or "")
+                unresolved.setdefault(node, (node, node[2:]))
+                opaque.append((edge.source, node, edge.kind, edge.basis, *tail))
             for target in edge.targets:
                 rels.append((edge.source, target, edge.kind, edge.resolution, edge.basis, *tail))
-        tables = {"Entity": entities, "Unresolved": unresolved, "Rel": rels, "Opaque": opaque}
+        tables = {
+            "Entity": entities,
+            "Unresolved": [*unresolved.values()],
+            "Rel": rels,
+            "Opaque": opaque,
+        }
         written = {
             table: _write_csv(staging / f"{table}.csv", rows) for table, rows in tables.items()
         }

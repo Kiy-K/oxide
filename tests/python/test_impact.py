@@ -10,6 +10,7 @@ from conftest import write
 
 import oxide
 from oxide.models import InvalidArgument
+from oxide.storage.ladybug import unresolved_key
 
 SOURCES = {
     "pkg/__init__.py": "",
@@ -101,3 +102,19 @@ def test_invalid_arguments(repo: oxide.Repository) -> None:
         repo.impact("symbol:pkg/core.py#low", direction="sideways")  # type: ignore[arg-type]
     with pytest.raises(InvalidArgument):
         repo.impact("symbol:pkg/core.py#low", depth=9)
+
+
+@pytest.mark.parametrize(
+    ("name", "sites"),
+    [
+        ("low", ["low", "x.low", "a.b.low", "mod::low", "a:::low"]),
+        ("Store.get", ["Store.get", "x.Store.get", "m::Store.get"]),
+        ("Vec::new", ["Vec::new", "std::vec::Vec::new", "x.Vec::new"]),
+    ],
+)
+def test_unresolved_sites_share_the_key_of_every_name_they_may_target(
+    name: str, sites: list[str]
+) -> None:
+    # ``mentions`` reads only the Unresolved node of the name's key; the count stays exact
+    assert {unresolved_key(s) for s in sites} == {unresolved_key(name)}
+    assert unresolved_key("") == "u:"

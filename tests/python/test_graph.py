@@ -47,8 +47,12 @@ def calls(repo: oxide.Repository, key: str) -> list[oxide.Relation]:
 def test_cross_file_calls_resolve_through_relative_imports(repo: oxide.Repository) -> None:
     run = calls(repo, "symbol:pkg/use.py#Child.run")
     resolved = [r for r in run if r.resolution == "resolved"]
-    assert [r.target for r in resolved] == ["symbol:pkg/base.py#helper"]
-    assert resolved[0].basis == "resolved"
+    # ``self.run`` is the receiver's own method: no subclass overrides it.
+    assert [r.target for r in resolved] == [
+        "symbol:pkg/base.py#helper",
+        "symbol:pkg/use.py#Child.run",
+    ]
+    assert [r.basis for r in resolved] == ["resolved", "heuristic"]
     assert resolved[0].evidence is not None and resolved[0].evidence.path == "pkg/use.py"
 
 
@@ -66,7 +70,7 @@ def test_builtins_attributes_and_parameters_stay_unresolved(repo: oxide.Reposito
     unresolved = [
         r for r in calls(repo, "symbol:pkg/use.py#Child.run") if r.resolution == "unresolved"
     ]
-    assert {r.name for r in unresolved} == {"print", "self.run", "helper2"}
+    assert {r.name for r in unresolved} == {"print", "helper2"}
     assert all(r.target is None for r in unresolved)
 
 

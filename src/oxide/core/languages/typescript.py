@@ -16,9 +16,9 @@ from typing import Any
 
 from tree_sitter import Node, Parser, QueryCursor
 
+from oxide.core.languages.nesting import Nesting
 from oxide.core.languages.python import (
     TOO_DEEP,
-    Nesting,
     Use,
     as_list,
     syntax_diagnostics,

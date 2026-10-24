@@ -74,7 +74,13 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
 - `Relation`: `kind` (`contains`, `contains_logical`, `defines`, `references`,
   `calls`, `imports`, `tested_by`), `source`, `target` (None when unresolved),
   `resolution` (`resolved`/`ambiguous`/`unresolved`), `basis`, `name`, `site`
-  (shared by the rows of one ambiguous relation), `evidence`.
+  (shared by the rows of one ambiguous relation), `evidence`. `basis` is `heuristic`
+  for `tested_by` and for Python method dispatch (`self.m()`, `cls.m()`, `super().m()`,
+  inherited `Class.m()`, `x = C(); x.m()`), which rests on the capture's whole class
+  hierarchy: every in-repo override is a candidate, and the call stays unresolved
+  wherever a definition could hide (an external or non-name base, a metaclass, an
+  attribute assigned anywhere, `__getattribute__`). Context routing does not follow
+  heuristic `calls`/`references` edges.
 - `SearchResult`: `entries` (`EntryPoint`: entity, `lexical_rank`,
   `lexical_score`, `seeds`), `lexical` (`ChannelStatus`: `ran` with the scorer
   name, or `disabled`/`unavailable` with a reason, never a zero score), `hints`.
@@ -111,7 +117,7 @@ file's declarations) and, for a file, the modules that logically contain it, bec
 imports name modules; `roots` lists them. Each `ImpactHop` has two depths: `depth` over
 every followed relation, `proven_depth` over relations that are `resolved` with a
 non-heuristic basis only (`None` when no such path exists within `depth`). Ambiguous
-candidates and the `tested_by` heuristic are reachable but never proven. `via` is
+candidates, the `tested_by` heuristic and method dispatch are reachable but never proven. `via` is
 `kind:in|out:key`, the step a shallowest path took; `cyclic` marks an entity in a
 dependency cycle with another reached entity (a strongly connected component of the
 walk). Order is (`depth`, key).
@@ -120,16 +126,16 @@ walk). Order is (`depth`, key).
 a root's name or ends with `.name`/`::name`. It is a by-name signal, not a bound: for a
 common name (`get`) most of those sites target something else, and an aliased import is
 not counted. Zero means no unresolved site even names it; a small upstream set with a
-large `unresolved` is incomplete, not safe. Method calls through an instance
-(`self.save()`, `client.get()`) are the main source, because OXIDE resolves no instance
-or inherited attribute.
+large `unresolved` is incomplete, not safe. Method calls on a receiver OXIDE cannot type
+(`self.client.get()`, a parameter's `x.save()`) are the main source.
 
 Bounds: `depth` in `[0, 8]`, `limit` reached entities in `[0, 1000]`, and 20,000
 adjacency rows per pass; `stopped_by` names the one that cut the walk (`depth`,
 `limit`, `edges`), `None` when the walk was exhausted. An unknown `key` is
-`invalid_argument`. Measured cost (p50, 40 random symbols): 3–35 ms on requests,
-xarray, pytest, ripgrep and gh-cli; 330 ms upstream on VS Code, about three quarters of it
-the unresolved count's scan of 254k unresolved rows ([phase-6/graph-v1](phase-6/graph-v1/README.md)).
+`invalid_argument`. Measured upstream cost (p50, 40 random symbols): 6–26 ms on
+requests, xarray, pytest, ripgrep and gh-cli; 101 ms on VS Code, where the unresolved
+count reads only the sites sharing a root name's last segment (3.5 ms of 377k unresolved
+rows; [phase-6/graph-v2](phase-6/graph-v2/README.md)).
 It is a Python API only; the MCP tool is unchanged (§ MCP).
 
 ## Structural search

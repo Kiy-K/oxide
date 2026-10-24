@@ -12,10 +12,8 @@ import tree_sitter_javascript
 import tree_sitter_typescript
 from tree_sitter import Language, Node, Query
 
-from oxide.core.languages.python import (
-    Nesting,
-    Use,
-)
+from oxide.core.languages.nesting import Nesting
+from oxide.core.languages.python import Use
 
 Dialect = Literal["typescript", "tsx", "javascript"]
 _COMMON = """

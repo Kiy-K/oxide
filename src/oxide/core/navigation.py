@@ -50,10 +50,10 @@ def _steps(
 ) -> list[tuple[str, str]]:
     """(neighbor, via) of one entity, in domain order."""
     if direction == "upstream":
-        found = [(a, f"{kind}:in:{key}", p) for kind, a, p in into if kind in _CROSS]
-        found += [(b, f"tested_by:out:{key}", p) for kind, b, p in out if kind == "tested_by"]
+        found = [(a, f"{kind}:in:{key}", p) for kind, a, p, _ in into if kind in _CROSS]
+        found += [(b, f"tested_by:out:{key}", p) for kind, b, p, _ in out if kind == "tested_by"]
     else:
-        found = [(b, f"{kind}:out:{key}", p) for kind, b, p in out if kind in _CROSS]
+        found = [(b, f"{kind}:out:{key}", p) for kind, b, p, _ in out if kind in _CROSS]
     return sorted({(n, via) for n, via, p in found if p or not proven_only})
 
 
@@ -62,11 +62,11 @@ def _roots(view: View, key: str) -> list[str]:
     roots, layer = [key], [key]
     while layer:
         adjacency = view.adjacency(layer)
-        layer = sorted({b for k in layer for kind, b, _ in adjacency[k][0] if kind == "contains"})
+        layer = sorted({b for k in layer for kind, b, *_ in adjacency[k][0] if kind == "contains"})
         roots += layer
     if key.startswith("file:"):
         into = view.adjacency([key])[key][1]
-        roots += sorted(a for kind, a, _ in into if kind == "contains_logical")
+        roots += sorted(a for kind, a, *_ in into if kind == "contains_logical")
     return list(dict.fromkeys(roots))
 
 

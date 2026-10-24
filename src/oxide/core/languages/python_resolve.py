@@ -12,6 +12,7 @@ from oxide.core.languages.python import (
     Parsed,
     Use,
 )
+from oxide.core.languages.python_dispatch import Dispatch
 from oxide.models import Basis, Entity, RelationKind, Resolution, SourceRef
 
 
@@ -176,6 +177,10 @@ class Resolver:
             self.tests.update(keys[k] for k in range(1, len(parsed.scopes)) if _is_test(file, k))
             self.scopes.update((key, (len(self.files), k)) for k, key in enumerate(keys))
             self.files.append(file)
+        self.bound: dict[int, list[list[tuple[str, Res]]]] = {}  # file -> per-scope bindings
+        self.dispatch = Dispatch(self)
+        self.inferred = False  # set when a lookup consulted ``python_dispatch``
+        self.making: set[tuple[int, int, str]] = set()  # ``_instance`` makers in progress
 
     def derive(self, entities: list[Entity], edges: list[Edge]) -> None:
         for name in sorted(self.modules):
@@ -195,21 +200,28 @@ class Resolver:
         def evidence(start: int, end: int) -> SourceRef:
             return SourceRef(file.path, start, end, file.digest)
 
-        def edge(kind: RelationKind, source: str, res: Res, name: str, at: Use | Import) -> Edge:
+        def edge(
+            kind: RelationKind, source: str, res: Res, name: str, at: Use | Import, guess: bool
+        ) -> Edge:
             targets, resolution, basis = edge_target(res, kind == "calls")
+            if guess and resolution != "unresolved":
+                basis = "heuristic"
             shown = None if resolution == "resolved" else name
             return Edge(kind, source, targets, resolution, basis, shown, evidence(at.start, at.end))
 
-        bindings: list[list[tuple[str, Res]]] = []
+        def lookup(k: int, name: str) -> tuple[Res, bool]:
+            """Candidates, and whether they rest on receiver dispatch (a heuristic: the
+            closed-world class hierarchy of ``python_dispatch``)."""
+            self.inferred = False
+            res = self._lookup(i, bindings, k, name)
+            return res, self.inferred
+
         for k, scope in enumerate(scopes):
-            bound: list[tuple[str, Res]] = []
             for item in scope.imports:
-                target, binding = self._import(i, item)
-                edges.append(edge("imports", file.keys[k], target, _import_text(item), item))
-                name = _bound_name(item)
-                if name is not None and binding is not False:
-                    bound.append((name, binding))
-            bindings.append(bound)
+                target = self._import(i, item)[0]
+                text = _import_text(item)
+                edges.append(edge("imports", file.keys[k], target, text, item, False))
+        bindings = self.bindings(i)
 
         for k, scope in enumerate(scopes):
             key = file.keys[k]
@@ -226,13 +238,14 @@ class Resolver:
                 if parent == 0 and file.module is not None:
                     edges.append(structural("defines", module_key(file.module), key, source))
                 for base in scope.bases:
-                    res = self._lookup(i, bindings, parent, base.name)
-                    edges.append(edge("references", key, res, base.name, base))
+                    res, guess = lookup(parent, base.name)
+                    edges.append(edge("references", key, res, base.name, base, guess))
             for call in scope.calls:
-                relation = edge(
-                    "calls", key, self._lookup(i, bindings, k, call.name), call.name, call
-                )
-                callee = relation.targets[0] if relation.resolution == "resolved" else None
+                res, guess = lookup(k, call.name)
+                relation = edge("calls", key, res, call.name, call, guess)
+                # tested_by stays a heuristic over proven calls only.
+                proven = relation.resolution == "resolved" and not guess
+                callee = relation.targets[0] if proven else None
                 test_key = self._enclosing_test(i, k)
                 if (
                     callee
@@ -254,10 +267,35 @@ class Resolver:
             k = file.parsed.scopes[k].parent
         return None
 
+    def bindings(self, i: int) -> list[list[tuple[str, Res]]]:
+        """What each scope of file ``i`` binds by import: (name, candidates)."""
+        if i not in self.bound:
+            self.bound[i] = [
+                [
+                    (name, binding)
+                    for item in scope.imports
+                    if (name := _bound_name(item)) is not None
+                    and (binding := self._import(i, item)[1]) is not False
+                ]
+                for scope in self.files[i].parsed.scopes
+            ]
+        return self.bound[i]
+
+    def lookup(self, i: int, k: int, name: str) -> Res:
+        return self._lookup(i, self.bindings(i), k, name)
+
     def _lookup(self, i: int, bindings: list[list[tuple[str, Res]]], k: int, name: str) -> Res:
         file = self.files[i]
         head, *members = name.split(".")
         if members:
+            if head == "super()":
+                return self._super(i, bindings, k, members)
+            instance = self._instance(i, bindings, k, head)
+            if instance is not None:
+                cls, subclasses = instance
+                if len(members) != 1:
+                    return None  # an attribute of an attribute: its type is unknown
+                return self.dispatch.method(cls, members[0], subclasses)
             return self._member(self._lookup(i, bindings, k, head), members)
         if name in file.parsed.rebound:
             return None
@@ -267,16 +305,73 @@ class Resolver:
             decl = scopes[current].decl
             # Enclosing class bodies are not scopes for nested functions.
             if current == k or decl is None or not decl.cls:
-                found = self._in_scope(i, current, name, bindings[current])
+                found = self.in_scope(i, current, name, bindings[current])
                 if found is not False:
                     return found
             current = scopes[current].parent
         return None
 
+    def _binder(self, i: int, k: int, name: str) -> int | None:
+        """The scope ``name`` refers to from scope ``k`` by Python scoping, None when no
+        scope of the file binds it (a builtin or a missing name)."""
+        scopes = self.files[i].parsed.scopes
+        current: int | None = k
+        while current is not None:
+            scope = scopes[current]
+            visible = current == k or scope.decl is None or not scope.decl.cls
+            if visible and (
+                self.in_scope(i, current, name, []) is not False
+                or any(_bound_name(item) == name for item in scope.imports)
+            ):
+                return current
+            current = scope.parent
+        return None
+
+    def _instance(
+        self, i: int, bindings: list[list[tuple[str, Res]]], k: int, head: str
+    ) -> tuple[str, bool] | None:
+        """(class, whether subclasses count) when ``head`` is an instance of a known
+        in-repo class: a method's receiver (any subclass), or a name bound once by
+        calling the class (exactly it)."""
+        file = self.files[i]
+        if head in file.parsed.rebound:
+            return None
+        s = self._binder(i, k, head)
+        if s is None:
+            return None
+        scope = file.parsed.scopes[s]
+        if scope.receiver == head:
+            assert scope.parent is not None
+            return file.keys[scope.parent], True
+        maker = scope.made.get(head)
+        if maker is None or (s == 0 and head in self.dispatch.attrs):
+            return None
+        if (i, s, head) in self.making:  # ``x = x.copy()``, or a cycle of such bindings
+            return None
+        self.making.add((i, s, head))
+        try:
+            res = self._lookup(i, bindings, s, maker)
+        finally:
+            self.making.discard((i, s, head))
+        exact = res and len(res) == 1 and self.dispatch.is_class(res[0])
+        return (res[0], False) if res and exact and self.dispatch.constructs(res[0]) else None
+
+    def _super(
+        self, i: int, bindings: list[list[tuple[str, Res]]], k: int, members: list[str]
+    ) -> Res:
+        """``super().m()`` directly in a method: the next definition after its class."""
+        file = self.files[i]
+        scope = file.parsed.scopes[k]
+        if len(members) != 1 or scope.receiver is None or scope.parent is None:
+            return None
+        if "super" in file.parsed.rebound or self._binder(i, k, "super") is not None:
+            return None
+        return self.dispatch.method(file.keys[scope.parent], members[0], True, after=True)
+
     def _member(self, res: Res, members: list[str]) -> Res:
         """``a.b.c`` once ``a`` is known: attributes of one in-repo module (its
-        submodules and module-level names) or one class (its own body only; inherited
-        and instance attributes stay unresolved)."""
+        submodules and module-level names) or one class (its own body, then the rest of
+        its method resolution order: ``python_dispatch``)."""
         for member in members:
             if not res or len(res) != 1:
                 return None
@@ -289,11 +384,14 @@ class Resolver:
             decl = self.files[i].parsed.scopes[k].decl
             if decl is None or not decl.cls:
                 return None
-            found = self._in_scope(i, k, member, [])
-            res = None if found is False else found
+            found = self.in_scope(i, k, member, [])
+            if found is False:
+                res = self.dispatch.method(res[0], member, False)
+                continue
+            res = found
         return res
 
-    def _in_scope(
+    def in_scope(
         self, i: int, s: int, name: str, bindings: list[tuple[str, Res]] | None
     ) -> Res | Literal[False]:
         """Candidates bound to ``name`` in scope ``s``; False when ``s`` does not bind it.
@@ -355,7 +453,7 @@ class Resolver:
             for j in (j for m in names for j in self.modules[m]):
                 if name in self.files[j].parsed.rebound:
                     return None
-                res = self._in_scope(j, 0, name, None)
+                res = self.in_scope(j, 0, name, None)
                 if res is None:
                     return None
                 if res is not False:

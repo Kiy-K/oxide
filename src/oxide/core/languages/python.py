@@ -12,14 +12,15 @@ never walks the syntax tree recursively.
 
 from __future__ import annotations
 
-import bisect
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import tree_sitter_python
 from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
-VERSION = "oxide-python-v4"
+from oxide.core.languages.nesting import Nesting
+
+VERSION = "oxide-python-v5"
 MAX_DIAGNOSTICS = 16
 # tree-sitter's query cursor keeps node depth in 16 bits: it drops matches below this
 # depth and its time turns super-linear (docs/parser-limits.md), so a file whose syntax
@@ -39,6 +40,7 @@ _QUERY = Query(
     (global_statement) @rebind
     (nonlocal_statement) @rebind
     (assignment left: (_) @bind)
+    (assignment left: (identifier) right: (call)) @made
     (augmented_assignment left: (_) @bind)
     (for_statement left: (_) @bind)
     (for_in_clause left: (_) @bind)
@@ -91,6 +93,12 @@ class Scope:
     imports: list[Import] = field(default_factory=list)
     calls: list[Use] = field(default_factory=list)
     bases: list[Use] = field(default_factory=list)
+    # A method's first parameter when it is bound nowhere else (not a ``staticmethod``).
+    receiver: str | None = None
+    # Names bound exactly once in this scope, by ``name = callee(...)``: name -> callee.
+    made: dict[str, str] = field(default_factory=dict)
+    # A class with bases that ``bases`` does not record (keywords, splats, expressions).
+    open: bool = False
 
 
 @dataclass(slots=True)
@@ -100,43 +108,8 @@ class Parsed:
     scopes: list[Scope]
     rebound: set[str]
     diagnostics: list[str]
-
-
-class Nesting:
-    """The innermost scope whose body holds a byte, in O(log depth).
-
-    Scope 0 is the whole file. Bodies nest, so the innermost scope holding a byte is an
-    ancestor-or-self of the last body starting at or before it, and ancestors' bodies
-    end no earlier. ``jumps[k][j]`` is the 2**j-th ancestor of ``k``: skipping the
-    ancestors that end at or before the byte takes O(log depth), where one parent at
-    a time is quadratic after a deep nest.
-    """
-
-    def __init__(self, size: int) -> None:
-        self.bodies: list[tuple[int, int]] = []  # (body start, scope), sorted
-        self.ends = [size]
-        self.parents = [0]
-        self.jumps: list[list[int]] = [[]]
-
-    def add(self, parent: int, body: tuple[int, int]) -> None:
-        own = len(self.ends)
-        up = [parent]
-        while len(self.jumps[up[-1]]) >= len(up):
-            up.append(self.jumps[up[-1]][len(up) - 1])
-        self.ends.append(body[1])
-        self.parents.append(parent)
-        self.jumps.append(up)
-        bisect.insort(self.bodies, (body[0], own))
-
-    def scope_at(self, at: int) -> int:
-        i = bisect.bisect_right(self.bodies, (at, len(self.ends))) - 1
-        k = self.bodies[i][1] if i >= 0 else 0
-        if not k or at < self.ends[k]:
-            return k
-        for j in range(len(self.jumps[k]) - 1, -1, -1):
-            if j < len(self.jumps[k]) and (up := self.jumps[k][j]) and self.ends[up] <= at:
-                k = up
-        return self.parents[k]
+    # Attribute names the file assigns or deletes (``x.name = ...``): never a method target.
+    attrs: set[str] = field(default_factory=set)
 
 
 class _Facts:
@@ -145,6 +118,8 @@ class _Facts:
         self.scopes = [Scope(None, None, (0, len(data)))]
         self.nesting = Nesting(len(data))
         self.scope_at = self.nesting.scope_at
+        self.binds: dict[tuple[int, str], int] = {}
+        self.attrs: set[str] = set()
 
     def text(self, node: Node | None) -> str:
         if node is None:
@@ -152,8 +127,13 @@ class _Facts:
         return self.data[node.start_byte : node.end_byte].decode("utf-8", "replace")
 
     def bind(self, scope: int, node: Node | None) -> None:
-        if node is not None:
-            self.scopes[scope].bound.update(self.text(n) for n in _targets(node))
+        if node is None:
+            return
+        found, attributes = _targets(node)
+        for name in map(self.text, found):
+            self.scopes[scope].bound.add(name)
+            self.binds[scope, name] = self.binds.get((scope, name), 0) + 1
+        self.attrs.update(self.text(a.child_by_field_name("attribute")) for a in attributes)
 
     def dotted(self, node: Node) -> str | None:
         parts: list[str] = []
@@ -165,6 +145,19 @@ class _Facts:
             return None
         parts.append(self.text(current))
         return ".".join(reversed(parts))
+
+    def super_member(self, callee: Node) -> str | None:
+        """``super().name`` for a zero-argument ``super()`` receiver, else None."""
+        receiver = callee.child_by_field_name("object")
+        if receiver is None or receiver.type != "call":
+            return None
+        function = receiver.child_by_field_name("function")
+        arguments = receiver.child_by_field_name("arguments")
+        if function is None or self.dotted(function) != "super":
+            return None
+        if arguments is None or arguments.named_children:
+            return None
+        return f"super().{self.text(callee.child_by_field_name('attribute'))}"
 
     def declaration(self, node: Node) -> None:
         name = self.text(node.child_by_field_name("name"))
@@ -194,9 +187,28 @@ class _Facts:
                 dotted = self.dotted(base)
                 if dotted is not None:
                     self.scopes[own].bases.append(Use(dotted, base.start_byte, base.end_byte))
+                else:
+                    self.scopes[own].open = True
             return
         parameters = node.child_by_field_name("parameters")
-        for parameter in parameters.named_children if parameters is not None else []:
+        params = parameters.named_children if parameters is not None else []
+        outer = self.scopes[enclosing].decl
+        static = (
+            decorated
+            and parent is not None
+            and any(
+                self.dotted(d.named_children[0]) == "staticmethod"
+                for d in parent.named_children
+                if d.type == "decorator" and d.named_children
+            )
+        )
+        if outer is not None and outer.cls and params and not static:
+            first = params[0]
+            if first.type == "typed_parameter":
+                first = first.named_children[0]
+            if first.type == "identifier":
+                self.scopes[own].receiver = self.text(first)
+        for parameter in params:
             if parameter.type in ("default_parameter", "typed_default_parameter"):
                 self.bind(own, parameter.child_by_field_name("name"))
             elif parameter.type == "typed_parameter":
@@ -246,16 +258,18 @@ class _Facts:
         return out
 
 
-def _targets(node: Node) -> list[Node]:
-    """Identifiers a target binds; attribute and subscript targets bind nothing."""
-    found, stack = [], [node]
+def _targets(node: Node) -> tuple[list[Node], list[Node]]:
+    """Identifiers a target binds, and its attribute targets (which bind no name)."""
+    found, attributes, stack = [], [], [node]
     while stack:
         current = stack.pop()
         if current.type == "identifier":
             found.append(current)
-        elif current.type not in ("attribute", "subscript"):
+        elif current.type == "attribute":
+            attributes.append(current)
+        elif current.type != "subscript":
             stack.extend(current.named_children)
-    return found
+    return found, attributes
 
 
 def parse(data: bytes) -> Parsed | str:
@@ -277,6 +291,8 @@ def parse(data: bytes) -> Parsed | str:
         # descending from the root, which is quadratic over a long method chain.
         callee = call.child_by_field_name("function")
         name = facts.dotted(callee) if callee is not None else None
+        if name is None and callee is not None and callee.type == "attribute":
+            name = facts.super_member(callee)
         if name is not None:
             use = Use(name, call.start_byte, call.end_byte)
             scopes[facts.scope_at(call.start_byte)].calls.append(use)
@@ -284,11 +300,22 @@ def parse(data: bytes) -> Parsed | str:
         scopes[facts.scope_at(node.start_byte)].imports.extend(facts.imports(node))
     for node in captures.get("bind", []):
         facts.bind(facts.scope_at(node.start_byte), node)
+    for node in captures.get("made", []):
+        k = facts.scope_at(node.start_byte)
+        bound = facts.text(node.child_by_field_name("left"))
+        right = node.child_by_field_name("right")
+        function = right.child_by_field_name("function") if right is not None else None
+        maker = facts.dotted(function) if function is not None else None
+        if maker is not None and facts.binds.get((k, bound)) == 1:
+            scopes[k].made[bound] = maker
     rebound = {facts.text(n) for node in captures.get("rebind", []) for n in node.named_children}
+    for k, scope in enumerate(scopes):
+        if scope.receiver is not None and facts.binds.get((k, scope.receiver)) != 1:
+            scope.receiver = None
     for scope in scopes:
         scope.calls.sort(key=lambda u: (u.start, u.end))
         scope.imports.sort(key=lambda i: (i.start, i.end, i.item))
-    return Parsed(scopes, rebound, syntax_diagnostics(root, _BROKEN))
+    return Parsed(scopes, rebound, syntax_diagnostics(root, _BROKEN), facts.attrs)
 
 
 def too_deep(root: Node) -> bool:
@@ -325,7 +352,7 @@ def syntax_diagnostics(root: Node, broken: Query) -> list[str]:
 
 
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-python-facts-v2"
+FACTS_VERSION = "oxide-python-facts-v3"
 
 
 def encode(parsed: Parsed) -> list[Any]:
@@ -338,10 +365,13 @@ def encode(parsed: Parsed) -> list[Any]:
             [[i.level, list(i.module), i.item, i.name, i.alias, i.start, i.end] for i in s.imports],
             [[u.name, u.start, u.end] for u in s.calls],
             [[u.name, u.start, u.end] for u in s.bases],
+            s.receiver,
+            sorted(s.made.items()),
+            s.open,
         ]
         for s in parsed.scopes
     ]
-    return [scopes, sorted(parsed.rebound), parsed.diagnostics]
+    return [scopes, sorted(parsed.rebound), parsed.diagnostics, sorted(parsed.attrs)]
 
 
 def as_list(value: Any) -> list[Any]:
@@ -357,7 +387,7 @@ def decode(value: Any, size: int) -> Parsed:
     resolver only sees well-typed, in-bounds facts: a tree whose parents precede their
     scopes, and identifier names, so keys stay unique."""
     try:
-        scopes, rebound, diagnostics = as_list(value)
+        scopes, rebound, diagnostics, attrs = as_list(value)
         parsed = Parsed(
             [
                 Scope(
@@ -371,13 +401,26 @@ def decode(value: Any, size: int) -> Parsed:
                     ],
                     [Use(*as_list(u)) for u in as_list(calls)],
                     [Use(*as_list(u)) for u in as_list(bases)],
+                    receiver,
+                    dict(map(as_list, as_list(made))),
+                    opened,
                 )
-                for parent, decl, body, bound, imports, calls, bases in map(
-                    as_list, as_list(scopes)
-                )
+                for (
+                    parent,
+                    decl,
+                    body,
+                    bound,
+                    imports,
+                    calls,
+                    bases,
+                    receiver,
+                    made,
+                    opened,
+                ) in map(as_list, as_list(scopes))
             ],
             set(as_list(rebound)),
             as_list(diagnostics),
+            set(as_list(attrs)),
         )
     except (TypeError, ValueError) as error:
         raise ValueError(f"malformed parse facts: {error}") from None
@@ -417,7 +460,9 @@ def _sound(parsed: Parsed, size: int) -> bool:
         uses = (*s.calls, *s.bases)
         if not (
             spans(s.body, *((u.start, u.end) for u in uses), *((i.start, i.end) for i in s.imports))
-            and texts(*s.bound, *(u.name for u in uses))
+            and texts(*s.bound, *(u.name for u in uses), *s.made, *s.made.values())
+            and (s.receiver is None or (type(s.receiver) is str and s.receiver.isidentifier()))
+            and type(s.open) is bool
             and all(
                 type(i.level) is int
                 and i.level >= 0
@@ -428,4 +473,4 @@ def _sound(parsed: Parsed, size: int) -> bool:
             )
         ):
             return False
-    return texts(*parsed.rebound, *parsed.diagnostics)
+    return texts(*parsed.rebound, *parsed.diagnostics, *parsed.attrs)

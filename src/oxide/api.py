@@ -341,12 +341,12 @@ class Repository:
         ]
         children = view.adjacency(files)
         tops = view.entities(
-            b for k in files for kind, b, _ in children[k][0] if kind == "contains"
+            b for k in files for kind, b, *_ in children[k][0] if kind == "contains"
         )
         declarations = {
             k: [
                 (s.start, s.end)
-                for kind, b, _ in children[k][0]
+                for kind, b, *_ in children[k][0]
                 if kind == "contains" and b in tops and (s := tops[b].source) is not None
             ]
             for k in files

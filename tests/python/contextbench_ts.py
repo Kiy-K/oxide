@@ -47,7 +47,7 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v9"
+BASELINE = cb.PHASE6 / "typescript-v10"
 PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
 TASKS = PROTOCOL / "tasks.json"
 AUDIT = PROTOCOL / "gold-audit.json"
@@ -583,7 +583,9 @@ def distances(
         for key in layer:
             out, into = adjacency[key]
             near = [
-                o for kind, o, _ in [*out, *into] if kind == "contains" or kind in routing.FOLLOW
+                o
+                for kind, o, _, h in [*out, *into]
+                if kind == "contains" or routing.follows(kind, h)
             ]
             for other in [*near, *extra.get(key, [])]:
                 if other != "repo" and other not in seen:
