@@ -1,7 +1,9 @@
 # Decision Study v3: independent quality confirmation (2026-10-24)
 
-Status: **preregistered and frozen; no judge call made.** The v3 set is sealed: no OXIDE
-outcome on it exists. Inference waits for the user's spending authorization.
+Status: **PASS** (2026-10-24, run once at 18:16–18:28 UTC+7 after the user authorized
+the 52 corpora and the $0.20 cap). Frozen in `bf86d3a`; the preregistration digest the
+report prints is `sha256:cf4707aa…`. Full output:
+[results/gate-v3.txt](results/gate-v3.txt). The v3 set is now consumed.
 
 The policy under test is frozen and is exactly Decision Study v2's: production's
 heuristic admits, JEV (`jev-1.14.0`, `ds1-compact-v1`) orders the admitted set as
@@ -75,13 +77,59 @@ On localhost, `call.py selfcheck` checks the following:
   anything. A request whose estimate would cross the cap is not sent. A request that
   reports no billed tokens is charged its estimate.
 
-## Next (not run)
+## Result (measured, [results/gate-v3.txt](results/gate-v3.txt))
 
-1. `score.py $D/v3 --split v3 --requests-only`, then `call.py estimate $D/v3`. These are
-   offline and compute no outcome.
-2. **The user authorizes** the 52 corpora printed and the $0.20 cap.
-3. `call.py run` primary, then the repeat (`--sent` the primary's judgments), then
-   `score.py` with both, then `report.py`. Each step runs once.
+Validity checks passed before any number was printed: the bytes sent match the scored
+requests in both arms, the leak check holds, and every fallback packs production exactly.
+
+| Arm (end to end, 52 tasks) | LR@256 | LR@1024 | LR@4096 |
+| --- | --- | --- | --- |
+| `heuristic` (production) | 0.0201 | 0.1779 | 0.3161 |
+| `random~order` (mean of 5) | 0.0058 | 0.0505 | 0.1405 |
+| `compact~order` (primary) | 0.0334 | 0.3026 | **0.4755** |
+| `compact-repeat~order` | 0.0318 | 0.2977 | 0.4686 |
+| `oracle_order` (ceiling, not gated) | 0.0458 | 0.3064 | 0.5022 |
+
+- **Quality, end to end.** Primary Δ@4096 **+0.1594**: task bootstrap 95% CI +0.103 to
+  +0.224, repository-cluster CI +0.075 to +0.250. At 4,096: 33 tasks win, 0 lose, 19
+  tie. Δ is positive at every budget (+0.013, +0.125). Leave-one-repository-out stays
+  between +0.117 (without keras) and +0.186 (without langchain). By repository: keras
+  +0.391; transformers, qutebrowser and openlibrary +0.16 to +0.19; ansible +0.102;
+  langchain +0.011; AutoGPT (1 task) +0.014; yt-dlp (3 tasks) 0.
+- **Per-task regressions** happen only at smaller budgets: 9 task-budget pairs for the
+  primary and 8 for the repeat. The worst is `transformers-28071` at 256 (−0.375); it
+  gains +0.562 at 4,096.
+- **Quality on answered requests only.** The primary answered 52/52, so this view is the
+  same as end to end. The repeat answered 50/52: Δ@4096 +0.1586 (CI +0.100 to +0.225),
+  against a heuristic of 0.3226 on those tasks.
+- **Reproducibility.** The repeat's end-to-end Δ@4096 is +0.1525. Median Spearman of
+  the two arms' admitted orders is 0.989, and the difference at 4,096 is +0.0002.
+- **Operations.**
+  - Primary: 52/52 answered with status 200; p50 1.01 s, p95 1.19 s, max 1.42 s.
+  - Repeat: 50 answered with 200; 2 openlibrary requests were killed at the 2.0 s
+    deadline and fell back. That is a 3.8% failure rate (Wilson 95% interval 1.1% to
+    13.0%); p95 1.45 s over sent requests.
+  - Neither arm returned a 529, a wrong model or a malformed reply.
+  - About 24.3k billed input tokens per request.
+- **Cost.** $0.1060 in total ($0.0530 per arm), against the $0.20 cap.
+- **Gates.** Q1–Q5 and O1–O3 all pass. **VERDICT: PASS.**
+
+Limitations (operational and evidential):
+
+- **The failure rate is small-sample.** No primary request failed, but the upper Wilson
+  bound is 6.9%, and the repeat's bound reaches 13%. The deadline has little headroom
+  at this request size: the repeat's two kills came at 2.01 s, and its p95 is 1.45 s.
+  v2's 529 outages did not recur in this one ~2-minute window. The reliability study's
+  retry and breaker policies remain untested.
+- **The gain is uneven across repositories.** Langchain and yt-dlp show almost none,
+  and keras drives part of the mean (the gain is +0.117 without it).
+- **The judge sees clipped queries.** 40 of 52 issue texts are cut at 1,024 bytes.
+- **The repositories are not new to the project.** Legacy Rust-era studies used other
+  tasks from them.
+- **One model and one snapshot** (`jev-1.14.0`), on Python only.
+
+Nothing in `src/` changed. Per the preregistration, a PASS allows proposing an ADR for
+an optional judge adapter, as a separate step; none is drafted here.
 
 ## Reproduce
 
@@ -97,7 +145,7 @@ uv run --with pyarrow python $S/taskset.py $P                         # the set 
 uv run --with tiktoken python $S/call.py selfcheck
 uv run --with tiktoken python $S/score.py $D/v3 --split v3 --requests-only
 uv run --with tiktoken python $S/call.py estimate $D/v3
-# after authorization (TYPESAFE_API_KEY):
+# after authorization (TYPESAFE_API_KEY); run once 2026-10-24:
 uv run --with tiktoken python $S/call.py run $D/v3 compact --authorize <corpora> --ledger $D/ledger.json
 uv run --with tiktoken python $S/call.py run $D/v3 compact-repeat --authorize <corpora> \
   --ledger $D/ledger.json --sent $D/v3/judgments/compact.json
