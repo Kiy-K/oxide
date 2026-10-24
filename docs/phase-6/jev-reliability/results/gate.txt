@@ -1,0 +1,46 @@
+logical requests evaluated 408, not sent (cap) 0
+attempts sent 408; status {200: 408}
+first-attempt failures by concurrency:
+  c=1: 0/136 = 0.000 (95% CI 0.000..0.027)
+        200 latency p50 0.92 p95 1.13
+  c=2: 0/136 = 0.000 (95% CI 0.000..0.027)
+        200 latency p50 0.83 p95 1.02
+  c=4: 0/136 = 0.000 (95% CI 0.000..0.027)
+        200 latency p50 0.89 p95 1.13
+first-attempt failures by window:
+  w1 05:24 UTC: 0/51 = 0.000
+  w2 06:04 UTC: 0/51 = 0.000
+  w3 06:44 UTC: 0/51 = 0.000
+  w4 07:24 UTC: 0/51 = 0.000
+  w5 08:04 UTC: 0/51 = 0.000
+  w6 08:44 UTC: 0/51 = 0.000
+  w7 09:24 UTC: 0/51 = 0.000
+  w8 10:04 UTC: 0/51 = 0.000
+attempt latency, client wall s, p50 / p90 / p95 / p99 / max [network p50]:
+  200   n  408: 0.90 / 1.02 / 1.03 / 1.23 / 2.14 [0.85]
+retry-after header on failures: {}
+retryable first failures 0; immediate retry answered 0/0 (at any latency)
+policy     avail  fail (95% CI)        ttd p50/p95/p99  deadline  calls  $/answer
+  fallback 0.998  0.002 (0.000..0.014)  0.90/1.03/1.23   0.002    1.000  0.000638
+  retry    0.998  0.002 (0.000..0.014)  0.90/1.03/1.23   0.002    1.000  0.000638
+  breaker  0.998  0.002 (0.000..0.014)  0.90/1.03/1.23   0.002    1.000  0.000638
+retry - fallback availability +0.0000 (block bootstrap 95% CI +0.0000..+0.0000)
+retry calls per logical request at c=4: 1.000
+adjacent first-failure pairs 0 vs 0.00 by chance; p 1.0000
+breaker K=3 open 15s: skips 0 calls; 0 would have failed, 0 would have answered
+
+R0 >= 20 retryable first failures              FAIL
+R1 dA >= +0.03 and CI low > 0                  FAIL
+R2 ttd p95 rises <= 0.5 s, p99 <= 2.0 s        PASS
+R3 calls <= 1.25 (c=4 <= 1.35)                 PASS
+R4 $/answer <= 1.05x fallback                  PASS
+B0 bursty, p < 0.05                            FAIL
+B1 skips >= 20% of failures, loses <= 0.01     FAIL
+O0 >= 300 logical requests evaluated           PASS
+O1 fail <= 0.10 and CI high <= 0.15            PASS
+O1w every window fail <= 0.25                  PASS
+O2 deadline hits <= 0.05, ttd p50 <= 1.2 s     PASS
+O3 no malformed or wrong-model reply           PASS
+bounded retry: NOT RECOMMENDED (R0: too few failures to evaluate)
+circuit breaker: NOT RECOMMENDED
+OPERATIONAL VERDICT: PASS (under fallback)
