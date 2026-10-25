@@ -13,6 +13,11 @@ over proven edges only (``resolved`` with a non-heuristic basis), so ambiguous
 candidates and the ``tested_by`` heuristic never make a path proven. Reached entities
 in a dependency cycle with another reached entity are flagged (strongly connected
 components of the reached subgraph). Bounds fire visibly.
+
+The reached subgraph is kept as a NetworkX projection (ADR-0012): ``Walk.graph`` holds
+every walked edge in traversal direction, with the ``via`` of its first step in domain
+order, as bounded as the walk
+itself; ``Walk.stopped_by`` says whether it is complete. NetworkX is imported lazily.
 """
 
 from __future__ import annotations
@@ -21,6 +26,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
+    import networkx as nx
+
     from oxide.storage.ladybug import Adjacent, View
 
 NAVIGATION_VERSION = "oxide-impact-bfs-v1"
@@ -43,6 +50,7 @@ class Walk:
     roots: tuple[str, ...]
     hops: tuple[Hop, ...]
     stopped_by: str | None  # "depth", "limit" or "edges"; None when exhausted
+    graph: nx.DiGraph[str]  # the walked edges, traversal direction, edge attr ``via``
 
 
 def _steps(
@@ -72,83 +80,48 @@ def _roots(view: View, key: str) -> list[str]:
 
 def _bfs(
     view: View, roots: list[str], direction: Direction, depth: int, limit: int, proven_only: bool
-) -> tuple[dict[str, tuple[int, str]], dict[str, set[str]], str | None]:
+) -> tuple[dict[str, tuple[int, str]], nx.DiGraph[str], str | None]:
+    import networkx as nx
+
     seen = set(roots)
     found: dict[str, tuple[int, str]] = {}
-    edges: dict[str, set[str]] = {}
+    graph: nx.DiGraph[str] = nx.DiGraph()
     layer, examined, level = roots, 0, 0
     while layer:
         adjacency = view.adjacency(layer)
         steps = {k: _steps(direction, k, *adjacency[k], proven_only) for k in layer}
         if level == depth:
             beyond = any(n not in seen for k in layer for n, _ in steps[k])
-            return found, edges, "depth" if beyond else None
+            return found, graph, "depth" if beyond else None
         level += 1
         upcoming: list[str] = []
         for source in layer:
             examined += sum(map(len, adjacency[source]))
             for neighbor, via in steps[source]:
-                edges.setdefault(source, set()).add(neighbor)
+                if not graph.has_edge(source, neighbor):  # keep the first step's ``via``
+                    graph.add_edge(source, neighbor, via=via)
                 if neighbor in seen:
                     continue
                 if len(found) >= limit:
-                    return found, edges, "limit"
+                    return found, graph, "limit"
                 seen.add(neighbor)
                 found[neighbor] = (level, via)
                 upcoming.append(neighbor)
             if examined > MAX_EDGES:
-                return found, edges, "edges"
+                return found, graph, "edges"
         layer = upcoming
-    return found, edges, None
+    return found, graph, None
 
 
 def walk(view: View, key: str, direction: Direction, depth: int, limit: int) -> Walk:
+    import networkx as nx
+
     roots = _roots(view, key)
-    found, edges, stopped_by = _bfs(view, roots, direction, depth, limit, False)
+    found, graph, stopped_by = _bfs(view, roots, direction, depth, limit, False)
     proven, _, _ = _bfs(view, roots, direction, depth, limit, True)
-    cyclic = _cyclic(edges)
+    cyclic = {k for c in nx.strongly_connected_components(graph) if len(c) > 1 for k in c}
     hops = tuple(
         Hop(k, d, proven[k][0] if k in proven else None, via, k in cyclic)
         for k, (d, via) in sorted(found.items(), key=lambda item: (item[1][0], item[0]))
     )
-    return Walk(tuple(roots), hops, stopped_by)
-
-
-def _cyclic(edges: dict[str, set[str]]) -> set[str]:
-    """Members of strongly connected components larger than one (iterative Tarjan)."""
-    index: dict[str, int] = {}
-    low: dict[str, int] = {}
-    stack: list[str] = []
-    on: set[str] = set()
-    out: set[str] = set()
-    for root in sorted(edges):
-        if root in index:
-            continue
-        work = [(root, iter(sorted(edges.get(root, ()))))]
-        index[root] = low[root] = len(index)
-        stack.append(root)
-        on.add(root)
-        while work:
-            node, children = work[-1]
-            for child in children:
-                if child not in index:
-                    index[child] = low[child] = len(index)
-                    stack.append(child)
-                    on.add(child)
-                    work.append((child, iter(sorted(edges.get(child, ())))))
-                    break
-                if child in on:
-                    low[node] = min(low[node], index[child])
-            else:
-                work.pop()
-                if work:
-                    low[work[-1][0]] = min(low[work[-1][0]], low[node])
-                if low[node] == index[node]:
-                    component = []
-                    while (member := stack.pop()) != node:
-                        on.discard(member)
-                        component.append(member)
-                    on.discard(node)
-                    if component:
-                        out.update([node, *component])
-    return out
+    return Walk(tuple(roots), hops, stopped_by, graph)

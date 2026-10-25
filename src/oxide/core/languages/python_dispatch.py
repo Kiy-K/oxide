@@ -18,6 +18,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
+    import networkx as nx
+
     from oxide.core.languages.python_resolve import Res, Resolver
 
 
@@ -33,7 +35,7 @@ class Dispatch:
         self._mro: dict[str, list[str]] = {}
         self._active: list[str] = []  # classes whose MRO is being computed, outermost first
         self._cyclic: set[str] = set()
-        self._subclasses: dict[str, list[str]] | None = None
+        self._inheritance: nx.DiGraph[str] | None = None  # base -> derived
 
     def is_class(self, key: str) -> bool:
         if key not in self.r.scopes:
@@ -84,20 +86,14 @@ class Dispatch:
 
     def subclasses(self, key: str) -> list[str]:
         """Every in-repo class with ``key`` among its known bases, transitively."""
-        if self._subclasses is None:
-            self._subclasses = {}
+        import networkx as nx  # lazily: ADR-0012
+
+        if self._inheritance is None:
+            self._inheritance = nx.DiGraph()
             for derived in sorted(k for k in self.r.scopes if self.is_class(k)):
-                for base in self.bases(derived):
-                    self._subclasses.setdefault(base, []).append(derived)
-        found, stack = [], [key]
-        seen = {key}
-        while stack:
-            for derived in self._subclasses.get(stack.pop(), []):
-                if derived not in seen:
-                    seen.add(derived)
-                    found.append(derived)
-                    stack.append(derived)
-        return sorted(found)
+                self._inheritance.add_edges_from((b, derived) for b in self.bases(derived))
+        graph = self._inheritance
+        return sorted(nx.descendants(graph, key)) if key in graph else []
 
     def _defines(self, key: str, name: str) -> Res | Literal[False]:
         """Candidates ``key``'s body binds to ``name``; False when it does not bind it,

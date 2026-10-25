@@ -6,9 +6,10 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
-from conftest import write
+from conftest import python, write
 
 import oxide
+from oxide.core import navigation
 from oxide.models import InvalidArgument
 from oxide.storage.ladybug import unresolved_key
 
@@ -66,6 +67,20 @@ def test_cycles_are_flagged_and_terminate(repo: oxide.Repository) -> None:
     impact = repo.impact("symbol:pkg/core.py#low", depth=8)
     cyclic = {h.entity.key for h in impact.hops if h.cyclic}
     assert cyclic == {"symbol:pkg/loop.py#ping", "symbol:pkg/loop.py#pong"}
+
+
+def test_the_walk_keeps_its_edges_as_a_networkx_projection(repo: oxide.Repository) -> None:
+    found = navigation.walk(repo._view(), "symbol:pkg/core.py#low", "upstream", 8, 200)
+    graph = found.graph
+    assert {h.key for h in found.hops} <= set(graph.nodes)
+    ping, pong = "symbol:pkg/loop.py#ping", "symbol:pkg/loop.py#pong"
+    assert graph.has_edge(ping, pong) and graph.has_edge(pong, ping)
+    assert graph.edges[pong, ping]["via"] == f"calls:in:{pong}"  # traversal direction
+
+
+def test_networkx_is_imported_only_when_needed(tmp_path: Path) -> None:
+    probe = "import sys, oxide; assert 'networkx' not in sys.modules; print('lazy')"
+    assert python(tmp_path, probe).stdout.strip() == "lazy"
 
 
 def test_a_class_stands_for_its_members_and_a_file_for_its_module(
