@@ -1,0 +1,107 @@
+{
+ "tasks": [
+  {
+   "id": "D1",
+   "repo": "xarray",
+   "type": "dispatch",
+   "question": "Which functions or methods in the library code (the `xarray/` package, not tests) contain a call that can execute `Variable.reduce` (defined in xarray/core/variable.py) at run time? Follow calls through `self`, `cls` and `super()` by the class hierarchy, and calls on objects that are clearly of that class. Do not list calls that always reach a different method of the same name. Give one location per function.",
+   "truth": [
+    "xarray/core/common.py#ImplementsArrayReduce._reduce_method",
+    "xarray/core/dataarray.py#DataArray.reduce",
+    "xarray/core/dataset.py#Dataset.reduce"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "D2",
+   "repo": "xarray",
+   "type": "dispatch",
+   "question": "Which functions or methods in the library code (the `xarray/` package, not tests) contain a call that can execute `DataArrayGroupBy.apply` (defined in xarray/core/groupby.py) at run time? Follow calls through `self`, `cls` and `super()` by the class hierarchy, and calls on objects that are clearly of that class. Do not list calls that always reach a different method of the same name. Give one location per function.",
+   "truth": [
+    "xarray/core/groupby.py#GroupBy.assign_coords",
+    "xarray/core/groupby.py#DataArrayGroupBy.quantile",
+    "xarray/core/groupby.py#DataArrayGroupBy.reduce",
+    "xarray/core/resample.py#DataArrayResample.apply"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "D3",
+   "repo": "seaborn",
+   "type": "dispatch",
+   "question": "Which functions or methods in the library code (the `seaborn/` package, not tests) contain a call that can execute `Dot._resolve_properties` (defined in seaborn/_marks/dot.py) at run time? Follow calls through `self`, `cls` and `super()` by the class hierarchy, and calls on objects that are clearly of that class. Do not list calls that always reach a different method of the same name. Give one location per function.",
+   "truth": [
+    "seaborn/_marks/dot.py#DotBase._plot",
+    "seaborn/_marks/dot.py#DotBase._legend_artist"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "I1",
+   "repo": "xarray",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (the `xarray/` package, not tests) would be affected by a change to `summarize_variable` (defined in xarray/core/formatting.py): those that call it directly, and those that call one of its direct callers? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "xarray/core/formatting.py#_summarize_coord_levels",
+    "xarray/core/formatting.py#summarize_datavar",
+    "xarray/core/formatting.py#summarize_coord",
+    "xarray/core/formatting.py#_mapping_repr",
+    "xarray/core/formatting.py#_diff_mapping_repr"
+   ],
+   "neutral": [
+    "file:xarray/core/formatting.py",
+    "xarray/core/formatting.py#coords_repr"
+   ]
+  },
+  {
+   "id": "I2",
+   "repo": "xarray",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (the `xarray/` package, not tests) would be affected by a change to `_get_broadcast_dims_map_common_coords` (defined in xarray/core/alignment.py): those that call it directly, and those that call one of its direct callers? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "xarray/core/alignment.py#broadcast",
+    "xarray/core/dataarray.py#DataArray.broadcast_like",
+    "xarray/core/dataset.py#Dataset.broadcast_like",
+    "xarray/core/alignment.py#broadcast_arrays"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "I3",
+   "repo": "seaborn",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (the `seaborn/` package, not tests) would be affected by a change to `_init_mutable_colormap` (defined in seaborn/widgets.py): those that call it directly, and those that call one of its direct callers? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "seaborn/widgets.py#choose_colorbrewer_palette",
+    "seaborn/widgets.py#choose_dark_palette",
+    "seaborn/widgets.py#choose_light_palette",
+    "seaborn/widgets.py#choose_diverging_palette",
+    "seaborn/widgets.py#choose_cubehelix_palette"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "I4",
+   "repo": "seaborn",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (the `seaborn/` package, not tests) would be affected by a change to `assert_artists_equal` (defined in seaborn/_testing.py): those that call it directly, and those that call one of its direct callers? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "seaborn/_testing.py#assert_legends_equal",
+    "seaborn/_testing.py#assert_plots_equal"
+   ],
+   "neutral": []
+  }
+ ],
+ "dev": {
+  "id": "dev",
+  "repo": "xarray",
+  "type": "impact",
+  "question": "Which functions or methods in the library code (the `xarray/` package, not tests) call `default_indexes` (defined in xarray/core/indexes.py) directly? Give one location per function.",
+  "truth": [
+   "xarray/core/dataarray.py#DataArray.indexes",
+   "xarray/core/dataset.py#Dataset.indexes",
+   "xarray/testing.py#_assert_indexes_invariants_checks"
+  ],
+  "neutral": []
+ }
+}

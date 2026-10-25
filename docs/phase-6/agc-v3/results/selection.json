@@ -1,0 +1,1642 @@
+{
+ "xarray/dispatch": [
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/variable.py#Variable.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/file_manager.py#FileManager.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/common.py#AbstractDataStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/groupby.py#DataArrayGroupBy.apply",
+   "name": "apply",
+   "definitions": 5,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#YearBegin.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#YearEnd.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataset.py#Dataset.apply",
+   "name": "apply",
+   "definitions": 5,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/coordinates.py#DataArrayCoordinates.to_dataset",
+   "name": "to_dataset",
+   "definitions": 3,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pynio_.py#NioDataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/coordinates.py#DatasetCoordinates.to_dataset",
+   "name": "to_dataset",
+   "definitions": 3,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataset.py#Dataset._unary_op",
+   "name": "_unary_op",
+   "definitions": 3,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/variable.py#Variable._unary_op",
+   "name": "_unary_op",
+   "definitions": 3,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#MemoryCachedArray.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/resample.py#DataArrayResample.apply",
+   "name": "apply",
+   "definitions": 5,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/h5netcdf_.py#H5NetCDFArrayWrapper.get_array",
+   "name": "get_array",
+   "definitions": 5,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataset.py#Dataset.isel",
+   "name": "isel",
+   "definitions": 3,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#Hour.as_timedelta",
+   "name": "as_timedelta",
+   "definitions": 4,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/rolling.py#DatasetRolling.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/groupby.py#DatasetGroupBy.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pynio_.py#NioArrayWrapper.get_array",
+   "name": "get_array",
+   "definitions": 5,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataarray.py#DataArray.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/file_manager.py#DummyFileManager.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/netCDF4_.py#NetCDF4ArrayWrapper.get_array",
+   "name": "get_array",
+   "definitions": 5,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataset.py#Dataset.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/variable.py#Variable.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataarray.py#DataArray.to_dataset",
+   "name": "to_dataset",
+   "definitions": 3,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/zarr.py#ZarrArrayWrapper.get_array",
+   "name": "get_array",
+   "definitions": 5,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataarray.py#DataArray.isel",
+   "name": "isel",
+   "definitions": 3,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/resample.py#DatasetResample.apply",
+   "name": "apply",
+   "definitions": 5,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#LazilyVectorizedIndexedArray.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#QuarterOffset.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pydap_.py#PydapDataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pynio_.py#NioDataStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataset.py#Dataset.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/h5netcdf_.py#H5NetCDFStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/groupby.py#DatasetGroupBy.apply",
+   "name": "apply",
+   "definitions": 5,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/groupby.py#DataArrayGroupBy.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/resample.py#DatasetResample.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/netCDF4_.py#NetCDF4DataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/common.py#DataWithCoords.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/scipy_.py#ScipyDataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/api.py#_MultiFileCloser.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#MonthEnd.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#LazilyOuterIndexedArray.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pseudonetcdf_.py#PncArrayWrapper.get_array",
+   "name": "get_array",
+   "definitions": 5,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pseudonetcdf_.py#PseudoNetCDFDataStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#BaseCFTimeOffset.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataarray.py#DataArray.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/variable.py#Variable.isel",
+   "name": "isel",
+   "definitions": 3,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#Second.as_timedelta",
+   "name": "as_timedelta",
+   "definitions": 4,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/rolling.py#DataArrayRolling.reduce",
+   "name": "reduce",
+   "definitions": 8,
+   "call_sites": 11
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#MonthBegin.onOffset",
+   "name": "onOffset",
+   "definitions": 6,
+   "call_sites": 10
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/pseudonetcdf_.py#PseudoNetCDFDataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/file_manager.py#CachingFileManager.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/zarr.py#ZarrStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/h5netcdf_.py#H5NetCDFStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/dataarray.py#DataArray._unary_op",
+   "name": "_unary_op",
+   "definitions": 3,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#PandasIndexAdapter.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#DaskIndexingAdapter.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#CopyOnWriteArray.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#Minute.as_timedelta",
+   "name": "as_timedelta",
+   "definitions": 4,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/coding/cftime_offsets.py#Day.as_timedelta",
+   "name": "as_timedelta",
+   "definitions": 4,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/scipy_.py#ScipyDataStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/netCDF4_.py#NetCDF4DataStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/zarr.py#ZarrStore.close",
+   "name": "close",
+   "definitions": 12,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/backends/cfgrib_.py#CfGribDataStore.open_store_variable",
+   "name": "open_store_variable",
+   "definitions": 8,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "dispatch",
+   "key": "symbol:xarray/core/indexing.py#NumpyIndexingAdapter.transpose",
+   "name": "transpose",
+   "definitions": 10,
+   "call_sites": 5
+  }
+ ],
+ "xarray/impact": [
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#summarize_variable",
+   "name": "summarize_variable",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/alignment.py#_get_broadcast_dims_map_common_coords",
+   "name": "_get_broadcast_dims_map_common_coords",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#_decompose_slice",
+   "name": "_decompose_slice",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/times.py#_netcdf_to_numpy_timeunit",
+   "name": "_netcdf_to_numpy_timeunit",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexes.py#default_indexes",
+   "name": "default_indexes",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/common.py#_full_like_variable",
+   "name": "_full_like_variable",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#merge_variables",
+   "name": "merge_variables",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/dataset.py#_get_virtual_variable",
+   "name": "_get_virtual_variable",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#_infer_xy_labels",
+   "name": "_infer_xy_labels",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/dtypes.py#result_type",
+   "name": "result_type",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#as_integer_slice",
+   "name": "as_integer_slice",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#_get_priority_vars",
+   "name": "_get_priority_vars",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/testing.py#_assert_variable_invariants",
+   "name": "_assert_variable_invariants",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#_assert_compat_valid",
+   "name": "_assert_compat_valid",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#_arrayize_vectorized_indexer",
+   "name": "_arrayize_vectorized_indexer",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#to_offset",
+   "name": "to_offset",
+   "definitions": 1,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/common.py#is_np_datetime_like",
+   "name": "is_np_datetime_like",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/alignment.py#reindex_like_indexers",
+   "name": "reindex_like_indexers",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/common.py#_encode_variable_name",
+   "name": "_encode_variable_name",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/variable.py#assert_unique_multiindex_level_names",
+   "name": "assert_unique_multiindex_level_names",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/ops.py#op_str",
+   "name": "op_str",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#_sanitize_slice_element",
+   "name": "_sanitize_slice_element",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftimeindex.py#_parse_iso8601_with_reso",
+   "name": "_parse_iso8601_with_reso",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/locks.py#combine_locks",
+   "name": "combine_locks",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/common.py#full_like",
+   "name": "full_like",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#import_matplotlib_pyplot",
+   "name": "import_matplotlib_pyplot",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#expand_and_merge_variables",
+   "name": "expand_and_merge_variables",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/strings.py#is_unicode_dtype",
+   "name": "is_unicode_dtype",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#remove_incompatible_items",
+   "name": "remove_incompatible_items",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#safe_cast_to_index",
+   "name": "safe_cast_to_index",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/common.py#contains_cftime_datetimes",
+   "name": "contains_cftime_datetimes",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#_wrap_numpy_scalars",
+   "name": "_wrap_numpy_scalars",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#_get_day_of_month",
+   "name": "_get_day_of_month",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/dataset.py#calculate_dimensions",
+   "name": "calculate_dimensions",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/ops.py#inject_all_ops_and_reduce_methods",
+   "name": "inject_all_ops_and_reduce_methods",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/convert.py#_filter_attrs",
+   "name": "_filter_attrs",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#dim_summary",
+   "name": "dim_summary",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#_days_in_month",
+   "name": "_days_in_month",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#dict_equiv",
+   "name": "dict_equiv",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/strings.py#check_vlen_dtype",
+   "name": "check_vlen_dtype",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/netcdf3.py#encode_nc3_attr_value",
+   "name": "encode_nc3_attr_value",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/ops.py#get_op",
+   "name": "get_op",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#is_remote_uri",
+   "name": "is_remote_uri",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#_infer_interval_breaks",
+   "name": "_infer_interval_breaks",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/ops.py#inject_reduce_methods",
+   "name": "inject_reduce_methods",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#get_axis",
+   "name": "get_axis",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/duck_array_ops.py#array_equiv",
+   "name": "array_equiv",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#_shift_month",
+   "name": "_shift_month",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/plot.py#imshow",
+   "name": "imshow",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/variable.py#_maybe_wrap_data",
+   "name": "_maybe_wrap_data",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/duck_array_ops.py#datetime_to_numeric",
+   "name": "datetime_to_numeric",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#_outer_to_vectorized_indexer",
+   "name": "_outer_to_vectorized_indexer",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/times.py#_unpack_netcdf_time_units",
+   "name": "_unpack_netcdf_time_units",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#to_0d_object_array",
+   "name": "to_0d_object_array",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/nanops.py#_nanmean_ddof_object",
+   "name": "_nanmean_ddof_object",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/_version.py#run_command",
+   "name": "run_command",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/variables.py#unpack_for_encoding",
+   "name": "unpack_for_encoding",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#explicit_indexing_adapter",
+   "name": "explicit_indexing_adapter",
+   "definitions": 1,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#format_item",
+   "name": "format_item",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/accessor_str.py#_is_str_like",
+   "name": "_is_str_like",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/zarr.py#open_zarr",
+   "name": "open_zarr",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#expanded_indexer",
+   "name": "expanded_indexer",
+   "definitions": 1,
+   "call_sites": 7
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/duck_array_ops.py#as_shared_dtype",
+   "name": "as_shared_dtype",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/npcompat.py#moveaxis",
+   "name": "moveaxis",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#_get_col_items",
+   "name": "_get_col_items",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#_valid_other_type",
+   "name": "_valid_other_type",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/ops.py#inject_binary_ops",
+   "name": "inject_binary_ops",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#merge_core",
+   "name": "merge_core",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/_version.py#register_vcs_handler",
+   "name": "register_vcs_handler",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/dtypes.py#get_fill_value",
+   "name": "get_fill_value",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/locks.py#ensure_lock",
+   "name": "ensure_lock",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/pdcompat.py#remove_unused_levels",
+   "name": "remove_unused_levels",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/missing.py#_apply_over_vars_with_dim",
+   "name": "_apply_over_vars_with_dim",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/duck_array_ops.py#as_like_arrays",
+   "name": "as_like_arrays",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/convert.py#_name",
+   "name": "_name",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/nputils.py#inverse_permutation",
+   "name": "inverse_permutation",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/variable.py#broadcast_variables",
+   "name": "broadcast_variables",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/merge.py#expand_variable_dicts",
+   "name": "expand_variable_dicts",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#peek_at",
+   "name": "peek_at",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/groupby.py#_maybe_reorder",
+   "name": "_maybe_reorder",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/nanops.py#_replace_nan",
+   "name": "_replace_nan",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/alignment.py#_broadcast_helper",
+   "name": "_broadcast_helper",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#alias",
+   "name": "alias",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/indexing.py#as_integer_or_none",
+   "name": "as_integer_or_none",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/conventions.py#decode_cf",
+   "name": "decode_cf",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#pretty_print",
+   "name": "pretty_print",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/utils.py#get_temp_dimname",
+   "name": "get_temp_dimname",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#_is_monotonic",
+   "name": "_is_monotonic",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/plot/utils.py#_update_axes",
+   "name": "_update_axes",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/times.py#to_timedelta_unboxed",
+   "name": "to_timedelta_unboxed",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/backends/locks.py#get_write_lock",
+   "name": "get_write_lock",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#_calculate_col_width",
+   "name": "_calculate_col_width",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#normalize_date",
+   "name": "normalize_date",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/formatting.py#diff_array_repr",
+   "name": "diff_array_repr",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/variables.py#safe_setitem",
+   "name": "safe_setitem",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/conventions.py#_var_as_tuple",
+   "name": "_var_as_tuple",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/cftime_offsets.py#cftime_range",
+   "name": "cftime_range",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/alignment.py#deep_align",
+   "name": "deep_align",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/variables.py#lazy_elemwise_func",
+   "name": "lazy_elemwise_func",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/core/dtypes.py#maybe_promote",
+   "name": "maybe_promote",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "xarray",
+   "type": "impact",
+   "key": "symbol:xarray/coding/variables.py#unpack_for_decoding",
+   "name": "unpack_for_decoding",
+   "definitions": 1,
+   "call_sites": 8
+  }
+ ],
+ "seaborn/dispatch": [
+  {
+   "repo": "seaborn",
+   "type": "dispatch",
+   "key": "symbol:seaborn/_marks/dot.py#Dot._resolve_properties",
+   "name": "_resolve_properties",
+   "definitions": 4,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "dispatch",
+   "key": "symbol:seaborn/_marks/dot.py#Dots._resolve_properties",
+   "name": "_resolve_properties",
+   "definitions": 4,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "dispatch",
+   "key": "symbol:seaborn/_marks/bar.py#BarBase._resolve_properties",
+   "name": "_resolve_properties",
+   "definitions": 4,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "dispatch",
+   "key": "symbol:seaborn/_marks/dot.py#DotBase._resolve_properties",
+   "name": "_resolve_properties",
+   "definitions": 4,
+   "call_sites": 6
+  }
+ ],
+ "seaborn/impact": [
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/widgets.py#_init_mutable_colormap",
+   "name": "_init_mutable_colormap",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/_testing.py#assert_artists_equal",
+   "name": "assert_artists_equal",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#axis_ticklabels_overlap",
+   "name": "axis_ticklabels_overlap",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/rcmod.py#set_palette",
+   "name": "set_palette",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/palettes.py#_color_to_rgb",
+   "name": "_color_to_rgb",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#_normalize_kwargs",
+   "name": "_normalize_kwargs",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#_draw_figure",
+   "name": "_draw_figure",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/palettes.py#dark_palette",
+   "name": "dark_palette",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/external/husl.py#rgb_to_husl",
+   "name": "rgb_to_husl",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/distributions.py#_freedman_diaconis_bins",
+   "name": "_freedman_diaconis_bins",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/rcmod.py#axes_style",
+   "name": "axes_style",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#_default_color",
+   "name": "_default_color",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/distributions.py#histplot",
+   "name": "histplot",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/palettes.py#light_palette",
+   "name": "light_palette",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/external/husl.py#f",
+   "name": "f",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/palettes.py#blend_palette",
+   "name": "blend_palette",
+   "definitions": 1,
+   "call_sites": 8
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/external/husl.py#husl_to_rgb",
+   "name": "husl_to_rgb",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/algorithms.py#bootstrap",
+   "name": "bootstrap",
+   "definitions": 1,
+   "call_sites": 6
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#get_color_cycle",
+   "name": "get_color_cycle",
+   "definitions": 1,
+   "call_sites": 5
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/_core/scales.py#_make_log_transforms",
+   "name": "_make_log_transforms",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/matrix.py#_index_to_label",
+   "name": "_index_to_label",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#adjust_legend_subtitles",
+   "name": "adjust_legend_subtitles",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/matrix.py#dendrogram",
+   "name": "dendrogram",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/matrix.py#_index_to_ticklabels",
+   "name": "_index_to_ticklabels",
+   "definitions": 1,
+   "call_sites": 7
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#_deprecate_ci",
+   "name": "_deprecate_ci",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/matrix.py#heatmap",
+   "name": "heatmap",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/external/husl.py#max_chroma",
+   "name": "max_chroma",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/palettes.py#cubehelix_palette",
+   "name": "cubehelix_palette",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/_core/plot.py#theme_context",
+   "name": "theme_context",
+   "definitions": 1,
+   "call_sites": 4
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/external/version.py#_parse_letter_version",
+   "name": "_parse_letter_version",
+   "definitions": 1,
+   "call_sites": 3
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/_compat.py#MarkerStyle",
+   "name": "MarkerStyle",
+   "definitions": 1,
+   "call_sites": 7
+  },
+  {
+   "repo": "seaborn",
+   "type": "impact",
+   "key": "symbol:seaborn/utils.py#to_utf8",
+   "name": "to_utf8",
+   "definitions": 1,
+   "call_sites": 4
+  }
+ ]
+}
