@@ -1,0 +1,748 @@
+{
+ "n_runs": 144,
+ "tasks": [
+  "A1",
+  "A2",
+  "A3",
+  "L1",
+  "L2",
+  "L3",
+  "L4",
+  "R1",
+  "R2",
+  "R3",
+  "R4",
+  "R5"
+ ],
+ "arms": {
+  "B": {
+   "runs": 36,
+   "technical_failures": 0,
+   "success_rate": 0.944,
+   "f1": 0.98,
+   "false_claims": 0.028,
+   "cost_units_total": 403205,
+   "cps": 11859.0,
+   "ratio_cps": 1.0,
+   "ratio_cps_ci95": [
+    1.0,
+    1.0
+   ],
+   "ratio_tokens": 1.0,
+   "ratio_cost_units": 1.0,
+   "ratio_calls": 1.0,
+   "ratio_seconds": 1.0,
+   "first_prompt_median": 867.0,
+   "startup_s_median": 0.55,
+   "tokens_median": 11309.5,
+   "seconds_median": 24.205,
+   "builtin_calls_mean": 5.778,
+   "grep_calls_mean": 1.861,
+   "read_calls_mean": 3.917,
+   "repeated_reads_mean": 1.472,
+   "oxide_calls_mean": 0.0,
+   "graph_calls": 0,
+   "outline_calls": 0,
+   "oxide_chars_median_when_used": 0,
+   "used_oxide_heavy": "0/24",
+   "used_oxide_lookup": "0/12",
+   "cost_usd": 0,
+   "per_type": {
+    "architecture": {
+     "f1": 0.948,
+     "success": 0.778,
+     "false": 0.111,
+     "cost_units": 17107
+    },
+    "callees": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 12851
+    },
+    "callers": {
+     "f1": 0.986,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 13565
+    },
+    "chain": {
+     "f1": 0.956,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 13461
+    },
+    "lookup": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 4082
+    }
+   },
+   "per_task": {
+    "A1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 12751,
+     "cost_units": 14603.6,
+     "calls": 7,
+     "seconds": 27.55
+    },
+    "A2": {
+     "f1": 0.844,
+     "success": 0.333,
+     "false": 0.333,
+     "tokens": 13622,
+     "cost_units": 17107.0,
+     "calls": 11,
+     "seconds": 25.71
+    },
+    "A3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 30098,
+     "cost_units": 23419.6,
+     "calls": 10,
+     "seconds": 35.62
+    },
+    "L1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 3159,
+     "cost_units": 3782.0,
+     "calls": 2,
+     "seconds": 11.15
+    },
+    "L2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 4306,
+     "cost_units": 4381.0,
+     "calls": 2,
+     "seconds": 11.71
+    },
+    "L3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 7251,
+     "cost_units": 5950.6,
+     "calls": 2,
+     "seconds": 12.59
+    },
+    "L4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 2767,
+     "cost_units": 3236.0,
+     "calls": 1,
+     "seconds": 10.01
+    },
+    "R1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 2138,
+     "cost_units": 2866.0,
+     "calls": 1,
+     "seconds": 9.55
+    },
+    "R2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 26553,
+     "cost_units": 13564.8,
+     "calls": 6,
+     "seconds": 29.22
+    },
+    "R3": {
+     "f1": 0.956,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 17692,
+     "cost_units": 13460.6,
+     "calls": 6,
+     "seconds": 24.33
+    },
+    "R4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 17670,
+     "cost_units": 12851.2,
+     "calls": 7,
+     "seconds": 35.2
+    },
+    "R5": {
+     "f1": 0.957,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 12386,
+     "cost_units": 15882.0,
+     "calls": 12,
+     "seconds": 24.8
+    }
+   }
+  },
+  "Bcm": {
+   "runs": 36,
+   "technical_failures": 0,
+   "success_rate": 0.917,
+   "f1": 0.966,
+   "false_claims": 0.056,
+   "cost_units_total": 587922,
+   "cps": 17815.8,
+   "ratio_cps": 1.502,
+   "ratio_cps_ci95": [
+    1.296,
+    1.76
+   ],
+   "ratio_tokens": 2.919,
+   "ratio_cost_units": 1.554,
+   "ratio_calls": 1.473,
+   "ratio_seconds": 1.595,
+   "first_prompt_median": 2093.0,
+   "startup_s_median": 0.55,
+   "tokens_median": 24435.5,
+   "seconds_median": 32.145,
+   "builtin_calls_mean": 6.111,
+   "grep_calls_mean": 1.944,
+   "read_calls_mean": 4.167,
+   "repeated_reads_mean": 1.778,
+   "oxide_calls_mean": 0.0,
+   "graph_calls": 0,
+   "outline_calls": 0,
+   "oxide_chars_median_when_used": 0,
+   "used_oxide_heavy": "0/24",
+   "used_oxide_lookup": "0/12",
+   "cost_usd": 0,
+   "per_type": {
+    "architecture": {
+     "f1": 0.993,
+     "success": 0.889,
+     "false": 0.111,
+     "cost_units": 23274
+    },
+    "callees": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 12779
+    },
+    "callers": {
+     "f1": 0.981,
+     "success": 0.889,
+     "false": 0.111,
+     "cost_units": 18460
+    },
+    "chain": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 22949
+    },
+    "lookup": {
+     "f1": 0.917,
+     "success": 0.917,
+     "false": 0.0,
+     "cost_units": 6654
+    }
+   },
+   "per_task": {
+    "A1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 39659,
+     "cost_units": 23273.8,
+     "calls": 9,
+     "seconds": 39.65
+    },
+    "A2": {
+     "f1": 0.978,
+     "success": 0.667,
+     "false": 0.333,
+     "tokens": 35306,
+     "cost_units": 22308.4,
+     "calls": 11,
+     "seconds": 45.59
+    },
+    "A3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 88740,
+     "cost_units": 31532.8,
+     "calls": 12,
+     "seconds": 58.09
+    },
+    "L1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 11231,
+     "cost_units": 3955.8,
+     "calls": 4,
+     "seconds": 18.68
+    },
+    "L2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 12552,
+     "cost_units": 7082.0,
+     "calls": 4,
+     "seconds": 18.97
+    },
+    "L3": {
+     "f1": 0.667,
+     "success": 0.667,
+     "false": 0.0,
+     "tokens": 17973,
+     "cost_units": 6669.2,
+     "calls": 4,
+     "seconds": 19.94
+    },
+    "L4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 7841,
+     "cost_units": 6638.0,
+     "calls": 2,
+     "seconds": 10.89
+    },
+    "R1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 27141,
+     "cost_units": 14010.6,
+     "calls": 7,
+     "seconds": 30.73
+    },
+    "R2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 27917,
+     "cost_units": 18460.4,
+     "calls": 9,
+     "seconds": 33.49
+    },
+    "R3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 43052,
+     "cost_units": 22948.6,
+     "calls": 8,
+     "seconds": 43.96
+    },
+    "R4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 19825,
+     "cost_units": 12778.6,
+     "calls": 8,
+     "seconds": 27.58
+    },
+    "R5": {
+     "f1": 0.943,
+     "success": 0.667,
+     "false": 0.333,
+     "tokens": 75309,
+     "cost_units": 25712.4,
+     "calls": 15,
+     "seconds": 66.0
+    }
+   }
+  },
+  "Ad": {
+   "runs": 36,
+   "technical_failures": 0,
+   "success_rate": 1.0,
+   "f1": 0.995,
+   "false_claims": 0.0,
+   "cost_units_total": 389180,
+   "cps": 10810.6,
+   "ratio_cps": 0.912,
+   "ratio_cps_ci95": [
+    0.784,
+    1.041
+   ],
+   "ratio_tokens": 1.09,
+   "ratio_cost_units": 1.005,
+   "ratio_calls": 1.126,
+   "ratio_seconds": 1.002,
+   "first_prompt_median": 1154.0,
+   "startup_s_median": 3.08,
+   "tokens_median": 10883.5,
+   "seconds_median": 21.91,
+   "builtin_calls_mean": 5.889,
+   "grep_calls_mean": 1.75,
+   "read_calls_mean": 4.139,
+   "repeated_reads_mean": 1.611,
+   "oxide_calls_mean": 0.222,
+   "graph_calls": 0,
+   "outline_calls": 8,
+   "oxide_chars_median_when_used": 215,
+   "used_oxide_heavy": "5/24",
+   "used_oxide_lookup": "2/12",
+   "cost_usd": 0,
+   "per_type": {
+    "architecture": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 17417
+    },
+    "callees": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 11474
+    },
+    "callers": {
+     "f1": 0.986,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 12939
+    },
+    "chain": {
+     "f1": 0.978,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 17118
+    },
+    "lookup": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 3712
+    }
+   },
+   "per_task": {
+    "A1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 11190,
+     "cost_units": 14844.2,
+     "calls": 8,
+     "seconds": 29.13
+    },
+    "A2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 14060,
+     "cost_units": 17417.4,
+     "calls": 9,
+     "seconds": 26.02
+    },
+    "A3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 26533,
+     "cost_units": 19005.2,
+     "calls": 10,
+     "seconds": 38.04
+    },
+    "L1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 5229,
+     "cost_units": 3211.0,
+     "calls": 3,
+     "seconds": 16.44
+    },
+    "L2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 4627,
+     "cost_units": 3424.6,
+     "calls": 2,
+     "seconds": 11.0
+    },
+    "L3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 11887,
+     "cost_units": 8971.2,
+     "calls": 3,
+     "seconds": 14.65
+    },
+    "L4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 5121,
+     "cost_units": 3999.8,
+     "calls": 2,
+     "seconds": 11.08
+    },
+    "R1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 2679,
+     "cost_units": 3180.0,
+     "calls": 1,
+     "seconds": 6.92
+    },
+    "R2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 16780,
+     "cost_units": 13482.4,
+     "calls": 7,
+     "seconds": 22.67
+    },
+    "R3": {
+     "f1": 0.978,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 25808,
+     "cost_units": 17117.8,
+     "calls": 8,
+     "seconds": 30.1
+    },
+    "R4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 13502,
+     "cost_units": 11474.2,
+     "calls": 8,
+     "seconds": 26.59
+    },
+    "R5": {
+     "f1": 0.957,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 9204,
+     "cost_units": 12938.6,
+     "calls": 12,
+     "seconds": 23.75
+    }
+   },
+   "premium_justified": false,
+   "criteria": {
+    "V": true,
+    "A": false,
+    "Q": true,
+    "F": true,
+    "E": true
+   },
+   "passes": false
+  },
+  "Acm": {
+   "runs": 36,
+   "technical_failures": 0,
+   "success_rate": 0.972,
+   "f1": 0.993,
+   "false_claims": 0.028,
+   "cost_units_total": 543823,
+   "cps": 15537.8,
+   "ratio_cps": 1.31,
+   "ratio_cps_ci95": [
+    1.143,
+    1.472
+   ],
+   "ratio_tokens": 2.553,
+   "ratio_cost_units": 1.329,
+   "ratio_calls": 1.101,
+   "ratio_seconds": 1.167,
+   "first_prompt_median": 2537.0,
+   "startup_s_median": 3.075,
+   "tokens_median": 27356.5,
+   "seconds_median": 25.785,
+   "builtin_calls_mean": 5.667,
+   "grep_calls_mean": 1.778,
+   "read_calls_mean": 3.889,
+   "repeated_reads_mean": 1.722,
+   "oxide_calls_mean": 0.028,
+   "graph_calls": 1,
+   "outline_calls": 0,
+   "oxide_chars_median_when_used": 1732,
+   "used_oxide_heavy": "1/24",
+   "used_oxide_lookup": "0/12",
+   "cost_usd": 0,
+   "per_type": {
+    "architecture": {
+     "f1": 0.993,
+     "success": 0.889,
+     "false": 0.111,
+     "cost_units": 25566
+    },
+    "callees": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 15237
+    },
+    "callers": {
+     "f1": 0.986,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 11454
+    },
+    "chain": {
+     "f1": 0.978,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 14682
+    },
+    "lookup": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "cost_units": 5010
+    }
+   },
+   "per_task": {
+    "A1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 54170,
+     "cost_units": 25566.4,
+     "calls": 8,
+     "seconds": 47.13
+    },
+    "A2": {
+     "f1": 0.978,
+     "success": 0.667,
+     "false": 0.333,
+     "tokens": 53395,
+     "cost_units": 22745.6,
+     "calls": 9,
+     "seconds": 43.37
+    },
+    "A3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 68449,
+     "cost_units": 33484.4,
+     "calls": 11,
+     "seconds": 51.38
+    },
+    "L1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 8163,
+     "cost_units": 4321.2,
+     "calls": 2,
+     "seconds": 10.22
+    },
+    "L2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 8873,
+     "cost_units": 5244.4,
+     "calls": 2,
+     "seconds": 10.03
+    },
+    "L3": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 13258,
+     "cost_units": 11358.2,
+     "calls": 2,
+     "seconds": 11.92
+    },
+    "L4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 9204,
+     "cost_units": 4775.4,
+     "calls": 2,
+     "seconds": 9.08
+    },
+    "R1": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 19317,
+     "cost_units": 6208.2,
+     "calls": 5,
+     "seconds": 21.18
+    },
+    "R2": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 38271,
+     "cost_units": 15907.0,
+     "calls": 6,
+     "seconds": 30.12
+    },
+    "R3": {
+     "f1": 0.978,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 35968,
+     "cost_units": 14682.2,
+     "calls": 6,
+     "seconds": 26.64
+    },
+    "R4": {
+     "f1": 1.0,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 39701,
+     "cost_units": 15236.6,
+     "calls": 8,
+     "seconds": 37.13
+    },
+    "R5": {
+     "f1": 0.957,
+     "success": 1.0,
+     "false": 0.0,
+     "tokens": 13044,
+     "cost_units": 11454.0,
+     "calls": 7,
+     "seconds": 21.41
+    }
+   },
+   "premium_justified": false,
+   "criteria": {
+    "V": true,
+    "A": false,
+    "Q": true,
+    "F": true,
+    "E": false
+   },
+   "passes": false
+  }
+ },
+ "decision": "REJECT",
+ "overhead": {
+  "Bcm/B": {
+   "first_prompt_median": 2.414,
+   "cps": 1.502
+  },
+  "Acm/Ad": {
+   "first_prompt_median": 2.198,
+   "cps": 1.437
+  }
+ }
+}
