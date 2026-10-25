@@ -1,0 +1,3 @@
+2026-10-25T05:35:54Z
+7a9b9b61767ac8d4709e092c8e887a6782e9ef56
+bd133222255640ae573be6cee6d7601d3bec8308cbe46905f00c1c3921966b6f  docs/phase-6/graph-navigation/preregistration.md

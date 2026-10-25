@@ -126,8 +126,12 @@ walk). Order is (`depth`, key).
 `unresolved` (upstream only) counts unresolved `calls`/`references` sites whose text is
 a root's name or ends with `.name`/`::name`. It is a by-name signal, not a bound: for a
 common name (`get`) most of those sites target something else, and an aliased import is
-not counted. Zero means no unresolved site even names it; a small upstream set with a
-large `unresolved` is incomplete, not safe. Method calls on a receiver OXIDE cannot type
+not counted. A small upstream set with a large `unresolved` is incomplete, not safe; but
+zero does not mean complete. Uses OXIDE records no unresolved call/reference for are
+not counted: a bare name passed as a value (`StreamHandler(f)`), a decorator
+(`@flask.after_this_request`), the name as a receiver (`f.attr()`) and pytest fixture
+injection. On 24 sampled flask/requests/pytest functions and methods, 3 of the 11 with
+missed dependents had `unresolved == 0` ([phase-6/graph-navigation](phase-6/graph-navigation/README.md)). Method calls on a receiver OXIDE cannot type
 (`self.client.get()`, a parameter's `x.save()`) are the main source.
 
 Bounds: `depth` in `[0, 8]`, `limit` reached entities in `[0, 1000]`, and 20,000
