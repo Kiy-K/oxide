@@ -30,8 +30,9 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - If missing or ambiguous information could change the implementation, check the repo first. If that doesn't settle it, ask one focused question instead of guessing. Don't invent permanent ID/schema/transport/model policy to unblock scaffolding (BOOTSTRAP rule 4).
 - Before finishing, read the full diff for accidental changes in scope, public API surface (`oxide/__init__.py`), dependencies (`pyproject.toml`, `uv.lock`) or generated files.
 - Tests never touch real user data: every test and subprocess gets a private data location (`tests/python/conftest.py`).
-- Don't commit, push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless asked.
+- Don't commit, push, tag, release, edit GitHub issues or roadmaps, or start the next phase unless approved.
 - Keep every source file at or below 500 LOC. Tests, docs and CSS are exempt. Markdown is documentation, not source. Split a source file before completion if your change takes it over the limit.
+- If unsure about a problem or a bug, search relevant sources of the problem before tackling it.
 
 ## Read before touching
 
@@ -49,7 +50,7 @@ This file is always loaded; keep it short. New commands go in `docs/agents/workf
 - Legacy code and docs are historical evidence, not a template (SPEC, BOOTSTRAP rule 2). The old implementation is recoverable from `main` / `ac985b28`; don't port it into `src/oxide/` without a stated SPEC requirement.
 - Retrieval, routing and packing changes are evaluated per SPEC § Evaluation against the frozen baselines (`tests/python/test_baseline.py` checks Phase 3 exactly); never regenerate a frozen artifact to make a failure pass. Legacy numbers such as `docs/canonical-baseline.md` are historical comparators, not v2 gates.
 - Models judge; deterministic code decides. Keep JEV and learned judges optional; there are no embeddings. The deterministic offline path needs no model or network (only `oxide prepare` fetches the pinned FTS extension, explicitly).
-- Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries); Python holds bounded policy.
+- Let native libraries do recursive and latency-sensitive work (tree-sitter queries, LadybugDB queries, Networkx for graph algorithms); Python holds bounded policy.
 
 <!-- CODEGRAPH_START -->
 ## CodeGraph
