@@ -20,7 +20,7 @@ from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
 from oxide.core.languages.nesting import Nesting
 
-VERSION = "oxide-python-v5"
+VERSION = "oxide-python-v6"
 MAX_DIAGNOSTICS = 16
 # tree-sitter's query cursor keeps node depth in 16 bits: it drops matches below this
 # depth and its time turns super-linear (docs/parser-limits.md), so a file whose syntax
@@ -99,6 +99,8 @@ class Scope:
     made: dict[str, str] = field(default_factory=dict)
     # A class with bases that ``bases`` does not record (keywords, splats, expressions).
     open: bool = False
+    # ``(receiver, name)`` of each ``receiver.name = ...`` (or ``del``) on a plain name.
+    assigned: set[tuple[str, str]] = field(default_factory=set)
 
 
 @dataclass(slots=True)
@@ -108,7 +110,7 @@ class Parsed:
     scopes: list[Scope]
     rebound: set[str]
     diagnostics: list[str]
-    # Attribute names the file assigns or deletes (``x.name = ...``): never a method target.
+    # Attribute names the file assigns or deletes (``x.name = ...``) on any receiver.
     attrs: set[str] = field(default_factory=set)
 
 
@@ -133,7 +135,12 @@ class _Facts:
         for name in map(self.text, found):
             self.scopes[scope].bound.add(name)
             self.binds[scope, name] = self.binds.get((scope, name), 0) + 1
-        self.attrs.update(self.text(a.child_by_field_name("attribute")) for a in attributes)
+        for a in attributes:
+            name = self.text(a.child_by_field_name("attribute"))
+            receiver = a.child_by_field_name("object")
+            self.attrs.add(name)
+            if receiver is not None and receiver.type == "identifier":
+                self.scopes[scope].assigned.add((self.text(receiver), name))
 
     def dotted(self, node: Node) -> str | None:
         parts: list[str] = []
@@ -352,7 +359,7 @@ def syntax_diagnostics(root: Node, broken: Query) -> list[str]:
 
 
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-python-facts-v3"
+FACTS_VERSION = "oxide-python-facts-v4"
 
 
 def encode(parsed: Parsed) -> list[Any]:
@@ -368,6 +375,7 @@ def encode(parsed: Parsed) -> list[Any]:
             s.receiver,
             sorted(s.made.items()),
             s.open,
+            sorted(map(list, s.assigned)),
         ]
         for s in parsed.scopes
     ]
@@ -404,6 +412,7 @@ def decode(value: Any, size: int) -> Parsed:
                     receiver,
                     dict(map(as_list, as_list(made))),
                     opened,
+                    {(r, n) for r, n in map(as_list, as_list(assigned))},
                 )
                 for (
                     parent,
@@ -416,6 +425,7 @@ def decode(value: Any, size: int) -> Parsed:
                     receiver,
                     made,
                     opened,
+                    assigned,
                 ) in map(as_list, as_list(scopes))
             ],
             set(as_list(rebound)),
@@ -463,6 +473,7 @@ def _sound(parsed: Parsed, size: int) -> bool:
             and texts(*s.bound, *(u.name for u in uses), *s.made, *s.made.values())
             and (s.receiver is None or (type(s.receiver) is str and s.receiver.isidentifier()))
             and type(s.open) is bool
+            and texts(*(x for pair in s.assigned for x in pair))
             and all(
                 type(i.level) is int
                 and i.level >= 0

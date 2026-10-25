@@ -80,7 +80,9 @@ Every result is a frozen dataclass naming the `Snapshot` it was read from.
   inherited `Class.m()`, `x = C(); x.m()`), which rests on the capture's whole class
   hierarchy: every in-repo override is a candidate, and the call stays unresolved
   wherever a definition could hide (an external or non-name base, a metaclass, an
-  attribute assigned anywhere, `__getattribute__`). Context routing does not follow
+  attribute assigned on an instance or class of the receiver's hierarchy, such as
+  `self.m = ...`, `x = C(); x.m = ...` or `C.m = ...`, `__getattribute__`). An assignment
+  through a receiver of unknown type hides nothing. Context routing does not follow
   heuristic `calls`/`references` edges.
 - `SearchResult`: `entries` (`EntryPoint`: entity, `lexical_rank`,
   `lexical_score`, `seeds`), `lexical` (`ChannelStatus`: `ran` with the scorer

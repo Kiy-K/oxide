@@ -106,12 +106,14 @@ def repo(tmp_path: Path) -> Iterator[oxide.Repository]:
         yield repository
 
 
-def calls(repo: oxide.Repository, key: str) -> list[tuple[str, list[str] | None]]:
+def calls(
+    repo: oxide.Repository, key: str, sources: dict[str, str] = SOURCES
+) -> list[tuple[str, list[str] | None]]:
     """(call text, sorted target names or None when unresolved) per call site, in order."""
     sites: dict[int, tuple[str, list[str]]] = {}
     for r in repo.relations(key):
         if r.kind == "calls" and r.source == key and r.evidence is not None:
-            text = SOURCES[r.evidence.path][r.evidence.start : r.evidence.end]
+            text = sources[r.evidence.path][r.evidence.start : r.evidence.end]
             _, found = sites.setdefault(r.site, (text.removesuffix("()"), []))
             if r.target is not None:
                 found.append(r.target.rsplit("#", 1)[1])
@@ -198,3 +200,75 @@ def test_self_referential_bindings_terminate(tmp_path: Path) -> None:
         repo.index()
         found = [r for r in repo.relations("symbol:mod.py#f") if r.kind == "calls"]
         assert {r.resolution for r in found} == {"unresolved"}
+
+
+SHADOWS = {
+    "session.py": """\
+class Session:
+    def request(self): pass
+    def get(self):
+        return self.request()
+
+class Response:
+    def __init__(self):
+        self.request = None
+
+def build(req):
+    response = Response()
+    response.request = req
+
+def patch(anything, req):
+    anything.request = req
+""",
+    "shadow.py": """\
+class Base:
+    def setup(self):
+        self.hook = print
+
+class Child(Base):
+    def hook(self): pass
+    def other(self):
+        self.hook()
+
+class Plain:
+    def hook(self): pass
+    def go(self):
+        self.hook()
+
+class Client:
+    def send(self): pass
+    def go(self):
+        self.send()
+
+class Patched:
+    def run(self): pass
+    def go(self):
+        self.run()
+
+Patched.run = print
+
+def use():
+    c = Client()
+    c.send = print
+    c.send()
+""",
+}
+
+
+def test_attributes_hide_methods_only_on_their_own_class_hierarchy(tmp_path: Path) -> None:
+    with oxide.open_repository(write(tmp_path / "src", SHADOWS)) as repo:
+        repo.index()
+
+        def site(key: str) -> list[tuple[str, list[str] | None]]:
+            return calls(repo, key, SHADOWS)
+
+        # requests: ``response.request = req`` sets a Response, never a Session; an
+        # untyped receiver (``anything``) is no evidence about any class.
+        assert site("symbol:session.py#Session.get") == [("self.request", ["Session.request"])]
+        assert site("symbol:shadow.py#Plain.go") == [("self.hook", ["Plain.hook"])]
+        # Real shadowing still resolves nothing: an instance attribute set by a base
+        # class's method, on a constructed instance, or a class attribute.
+        assert site("symbol:shadow.py#Child.other") == [("self.hook", None)]
+        assert site("symbol:shadow.py#Client.go") == [("self.send", None)]
+        assert site("symbol:shadow.py#use") == [("Client", ["Client"]), ("c.send", None)]
+        assert site("symbol:shadow.py#Patched.go") == [("self.run", None)]

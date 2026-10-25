@@ -1,0 +1,555 @@
+{
+ "flask": {
+  "edges_head": 997,
+  "edges_fix": 998,
+  "added": [
+   {
+    "source": "symbol:src/flask/app.py#Flask.__call__",
+    "target": "symbol:src/flask/app.py#Flask.wsgi_app",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/flask/app.py:2228"
+   }
+  ],
+  "removed": []
+ },
+ "requests": {
+  "edges_head": 877,
+  "edges_fix": 889,
+  "added": [
+   {
+    "source": "symbol:requests/adapters.py#HTTPAdapter.send",
+    "target": "symbol:requests/adapters.py#HTTPAdapter.build_response",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/adapters.py:538"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.delete",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:611"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.get",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:542"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.head",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:564"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.options",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:553"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.patch",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:601"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.post",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:577"
+   },
+   {
+    "source": "symbol:requests/sessions.py#Session.put",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "requests/sessions.py:589"
+   },
+   {
+    "source": "symbol:tests/test_requests.py#RedirectSession.send",
+    "target": "symbol:tests/test_requests.py#RedirectSession.build_response",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_requests.py:2285"
+   },
+   {
+    "source": "symbol:tests/test_requests.py#TestRequests.test_proxy_authorization_preserved_on_request",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_requests.py:599"
+   },
+   {
+    "source": "symbol:tests/test_requests.py#TestRequests.test_request_with_bytestring_host",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_requests.py:1065"
+   },
+   {
+    "source": "symbol:tests/test_requests.py#TestRequests.test_respect_proxy_env_on_request",
+    "target": "symbol:requests/sessions.py#Session.request",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_requests.py:593"
+   }
+  ],
+  "removed": []
+ },
+ "pytest": {
+  "edges_head": 4486,
+  "edges_fix": 4526,
+  "added": [
+   {
+    "source": "symbol:doc/en/example/nonpython/conftest.py#YamlItem.__init__",
+    "target": "symbol:src/_pytest/nodes.py#Item.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "doc/en/example/nonpython/conftest.py:21"
+   },
+   {
+    "source": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/_io/terminalwriter.py:155"
+   },
+   {
+    "source": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.line",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/_io/terminalwriter.py:156"
+   },
+   {
+    "source": "symbol:src/_pytest/capture.py#TeeCaptureIO.__init__",
+    "target": "symbol:src/_pytest/capture.py#CaptureIO.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/capture.py:205"
+   },
+   {
+    "source": "symbol:src/_pytest/doctest.py#DoctestItem.__init__",
+    "target": "symbol:src/_pytest/nodes.py#Item.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/doctest.py:247"
+   },
+   {
+    "source": "symbol:src/_pytest/fixtures.py#fail_fixturefunc",
+    "target": "symbol:src/_pytest/_code/source.py#Source.indent",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/fixtures.py:894"
+   },
+   {
+    "source": "symbol:src/_pytest/mark/structures.py#ParameterSet.extract_from",
+    "target": "symbol:src/_pytest/mark/structures.py#ParameterSet.param",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/mark/structures.py:124"
+   },
+   {
+    "source": "symbol:src/_pytest/nodes.py#FSCollector.__init__",
+    "target": "symbol:src/_pytest/nodes.py#Node.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/nodes.py:535"
+   },
+   {
+    "source": "symbol:src/_pytest/nodes.py#Item.__init__",
+    "target": "symbol:src/_pytest/nodes.py#FSCollector.__init__",
+    "resolution": "ambiguous",
+    "basis": "heuristic",
+    "site": "src/_pytest/nodes.py:623"
+   },
+   {
+    "source": "symbol:src/_pytest/nodes.py#Item.__init__",
+    "target": "symbol:src/_pytest/nodes.py#Node.__init__",
+    "resolution": "ambiguous",
+    "basis": "heuristic",
+    "site": "src/_pytest/nodes.py:623"
+   },
+   {
+    "source": "symbol:src/_pytest/python.py#Function.__init__",
+    "target": "symbol:src/_pytest/nodes.py#Item.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/python.py:1483"
+   },
+   {
+    "source": "symbol:src/_pytest/recwarn.py#WarningsChecker.__init__",
+    "target": "symbol:src/_pytest/recwarn.py#WarningsRecorder.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/recwarn.py:212"
+   },
+   {
+    "source": "symbol:src/_pytest/terminal.py#TerminalReporter._write_progress_information_filling_space",
+    "target": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/terminal.py:590"
+   },
+   {
+    "source": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_collection",
+    "target": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/terminal.py:600"
+   },
+   {
+    "source": "symbol:src/_pytest/terminal.py#TerminalReporter.pytest_collection",
+    "target": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/terminal.py:603"
+   },
+   {
+    "source": "symbol:src/_pytest/terminal.py#TerminalReporter.report_collect",
+    "target": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "src/_pytest/terminal.py:651"
+   },
+   {
+    "source": "symbol:testing/code/test_code.py#test_code_source",
+    "target": "symbol:src/_pytest/_code/code.py#Code.source",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/code/test_code.py:48"
+   },
+   {
+    "source": "symbol:testing/code/test_source.py#test_code_of_object_instance_with_call",
+    "target": "symbol:src/_pytest/_code/code.py#Code.source",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/code/test_source.py:548"
+   },
+   {
+    "source": "symbol:testing/io/test_terminalwriter.py#TestTerminalWriterLineWidth.test_combining",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/io/test_terminalwriter.py:211"
+   },
+   {
+    "source": "symbol:testing/io/test_terminalwriter.py#TestTerminalWriterLineWidth.test_composed",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/io/test_terminalwriter.py:204"
+   },
+   {
+    "source": "symbol:testing/io/test_terminalwriter.py#TestTerminalWriterLineWidth.test_update",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/io/test_terminalwriter.py:187"
+   },
+   {
+    "source": "symbol:testing/io/test_terminalwriter.py#TestTerminalWriterLineWidth.test_update_with_newline",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/io/test_terminalwriter.py:192"
+   },
+   {
+    "source": "symbol:testing/io/test_terminalwriter.py#TestTerminalWriterLineWidth.test_update_with_wide_text",
+    "target": "symbol:src/_pytest/_io/terminalwriter.py#TerminalWriter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/io/test_terminalwriter.py:197"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#TestCaptureIO.test_text",
+    "target": "symbol:src/_pytest/capture.py#CaptureIO.getvalue",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:803"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#TestCaptureIO.test_write_bytes_to_buffer",
+    "target": "symbol:src/_pytest/capture.py#CaptureIO.getvalue",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:818"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#TestTeeCaptureIO.test_text",
+    "target": "symbol:src/_pytest/capture.py#CaptureIO.getvalue",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:826"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#TestTeeCaptureIO.test_text",
+    "target": "symbol:src/_pytest/capture.py#TeeCaptureIO.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:825"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#TestTeeCaptureIO.test_unicode_and_str_mixture",
+    "target": "symbol:src/_pytest/capture.py#TeeCaptureIO.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:836"
+   },
+   {
+    "source": "symbol:testing/test_capture.py#test_dontreadfrominput",
+    "target": "symbol:src/_pytest/capture.py#DontReadFromInput.isatty",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_capture.py:845"
+   },
+   {
+    "source": "symbol:testing/test_collection.py#test_fscollector_from_parent.MyCollector.__init__",
+    "target": "symbol:src/_pytest/nodes.py#FSCollector.__init__",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_collection.py:1346"
+   },
+   {
+    "source": "symbol:testing/test_parseopt.py#TestParser.test_argument_processopt",
+    "target": "symbol:src/_pytest/config/argparsing.py#Argument.attrs",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_parseopt.py:67"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:384"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:385"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:391"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:392"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:393"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:394"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:396"
+   },
+   {
+    "source": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.test_restore",
+    "target": "symbol:testing/test_pytester.py#TestSysPathsSnapshot.path",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_pytester.py:398"
+   },
+   {
+    "source": "symbol:testing/test_terminal.py#TestTerminal.test_rewrite",
+    "target": "symbol:src/_pytest/terminal.py#TerminalReporter.write",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "testing/test_terminal.py:310"
+   }
+  ],
+  "removed": []
+ },
+ "xarray": {
+  "edges_head": 11048,
+  "edges_fix": 11050,
+  "added": [
+   {
+    "source": "symbol:xarray/core/accessor_str.py#StringAccessor.rindex",
+    "target": "symbol:xarray/core/accessor_str.py#StringAccessor.index",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "xarray/core/accessor_str.py:842"
+   },
+   {
+    "source": "symbol:xarray/core/rolling.py#DataArrayRolling.reduce",
+    "target": "symbol:xarray/core/rolling.py#DataArrayRolling._counts",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "xarray/core/rolling.py:291"
+   }
+  ],
+  "removed": []
+ },
+ "seaborn": {
+  "edges_head": 3526,
+  "edges_fix": 3545,
+  "added": [
+   {
+    "source": "symbol:seaborn/axisgrid.py#FacetGrid.refline",
+    "target": "symbol:seaborn/axisgrid.py#FacetGrid.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "seaborn/axisgrid.py:1057"
+   },
+   {
+    "source": "symbol:seaborn/axisgrid.py#FacetGrid.refline",
+    "target": "symbol:seaborn/axisgrid.py#FacetGrid.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "seaborn/axisgrid.py:1060"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_add_variable",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:242"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_add_variable_different_index",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:350"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_add_variable_new_data",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:317"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_all_operations",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:284"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_all_operations_same_data",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:299"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_remove_variable",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:271"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_replace_variable",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:255"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_replace_variable_different_index",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:372"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_replace_variable_new_data",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:332"
+   },
+   {
+    "source": "symbol:tests/_core/test_data.py#TestPlotData.test_join_subset_data_inherit_variables",
+    "target": "symbol:seaborn/_core/data.py#PlotData.join",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_data.py:386"
+   },
+   {
+    "source": "symbol:tests/_core/test_plot.py#TestPlotting.test_png_repr",
+    "target": "symbol:seaborn/_core/plot.py#Plot._repr_png_",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_plot.py:1020"
+   },
+   {
+    "source": "symbol:tests/_core/test_scales.py#TestContinuous.test_label_type_checks",
+    "target": "symbol:seaborn/_core/scales.py#Continuous.label",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_scales.py:301"
+   },
+   {
+    "source": "symbol:tests/_core/test_scales.py#TestContinuous.test_label_type_checks",
+    "target": "symbol:seaborn/_core/scales.py#Continuous.label",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/_core/test_scales.py:304"
+   },
+   {
+    "source": "symbol:tests/test_core.py#TestHueMapping.test_init_from_map",
+    "target": "symbol:seaborn/_oldcore.py#SemanticMapping.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_core.py:73"
+   },
+   {
+    "source": "symbol:tests/test_core.py#TestSizeMapping.test_init_from_map",
+    "target": "symbol:seaborn/_oldcore.py#SemanticMapping.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_core.py:338"
+   },
+   {
+    "source": "symbol:tests/test_core.py#TestStyleMapping.test_init_from_map",
+    "target": "symbol:seaborn/_oldcore.py#SemanticMapping.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_core.py:488"
+   },
+   {
+    "source": "symbol:tests/test_utils.py#test_move_legend_grid_object",
+    "target": "symbol:seaborn/axisgrid.py#FacetGrid.map",
+    "resolution": "resolved",
+    "basis": "heuristic",
+    "site": "tests/test_utils.py:393"
+   }
+  ],
+  "removed": []
+ }
+}

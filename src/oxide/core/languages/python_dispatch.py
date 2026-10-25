@@ -8,9 +8,13 @@ an in-repo class (``x = Class(); x.m()``). The candidates are the first definiti
 subclass for ``self``/``cls``/``super()``, the class itself otherwise. Lookup gives up,
 leaving the call unresolved, wherever a definition could hide: a base outside the
 repository or not a plain name, a class attribute or ``__getattribute__``, an attribute
-assigned anywhere (``x.m = ...``), an in-repo ``__new__`` for a constructed name.
-Code outside the capture (subclasses elsewhere, monkey-patching by ``setattr``) is not
-seen; that is the same closed world as cross-file import resolution.
+``m`` assigned or deleted on a receiver of known class anywhere in the capture
+(``self.m = ...`` in a method, ``x = C(); x.m = ...``, ``C.m = ...``) when that class is
+on the receiver's method resolution order, an in-repo ``__new__`` for a constructed name.
+An assignment through a receiver of unknown type (``response.m = ...``) is not evidence
+about any class and hides nothing. Code outside the capture (subclasses elsewhere,
+monkey-patching by ``setattr``) is not seen; that is the same closed world as cross-file
+import resolution.
 """
 
 from __future__ import annotations
@@ -36,6 +40,8 @@ class Dispatch:
         self._active: list[str] = []  # classes whose MRO is being computed, outermost first
         self._cyclic: set[str] = set()
         self._inheritance: nx.DiGraph[str] | None = None  # base -> derived
+        self._assigned: dict[str, set[str]] | None = None  # class -> attributes set on it
+        self._typing = False  # ``assigned`` is typing receivers
 
     def is_class(self, key: str) -> bool:
         if key not in self.r.scopes:
@@ -95,6 +101,25 @@ class Dispatch:
         graph = self._inheritance
         return sorted(nx.descendants(graph, key)) if key in graph else []
 
+    def assigned(self) -> dict[str, set[str]]:
+        """Attribute names assigned on each in-repo class or its instances, wherever the
+        receiver's class is known: ``(receiver, name)`` facts typed like a call receiver."""
+        if self._assigned is None:
+            self._typing = True
+            found: dict[str, set[str]] = {}
+            for i, file in enumerate(self.r.files):
+                bindings = self.r.bindings(i)
+                for k, scope in enumerate(file.parsed.scopes):
+                    for receiver, name in sorted(scope.assigned):
+                        instance = self.r._instance(i, bindings, k, receiver)
+                        res = self.r.lookup(i, k, receiver) if instance is None else None
+                        if instance is not None:
+                            found.setdefault(instance[0], set()).add(name)
+                        elif res is not None and len(res) == 1 and self.is_class(res[0]):
+                            found.setdefault(res[0], set()).add(name)
+            self._assigned, self._typing = found, False
+        return self._assigned
+
     def _defines(self, key: str, name: str) -> Res | Literal[False]:
         """Candidates ``key``'s body binds to ``name``; False when it does not bind it,
         None when it binds it some other way or may intercept every lookup."""
@@ -107,15 +132,16 @@ class Dispatch:
         """Targets of ``name`` looked up on an instance (``subclasses``: of ``cls`` or any
         subclass) or on ``cls`` itself, starting after ``cls`` for ``super()``."""
         self.r.inferred = True
-        if name in self.attrs:
+        if self._typing:  # a receiver of ``assigned`` made by a method call: unknown type
             return None
+        assigned = self.assigned()
         if _private(name):  # mangled to ``_<cls>__name``: only ``cls``'s own body
-            own = None if after else self._defines(cls, name)
+            own = None if after or name in assigned.get(cls, ()) else self._defines(cls, name)
             return own or None
         targets: set[str] = set()
         for derived in [cls, *self.subclasses(cls)] if subclasses else [cls]:
             order = self.mro(derived)
-            if cls not in order:
+            if cls not in order or any(name in assigned.get(c, ()) for c in order):
                 return None
             for candidate in order[order.index(cls) + 1 if after else 0 :]:
                 found = None if candidate.startswith("?") else self._defines(candidate, name)
