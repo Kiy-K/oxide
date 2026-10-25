@@ -1,0 +1,122 @@
+{
+ "tasks": [
+  {
+   "id": "L1",
+   "repo": "pytest",
+   "lang": "python",
+   "type": "lookup",
+   "question": "In pytest's command-line option parsing, which method returns an existing named group of options, or creates it (optionally placed after another group in the --help output)? Give the location of its definition.",
+   "truth": [
+    "src/_pytest/config/argparsing.py#Parser.getgroup"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "L2",
+   "repo": "vue-core",
+   "lang": "typescript",
+   "type": "lookup",
+   "question": "In Vue's runtime core, which compiler helper sets the scope id that is used when hoisted vnodes are created? Give the location of its definition.",
+   "truth": [
+    "packages/runtime-core/src/componentRenderContext.ts#pushScopeId"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "C1",
+   "repo": "pytest",
+   "lang": "python",
+   "type": "callers",
+   "question": "Which functions or methods in the library code (`src/`, not tests) contain a call that reaches `ReprFuncArgs.toterminal` (defined in src/_pytest/_code/code.py) directly? Follow calls through `self`/`this`, `cls` and `super()` by the class hierarchy, and calls on objects whose declared or evident type is that class. List only the functions containing such a call, not their own callers. Give one location per function.",
+   "truth": [
+    "src/_pytest/_code/code.py#ReprEntry.toterminal",
+    "src/_pytest/_code/code.py#TerminalRepr.__str__"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "C2",
+   "repo": "vue-core",
+   "lang": "typescript",
+   "type": "callers",
+   "question": "Which functions or methods in the library code (`packages/*/src`, not tests) contain a call that reaches `VueElement._createVNode` (defined in packages/runtime-dom/src/apiCustomElement.ts) directly? Follow calls through `self`/`this`, `cls` and `super()` by the class hierarchy, and calls on objects whose declared or evident type is that class. List only the functions containing such a call, not their own callers. Give one location per function.",
+   "truth": [
+    "packages/runtime-dom/src/apiCustomElement.ts#VueElement.constructor",
+    "packages/runtime-dom/src/apiCustomElement.ts#VueElement._update"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "I1",
+   "repo": "flask",
+   "lang": "python",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (`src/flask/`, not tests) would be affected by a change to `get_debug_flag` (defined in src/flask/helpers.py): those that call it directly, and those that call one of its direct callers (at most two steps)? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "src/flask/app.py#Flask.make_config",
+    "src/flask/app.py#Flask.run",
+    "src/flask/app.py#Flask.__init__",
+    "src/flask/cli.py#ScriptInfo.load_app",
+    "src/flask/cli.py#run_command",
+    "src/flask/cli.py#with_appcontext",
+    "src/flask/cli.py#FlaskGroup.get_command",
+    "src/flask/cli.py#FlaskGroup.list_commands"
+   ],
+   "neutral": [
+    "src/flask/cli.py#FlaskGroup.__init__",
+    "file:src/flask/cli.py"
+   ]
+  },
+  {
+   "id": "I2",
+   "repo": "vue-core",
+   "lang": "typescript",
+   "type": "impact",
+   "question": "Which functions or methods in the library code (`packages/*/src`, not tests) would be affected by a change to `getObjectOrArrayExpressionKeys` (defined in packages/compiler-sfc/src/script/analyzeScriptBindings.ts): those that call it directly, and those that call one of its direct callers (at most two steps)? A call through a parameter counts as a call to each library function passed for that parameter. Give one location per function.",
+   "truth": [
+    "packages/compiler-sfc/src/script/analyzeScriptBindings.ts#analyzeBindingsFromOptions",
+    "packages/compiler-sfc/src/script/defineProps.ts#processDefineProps",
+    "packages/compiler-sfc/src/script/analyzeScriptBindings.ts#analyzeScriptBindings",
+    "packages/compiler-sfc/src/compileScript.ts#compileScript",
+    "packages/compiler-sfc/src/script/defineProps.ts#processWithDefaults"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "E1",
+   "repo": "pytest",
+   "lang": "python",
+   "type": "callees",
+   "question": "Which functions, methods or classes defined in this repository does `BaseReport.longreprtext` (src/_pytest/reports.py) call directly? Follow a call through `self` by the class hierarchy, and count calling a class as calling that class. Ignore the standard library and third-party code. Give one location per callee: where it is defined.",
+   "truth": [
+    "src/_pytest/_io/terminalwriter.py#TerminalWriter",
+    "src/_pytest/reports.py#BaseReport.toterminal"
+   ],
+   "neutral": []
+  },
+  {
+   "id": "O1",
+   "repo": "flask",
+   "lang": "python",
+   "type": "overrides",
+   "question": "Which methods of the class `TagMarkup` (src/flask/json/tag.py) override a method defined in one of its in-repository base classes? Give one location per overriding method.",
+   "truth": [
+    "src/flask/json/tag.py#TagMarkup.check",
+    "src/flask/json/tag.py#TagMarkup.to_json",
+    "src/flask/json/tag.py#TagMarkup.to_python"
+   ],
+   "neutral": []
+  }
+ ],
+ "dev": {
+  "id": "dev",
+  "repo": "vue-core",
+  "lang": "typescript",
+  "type": "lookup",
+  "question": "In Vue's SFC compiler, which function drops the cached type-resolution data (scopes and tsconfig) for a given file? Give the location of its definition.",
+  "truth": [
+   "packages/compiler-sfc/src/script/resolveType.ts#invalidateTypeCache"
+  ],
+  "neutral": []
+ }
+}

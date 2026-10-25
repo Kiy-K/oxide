@@ -1,0 +1,75 @@
+{
+ "successes": {
+  "D": 16,
+  "G": 14,
+  "n": 21,
+  "fisher_p": 0.734
+ },
+ "cps_G_over_D": {
+  "point": 1.332,
+  "ci95": [
+   1.096,
+   1.771
+  ]
+ },
+ "D": {
+  "oxide_calls_mean": 1.76,
+  "graph_calls_on_other_than_target_share": 0.576,
+  "depth_2plus_share": 1.0,
+  "steps_mean": 5.14,
+  "tokens_mean": 19511,
+  "answers_mean": 5.33,
+  "grep_mean": 1.86,
+  "precision_mean": 0.858,
+  "recall_mean": 0.99,
+  "per_task_success": {
+   "D1": 0,
+   "D2": 3,
+   "D3": 3,
+   "I1": 1,
+   "I2": 3,
+   "I3": 3,
+   "I4": 3
+  }
+ },
+ "G": {
+  "oxide_calls_mean": 3.33,
+  "graph_calls_on_other_than_target_share": 0.697,
+  "depth_2plus_share": 0.894,
+  "steps_mean": 6.0,
+  "tokens_mean": 24170,
+  "answers_mean": 5.81,
+  "grep_mean": 0.86,
+  "precision_mean": 0.808,
+  "recall_mean": 0.981,
+  "per_task_success": {
+   "D1": 0,
+   "D2": 3,
+   "D3": 2,
+   "I1": 0,
+   "I2": 3,
+   "I3": 3,
+   "I4": 3
+  }
+ },
+ "F": {
+  "oxide_calls_mean": 3.0,
+  "graph_calls_on_other_than_target_share": 0.638,
+  "depth_2plus_share": 0.828,
+  "steps_mean": 5.29,
+  "tokens_mean": 24865,
+  "answers_mean": 4.19,
+  "grep_mean": 1.05,
+  "precision_mean": 0.919,
+  "recall_mean": 0.972,
+  "per_task_success": {
+   "D1": 1,
+   "D2": 2,
+   "D3": 3,
+   "I1": 3,
+   "I2": 3,
+   "I3": 3,
+   "I4": 3
+  }
+ }
+}
