@@ -1,0 +1,238 @@
+{
+ "signal": {
+  "preregistered: unresolved > 0 or stopped_by": {
+   "sensitivity": {
+    "k": 8,
+    "n": 11,
+    "rate": 0.727,
+    "ci95": [
+     0.434,
+     0.903
+    ]
+   },
+   "specificity": {
+    "k": 6,
+    "n": 13,
+    "rate": 0.462,
+    "ci95": [
+     0.232,
+     0.709
+    ]
+   }
+  },
+  "unresolved > 0": {
+   "sensitivity": {
+    "k": 8,
+    "n": 11,
+    "rate": 0.727,
+    "ci95": [
+     0.434,
+     0.903
+    ]
+   },
+   "specificity": {
+    "k": 11,
+    "n": 13,
+    "rate": 0.846,
+    "ci95": [
+     0.578,
+     0.957
+    ]
+   }
+  },
+  "stopped_by set": {
+   "sensitivity": {
+    "k": 1,
+    "n": 11,
+    "rate": 0.091,
+    "ci95": [
+     0.016,
+     0.377
+    ]
+   },
+   "specificity": {
+    "k": 8,
+    "n": 13,
+    "rate": 0.615,
+    "ci95": [
+     0.355,
+     0.823
+    ]
+   }
+  },
+  "unresolved > 0 or method root": {
+   "sensitivity": {
+    "k": 8,
+    "n": 11,
+    "rate": 0.727,
+    "ci95": [
+     0.434,
+     0.903
+    ]
+   },
+   "specificity": {
+    "k": 8,
+    "n": 13,
+    "rate": 0.615,
+    "ci95": [
+     0.355,
+     0.823
+    ]
+   }
+  },
+  "residual: a grep owner no hop explains": {
+   "sensitivity": {
+    "k": 11,
+    "n": 11,
+    "rate": 1.0,
+    "ci95": [
+     0.741,
+     1.0
+    ]
+   },
+   "specificity": {
+    "k": 8,
+    "n": 13,
+    "rate": 0.615,
+    "ci95": [
+     0.355,
+     0.823
+    ]
+   }
+  }
+ },
+ "residual_entities": {
+  "incomplete": [
+   1,
+   1,
+   2,
+   2,
+   3,
+   3,
+   6,
+   14,
+   17,
+   24,
+   34
+  ],
+  "complete": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   1,
+   5,
+   9,
+   22
+  ]
+ },
+ "stopped_by_depth_on_complete": [
+  "symbol:requests/_internal_utils.py#to_native_string",
+  "symbol:requests/utils.py#rewind_body",
+  "symbol:requests/adapters.py#HTTPAdapter.proxy_headers",
+  "symbol:src/_pytest/mark/structures.py#normalize_mark_list",
+  "symbol:src/_pytest/warnings.py#_issue_warning_captured"
+ ],
+ "missed_sites": {
+  "total": 44,
+  "by_syntax": {
+   "attribute call": 36,
+   "bare-name value": 7,
+   "decorator": 1
+  },
+  "by_root_kind": {
+   "function": {
+    "decorator": 1,
+    "bare-name value": 7
+   },
+   "method": {
+    "attribute call": 36
+   }
+  },
+  "examples": {
+   "decorator": [
+    "tests/test_basic.py:740: @flask.after_this_request"
+   ],
+   "attribute call": [
+    "src/flask/app.py:1392: got_request_exception.send(self, exception=e)",
+    "src/flask/app.py:1496: request_started.send(self)",
+    "src/flask/app.py:1524: request_finished.send(self, response=response)",
+    "src/flask/app.py:2055: request_tearing_down.send(self, exc=exc)"
+   ],
+   "bare-name value": [
+    "src/flask/logging.py:47: default_handler = logging.StreamHandler(wsgi_errors_stream)  # type: ignore",
+    "tests/test_logging.py:64: assert wsgi_errors_stream._get_current_object() is sys.stderr",
+    "tests/test_logging.py:67: assert wsgi_errors_stream._get_current_object() is stream",
+    "src/_pytest/tmpdir.py:187: return py.path.local(tmp_path)"
+   ]
+  }
+ },
+ "grep_false_sites": {
+  "total": 178,
+  "by_syntax": {
+   "attribute call": 65,
+   "comment or string": 50,
+   "bare-name value": 30,
+   "parameter (fixture or default)": 17,
+   "another definition of the name": 11,
+   "import": 3,
+   "bare-name call": 2
+  },
+  "examples": {
+   "attribute call": [
+    "flask src/flask/ctx.py:263: appcontext_popped.send(self.app)",
+    "flask src/flask/templating.py:129: before_render_template.send(app, template=template, context=context)",
+    "flask src/flask/templating.py:131: template_rendered.send(app, template=template, context=context)",
+    "flask src/flask/templating.py:166: before_render_template.send(app, template=template, context=context)",
+    "flask src/flask/templating.py:170: template_rendered.send(app, template=template, context=context)",
+    "flask src/flask/helpers.py:329: message_flashed.send("
+   ],
+   "comment or string": [
+    "flask src/flask/signals.py:17: error on anything else.  Instead of doing anything on send, it",
+    "flask src/flask/helpers.py:419: ``USE_X_SENDFILE = True`` will tell the server to send the given",
+    "flask src/flask/helpers.py:422: :param path_or_file: The path to the file to send, relative to the",
+    "flask src/flask/helpers.py:426: :param mimetype: The MIME type to send for the file. If not",
+    "flask src/flask/helpers.py:436: :param last_modified: The last modified time to send for the file,",
+    "flask src/flask/helpers.py:544: :param path: The path to the file to send, relative to"
+   ],
+   "another definition of the name": [
+    "flask tests/test_json.py:241: def loads(self, s, **kwargs):",
+    "flask src/flask/json/tag.py:310: def loads(self, value: str) -> t.Any:",
+    "flask src/flask/json/provider.py:182: def loads(self, s: str | bytes, **kwargs: t.Any) -> t.Any:",
+    "flask src/flask/sessions.py:86: def setdefault(self, key: str, default: t.Any = None) -> t.Any:",
+    "flask tests/test_basic.py:555: def setdefault():",
+    "flask tests/test_helpers.py:172: def redirect(location, code=302):"
+   ],
+   "import": [
+    "flask src/flask/json/tag.py:54: from ..json import loads",
+    "flask src/flask/helpers.py:13: from werkzeug.utils import redirect as _wz_redirect",
+    "flask src/flask/app.py:30: from werkzeug.utils import redirect as _wz_redirect"
+   ],
+   "bare-name call": [
+    "flask src/flask/json/tag.py:312: return loads(value, object_hook=self.untag)",
+    "flask src/flask/config.py:137: value = loads(value)"
+   ],
+   "bare-name value": [
+    "flask src/flask/config.py:102: self, prefix: str = \"FLASK\", *, loads: t.Callable[[str], t.Any] = json.loads",
+    "flask src/flask/sessions.py:104: __setitem__ = __delitem__ = clear = pop = popitem = update = setdefault = _fail  # type: i",
+    "pytest testing/test_pathlib.py:97: path = (tmp_path / (\"a\" * 250)).resolve()",
+    "pytest testing/test_tmpdir.py:60: monkeypatch.chdir(tmp_path)",
+    "pytest testing/test_tmpdir.py:63: assert t.getbasetemp().resolve() == (tmp_path / \"hello\").resolve()",
+    "pytest testing/test_tmpdir.py:249: d = make_numbered_dir(root=tmp_path, prefix=self.PREFIX)"
+   ],
+   "parameter (fixture or default)": [
+    "pytest testing/test_pathlib.py:95: def test_long_path_during_cleanup(tmp_path):",
+    "pytest testing/test_tmpdir.py:58: def test_tmppath_relative_basetemp_absolute(self, tmp_path, monkeypatch):",
+    "pytest testing/test_tmpdir.py:247: def test_make(self, tmp_path):",
+    "pytest testing/test_tmpdir.py:259: def test_cleanup_lock_create(self, tmp_path):",
+    "pytest testing/test_tmpdir.py:268: def test_lock_register_cleanup_removal(self, tmp_path: Path) -> None:",
+    "pytest testing/test_tmpdir.py:290: def _do_cleanup(self, tmp_path: Path) -> None:"
+   ]
+  }
+ }
+}
