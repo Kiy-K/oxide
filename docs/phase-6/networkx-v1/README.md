@@ -115,3 +115,19 @@ retrieval, routing and packing until a preregistered study passes (ADR-0012 § 6
   not code-shaped.
 - Memory was measured with `tracemalloc` (Python allocations only).
 - Import cost was measured on one laptop with a warm disk cache.
+
+## Post-merge review (530c6c5 against 0381565)
+
+[scripts/review.py](scripts/review.py) → [results/review.jsonl](results/review.jsonl).
+Each measurement ran in a fresh interpreter with one implementation on the path.
+Summarized in [../agc-v4/README.md § NetworkX review](../agc-v4/README.md):
+
+- **Parity:** identical snapshot and derivation ids and impact-walk outputs on 5
+  repositories.
+- **`import oxide`:** unchanged, and NetworkX is not loaded.
+- **Indexing:** a Python index now loads NetworkX, costing +10 to +64 ms (+1% to +13%) and
+  about +11 MB of peak RSS.
+- **Walks:** walk time is unchanged.
+
+Whether `Dispatch.subclasses` should keep NetworkX on the index path is left to the
+maintainer.
