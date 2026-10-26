@@ -1,0 +1,823 @@
+[
+ {
+  "task": "coder__code-server-6278",
+  "corpus": "coder__code-server@5d3c9edce436",
+  "gold": [
+   "src/node/app.ts",
+   "src/node/main.ts",
+   "src/node/util.ts",
+   "src/node/vscodeSocket.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/node/app.ts": 23,
+    "src/node/main.ts": 2,
+    "src/node/util.ts": 12,
+    "src/node/vscodeSocket.ts": 22
+   },
+   "P1": {
+    "src/node/app.ts": 18,
+    "src/node/main.ts": 9,
+    "src/node/util.ts": 5,
+    "src/node/vscodeSocket.ts": 3
+   },
+   "P2": {
+    "src/node/app.ts": null,
+    "src/node/main.ts": null,
+    "src/node/util.ts": null,
+    "src/node/vscodeSocket.ts": 8
+   },
+   "P3": {
+    "src/node/app.ts": 15,
+    "src/node/main.ts": 12,
+    "src/node/util.ts": 2,
+    "src/node/vscodeSocket.ts": 5
+   },
+   "P4": {
+    "src/node/app.ts": 11,
+    "src/node/main.ts": 6,
+    "src/node/util.ts": 4,
+    "src/node/vscodeSocket.ts": 2
+   },
+   "P5": {
+    "src/node/app.ts": 26,
+    "src/node/main.ts": 32,
+    "src/node/util.ts": 37,
+    "src/node/vscodeSocket.ts": 25
+   }
+  }
+ },
+ {
+  "task": "coder__code-server-4923",
+  "corpus": "coder__code-server@78658f1cf48a",
+  "gold": [
+   "src/node/app.ts",
+   "src/node/cli.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/node/app.ts": 7,
+    "src/node/cli.ts": 6
+   },
+   "P1": {
+    "src/node/app.ts": 5,
+    "src/node/cli.ts": 2
+   },
+   "P2": {
+    "src/node/app.ts": null,
+    "src/node/cli.ts": null
+   },
+   "P3": {
+    "src/node/app.ts": 8,
+    "src/node/cli.ts": 3
+   },
+   "P4": {
+    "src/node/app.ts": 3,
+    "src/node/cli.ts": 1
+   },
+   "P5": {
+    "src/node/app.ts": 43,
+    "src/node/cli.ts": 44
+   }
+  }
+ },
+ {
+  "task": "darkreader__darkreader-7241",
+  "corpus": "darkreader__darkreader@991883df4d59",
+  "gold": [
+   "src/generators/utils/parse.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/generators/utils/parse.ts": 3
+   },
+   "P1": {
+    "src/generators/utils/parse.ts": 7
+   },
+   "P2": {
+    "src/generators/utils/parse.ts": null
+   },
+   "P3": {
+    "src/generators/utils/parse.ts": 11
+   },
+   "P4": {
+    "src/generators/utils/parse.ts": 19
+   },
+   "P5": {
+    "src/generators/utils/parse.ts": null
+   }
+  }
+ },
+ {
+  "task": "darkreader__darkreader-6747",
+  "corpus": "darkreader__darkreader@a787eb511f45",
+  "gold": [
+   "src/generators/dynamic-theme.ts",
+   "src/generators/utils/parse.ts",
+   "src/utils/url.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/generators/dynamic-theme.ts": 10,
+    "src/generators/utils/parse.ts": 1,
+    "src/utils/url.ts": 14
+   },
+   "P1": {
+    "src/generators/dynamic-theme.ts": 14,
+    "src/generators/utils/parse.ts": 1,
+    "src/utils/url.ts": 21
+   },
+   "P2": {
+    "src/generators/dynamic-theme.ts": null,
+    "src/generators/utils/parse.ts": null,
+    "src/utils/url.ts": null
+   },
+   "P3": {
+    "src/generators/dynamic-theme.ts": 8,
+    "src/generators/utils/parse.ts": 1,
+    "src/utils/url.ts": 14
+   },
+   "P4": {
+    "src/generators/dynamic-theme.ts": 4,
+    "src/generators/utils/parse.ts": 8,
+    "src/utils/url.ts": 25
+   },
+   "P5": {
+    "src/generators/dynamic-theme.ts": null,
+    "src/generators/utils/parse.ts": null,
+    "src/utils/url.ts": null
+   }
+  }
+ },
+ {
+  "task": "ts-exact-versionedstore",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/cache/versioned_store.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/cache/versioned_store.ts": 1
+   },
+   "P1": {
+    "src/cache/versioned_store.ts": 1
+   },
+   "P2": {
+    "src/cache/versioned_store.ts": 1
+   },
+   "P3": {
+    "src/cache/versioned_store.ts": 1
+   },
+   "P4": {
+    "src/cache/versioned_store.ts": 1
+   },
+   "P5": {
+    "src/cache/versioned_store.ts": 1
+   }
+  }
+ },
+ {
+  "task": "ts-semantic-backoff",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/net/client.ts",
+   "src/net/retry.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/net/client.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P1": {
+    "src/net/client.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P2": {
+    "src/net/client.ts": null,
+    "src/net/retry.ts": null
+   },
+   "P3": {
+    "src/net/client.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P4": {
+    "src/net/client.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P5": {
+    "src/net/client.ts": null,
+    "src/net/retry.ts": null
+   }
+  }
+ },
+ {
+  "task": "ts-crossfile-decode-jwt",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/auth/service.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/auth/service.ts": 1
+   },
+   "P1": {
+    "src/auth/service.ts": 1
+   },
+   "P2": {
+    "src/auth/service.ts": null
+   },
+   "P3": {
+    "src/auth/service.ts": 1
+   },
+   "P4": {
+    "src/auth/service.ts": 3
+   },
+   "P5": {
+    "src/auth/service.ts": null
+   }
+  }
+ },
+ {
+  "task": "tsx-button-component",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/ui/Button.tsx"
+  ],
+  "rank": {
+   "P0": {
+    "src/ui/Button.tsx": 1
+   },
+   "P1": {
+    "src/ui/Button.tsx": 1
+   },
+   "P2": {
+    "src/ui/Button.tsx": 1
+   },
+   "P3": {
+    "src/ui/Button.tsx": 1
+   },
+   "P4": {
+    "src/ui/Button.tsx": 1
+   },
+   "P5": {
+    "src/ui/Button.tsx": 1
+   }
+  }
+ },
+ {
+  "task": "ts-related-test-button-click",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/ui/__tests__/Button.test.tsx"
+  ],
+  "rank": {
+   "P0": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   },
+   "P1": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   },
+   "P2": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   },
+   "P3": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   },
+   "P4": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   },
+   "P5": {
+    "src/ui/__tests__/Button.test.tsx": 1
+   }
+  }
+ },
+ {
+  "task": "ts-default-policy-const",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/net/retry.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/net/retry.ts": 1
+   },
+   "P1": {
+    "src/net/retry.ts": 1
+   },
+   "P2": {
+    "src/net/retry.ts": 1
+   },
+   "P3": {
+    "src/net/retry.ts": 1
+   },
+   "P4": {
+    "src/net/retry.ts": 1
+   },
+   "P5": {
+    "src/net/retry.ts": 1
+   }
+  }
+ },
+ {
+  "task": "ts-implementors-retrypolicy",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/net/policies.ts",
+   "src/net/retry.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/net/policies.ts": 1,
+    "src/net/retry.ts": 2
+   },
+   "P1": {
+    "src/net/policies.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P2": {
+    "src/net/policies.ts": null,
+    "src/net/retry.ts": 1
+   },
+   "P3": {
+    "src/net/policies.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P4": {
+    "src/net/policies.ts": 2,
+    "src/net/retry.ts": 1
+   },
+   "P5": {
+    "src/net/policies.ts": 3,
+    "src/net/retry.ts": 1
+   }
+  }
+ },
+ {
+  "task": "ts-callers-shouldretry",
+  "corpus": "fixture:ts_repo",
+  "gold": [
+   "src/net/policies.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/net/policies.ts": 1
+   },
+   "P1": {
+    "src/net/policies.ts": 2
+   },
+   "P2": {
+    "src/net/policies.ts": null
+   },
+   "P3": {
+    "src/net/policies.ts": 2
+   },
+   "P4": {
+    "src/net/policies.ts": 2
+   },
+   "P5": {
+    "src/net/policies.ts": 3
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-153121",
+  "corpus": "microsoft__vscode@1a599e2d1792",
+  "gold": [
+   "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 43
+   },
+   "P1": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 449
+   },
+   "P2": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 527
+   },
+   "P3": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 701
+   },
+   "P4": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 587
+   },
+   "P5": {
+    "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts": 949
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-148971",
+  "corpus": "microsoft__vscode@2dff5deef71f",
+  "gold": [
+   "src/vs/base/browser/markdownRenderer.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/base/browser/markdownRenderer.ts": 33
+   },
+   "P1": {
+    "src/vs/base/browser/markdownRenderer.ts": 366
+   },
+   "P2": {
+    "src/vs/base/browser/markdownRenderer.ts": 48
+   },
+   "P3": {
+    "src/vs/base/browser/markdownRenderer.ts": 530
+   },
+   "P4": {
+    "src/vs/base/browser/markdownRenderer.ts": 1120
+   },
+   "P5": {
+    "src/vs/base/browser/markdownRenderer.ts": 384
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-177084",
+  "corpus": "microsoft__vscode@384b03f26310",
+  "gold": [
+   "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+   "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 2892,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 707
+   },
+   "P1": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 2967,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 556
+   },
+   "P2": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 876,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 1025
+   },
+   "P3": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 1007,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 2500
+   },
+   "P4": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 687,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 1078
+   },
+   "P5": {
+    "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts": 595,
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts": 1362
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-160342",
+  "corpus": "microsoft__vscode@440e61ffab2b",
+  "gold": [
+   "src/vs/workbench/contrib/files/browser/views/explorerView.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 271
+   },
+   "P1": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 133
+   },
+   "P2": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 759
+   },
+   "P3": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 322
+   },
+   "P4": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 849
+   },
+   "P5": {
+    "src/vs/workbench/contrib/files/browser/views/explorerView.ts": 511
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-136347",
+  "corpus": "microsoft__vscode@4bbec283c36a",
+  "gold": [
+   "src/vs/base/common/charCode.ts",
+   "src/vs/editor/common/config/editorOptions.ts",
+   "src/vs/editor/common/viewLayout/viewLineRenderer.ts",
+   "src/vs/monaco.d.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/base/common/charCode.ts": 959,
+    "src/vs/editor/common/config/editorOptions.ts": 427,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 4,
+    "src/vs/monaco.d.ts": 392
+   },
+   "P1": {
+    "src/vs/base/common/charCode.ts": 2231,
+    "src/vs/editor/common/config/editorOptions.ts": 29,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 24,
+    "src/vs/monaco.d.ts": 4
+   },
+   "P2": {
+    "src/vs/base/common/charCode.ts": 63,
+    "src/vs/editor/common/config/editorOptions.ts": 1111,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 1,
+    "src/vs/monaco.d.ts": 2742
+   },
+   "P3": {
+    "src/vs/base/common/charCode.ts": 549,
+    "src/vs/editor/common/config/editorOptions.ts": 7,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 256,
+    "src/vs/monaco.d.ts": 49
+   },
+   "P4": {
+    "src/vs/base/common/charCode.ts": 216,
+    "src/vs/editor/common/config/editorOptions.ts": 960,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 487,
+    "src/vs/monaco.d.ts": 85
+   },
+   "P5": {
+    "src/vs/base/common/charCode.ts": 1403,
+    "src/vs/editor/common/config/editorOptions.ts": 705,
+    "src/vs/editor/common/viewLayout/viewLineRenderer.ts": 1,
+    "src/vs/monaco.d.ts": 1992
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-149380",
+  "corpus": "microsoft__vscode@5b8bd1c45ca3",
+  "gold": [
+   "src/vs/workbench/contrib/debug/node/terminals.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 238
+   },
+   "P1": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 442
+   },
+   "P2": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 385
+   },
+   "P3": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 1773
+   },
+   "P4": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 1205
+   },
+   "P5": {
+    "src/vs/workbench/contrib/debug/node/terminals.ts": 990
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-135805",
+  "corpus": "microsoft__vscode@7d8f55ebb1b7",
+  "gold": [],
+  "rank": {
+   "P0": {},
+   "P1": {},
+   "P2": {},
+   "P3": {},
+   "P4": {},
+   "P5": {}
+  }
+ },
+ {
+  "task": "microsoft__vscode-153857",
+  "corpus": "microsoft__vscode@88ffbc7a7a81",
+  "gold": [
+   "src/vs/editor/common/languages/linkComputer.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/common/languages/linkComputer.ts": 471
+   },
+   "P1": {
+    "src/vs/editor/common/languages/linkComputer.ts": 228
+   },
+   "P2": {
+    "src/vs/editor/common/languages/linkComputer.ts": 515
+   },
+   "P3": {
+    "src/vs/editor/common/languages/linkComputer.ts": 513
+   },
+   "P4": {
+    "src/vs/editor/common/languages/linkComputer.ts": 1070
+   },
+   "P5": {
+    "src/vs/editor/common/languages/linkComputer.ts": 396
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-110094",
+  "corpus": "microsoft__vscode@8c76afad6ccf",
+  "gold": [
+   "src/vs/editor/common/controller/cursor.ts",
+   "src/vs/editor/common/controller/cursorCommon.ts",
+   "src/vs/editor/common/controller/cursorDeleteOperations.ts",
+   "src/vs/editor/common/controller/cursorTypeOperations.ts",
+   "src/vs/editor/common/controller/cursorWordOperations.ts",
+   "src/vs/editor/common/modes/languageConfiguration.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/common/controller/cursor.ts": 29,
+    "src/vs/editor/common/controller/cursorCommon.ts": 48,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": 10,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 3,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": 596,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 1
+   },
+   "P1": {
+    "src/vs/editor/common/controller/cursor.ts": 179,
+    "src/vs/editor/common/controller/cursorCommon.ts": 204,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": 788,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 50,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": 611,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 81
+   },
+   "P2": {
+    "src/vs/editor/common/controller/cursor.ts": null,
+    "src/vs/editor/common/controller/cursorCommon.ts": null,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": null,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": null,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": null,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 160
+   },
+   "P3": {
+    "src/vs/editor/common/controller/cursor.ts": 720,
+    "src/vs/editor/common/controller/cursorCommon.ts": 146,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": 1373,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 138,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": 1164,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 46
+   },
+   "P4": {
+    "src/vs/editor/common/controller/cursor.ts": 589,
+    "src/vs/editor/common/controller/cursorCommon.ts": 590,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": 592,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 588,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": 591,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 518
+   },
+   "P5": {
+    "src/vs/editor/common/controller/cursor.ts": 1422,
+    "src/vs/editor/common/controller/cursorCommon.ts": 1425,
+    "src/vs/editor/common/controller/cursorDeleteOperations.ts": 1426,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 1430,
+    "src/vs/editor/common/controller/cursorWordOperations.ts": 1431,
+    "src/vs/editor/common/modes/languageConfiguration.ts": 3
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-106767",
+  "corpus": "microsoft__vscode@8ce35fa28ded",
+  "gold": [
+   "src/vs/editor/contrib/suggest/completionModel.ts",
+   "src/vs/editor/contrib/suggest/suggestModel.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 603,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 536
+   },
+   "P1": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 243,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 643
+   },
+   "P2": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 202,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 1864
+   },
+   "P3": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 785,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 1103
+   },
+   "P4": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 684,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 687
+   },
+   "P5": {
+    "src/vs/editor/contrib/suggest/completionModel.ts": 342,
+    "src/vs/editor/contrib/suggest/suggestModel.ts": 349
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-189223",
+  "corpus": "microsoft__vscode@9a281018181d",
+  "gold": [
+   "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 60
+   },
+   "P1": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 273
+   },
+   "P2": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 267
+   },
+   "P3": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 700
+   },
+   "P4": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 202
+   },
+   "P5": {
+    "src/vs/workbench/contrib/terminalContrib/links/browser/terminalWordLinkDetector.ts": 311
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-135197",
+  "corpus": "microsoft__vscode@a993ada9300a",
+  "gold": [
+   "src/vs/editor/common/controller/cursorCommon.ts",
+   "src/vs/editor/common/controller/cursorTypeOperations.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 143,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 16
+   },
+   "P1": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 119,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 60
+   },
+   "P2": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 618,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 103
+   },
+   "P3": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 637,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 548
+   },
+   "P4": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 466,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 464
+   },
+   "P5": {
+    "src/vs/editor/common/controller/cursorCommon.ts": 318,
+    "src/vs/editor/common/controller/cursorTypeOperations.ts": 314
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-109750",
+  "corpus": "microsoft__vscode@cf4b5a703f58",
+  "gold": [
+   "src/vs/platform/configuration/common/configurationRegistry.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 165
+   },
+   "P1": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 43
+   },
+   "P2": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 241
+   },
+   "P3": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 32
+   },
+   "P4": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 254
+   },
+   "P5": {
+    "src/vs/platform/configuration/common/configurationRegistry.ts": 393
+   }
+  }
+ },
+ {
+  "task": "microsoft__vscode-164396",
+  "corpus": "microsoft__vscode@f5fdf679b8d2",
+  "gold": [
+   "src/vs/editor/common/services/modelService.ts"
+  ],
+  "rank": {
+   "P0": {
+    "src/vs/editor/common/services/modelService.ts": 20
+   },
+   "P1": {
+    "src/vs/editor/common/services/modelService.ts": 210
+   },
+   "P2": {
+    "src/vs/editor/common/services/modelService.ts": 2803
+   },
+   "P3": {
+    "src/vs/editor/common/services/modelService.ts": 244
+   },
+   "P4": {
+    "src/vs/editor/common/services/modelService.ts": 916
+   },
+   "P5": {
+    "src/vs/editor/common/services/modelService.ts": 316
+   }
+  }
+ }
+]

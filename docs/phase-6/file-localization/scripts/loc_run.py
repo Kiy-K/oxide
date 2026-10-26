@@ -9,7 +9,8 @@ same index. Arms change only what retrieval returns, in this process:
   dir       lexical restricted to files in a parent directory of a file of G
   file@K    lexical restricted to G plus the first K non-gold files in P0 order
   loc:PN    lexical restricted to signal PN's top 10 files (no oracle)
-  signals   no scoring; records each signal's file ranking (stage 2)
+  signals   no scoring; records each signal's file ranking (stage 2; P5 added by
+            ../../change-classification, Part D)
 Writes OUT/ARM/results.json, OUT/signals.json (when requested) and OUT/cost.json.
 """
 
@@ -32,7 +33,7 @@ from oxide.storage import ladybug
 
 bench, out = sys.argv[1], Path(sys.argv[2])
 ARMS = (sys.argv[3] if len(sys.argv) > 3 else "none,file,seed,dir,file@3,file@10").split(",")
-SIGNALS = ("P0", "P1", "P2", "P3", "P4")
+SIGNALS = ("P0", "P1", "P2", "P3", "P4", "P5")
 state: dict = {"allowed": None, "paths": ()}
 original_lexical, original_retrieve, original_score = (
     ladybug.View.lexical,
@@ -91,6 +92,20 @@ def corpus(view):
     return _corpus[sid]
 
 
+def bm25(docs: dict[str, Counter], query: set[str]) -> dict[str, float]:
+    df = Counter(t for d in docs.values() for t in d)
+    n, avg = len(docs), sum(sum(d.values()) for d in docs.values()) / max(1, len(docs))
+    out = {}
+    for key, d in docs.items():
+        norm = 1.2 * (0.25 + 0.75 * sum(d.values()) / avg)
+        out[key] = sum(
+            math.log(1 + (n - df[t] + 0.5) / (df[t] + 0.5)) * d[t] * 2.2 / (d[t] + norm)
+            for t in query
+            if t in d
+        )
+    return out
+
+
 def ranked(scores: dict[str, float]) -> list[str]:
     return [p for p, s in sorted(scores.items(), key=lambda x: (-x[1], x[0])) if s > 0]
 
@@ -122,7 +137,18 @@ def signals(view, text) -> dict[str, list[str]]:
     for f, s in p1.items():
         by_dir[posixpath.dirname(f)] += s
     p4 = sorted(p1, key=lambda f: (-by_dir[posixpath.dirname(f)], -p1[f], f))
-    return {"P0": p0, "P1": ranked(p1), "P2": ranked(p2), "P3": ranked(p3), "P4": p4}
+    dirs: dict[str, Counter] = defaultdict(Counter)  # P5: directory path + file names
+    for f in docs:
+        d = posixpath.dirname(f)
+        if d not in dirs:
+            dirs[d].update(retrieval.terms(d))
+        dirs[d].update(retrieval.terms(posixpath.basename(f)))
+    by = bm25(dirs, query)
+    p5 = sorted(
+        (f for f in docs if by[posixpath.dirname(f)] > 0 or p2[f] > 0),
+        key=lambda f: (-by[posixpath.dirname(f)], -p2[f], f),
+    )
+    return {"P0": p0, "P1": ranked(p1), "P2": ranked(p2), "P3": ranked(p3), "P4": p4, "P5": p5}
 
 
 results: dict[str, list] = {a: [] for a in ARMS if a != "signals"}

@@ -1,0 +1,5863 @@
+[
+ {
+  "commit": "4eca4ba296361115f1aad89e5736d934924e8b18",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8542fea5f9bd1de89fcac7eeb5724b565743c6fb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_faq.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a1b6be720e59248d8b783c1dfce76a355e170dd7",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "face9e81df3fdbd432d3d97fb69162b33c06036b",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "88053ab75fd8576796d9226bcc710d057d42109b",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/main.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "13f2db5072d600c11d8d6298e4e9ba53ffc6c1ab",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "710884f95cc2279c7ffaa623dcb8bd54cb3cea76",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/arg_group.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/os_str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/possible_value.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/builder/resettable.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/builder/value_hint.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/builder/value_parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/derive.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/error/mod.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/mkeymap.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/output/fmt.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/parser/arg_matcher.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/parser/error.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/matches/matched_arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/util/graph.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/util/id.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/shell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/candidate.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_derive/src/attr.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_derive/src/utils/spanned.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_lex/src/ext.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "examples/find.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/04_01_enum.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "examples/typed-derive/custom.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/possible_values.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/derive/flags.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/derive/options.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "78d70f3c68b9f99dcdd1b28b846a8e824ea7d497",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_derive/src/attr.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_derive/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/defer.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2b2d8815fe1e8616569ec6c19a0979410ac45578",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "tests/derive/flatten.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f870209bfa0f1cd73b2203ef96cb5ac305c4034",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "247198320f143d55a0dee25cd43dc8b826d836f8",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8cf344b7072b1fa70f901f25f81d1dbd22313710",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "9a0248c837b8c042985417fd442b353397603a1f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "6982fb1c98c7247e38a6d4f04191b94e30497e7b",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "07c6fd2d7cef1601d0308d51dff9d695ff790bbc",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2003b342170421cc7867ddd91034c4ab6856d47c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dee8b8e4f07c092472d3f9131d34dd6f54ef60ea",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4a622b4340d5e1fffff60c0ecefdc6882f738159",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ecee8a4f862b1b97ce2c7db5bf806cfe394a55f6",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6dd2e5a0802d84226afd63c427fc09940fa837d4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "eb39a0eb5f6a214f197e82781edfd7c186ca505c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1ab0dbd20bd1a646cb21d6feedfb14cb8a812bcf",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/output/usage.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "543c5322e9f23412021bb1cad120e874b4eeac23",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "801277e030c146e90090e9e69478eac4bc5ce4d2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e19aeb7a18d6e74f7cf945c4e28f6aacd3a2cd06",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "14d47fb7e555e7d17d8f5aba0358fc034a150c46",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/validator.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9a1ec1f2be38f05e421a25e3b03fac767f3095f2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "examples/git-derive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/git.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_cookbook/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8d3b2b040fa3adb7080beada608984479c0a9286",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1ca55413c8e79c3b437054c0d9dc7e4691bd3e71",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2935d5a18948107e9f76f663efeab0a7f4c4ac83",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "examples/pacman.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_cookbook/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "src/_cookbook/pacman.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4e4ddc47e87dc52924de5f0dca699b43304627f0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2550f328b0c4d23c38cdb553c39042f544c07c47",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9048857bc4b46ce588e9a238f6a548c93104392b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0607d6600133d505c10c7197956217bc54eb1558",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "943de7350014a880ca787ddca5675ec4fed3dde1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "81b86a9fc3d3e2773873e4175ac26c8611fd29b5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ae09202eebb45d2ddca9b280dd91d50d810afc79",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "5df71cdbe87a7916f4c60e01849f44d3fef5295a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/range.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "466b2be56c5811d1af62c407f5a00456350ece62",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7cf4891ebafaeff05811c6ab585e690d0dda4828",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_derive/src/utils/ty.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "12e50b3bc855d506cdc07a3bdaece5416e6fc7ba",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f181417013e35092a1f097ce44d9c6144acdc40a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_derive/src/attr.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/default_value.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9011fa583b0957209e94873e8a11bd80230fe91a",
+  "class": "structural",
+  "refined": "structural",
+  "files": []
+ },
+ {
+  "commit": "7dd8df1b46027c31ed50733a0a35f548eadc031a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete_nushell/tests/completion.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e63b8ec18428ee318a492dc8dacfb8ec1e666033",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete_nushell/examples/test.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_complete_nushell/tests/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/tests/completion.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/tests/nushell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "67c5dfbb5aac9cdbfe195ef6d93d522d171918d9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8a93d4be29cae11594af8017e48e2a3e2761ee23",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/arg_aliases.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/arg_aliases_short.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/issues.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4a35e3bcabf7b6326e646f88ef9cf312ac0fa2da",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9f5451d59764bcda529c916f7cd7df1126956f08",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/elvish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/git-derive.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/tutorial_builder/03_02_option_mult.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/tutorial_builder/03_03_positional_mult.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b793fd602ab5a841bc0202ede426633dab0e4d4c",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/engine/candidate.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2310870f7a9fe4c39f5bb5620261a06ac9aaa0b1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5967c17393a09f90112cdc5b2c20a1383f0bd8e4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "594602bb29f374e49da5029df63e5c740c723ad0",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/shell.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f90a96636ad3b62c17790a97c1192a525b7db286",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/fish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "dd4997ba2d5eecf789936f46f2ccb52126e128bf",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "71a7213d6e45758bb8c9c5f7c36ed768edef872e",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "49a05cdc99c2151cdd48d5ec4c974151d21c026e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e791004a5bbbfe5418fe573a4db777df24d72490",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "74c6666698e90ff0141eb50dd169915f59fa7bcf",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "372a47db1c742ad84100a07222da7694e9ef35c8",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "tests/testsuite/main.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "ba89563c9d4c806afba2002c345b7108b64f1a1e",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/os_str.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/str.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/features/suggestions.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/validator.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/util/id.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/examples/completion-derive.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/examples/completion.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/examples/exhaustive.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/generator/utils.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/elvish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/fish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/powershell.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/tutorial_derive/04_03_relations.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/tutorial_derive/04_04_custom.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/env.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/error.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/tests.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/default_value.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/deny_warnings.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/nested_subcommands.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/non_literal_attributes.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/options.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/skip.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/subcommands.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ac0d148f7e21068fd1f544230456f30c95311f78",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "1565a3cbb411dedc410154fca0de7ec445fcdb08",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7d4c353d5b843ac3b45473172ebdf9c80e89b697",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_derive/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f6a6701e60f372c2104c6aca413c86b996e3e026",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ac5fda6a799e4c640d671edd1111d4a5e723dc1a",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "34ef8a02f7890f1c5c3c10ed1381b4569af87136",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "7ffe7399ff032cc247eb0449cf8fcdfbfe55a4ec",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d47fc4f8a5e9fcc16d0cae15b51e6eb1a8ed5832",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "acbb8225054e0a498f6941f278ad0095a893efe8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a49fadbf4acf1853f52ae43a445c8f3c81096b01",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dd1fcd3d4be0fcc2d3eede07df4d9ec25663241c",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1f546842695b858fdee546f95e162e3fabd499df",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9ab6dee710aa384e02ec5e9e2cfeadb2f35abf2a",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c774a892ba8bb703a9e77a16e6ebc6ff1c551868",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/generator/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/aot/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "src/_derive/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "73534f6ed3697b834743d283cedc7f529778d8a7",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_bench/benches/complex.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_bench/benches/empty.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_bench/benches/ripgrep.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_bench/benches/rustup.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_bench/benches/simple.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/possible_value.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/tests.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/error/format.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/error/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/macros.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/mkeymap.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/arg_matcher.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/error.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/matches/matched_arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/validator.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/util/flat_map.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/util/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/examples/completion-derive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/examples/completion.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/examples/exhaustive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/elvish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/fish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/powershell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/shell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/examples/sub_subcommands.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/tests/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/attr.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/derives/parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/derives/value_enum.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/utils/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_derive/src/utils/ty.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/examples/man.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/derive_ref/augment_args.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/derive_ref/hand_subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "examples/escaped-positional.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/find.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/git.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/multicall-busybox.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/01_quick.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/02_app_settings.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/02_apps.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_01_flag_bool.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_01_flag_count.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_02_option.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_02_option_mult.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_03_positional.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_03_positional_mult.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_04_subcommands.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/03_06_required.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/04_01_enum.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/04_03_relations.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/04_04_custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/typed-derive/builtin.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_concepts.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/bin/stdio-fixture.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/env.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/global_args.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/help_env.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "dfe05a9bfe5bf49ec560e484c1abf50bcb55cd96",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8b41d0b8497ccaa0fb0d1d8a51f91ea2f62b3aa8",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "185b19b64a4ce49ed595ae158c7e81482b3ec707",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1536fb6c6c9715ecd0d1560c4865d10be3d7b7df",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e359f44f75d96e33ec67a12e27bbc7eab3dd2c3c",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2fabbf027cc6b6ea9b5ea64d9aa66a8d6ef0ef6a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "20aac9d46e0852292bd43d845b6d9cb69c598c9e",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "420669948a1f637e0ee707d907053beb104bfc3d",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/util/escape.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "eb16ae4d25bf3a7300b4a51bf953bf0d6e6fa62c",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/possible_value.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/error/format.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/util/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "806d98164ce4ec62aa97c771006d782090a08520",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "68b5ff900bae8ee1a0e328c1a2301a7985e4f1c6",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "144e5cb46d946f97e51b7122eadd3134ee127bef",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/ignore_errors.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "ca5bdfc45e0c13ce290950a25ec76f9a62db0ffa",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/ignore_errors.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7801872ea4adb424a31ff522bb89a40af7ea6558",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/builder/ignore_errors.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f5ba9c51698db0622e4770f70b0c649b0d150e52",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3ef966045274335cc44a9b8571b5a47965d2b4e4",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/value_hint.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "05bac738ebc886143cceb80dd6905a41b42952bf",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "48c3b1139785a29f24cf18989f551622123275c0",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b8c9ad5b3332f63ba4119be1d24187b5caa09e33",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/elvish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/fish.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c40ad5c5d59d0387012b03d55a18a27a572843e5",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "af904ae2d76234593c81029df9fc3017e4520790",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "36eb896ead6e34fdad83db0e99a544040a8200f4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "24cbf6898ee298ab89c587b786b6cbab6f672832",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9d17332fc7cc0ce32405147b68d0eb1096a1cfc7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c98855a62d6e6d0ddab1c20808b1a9f99382eebb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ccba5f5ad1b233f4499c9aefd7b7684571d44acd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "59b2a12d0c34a536f929fabcc2567f9c7a37a771",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "916fd6347295fdc09e737fdc9530f958883b5868",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e0c26b09f0457284033610664423a44ed1ab9949",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "578cd43a88f0009a53ff729cb78163ed30156e93",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/validator.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/util/flat_set.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/groups.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3dca9ae6cefba3094efd004e02d2d141a63a261a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/groups.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d11a611d1b6c1d3f2e35cd6588c004c811befad0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/groups.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2047862681cecd15562d86e4e30e3229073abf91",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3604b13117cbb652c10bb44b228b300d543dcc80",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "63d73bcf3569bf695d7adef7d7f6d621ac02e4d1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e2d2d25094337ad98c21594f1fcb80109dd1ffc2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0e6ba89ff2da16d0cd300944e6739f5aaa1c1abf",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "03e3fd51e601d4bec6a486f1e2c08764e32a993a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bd005654a129184e22c4b240c9e27280786341ad",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_derive/src/derives/value_enum.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8fc3eb001eaccfe31698c820139af5d1062a3825",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ce7dcce91bbecd3aa96d99734c4a4e97648a7a71",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3a980a8360e1b456d8bd1058e30f489df8937bc6",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "81dea3b679c6c7a19833424525940942155e3882",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_lex/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_lex/tests/testsuite/lexer.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "76a016a0836351d9faef9c6329c1be70fd40f88a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9db823423389d7b487f7864eef2c2da59a8a35a8",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "475cac90d878ce6beab0878fa6c00d783ce8874e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6c2cff66a11136915a6242b997ba9616622c3c2f",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "58723e5f360fcfe7e97ed7af84cebec231f47ac9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/elvish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/fish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/powershell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4ecbf54ac314b6cd9a84d7e48350b71f6bd4c7ac",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a062eaf7f5c7b4a510ebc02f991efc1ea0f4e754",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "15509afcbcb01818fbed85a54f5ea52eeadbdf8f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5571b83c8a322ee2cf4342402d930cf2806fa2f1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c3b440570e1d7b4ec2838270fc63f156ecb1a5fa",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a794395340233a127a565ee502c92cc559646f8d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2280d4808b1e5718f869d8da6540a34d228bc3c5",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d4951455bfad78527ef27226db0358c2f2458f68",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1a6c0de0d761482a6e2c6e6705a4d9fa0668e842",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8d87e70789ed7832aa93473779d248090712d66b",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c2ced1aed1f30d468dfaa6ddbd53403fc667450b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/default_vals.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e82e1edf76bcbddf5fe53428d297520d76a6a300",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1823cef9d6ebf89c5076f23db63350fcc2f78473",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/conflicts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "dcc28467d1a4b28a60f257efdb9b53cda9e7c2c5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/conflicts.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e495ab164f3cfac5986dce77949c99ac5aa0c07d",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "20938a8d82a57d2682e85b46f271de24c4c99d3c",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c32c382bdc28782395e7743fd8a5aef98b5dbd32",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "1b6bf1b03974779bfb3d47c2a948785e6c2dfe44",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg_group.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "66367360eae254117fea78e37cc33591467e1a02",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg_group.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8d14ff12f871240a27bd2f1059b95feac87e78a7",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a89f3e6944cdfff0b1df30960572d0d3a051221b",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/error/kind.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "667ead6e5993c9fd7918407dc7ed088e8c10e4be",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/util/color.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "examples/tutorial_builder/04_04_custom.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/value_enum.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "83cbb5bf65f800ac98da12834dcd4dd08a42d635",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "bc38aa174786b530dfbf3d7f8e0aa2599186b089",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete_nushell/tests/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/tests/nushell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "009bba44ec3d182028ec3a72f5b6f3e507827768",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d89d57dfb4bdd18930a40c6d7f4fadb23ee9c5b3",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "126440ca846613671e1dac98198b2ceb17dab2b0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/macros.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9e3c05ef3800a3e638b8224a7881a81517a4f4db",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c9898d0fece98d8520d3dd954cf457b685b3308f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "24dfa0d5f9af0373d08bc2db05064990ae9a47d9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ef3f77deba22c53dc5e8abe009d794caf2c04634",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c7c761f988684ad97c8b2c521b05cf7f8192b3eb",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "55fafb4cec8fbf53aff1257924c5eabc8e3283a8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/os_str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/util/id.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0bb3ad7e12e729be9f152391558689ac4fdd31ec",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "dd17a418a9e6665c98ff6e0ba2a039fd1921988e",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/output/textwrap/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/output/textwrap/wrap_algorithms.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2cc4e350b9ea8955a9cf229405407426921e7871",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/bin/stdio-fixture.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "93e3559b1e4c8c81377f3598f7249b7708f4c379",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/textwrap/wrap_algorithms.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b1c46e633c04f5cb0d819b15f25c1fde1a6e42c4",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/textwrap/wrap_algorithms.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "03b9b38df059c1a9a529f295e038f81de295627a",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f218f4ae7ae9d079e52014b7f4a242cff9da89d4",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "fc1379ab99580a59ffec04d463256282cbcd3b78",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_concepts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f6c3a56ea28e340e03c76d20a374e84be230c556",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "src/_concepts.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dace4cbeb635e072e30e73527504daf6dc0bc0aa",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_concepts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8e3d03639756241aa2b7dd624a7f5852bef76f31",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "250a3f174d2e95ac46f7d972a5576e918383e4dc",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9d36f240a9b206a49aeaa22c72ff297e00aa1475",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "14e7d8ddd700a13aaef02d44fff396d955de4060",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8aaf704f5679e2329a2f8048ff3cfad40696fde7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4a86fee1b523aeade43b628294a18a68df5ee165",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3cbce42cc2115975432647c4238fa5dc9a2d662a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "examples/typed-derive/main.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9fd4dc9e4e6a6b2f5b696e8753b767a46e2aca7e",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "examples/typed-derive/main.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_cookbook/typed_derive.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8f8e8613459e3ccdd25051c97f011cd8d5e49ed9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "examples/typed-derive/implicit.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "926bafef0b8860c4b437db0c41567fc270586089",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "examples/typed-derive/fn_parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "29b946faa3a34cb7e85b0c541839660e339e60da",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "examples/typed-derive/main.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_cookbook/typed_derive.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "b043ed30454812445b69d2c01f5c899c3b6ce6be",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/_cookbook/typed_derive.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "40eb73cd37d9e1bf2471b670a8b9a7d00dcd4282",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "examples/typed-derive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c803d167bc2f8b789eb8aed603a850e8fcb00de1",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_derive/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a17a3b64c9fa35fcc58d6b03fe8dce647477f533",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b82766195caed969177fc16aa9fab294b2cd7605",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f8b9e2415e5324bce2d1acb3250e1ad6eb8ae600",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "395d657999cc90cc44ad0aa5822d0e1587be9664",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/derive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "92fd6e71c2c8164539e45a1f619fccdfd8d2fa47",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_derive/src/derives/args.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_derive/src/derives/subcommand.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0bb71a0d458562fd3336d247dd96c1131e7ef356",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f9fd356a461527911af6c7451e9a03d3a23f02e9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2b0a847feed0cc47ac0e258065e5130533a94284",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/styled_str.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "cda1b8531b3b21e7d670fd46eaa0cd8f1fdfd90e",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a8b8289fc492025cbb9065f70317c4fea69a125f",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_derive/src/item.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/derive/doc_comments_help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d55eac792f43c51eec86b817dab2ae0204598e34",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/derive/doc_comments_help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9d7f2128f77023941b53b7cfc311120a2ead75a2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "77b3fdbbea64ae0b0b3a51309bcbb861360de8d1",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "f89b9b8d1b818a2eb3863745be48725ace2d8f12",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive/author_version_about.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "58eb8a937ac6ca4a59614dc26deedb6cfe16c424",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5335f54d73eef9276c13313661fcfffb720c87cf",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c10231ded4b5e008018cfda56877491d9c01307b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/derive/app_name.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/arguments.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/author_version_about.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/custom_string_parsers.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/default_value.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/doc_comments_help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/explicit_name_no_renaming.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/flatten.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/issues.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/non_literal_attributes.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/options.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/rename_all_env.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/subcommands.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "11eea417fcd3816d4549cf99d9b7d166be52b8d2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "60184fb76a3d88277f89430402d01a121feb858c",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/custom.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "09969d3c1af9dd22fb944c09f8b1c27274cad824",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "520beb5ec2d2bb5dd11912d27127df4e97027965",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e5eb6c9d84efac5d660322e92dbbc0158266602d",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "594a771030e43df8c806ea1a029862339739a0f3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "883b9f97c0c758afdaeb620e98ec61d3ab8dd2d3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "583ba4ad9a4aea71e5b852b142715acaeaaaa050",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "debaa30eb5c8a77abcf2c381758628fbb904a822",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4f9f007de79ee49b122997064bc13d527f3e82c6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/flag_subcommands.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f4ba05b62efdb7f3aa839848b4b17f23e493fd34",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/src/render.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1ffb9a80088ead54a5b7a1f9fd1da07fcd63c664",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_mangen/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_mangen/tests/testsuite/roff.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4c039309b614ee4523c67a243afc38af11860de9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "83d4206ff16b489895e8a171a3bdb2e39d7d3e1f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "src/bin/stdio-fixture.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b13274d869ffa53910a6d16728546b1ca9161b2d",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "df92ea02bb4aa79b2738d7a8a86dcbfab417b7dd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/styling.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "de57287f303db0e0b29f1bcca05fef50ef011225",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c1c243c924570052857d85206c7ee282e273a961",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "daae02a4c4666c8adc2efb311c75b7ce093cadf7",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5e48e02f2fd3475daaa5ab0131df03372808f3d2",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3716f9f4289594b43abec42b2538efd1a90ff897",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "cb8255d2f3c7f12ebf07ec1c55ac98b6848599a9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_builder/src/macros.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e2aa2f07d1cd50412de51b51a7cc897e80e0b92f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "b9c0aee9f28c5ad72932225bd730260f9bbe1fc6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/elvish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/fish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/powershell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2fcafc0aee6380e1f0c44a3e927cef1bfc88930e",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_faq.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8520a7acb57fdcc4a5171d6f8e37252ee8a16432",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "21fc9e46d4151f1e64acbe2693fb88ef2ad7d0c0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/generator/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/elvish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/fish.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/powershell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/shell.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/shells/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/src/lib.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c758212a472e1181bd49402e74c2069aba0a225e",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/arg_aliases_short.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6d0bfa0e4d0d9991e554f5dc8cd765260950ddbe",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/arg_aliases_short.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ed0c63deba72682ce67c39bfe867fc82dd26b870",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_derive/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e2188d9af318f3287c1c5a52cba6b9dfebe7bb75",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e01f2b764016ce6ca03a4959310fee2cc112114a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/error/kind.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a4fb2108a5bc14db4a05a1386a8d3da753e3d02c",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7a38f0da6451d2577f49beb9e40fb2e82cbc809d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/zsh.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6b12a81bafe7b9d013b06981f520ab4c70da5510",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "da2cc8d04401cbe8383b624b3535f5fe28e07f94",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/arg_aliases_short.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "487aec34b16fd6d7385e5263307d2ab9a9f831d9",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/arg_aliases.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/arg_aliases_short.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b8f5d53da6bb67abcd2f01c2f5898a39b3167dcd",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5ab2579844a47a26b4567f77a7b9d198be006f0a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/action.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2f66432721bd24602455dc3e31765195c6107c34",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4d9d2100f75693645ea68180ed4b6b3ecacb9923",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e426f4ee7a467321a57c9a557b4378f375a9148e",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/shells/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d5229218e8e6c2878f3acd6143140f6912e4ce41",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fd3f6d271defef2aa2f111555a005689f71f6acb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/env/shells.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2f6a1083d94b832af96b791fc934beb043a969cb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/bash.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f88be5738e33018f3298fabb7b67835eefbc55e0",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f209bce2203498e743b171b7ac64f0fb9d3ae590",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5d357ada532d430290c2de14c918833564f12795",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "45d4088731d523d9de11ad0f886964fe46c55973",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9ebef155c0c05094f6b25b5884a0bdd4250db9f3",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ecb282491a08fa0b3a16be16a8b1942c6cbae622",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "183cfe3b011f2f1385a996ee9606289c69189550",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/command.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f5a6aedec37f7066db998123fb969b7bacdea2e7",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5ac11366e1f16b4db2e6aefc4ea2779ebefdd11a",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/multiple_values.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "93debbf6ec64c1d24e029d84af9c396878464ea0",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "78e41f66665f89ceea5975ab6320cfd4524122f2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0f7dbbc27ecf11d89b7406450576cbe505dc362f",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bdfa79a0ad7640e5e77d407c5f4fbf2d8a93a627",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "66fe920f9aaecf6e628d3cee9729c8d2e38fe032",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b4961bbca10b3b958ba0ce6a42d93019cdee64ac",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "21b0a302b60aaf9da0d05e2e48963928f1333414",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/output/help_template.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/builder/help.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "086f95fd1a2bfa5ad43fd4131b1673c8c3f09c77",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7893f88f9c988c9375cb3a9d913f6fb38f471621",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/parser.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/derive/groups.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "d0987fd8384dec902c0fcb7f6bfb171ccfa85ddc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/derive/groups.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "35f55afa46fdc6ea5ca3195bbbd2f1bd18fd8f98",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/derive/doc_comments_help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/groups.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/help.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "2a3cdd2caae0b03f3240fb35310cea714234ee73",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive/utils.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8a66dbf7c2c6ca050a65468180bc55a9d8425654",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "76465cf22381d9bcf188e35a259225509cebefd4",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "232cedbe76e861c7cf0a4a7d6c1b79f4dc9a7191",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2e13847533d458991e3353b373e679ab65f1c8c3",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "74388d784b999da1f67a12b3481b4478b3d597bc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5b3d45f72c94a4ce2a5a1837d2b40d58b22db1ff",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8ea75fa07890124aab14cbd0959073c8027424ce",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/tests/testsuite/engine.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "352e99f59e7aabf2a34e5e9fd334e568a0b197e6",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b1044d4d08b22d93bf4674647f36e68caf0d8350",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/error/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/error.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5ced676366e99dbca88fac2f8f519bfad3d2c248",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "examples/typed-derive.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "b86dc513e1b5300879b8f75824d123e8ecfa2b95",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/error/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "61e7825c630e39a1914bdc096a0275d651ccd0d3",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "clap_derive/src/utils/doc_comments.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "c74cfbe7f5c9f849f5c8d61bb75b73e41c6312f2",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "examples/tutorial_derive/03_02_option.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "examples/tutorial_derive/03_03_positional.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "src/_derive/_tutorial.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "08a9b9696a0daad9c4f1f6fca299e2c14e3f34d3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_derive/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2b8d21ae852f22c1ae4d95ce50e1981ccb1e7722",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/_derive/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "src/_tutorial.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "acf9abbc1b564cac24ed45b1b5906c90d688f4f0",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "536e29fb85919f23e8551135ae448fd92326159f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/value_parser.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "45ed71c0f235feb65d23568775e16b1f34c9f8d4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/src/aot/generator/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5029bb3d11809403cb9c1b37f970a8625aee56cd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_complete/examples/completion-derive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/examples/completion.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/examples/exhaustive.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/generator/mod.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete/src/aot/mod.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_complete/tests/testsuite/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_complete_nushell/tests/common.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8a1d59bbb068b82fe9ae55ff613a3a6927d3b964",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/derive_ui.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "b3146db1dbd5417569555fb1bfa01876cf3d6899",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/ignore_errors.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "246d972a6c5bef724ce5fbaac4a97cffa10a77c8",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "389fbe87d2cf5f093db7dc5ebcac819536176f76",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/action.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "clap_builder/src/builder/range.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/flags.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/derive/flags.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c395d02703e1ebe76dc87d03b725a47937be29de",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/flags.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/derive/flags.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "32c119efa6937a8f261e75d7c71323ab5312748d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/action.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/builder/range.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "80ea3e7c2437c46722c5e66e132002e684889bd9",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/debug_asserts.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/builder/action.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2bc0f45fe590a8c4a5518a3a3d42d074dc89ee87",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/range.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "a0187c6f3beb15f8f75bc38dd9e45cea2563329c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/action.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a8f9885250579d632aa9f6adc2a9ca17ab0833a1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/builder/action.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "clap_builder/src/builder/arg.rs",
+    "lang": "rust",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "67b74fb6e712945905c7d90343e070f3c300bfc6",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_complete/src/engine/complete.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6717cf142f21d9761d58dccb8f37077b498dcedd",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "24fd0a71f0945181a965a680300fc35a1b906bc8",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0ef80bb9bcc41d7cfc430b77a6fe614984dfe26c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "clap_builder/src/parser/matches/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "clap_builder/src/util/flat_map.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/builder/arg_matches.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "225e0d8bd846bb56df6f3daa8afd698c8130318d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/builder/arg_matches.rs",
+    "lang": "rust",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "839f195ed8f722008812e791d7eae6d7011070b0",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "336b645258d8433dff145785a4717ac3b991d241",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "src/lib.rs",
+    "lang": "rust",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ }
+]

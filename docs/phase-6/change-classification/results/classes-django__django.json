@@ -1,0 +1,8132 @@
+[
+ {
+  "commit": "a461af8ce48762d7ec602260aaff81014ddccbcb",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/gis_tests/relatedapp/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7847227a3fecde4b2a169552b84c60c6286b6025",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/contrib/auth/management/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/auth_tests/test_management.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3db0898eee4061d44de5052953ef0fe3afb5951f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/functions/uuid.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/db_functions/test_uuid.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "80ea222c8af501031b2eae4f7d9fdbf16cb507a7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/message.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "91585625a93a41388ded73b99fc71328bde1e760",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "docs/_ext/djangodocs.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "docs/conf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "docs/lint.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "50eef95591b1e5d8c47b2e8c96066cb0c516753a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/tuple_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/composite_pk/test_filter.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/foreign_object/test_tuple_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "479ba6d2812bb0613d1646d445be43f7c6ab7bc7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_docs/test_views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2f7f30c320b6517d31fb8852db1875ad3a6a774f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/sqlite3/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/backends/sqlite/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9332b163a67eabe5bdbf8066b1c5da394be9aa9c",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/backends/oracle/test_creation.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "dffadf6dfc1585da2d5822db4b95322f23f39d4b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/distinct_on_fields/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9e06baf2e4dd17834b5deaf3a3e6ae3bff2fcf26",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/paginator.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/shortcuts.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/test/client.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/asyncio.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/text.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/async/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/httpwrappers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/pagination/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_client/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_text.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a013c821ea7838a953869615b0bdcfdb298cc09f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/flatpages/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/messages/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/redirects/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/sessions/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/sites/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/clickjacking.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/common.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/csp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/csrf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/gzip.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/locale.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/security.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware_exceptions/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware_exceptions/urls.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/middleware_exceptions/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "703283b5b455a8410b4ce0a2e6ea0e1bde7f3047",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/libgdal.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/gdal/raster/const.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/gis_tests/inspectapp/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "446d9cf602a5c42862da118b714a5679bb61cf27",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/postgis/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/postgresql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/functions/json.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/backends/postgresql/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/queries/test_explain.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "82f34e2f7290d98ae2d1fe80919b2f0e21b18369",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "935edaa91b756325352ca70d5eba49a64b70d28c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/views/main.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a3f0642f69277f01611d0d3e829fc3b85aded2ec",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "581deb9402edc70f85b63c170c199a393f0f2183",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/__init__.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/model_fields/test_genericipaddressfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6ade6258480fba84a7e895b4b1e1716dfc954778",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "08ba4d0e0f62e322c6727596ee7a324465076a76",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "scripts/prepare_commit_msg.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "2abf9d2cf8602f0ddc0db4ec1a33769b41b4232a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/model_fields/test_generatedfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fb32a564ccc6f91d4b7594f5707c62fab0c11c04",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/generated.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/invalid_models_tests/test_ordinary_fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e7f464ecdc025000899067ceb6bc61116ca81996",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/model_fields/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8cbdd4a814397f81adf0129288f32b615bd1f94f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/schema.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "64edef37e7b419dd584307d84650a192fb47dc4c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/base/schema.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/postgresql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9cb2cba6fc7f71ed768aed8cbc32e7447ecb0be8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/mysql/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "97c38590a2396c8bb123d0782dbe96ddfd760a9a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/inspect.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_inspect.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "abb9c04bd6f4a1be893d40b2e1afe098e1beecf0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_widgets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "850e026cbfbe65944a5e0dc50e47c7ac64143708",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/validators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/validators/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fc4eaaabf419508ea39d750ca5ca801d933e0b16",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/raster/source.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/gdal_tests/test_raster.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e7d301b06a1752d648675702d4db0fe110031906",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "be6a149de8f85fb8f858680f721dbaadd182f1d8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/model_formsets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5f0293b3ab546f86d666524f07d17304ac785506",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/backends/oracle/test_creation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fee1cf726204f7ead542bf86b6647362cbe7a695",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "docs/_ext/djangodocs.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b3f4d83aad7f589f165a6d8b020b7acba4936f35",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/functions/datetime.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/db_functions/datetime/test_extract_trunc.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0398417c503e9f32674b36865abc54e575e8bcd7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/backends/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/migrations/serializer.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/tasks/backends/immediate.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/tasks/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/urls/resolvers.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/module_loading.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_module_loading.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "cc933385e75172cabacb49cfb9fe3571845cb216",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/version.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/version/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "aca5b3f694cdabaee8d9accbb0c6fcd01839e9f3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "026b005f3dc43a98557ce5a546b5e4938d06fed1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/deprecation/test_deprecate_posargs.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "52abe52bec23df6523aff492364f4f1b049c9572",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/async/test_async_queryset.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/test_middleware_mixin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/httpwrappers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0d0e7f15038360c158b6d22c679b47b21557fa1f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/conf/global_settings.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/checks.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/postgres/aggregates/general.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/postgres/aggregates/mixins.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/filebased.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/mail/backends/locmem.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/mail/backends/smtp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/handler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/message.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/paginator.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/signing.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/base/creation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/json.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/utils.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/transaction.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/common.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/test/utils.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/utils/crypto.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/html.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/log.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/aggregation_regress/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/annotations/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/backends/base/test_creation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/basic/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/defer/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/test_signed_cookie_legacy_salt_fallback.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/test_use_blank_choice_dash.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/expressions/test_queryset_values.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_forms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/relatedapp/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/logging_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/lookup/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_deprecated.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_handler.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/model_fields/test_booleanfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/test_jsonfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_inheritance_regress/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/modeladmin/test_checks.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/modeladmin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/pagination/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/postgres_tests/test_aggregates.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/postgres_tests/test_array.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queries/test_sqlcompiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related_onetoone/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/signed_cookies_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/signing/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/template_tests/syntax_tests/test_basic.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/transactions/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_crypto.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_html.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/tests/test_debug.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "00dca6f097f443de7a24c04bc133f98c83c632aa",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/distinct_on_fields/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f14e293cd7444e064b9c9ba471fd5aa7e6132ea6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/lookup/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0751d5fed159fd9ff7edba522ece13c8c9d2a0d0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/lookup/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6126f5d2fe0f22c0d2d4888de8c94b91a9795bb6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/serializers/xml_serializer.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/composite_pk/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8d1c673466bcabff500edc6c7724e5a20f6df3de",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/composite_pk/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5babd2e21ac0877d66c5452da17b97608b337fba",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/related_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "60a17fccf4f2fa31b823b0f938005897f2f3ef16",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/related_descriptors.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/prefetch_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fe81969e83d03b61e587a28ddebb92b9fca2b441",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_changelist/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_changelist/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "73cc09f14f13fedddc14d6ba5b287cb33c24e4a4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/filtered_relation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "439b936753e5a679ffcf40cff5918c5637f7c72b",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "fdfbb711e3dd52683ae633f568761efe2735d5f0",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/urls/conf.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/urlpatterns/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7576781cc6718fae313faadd29288ad8c4313f3c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_utils/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_autocomplete_view.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/composite_pk/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/defer/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/expressions/test_queryset_values.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/expressions/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/foreign_object/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/generic_relations/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/generic_relations_regress/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/known_related_objects/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/m2m_recursive/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/m2m_through/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/many_to_one/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/migrations/test_commands.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/model_fields/test_jsonfield.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/model_forms/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_formsets/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/multiple_database/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/postgres_tests/test_array.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/postgres_tests/test_bulk_update.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/postgres_tests/test_hstore.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/postgres_tests/test_ranges.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/postgres_tests/test_search.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/proxy_models/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/queries/test_qs_combinators.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/raw_query/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cccc004b46f71b4e54d87b376be691a17de6b903",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "1d50f12929f8f2d424f0e7cc6b1f693f590f71a2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/queries/test_qs_combinators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d992705f9eb56199dc474b77af16474e5ce3d2ab",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/basic/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "504d1f12cd5879177295fecd2ba4da1001a0930f",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "464a5e184443af937977ebe0ec5150fbfd6ee854",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_inlines/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/test_autocomplete_view.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_history_view.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_nav_sidebar.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_password_form.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_related_object_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_skip_link_to_content.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_widgets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/field_tests/test_floatfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/test_csp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/runtests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/tests/test_i18n.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "be6cf832293779d8aeaeddca8c47a37ba1530898",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/annotations/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c72f5fb4793f2cac66d76e3cbd590499ad85b89e",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/core/validators.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/validators/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "f7610bda78afb13ee395dfee2445805d8c7ad0f6",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/gis/geos/collections.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/gis_tests/geos_tests/test_geos.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "a3e6e7d3aa6e2aa793ba1d122a76cb007727197c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/sqlite3/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/model_fields/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/test_decimalfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1a001208b0b9d79b15b27ca04d94f31f3d55d5ea",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/composite_pk/test_order_by.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/ordering/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/ordering/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "07d4f69c94a0e32c583b3aee5daf48fd81b4cd69",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/related.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/schema/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4ee04972e7f9163dbdf5a7c36330e3379187e187",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/gis_tests/geoapp/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "febefb175e03352e5aeb2ed827024bacab96cf16",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/models/constraints.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/constraints/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/constraints/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/validation/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/validation/test_unique.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "812c08bd4e9da7b74ab9ee0db83da58a6da48d19",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/tuple_lookups.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/composite_pk/test_filter.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d6b73a6613f5e7de95fd8719198d0347c85ddf42",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/urlify.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "99d56e5cf15839995f62f24294584f1e2976b1ea",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_media.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c6be0bf3bb744d234947cefd6def9f31d9655800",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/fields/related.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/invalid_models_tests/test_relative_fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "082b3df4067c3899dd4d57e8c2eca5baea9d07bb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/templatetags/admin_list.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_changelist/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6df8fe3bc1879265958b8e59c637a4145995e93c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_changelist/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "616e8c52ded7f4c7b00cae5a95f5a5d12a6a39b9",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "b5388a3a80cafcce2e34196d8e81cf5b48eb33bb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/template/base.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/template_tests/syntax_tests/test_basic.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c9eb16a87e60c305fb3651459639f647cce498db",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "89e82866dc2746383c336c7b10e050b9da3ae1ef",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "30ebe0001c1d10bebc68567f796d821f7b309f4d",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "scripts/manage_translations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8f52e9199b260cdacc5ad372692cddf2dcf76558",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/migrations/test_autodetector.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6baaf6a87706265446c4c7f2e3b96e3c49385b27",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/async/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/decorators/test_common.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/decorators/test_csrf.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/decorators/test_http.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cef2346abf8d6e9e61a5a3599fbcf72163e6a6e5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/field_defaults/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/field_defaults/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f00270d05e3510f2edc8ae012418d1dfe34d99f5",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/mysql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/postgresql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/sqlite3/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/inline_formsets/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/inline_formsets/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "47511a21026cdd721d8fbf8571cc079bc38bb46d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d2e59b77fe18de318a8272c2a7bbc798d84d1d0d",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/mysql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/mysql/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/oracle/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/postgis/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/spatialite/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/models/fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/db/models/proxy.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/contrib/gis/forms/fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/forms/widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/geos/geometry.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/geos/prototypes/io.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/geoapp/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/gis_tests/geoapp/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/rasterapp/test_rasterfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/test_fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/test_geoforms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "27137e655e442e81095f1f8f77ff3870d9fdf169",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/test/signals.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/utils/translation/trans_real.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/i18n/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f1949c1f9758947ade984c895ff16bef46f56520",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/models/fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/gdal/raster/source.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/geoadmin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/geoapp/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/rasterapp/test_rasterfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/test_geoforms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7dee35f5eea131ddf807788c533da1264e571c61",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fetch_modes.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/defer/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/generic_relations/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/many_to_one/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/one_to_one/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/prefetch_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queryset_pickle/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/raw_query/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5637bec7a033d67407694316bdda74304449488e",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/servers/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/test_runner/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "2cace96be6d64b7dde7eb66d3ffc2c7f08ef644f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/field.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/gis_tests/gdal_tests/test_ds.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "60121939f6b225c7a719dd561e372e1d8e5e2c4a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/field.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/gis/gdal/prototypes/ds.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/gdal_tests/test_ds.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ea303dee45f4b703b31f73ceb235f11742d3c518",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/postgis/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/gis_migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "06463d3c11b3ce132075283d5f9368a269d66343",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/test/runner.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_runner/test_parallel.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_runner/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9465349120ef8a0b0689e12bcbfd05f3d173ebdf",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/field_defaults/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/field_defaults/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8c83e9c0ea39099b213478a893cbebe9faa837ba",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ca14173f968cf36115f22d6c6785f738de4391ed",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/urls/utils.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/urlpatterns/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "274a1d494d11d87a1b767340d1f398f197810f93",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/test_client/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5c4a36f81752025e1d8bd0eefafafd2206e02f10",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c9ff757a55392b1f50968eb89fe775f6155168d8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/bulk_create/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2936a0a99719e3c3777039a0d6968deecb55c752",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/utils.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/views/main.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_utils/models.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "92e1d9e3619ae5274a64b38f26177064486892f2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/templatetags/admin_list.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "92470ad3742524902b29769d2c822dbe791630db",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/templatetags/admin_list.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/utils.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_utils/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_utils/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5e32c82a5a896e1d942cfc9dd9a2ebbe86741258",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/staticfiles/finders.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/staticfiles_tests/test_finders.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c2517faff335f683e1cbe55d9844910b3fb40670",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/utils/http.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/utils_tests/test_http.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "4ea38d54c10e0f44e189605c217a55cdfe9fdde8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/contrib/admin/sites.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8a162076e1988ddf9453edfb8329d5df1573dc38",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "scripts/pr_quality/check_pr.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/pr_quality/errors.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/pr_quality/tests/test_check_pr.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "e0d64a5adaaad1cec22a0f909602ea4127c04ad3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/core/validators.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9ea5f4facca9931519109ae5d3646d3077da3e5f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/actions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/backends/spatialite/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/db/models/proxy.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/gdal/srs.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/gis/utils/layermapping.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/sessions/backends/db.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/exceptions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/ddl_references.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/mysql/operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/oracle/base.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/oracle/operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/postgresql/base.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/postgresql/psycopg_any.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/sqlite3/schema.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/migrations/recorder.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/options.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/sql/datastructures.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/sql/where.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/forms/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/http/multipartparser.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/template/context.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/templatetags/tz.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/utils/autoreload.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/encoding.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/utils/regex_helper.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/utils/translation/trans_real.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "docs/conf.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "docs/lint.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "50c2b7c83661a61da48f78dd0130fc3cbf8ed39f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/gis_tests/geoapp/test_indexes.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "6fc8150005256db2052b01812d65dff737563a1b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/staticfiles/handlers.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/handlers/exception.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/asgi/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/asgi/urls.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/staticfiles_tests/test_handlers.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2a5da9d00555beef8e5f6307cfcbfc029d45491e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/management/commands/inspectdb.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/inspectdb/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/inspectdb/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d8cedcab5241725003eef059dd76c533f24c5430",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/management/commands/inspectdb.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/inspectdb/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "76e1bca1311ae7073a1fa4add6f9d19d709f0f09",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/db/backends/postgis/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/gis_tests/geoapp/test_indexes.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "cceb6969d4dd62a421c483eefb54cbc159afbded",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_filters/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "274df4df0bca7fcfb5c1c1d49567f770df147eeb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/pr_quality/check_pr.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/pr_quality/errors.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/pr_quality/tests/test_check_pr.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "537c6df3e641ebc21e9da76c86aea4d36e6a32e2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/core/management/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/management/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/management/commands/makemessages.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/management/commands/shell.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/management/commands/startapp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/management/commands/startproject.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_scripts/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/settings_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "cae38ec9b9bd394f630bdcbffa013c2761e831e9",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/view_tests/tests/test_debug.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "bf5e73c576c8c7d8b3ef1c03a22cf724dbb2f306",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/gis_tests/gdal_tests/test_raster.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "a486b48d4ea0d34babe58cae215b2123748aacbd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/sessions/backends/cached_db.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/cache/failing_cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/sessions_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "bd1cd8f0f8776fc35c6d2d600c75d1292037ab68",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/inspectdb/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2e48636c54910e435eb31e1b7d8a8089c84233ad",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/modeladmin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "260d136920acf27dbd3cae9bc80eba2a43b44bba",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5f90dc2468bc52373efe4b231c4eb383b3f1edd2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admindocs/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/flatpages/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/messages/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/redirects/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/sessions/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/sites/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/clickjacking.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/common.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/csp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/csrf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/gzip.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/locale.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/security.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/csrf_tests/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/test_middleware_mixin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/urlpatterns_reverse/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "bdbda29c3e126754c3ae04ceb5c5d35d49aae01c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/transaction.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/handlers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "65a9f14196c338d70889bd54753370606b3fb4eb",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/contrib/auth/password_validation.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/backends/base/creation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/utils/module_loading.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/auth_tests/test_validators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_module_loading.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f51347964a85bd4881caabf3c736b2c54d75262f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/admin_views/test_history_view.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "4106acd141b614ca708c3d932ec8795aae45f5e2",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/admin_views/test_skip_link_to_content.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "ecc619703ad22d7707c14c11b14e3bea9684b3b6",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "7b8504eaabea6c70195baa3c02155c24a6e270c6",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/migrations/autodetector.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_autodetector.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e28c2a9a011a8260e58fe4cf2b4b948116d4223f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_widgets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7ab2d803533dd3ffe310055414ad584cfbbf0bea",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/test/client.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/test_client/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5d489a52c3c604018c786f11d45453eb75fa24b3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/test/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/backends/base/test_base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_regress/test_state.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3a720d0d8bf2529253b98968f10ca73daf6d693c",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/core/validators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/validators/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "6ca2bbe2efce21010eff48f1f36a3f621d698ed8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/raster/source.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/gdal_tests/test_raster.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6e365f8d01f2ba0bbd90968d76a42600fb8bc4b1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f3954386beaabc59695629b81c2c2d0cf0fe522",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/aggregation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e26cdc556eabd8ea443401c38e8b2f9c7f7f046c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/fields.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/forms_tests/field_tests/test_jsonfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c087b7e8c169f009ff6113647685df4ea9fefe88",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "docs/_ext/djangodocs.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "7b09ce8280ef9cdf4922a83c4119c80b868e4304",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "tests/migrations/test_commands.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_deprecated_fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_executor.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_loader.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_multidb.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_optimizer.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/postgres_tests/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e78991410b78391bc07a4b5010b273dfec814ff6",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/auth/hashers.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "356e5b0f5ddb473eec3ed96d8ad9a37f3f8585eb",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/hashers.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/auth_tests/test_hashers.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d058058976496cedf3f36fa303a0327af38cdeaa",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/cache/backends/filebased.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "99672c672a1537aeb0d1fd5911ca6f04154cc091",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f7cb1e1bbbc613eaf74a09f5c6dcb24c1fbde21b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_inlines/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/delete_regress/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/force_insert_update/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/forms_tests/tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/model_formsets/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/multiple_database/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/order_with_respect_to/base_tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/sites_framework/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "93a1751f2fc0dfb81057ec3a7fb86778de1780fa",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "scripts/do_django_release.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "01c3cceca1ac80796e5448295e294cbc01948185",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "scripts/do_django_release.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "8013cf61c6a1aff9839af2953c5bdda804efdff4",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "67c407585ccdc01b76d78e33c082f23d46346747",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/serializers/xml_serializer.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/utils/xmlutils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/serializers/test_xml.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/syndication_tests/feeds.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/syndication_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/syndication_tests/urls.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "8acd000725838f73c5e6781114f11866f6674c46",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/cache/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "65acb3cc2e76c238f5aee38d22626d92171a2f7c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "420b4f5b0170d090d3b5b78b5c0d3986743e39db",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/aggregation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "56050acb96abc7ac2079d83ffdd232056732bb47",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/views/debug.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/tests/test_debug.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "61e078ecab9a9e8de9d283adf9fa554b6a145ce8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/checks/mail.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/check_framework/test_mail.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "99a14b6be85793f3371779cd9bf6fb9d9247f475",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/core/checks/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/checks/registry.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b461519bf5973d7fc149560d2f99acdba71a437d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/cache.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/utils/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "189c2d2ce58482db5c09d8b1e1464d1456dc9bab",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/serializers/jsonl.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/serializers/test_jsonl.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "77d0c9d549a8d95156c833eceb6275d9b7317d4e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ca5746b8680a5e7e14014d365c0610f825df1dae",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/async/test_async_queryset.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "07394506a7d78d3dbfea081669df6a5009053a86",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/field_defaults/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5c71977daddb117d0417f3c1bf591f1afb2626b3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/deprecation/test_middleware_mixin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/tests/test_debug.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f3e66a32a3bdbf3c362b70e06c16393639dd36f3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "14988f14d94f9ce617f967d26b8ed2946172a140",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "09434486302078c3649e034dfa74cf3f102db20b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/message.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b5b53afa29c53a79ae92ed5298144db0cab0ea3b",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/views/decorators/csp.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "f89101088a149d8c9eca4e4796723a3f0de5b129",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/auth/decorators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "d0378e181e828dce90d865f38b8f10f260d88de3",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "cd385e6b8c16b51f68c1f220ff09a4cfd679af0c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f1440a752ec034277ccdad914995c3f164308e41",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/staticfiles/storage.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/staticfiles_tests/project/documents/cached/module.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/staticfiles_tests/test_storage.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "14c66825e0088b7e08fe5d108fa293bd31722c39",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/management/commands/sendtestemail.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_sendtestemail.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e1df3950b2a3a852dfa9eb70738b7bac28cb0a0e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/contenttypes/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/generic_inline_admin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dc4e5461faa390991e6a0f6d3ca47690e8f5c4e1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/test/client.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_client/auth_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_client/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c6f81b383251dc9fd0918b4ba040c993444b931e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e8cff2921ba169d806a15de18304f431f12700f4",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/utils/html.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "a2f8a4a6f9ac094edde937e56a3ecbd112ee448c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_media.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "15bcbeeb95ca34385c119acea14df1f5e7274d45",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/signals/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f970a98e464320c09dde8d45009eadfb4d038a57",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/signing.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/json.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/transaction.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/crypto.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/log.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/deprecation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "17a56cd6e600cfb02972657e8958b5ee2e0f936e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "docs/_ext/djangodocs.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9b1db9cb2c38c75b8fb0fc64ba5f73a6012e5b2d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "docs/_ext/djangodocs.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "867c7c0451f2e67e715da5b55b5bf6696747fdc3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/cache/backends/db.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "46c5e76f0bcc76bfce19ad7ba07f716fc653a822",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/core/management/templates.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_scripts/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_scripts/urls.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "142b881cecaddc334cabec139e701c0e4b9798da",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "71af23d1f4678c4bf052e051d72e8928e1697de3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/widget_tests/test_widget.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "526b1b414d8e215bf627b5722df12a09346dbf6b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f2afdd0f6a872ccb48d7fbdaacce9b11216af52",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/sites_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "59a89d1008ab9220275fbdcff2a44d9bbd920032",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_views/test_multidb.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a7a57a21a8cf42ecc767c204f7939ad4419ae25f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/cache/backends/db.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "57c8c8b107248a3358dd26276ac497c577454011",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/checks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_inlines/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_inlines/models.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_inlines/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/modeladmin/test_checks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a2348c85fc6c20087935c74cd99340dd4ef2dcdc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/basic/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/composite_pk/models/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/composite_pk/models/tenant.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/composite_pk/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/inline_formsets/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/inline_formsets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8c2d3dca633629effad17ccc98730234f740d03f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4bbc27c8686f10f9556cef02dbfa9f5157fbcf56",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/base/operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/mysql/operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/oracle/operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/backends/postgresql/features.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/lookups.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/lookup/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b5d9dbdf2bba8df4c85cd0db308b3a467d763d02",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "3328078a01f5268f9b8659f56fd28c5a2ed083dc",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/conf/global_settings.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/signing.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/signed_cookies_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "170975c5bdc3fc69b15e46f50df7b48eb9e1115c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/db_functions/datetime/test_extract_trunc.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "42aa0b3364d312e7c6472258d8b0e9c0277fbf22",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/cache.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a2faa8e895926ac5d63f72879b5ccf671b5b4ba9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d618d7ae4fec727d5b582bd24f803c28d17bf7cd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "df887f50198593a0e5b4638bfddbbd43a30fd276",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/backends/smtp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "70d36515b9cc71700105a14b275583070d48b689",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/conf/global_settings.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/signing.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/http/request.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/signed_cookies_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "672cfaa53c72dd67fb54ecbdd904ea364d2951c4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/pr_quality/check_pr.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "scripts/pr_quality/errors.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "scripts/pr_quality/tests/test_check_pr.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "48e0a64e6491b464249086d6052a00c8d2be418e",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/contrib/auth/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "ba70e1bcdd8dc879c7d5fc7a3d12b5831eb08540",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/request.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/asgi/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9383fae0d55a553be3bda620db87fa9ee8a81478",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/utils/termcolors.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_scripts/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "22d25eff1510eb157be3ef02984869b1309ec15d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/urls/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/urlpatterns/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "804660d685a5abd49fc66ba20c98d1a523f28f9f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admindocs/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admindocs/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/urls/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_docs/test_views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/urlpatterns/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5890d443e6e1ea454f1e76cc7c9239c0b5ccb5be",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/messages/storage/cookie.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ea9742c6d02edf64fc0969f21506f2048c976051",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/serializers/json.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/serializers/test_json.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2c8c0ca0a0b73b167c29db506f810c318f915587",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/contrib/auth/management/commands/createsuperuser.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/models/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_management.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8f84f269353e242e72eea55aa58df92d87df0453",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "6e15ac8066312328de279e3e072667416c205bfc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/httpwrappers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7ae70e7504b98553ab3537be84f930ea7e28c3c9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/do_django_release.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "scripts/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7436661b9c7f7232cc416720825561b2fb0a6649",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/do_django_release.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9b95c676a1670917c508015ddbfbf3d6c82e3091",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/contenttypes_tests/test_views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/flatpages_tests/test_csrf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/flatpages_tests/test_forms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/flatpages_tests/test_middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/flatpages_tests/test_sitemaps.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/flatpages_tests/test_templatetags.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/flatpages_tests/test_views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/redirects_tests/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/view_tests/tests/test_defaults.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f57a90073920f1c34096d062e151a7bd79065f01",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a53e02af6d7a07d0367b534f7107a0e2a37e3d34",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "53645750412efa1e9013004040db328bd515e0f1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/responses/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "bc9bed573ce39c3b739a4a3b7848816d464b6bdc",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_media.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "e78a46a8fb291a11a31b6938b5089db1058f3925",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/auth/hashers.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/auth_tests/test_hashers.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0c0bda7f79a2de89a55cfcc8e60467d6588f406f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "2eb36e705c85e8e376691cdcff985b2bf731c486",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/__init__.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "docs/conf.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "403c9f7f086bbf02a21ea2b85af2174b77f7e0ab",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/gis/gdal/libgdal.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "20960df455fffd73d556a5ed92cdf6832c23e65f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/transaction.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/transactions/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3ca621a38642bfd8fc2bfd308f489cc2d9e76fb0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/admin/DateTimeShortcuts.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "js_tests/admin/DateTimeShortcuts.test.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_widgets/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9b4433948714d5c43bab96b08bb6618c22512000",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/middleware/test_csp.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/middleware/urls.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8fd29079ed1253f0cd88ccf330de30271a5d15e4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7c125f6a6660a70a0568448b2e40db273a456479",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3e4e0db66961a48a080ff3ff91f6c0d954261366",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/views/csrf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/views/debug.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/view_tests/tests/test_csrf.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fbe902d4a4b8b9dcb371509b25ba8feff3852e64",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "6bbe2656e1e89a03d1ae8f2cea7bdd2a027f0665",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/queries/test_qs_combinators.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "0e1d950fbb44878f6972a0e5730f69f98caf468e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/sql/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/queries/test_qs_combinators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "da6567da7ea0e844c9a880e02c7b34e1a184edf8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/views/generic/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/generic_views/test_base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "25cf1cbb1cb92c6c57b76cc43d697cfdc61f568f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/backends/smtp.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ed5486376989c08b34cc62e7c8ba4a07bd60047d",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "0f581cd29d42d1b5ed1dafb67794c2f3ce6705c9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/conf/global_settings.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/mail/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/console.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/filebased.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/locmem.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/backends/smtp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/core/mail/message.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/middleware/common.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/test/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/log.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/auth_tests/test_forms.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/auth_tests/test_models.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/auth_tests/test_views.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/logging_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/custombackend.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_deprecated.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_sendtestemail.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/project_template/test_settings.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/test_client/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/test_client/views.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/test_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/view_tests/tests/test_debug.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "05a5244b8924c47cc5b1332dd15aaa1be6abbe1e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/actions.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_changelist/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f30acb184f75fd9260cfd6ddc48a3bbbd49f9c1d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/checks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/decorators.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/templatetags/admin_modify.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/modeladmin/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "952f42e958e5887fb297ec4d5607ceec5e1bf20b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/serializers/xml_serializer.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "335c6d0129400eda792f3bec5c71bb28af5e5d37",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/httpwrappers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ed13a58bf63df94508c8a0fe779da0b6a2bc26bb",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/admin_scripts/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9f44c947c8841938266f9fd9358906ea8b517e4f",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/constraints/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "2314cdf1ff860058a6579bb9f9bac1253fc9ab43",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/queries/test_qs_combinators.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "9c655e98006dec4f4fd47a84c254f36404d631e4",
+  "class": "body",
+  "refined": "body",
+  "files": [
+   {
+    "path": "django/db/backends/oracle/features.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/sql/compiler.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "cb192dbb191525550f90d7cb9cff756f57e86aec",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "122f0b62a1effa558aad67a62e5b0d84a49cdc23",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/checks.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/modeladmin/test_checks.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/modeladmin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f386d8ec7cbf42b350f5958b552cd3492a493d5b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/aggregation_regress/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/defer/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/gis_tests/relatedapp/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/test_booleanfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_inheritance_regress/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/select_related_onetoone/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a1ead0a580bc69035b768e9fae7f92f7f0b7bf01",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5ef47fccfafcbf540f870c2ee86c122cfd43a89b",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/defer/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/defer_regress/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/gis_tests/relatedapp/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/m2m_intermediary/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/many_to_one/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/model_inheritance_regress/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/null_fk/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/proxy_models/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/select_related/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/select_related_regress/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "0c634de4e6950ec6fb83ab420b4af9c645b28acd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/views/main.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4d455ae2d7689ce066dfffef9fc29a6f6d3ed33e",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "9d4ee17b268d9621112a77f22d650e126537de16",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/admin/DateTimeShortcuts.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/static/admin/js/calendar.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "js_tests/admin/DateTimeShortcuts.test.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e7f539f813bd56a71ca3c1fbf379f47691002086",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/templatetags/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/library.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/inspect.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3e0190a4586e71c92ead3c01323bf0cb9fe1a03c",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "4ca85546a52227b9ef33d5ab328a2f00625a8483",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "62fa9b8976b9fd74440e9f97c0744feaf3165dc9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/checks/security/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/check_framework/test_security.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8096b5251090bf7539c59956e398b027c7525529",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_media.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "21c51c2623a966ba1ad8fd10e36bc8bbec93b70e",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/base/schema.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/backends/sqlite3/schema.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/migrations/test_operations.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "21dcd9a94fb3e9edeec883d12cd1dcac5e773abe",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/auth_tests/test_forms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/logging_tests/logconfig.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/logging_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/middleware/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a276941334624994928c0547eebff4595c5e5532",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/test_utils/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f25ad7c086eb694372a8ef08cb713556bcb366a2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/mail/backends/filebased.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "b1a9fe4360ad527f4c7bed90c7bf80278826e58d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/mail/custombackend.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c8fefebecaa58fe4258d573addefb3629bde3e4d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "22ce7cf4d53cbe3d1613270088ff938907248ac2",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/mail/test_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/mail/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "5686ce41958b21f0ae5bfa290e8d4420a6349c1b",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/forms/widgets.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/context_processors.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/defaulttags.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/csp.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_media.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f66c3b41f0fb0fb938d7b96e20a28dccdaa2ecd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_auth_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "1085e5e17b7403b15c4eff397f3c98c15660f46d",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/auth_tests/test_remote_user.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "75bb46cc454fdef0585f0a460f36f579b59f0356",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "scripts/pr_quality/check_pr.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "scripts/pr_quality/tests/test_check_pr.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "57b23d15259c32dba80bb093645242f1b3b25365",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/hashers.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/core/cache/backends/db.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/db/models/fields/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/http/multipartparser.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/file_uploads/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/test_binaryfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/urlpatterns/converters.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "c79bdfc1351ef2a2ad95df36241a74c736ef20a1",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/middleware/cache.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/cache/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "7f6e9b55130d5158804c0acbc0b24ccb7422ed82",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/sessions/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/sessions_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5a89e341bfc77dd67b7fd57b7091b6430558e1f4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/files/uploadhandler.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/asgi/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/requests_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "d75d57c2c06934a65feabd206129b9d1a230a1da",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/response.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/shortcuts.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/httpwrappers/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/shortcuts/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c9b65e278103efb49c5bde65662b7f9849e1e0e7",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0147222691db284f87c8c2a64ac6b1eded034c49",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_remote_user.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "f8c0a9321f07c4bbb338da59d57c38878c85d1f0",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/runtests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "0f4fff79d33b7cc84822e66bd1fc16caf8222e3a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/core/signing.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/crypto.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/signing/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_crypto.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "920b43eb5b40190bb2dbee00773e17307bc699d8",
+  "class": "interface",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/annotations/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/delete_regress/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "fba9413a326634606c54cd19ff3aefd8e50d60a9",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/admin/DateTimeShortcuts.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/static/admin/js/calendar.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "js_tests/admin/DateTimeShortcuts.test.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "50bbf71bbd51616e2ce48785336ca3746fbe5f24",
+  "class": "interface",
+  "refined": "body",
+  "files": [
+   {
+    "path": "tests/file_uploads/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "5dfb6586f7be213d68d9f82510028660cfaed916",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ac010061fd532a4f855c49298bc5096a9e0adcab",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/auth_tests/test_remote_user.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "5bd7a66c2c2c224c56ed1e92a3cb325f401c93ed",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "12dcba45cb0d3bcf735621c3b2175fdee08308d8",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/middleware.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/auth_tests/test_remote_user.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "9f790ef1a0f356cf6342b5d57bbaeac35aed0d9f",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/backends/postgresql/base.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/backends/postgresql/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "8c8b833d32c02d3ae6f43b04bb1e45968796b402",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/tasks/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/tasks/test_tasks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "3f912ee4189602b4df121c0dc0428673fda5c253",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/forms/fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/field_tests/test_filepathfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "60a9c70496e5d7b971928ce3da5b47c8836a4def",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/deprecation/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "61941b6fc172933f425e8ba76bab444ab9b313e4",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/admin/DateTimeShortcuts.js",
+    "lang": "javascript",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "js_tests/admin/DateTimeShortcuts.test.js",
+    "lang": "javascript",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "5b3cfce51770f46c6dc100e9be7f199a37176762",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/admin.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "f3ff680c768a313d34eb2e15eb7322edec60920c",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "django/contrib/gis/forms/widgets.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "5d911f2d2fecc703be91b2b9b28acc59d34b35f3",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/template/base.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/template_tests/syntax_tests/test_basic.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fb292a549371a7c011c25b1a10fe5d25c579814a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/query_utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/queries/test_q.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "32a3b4aa695e76ced1b2829b178e630b9ac62dce",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/utils/deprecation.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a49be25e6128a3272960ed4f6f6506d147596395",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/queries/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "c63591d4da533944af31ccb46a77eb221dbdba0a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/auth/backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/auth/handlers/modwsgi.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   }
+  ]
+ },
+ {
+  "commit": "526b548cfb9c8a02ea2b7ae064ef3b795305d51a",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/auth/backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/models/custom_user.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/auth_tests/test_auth_backends.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "ad073338d02fce884301d159f30eaf17c7f2d246",
+  "class": "layout",
+  "refined": "layout",
+  "files": [
+   {
+    "path": "tests/model_formsets/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/modeladmin/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   }
+  ]
+ },
+ {
+  "commit": "183e6505b64c140ad2ad64626c52bba88fc13edd",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "tests/admin_views/test_related_object_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "fa2a3de6ede10b005fc2c1d23f4cffb53eaec425",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/actions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "django/contrib/admin/checks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/utils.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/customadmin.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/urls.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/modeladmin/test_checks.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "a586f03f36f511064f171c0e30f4ca2ebfd60085",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/templatetags/admin_filters.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/template/defaultfilters.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_templatetags.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/template_tests/filter_tests/test_unordered_list.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "61a62be313e395ce1265132bfc99f51476fb3c95",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/db/models/constraints.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/query_utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/constraints/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "63c56cda133a85a158502891c40465bc0331d3d9",
+  "class": "structural",
+  "refined": "structural",
+  "files": [
+   {
+    "path": "django/conf/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/conf/global_settings.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/contrib/admin/options.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/__init__.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/fields/reverse_related.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/db/models/utils.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/forms/fields.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "django/forms/models.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_views/test_actions.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/test_related_object_lookups.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/admin_widgets/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/forms_tests/field_tests/test_typedchoicefield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_forms.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/tests/test_i18n.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/forms_tests/widget_tests/test_radioselect.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/test_booleanfield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_fields/tests.py",
+    "lang": "python",
+    "class": "body",
+    "refined": "body"
+   },
+   {
+    "path": "tests/model_forms/test_modelchoicefield.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_forms/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/model_formsets/tests.py",
+    "lang": "python",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/modeladmin/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "dc467fdc3b5744cec71fab876c23a14013e2510b",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/http/request.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "django/utils/http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "body"
+   },
+   {
+    "path": "tests/requests_tests/tests.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   },
+   {
+    "path": "tests/utils_tests/test_http.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ },
+ {
+  "commit": "e1bdebc84ee7cacd40b820e862fd504054619403",
+  "class": "interface",
+  "refined": "interface",
+  "files": [
+   {
+    "path": "django/contrib/admin/static/admin/js/admin/RelatedObjectLookups.js",
+    "lang": "javascript",
+    "class": "layout",
+    "refined": "layout"
+   },
+   {
+    "path": "tests/admin_views/test_related_object_lookups.py",
+    "lang": "python",
+    "class": "interface",
+    "refined": "interface"
+   }
+  ]
+ }
+]
