@@ -24,6 +24,7 @@ Date: 2026-10-25. Branch `rewrite/v2` at `80f40c2` (plus the uncommitted working
     Python-heavy stages are not distorted.
   - `cold.sh` and `warm.sh` drive it.
   - `par_parse.py`, `fts_probe.py` and `drift.py` are the experiments.
+  - `blobs.py` summarizes the §8 A/B.
 
 ## 1. Where a cold full rebuild spends its time (measured)
 
@@ -233,8 +234,9 @@ Next, in order of value to cost:
 1. **2-worker parse pool**, −11–13% on a cold build for +60 MB. Worth it for first
    index, useless for re-index.
 2. **Skip re-writing unchanged content-addressed source blobs in seal.** Hard-link
-   them from the previous generation (seal is 0.6–2.1 s, warm and cold). Not measured
-   in isolation.
+   them from the previous generation (seal is 0.6–2.1 s, warm and cold). Implemented
+   and measured in §8: seal −77–89% and warm total −7–13%. Cold builds are unchanged,
+   because there is no previous generation.
 3. **Copy-on-write graph delta** (5d), only after a stable relation identity is
    accepted as a format change. The FTS rebuild floor stays.
 
@@ -294,6 +296,74 @@ Concurrency and portability (**inferred** from the code):
     running.
 - `gc` and LadybugDB's thread pool behave the same on Linux, macOS and Windows. Two
   threads on a 1-CPU host are only time-sliced. Not run on the platforms CI.
+
+## 8. Implemented: hard-link unchanged source blobs in seal (measured)
+
+Date: 2026-10-26, against HEAD `b47be65`, which already includes §7.
+
+**Problem (measured, §1–§2).** `Store._seal` wrote every captured file's bytes to
+`source/<sha256 hex>` and fsynced each blob, on every generation. After a one-file
+edit, all but one blob are byte-identical to the current generation's. Seal cost
+0.7–2.7 s of a warm index.
+
+**Change** (`src/oxide/storage/store.py`, `_link` and `_seal`):
+
+- For each captured file, `_seal` first `os.link`s the current generation's blob of the
+  same digest into staging. It then reads the linked blob back and keeps it only if
+  its bytes equal the captured bytes.
+- A missing blob, a file system without hard links, or any `OSError` falls back to
+  writing, so behaviour is unchanged.
+- A mismatching (damaged) blob is unlinked, never overwritten, because the inode is
+  shared. Fresh bytes are then written. So a damaged retained source is never carried
+  into the next generation. `test_missing_retained_source_is_never_reported_unchanged`
+  tampers every blob, and still passes.
+- Only written blobs are fsynced. A linked blob's data was fsynced when its own
+  generation was sealed. The new directory entries are made durable by the existing
+  `fsync(source)` and `fsync(staging)`.
+- Content addressing makes this sound. A blob's name is its sha256, it is never
+  written in place, and every read (`View.source`) re-verifies the digest. Deleting
+  the previous generation drops one link; the new generation keeps the inode.
+- No format, schema, manifest, derivation or public-API change. Generations look
+  exactly as before.
+- `test_unchanged_sources_are_linked_never_rewritten` checks that after a one-file
+  edit, every unchanged blob keeps its inode and only the edited file's blob is new.
+  It fails without the change.
+
+**A/B (measured).** HEAD (`git archive HEAD src` first on `PYTHONPATH`) against the
+working tree. `scripts/warm.sh` ran with the same venv and caps, the 4 corpora of
+§1, 3 interleaved rounds. Medians, seconds (`scripts/blobs.py
+results/blobs-head.jsonl results/blobs-new.jsonl`):
+
+| warm (1 file edited) | total HEAD → new | seal HEAD → new | publish HEAD → new | peak RSS, MB |
+|---|---:|---:|---:|---:|
+| transformers | 29.52 → 27.58 (**−6.6%**) | 1.69 → 0.21 (−87%) | 16.63 → 14.99 | 1,191 → 1,206 |
+| vscode | 27.68 → 24.17 (**−12.7%**) | 2.73 → 0.42 (−85%) | 22.49 → 19.16 | 1,221 → 1,201 |
+| teleport | 6.45 → 5.85 (**−9.4%**) | 0.89 → 0.10 (−89%) | 5.11 → 4.51 | 394 → 396 |
+| nushell | 5.10 → 4.73 (**−7.2%**) | 0.70 → 0.16 (−77%) | 3.67 → 3.30 | 324 → 324 |
+
+- **Seal is no longer a warm-path cost.** What remains (0.1–0.4 s) is the edited
+  blob, `MANIFEST.json`, `facts.json`, the `graph.lbug` fsync and the links.
+- **The total gain is larger than the seal gain** on vscode and teleport (−3.5 s
+  total vs −2.3 s seal on vscode). That is **inferred** to be fsync and writeback
+  contention with the concurrent load, which leaves the host. It was not isolated.
+- **Cold builds are unchanged, as expected.** There is no current generation to
+  link from. Cold seal medians are within run noise: transformers 1.90 → 1.79 s,
+  nushell 0.70 → 0.71 s.
+- **Variance.** HEAD's warm seal on vscode ranged 0.65–2.95 s (fsync latency). The
+  new arm ranged 0.33–0.44 s. Absolute totals are about 1.5× §7's, because of host
+  state, on both arms alike.
+- **Equal output.** Across all 6 runs of both arms, each corpus gave one cold digest
+  and one warm digest (`scripts/digest.py`: manifest, facts, retained source names,
+  every table row, 300 BM25 result lists).
+- **Disk (inferred from the code, not measured).** While staging and the current
+  generation coexist, unchanged sources are stored once instead of twice. Peak disk
+  drops by the captured bytes of the unchanged files.
+
+**Portability (inferred from the code, not run off Linux).** `os.link` works on
+ext4, btrfs, APFS and NTFS. Where it fails (FAT, some network mounts), the
+`OSError` fallback writes the blob as before. Windows `_fsync` opens files for write,
+but linked blobs are no longer opened. Staging and generations share one directory,
+so a link never crosses devices.
 
 ## Negative results
 

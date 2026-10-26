@@ -18,6 +18,7 @@ import pytest
 from conftest import python, write
 
 import oxide
+from oxide.capture import digest
 from oxide.models import IncompatibleIndex, StoreCorrupt
 from oxide.storage.store import Store
 
@@ -172,6 +173,19 @@ def test_missing_retained_source_is_never_reported_unchanged(
         assert repo.index().status == "unchanged"
         assert repo.build_context("retry", 4096).used > 0
     assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
+
+
+def test_unchanged_sources_are_linked_never_rewritten(repo_copy: Path, private_data: Path) -> None:
+    oxide.index_repository(repo_copy)
+    before = {b.name: b.stat().st_ino for b in blobs(private_data)}
+    edited = next(p for p in sorted(repo_copy.rglob("*.py")) if p.stat().st_size)
+    old = edited.read_bytes()
+    edited.write_bytes(old + b"\n# edited\n")
+    assert oxide.index_repository(repo_copy).status == "built"
+    after = {b.name: b.stat().st_ino for b in blobs(private_data)}
+    gone = digest(old).removeprefix("sha256:")
+    assert set(after) - set(before) == {digest(edited.read_bytes()).removeprefix("sha256:")}
+    assert all(after[n] == ino for n, ino in before.items() if n != gone)
 
 
 # Crash injection: the child dies (os._exit, no cleanup) at one publication step.

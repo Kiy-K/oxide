@@ -49,6 +49,23 @@ from oxide.storage.ladybug import (
 )
 
 
+def _link(retained: Path, blob: Path, data: bytes) -> bool:
+    """Hard-links the current generation's blob of ``data`` into staging, if it holds
+    exactly these bytes. A damaged blob is never carried over; a missing one, or a file
+    system without hard links, falls back to writing."""
+    try:
+        os.link(retained, blob)
+    except OSError:
+        return False
+    try:
+        if blob.read_bytes() == data:
+            return True
+    except OSError:
+        pass
+    blob.unlink()  # unlink, never overwrite: the inode is shared
+    return False
+
+
 class Store:
     """The single owner of one repository's store in this process.
 
@@ -246,14 +263,20 @@ class Store:
         """Retains the captured bytes and the manifest, then makes the staging durable."""
         source = staging / "source"
         source.mkdir()
+        retained = self.generations / self.current / "source" if self.current else None
+        written: list[Path] = []
         for f in capture.files:
-            blob = source / f.digest.removeprefix("sha256:")
-            if not blob.exists():
-                blob.write_bytes(f.data)
+            name = f.digest.removeprefix("sha256:")
+            blob = source / name
+            if blob.exists() or (retained and _link(retained / name, blob, f.data)):
+                continue
+            blob.write_bytes(f.data)
+            written.append(blob)
         (staging / "MANIFEST.json").write_text(
             json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
         )
-        for path in [*source.iterdir(), *staging.iterdir()]:
+        # A linked blob's bytes were made durable when its generation was sealed.
+        for path in [*written, *staging.iterdir()]:
             if path.is_file():
                 _fsync(path)
         _fsync(source)

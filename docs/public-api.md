@@ -299,8 +299,10 @@ Damage is classified like this:
   characters (escaped in the two literal paths, `COPY` and `LOAD EXTENSION`).
   Paths that are not valid UTF-8 are `invalid_path`.
 - Indexing reuses parse facts of unchanged bytes, but resolution and publication
-  (the graph, FTS index and retained source) are rebuilt per change
-  (`docs/phase-6/incremental-indexing/`). Capture holds every captured file in
+  (the graph and FTS index) are rebuilt per change
+  (`docs/phase-6/incremental-indexing/`). Retained source blobs the current
+  generation already holds byte for byte are hard-linked into the new one instead of
+  rewritten (`docs/phase-6/indexing-throughput/` § 8). Capture holds every captured file in
   memory: at most 1 GiB in scope, 1 MiB per file, and peak RSS was about 1.0×
   the captured bytes plus ~30 MiB for capture alone. Derivation adds per-entity
   memory: 239 MiB peak for a 14 MiB stdlib. Measurements are in
