@@ -311,8 +311,9 @@ class Store:
         }
         size = sum((staging / f"{table}.csv").stat().st_size for table in tables)
         pool = load_pool(size)
-        # The staging load alone gets a second thread: FTS indexing and COPY use it (output
-        # unchanged, docs/phase-6/indexing-throughput); read views keep one.
+        # The staging load alone gets a second thread for COPY (rows unchanged); read views
+        # keep one. FTS indexing does not: on 2 threads its BM25 scores drift by one ULP in
+        # ~10% of builds (docs/phase-6/indexing-throughput § 9).
         db = ladybug.Database(str(staging / "graph.lbug"), buffer_pool_size=pool, max_num_threads=2)
         conn = ladybug.Connection(db)
         try:
@@ -339,6 +340,7 @@ class Store:
                 # COPY can drop rows whose endpoints are missing; never publish that.
                 raise StoreCorrupt(f"read back {read}, wrote {written}")
             if lexical:
+                conn.set_max_threads_for_exec(1)
                 _rows(conn, f"LOAD EXTENSION {_literal(fts_location())}")
                 _rows(
                     conn,

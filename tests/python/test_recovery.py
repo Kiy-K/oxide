@@ -194,7 +194,11 @@ CRASH = textwrap.dedent(
     import os, sys, oxide
     import oxide.storage.store as storage
     root, data, step = sys.argv[1], sys.argv[2], sys.argv[3]
-    real_rename, real_write = os.rename, storage._write_atomic
+    real_rename, real_write, real_fsync = os.rename, storage._write_atomic, storage._fsync
+    def fsync(path):
+        if step == "in-seal" and path.name == "source":  # blobs linked, not yet published
+            os._exit(9)
+        real_fsync(path)
     def rename(src, dst):
         if step == "between-renames" and str(src).endswith(".staging"):
             os._exit(9)
@@ -207,6 +211,7 @@ CRASH = textwrap.dedent(
             os._exit(9)
     storage.os.rename = rename
     storage._write_atomic = write_atomic
+    storage._fsync = fsync
     with oxide.open_repository(root, data_dir=data) as repo:
         repo.index()
     sys.exit(3)
@@ -259,6 +264,41 @@ def test_a_crash_after_current_moves_serves_the_new_generation(
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
         assert repo.index().status == "unchanged"
+
+
+def test_a_crash_after_linking_blobs_leaves_the_current_generation_whole(
+    repo_copy: Path, private_data: Path, fts: Path
+) -> None:
+    first = oxide.index_repository(repo_copy)
+    before = {b.name: b.read_bytes() for b in blobs(private_data)}
+    write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+    crash(repo_copy, private_data, "in-seal")
+    with oxide.open_repository(repo_copy) as repo:
+        assert repo.snapshot == first.snapshot
+        assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
+        assert {b.name: b.read_bytes() for b in blobs(private_data)} == before
+        assert repo.build_context("retry", 4096).used > 0
+        assert repo.index().status == "built"
+        assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
+
+
+def test_without_hard_links_every_blob_is_written(
+    repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """FAT, some network mounts and sandboxes refuse links: the seal writes instead."""
+    oxide.index_repository(repo_copy)
+    before = {b.name: b.stat().st_ino for b in blobs(private_data)}
+
+    def refuse(*args: object, **kwargs: object) -> None:
+        raise PermissionError(1, "Operation not permitted")
+
+    monkeypatch.setattr(os, "link", refuse)
+    write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+    with oxide.open_repository(repo_copy) as repo:
+        assert repo.index().status == "built"
+        after = {b.name: b.stat().st_ino for b in blobs(private_data)}
+        assert set(before) < set(after) and not set(before.values()) & set(after.values())
+        assert repo.index().status == "unchanged"  # every retained source verifies
 
 
 @pytest.mark.parametrize("fails", [False, True], ids=["published", "failed"])

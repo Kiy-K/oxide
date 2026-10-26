@@ -24,7 +24,7 @@ Date: 2026-10-25. Branch `rewrite/v2` at `80f40c2` (plus the uncommitted working
     Python-heavy stages are not distorted.
   - `cold.sh` and `warm.sh` drive it.
   - `par_parse.py`, `fts_probe.py` and `drift.py` are the experiments.
-  - `blobs.py` summarizes the §8 A/B.
+  - `blobs.py` summarizes the §8 and §9 A/Bs; `fts_threads.py` is the §9a probe.
 
 ## 1. Where a cold full rebuild spends its time (measured)
 
@@ -120,6 +120,8 @@ Every run in this section kept the lexical output identical. The check is a dige
 - **2 DB threads.** The staging `Database` gets `max_num_threads=2` instead of 1;
   `COPY … parallel=false` is kept.
   - `CREATE_FTS_INDEX` drops 3.15 → 2.35 s (transformers) and 4.15 → 3.00 s (vscode).
+    **Withdrawn in §9:** on 2 threads its BM25 scores drift by one ULP in about 10% of
+    builds, so the FTS build is back on one thread.
   - COPY Rel drops by about 20%.
   - RSS rises by 8–12 MB.
   - ADR-0002 requires `max_num_threads` to be set explicitly, not set to 1.
@@ -249,7 +251,8 @@ The first optimization was accepted and implemented as two minimal changes:
     publish.
   - A `finally` re-enables GC only if it was enabled before.
   - `test_index_restores_the_callers_gc_state` covers GC on/off × published/failed.
-- **Staging threads** (`src/oxide/storage/store.py`, `_load`): `max_num_threads=2` on
+- **Staging threads** (`src/oxide/storage/store.py`, `_load`; since §9 COPY only, not the
+  FTS build): `max_num_threads=2` on
   the staging `Database` only. Read views stay at 1.
 - No flag, version, schema or baseline change.
 
@@ -271,7 +274,7 @@ working tree. Each run used the same venv and caps, interleaved per corpus
   same direction:
   - cold −10 to −14%, warm −10 to −17%;
   - peak RSS up to +27 MB cold and +50 MB warm (≤ +4%).
-- **Equal output.** `scripts/digest.py` masks the store's random repository id, which
+- **Equal output (corrected in §9).** `scripts/digest.py` masks the store's random repository id, which
   is the repository entity's name and is in the manifest. On every corpus, the 2 HEAD
   and 2 new builds gave a single digest for cold and a single digest for warm. The
   digest covers:
@@ -365,10 +368,117 @@ ext4, btrfs, APFS and NTFS. Where it fails (FAT, some network mounts), the
 but linked blobs are no longer opened. Staging and generations share one directory,
 so a link never crosses devices.
 
+## 9. Combined validation against the pre-optimization tree (measured)
+
+Date: 2026-10-26. This compares clean exports, not the working tree: `git archive 80f40c2
+src` (before §7 and §8) against `git archive abcc202 src` (HEAD: §7 + §8). It then checks
+the hard-link fallback on a real file system without links, and publication integrity.
+The digest check found a determinism defect in §7, which is fixed here and measured again.
+
+### 9a. A determinism defect in the 2-thread FTS build (measured), and the fix
+
+- **Finding.** In the first combined A/B (`results/combined-{base,head}.jsonl`), one of 24
+  warm HEAD builds (teleport, round 3) gave a different `lexical` digest. Every table row,
+  the manifest, the facts and the retained sources still matched.
+- **Isolated.** `scripts/fts_threads.py` copies one teleport generation and repeats only
+  `DROP_FTS_INDEX` + `CREATE_FTS_INDEX`, with exactly `_load`'s statement. Then it records
+  the exact `(key, score)` lists of `digest.py`'s 300 queries.
+  `results/fts-threads-teleport.jsonl`, 30 builds per setting:
+
+  | database threads : FTS exec threads | distinct result digests | median `CREATE_FTS_INDEX` |
+  |---|---|---:|
+  | 1 : 1 (before §7) | **1** (30/30) | 0.917 s |
+  | 2 : 2 (§7, HEAD `abcc202`) | **2** (27 + 3) | 0.772 s |
+  | 2 : 1 (this fix) | **1** (30/30) | 0.954 s |
+
+- **Size of the drift.** In a separate 30-build run, the same query differed in 5 of 30
+  builds, on one hit. The score changed 11.502267187117486 → 11.502267187117488: one ULP,
+  relative 1.5e-16. That fits a parallel floating-point reduction of a corpus statistic
+  (**inferred**). No ranking changed in these samples.
+- **Why it matters anyway (inferred from the code).** `View.lexical` orders by
+  `score DESC, key` and cuts at `LIMIT`. When two entities score exactly the same, a
+  one-ULP wobble on one of them reorders them and can move the cut. That changes routed
+  context. It breaks SPEC principle 6 (source-derived state is reproducible) and CORE-004
+  (stable order). §4 and §7 compared only 2–3 builds per arm, too few to see a ~10% event.
+- **Fix** (`Store._load`). The connection calls `set_max_threads_for_exec(1)` before
+  `LOAD EXTENSION` / `CREATE_FTS_INDEX`. The staging database keeps 2 threads, so COPY keeps
+  its gain. Read views were already on one thread. This gives back the FTS share of §7
+  (§4: about 0.8 s on transformers, 1.15 s on vscode). No format or version change: the
+  output equals the pre-§7 output (9b).
+
+### 9b. Combined A/B, pre-optimization vs HEAD + fix (measured)
+
+`scripts/warm.sh`, same venv and caps, 4 corpora, 3 interleaved rounds. Medians, seconds
+(`scripts/blobs.py results/final-base.jsonl results/final-fixed.jsonl`). The host stayed in
+one state for all 24 runs; absolute times match §7's:
+
+| | cold `80f40c2` → fixed | warm (1 file edited) `80f40c2` → fixed | warm seal | peak RSS warm, MB |
+|---|---:|---:|---:|---:|
+| transformers | 27.41 → 25.38 (**−7.4%**) | 19.48 → 17.08 (**−12.3%**) | 1.19 → 0.15 | 1,184 → 1,189 |
+| vscode | 27.27 → 25.22 (**−7.5%**) | 19.27 → 15.09 (**−21.7%**) | 1.93 → 0.18 | 1,201 → 1,204 |
+| teleport | 6.80 → 5.95 (**−12.5%**) | 4.81 → 3.77 (**−21.7%**) | 0.65 → 0.08 | 380 → 399 |
+| nushell | 5.04 → 4.56 (**−9.5%**) | 3.62 → 2.81 (**−22.4%**) | 0.55 → 0.07 | 313 → 328 |
+
+- **Equal output.** For each corpus, all 6 builds of both arms gave one cold digest and one
+  warm digest. Before the fix, HEAD did not (9a).
+- **Cold gains** now come from GC-off and the COPY thread only. They are a few points under
+  §7's −8 to −13%, because the FTS build no longer gets the second thread. The cold seal
+  is noisy: vscode ran 0.52–1.94 s on base and 1.70–2.49 s fixed. A cold build has nothing
+  to link, so that difference is fsync latency, not a change.
+- **Warm gains** stack. GC-off, the COPY thread (§7) and the linked blobs (§8) give
+  −12 to −22%, against −10 to −22% for §7 alone with its FTS thread.
+- **Peak RSS** is within +5% (≤ +19 MB).
+- **Gates.** `mise run verify` passes (391 tests). `mise run contextbench-ts` passes 17/17.
+  Both ran under the caps.
+- **An earlier run** (`results/combined-*.jsonl`, unfixed HEAD) showed the same direction:
+  cold −9 to −12%, warm −14 to −27%. One of its HEAD rounds was ~2× faster across all
+  corpora (host state), so only the final run is used for the table.
+
+### 9c. Hard-link fallback on a real file system without links (measured)
+
+- **Setup.** A 256 MB vfat image, loop-mounted through udisks, holds `OXIDE_DATA_DIR`.
+  `os.link` there raises `PermissionError` (`EPERM`).
+- **Run.** HEAD `abcc202` indexed nushell cold, then once more after a one-file edit, then
+  once more (`unchanged`). The same steps ran with the data directory on btrfs.
+- **Result** (`results/fat-fallback.json`). Every component of the `digest.py` output is
+  equal: manifest, facts, retained source names, every table row and the BM25 lists. The
+  third index reported `unchanged`, so every retained source verified.
+- **Cost.** vfat on a loop device took 130 s per build, against 4.5–7 s on btrfs. That
+  is the file system, not OXIDE. It is not a supported configuration for speed.
+- **Test.** `test_without_hard_links_every_blob_is_written` makes `os.link` raise. It then
+  checks that a re-index writes every blob, that no inode is shared with the previous
+  generation, and that the next index is `unchanged`. It runs on every CI platform.
+- **Other platforms (inferred, not run).** macOS (APFS, HFS+) and Windows (NTFS) support
+  file hard links. FAT and exFAT drives and some network or sandboxed mounts do not. There,
+  `os.link` raises `OSError` and the tested fallback writes the blob. Staging and
+  generations share one directory, so a link never crosses devices. On Windows `_fsync`
+  opens files for write, but linked blobs are no longer fsynced. Deleting the previous
+  generation removes one link of each shared file, and no file is open at that point. This
+  path has not run on the macOS and Windows CI jobs: nothing is pushed.
+
+### 9d. Publication integrity with linked blobs (measured by tests)
+
+| property | evidence |
+|---|---|
+| unchanged blobs are linked, never rewritten; only edited content is new | `test_unchanged_sources_are_linked_never_rewritten` |
+| a damaged or missing current blob is never carried over | `test_missing_retained_source_is_never_reported_unchanged` (tampers all blobs, deletes one) |
+| a crash after linking, before publication, leaves the current generation whole: same snapshot, byte-identical blobs, one generation after open, context still builds, next index publishes | `test_a_crash_after_linking_blobs_leaves_the_current_generation_whole` (new crash step `in-seal`: `os._exit` at the `source/` fsync) |
+| a same-name rebuild that links from the generation it replaces, and a crash between its renames, are undone on open | `test_a_crash_between_the_rebuild_renames_is_undone_on_open` |
+| without hard links, every blob is written and nothing is shared | `test_without_hard_links_every_blob_is_written`, 9c |
+| incremental equals full rebuild over every row, the manifest, the facts and BM25 lists | 9b digests, §8 digests, `tests/python/test_incremental.py` |
+
+Why a shared inode is safe (**inferred from the code**):
+- Blobs are named by their sha256 and never opened for writing after creation.
+- `_link` unlinks a mismatching link instead of writing through it.
+- `View.source` re-verifies the digest on every read.
+- A failed or crashed staging is removed with `rmtree`, which drops only its own links.
+
 ## Negative results
 
 - **4 parse workers** under a 200% quota are slower than 2.
 - **In-place FTS update** is not exact at 14k rows (5c), even though it was exact at
   1.3k rows. A small test would have passed wrongly.
+- **2 threads for `CREATE_FTS_INDEX`** (§7) are not deterministic: one-ULP BM25 drift in
+  about 10% of builds (§9a). 2–3 equal digests per arm could not show it; 30 builds did.
 - **Per-file invalidation.** Deletes reach 1–21 other files, and the resolvers' scope
   is repository-wide. No safe per-file dependency rule was found.
