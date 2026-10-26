@@ -15,6 +15,7 @@ thread-safe.
 
 from __future__ import annotations
 
+import gc
 import os
 import time
 from collections.abc import Callable, Iterable, Mapping
@@ -175,13 +176,24 @@ class Repository:
                 f"deriving {len(after)} files: parsing {len(sources) - hits} source files, "
                 f"reusing {hits}"
             )
-            derived = derive(snapshot, store.repo_id, cached)
-            reused, parsed = derived.reused, len(sources) - derived.reused
-            if reused < hits:
-                report(f"{hits - reused} cached parse facts were unusable and parsed again")
-            validate(derived)
-            report(f"publishing {len(derived.entities)} entities, {len(derived.edges)} relations")
-            store.publish(snapshot, derived, parts, lexical_unavailable)
+            # A build allocates millions of objects that hold no cycles; the cyclic GC only
+            # re-scans them (~8% of a build, docs/phase-6/indexing-throughput). The switch
+            # is process-global, so the caller's state is restored on every exit.
+            enabled = gc.isenabled()
+            gc.disable()
+            try:
+                derived = derive(snapshot, store.repo_id, cached)
+                reused, parsed = derived.reused, len(sources) - derived.reused
+                if reused < hits:
+                    report(f"{hits - reused} cached parse facts were unusable and parsed again")
+                validate(derived)
+                report(
+                    f"publishing {len(derived.entities)} entities, {len(derived.edges)} relations"
+                )
+                store.publish(snapshot, derived, parts, lexical_unavailable)
+            finally:
+                if enabled:
+                    gc.enable()
         view = store.view()
         files = view.files.values()
         return IndexReport(

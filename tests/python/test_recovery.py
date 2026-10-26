@@ -6,6 +6,7 @@ private data locations; only the store under ``tmp_path`` is ever damaged.
 
 from __future__ import annotations
 
+import gc
 import json
 import os
 import textwrap
@@ -18,6 +19,7 @@ from conftest import python, write
 
 import oxide
 from oxide.models import IncompatibleIndex, StoreCorrupt
+from oxide.storage.store import Store
 
 
 def store_dir(data: Path) -> Path:
@@ -243,3 +245,31 @@ def test_a_crash_after_current_moves_serves_the_new_generation(
         assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None
         assert len(list((store_dir(private_data) / "generations").iterdir())) == 1
         assert repo.index().status == "unchanged"
+
+
+@pytest.mark.parametrize("fails", [False, True], ids=["published", "failed"])
+@pytest.mark.parametrize("enabled", [True, False], ids=["gc-on", "gc-off"])
+def test_index_restores_the_callers_gc_state(
+    repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch, enabled: bool, fails: bool
+) -> None:
+    seen: list[bool] = []
+    publish = Store.publish
+
+    def spy(self: Store, *args: Any) -> None:
+        seen.append(gc.isenabled())
+        if fails:
+            raise OSError("disk full")
+        publish(self, *args)
+
+    monkeypatch.setattr(Store, "publish", spy)
+    (gc.enable if enabled else gc.disable)()
+    try:
+        with oxide.open_repository(repo_copy) as repo:
+            if fails:
+                with pytest.raises(OSError, match="disk full"):
+                    repo.index()
+            else:
+                assert repo.index().status == "built"
+            assert seen == [False] and gc.isenabled() is enabled
+    finally:
+        gc.enable()

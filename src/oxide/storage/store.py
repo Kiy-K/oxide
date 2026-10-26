@@ -288,7 +288,9 @@ class Store:
         }
         size = sum((staging / f"{table}.csv").stat().st_size for table in tables)
         pool = load_pool(size)
-        db = ladybug.Database(str(staging / "graph.lbug"), buffer_pool_size=pool, max_num_threads=1)
+        # The staging load alone gets a second thread: FTS indexing and COPY use it (output
+        # unchanged, docs/phase-6/indexing-throughput); read views keep one.
+        db = ladybug.Database(str(staging / "graph.lbug"), buffer_pool_size=pool, max_num_threads=2)
         conn = ladybug.Connection(db)
         try:
             if db.get_storage_version() != STORAGE_FORMAT:
