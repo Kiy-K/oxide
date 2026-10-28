@@ -313,8 +313,15 @@ class Store:
         pool = load_pool(size)
         # The staging load alone gets a second thread for COPY (rows unchanged); read views
         # keep one. FTS indexing does not: on 2 threads its BM25 scores drift by one ULP in
-        # ~10% of builds (docs/phase-6/indexing-throughput § 9).
-        db = ladybug.Database(str(staging / "graph.lbug"), buffer_pool_size=pool, max_num_threads=2)
+        # ~10% of builds (docs/phase-6/indexing-throughput § 9). Only the final CHECKPOINT
+        # writes pages: an auto-checkpoint inside CREATE_FTS_INDEX would leave its temporary
+        # tables as dead pages in the file (docs/phase-6/fts-footprint).
+        db = ladybug.Database(
+            str(staging / "graph.lbug"),
+            buffer_pool_size=pool,
+            max_num_threads=2,
+            auto_checkpoint=False,
+        )
         conn = ladybug.Connection(db)
         try:
             if db.get_storage_version() != STORAGE_FORMAT:

@@ -415,11 +415,18 @@ class View:
         # OXIDE terms reach here, and they can never close the quote.
         if not _TERMS_TEXT.fullmatch(text):
             raise ValueError(f"lexical query must be OXIDE terms, got {text!r}")
-        rows = self._query(
+        statement = (
             f"CALL QUERY_FTS_INDEX('Entity', 'lexical', '{text}', conjunctive := false, "
-            "K := 1.2, B := 0.75) RETURN node.key, score ORDER BY score DESC, node.key "
-            f"LIMIT {limit + 1}",
+            "K := 1.2, B := 0.75{top}) RETURN node.key, score ORDER BY score DESC, node.key "
+            "LIMIT {n}"
         )
+        # `top` spares sorting every match by key (docs/phase-6/fts-footprint § 3) but cuts
+        # ties arbitrarily: exact unless its last score reaches the limit-th; then rerun.
+        wide = 10 * (limit + 1)
+        rows = self._query(statement.format(top=f", top := {wide}", n=wide))
+        if len(rows) == wide and rows[-1][1] >= rows[limit - 1][1]:
+            rows = self._query(statement.format(top="", n=limit + 1))
+        rows = rows[: limit + 1]
         for key, score in rows:
             if not (isinstance(score, float) and math.isfinite(score) and score > 0):
                 raise StoreCorrupt(f"invalid lexical score {score!r} for {key}")

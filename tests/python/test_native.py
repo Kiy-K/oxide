@@ -58,6 +58,18 @@ def test_the_fts_literal_only_ever_holds_oxide_terms(fts: Path) -> None:
                 view.lexical(text, 3)
 
 
+def test_bounded_lexical_hits_are_the_prefix_of_the_unbounded_ranking(fts: Path) -> None:
+    # Small limits make `top`'s cut land inside score ties, so both paths of `lexical` run.
+    with oxide.open_repository(FIXTURE) as repo:
+        repo.index()
+        view = repo._view()
+        for text in ("retry", "token", "cache", "auth service", "retry policy token test"):
+            everything, more = view.lexical(text, 10_000)
+            assert not more
+            for limit in range(len(everything) + 1):
+                assert view.lexical(text, limit) == (everything[:limit], len(everything) > limit)
+
+
 @pytest.mark.skipif(sys.platform == "win32", reason="backslash is a path separator")
 def test_literals_escape_quotes_and_backslashes() -> None:
     assert _literal(Path("/a/o'brien\\x")) == "'/a/o\\'brien\\\\x'"
