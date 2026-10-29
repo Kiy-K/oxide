@@ -1,0 +1,45 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M63P9JRQHZZM9TDHZMN99QGP",
+  "strategy": "manual-commit",
+  "branch": "rewrite/v2",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "docs/phase-6/fts-footprint/README.md",
+    "docs/phase-6/fts-footprint/scripts/lexical_order.py",
+    "docs/phase-6/fts-footprint/scripts/stages.py",
+    "src/oxide/core/retrieval.py",
+    "src/oxide/storage/store.py",
+    "tests/python/test_recovery.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 195000,
+    "cache_read_tokens": 7731545,
+    "output_tokens": 21413,
+    "api_call_count": 47
+  },
+  "redaction": {
+    "replacements": 43,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 43,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
