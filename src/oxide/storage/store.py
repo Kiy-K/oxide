@@ -10,6 +10,7 @@ import secrets
 import shutil
 import sys
 import weakref
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
@@ -217,7 +218,12 @@ class Store:
         shutil.rmtree(staging, ignore_errors=True)
         staging.mkdir()
         try:
-            rows = self._load(staging, derived, lexical_unavailable is None)
+            # LadybugDB releases the GIL and builds the FTS index on one thread, so the
+            # source blobs are written meanwhile (docs/phase-6/fts-footprint § 4).
+            with ThreadPoolExecutor(1) as pool:
+                retaining = pool.submit(self._retain, staging, capture)
+                rows = self._load(staging, derived, lexical_unavailable is None)
+                retaining.result()
             facts = json.dumps(derived.facts, separators=(",", ":")).encode()
             (staging / "facts.json").write_bytes(facts)
             manifest = {
@@ -238,7 +244,7 @@ class Store:
                 "rows": rows,
                 "facts": {"format": FACTS_FORMAT, "digest": digest(facts)},
             }
-            self._seal(staging, capture, manifest)
+            self._seal(staging, manifest)
             target = self.generations / name
             if target.exists():
                 # The unreadable generation this rebuild replaces. A crash between the two
@@ -259,27 +265,28 @@ class Store:
         for stale in {previous, f"{name}.replaced"} - {name, None}:
             shutil.rmtree(self.generations / str(stale), ignore_errors=True)
 
-    def _seal(self, staging: Path, capture: Capture, manifest: dict[str, Any]) -> None:
-        """Retains the captured bytes and the manifest, then makes the staging durable."""
+    def _retain(self, staging: Path, capture: Capture) -> None:
+        """Makes the captured bytes durable in the staging's ``source`` directory."""
         source = staging / "source"
         source.mkdir()
         retained = self.generations / self.current / "source" if self.current else None
-        written: list[Path] = []
         for f in capture.files:
             name = f.digest.removeprefix("sha256:")
             blob = source / name
             if blob.exists() or (retained and _link(retained / name, blob, f.data)):
-                continue
+                continue  # a linked blob was made durable when its generation was sealed
             blob.write_bytes(f.data)
-            written.append(blob)
+            _fsync(blob)
+        _fsync(source)
+
+    def _seal(self, staging: Path, manifest: dict[str, Any]) -> None:
+        """Writes the manifest, then makes the staging durable."""
         (staging / "MANIFEST.json").write_text(
             json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
         )
-        # A linked blob's bytes were made durable when its generation was sealed.
-        for path in [*written, *staging.iterdir()]:
+        for path in staging.iterdir():
             if path.is_file():
                 _fsync(path)
-        _fsync(source)
         _fsync(staging)
 
     def _load(self, staging: Path, derived: Derived, lexical: bool) -> dict[str, int]:

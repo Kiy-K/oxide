@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from oxide.models import ChannelStatus, Entity, HintIssue, HintKind, Seed
@@ -37,11 +38,17 @@ def terms(text: str) -> list[str]:
     """
     out: list[str] = []
     for word in _WORD.findall(text):
-        parts = [p.lower() for p in _PART.findall(word)]
-        out.extend(p for p in parts if len(p) > 1)
-        if len(parts) > 1:
-            out.append("".join(parts))
+        out.extend(_word_terms(word))
     return out
+
+
+# Words repeat across names, signatures and paths: caching them halves `document`'s cost
+# on large repositories (docs/phase-6/fts-footprint § 4).
+@lru_cache(maxsize=1 << 16)
+def _word_terms(word: str) -> tuple[str, ...]:
+    parts = [p.lower() for p in _PART.findall(word)]
+    joined = ("".join(parts),) if len(parts) > 1 else ()
+    return (*(p for p in parts if len(p) > 1), *joined)
 
 
 def document(entity: Entity) -> str:

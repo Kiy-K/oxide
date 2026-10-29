@@ -6,7 +6,7 @@ Dumps the generation's four tables to CSV in the product's format, rebuilds them
 ``Store._load``'s statements, and after each stage records the file size and the pages
 STORAGE_INFO attributes to live columns and indexes. The difference is space no table
 owns. ``noauto`` opens the database with ``auto_checkpoint=False``, so only the explicit
-CHECKPOINTs write pages. ``sorted`` writes Entity rows in key order (README § 4).
+CHECKPOINTs write pages. ``sorted`` writes Entity rows in key order (README § 3).
 """
 
 from __future__ import annotations

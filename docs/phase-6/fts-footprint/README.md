@@ -147,18 +147,70 @@ store. HEAD's `src` vs the working tree, 3 interleaved rounds, medians.
 - The median query moves less (−5..+7%) than the tail. `top` pays off on the queries
   that match many documents.
 
-## 4. Decision
+## 4. Indexing time: overlap the blob writes, cache word terms (measured)
 
-- **ACCEPT, implemented (uncommitted):** `auto_checkpoint=False` on the staging
+The FTS build has to stay on one thread: on two, BM25 scores drift by one ULP. Neither
+of its knobs is a lever:
+- **A CHECKPOINT before `CREATE_FTS_INDEX`** only moves time. On vscode, 3 builds each,
+  the build takes 13.1–13.3 s either way, and the file is the same size.
+- **The buffer pool.** ×2 changes nothing (FTS 6.73–6.82 s), and ×0.5 fails.
+
+Two output-identical changes take their time back elsewhere.
+
+- **Overlap.** LadybugDB releases the GIL during the build. A Python loop slowed only
+  0.122 → 0.150 s while it ran, and the build uses one of the two allowed cores.
+  `Store._retain` therefore writes and fsyncs the source blobs on a second thread
+  while `_load` runs. `_seal` keeps the manifest and the final fsyncs, and all of it
+  still happens before the rename.
+  - `test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_generation`
+    makes one side fail while the other runs. The other side finishes, the staging is
+    removed, and the previous generation keeps serving with its blobs unchanged.
+- **Word-term cache.** `terms` caches each word's split (`lru_cache`, 65,536 entries).
+  Words repeat across names, signatures and paths. On vscode's 81,832 entities, a
+  benchmark of `document` went from 1.62 s to 0.75 s, with identical output.
+
+`ab.sh`: the committed state (`93e4dca`) vs the working tree, with rounds interleaved
+and each corpus's two arms run back to back. One round per corpus ran under outside
+load, about 60% slower in both arms, so each change is compared with its paired run.
+
+| total s, per pair | cold | warm (one-file edit) |
+|---|---|---|
+| nushell | −15, −9, −12, −30% | −4, −7, −1, −7% |
+| teleport | −10, −12, −15% | −7, −6, −5% |
+| transformers | −7, −6, −9% | −4, −8, −7% |
+| vscode | −9, +12, −4% | −6, +3, −6% |
+| vscode recheck, 5 quiet rounds | −5, −5, 0, −5, −4% | −5, −5, 0, −5, −8% |
+
+- **34 of 38 pairs are faster, and none of the 10 vscode recheck pairs is slower.**
+  Cold is −6 to −30% on nushell, teleport and transformers, and every pair on those
+  three is faster. In the first run, one vscode pair was 12% slower cold and 3% slower
+  warm. The recheck (`ab4/`) ran 5 more rounds on a quiet machine:
+  - cold median 22.24 → 21.38 s (−4%), warm median 15.14 → 14.34 s (−5%);
+  - every pair is faster or flat (0%);
+  - digests are identical, and peak RSS is within ±2% (cold 1,178 → 1,197 MB, warm
+    1,240 → 1,226 MB).
+- **Medians of the unloaded rounds**, cold: nushell 4.35/5.82 → 3.82/4.10 s,
+  teleport 6.36 → 5.38 s, transformers 12.24 → 11.37 s.
+- **By stage:** `document` (`fts_terms`) halves on every corpus, e.g. vscode
+  1.00 → 0.56 s and transformers 0.41 → 0.20 s. Cold publish drops 0.8–0.9 s on
+  nushell, teleport and transformers.
+- **Identical outputs:** every cold and warm digest is equal between arms.
+- **Peak RSS** is +1 to +4%.
+
+## 5. Decision
+
+- **ACCEPT, committed `93e4dca`:** `auto_checkpoint=False` on the staging
   `Database` in `Store._load`. Disk −29 to −33% per graph, identical outputs, time
   neutral, peak RSS up to +9.5% on the largest corpus.
   - There is no format, version, schema or API change.
   - The read side is unaffected, and generations built before the change stay readable.
   - They keep their dead pages until the next re-index.
-- **ACCEPT, implemented (uncommitted):** the wide `top := k` with an exact fallback in
+- **ACCEPT, committed `93e4dca`:** the wide `top := k` with an exact fallback in
   `View.lexical` (§ 3). `repo.search` total −11 to −16%, p95 −19 to −30%, identical
   results.
-- **Not a lever:** View open (0.04 s) and the compacted file's query speed (equal to
+- **ACCEPT:** the blob-write overlap and the word-term cache
+  (§ 4). Cold indexing −4 to −30% (vscode −4% cold, −5% warm), identical outputs.
+- **Not a lever:** a CHECKPOINT before the FTS build, the buffer pool size (§ 4), View open (0.04 s) and the compacted file's query speed (equal to
   the old file within noise).
 
 ## Limits
@@ -167,8 +219,7 @@ store. HEAD's `src` vs the working tree, 3 interleaved rounds, medians.
 - A repository much larger than vscode holds its whole FTS build in the WAL until the
   final CHECKPOINT, so peak memory grows with it. The fallback would be an explicit
   CHECKPOINT after COMMIT, before `CREATE_FTS_INDEX`. That point leaves no dead pages
-  (§ 1: 15.75 M file, 15.72 M live). Measured on vscode, 3 builds each, it only moves
-  time: the build takes 13.1–13.3 s either way, and the file is the same size.
+  (§ 1: 15.75 M file, 15.72 M live), and it costs no time (§ 4).
 - A buffer-pool overflow fails the build before publication, and the previous
   generation stays current (`_load` runs before seal). This is inferred from the code,
   not measured.

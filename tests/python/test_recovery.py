@@ -10,6 +10,7 @@ import gc
 import json
 import os
 import textwrap
+import threading
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -327,3 +328,43 @@ def test_index_restores_the_callers_gc_state(
             assert seen == [False] and gc.isenabled() is enabled
     finally:
         gc.enable()
+
+
+@pytest.mark.parametrize("side", ["_retain", "_load"])
+def test_a_failure_on_either_side_of_the_concurrent_publish_keeps_the_current_generation(
+    repo_copy: Path, private_data: Path, monkeypatch: pytest.MonkeyPatch, fts: Path, side: str
+) -> None:
+    """Blobs are retained on a thread while the graph loads: whichever fails, the other
+    finishes first, the staging is removed and the previous generation keeps serving."""
+    first = oxide.index_repository(repo_copy)
+    before = {b.name: b.read_bytes() for b in blobs(private_data)}
+    retain, started = Store._retain, threading.Event()
+
+    def retaining(self: Store, *args: Any) -> None:
+        started.set()
+        if side == "_retain":
+            raise OSError("disk full")
+        retain(self, *args)
+
+    def loading(self: Store, *args: Any) -> None:
+        assert started.wait(10)  # fail while the blob thread is running
+        raise OSError("disk full")
+
+    with monkeypatch.context() as patched:  # undo() would also drop the private data dir
+        patched.setattr(Store, "_retain", retaining)
+        if side == "_load":
+            patched.setattr(Store, "_load", loading)
+        write(repo_copy, {"oxidepy/extra.py": "def brand_new_helper():\n    pass\n"})
+        with oxide.open_repository(repo_copy) as repo:
+            with pytest.raises(OSError, match="disk full"):
+                repo.index()
+            assert repo.snapshot == first.snapshot
+            assert repo.build_context("retry", 4096).used > 0
+        generations = store_dir(private_data) / "generations"
+        assert [p.name for p in generations.iterdir()] == [
+            (store_dir(private_data) / "CURRENT").read_text()
+        ]
+        assert {b.name: b.read_bytes() for b in blobs(private_data)} == before
+    with oxide.open_repository(repo_copy) as repo:
+        assert repo.index().status == "built"
+        assert repo.entity("symbol:oxidepy/extra.py#brand_new_helper") is not None

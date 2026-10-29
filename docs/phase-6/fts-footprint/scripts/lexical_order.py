@@ -1,4 +1,4 @@
-"""Tie order by node offset vs by key, on two builds of the same rows (README § 4).
+"""Tie order by node offset vs by key, on two builds of the same rows (README § 3).
 
     uv run python lexical_order.py BASE.lbug SORTED.lbug REPS
 
