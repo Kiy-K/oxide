@@ -1,0 +1,79 @@
+Below is a conversation log from a Claude Code coding session.
+Create a summary to help the next session quickly understand the context.
+
+## Prioritize including
+- Design decisions and technology choices made this session
+- Bugs and problems solved
+- Files changed or created, with a brief description of changes
+- Unfinished tasks and work to continue in the next session
+- Important context the next session needs to know
+
+## Conversation log
+**Claude:** The FTS index is stored in hidden tables: `0_lexical_docs`, `0_lexical_terms`, `0_lexical_appears_in`, and `0_lexical_appears_info` (with a serial ID). Next I'll measure their schemas and row counts.
+
+**Claude:** Auto-checkpoint is on by default with a 16 MiB WAL threshold, and `Database` takes `auto_checkpoint=False`. I'll add that as an arm to the stages probe.
+
+**Claude:** I'll use the existing `warm.sh` harness: it records cold and warm profiles, row and BM25 digests, and graph size. Now the product change:
+
+**Claude:** The A/B is still running; I'll wait for it before running anything else heavy.
+
+**Claude:** The HEAD-vs-new A/B (4 corpora × 3 interleaved rounds) is running in the background. When it finishes I'll compare sizes, timings and digests, then run the query-latency probe.
+
+**User:** <task-notification> <task-id>b3s1m710r</task-id> <tool-use-id>toolu_011fxwrbszskZPKJT9488Qrv</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/a6b10104-1682-4ba6-83e9-314fff79429c/tasks/b3s1m710r.output</output-file> <status>completed</status> <summary>Background command "Run the interleaved HEAD vs new A/B on 4 corpora" completed (exit code 0)</summary> </task-notification>
+
+**User:** <system-reminder> [SYSTEM NOTIFICATION - NOT USER INPUT] This is an automated background-task event, NOT a message from the user. Do NOT interpret this as user acknowledgement, confirmation, or response to any pending question. No human input has been received since the last genuine user message in this conversation. Any statement that the user said, approved, or confirmed something — including st
+
+**Claude:** Verify passes: 391 passed, 7 skipped by design, including the frozen baselines. I'll also run the TypeScript gate the earlier studies used, plus Ruff on the new scripts.
+
+**Claude:** Fixing the two long lines while the TypeScript gate runs:
+
+**Claude:** Now the study README. Pulling the vscode stage numbers first:
+
+**Claude:** The README is written. Next I'll check the TypeScript gate.
+
+**Claude:** That output is only the earlier Ruff errors; the gate's own output hasn't come yet. I'll wait for it to finish.
+
+**Claude:** The TypeScript ContextBench gate is still running in the background. Once it finishes I'll review the full diff and give you the summary.
+
+**User:** <task-notification> <task-id>bhv885rou</task-id> <tool-use-id>toolu_017nBq9DXu12xmEqKf5B9TMs</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/a6b10104-1682-4ba6-83e9-314fff79429c/tasks/bhv885rou.output</output-file> <status>completed</status> <summary>Background command "Lint study scripts and run the TypeScript gate" completed (exit code 0)</summary> </task-notification>
+
+**User:** <system-reminder> [SYSTEM NOTIFICATION - NOT USER INPUT] This is an automated background-task event, NOT a message from the user. Do NOT interpret this as user acknowledgement, confirmation, or response to any pending question. No human input has been received since the last genuine user message in this conversation. Any statement that the user said, approved, or confirmed something — including st
+
+**Claude:** I made one change: indexes are now 29–33% smaller on disk, and every output is unchanged. Indexing time and query latency did not improve beyond run-to-run noise. Nothing is committed. **What was wrong:** about 40% of every `graph.lbug` file was unused pages. LadybugDB auto-saves to disk partway through building the FTS index, which writes temporary tables to the file. Those tables are dropped afterwards, but LadybugDB only reclaims free space at the end of the file, so the holes stay. The FTS index itself is only 28–33% of the live data, not the 55–58% the earlier storage study reported. **Th
+
+**User:** Stop hook feedback: [Optimize OXIDE's LadybugDB FTS indexing time, disk footprint, and query latency using existing performance evidence in `/docs`. Use tools if needed more information]: Only disk footprint was measurably optimized: graph.lbug shrank 29-33% with identical outputs. Indexing time changed by only -0.2 to -6%, which the transcript itself calls 'within run-to-run noise', and query lat
+
+**Claude:** The stop hook is right: only disk footprint actually improved. Indexing time and query latency still need real gains that keep outputs identical. I'll start by finding where per-query time goes end to end, including how often a View is opened, since opening costs 40 ms against a 3 ms median query.
+
+**Claude:** That prototype failed: no faster (total 15.6 → 16.7 s, median worse) and 85 of 400 queries differ. Checking whether the differences are in the scores themselves:
+
+**Claude:** Tests pass (Pyright warnings are pre-existing stub noise). I'll confirm the new test actually reaches both the fast path and the fallback:
+
+**Claude:** Both branches run: 92 fast-path queries and 3 fallbacks. Next is an end-to-end A/B through `repo.search` (HEAD vs new code, 4 corpora, 3 interleaved rounds), comparing result digests and latency.
+
+**Claude:** The end-to-end search A/B is running: HEAD vs the new `View.lexical` across 4 corpora and 3 rounds. Once it finishes I'll test the two indexing-time levers.
+
+**User:** 
+
+**User:**                           
+
+**User:** /compact
+
+## Output format (Markdown only, no preamble)
+
+## Session Summary
+
+### Tasks
+(main tasks worked on this session)
+
+### Decisions Made
+(design decisions and technology choices)
+
+### Files Modified
+(files changed or created)
+
+### Unresolved Issues
+(unfinished tasks and work to continue)
+
+### Next Session Context
+(important context for the next session)
