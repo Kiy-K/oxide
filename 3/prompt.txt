@@ -1,0 +1,79 @@
+Below is a conversation log from a Claude Code coding session.
+Create a summary to help the next session quickly understand the context.
+
+## Prioritize including
+- Design decisions and technology choices made this session
+- Bugs and problems solved
+- Files changed or created, with a brief description of changes
+- Unfinished tasks and work to continue in the next session
+- Important context the next session needs to know
+
+## Conversation log
+**Claude:** While that runs (no other heavy jobs in parallel), I'll write `docs/java.md`, following `docs/go.md`'s structure.
+
+**Claude:** Docs are updated. Next, evidence on real code. `scripts/eval_go.py` drives real-repo, audit and ContextBench runs, so I'll read it to see what a Java variant needs.
+
+**Claude:** ContextBench gave the Go and Rust milestones a diagnostic, so I'll check whether its parquet has Java rows. If it does, `eval_java.py` can mirror `eval_go.py`.
+
+**Claude:** Memory is explicit: I write the code, and OpenCode (GPT-6 Luna) runs evals and benchmarks under the laptop caps. I'll check the Go oracle brief to see where that line fell for the oracle tooling.
+
+**Claude:** Quick smoke test of the `real` and `audit` modes on the fixture:
+
+**Claude:** Local ContextBench checkouts include gson (264 Java files), mockito (1,004) and fastjson2 (4,316). There's also a `fixtures/conformance/java` golden I didn't know about, so I'll check what uses it.
+
+**Claude:** I'll add the Java smoke check alongside Go and Rust: copy the fixture in, search for `mustGet`, check the packed context, and record the grammar version.
+
+**Claude:** The smoke script only runs from an installed artifact, so OpenCode's step 6 will exercise it. Now writing the brief (gate facts given above):
+
+**Claude:** The Python baseline is done (`py=0`) and the TS one is in progress. Next I'll compare v15 with v14 myself: `metrics.json` should be byte-identical, and only identity fields should differ.
+
+**Claude:** Now the baseline-v15 README, modelled on v14's:
+
+**Claude:** While the TS run finishes, I'll read through the formatted `java_resolve.py` once for correctness.
+
+**Claude:** Passes. The Java version string stays `oxide-java-v1`, since nothing has been published yet and the frozen corpora hold no Java. The rest of the resolver, from `_variable` to the end:
+
+**Claude:** The remaining logic holds up. `super.m()` and the static-import edge cases are only reachable from code javac would reject, or are conservative. I'll check the TS baseline run:
+
+**Claude:** The TS run is at task 20 of about 89, so roughly 15 more minutes. Nothing else heavy can run meanwhile, so I'll wait for its completion notification.
+
+**Claude:** Java support is written and its tests pass; I'm waiting on one background job before the evaluation run. **Done so far:** - **Parser and resolver**: `src/oxide/core/languages/java.py` (494 lines) extracts the facts, using `tree-sitter-java==0.23.5`, pinned. `java_resolve.py` resolves names over the whole repository: javac's type lookup order, inherited members, arity-filtered overloads and receivers with declared types. When a lookup reaches code outside the repository, it stays unresolved rather than guessing. - **Wiring**: `.java` files are now parsed in `indexing.py`. The derivation compone
+
+**User:** <task-notification> <task-id>bc4wv91m1</task-id> <tool-use-id>toolu_01S6sovKdx3oPDsg1zBJYHsd</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bc4wv91m1.output</output-file> <status>completed</status> <summary>Background command "Freeze successor baselines in background" completed (exit code 0)</summary> </task-notification>
+
+**User:**                               <system-reminder> [SYSTEM NOTIFICATION - NOT USER INPUT] This is an automated background-task event, NOT a message from the user. Do NOT interpret this as user acknowledgement, confirmation, or r
+
+**Claude:** Identity-only again: metrics byte-identical, and only derivation ids and `oxide_source` differ. Writing the typescript-v12 README:
+
+**Claude:** Now I'll launch the OpenCode eval run in the foreground mode the brief asks for, running as a background job here:
+
+**Claude:** The classifier blocked launching an autonomous OpenCode agent, so that needs you. Meanwhile I'll run the full verification against the new baselines myself:
+
+**Claude:** Full verification passes. Last, the diff scope check AGENTS.md requires:
+
+**Claude:** Java support is built and fully verified: `mise run verify` passes, 403 tests with 7 skipped. What isn't done yet is the real-code evaluation, because I couldn't launch OpenCode to run it. Precision against javac is still unmeasured. **What's in place:** - **Code:** `.java` files are now parsed and indexed. The new files are `java.py` (494 lines, extracts facts with `tree-sitter-java==0.23.5`, pinned) and `java_resolve.py` (403 lines), wired into `indexing.py`. Both are under the 500-line limit. - **Resolution:**   - Types are looked up in javac's order.   - Methods are found through supertype
+
+**User:** Stop hook feedback: [Implement Java language support for OXIDE using the existing language slices and relevant `/docs` research as references.]: Java language support is implemented and verified in the transcript: java.py and java_resolve.py exist, indexing.py is wired, fixtures and test_java.py pass (9 tests), docs/java.md is written, and mise run verify passed with 403 tests. But the assistant's
+
+**Claude:** The hook's remaining gap is the `docs/phase-6/java-v1` evidence. The evaluation runs belong to OpenCode under your standing preference, and launching it is blocked. What I can do honestly is write the milestone README with what has actually been measured, and mark the evaluation pending rather than invent results.
+
+**Claude:** Java support is implemented and verified: `mise run verify` passes (403 tests, 7 skipped), including the 9 new Java tests. The real-code evaluation hasn't run, so I can't yet say how accurate it is. I've also written `docs/phase-6/java-v1/README.md`, which fixes the broken links from the baseline READMEs. That README records only what was actually measured: - the grammar and fixture test results; - the two new baselines, which change nothing but derivation ids; - the derive runs on gson, mockito and fastjson2. Every file parsed and nothing crashed; those numbers are edge counts, not accuracy. 
+
+## Output format (Markdown only, no preamble)
+
+## Session Summary
+
+### Tasks
+(main tasks worked on this session)
+
+### Decisions Made
+(design decisions and technology choices)
+
+### Files Modified
+(files changed or created)
+
+### Unresolved Issues
+(unfinished tasks and work to continue)
+
+### Next Session Context
+(important context for the next session)
