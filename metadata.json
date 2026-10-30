@@ -1,0 +1,72 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M66HC53NR9XPNE7ST1XFCW75",
+  "strategy": "manual-commit",
+  "branch": "rewrite/v2",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "README.md",
+    "docs/c.md",
+    "docs/cpp.md",
+    "docs/phase-6/baseline-v17/README.md",
+    "docs/phase-6/baseline-v17/manifest.json",
+    "docs/phase-6/baseline-v17/metrics.json",
+    "docs/phase-6/baseline-v17/results.json",
+    "docs/phase-6/cpp-v1/README.md",
+    "docs/phase-6/cpp-v1/oracle/oracle.py",
+    "docs/phase-6/cpp-v1/verification/mise-verify.log",
+    "docs/public-api.md",
+    "fixtures/cpp_repo/Makefile",
+    "fixtures/cpp_repo/include/shop/limits.h",
+    "fixtures/cpp_repo/include/shop/store.hpp",
+    "fixtures/cpp_repo/src/cart.h",
+    "fixtures/cpp_repo/src/limits.c",
+    "fixtures/cpp_repo/src/main.cpp",
+    "fixtures/cpp_repo/src/store.cpp",
+    "fixtures/cpp_repo/tests/test_store.cpp",
+    "pyproject.toml",
+    "scripts/smoke_dist.py",
+    "src/oxide/api.py",
+    "src/oxide/core/indexing.py",
+    "src/oxide/core/languages/c.py",
+    "src/oxide/core/languages/c_resolve.py",
+    "src/oxide/core/languages/cpp.py",
+    "src/oxide/core/languages/cpp_facts.py",
+    "src/oxide/core/languages/cpp_macros.py",
+    "src/oxide/core/languages/cpp_resolve.py",
+    "tests/python/contextbench.py",
+    "tests/python/contextbench_ts.py",
+    "tests/python/test_cpp.py",
+    "uv.lock"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 262,
+    "cache_creation_tokens": 310713,
+    "cache_read_tokens": 41272451,
+    "output_tokens": 150495,
+    "api_call_count": 132
+  },
+  "redaction": {
+    "replacements": 126,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 126,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
