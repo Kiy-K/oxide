@@ -3,9 +3,20 @@
   "checkpoint_id": "01M669VCEMGTKK2SDDCR99RQ53",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 1,
+  "checkpoints_count": 3,
   "files_touched": [
+    "README.md",
+    "docs/phase-6/java-v1/README.md",
+    "docs/phase-6/java-v1/verification/mise-verify-header-scope.log",
+    "docs/public-api.md",
     "pyproject.toml",
+    "scripts/smoke_dist.py",
+    "src/oxide/core/indexing.py",
+    "src/oxide/core/languages/java.py",
+    "src/oxide/core/languages/java_facts.py",
+    "tests/python/contextbench.py",
+    "tests/python/contextbench_ts.py",
+    "tests/python/test_java.py",
     "uv.lock"
   ],
   "sessions": [
@@ -15,14 +26,21 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 4,
-    "cache_creation_tokens": 1760,
-    "cache_read_tokens": 378101,
-    "output_tokens": 1328,
-    "api_call_count": 2
+    "input_tokens": 200,
+    "cache_creation_tokens": 206425,
+    "cache_read_tokens": 13873812,
+    "output_tokens": 53802,
+    "api_call_count": 100
   },
   "redaction": {
     "replacements": 43,
