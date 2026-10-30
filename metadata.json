@@ -3,7 +3,7 @@
   "checkpoint_id": "01M66E4PW2AH4SRNSRA28C7DXB",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 5,
+  "checkpoints_count": 16,
   "files_touched": [
     "README.md",
     "docs/c.md",
@@ -66,6 +66,13 @@
       "compact_transcript": "/3/transcript.jsonl",
       "content_hash": "/3/content_hash.txt",
       "prompt": "/3/prompt.txt"
+    },
+    {
+      "metadata": "/4/metadata.json",
+      "transcript": "/4/full.jsonl",
+      "compact_transcript": "/4/transcript.jsonl",
+      "content_hash": "/4/content_hash.txt",
+      "prompt": "/4/prompt.txt"
     }
   ],
   "token_usage": {
@@ -76,14 +83,14 @@
     "api_call_count": 163
   },
   "redaction": {
-    "replacements": 0,
+    "replacements": 4,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 0,
+      "entropy": 4,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
