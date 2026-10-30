@@ -3,10 +3,40 @@
   "checkpoint_id": "01M66E4PW2AH4SRNSRA28C7DXB",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 1,
+  "checkpoints_count": 3,
   "files_touched": [
+    "README.md",
+    "docs/c.md",
+    "docs/phase-6/baseline-v16/README.md",
+    "docs/phase-6/baseline-v16/manifest.json",
+    "docs/phase-6/baseline-v16/metrics.json",
+    "docs/phase-6/baseline-v16/results.json",
     "docs/phase-6/c-v1/README.md",
-    "src/oxide/core/languages/c.py"
+    "docs/phase-6/c-v1/oracle/hiredis-oracle.json",
+    "docs/phase-6/c-v1/oracle/hiredis-oracle.log",
+    "docs/phase-6/c-v1/oracle/lua-oracle.json",
+    "docs/phase-6/c-v1/oracle/lua-oracle.log",
+    "docs/phase-6/c-v1/oracle/oracle.py",
+    "docs/phase-6/typescript-v13/README.md",
+    "docs/public-api.md",
+    "fixtures/c_repo/Makefile",
+    "fixtures/c_repo/include/shop/store.h",
+    "fixtures/c_repo/src/cart.c",
+    "fixtures/c_repo/src/cart.h",
+    "fixtures/c_repo/src/main.c",
+    "fixtures/c_repo/src/path_posix.c",
+    "fixtures/c_repo/src/path_windows.c",
+    "fixtures/c_repo/src/store.c",
+    "fixtures/c_repo/tests/test_store.c",
+    "pyproject.toml",
+    "scripts/smoke_dist.py",
+    "src/oxide/core/indexing.py",
+    "src/oxide/core/languages/c.py",
+    "src/oxide/core/languages/c_resolve.py",
+    "tests/python/contextbench.py",
+    "tests/python/contextbench_ts.py",
+    "tests/python/test_c.py",
+    "uv.lock"
   ],
   "sessions": [
     {
@@ -15,14 +45,21 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 126,
-    "cache_creation_tokens": 386707,
-    "cache_read_tokens": 9100472,
-    "output_tokens": 94447,
-    "api_call_count": 63
+    "input_tokens": 320,
+    "cache_creation_tokens": 651263,
+    "cache_read_tokens": 28358622,
+    "output_tokens": 208653,
+    "api_call_count": 159
   },
   "redaction": {
     "replacements": 0,
