@@ -3,7 +3,7 @@
   "checkpoint_id": "01M669VCEMGTKK2SDDCR99RQ53",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 3,
+  "checkpoints_count": 4,
   "files_touched": [
     "README.md",
     "docs/phase-6/java-v1/README.md",
@@ -33,14 +33,21 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 200,
-    "cache_creation_tokens": 206425,
+    "input_tokens": 202,
+    "cache_creation_tokens": 284316,
     "cache_read_tokens": 13873812,
-    "output_tokens": 53802,
-    "api_call_count": 100
+    "output_tokens": 57601,
+    "api_call_count": 101
   },
   "redaction": {
     "replacements": 43,
