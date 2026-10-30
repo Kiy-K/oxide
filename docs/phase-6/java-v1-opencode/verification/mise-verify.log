@@ -1,0 +1,81 @@
+             .',;::::;,'.                 khoi@NGUYENKHOI
+         .';:cccccccccccc:;,.             ---------------
+      .;cccccccccccccccccccccc;.          OS: Fedora Linux 44 (Workstation Edition) x86_64
+    .:cccccccccccccccccccccccccc:.        Host: ASUS Vivobook S 16 S3607VA_S3607VA (1.0)
+  .;ccccccccccccc;.:dddl:.;ccccccc;.      Kernel: Linux 7.2.13-200.fc44.x86_64
+ .:ccccccccccccc;OWMKOOXMWd;ccccccc:.     Uptime: 2 hours, 42 mins
+.:ccccccccccccc;KMMc;cc;xMMc;ccccccc:.    Packages: 15 (flatpak), 2416 (rpm)
+,cccccccccccccc;MMM.;cc;;WW:;cccccccc,    Shell: bash 5.3.9
+:cccccccccccccc;MMM.;cccccccccccccccc:    Display (NE160WUM-NX8): 1920x1200 in 16", 144 Hz [Built-in]
+:ccccccc;oxOOOo;MMM000k.;cccccccccccc:    Desktop Environment: GNOME 50.6
+cccccc;0MMKxdd:;MMMkddc.;cccccccccccc;    Window Manager: Mutter (Wayland)
+ccccc;XMO';cccc;MMM.;cccccccccccccccc'    WM Theme: Adwaita
+ccccc;MMo;ccccc;MMW.;ccccccccccccccc;     Theme: Adwaita [GTK2/3/4]
+ccccc;0MNc.ccc.xMMd;ccccccccccccccc;      Icons: Adwaita [GTK2/3/4]
+cccccc;dNMWXXXWM0:;cccccccccccccc:,       Font: Adwaita Sans (11pt) [GTK2/3/4]
+cccccccc;.:odl:.;cccccccccccccc:,.        Cursor: Adwaita (24px)
+ccccccccccccccccccccccccccccc:'.          Terminal: opencode.exe
+:ccccccccccccccccccccccc:;,..             CPU: 13th Gen Intel(R) Core(TM) i7-13620H (12+4) @ 4.90 GHz
+ ':cccccccccccccccc::;,.                  GPU: Intel UHD Graphics @ 1.50 GHz [Integrated]
+                                          Memory: 7.17 GiB / 15.26 GiB (47%)
+                                          Swap: 7.44 GiB / 20.00 GiB (37%)
+                                          Disk (/): 184.45 GiB / 474.34 GiB (39%) - btrfs
+                                          Local IP (wlp1s0): 192.168.1.10/24
+                                          Battery (A32-K55): 100% [AC Connected]
+                                          Locale: en_US.UTF-8
+                                          
+                                          [40m   [41m   [42m   [43m   [44m   [45m   [46m   [47m   [m
+                                          [100m   [101m   [102m   [103m   [104m   [105m   [106m   [107m   [m
+[verify] $ # Sequential on purpose: stop at the first failure.
+[lint] $ uv run --locked ruff check src tests/python
+All checks passed!
+[lint] $ uv run --locked ruff format --check src tests/python
+69 files already formatted
+[typecheck] $ uv run --locked mypy
+Success: no issues found in 69 source files
+[test] $ uv run --locked pytest
+============================= test session starts ==============================
+platform linux -- Python 3.13.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/khoi/Projects/oxide
+configfile: pyproject.toml
+testpaths: tests/python
+plugins: platformdirs-4.13.3, anyio-4.15.1
+collected 410 items
+
+tests/python/test_baseline.py ........                                   [  1%]
+tests/python/test_capsule.py ................                            [  5%]
+tests/python/test_capture.py .......                                     [  7%]
+tests/python/test_cli.py ......                                          [  9%]
+tests/python/test_context.py ...................                         [ 13%]
+tests/python/test_contextbench.py ....................                   [ 18%]
+tests/python/test_contextbench_ts.py ..........sssssss                   [ 22%]
+tests/python/test_dispatch.py ........                                   [ 24%]
+tests/python/test_go.py ...............                                  [ 28%]
+tests/python/test_graph.py .......                                       [ 30%]
+tests/python/test_impact.py ............                                 [ 32%]
+tests/python/test_incremental.py .............                           [ 36%]
+tests/python/test_indexing.py ........                                   [ 38%]
+tests/python/test_java.py .........                                      [ 40%]
+tests/python/test_javascript.py ........................................ [ 50%]
+.....                                                                    [ 51%]
+tests/python/test_jev.py ......................                          [ 56%]
+tests/python/test_judgment.py .................                          [ 60%]
+tests/python/test_lifecycle.py ....                                      [ 61%]
+tests/python/test_mcp.py ..............                                  [ 65%]
+tests/python/test_native.py ........                                     [ 67%]
+tests/python/test_ordering.py ............                               [ 70%]
+tests/python/test_persistence.py ........                                [ 71%]
+tests/python/test_recovery.py ................................           [ 79%]
+tests/python/test_retrieval.py .....................                     [ 84%]
+tests/python/test_rust.py .............................                  [ 91%]
+tests/python/test_structural.py .............                            [ 95%]
+tests/python/test_typescript.py ....................                     [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/python/test_contextbench_ts.py:196: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:205: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:215: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:225: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [2] tests/python/test_contextbench_ts.py:236: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+SKIPPED [1] tests/python/test_contextbench_ts.py:250: TypeScript gate: OXIDE_CONTEXTBENCH_TS=1
+================== 403 passed, 7 skipped in 156.64s (0:02:36) ==================

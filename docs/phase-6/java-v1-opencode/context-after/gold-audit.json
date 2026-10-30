@@ -1,0 +1,823 @@
+{
+ "alibaba__fastjson2-2559": [
+  {
+   "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+   "start": 1522,
+   "end": 1527,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "alibaba__fastjson2-2775": [
+  {
+   "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "start": 941,
+   "end": 978,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "start": 978,
+   "end": 1001,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "start": 999,
+   "end": 1004,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "alibaba__fastjson2-82": [
+  {
+   "file": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "start": 1,
+   "end": 427,
+   "class": "path",
+   "corrected_file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "detail": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSON.java is not in the corpus; core/src/main/java/com/alibaba/fastjson2/JSON.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "start": 598,
+   "end": 701,
+   "class": "path",
+   "corrected_file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+   "detail": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSON.java is not in the corpus; core/src/main/java/com/alibaba/fastjson2/JSON.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+   "start": 350,
+   "end": 359,
+   "class": "path",
+   "corrected_file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+   "detail": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSONReader.java is not in the corpus; core/src/main/java/com/alibaba/fastjson2/JSONReader.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+   "start": 358,
+   "end": 371,
+   "class": "path",
+   "corrected_file": "core/src/main/java/com/alibaba/fastjson2/JSONReader.java",
+   "detail": "/workspace/alibaba__fastjson2__0.1/core/src/main/java/com/alibaba/fastjson2/JSONReader.java is not in the corpus; core/src/main/java/com/alibaba/fastjson2/JSONReader.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "elastic__logstash-13825": [
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+   "start": 1,
+   "end": 267,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+   "start": 1,
+   "end": 343,
+   "class": "path",
+   "corrected_file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java is not in the corpus; logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "elastic__logstash-13902": [
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "start": 1,
+   "end": 386,
+   "class": "path",
+   "corrected_file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java is not in the corpus; logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+   "start": 1,
+   "end": 67,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+   "start": 1,
+   "end": 235,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+   "start": 1,
+   "end": 181,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java is not in the corpus",
+   "numbered": true
+  }
+ ],
+ "elastic__logstash-13931": [
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java is not in the corpus; logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "start": 100,
+   "end": 201,
+   "class": "path",
+   "corrected_file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java is not in the corpus; logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "start": 200,
+   "end": 301,
+   "class": "path",
+   "corrected_file": "logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java is not in the corpus; logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java",
+   "start": 1,
+   "end": 67,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java",
+   "start": 1,
+   "end": 235,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java is not in the corpus",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+   "start": 1,
+   "end": 181,
+   "class": "unresolved",
+   "detail": "/workspace/elastic__logstash__0.1/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java is not in the corpus",
+   "numbered": true
+  }
+ ],
+ "fasterxml__jackson-core-1016": [
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+   "start": 1295,
+   "end": 1306,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+   "start": 1299,
+   "end": 1305,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+   "start": 1326,
+   "end": 1332,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+   "start": 1849,
+   "end": 1855,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+   "start": 1933,
+   "end": 1938,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/json/UTF8DataInputJsonParser.java",
+   "start": 1934,
+   "end": 1942,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+   "start": 790,
+   "end": 795,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/json/async/NonBlockingJsonParserBase.java",
+   "start": 791,
+   "end": 799,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java",
+   "start": 362,
+   "end": 391,
+   "class": "exact",
+   "numbered": false
+  }
+ ],
+ "fasterxml__jackson-core-1263": [
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+   "start": 1,
+   "end": 274,
+   "class": "path",
+   "corrected_file": "src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java is not in the corpus; src/main/java/com/fasterxml/jackson/core/util/BufferRecycler.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+   "start": 1,
+   "end": 273,
+   "class": "path",
+   "corrected_file": "src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java is not in the corpus; src/main/java/com/fasterxml/jackson/core/util/JsonRecyclerPools.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+   "start": 1,
+   "end": 401,
+   "class": "path",
+   "corrected_file": "src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java is not in the corpus; src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+   "start": 1,
+   "end": 140,
+   "class": "path",
+   "corrected_file": "src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java is not in the corpus; src/test/java/com/fasterxml/jackson/core/io/BufferRecyclerPoolTest.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java",
+   "start": 1,
+   "end": 167,
+   "class": "unresolved",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/test/java/com/fasterxml/jackson/core/util/JsonBufferRecyclersTest.java is not in the corpus",
+   "numbered": false
+  }
+ ],
+ "fasterxml__jackson-core-183": [
+  {
+   "file": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+   "start": 295,
+   "end": 311,
+   "class": "path",
+   "corrected_file": "src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java",
+   "detail": "/workspace/fasterxml__jackson-core__0.1/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java is not in the corpus; src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "google__gson-1391": [
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "start": 1,
+   "end": 428,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java is not in the corpus; gson/src/main/java/com/google/gson/internal/$Gson$Types.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "start": 336,
+   "end": 357,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java is not in the corpus; gson/src/main/java/com/google/gson/internal/$Gson$Types.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "start": 419,
+   "end": 451,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/internal/$Gson$Types.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/$Gson$Types.java is not in the corpus; gson/src/main/java/com/google/gson/internal/$Gson$Types.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+   "start": 1,
+   "end": 115,
+   "class": "path",
+   "corrected_file": "gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java is not in the corpus; gson/src/test/java/com/google/gson/internal/bind/RecursiveTypesResolveTest.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "google__gson-1703": [
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java",
+   "start": 1,
+   "end": 350,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/Gson.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java is not in the corpus; gson/src/main/java/com/google/gson/Gson.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java",
+   "start": 656,
+   "end": 667,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/Gson.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java is not in the corpus; gson/src/main/java/com/google/gson/Gson.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java",
+   "start": 680,
+   "end": 691,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/Gson.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java is not in the corpus; gson/src/main/java/com/google/gson/Gson.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java",
+   "start": 739,
+   "end": 750,
+   "class": "path",
+   "corrected_file": "gson/src/main/java/com/google/gson/Gson.java",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/Gson.java is not in the corpus; gson/src/main/java/com/google/gson/Gson.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/Streams.java",
+   "start": 1,
+   "end": 121,
+   "class": "unresolved",
+   "detail": "/workspace/google__gson__0.1/gson/src/main/java/com/google/gson/internal/Streams.java is not in the corpus",
+   "numbered": false
+  }
+ ],
+ "googlecontainertools__jib-2542": [
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java",
+   "start": 1,
+   "end": 57,
+   "class": "path",
+   "corrected_file": "jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java is not in the corpus; jib-core/src/main/java/com/google/cloud/tools/jib/http/ResponseException.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+   "start": 1,
+   "end": 192,
+   "class": "path",
+   "corrected_file": "jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java is not in the corpus; jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+   "start": 1,
+   "end": 224,
+   "class": "path",
+   "corrected_file": "jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java is not in the corpus; jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "start": 1,
+   "end": 423,
+   "class": "path",
+   "corrected_file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java is not in the corpus; jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "start": 420,
+   "end": 431,
+   "class": "path",
+   "corrected_file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java is not in the corpus; jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "start": 420,
+   "end": 455,
+   "class": "path",
+   "corrected_file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java is not in the corpus; jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "start": 450,
+   "end": 461,
+   "class": "path",
+   "corrected_file": "jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java is not in the corpus; jib-core/src/test/java/com/google/cloud/tools/jib/registry/RegistryEndpointCallerTest.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "googlecontainertools__jib-2688": [
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "start": 1,
+   "end": 415,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java is not in the corpus; jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "start": 490,
+   "end": 556,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java is not in the corpus; jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "start": 500,
+   "end": 531,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java is not in the corpus; jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "start": 520,
+   "end": 581,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java is not in the corpus; jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "start": 560,
+   "end": 581,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java is not in the corpus; jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java",
+   "start": 775,
+   "end": 841,
+   "class": "path",
+   "corrected_file": "jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java",
+   "detail": "/workspace/googlecontainertools__jib__0.1/jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java is not in the corpus; jib-maven-plugin/src/test/java/com/google/cloud/tools/jib/maven/MavenProjectPropertiesTest.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "mockito__mockito-3129": [
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/MockMakers.java",
+   "start": 1,
+   "end": 43,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/MockMakers.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/MockMakers.java is not in the corpus; src/main/java/org/mockito/MockMakers.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+   "start": 1,
+   "end": 118,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java is not in the corpus; src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "start": 1,
+   "end": 309,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/util/MockUtil.java",
+   "start": 1,
+   "end": 221,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/util/MockUtil.java is not in the corpus; src/main/java/org/mockito/internal/util/MockUtil.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/InlineMockMaker.java",
+   "start": 1,
+   "end": 47,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/plugins/InlineMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/InlineMockMaker.java is not in the corpus; src/main/java/org/mockito/plugins/InlineMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/MockMaker.java",
+   "start": 1,
+   "end": 253,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/plugins/MockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/MockMaker.java is not in the corpus; src/main/java/org/mockito/plugins/MockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/MockitoPlugins.java",
+   "start": 1,
+   "end": 45,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/plugins/MockitoPlugins.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/plugins/MockitoPlugins.java is not in the corpus; src/main/java/org/mockito/plugins/MockitoPlugins.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "mockito__mockito-3167": [
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+   "start": 1,
+   "end": 101,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java",
+   "start": 55,
+   "end": 71,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineBytecodeGenerator.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "start": 1,
+   "end": 302,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "start": 544,
+   "end": 571,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java",
+   "start": 1,
+   "end": 193,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java is not in the corpus; src/main/java/org/mockito/internal/creation/bytebuddy/SubclassByteBuddyMockMaker.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/TypeSupport.java",
+   "start": 1,
+   "end": 43,
+   "class": "unresolved",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/creation/bytebuddy/TypeSupport.java is not in the corpus",
+   "numbered": false
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+   "start": 1,
+   "end": 218,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java is not in the corpus; src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java holds the content at these lines",
+   "numbered": true
+  },
+  {
+   "file": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/util/MockUtil.java",
+   "start": 1,
+   "end": 221,
+   "class": "path",
+   "corrected_file": "src/main/java/org/mockito/internal/util/MockUtil.java",
+   "detail": "/workspace/mockito__mockito__0.1/src/main/java/org/mockito/internal/util/MockUtil.java is not in the corpus; src/main/java/org/mockito/internal/util/MockUtil.java holds the content at these lines",
+   "numbered": true
+  }
+ ],
+ "mockito__mockito-3220": [
+  {
+   "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+   "start": 26,
+   "end": 35,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+   "start": 59,
+   "end": 65,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+   "start": 70,
+   "end": 78,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+   "start": 84,
+   "end": 126,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/MockitoCore.java",
+   "start": 131,
+   "end": 142,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+   "start": 12,
+   "end": 18,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java",
+   "start": 62,
+   "end": 68,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+   "start": 5,
+   "end": 12,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+   "start": 46,
+   "end": 53,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/PluginRegistry.java",
+   "start": 119,
+   "end": 125,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+   "start": 4,
+   "end": 13,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+   "start": 16,
+   "end": 22,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/configuration/plugins/Plugins.java",
+   "start": 99,
+   "end": 107,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+   "start": 34,
+   "end": 39,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+   "start": 283,
+   "end": 291,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/MockSettingsImpl.java",
+   "start": 306,
+   "end": 314,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+   "start": 18,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+   "start": 49,
+   "end": 54,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+   "start": 73,
+   "end": 78,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/creation/settings/CreationSettings.java",
+   "start": 198,
+   "end": 201,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+   "start": 7,
+   "end": 12,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/internal/util/MockNameImpl.java",
+   "start": 15,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/mock/MockCreationSettings.java",
+   "start": 151,
+   "end": 154,
+   "class": "exact",
+   "numbered": false
+  },
+  {
+   "file": "src/main/java/org/mockito/plugins/DoNotMockEnforcer.java",
+   "start": 4,
+   "end": 23,
+   "class": "exact",
+   "numbered": false
+  }
+ ]
+}

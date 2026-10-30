@@ -1,0 +1,69 @@
+{
+ "tasks": {
+  "alibaba__fastjson2-2559": {
+   "index_s": 2.275404199001059,
+   "score_s": 0.09949750199848495
+  },
+  "alibaba__fastjson2-2775": {
+   "index_s": 2.321100867000496,
+   "score_s": 0.0993700209983217
+  },
+  "alibaba__fastjson2-82": {
+   "index_s": 1.0430642340015766,
+   "score_s": 0.050573083000927
+  },
+  "elastic__logstash-13825": {
+   "index_s": 0.32111795600030746,
+   "score_s": 0.041497938000247814
+  },
+  "elastic__logstash-13902": {
+   "index_s": 0.32656895899890515,
+   "score_s": 0.04639394399964658
+  },
+  "elastic__logstash-13931": {
+   "index_s": 0.32108418000098027,
+   "score_s": 0.04641740000079153
+  },
+  "fasterxml__jackson-core-1016": {
+   "index_s": 0.2481762669995078,
+   "score_s": 0.0523042409986374
+  },
+  "fasterxml__jackson-core-1263": {
+   "index_s": 0.25138099000105285,
+   "score_s": 0.029169362998800352
+  },
+  "fasterxml__jackson-core-183": {
+   "index_s": 0.12934372800009442,
+   "score_s": 0.02876457499951357
+  },
+  "google__gson-1391": {
+   "index_s": 0.1792475820002437,
+   "score_s": 0.029612124999403022
+  },
+  "google__gson-1703": {
+   "index_s": 0.17801932100155682,
+   "score_s": 0.029930639999292907
+  },
+  "googlecontainertools__jib-2542": {
+   "index_s": 0.3829437880012847,
+   "score_s": 0.03366710799855355
+  },
+  "googlecontainertools__jib-2688": {
+   "index_s": 0.40068197999971744,
+   "score_s": 0.042763323999679415
+  },
+  "mockito__mockito-3129": {
+   "index_s": 0.566120037001383,
+   "score_s": 0.04763090699998429
+  },
+  "mockito__mockito-3167": {
+   "index_s": 0.5747516799983714,
+   "score_s": 0.050564965000376105
+  },
+  "mockito__mockito-3220": {
+   "index_s": 0.5455205010002828,
+   "score_s": 0.046397790998526034
+  }
+ },
+ "peak_rss_mib": 208.38671875
+}

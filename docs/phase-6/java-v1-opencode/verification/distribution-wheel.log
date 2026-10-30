@@ -1,0 +1,7 @@
+/home/khoi/.cache/oxide/ladybug-extensions-0.21.0/libfts.lbug_extension
+smoke: oxide at /home/khoi/Projects/oxide-eval-data/oxide-java-eval/oc-wheel-venv/lib/python3.13/site-packages/oxide/__init__.py
+smoke: indexed 65 files, 319 entities
+smoke: search and context ok (381/400 units)
+smoke: mcp stdio ok
+smoke: store lock exclusive and released
+smoke: OK

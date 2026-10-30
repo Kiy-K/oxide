@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/khoi/Projects/oxide/docs/phase-6/java-v1-opencode/verification/compare_baselines.py", line 29, in <module>
+    normalized_pair("docs/phase-6/baseline-v15", "docs/phase-6/baseline-v14", "results.json")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/khoi/Projects/oxide/docs/phase-6/java-v1-opencode/verification/compare_baselines.py", line 13, in normalized_pair
+    av, bv = a["versions"], b["versions"]
+             ~^^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str

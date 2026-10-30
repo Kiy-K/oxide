@@ -98,6 +98,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "js_repo", root / "javascript")
         shutil.copytree(fixtures / "go_repo", root / "golang")
         shutil.copytree(fixtures / "rust_repo", root / "rustlang")
+        shutil.copytree(fixtures / "java_repo", root / "javalang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         # Exclude host toolchains: parsing source must never execute its runtimes.
         env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
@@ -169,6 +170,17 @@ def main(fixtures: Path) -> None:
             "pub fn must_get(&self, key: &Key) -> String" in rust_context["payload"],
             "installed Rust context unavailable",
         )
+        java = result("search", str(root), "must get", "--symbol", "mustGet")
+        check(
+            java["entries"][0]["entity"]["key"]
+            == "symbol:javalang/src/main/java/com/example/shop/store/Store.java#Store.mustGet",
+            "installed Java extraction unavailable",
+        )
+        java_context = result("context", str(root), "open", "--symbol", "open", "--budget", "1024")
+        check(
+            "static Store open(Mode mode)" in java_context["payload"],
+            "installed Java context unavailable",
+        )
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -237,6 +249,7 @@ def environment() -> dict[str, Any]:
                 "tree-sitter-javascript",
                 "tree-sitter-go",
                 "tree-sitter-rust",
+                "tree-sitter-java",
                 "fastmcp",
             )
         },

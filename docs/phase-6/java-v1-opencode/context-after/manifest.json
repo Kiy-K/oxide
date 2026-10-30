@@ -1,0 +1,158 @@
+{
+ "source_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+ "rows_sha256": "4041983b1e94233a2425963fadd0abcd39f13c36a0401d03998309776bf65430",
+ "selection": [
+  "alibaba__fastjson2-2559",
+  "alibaba__fastjson2-2775",
+  "alibaba__fastjson2-82",
+  "elastic__logstash-13825",
+  "elastic__logstash-13902",
+  "elastic__logstash-13931",
+  "fasterxml__jackson-core-1016",
+  "fasterxml__jackson-core-1263",
+  "fasterxml__jackson-core-183",
+  "google__gson-1391",
+  "google__gson-1703",
+  "googlecontainertools__jib-2542",
+  "googlecontainertools__jib-2688",
+  "mockito__mockito-3129",
+  "mockito__mockito-3167",
+  "mockito__mockito-3220"
+ ],
+ "corpora": {
+  "alibaba__fastjson2@45cc6b34343b": {
+   "snapshot": "sha256:e31195ab493058a7cfd365ccdc98e7120fcf0c6b1cb6cc103bc994ab73ec1895",
+   "commit": "45cc6b34343bc133a03c632d6c9dd4a2d895e2e9",
+   "files": 4030,
+   "entities": 42426,
+   "relations": 346132,
+   "partial": []
+  },
+  "alibaba__fastjson2@12b40c7ba3e7": {
+   "snapshot": "sha256:66989f7e4fca6f178f8c53727784fb755a90e45430652caa44d7fd462b58e2cc",
+   "commit": "12b40c7ba3e7c30e35977195770c80beb34715c5",
+   "files": 4112,
+   "entities": 43370,
+   "relations": 354348,
+   "partial": []
+  },
+  "alibaba__fastjson2@3aed80608b36": {
+   "snapshot": "sha256:0f7fb081bc5e43ec694a3adce9cf3a7fd9dc54d2e17a2df099a40dd1de5686d8",
+   "commit": "3aed80608b36c310d0fe5f240f49d670b3638698",
+   "files": 1809,
+   "entities": 19543,
+   "relations": 145291,
+   "partial": []
+  },
+  "elastic__logstash@d64248f62837": {
+   "snapshot": "sha256:c51ddda54248b7d8b8a2ac2229a24be6c725333b5d486abf11d71b0bb531065d",
+   "commit": "d64248f62837efb4b69de23539e350be70704f38",
+   "files": 493,
+   "entities": 4927,
+   "relations": 46047,
+   "partial": []
+  },
+  "elastic__logstash@32675c1a88bd": {
+   "snapshot": "sha256:7d634bde7a2d7515f1897be9fe703c8db159f81237addf86658753ad9221dc26",
+   "commit": "32675c1a88bd3393e3f8d6d9275217d2f3891e66",
+   "files": 493,
+   "entities": 4927,
+   "relations": 46047,
+   "partial": []
+  },
+  "elastic__logstash@7df02cc828c8": {
+   "snapshot": "sha256:f2f8ea399cc092a404754e86da1ba44b3babc0dd7b1f2fca2ebb930a7c94ee5b",
+   "commit": "7df02cc828c894a619687a41a7ff961461c276d3",
+   "files": 491,
+   "entities": 4886,
+   "relations": 45689,
+   "partial": []
+  },
+  "fasterxml__jackson@315ac5ad2ad5": {
+   "snapshot": "sha256:c9f5bb24ba12852be9592307fb6c2b653b6b3604429473321b9e2223d797294e",
+   "commit": "315ac5ad2ad5228129a3df50623570d9bc2d7045",
+   "files": 332,
+   "entities": 5204,
+   "relations": 43613,
+   "partial": []
+  },
+  "fasterxml__jackson@9ed17fc7e9df": {
+   "snapshot": "sha256:6fb47de78974a3450c4f8e1e5f806c86e279b807839fd89e32792112eb8a87fa",
+   "commit": "9ed17fc7e9df9203f11ccb17819009ab0a898aa3",
+   "files": 356,
+   "entities": 5616,
+   "relations": 53483,
+   "partial": []
+  },
+  "fasterxml__jackson@ac6d8e22847c": {
+   "snapshot": "sha256:e4c769914dacdb4e2df6ec989e74b6dc7875e29b10f23b1f9f7a93ac5698e233",
+   "commit": "ac6d8e22847c19b2695cbd7d1f418e07a9a3dbb2",
+   "files": 154,
+   "entities": 2460,
+   "relations": 17808,
+   "partial": []
+  },
+  "google__gson@3f4ac29f9112": {
+   "snapshot": "sha256:f570abb3a8822c6ec3f8099547581329e5065fdf63bb790a7cfc5265d3ebda0f",
+   "commit": "3f4ac29f9112799a7374a99b18acabd0232ff075",
+   "files": 215,
+   "entities": 3076,
+   "relations": 29399,
+   "partial": []
+  },
+  "google__gson@6d2557d5d1a8": {
+   "snapshot": "sha256:62d3d3f61083efdb54bfeabc572b136e047f3b2f17c508cb9d64676acc902bdf",
+   "commit": "6d2557d5d1a8ac498f2bcee20e5053c93b33ecce",
+   "files": 223,
+   "entities": 3147,
+   "relations": 30630,
+   "partial": []
+  },
+  "googlecontainertools__jib@34a757b0d64f": {
+   "snapshot": "sha256:cea4cd372bff86089a24ca2f073f007c99a0c7b6228a9e4ea0ea20b8d1b3e084",
+   "commit": "34a757b0d64f19c47c60fcb56e705e14c2a4e0c8",
+   "files": 569,
+   "entities": 4552,
+   "relations": 52320,
+   "partial": []
+  },
+  "googlecontainertools__jib@7b36544eca5e": {
+   "snapshot": "sha256:e726d6ad6d2797805c4674388010cdc3623e4ff8d87c79e072791781b7a50466",
+   "commit": "7b36544eca5e72aba689760118b98419ef4dd179",
+   "files": 604,
+   "entities": 4904,
+   "relations": 55810,
+   "partial": []
+  },
+  "mockito__mockito@edc624371009": {
+   "snapshot": "sha256:03eb0507ffc9fba5630ad3ea8495e3add88fae3934940fba58958dd562750d0d",
+   "commit": "edc624371009ce981bbc11b7d125ff4e359cff7e",
+   "files": 968,
+   "entities": 9208,
+   "relations": 73306,
+   "partial": []
+  },
+  "mockito__mockito@b6554b29ed6c": {
+   "snapshot": "sha256:403e2cb97e3809ed79bd3651945a9918ec5e083e738c1438a05fcb35b8151212",
+   "commit": "b6554b29ed6c204a0dd4b8a670877fe0ba2e808b",
+   "files": 974,
+   "entities": 9260,
+   "relations": 73673,
+   "partial": []
+  },
+  "mockito__mockito@a0214364c36c": {
+   "snapshot": "sha256:57dbf394a89b36acebf70deea7fd00448a8e1b2054724d571bd8f1f73363f277",
+   "commit": "a0214364c36c840b259a4e5a0b656378e47d90df",
+   "files": 976,
+   "entities": 9303,
+   "relations": 73925,
+   "partial": []
+  }
+ },
+ "budgets": [
+  256,
+  1024,
+  4096
+ ],
+ "scorer": "contextbench-py-scorer with Java module projection v1"
+}

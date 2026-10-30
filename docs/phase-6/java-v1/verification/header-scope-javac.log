@@ -1,0 +1,40 @@
+# javac 25.0.4.1 (system OpenJDK jdk.compiler), Probe.java: ToolProvider compile of each file, -proc:none
+## Bound.java
+class Bound<T extends Inner> { static class Inner {} }
+## BoundOuter.java
+class Inner {}
+class BoundOuter<T extends Inner> { static class Inner {} static Class<?> k = Inner.class; }
+## Permits.java
+sealed interface Permits permits Leaf { final class Leaf implements Permits {} }
+## PermitsOuter.java
+final class Leaf2 implements PermitsOuter {}
+sealed interface PermitsOuter permits Leaf2 { final class Leaf2 implements PermitsOuter {} }
+## Record.java
+record Record(Inner i) { record Inner() {} }
+## SelfBound.java
+class T {}
+class SelfBound<T extends Comparable<T>> {}
+# output
+== src/Bound.java
+src/Bound.java:1: error: cannot find symbol
+class Bound<T extends Inner> { static class Inner {} }
+                      ^
+  symbol: class Inner
+1 error
+== src/BoundOuter.java
+== src/Permits.java
+src/Permits.java:1: error: cannot find symbol
+sealed interface Permits permits Leaf { final class Leaf implements Permits {} }
+                                 ^
+  symbol: class Leaf
+src/Permits.java:1: error: class is not allowed to extend sealed class: Permits (as it is not listed in its 'permits' clause)
+sealed interface Permits permits Leaf { final class Leaf implements Permits {} }
+                                              ^
+2 errors
+== src/PermitsOuter.java
+src/PermitsOuter.java:2: error: class is not allowed to extend sealed class: PermitsOuter (as it is not listed in its 'permits' clause)
+sealed interface PermitsOuter permits Leaf2 { final class Leaf2 implements PermitsOuter {} }
+                                                    ^
+1 error
+== src/Record.java
+== src/SelfBound.java

@@ -1,0 +1,4 @@
+Using Python 3.13.17 environment at: /home/khoi/Projects/oxide-eval-data/oxide-java-eval/oc-before-venv
+Resolved 1 package in 338ms
+Installed 1 package in 0.93ms
+ + tree-sitter-java==0.23.5

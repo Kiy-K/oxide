@@ -1,0 +1,367 @@
+{
+ "repository": "/home/khoi/Projects/oxide-eval-data/oxide-jev-eval/cb-repos/google__gson",
+ "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+ "snapshot": "sha256:c4971c5a78e01cec2e39ff54ede1586f5cf8c6c47e0b1af0945d75a0c79767b1",
+ "files": 313,
+ "java_files": 264,
+ "coverage": {
+  "complete": 264
+ },
+ "entities": 4220,
+ "java_symbol_kinds": {
+  "class": 647,
+  "constructor": 339,
+  "method": 2823,
+  "annotation": 8,
+  "interface": 27,
+  "enum": 26,
+  "record": 13
+ },
+ "graph_sha256": "ce0b18616d6da0326e0fef108a89cc1f44ffe01efdca30c7937dc9baaa44fc59",
+ "relations": 48243,
+ "resolution": {
+  "calls:ambiguous": 2078,
+  "calls:resolved": 7879,
+  "calls:unresolved": 7924,
+  "contains:resolved": 4219,
+  "contains_logical:resolved": 261,
+  "defines:resolved": 259,
+  "imports:resolved": 1085,
+  "imports:unresolved": 1589,
+  "references:resolved": 5710,
+  "references:unresolved": 11851,
+  "tested_by:resolved": 5388
+ },
+ "derive_cold_s": 0.6303591840005538,
+ "derive_reused_s": 0.35464769000100205,
+ "facts_reused": 263,
+ "derive_parity": true,
+ "index_cold_s": 1.6544421250000596,
+ "index_unchanged_s": 0.027853826999489684,
+ "index_edit_s": 1.2753724269987288,
+ "edit_reused": 262,
+ "persisted_edit_parity": true,
+ "peak_rss_mib": 448.19921875,
+ "resolved_import_sample": [
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+    "start": 652,
+    "end": 680,
+    "digest": "sha256:17be0448aa0041e8f36bb9069a0b8535176b6b9b0899a6aeb1d8e0d98cda2d2e"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/JsonArray.java#JsonArray"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+    "start": 681,
+    "end": 714,
+    "digest": "sha256:17be0448aa0041e8f36bb9069a0b8535176b6b9b0899a6aeb1d8e0d98cda2d2e"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/JsonParser.java#JsonParser"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+    "start": 715,
+    "end": 749,
+    "digest": "sha256:17be0448aa0041e8f36bb9069a0b8535176b6b9b0899a6aeb1d8e0d98cda2d2e"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 635,
+    "end": 663,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/TypeAdapter.java#TypeAdapter"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 664,
+    "end": 699,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/TypeAdapterFactory.java#TypeAdapterFactory"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 700,
+    "end": 742,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/reflect/TypeToken.java#TypeToken"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 743,
+    "end": 784,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 785,
+    "end": 826,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/stream/JsonWriter.java#JsonWriter"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+    "start": 827,
+    "end": 868,
+    "digest": "sha256:3f51cd4ce3218069126715c6b331f7793bd1516133611bf7c40dc73f29eaee3b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/interceptors/JsonPostDeserializer.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/InstanceCreator.java#InstanceCreator"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/interceptors/JsonPostDeserializer.java",
+    "start": 634,
+    "end": 673,
+    "digest": "sha256:388dc51c622a0587efc515e57a86f401800b762fb0a88831ff67dd81782f562b"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 641,
+    "end": 669,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/TypeAdapter.java#TypeAdapter"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 670,
+    "end": 705,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/TypeAdapterFactory.java#TypeAdapterFactory"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 706,
+    "end": 748,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/reflect/TypeToken.java#TypeToken"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 749,
+    "end": 790,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 791,
+    "end": 832,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/stream/JsonWriter.java#JsonWriter"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+    "start": 833,
+    "end": 874,
+    "digest": "sha256:dca33b7d30f3c6a434e18077fcf096fb1f5e4896be86b8a0b3365e0d2edd37a6"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/Gson.java#Gson"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+    "start": 703,
+    "end": 731,
+    "digest": "sha256:8615ac71bb10c77aecd104502f8869071ecf8aab9cbbc1b1900f24ffdcda37fe"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/JsonElement.java#JsonElement"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+    "start": 732,
+    "end": 767,
+    "digest": "sha256:8615ac71bb10c77aecd104502f8869071ecf8aab9cbbc1b1900f24ffdcda37fe"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/JsonObject.java#JsonObject"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+    "start": 768,
+    "end": 802,
+    "digest": "sha256:8615ac71bb10c77aecd104502f8869071ecf8aab9cbbc1b1900f24ffdcda37fe"
+   }
+  },
+  {
+   "kind": "imports",
+   "source": "file:extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+   "targets": [
+    "symbol:gson/src/main/java/com/google/gson/JsonParseException.java#JsonParseException"
+   ],
+   "resolution": "resolved",
+   "basis": "resolved",
+   "name": null,
+   "evidence": {
+    "path": "extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+    "start": 803,
+    "end": 845,
+    "digest": "sha256:8615ac71bb10c77aecd104502f8869071ecf8aab9cbbc1b1900f24ffdcda37fe"
+   }
+  }
+ ]
+}

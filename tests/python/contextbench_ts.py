@@ -47,7 +47,7 @@ from oxide.models import IndexReport, SourceRef
 from oxide.storage import ladybug
 from oxide.storage.ladybug import View
 
-BASELINE = cb.PHASE6 / "typescript-v11"
+BASELINE = cb.PHASE6 / "typescript-v12"
 PROTOCOL = cb.PHASE6 / "typescript-v1"  # tasks, gold audit and scorer are v1's
 TASKS = PROTOCOL / "tasks.json"
 AUDIT = PROTOCOL / "gold-audit.json"

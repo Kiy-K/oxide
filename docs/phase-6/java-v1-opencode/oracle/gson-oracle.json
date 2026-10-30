@@ -1,0 +1,611 @@
+{
+  "counts": {
+    "calls": {
+      "agree": 7830,
+      "precision": 1.0
+    },
+    "references": {
+      "agree": 5605,
+      "disagree": 1,
+      "precision": 0.9998216196931858
+    },
+    "imports": {
+      "agree": 1042,
+      "precision": 1.0
+    }
+  },
+  "overall": {
+    "agree": 14477,
+    "disagree": 1
+  },
+  "no_oracle_reasons": {
+    "unrecorded_or_error_or_external": {
+      "imports": 43,
+      "calls": 49,
+      "references": 104
+    }
+  },
+  "ambiguous": {
+    "calls_hit": 2031,
+    "calls_miss": 47
+  },
+  "disagreements": [
+    {
+      "kind": "references",
+      "source_entity": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A",
+      "evidence": "JsonAdapter",
+      "path_line": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:221",
+      "oxide_targets": [
+        "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.A.JsonAdapter"
+      ],
+      "javac_declaration": "gson/src/main/java/com/google/gson/annotations/JsonAdapter.java:4407",
+      "reason": "candidate span does not contain javac declaration"
+    }
+  ],
+  "unresolved": {
+    "references": [
+      {
+        "evidence": "LocalDate",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java:28599",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters",
+        "cause": "other",
+        "sha256": "00080a03caf968afa37884e4e796379cb6ca331bb905a2b2744e0e7afbfef375"
+      },
+      {
+        "evidence": "LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:6298",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testThrowingAccessor",
+        "cause": "other",
+        "sha256": "00d7ade9287cb35619ed34d2a847f8b597cb3398d1e1f34e15f1e4cc4de96f9a"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java#ParameterizedTypesTest.testParameterizedTypeGenericArraysDeserialization",
+        "cause": "other",
+        "sha256": "01d1bfee49a61e2d5a4d4da84c9b999be6a32ffd0c60f966feb46f84a5c5af3c"
+      },
+      {
+        "evidence": "Boolean",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/PrimitiveTest.java#PrimitiveTest.testStringsAsBooleans",
+        "cause": "other",
+        "sha256": "025c37f739422d010beb5e33af6d1110882e6bbfb7b531cd4a4c60940fc5bd4a"
+      },
+      {
+        "evidence": "T",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenTypeVariable",
+        "cause": "other",
+        "sha256": "03ec4a75879e12973f948a7f02da1b74f0cf3b521ea8e1abec416c5c0d1588ea"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ArrayTest.java#ArrayTest.testArrayOfCollectionSerialization",
+        "cause": "other",
+        "sha256": "051cc9a4afd00b8812069848c40de136e7b8216ab65131e55217bc1e94d1ea1b"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapTest.java#MapTest.testMapStandardSubclassDeserialization",
+        "cause": "other",
+        "sha256": "06e599823fc0b40c919219a1eb0bb328b38f260bec08e1f9afc7b34df7ab2877"
+      },
+      {
+        "evidence": "Enclosing",
+        "declaration": "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java:14609",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenTypeVariable",
+        "cause": "other",
+        "sha256": "0b11bd066cfa3f16699dd480d9fa45d980c3501a7ebbe780777fcd114f6c5f9d"
+      },
+      {
+        "evidence": "LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:4657",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testConstructorRuns",
+        "cause": "other",
+        "sha256": "0b65789788eaaba80661841fc1d6a95317d70837fc0ac22d68fa500c76747868"
+      },
+      {
+        "evidence": "SubTreeSet",
+        "declaration": "gson/src/test/java/com/google/gson/functional/InstanceCreatorTest.java:3456",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/InstanceCreatorTest.java#InstanceCreatorTest.testInstanceCreatorForParametrizedType",
+        "cause": "other",
+        "sha256": "0ba02f4a161298a447a46cce29ad49eac6c899dc0570428591ee99bd2eceb096"
+      },
+      {
+        "evidence": "T",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenTypeVariable",
+        "cause": "other",
+        "sha256": "0bf5e7128a40a183a52480c0580c1a619a218ddad67521276a2c398c64a05f21"
+      },
+      {
+        "evidence": "Blocked",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:13698",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testClassReflectionFilter",
+        "cause": "other",
+        "sha256": "0ca0bd44631e54c793fb5f41bb3efb8f3af004d09aa46cd83b1c55db9b3a5d12"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/GenericArrayTypeTest.java#GenericArrayTypeTest.testNotEquals",
+        "cause": "other",
+        "sha256": "0f29bdeec199696638259cb23b7cd86e8c7cdbf29c4acd9e27b8657342b418de"
+      },
+      {
+        "evidence": "Number",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java#TypeAdapters",
+        "cause": "other",
+        "sha256": "1018dc9518049fc4c916ffeed3b36f994b03a58ed3d389dc32195887688afb21"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ParameterizedTypesTest.java#ParameterizedTypesTest.testParameterizedTypeWithVariableTypeDeserialization",
+        "cause": "other",
+        "sha256": "1158671f754647c6e45cce50a92832ba9f3de3a95e87f1aba0cda97aafb52eb9"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java#MapAsArrayTypeAdapterTest.testTwoTypesCollapseToOneDeserialize",
+        "cause": "other",
+        "sha256": "11bf64aa686807825287a1910a9a62306509d13680d97e0d6625ae849274d111"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java#MapAsArrayTypeAdapterTest.testSerializeComplexMapWithTypeAdapter",
+        "cause": "other",
+        "sha256": "13465407a2bffda9faef42db7567015393f273f9e5d8d74eabe4374ebc0803df"
+      },
+      {
+        "evidence": "Boolean",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java#MapAsArrayTypeAdapterTest.testSerializeComplexMapWithTypeAdapter",
+        "cause": "other",
+        "sha256": "14211161bd7e4677e2eb46d6afab185c8e0e4d519d69a390ee9d289f2962eee3"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testParameterizedFactory",
+        "cause": "other",
+        "sha256": "14bd0506cd2af0dd85be5ba1a003c8f3117be2853320877a0adbfcc2155d3520"
+      },
+      {
+        "evidence": "AtomicLong",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java#TypeAdapters.atomicLongAdapter",
+        "cause": "other",
+        "sha256": "153e444690491edcd949c4c4a1f1d281ccc3684dd2f1abef8234ff224f7184e4"
+      },
+      {
+        "evidence": "Number",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java#TypeAdapters",
+        "cause": "other",
+        "sha256": "155c2dc59b2a3f684be377f025a5784a13ba120fbd665cdc7c90b8a8ffa5f6f7"
+      },
+      {
+        "evidence": "LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:4121",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testUnknownJsonProperty",
+        "cause": "other",
+        "sha256": "156d247bc9e687391eb431f9117e44cc15883e409b3a33fe0010ba8148277708"
+      },
+      {
+        "evidence": "BitSet",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java#TypeAdapters",
+        "cause": "other",
+        "sha256": "18ef4b79a0d4cf1774ce86c3fa2916ce44a214a6b0b413771dcc573bbafc17e6"
+      },
+      {
+        "evidence": "LocalGenericClass",
+        "declaration": "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java:7824",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testParameterizedFactory",
+        "cause": "other",
+        "sha256": "1942428db2dca1830c79c3f746868458d60abb63756e82db5c5effdead9cde16"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonParserTest.java#JsonParserTest.testExtraCommasInMaps",
+        "cause": "other",
+        "sha256": "19c0be38fba8293f880b2d62a180c063f08811c648fdec1c034baaab17ec82e0"
+      },
+      {
+        "evidence": "LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:4361",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testDuplicateJsonProperties",
+        "cause": "other",
+        "sha256": "1aa5e52cf2f5637549054adea9860396ed2f3925e561f3decb47042c3bb797c4"
+      },
+      {
+        "evidence": "Character",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java#TypeAdapters",
+        "cause": "other",
+        "sha256": "1aacecb4aa85230e233efb5c9362f6e1595f0d95a3c018f3ad7e90fc5b28716d"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/CollectionTest.java#CollectionTest.testWildcardPrimitiveCollectionDeserialization",
+        "cause": "other",
+        "sha256": "1ab7876ae6723f65d125be27b5dc633fc485532a5c408238e91b74a618faeed0"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapAsArrayTypeAdapterTest.java#MapAsArrayTypeAdapterTest.testDuplicateKeyWithNullFirstValueArrayForm",
+        "cause": "other",
+        "sha256": "1b1cd5289af380e9de7499e7de98de0c0af3bd48b65f4c225bf176c0ab705c55"
+      },
+      {
+        "evidence": "YearMonth",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/TypeAdapters.java:28599",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters",
+        "cause": "other",
+        "sha256": "1b2b473e8d0fe3915559867e29b894b38607af29e8c10adfd617076416235f10"
+      },
+      {
+        "evidence": "Byte",
+        "declaration": "gson/src/main/java/com/google/gson/TypeAdapter.java:5279",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testPrimitiveAdapterNullValue",
+        "cause": "other",
+        "sha256": "1b497d4f17fbd7daa288a72b37890b19a0ef857df36230badcc3f0c48926b609"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapTest.java#MapTest.testStringMapDeserializationWithCustomAdapterNullKey",
+        "cause": "other",
+        "sha256": "1c27393fb01ce604a73adbe70ea3248ece7ca7a7d4453b14ddec1593957cbdf1"
+      },
+      {
+        "evidence": "Double",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/StreamingTypeAdaptersTest.java#StreamingTypeAdaptersTest",
+        "cause": "other",
+        "sha256": "1ca27192647dc8480ed242372d7f0a773d8ea970228faf32538f6a9b13c43fe8"
+      },
+      {
+        "evidence": "Inner",
+        "declaration": "gson/src/test/java/com/google/gson/functional/FieldExclusionTest.java:2325",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/FieldExclusionTest.java#FieldExclusionTest.testInnerClassExclusion",
+        "cause": "other",
+        "sha256": "1d79a37e11fa384bb6bf6b63bb662eac0ccbcdcfaa66679a0c635a8ef131ec4e"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/MixedStreamTest.java#MixedStreamTest.testWriteHtmlSafeWithoutEscaping",
+        "cause": "other",
+        "sha256": "1de2ba8a39d0dca5896f592fe0240b4fba06bfe7a058fc3877ae8169c6e1dc54"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/MapTest.java#MapTest.testMapDeserializationWithUnquotedIntegerKeys",
+        "cause": "other",
+        "sha256": "1e18a6cdbd703f57cec11f7eab8d0140c6a07e87b0dd6187e03a9e295bb36f11"
+      },
+      {
+        "evidence": "DummyAdapter",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:12238",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetDelegateAdapter",
+        "cause": "other",
+        "sha256": "1ee6f6638dcb762425f257b3375e468cae15fb2bdc6faad5bdbb1c6df267d92f"
+      },
+      {
+        "evidence": "Integer",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/CollectionTest.java#CollectionTest.testTopLevelListOfIntegerCollectionsDeserialization",
+        "cause": "other",
+        "sha256": "1f98ae48c3303e8d3e9a75c393a281b0599710c63968a5452934f3666035957c"
+      },
+      {
+        "evidence": "CustomAppendable",
+        "declaration": "gson/src/test/java/com/google/gson/functional/ReadersWritersTest.java:5702",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ReadersWritersTest.java#ReadersWritersTest.testToJsonAppendable",
+        "cause": "other",
+        "sha256": "1fb8ac7d1f7683a633c6f6716098f7e8b9ddde38df5a3df633bae297996f33c4"
+      },
+      {
+        "evidence": "String",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:2227",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/DefaultTypeAdaptersTest.java#DefaultTypeAdaptersTest.testTreeSetDeserialization",
+        "cause": "other",
+        "sha256": "1ff9817373d2b9612bf697c8e8f9991589e1145718f318dbfb19864a9283aaef"
+      }
+    ],
+    "calls": [
+      {
+        "evidence": "requireNonNullField",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:16141",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.zonedDateTime",
+        "cause": "other",
+        "sha256": "0626c363f26fff1571d049f41c58b302df6520dc46362619232dee5a3c5bdbd4"
+      },
+      {
+        "evidence": "localDateTime",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:4079",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters",
+        "cause": "other",
+        "sha256": "08f8fa720e11a7d492328e480f523fcca4fdd248a8249d97135d3e024b95234f"
+      },
+      {
+        "evidence": "separateCamelCase",
+        "declaration": "gson/src/main/java/com/google/gson/FieldNamingPolicy.java:6102",
+        "source": "symbol:gson/src/main/java/com/google/gson/FieldNamingPolicy.java#FieldNamingPolicy",
+        "cause": "other",
+        "sha256": "0a40f5b19105b40eefeb5deb7e5a00b90ac341bf930b622a57698d1c23e60d09"
+      },
+      {
+        "evidence": "new LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:4657",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testConstructorRuns",
+        "cause": "other",
+        "sha256": "0ac534f2d6cfbf8f9ac76cd35f550861ad21707d1af89b366b38209ff8cda50c"
+      },
+      {
+        "evidence": "typeToString",
+        "declaration": "gson/src/main/java/com/google/gson/internal/GsonTypes.java:7814",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/GsonTypes.java#GsonTypes.ParameterizedTypeImpl.toString",
+        "cause": "other",
+        "sha256": "0ddb1f774837ae292abe60a79aca86b8216731453cb3e6e122ba01ea54358bd1"
+      },
+      {
+        "evidence": "element.getAsInt",
+        "declaration": "gson/src/main/java/com/google/gson/JsonElement.java:11181",
+        "source": "symbol:gson/src/test/java/com/google/gson/JsonArrayAsListTest.java#JsonArrayAsListTest.testReplaceAll",
+        "cause": "other",
+        "sha256": "0e2060fcf85ec5c6ffc553803b7420fd6165df00170473140343f6ad2c27867a"
+      },
+      {
+        "evidence": "gson.toJson",
+        "declaration": "gson/src/main/java/com/google/gson/Gson.java:25595",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ConcurrencyTest.java#ConcurrencyTest.testMultiThreadSerialization",
+        "cause": "other",
+        "sha256": "1613fa0fab8da5971eeb908263829958b800406849e2ba35fd396e8f833e8e4e"
+      },
+      {
+        "evidence": "typeToString",
+        "declaration": "gson/src/main/java/com/google/gson/internal/GsonTypes.java:7814",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/GsonTypes.java#GsonTypes.WildcardTypeImpl.toString",
+        "cause": "other",
+        "sha256": "16eb5b84a819a2a2b3c9d9a163beb7dca9bdc766b42d911bdf1229ef438dc1fd"
+      },
+      {
+        "evidence": "findByEntry",
+        "declaration": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:6919",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.EntrySet.contains",
+        "cause": "other",
+        "sha256": "1b2ba1ae3589206a795f35c625c0643c7fe9e91bc47477952339463334e82877"
+      },
+      {
+        "evidence": "new DummyFactory",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:12861",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetDelegateAdapter",
+        "cause": "other",
+        "sha256": "1be431b962134cf12ad75d55356427e31a8e83e816d1e93fc70ceeaa77e1fe6d"
+      },
+      {
+        "evidence": "new LocalRecord",
+        "declaration": "gson/src/test/java/com/google/gson/functional/Java17RecordTest.java:5915",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/Java17RecordTest.java#Java17RecordTest.testAccessorIsCalled",
+        "cause": "other",
+        "sha256": "1f4bd8b9cd37dc56c3f2accc4d780114cff39bfb938c80fb239175bcb58b44c7"
+      },
+      {
+        "evidence": "Streams.parse",
+        "declaration": "gson/src/main/java/com/google/gson/internal/Streams.java:1468",
+        "source": "symbol:gson/src/main/java/com/google/gson/JsonStreamParser.java#JsonStreamParser.next",
+        "cause": "other",
+        "sha256": "1f5b88fb3616bb4e8a5a9be960f1ed9171fa803040458f2513652be2b2fa06d5"
+      },
+      {
+        "evidence": "new DummyAdapter",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:12238",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetDelegateAdapter",
+        "cause": "other",
+        "sha256": "1fc7e745ea6bc109c909519491f11548a6e4c51111eb45b96dfe09d0d5ffd6c4"
+      },
+      {
+        "evidence": "gson.getAdapter",
+        "declaration": "gson/src/main/java/com/google/gson/Gson.java:18329",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetAdapter_FutureAdapterConcurrency",
+        "cause": "other",
+        "sha256": "2085df2681abf68a6f8e453334ddda6875dd90603b1db44d6f11e28932116ac6"
+      },
+      {
+        "evidence": "new DummyAdapter<>",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:5587",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetAdapter_Concurrency",
+        "cause": "other",
+        "sha256": "213394552f297658c2609a5c08287ea8e7fc5dd5ef39989371c084cbb0f9cbf0"
+      },
+      {
+        "evidence": "requireNonNullField",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:16141",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.offsetTime",
+        "cause": "other",
+        "sha256": "2172588a5958a59e2c80d3cbde6ef6a41a112886989e41d6ec46b869066abc29"
+      },
+      {
+        "evidence": "findByEntry",
+        "declaration": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:6919",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.EntrySet.remove",
+        "cause": "other",
+        "sha256": "2365bd80bdb32439a16fcc34730869aaa540a5cf3bec1f05be390603134fec3b"
+      },
+      {
+        "evidence": "new SubTreeSet<>",
+        "declaration": "gson/src/test/java/com/google/gson/functional/InstanceCreatorTest.java:3456",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/InstanceCreatorTest.java#InstanceCreatorTest.testInstanceCreatorForParametrizedType",
+        "cause": "other",
+        "sha256": "24248d22a1cccba9525d4d8f59e4c8c6f0c7e6dce969e6f15d779220087e4c80"
+      },
+      {
+        "evidence": "checkAccessible",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java:6282",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java#ReflectiveTypeAdapterFactory.createBoundField",
+        "cause": "other",
+        "sha256": "2426c457f113769fce91f542907dfde3d235dbcde16693d36eea8ab3e28aa700"
+      },
+      {
+        "evidence": "requireNonNullField",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:16141",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.offsetDateTime",
+        "cause": "other",
+        "sha256": "27f93186b45198b03bd4cc30023774d2bb91cef5c9cd53beb67b45cfdd0adaad"
+      },
+      {
+        "evidence": "requireNonNullField",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:16141",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.zonedDateTime",
+        "cause": "other",
+        "sha256": "287bc3447695bb881632b56bdb19af49ffcd147d43ae19541fc8336af04abffc"
+      },
+      {
+        "evidence": "objectConstructor.construct",
+        "declaration": "gson/src/main/java/com/google/gson/internal/ObjectConstructor.java:987",
+        "source": "symbol:gson/src/test/java/com/google/gson/internal/ConstructorConstructorTest.java#ConstructorConstructorTest.testCustomMapInterfaceCreation",
+        "cause": "other",
+        "sha256": "2c7a5da2098a18897c871e1af1b4b1651063c198b65b610ab26d3ab67703df52"
+      },
+      {
+        "evidence": "new Enclosing<>",
+        "declaration": "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java:14609",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenTypeVariable",
+        "cause": "other",
+        "sha256": "2d94b7ee878e34f4d0c03494b0397db2fd3a0cc0c72fc0ce3ff66767801b52d8"
+      },
+      {
+        "evidence": "checkNotPrimitive",
+        "declaration": "gson/src/main/java/com/google/gson/internal/GsonTypes.java:17869",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/GsonTypes.java#GsonTypes.WildcardTypeImpl.WildcardTypeImpl",
+        "cause": "other",
+        "sha256": "2eb569bf2bed6dc95f4170f1f3ea5d2dec98012f66236ddb2474ce7f825f6b11"
+      },
+      {
+        "evidence": "new SubTypeToken<Integer>",
+        "declaration": "gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java:13148",
+        "source": "symbol:gson/src/test/java/com/google/gson/reflect/TypeTokenTest.java#TypeTokenTest.testTypeTokenSubSubClass",
+        "cause": "other",
+        "sha256": "30350c5e3ff13b2a13e95eae28f34ecc5900053ffda11c1adde33f15329b36a6"
+      },
+      {
+        "evidence": "TroubleshootingGuide.createUrl",
+        "declaration": "gson/src/main/java/com/google/gson/internal/TroubleshootingGuide.java:191",
+        "source": "symbol:gson/src/main/java/com/google/gson/stream/JsonReader.java#JsonReader.syntaxError",
+        "cause": "other",
+        "sha256": "3087cdd4a141a84fa2a1decbb78428bcac1ccbf63ff89426cdb6184f90c0e7cd"
+      },
+      {
+        "evidence": "nextNode",
+        "declaration": "gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java:16627",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/LinkedTreeMap.java#LinkedTreeMap.EntrySet.iterator",
+        "cause": "other",
+        "sha256": "31e706b8092fa48d409f4beaa15b5ad216a3b69d9cc1236855a62ee5e733f99a"
+      },
+      {
+        "evidence": "factory1.equals",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:13342",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetDelegateAdapter",
+        "cause": "other",
+        "sha256": "36d437fb1a2b7231ac32d905641b998cadf95a5d33980785b845d3fd6f5addd1"
+      },
+      {
+        "evidence": "json1.getAsJsonObject",
+        "declaration": "gson/src/main/java/com/google/gson/JsonElement.java:5285",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/CustomDeserializerTest.java#CustomDeserializerTest.testJsonTypeFieldBasedDeserialization",
+        "cause": "other",
+        "sha256": "38a0e656b45e2a75d2f15c407444c9de75ccc62f53b924fa4787f1cd162d2fb0"
+      },
+      {
+        "evidence": "typeToken.getRawType",
+        "declaration": "gson/src/main/java/com/google/gson/reflect/TypeToken.java:6726",
+        "source": "symbol:test-jpms/src/test/java/com/google/gson/jpms_test/ExportedPackagesTest.java#ExportedPackagesTest.testReflectPackage",
+        "cause": "other",
+        "sha256": "3b5f1299d50f6ce1b2ba4d12e2b75d2fc51a03870881c208ded01a977483982a"
+      },
+      {
+        "evidence": "new DummyFactory",
+        "declaration": "gson/src/test/java/com/google/gson/GsonTest.java:12861",
+        "source": "symbol:gson/src/test/java/com/google/gson/GsonTest.java#GsonTest.testGetDelegateAdapter",
+        "cause": "other",
+        "sha256": "3ceb1ccf4a6d54393506935916788a5b90742069fccc56dfd3692afa5b46f136"
+      },
+      {
+        "evidence": "ReflectionHelper.isAnonymousOrNonStaticLocal",
+        "declaration": "gson/src/main/java/com/google/gson/internal/reflect/ReflectionHelper.java:5846",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/Excluder.java#Excluder.excludeClass",
+        "cause": "other",
+        "sha256": "3da78838517693fcff49a4a29ffa78e03d010398c3728e44f2172ef24d111d51"
+      },
+      {
+        "evidence": "context.serialize",
+        "declaration": "gson/src/main/java/com/google/gson/JsonSerializationContext.java:1168",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/NullObjectAndFieldTest.java#NullObjectAndFieldTest.testCustomTypeAdapterPassesNullSerialization",
+        "cause": "other",
+        "sha256": "3ec6c3d6955f16a725af4cf7ca01a955635747d6a378a6acc269a58343a45da3"
+      },
+      {
+        "evidence": "new Local",
+        "declaration": "gson/src/test/java/com/google/gson/functional/ObjectTest.java:14094",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/ObjectTest.java#ObjectTest.testAnonymousLocalClassesCustomSerialization",
+        "cause": "other",
+        "sha256": "403d13b365d5f6a6013cf7b7d38ecfdba7d07093e025fb82a154bd9471292809"
+      },
+      {
+        "evidence": "requiresOwnerType",
+        "declaration": "gson/src/main/java/com/google/gson/internal/GsonTypes.java:18404",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/GsonTypes.java#GsonTypes.ParameterizedTypeImpl.ParameterizedTypeImpl",
+        "cause": "other",
+        "sha256": "4540736d27b41d37babb37922fb9d9adf08e902d503d50fcb696d9e617ea7c10"
+      },
+      {
+        "evidence": "assertInstantiable",
+        "declaration": "gson/src/main/java/com/google/gson/internal/UnsafeAllocator.java:1278",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/UnsafeAllocator.java#UnsafeAllocator.create",
+        "cause": "other",
+        "sha256": "45c929c4441406ec212a2036964e39f6c16f5d0ffd3d736b945c06f38cff0f36"
+      },
+      {
+        "evidence": "delegate",
+        "declaration": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java:16077",
+        "source": "symbol:gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java#JsonAdapterAnnotationOnClassesTest.WithDelayedDelegatingFactory.Factory.create",
+        "cause": "other",
+        "sha256": "464398409bc3830295b797a9339b2c299211855ae868d477827d0b989e279645"
+      },
+      {
+        "evidence": "gson.toJson",
+        "declaration": "gson/src/main/java/com/google/gson/Gson.java:32066",
+        "source": "symbol:proto/src/test/java/com/google/gson/protobuf/functional/ProtosWithAnnotationsAndJsonNamesTest.java#ProtosWithAnnotationsAndJsonNamesTest.testProtoWithAnnotationsAndJsonNames_basicConversions",
+        "cause": "other",
+        "sha256": "4951cd2baf2bdab2fd41339d54e5abeb92dab7d946d9d298e88aa605af62208d"
+      },
+      {
+        "evidence": "requireNonNullField",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java:16141",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/JavaTimeTypeAdapters.java#JavaTimeTypeAdapters.localDateTime",
+        "cause": "other",
+        "sha256": "4deb4187dd1900e927f5d8ebd551cede926022ffe2d72296298a705482298c93"
+      },
+      {
+        "evidence": "checkAccessible",
+        "declaration": "gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java:6282",
+        "source": "symbol:gson/src/main/java/com/google/gson/internal/bind/ReflectiveTypeAdapterFactory.java#ReflectiveTypeAdapterFactory.createBoundField",
+        "cause": "other",
+        "sha256": "4f18710b2aacdd301d62cb1885cb48dce115d7c22557c3ee7bc7e5be0fb4cf8f"
+      }
+    ]
+  }
+}
