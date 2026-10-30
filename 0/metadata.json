@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M66H6M8A2QMPG0KGHCKC53N6",
+  "session_id": "82489c2a-925a-4daf-9328-e73f08dd0e7b",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-30T13:50:16.449078764Z",
+  "branch": "rewrite/v2",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/phase-6/go-v1/README.md",
+    "docs/phase-6/go-v1/verification/README.md",
+    "logo.png",
+    "pyproject.toml",
+    "skills-lock.json",
+    "uv.lock"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-haiku-5-5",
+  "turn_id": "e033fb501272",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}

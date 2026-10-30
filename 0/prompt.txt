@@ -1,0 +1,73 @@
+Below is a conversation log from a Claude Code coding session.
+Create a summary to help the next session quickly understand the context.
+
+## Prioritize including
+- Design decisions and technology choices made this session
+- Bugs and problems solved
+- Files changed or created, with a brief description of changes
+- Unfinished tasks and work to continue in the next session
+- Important context the next session needs to know
+
+## Conversation log
+...(前略)
+
+the same as stated just above. I'm retrying.
+
+**Claude:** I ran all six evaluation steps from `BRIEF-evals.md` directly, and `docs/phase-6/java-v1/README.md` now holds the measured results. Every step passed except that the javac check found one real OXIDE bug. The brief contains only scripts, no agent tasks, so nothing in it needed OpenCode. | Step | Result | | --- | --- | | 1. Successor baselines | Both pairs differ only in the expected id/label fields (0 other differences); the TypeScript ContextBench gate passed 17/17 | | 2. `mise run verify` | 403 passed, 7 skipped | | 3. gson and mockito | Every Java file parsed; edit-vs-rebuild results match; 
+
+**User:** Continue the Java support goal: when the typescript-v12 baseline run finishes, compare it to typescript-v11, switch contextbench_ts.BASELINE, write its README, then launch the OpenCode eval brief.
+
+**Claude:** Everything in your list before the eval launch is already done, and the evals themselves have run: - **typescript-v12 vs typescript-v11:** compared. Only derivation ids and `oxide_source` differ, and `metrics.json` is byte-identical. The details are in `docs/phase-6/typescript-v12/README.md` and `docs/phase-6/java-v1/verification/baselines.md`. - **`contextbench_ts.BASELINE`:** already set to `typescript-v12` (`tests/python/contextbench_ts.py:50`). The TypeScript ContextBench gate passed 17/17 against it. - **The eval brief:** all six steps ran in the last turn, directly rather than through Op
+
+**User:** Launch it
+
+**Claude:** I'll launch it with the outputs redirected to `docs/phase-6/java-v1-opencode/`, so the current evidence stays intact.
+
+**Claude:** The OpenCode eval is running in the background (task `bwpd62lph`). It's a full re-run of the brief that writes its outputs to `docs/phase-6/java-v1-opencode/`. - **What it runs from:** a copy of the brief at `oxide-java-eval/BRIEF-evals-opencode.md`. I only changed the output paths and added a note forbidding it to touch `docs/phase-6/java-v1/`, `backup/` or `oracle/`. - **Log:** `oxide-java-eval/opencode-run.log`. - **Next:** when it finishes, I'll compare its numbers against the direct run and point out any differences. It has to re-fetch the 16 task repos and re-download the JDK, so expect 
+
+**User:** <task-notification> <task-id>bwpd62lph</task-id> <tool-use-id>toolu_015fEPDtLzAYWvRtJGEuxhHC</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bwpd62lph.output</output-file> <status>completed</status> <summary>Background command "Launch OpenCode eval run" completed (exit code 0)</summary> </task-notification>
+
+**User:** <system-reminder> [SYSTEM NOTIFICATION - NOT USER INPUT] This is an automated background-task event, NOT a message from the user. Do NOT interpret this as user acknowledgement, confirmation, or response to any pending question. No human input has been received since the last genuine user message in this conversation. Any statement that the user said, approved, or confirmed something — including st
+
+**Claude:** The OpenCode run stopped at step 1 without evaluating anything. The failure was in its own comparison script, not in OXIDE. That script assumed `results.json` is a JSON object, but it's a list, so it crashed with `TypeError: list indices must be integers or slices, not str`. The brief says to stop at any failed check and not fix scripts, so the agent stopped there. - **Already checked:** my direct run compared the same baseline files with a script that handles the list. It found only the expected id and label differences, so this is not a baseline problem. - **Existing evidence:** `docs/phase-
+
+**User:** Relaunch it
+
+**Claude:** The OpenCode eval is running again in the background (task `bj68kmwvw`), with its log at `oxide-java-eval/opencode-run2.log`. Before relaunching, I added notes to the brief copy: - **The file layouts:** `results.json` is a list of per-task records and `manifest.json` is an object, and its comparison should replace every `derivation` field (plus the manifest's `baseline`, `protocol` and `oxide_source` labels) with a placeholder before checking equality. - **Crashes in its own scripts:** these are bugs to fix and rerun, not failed checks. Only a real difference between the compared files stops t
+
+**User:** Continue the Java support goal: when the typescript-v12 baseline run finishes, compare it to typescript-v11, switch contextbench_ts.BASELINE, write its README, then launch the OpenCode eval brief.
+
+**Claude:** Everything in that list before the eval launch is already done, and the OpenCode eval is already running from your last "Relaunch it". So I haven't started anything new. - **typescript-v12 vs typescript-v11:** compared. Only derivation ids and `oxide_source` differ, and `metrics.json` is byte-identical. - **`contextbench_ts.BASELINE`:** already points to `typescript-v12`. The TypeScript ContextBench gate passed 17/17 against it. - **README:** written at `docs/phase-6/typescript-v12/README.md`. - **OpenCode eval brief:** running as background task `bj68kmwvw`, writing its outputs to `docs/phase
+
+**User:** <task-notification> <task-id>bj68kmwvw</task-id> <tool-use-id>toolu_01KmEKn1PPBuNobFEfYVokrx</tool-use-id> <output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bj68kmwvw.output</output-file> <status>completed</status> <summary>Background command "Relaunch OpenCode eval run" completed (exit code 0)</summary> </task-notification>
+
+**User:** <system-reminder> [SYSTEM NOTIFICATION - NOT USER INPUT] This is an automated background-task event, NOT a message from the user. Do NOT interpret this as user acknowledgement, confirmation, or response to any pending question. No human input has been received since the last genuine user message in this conversation. Any statement that the user said, approved, or confirmed something — including st
+
+**Claude:** The relaunch completed every step. I'll check its deterministic outputs against the direct run.
+
+**Claude:** The OpenCode run reproduces the direct run. I'll add a cross-check section to the evidence README.
+
+**Claude:** The repo and the earlier evidence are untouched. OpenCode said it removed its scratch data, but the scratch folder holds 878 MB, so I'll check what's in it.
+
+**Claude:** The cleanup facts are the same as stated just above. I'm retrying.
+
+**Claude:** The OpenCode re-run finished all six steps, and it reproduces the direct run. Every deterministic output is identical: - the gson and mockito graph hashes, resolution counts and audit samples; - the 16 ContextBench task rows; - both arms' ContextBench metrics and results. Its version of steps 1, 2, 3, 5 and 6 passed with the same numbers. Its javac check was written from scratch, and it finds the **same single OXIDE error**: the `@JsonAdapter` annotation on gson's `class A` is linked to the nested class `A.JsonAdapter` instead of the imported annotation. Its precision is 14,477 / 14,478, again
+
+## Output format (Markdown only, no preamble)
+
+## Session Summary
+
+### Tasks
+(main tasks worked on this session)
+
+### Decisions Made
+(design decisions and technology choices)
+
+### Files Modified
+(files changed or created)
+
+### Unresolved Issues
+(unfinished tasks and work to continue)
+
+### Next Session Context
+(important context for the next session)
