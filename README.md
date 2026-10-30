@@ -10,8 +10,8 @@ deterministic selection and packing. No embeddings, model runners, or network ac
 the query path.
 
 Status: pre-release, on branch `rewrite/v2`. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust,
-Java and C have parser slices ([TypeScript](docs/typescript.md), [JavaScript](docs/javascript.md),
-[Go](docs/go.md), [Rust](docs/rust.md), [Java](docs/java.md), [C](docs/c.md)); other files are kept as
+Java, C and C++ have parser slices ([TypeScript](docs/typescript.md), [JavaScript](docs/javascript.md),
+[Go](docs/go.md), [Rust](docs/rust.md), [Java](docs/java.md), [C](docs/c.md), [C++](docs/cpp.md)); other files are kept as
 unsupported file evidence. The public Python API is the product boundary
 ([docs/public-api.md](docs/public-api.md)). The legacy v1 implementation and its README
 live on `main`; a copy is kept as history in

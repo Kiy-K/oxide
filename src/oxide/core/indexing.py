@@ -19,6 +19,10 @@ from oxide.capture import Capture
 from oxide.core.languages import (
     c,
     c_resolve,
+    cpp,
+    cpp_facts,
+    cpp_macros,
+    cpp_resolve,
     go,
     go_resolve,
     java,
@@ -43,10 +47,23 @@ TREE_PROJECTION = "1"
 FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
     f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION} {rust.FACTS_VERSION} "
-    f"{java.FACTS_VERSION} {c.FACTS_VERSION}"
+    f"{java.FACTS_VERSION} {c.FACTS_VERSION} {cpp.FACTS_VERSION}"
 )
 
-Dialect = Literal["python", "typescript", "tsx", "javascript", "go", "rust", "java", "c"]
+Dialect = Literal["python", "typescript", "tsx", "javascript", "go", "rust", "java", "c", "cpp"]
+CPP_SUFFIXES = (
+    ".cc",
+    ".cpp",
+    ".cxx",
+    ".c++",
+    ".hh",
+    ".hpp",
+    ".hxx",
+    ".h++",
+    ".ipp",
+    ".tpp",
+    ".inl",
+)
 
 
 def dialect(path: str) -> Dialect | None:
@@ -59,7 +76,17 @@ def dialect(path: str) -> Dialect | None:
         return "java"
     if path.endswith((".c", ".h")):
         return "c"
+    if path.endswith(CPP_SUFFIXES):
+        return "cpp"
     return "python" if path.endswith(".py") else typescript_syntax.dialect(path)
+
+
+def source_dialect(path: str, data: bytes) -> Dialect | None:
+    """``dialect``, except that a ``.h`` file with C++ syntax is C++ (docs/cpp.md)."""
+    found = dialect(path)
+    return (
+        "cpp" if found == "c" and path.endswith(".h") and cpp_macros.is_cplusplus(data) else found
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -92,6 +119,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "java-parser": f"{parser} tree-sitter-java={version('tree-sitter-java')}",
         "c": c.VERSION,
         "c-parser": f"{parser} tree-sitter-c={version('tree-sitter-c')}",
+        "cpp": cpp.VERSION,
+        "cpp-parser": f"{parser} tree-sitter-cpp={version('tree-sitter-cpp')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -152,13 +181,14 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
     c_sources: list[tuple[str, str, c.Parsed]] = []
+    cpp_sources: list[tuple[str, str, cpp.Parsed]] = []
     for f in capture.files:
         key = f"file:{f.path}"
         name = f.path.rsplit("/", 1)[-1]
         source = SourceRef(f.path, 0, len(f.data), f.digest)
         entities.append(Entity(key, "file", "file", name, None, source, False))
         edges.append(Edge("contains", "repo", (key,), "resolved", "syntactic", None, None))
-        lang = dialect(f.path)
+        lang = source_dialect(f.path, f.data)
         if lang is None:
             files.append(FileInfo(f.path, f.digest, len(f.data), "unknown", "unsupported", ()))
             continue
@@ -196,6 +226,12 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 c_sources.append((f.path, f.digest, cp))
                 encoded = raw if hit else c.encode(cp)
             diagnostics = cp if isinstance(cp, str) else cp.diagnostics
+        elif lang == "cpp":
+            xp, hit = _reuse(raw, f.data, cpp_facts.decode, cpp.parse)
+            if not isinstance(xp, str):
+                cpp_sources.append((f.path, f.digest, xp))
+                encoded = raw if hit else cpp_facts.encode(xp)
+            diagnostics = xp if isinstance(xp, str) else xp.diagnostics
         else:
             parse = partial(typescript.parse, language=lang)
             ts, hit = _reuse(raw, f.data, typescript.decode, parse)
@@ -220,5 +256,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     manifests = {p: d for p, d in others.items() if p.rpartition("/")[2] == "Cargo.toml"}
     rust_resolve.Resolver(rs_sources, manifests).derive(entities, edges)
     java_resolve.Resolver(java_sources).derive(entities, edges)
-    c_resolve.Resolver(c_sources, {f.path for f in capture.files}).derive(entities, edges)
+    paths = {f.path for f in capture.files}
+    c_resolve.Resolver(c_sources, paths).derive(entities, edges)
+    cpp_resolve.Resolver(cpp_sources, c_sources, paths).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

@@ -1,0 +1,1481 @@
+{
+ "units": 31,
+ "failed_units": [],
+ "gcc_call_sites": 2894,
+ "gcc_calls_to_captured_definitions": {
+  "header": 726,
+  "unit": 1491
+ },
+ "tally": {
+  "ambiguous to a macro, not judged": 81,
+  "ambiguous, gcc captured": 66,
+  "ambiguous, no gcc call (header)": 1229,
+  "resolved to a macro, not judged": 7950,
+  "resolved, agree": 640,
+  "resolved, agree for some": 8,
+  "resolved, no gcc call (header)": 7938,
+  "resolved, no gcc call (unit)": 3,
+  "unresolved, gcc definition not compiled": 1,
+  "unresolved, gcc external": 15,
+  "unresolved, no gcc call (header)": 17596,
+  "unresolved, no gcc call (unit)": 54
+ },
+ "disagreements": [
+  {
+   "site": [
+    "src/exp.h",
+    85
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEENS_8REGEX_OPE",
+     [
+      [
+       "src/regex_yaml.cpp",
+       13
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    89
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEENS_8REGEX_OPE",
+     [
+      [
+       "src/regex_yaml.cpp",
+       13
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    97
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1Ec",
+     [
+      [
+       "src/regex_yaml.cpp",
+       9
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    109
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1Ec",
+     [
+      [
+       "src/regex_yaml.cpp",
+       9
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    156
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEENS_8REGEX_OPE",
+     [
+      [
+       "src/regex_yaml.cpp",
+       13
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    162
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEENS_8REGEX_OPE",
+     [
+      [
+       "src/regex_yaml.cpp",
+       13
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    166
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1Ec",
+     [
+      [
+       "src/regex_yaml.cpp",
+       9
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    171
+   ],
+   "oxide": "symbol:src/regex_yaml.cpp#YAML.RegEx.RegEx~1",
+   "gcc": [
+    [
+     "_ZN4YAML5RegExC1ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEENS_8REGEX_OPE",
+     [
+      [
+       "src/regex_yaml.cpp",
+       13
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ec",
+     [
+      [
+       "src/regex_yaml.cpp",
+       9
+      ]
+     ]
+    ],
+    [
+     "_ZN4YAML5RegExC1Ev",
+     [
+      [
+       "src/regex_yaml.cpp",
+       7
+      ]
+     ]
+    ]
+   ]
+  }
+ ],
+ "missed": [
+  {
+   "site": [
+    "include/yaml-cpp/exceptions.h",
+    264
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "include/yaml-cpp/exceptions.h",
+      118
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/emitter.cpp",
+    929
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/emitter.cpp",
+      900
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/emitter.cpp",
+    961
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/emitter.cpp",
+      900
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    28
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    32
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    40
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    40
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    40
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    48
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    52
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    52
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    60
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    64
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    64
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    71
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    72
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    73
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    74
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    74
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    74
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      11
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    78
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    85
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    89
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    97
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    101
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    105
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    109
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    113
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    113
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    117
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    121
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    125
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    129
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    133
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    137
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    138
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    142
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    143
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    155
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    156
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    161
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    162
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    166
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    171
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    171
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ],
+    [
+     [
+      "src/regex_yaml.cpp",
+      7
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    172
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    186
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    190
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/exp.h",
+    195
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      13
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/nodebuilder.cpp",
+    28
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "include/yaml-cpp/node/impl.h",
+      53
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    14
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      22
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    19
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      22
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    37
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      22
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    42
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      50
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    47
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      50
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/parse.cpp",
+    70
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/parse.cpp",
+      50
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    19
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      22
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    23
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      40
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      40
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    26
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      45
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      45
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      45
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    30
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    42
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    47
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      68
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    69
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      56
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      51
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      51
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      51
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      51
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      56
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/regeximpl.h",
+    76
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regeximpl.h",
+      107
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      102
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      102
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      102
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      102
+     ]
+    ],
+    [
+     [
+      "src/regeximpl.h",
+      107
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/scantoken.cpp",
+    341
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  },
+  {
+   "site": [
+    "src/scantoken.cpp",
+    341
+   ],
+   "oxide": "ambiguous",
+   "gcc": [
+    [
+     [
+      "src/regex_yaml.cpp",
+      9
+     ]
+    ]
+   ]
+  }
+ ],
+ "unseen": [
+  {
+   "site": [
+    "src/parser.cpp",
+    84
+   ],
+   "oxide": "symbol:include/yaml-cpp/exceptions.h#YAML.ParserException.ParserException"
+  },
+  {
+   "site": [
+    "src/scantoken.cpp",
+    241
+   ],
+   "oxide": "symbol:include/yaml-cpp/exceptions.h#YAML.ParserException.ParserException"
+  },
+  {
+   "site": [
+    "src/scantoken.cpp",
+    246
+   ],
+   "oxide": "symbol:include/yaml-cpp/exceptions.h#YAML.ParserException.ParserException"
+  }
+ ]
+}

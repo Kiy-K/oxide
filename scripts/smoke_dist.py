@@ -100,6 +100,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "rust_repo", root / "rustlang")
         shutil.copytree(fixtures / "java_repo", root / "javalang")
         shutil.copytree(fixtures / "c_repo", root / "clang")
+        shutil.copytree(fixtures / "cpp_repo", root / "cpplang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         # Exclude host toolchains: parsing source must never execute its runtimes.
         env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
@@ -195,6 +196,19 @@ def main(fixtures: Path) -> None:
             "Store *store_open(enum Mode mode)" in c_context["payload"],
             "installed C context unavailable",
         )
+        cpp = result("search", str(root), "must get", "--symbol", "Store.must_get")
+        check(
+            cpp["entries"][0]["entity"]["key"].startswith("symbol:cpplang/")
+            and cpp["entries"][0]["entity"]["name"] == "must_get",
+            "installed C++ extraction unavailable",
+        )
+        cpp_context = result(
+            "context", str(root), "open", "--symbol", "Store.open", "--budget", "1024"
+        )
+        check(
+            "Store Store::open(Mode mode)" in cpp_context["payload"],
+            "installed C++ context unavailable",
+        )
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -265,6 +279,7 @@ def environment() -> dict[str, Any]:
                 "tree-sitter-rust",
                 "tree-sitter-java",
                 "tree-sitter-c",
+                "tree-sitter-cpp",
                 "fastmcp",
             )
         },

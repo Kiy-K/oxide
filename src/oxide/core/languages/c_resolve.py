@@ -13,7 +13,7 @@ from __future__ import annotations
 import posixpath
 from dataclasses import dataclass
 
-from oxide.core.languages.c import Parsed
+from oxide.core.languages.c import Include, Parsed
 from oxide.core.languages.python import Use
 from oxide.core.languages.python_resolve import Edge, Res, edge_target, structural
 from oxide.models import Entity, RelationKind, SourceRef
@@ -44,26 +44,40 @@ class _File:
     includes: list[list[str]]  # candidate paths per include, in source order
 
 
+def suffixes(paths: set[str]) -> dict[str, list[str]]:
+    """Every captured path by each of its path suffixes."""
+    found: dict[str, list[str]] = {}
+    for path in paths:
+        parts = path.split("/")
+        for n in range(len(parts)):
+            found.setdefault("/".join(parts[n:]), []).append(path)
+    return found
+
+
+def included(
+    path: str, items: list[Include], paths: set[str], by_suffix: dict[str, list[str]]
+) -> list[list[str]]:
+    """Candidate paths of each include of ``path``, in source order."""
+    found = []
+    for item in items:
+        beside = posixpath.normpath(posixpath.join(posixpath.dirname(path), item.path))
+        if not item.system and beside in paths:
+            found.append([beside])
+        elif not item.system or "/" in item.path:
+            found.append(sorted(by_suffix.get(posixpath.normpath(item.path), [])))
+        else:
+            found.append([])
+    return found
+
+
 class Resolver:
     def __init__(self, files: list[tuple[str, str, Parsed]], paths: set[str]) -> None:
         self.files: list[_File] = []
         self.at: dict[str, int] = {}
         self.names: dict[str, list[Site]] = {}  # by declared name, every kind
-        suffixes: dict[str, list[str]] = {}
-        for path in paths:
-            parts = path.split("/")
-            for n in range(len(parts)):
-                suffixes.setdefault("/".join(parts[n:]), []).append(path)
+        by_suffix = suffixes(paths)
         for path, digest, parsed in files:
-            includes = []
-            for item in parsed.includes:
-                beside = posixpath.normpath(posixpath.join(posixpath.dirname(path), item.path))
-                if not item.system and beside in paths:
-                    includes.append([beside])
-                elif not item.system or "/" in item.path:
-                    includes.append(sorted(suffixes.get(posixpath.normpath(item.path), [])))
-                else:
-                    includes.append([])
+            includes = included(path, parsed.includes, paths, by_suffix)
             self.at[path] = len(self.files)
             self.files.append(_File(path, digest, parsed, symbol_keys(path, parsed), includes))
             for k, scope in enumerate(parsed.scopes[1:], 1):

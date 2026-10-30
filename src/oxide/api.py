@@ -26,7 +26,7 @@ from typing import Any, Literal
 from oxide import jev
 from oxide.capture import capture
 from oxide.core import navigation, ordering, packing, retrieval, routing, structural
-from oxide.core.indexing import components, derive, dialect, validate
+from oxide.core.indexing import components, derive, source_dialect, validate
 from oxide.core.retrieval import Hints
 from oxide.models import (
     Closed,
@@ -170,7 +170,11 @@ class Repository:
             )
             previous = old.snapshot if old else None
             cached = old.facts() if old else {}
-            sources = [(lang, d) for p, d in after.items() if (lang := dialect(p)) is not None]
+            sources = [
+                (lang, f.digest)
+                for f in snapshot.files
+                if (lang := source_dialect(f.path, f.data)) is not None
+            ]
             hits = sum(isinstance(s := cached.get(lang), dict) and d in s for lang, d in sources)
             report(
                 f"deriving {len(after)} files: parsing {len(sources) - hits} source files, "

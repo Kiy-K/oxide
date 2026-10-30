@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import bisect
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -216,6 +217,28 @@ class _Facts:
         return body
 
 
+def innermost(spans: list[tuple[int, int, int]]) -> Callable[[int], int]:
+    """The scope of the innermost ``(start, end, scope)`` span holding a byte, else 0.
+    Spans nest (a tag definition in its declaration), so each knows its enclosing one."""
+    tops = sorted(spans)
+    starts = [t[0] for t in tops]
+    outer: list[int] = []
+    stack: list[int] = []
+    for start, _, _ in tops:
+        while stack and start >= tops[stack[-1]][1]:
+            stack.pop()
+        outer.append(stack[-1] if stack else -1)
+        stack.append(len(outer) - 1)
+
+    def scope_at(at: int) -> int:
+        j = bisect.bisect_right(starts, at) - 1
+        while j >= 0 and at >= tops[j][1]:
+            j = outer[j]
+        return tops[j][2] if j >= 0 else 0
+
+    return scope_at
+
+
 def parse(data: bytes) -> Parsed | str:
     """Syntax facts, or the reason the file is unsupported."""
     try:
@@ -233,24 +256,7 @@ def parse(data: bytes) -> Parsed | str:
             facts.top(node)
             end = node.end_byte
     scopes = facts.scopes
-    # File-level spans by start. A tag definition nests in its declaration, so each span
-    # knows its enclosing one and a byte's scope is the innermost span holding it.
-    tops = sorted((d.start, d.end, k) for k, s in enumerate(scopes) if (d := s.decl))
-    starts = [t[0] for t in tops]
-    outer: list[int] = []
-    stack: list[int] = []
-    for start, _, _ in tops:
-        while stack and start >= tops[stack[-1]][1]:
-            stack.pop()
-        outer.append(stack[-1] if stack else -1)
-        stack.append(len(outer) - 1)
-
-    def scope_at(at: int) -> int:
-        j = bisect.bisect_right(starts, at) - 1
-        while j >= 0 and at >= tops[j][1]:
-            j = outer[j]
-        return tops[j][2] if j >= 0 else 0
-
+    scope_at = innermost([(d.start, d.end, k) for k, s in enumerate(scopes) if (d := s.decl)])
     # Declared names are not uses: tag and typedef names in their declarations.
     skip = set(facts.names)
     for node in captures.get("tag", []):

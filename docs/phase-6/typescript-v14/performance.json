@@ -1,0 +1,583 @@
+{
+ "coder__code-server@5d3c9edce436": {
+  "index_s": 0.336,
+  "score_s": {
+   "coder__code-server-6278": 0.281
+  },
+  "max_rss_mb": 158
+ },
+ "coder__code-server@78658f1cf48a": {
+  "index_s": 0.247,
+  "score_s": {
+   "coder__code-server-4923": 0.274
+  },
+  "max_rss_mb": 175
+ },
+ "darkreader__darkreader@991883df4d59": {
+  "index_s": 0.483,
+  "score_s": {
+   "darkreader__darkreader-7241": 0.284
+  },
+  "max_rss_mb": 182
+ },
+ "darkreader__darkreader@a787eb511f45": {
+  "index_s": 0.516,
+  "score_s": {
+   "darkreader__darkreader-6747": 0.271
+  },
+  "max_rss_mb": 192
+ },
+ "fixture:ts_repo": {
+  "index_s": 0.091,
+  "score_s": {
+   "ts-exact-versionedstore": 0.036,
+   "ts-semantic-backoff": 0.062,
+   "ts-crossfile-decode-jwt": 0.042,
+   "tsx-button-component": 0.062,
+   "ts-related-test-button-click": 0.058,
+   "ts-default-policy-const": 0.104,
+   "ts-implementors-retrypolicy": 0.06,
+   "ts-callers-shouldretry": 0.061
+  },
+  "max_rss_mb": 197
+ },
+ "microsoft__vscode@1a599e2d1792": {
+  "index_s": 23.634,
+  "score_s": {
+   "microsoft__vscode-153121": 2.051
+  },
+  "max_rss_mb": 1197
+ },
+ "microsoft__vscode@2dff5deef71f": {
+  "index_s": 22.016,
+  "score_s": {
+   "microsoft__vscode-148971": 2.442
+  },
+  "max_rss_mb": 1197
+ },
+ "microsoft__vscode@384b03f26310": {
+  "index_s": 23.733,
+  "score_s": {
+   "microsoft__vscode-177084": 1.636
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@440e61ffab2b": {
+  "index_s": 22.139,
+  "score_s": {
+   "microsoft__vscode-160342": 1.828
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@4bbec283c36a": {
+  "index_s": 20.691,
+  "score_s": {
+   "microsoft__vscode-136347": 2.162
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@5b8bd1c45ca3": {
+  "index_s": 22.854,
+  "score_s": {
+   "microsoft__vscode-149380": 1.601
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@7d8f55ebb1b7": {
+  "index_s": 20.236,
+  "score_s": {
+   "microsoft__vscode-135805": 1.867
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@88ffbc7a7a81": {
+  "index_s": 22.031,
+  "score_s": {
+   "microsoft__vscode-153857": 1.874
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@8c76afad6ccf": {
+  "index_s": 16.11,
+  "score_s": {
+   "microsoft__vscode-110094": 1.578
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@8ce35fa28ded": {
+  "index_s": 15.672,
+  "score_s": {
+   "microsoft__vscode-106767": 1.661
+  },
+  "max_rss_mb": 1296
+ },
+ "microsoft__vscode@9a281018181d": {
+  "index_s": 23.826,
+  "score_s": {
+   "microsoft__vscode-189223": 1.564
+  },
+  "max_rss_mb": 1303
+ },
+ "microsoft__vscode@a993ada9300a": {
+  "index_s": 19.549,
+  "score_s": {
+   "microsoft__vscode-135197": 2.389
+  },
+  "max_rss_mb": 1303
+ },
+ "microsoft__vscode@cf4b5a703f58": {
+  "index_s": 15.938,
+  "score_s": {
+   "microsoft__vscode-109750": 1.612
+  },
+  "max_rss_mb": 1303
+ },
+ "microsoft__vscode@f5fdf679b8d2": {
+  "index_s": 23.162,
+  "score_s": {
+   "microsoft__vscode-164396": 2.647
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@03b616a1e015": {
+  "index_s": 3.711,
+  "score_s": {
+   "mui__material-ui-33312": 0.387
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@05917392afce": {
+  "index_s": 4.177,
+  "score_s": {
+   "mui__material-ui-37716": 0.451
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@09896d42e620": {
+  "index_s": 0.287,
+  "score_s": {
+   "mui__material-ui-11987": 0.272
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@0d94283959a3": {
+  "index_s": 2.392,
+  "score_s": {
+   "mui__material-ui-29880": 0.405
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@13b3a0d31947": {
+  "index_s": 0.91,
+  "score_s": {
+   "mui__material-ui-18141": 0.269
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@182d4dc7726f": {
+  "index_s": 2.276,
+  "score_s": {
+   "mui__material-ui-28813": 0.42
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@18aa6293ad8b": {
+  "index_s": 0.272,
+  "score_s": {
+   "mui__material-ui-12236": 0.156
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@1a4263a50af0": {
+  "index_s": 3.882,
+  "score_s": {
+   "mui__material-ui-34207": 0.404
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@1dc2782ddd66": {
+  "index_s": 3.841,
+  "score_s": {
+   "mui__material-ui-36056": 0.478
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@1e09429e1804": {
+  "index_s": 3.339,
+  "score_s": {
+   "mui__material-ui-34610": 0.458
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@1e4dd5f0837c": {
+  "index_s": 3.514,
+  "score_s": {
+   "mui__material-ui-35410": 0.363
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@20cd3e33ae60": {
+  "index_s": 0.289,
+  "score_s": {
+   "mui__material-ui-13534": 0.166
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@21b4e266d576": {
+  "index_s": 1.705,
+  "score_s": {
+   "mui__material-ui-23806": 0.274
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@2694045ca3d1": {
+  "index_s": 3.57,
+  "score_s": {
+   "mui__material-ui-35994": 0.555
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@375358b6f7d0": {
+  "index_s": 4.96,
+  "score_s": {
+   "mui__material-ui-39108": 0.579
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@38ac830eedf6": {
+  "index_s": 2.531,
+  "score_s": {
+   "mui__material-ui-29898": 0.446
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@4acfb8da9fb5": {
+  "index_s": 0.283,
+  "score_s": {
+   "mui__material-ui-11858": 0.181
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@553cf822f650": {
+  "index_s": 5.228,
+  "score_s": {
+   "mui__material-ui-39962": 0.663
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@56520e757e00": {
+  "index_s": 1.417,
+  "score_s": {
+   "mui__material-ui-23229": 0.358
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@567e6cf97dce": {
+  "index_s": 2.207,
+  "score_s": {
+   "mui__material-ui-26807": 0.351
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@5b53f5efe691": {
+  "index_s": 3.155,
+  "score_s": {
+   "mui__material-ui-31998": 0.447
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@67073cc35a74": {
+  "index_s": 3.154,
+  "score_s": {
+   "mui__material-ui-34138": 0.464
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@72a477f3ca67": {
+  "index_s": 1.102,
+  "score_s": {
+   "mui__material-ui-20657": 0.297
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@75404f9ff099": {
+  "index_s": 5.39,
+  "score_s": {
+   "mui__material-ui-39196": 0.584
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@7767fb8f46ab": {
+  "index_s": 2.655,
+  "score_s": {
+   "mui__material-ui-30345": 0.495
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@7e7435ad08ba": {
+  "index_s": 3.438,
+  "score_s": {
+   "mui__material-ui-34245": 0.518
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@85c3c776918e": {
+  "index_s": 4.882,
+  "score_s": {
+   "mui__material-ui-38247": 0.62
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@9acf8be6d2fd": {
+  "index_s": 2.074,
+  "score_s": {
+   "mui__material-ui-26746": 0.401
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@a4d8c4ffadca": {
+  "index_s": 1.998,
+  "score_s": {
+   "mui__material-ui-25874": 0.339
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@b00bdc767032": {
+  "index_s": 4.567,
+  "score_s": {
+   "mui__material-ui-37855": 0.661
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@b3548fabeab1": {
+  "index_s": 3.769,
+  "score_s": {
+   "mui__material-ui-34337": 0.575
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@ba0529496c52": {
+  "index_s": 2.942,
+  "score_s": {
+   "mui__material-ui-31172": 0.428
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@bbedbf79e07c": {
+  "index_s": 2.757,
+  "score_s": {
+   "mui__material-ui-30524": 0.415
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@be6b6e2bc479": {
+  "index_s": 4.859,
+  "score_s": {
+   "mui__material-ui-36971": 0.61
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@c4c5a03e143f": {
+  "index_s": 1.053,
+  "score_s": {
+   "mui__material-ui-18796": 0.247
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@d11ef0f82f1e": {
+  "index_s": 2.509,
+  "score_s": {
+   "mui__material-ui-29023": 0.49
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@d2e00769d032": {
+  "index_s": 2.148,
+  "score_s": {
+   "mui__material-ui-25637": 0.362
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@d35d22994887": {
+  "index_s": 3.811,
+  "score_s": {
+   "mui__material-ui-34401": 0.569
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@d81caa37668a": {
+  "index_s": 2.237,
+  "score_s": {
+   "mui__material-ui-26480": 0.41
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@dbddc26ff0e4": {
+  "index_s": 4.123,
+  "score_s": {
+   "mui__material-ui-35963": 0.59
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@e195455738a9": {
+  "index_s": 3.801,
+  "score_s": {
+   "mui__material-ui-35477": 0.415
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@e24280973174": {
+  "index_s": 1.887,
+  "score_s": {
+   "mui__material-ui-24857": 0.409
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@ea2bd5aa822d": {
+  "index_s": 1.926,
+  "score_s": {
+   "mui__material-ui-25390": 0.4
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@eb8e95bacf06": {
+  "index_s": 4.531,
+  "score_s": {
+   "mui__material-ui-37850": 0.558
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@f336e03acfad": {
+  "index_s": 2.202,
+  "score_s": {
+   "mui__material-ui-26623": 0.418
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@f432f8a73351": {
+  "index_s": 0.278,
+  "score_s": {
+   "mui__material-ui-12303": 0.197
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@f588d8fdf63b": {
+  "index_s": 2.192,
+  "score_s": {
+   "mui__material-ui-28186": 0.487
+  },
+  "max_rss_mb": 1303
+ },
+ "mui__material-ui@fca2ddf44ce5": {
+  "index_s": 1.838,
+  "score_s": {
+   "mui__material-ui-25149": 0.345
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@0275dd329d24": {
+  "index_s": 2.484,
+  "score_s": {
+   "vuejs__core-10004": 0.527
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@0e63cbfaf579": {
+  "index_s": 2.292,
+  "score_s": {
+   "vuejs__core-8538": 0.396
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@314ce82e479d": {
+  "index_s": 2.474,
+  "score_s": {
+   "vuejs__core-11338": 0.508
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@582cd2e9bc21": {
+  "index_s": 2.346,
+  "score_s": {
+   "vuejs__core-11201": 0.369
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@6277cb994ace": {
+  "index_s": 2.149,
+  "score_s": {
+   "vuejs__core-8535": 0.524
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@68e5cc6ac8fc": {
+  "index_s": 2.464,
+  "score_s": {
+   "vuejs__core-10027": 0.397
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@75e02b5099a0": {
+  "index_s": 2.602,
+  "score_s": {
+   "vuejs__core-10289": 0.552
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@b74687c0bbc0": {
+  "index_s": 2.553,
+  "score_s": {
+   "vuejs__core-11517": 0.834
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@c0c9432b6409": {
+  "index_s": 2.521,
+  "score_s": {
+   "vuejs__core-10874": 0.567
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@caeb8a68811a": {
+  "index_s": 2.448,
+  "score_s": {
+   "vuejs__core-10522": 0.475
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@d0b513eb463f": {
+  "index_s": 2.599,
+  "score_s": {
+   "vuejs__core-11899": 0.415
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@d276a4f3e914": {
+  "index_s": 2.39,
+  "score_s": {
+   "vuejs__core-10250": 0.541
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@d298c431cc42": {
+  "index_s": 2.588,
+  "score_s": {
+   "vuejs__core-11761": 0.34
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@dadb3632a0f8": {
+  "index_s": 2.422,
+  "score_s": {
+   "vuejs__core-9213": 0.867
+  },
+  "max_rss_mb": 1303
+ },
+ "vuejs__core@f6babf323631": {
+  "index_s": 2.711,
+  "score_s": {
+   "vuejs__core-9572": 0.728
+  },
+  "max_rss_mb": 1303
+ }
+}

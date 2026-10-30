@@ -9,8 +9,8 @@ and MCP remains exactly one tool, `oxide_search`, with `search` and `context` mo
 
 ## Extraction and identity
 
-`.c` and `.h` files report `FileInfo.language == "c"` (a C++ header named `.h` parses
-as C, with partial coverage where it is not). File-level declarations become symbols,
+`.c` and `.h` files report `FileInfo.language == "c"`, except a `.h` file with C++ syntax,
+which is C++ ([cpp.md](cpp.md)). File-level declarations become symbols,
 including those in every branch of an `#if`/`#ifdef`/`#else`:
 
 | C declaration | Kind | Key segment |
@@ -101,8 +101,7 @@ unresolved (with their name) or absent rather than guessed:
   `cb = handler`), member access, and calls through pointers;
 - struct members, enumerators and block-scope declarations as symbols, and block
   scoping (a shadowed name is opaque in the whole declaration);
-- K&R parameter declarations, C++ in `.h` files, and non-UTF-8 sources (unsupported
-  file evidence).
+- K&R parameter declarations, and non-UTF-8 sources (unsupported file evidence).
 
 Structural search (`Repository.structural_search`, ast-grep) remains Python and
 TypeScript only.

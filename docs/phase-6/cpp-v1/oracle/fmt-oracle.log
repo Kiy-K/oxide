@@ -1,0 +1,31 @@
+{
+ "units": 28,
+ "failed_units": [
+  "test/format-impl-test.cc",
+  "test/header-only-test.cc",
+  "test/module-test.cc"
+ ],
+ "gcc_call_sites": 12674,
+ "gcc_calls_to_captured_definitions": {
+  "header": 45708,
+  "unit": 36748
+ },
+ "tally": {
+  "ambiguous to a macro, not judged": 420,
+  "ambiguous, gcc captured": 611,
+  "ambiguous, no gcc call (header)": 303,
+  "ambiguous, no gcc call (unit)": 35,
+  "resolved to a macro, not judged": 2883,
+  "resolved, agree": 2244,
+  "resolved, agree for some": 1,
+  "resolved, disagree": 7,
+  "resolved, gcc definition not compiled": 15,
+  "resolved, no gcc call (header)": 832,
+  "resolved, no gcc call (unit)": 336,
+  "unresolved, gcc captured": 2083,
+  "unresolved, gcc definition not compiled": 346,
+  "unresolved, gcc external": 281,
+  "unresolved, no gcc call (header)": 1816,
+  "unresolved, no gcc call (unit)": 1735
+ }
+}
