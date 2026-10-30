@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: ~/Projects/oxide
+configfile: pyproject.toml
+plugins: platformdirs-4.13.3, anyio-4.15.1
+collected 17 items
+
+tests/python/test_contextbench_ts.py .................                   [100%]
+
+======================== 17 passed in 601.18s (0:10:01) ========================
+exit=0

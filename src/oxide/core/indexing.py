@@ -17,6 +17,8 @@ from typing import Any, Literal
 
 from oxide.capture import Capture
 from oxide.core.languages import (
+    c,
+    c_resolve,
     go,
     go_resolve,
     java,
@@ -41,10 +43,10 @@ TREE_PROJECTION = "1"
 FACTS_FORMAT = (
     f"oxide-facts-v2 {python.FACTS_VERSION} {typescript.FACTS_VERSION} "
     f"{typescript.JAVASCRIPT_FACTS_VERSION} {go.FACTS_VERSION} {rust.FACTS_VERSION} "
-    f"{java.FACTS_VERSION}"
+    f"{java.FACTS_VERSION} {c.FACTS_VERSION}"
 )
 
-Dialect = Literal["python", "typescript", "tsx", "javascript", "go", "rust", "java"]
+Dialect = Literal["python", "typescript", "tsx", "javascript", "go", "rust", "java", "c"]
 
 
 def dialect(path: str) -> Dialect | None:
@@ -55,6 +57,8 @@ def dialect(path: str) -> Dialect | None:
         return "rust"
     if path.endswith(".java"):
         return "java"
+    if path.endswith((".c", ".h")):
+        return "c"
     return "python" if path.endswith(".py") else typescript_syntax.dialect(path)
 
 
@@ -86,6 +90,8 @@ def components(storage: dict[str, str]) -> dict[str, str]:
         "rust-parser": f"{parser} tree-sitter-rust={version('tree-sitter-rust')}",
         "java": java.VERSION,
         "java-parser": f"{parser} tree-sitter-java={version('tree-sitter-java')}",
+        "c": c.VERSION,
+        "c-parser": f"{parser} tree-sitter-c={version('tree-sitter-c')}",
         "terms": TERMS_VERSION,
         "tree-projection": TREE_PROJECTION,
         **storage,
@@ -145,6 +151,7 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     go_sources: list[tuple[str, str, go.Parsed]] = []
     rs_sources: list[tuple[str, str, rust.Parsed]] = []
     java_sources: list[tuple[str, str, java.Parsed]] = []
+    c_sources: list[tuple[str, str, c.Parsed]] = []
     for f in capture.files:
         key = f"file:{f.path}"
         name = f.path.rsplit("/", 1)[-1]
@@ -183,6 +190,12 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
                 java_sources.append((f.path, f.digest, jp))
                 encoded = raw if hit else java_facts.encode(jp)
             diagnostics = jp if isinstance(jp, str) else jp.diagnostics
+        elif lang == "c":
+            cp, hit = _reuse(raw, f.data, c.decode, c.parse)
+            if not isinstance(cp, str):
+                c_sources.append((f.path, f.digest, cp))
+                encoded = raw if hit else c.encode(cp)
+            diagnostics = cp if isinstance(cp, str) else cp.diagnostics
         else:
             parse = partial(typescript.parse, language=lang)
             ts, hit = _reuse(raw, f.data, typescript.decode, parse)
@@ -207,4 +220,5 @@ def derive(capture: Capture, repo_id: str, cached: Mapping[str, Any] | None = No
     manifests = {p: d for p, d in others.items() if p.rpartition("/")[2] == "Cargo.toml"}
     rust_resolve.Resolver(rs_sources, manifests).derive(entities, edges)
     java_resolve.Resolver(java_sources).derive(entities, edges)
+    c_resolve.Resolver(c_sources, {f.path for f in capture.files}).derive(entities, edges)
     return Derived(tuple(files), tuple(entities), tuple(edges), facts, reused)

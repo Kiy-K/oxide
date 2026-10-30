@@ -99,6 +99,7 @@ def main(fixtures: Path) -> None:
         shutil.copytree(fixtures / "go_repo", root / "golang")
         shutil.copytree(fixtures / "rust_repo", root / "rustlang")
         shutil.copytree(fixtures / "java_repo", root / "javalang")
+        shutil.copytree(fixtures / "c_repo", root / "clang")
         (root / "naïve_ünicode.py").write_bytes(b"def caf\xc3\xa9_total():\r\n    return 1\r\n")
         # Exclude host toolchains: parsing source must never execute its runtimes.
         env = {**os.environ, "OXIDE_DATA_DIR": str(data), "PATH": scripts}
@@ -181,6 +182,19 @@ def main(fixtures: Path) -> None:
             "static Store open(Mode mode)" in java_context["payload"],
             "installed Java context unavailable",
         )
+        c = result("search", str(root), "must get", "--symbol", "store_must_get")
+        check(
+            c["entries"][0]["entity"]["key"].startswith("symbol:clang/")
+            and c["entries"][0]["entity"]["name"] == "store_must_get",
+            "installed C extraction unavailable",
+        )
+        c_context = result(
+            "context", str(root), "open", "--symbol", "store_open", "--budget", "1024"
+        )
+        check(
+            "Store *store_open(enum Mode mode)" in c_context["payload"],
+            "installed C context unavailable",
+        )
         hint = ("--file", "oxidepy/cache.py", "--budget", "400")
         context = result("context", str(root), "cache", *hint)
         check(0 < context["used"] <= 400, f"context used {context['used']} of 400")
@@ -250,6 +264,7 @@ def environment() -> dict[str, Any]:
                 "tree-sitter-go",
                 "tree-sitter-rust",
                 "tree-sitter-java",
+                "tree-sitter-c",
                 "fastmcp",
             )
         },

@@ -1,0 +1,12 @@
+artifact: oxide-0.0.0.tar.gz sha256 91cd5d4facc04e41b061eac63a6b69278a751ea288bbcd79e1053af02a70db75
+Using Python 3.13.17 environment at: ~/Projects/oxide-eval-data/oxide-c-eval/venv-sdist
+Checked 80 packages in 1ms
+All installed packages are compatible
+~/.cache/oxide/ladybug-extensions-0.21.0/libfts.lbug_extension
+smoke: oxide at ~/Projects/oxide-eval-data/oxide-c-eval/venv-sdist/lib/python3.13/site-packages/oxide/__init__.py
+smoke: indexed 74 files, 359 entities
+smoke: search and context ok (381/400 units)
+smoke: mcp stdio ok
+smoke: store lock exclusive and released
+smoke: OK
+exit=0
