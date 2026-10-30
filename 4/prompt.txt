@@ -1,0 +1,55 @@
+/goal Implement Java language support for OXIDE using the existing language slices and relevant `/docs` research as references.
+
+---
+
+<task-notification>
+<task-id>bc4wv91m1</task-id>
+<tool-use-id>toolu_01S6sovKdx3oPDsg1zBJYHsd</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bc4wv91m1.output</output-file>
+<status>completed</status>
+<summary>Background command "Freeze successor baselines in background" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Goal set: Run the pending Java v1 evaluations directly using `BRIEF-evals.md`, preserve the specified OpenCode protocol where required, and complete `docs/phase-6/java-v1/README.md` with measured results.
+
+---
+
+Continue the Java support goal: when the typescript-v12 baseline run finishes, compare it to typescript-v11, switch contextbench_ts.BASELINE, write its README, then launch the OpenCode eval brief.
+
+---
+
+Launch it
+
+---
+
+<task-notification>
+<task-id>bwpd62lph</task-id>
+<tool-use-id>toolu_015fEPDtLzAYWvRtJGEuxhHC</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bwpd62lph.output</output-file>
+<status>completed</status>
+<summary>Background command "Launch OpenCode eval run" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Relaunch it
+
+---
+
+Continue the Java support goal: when the typescript-v12 baseline run finishes, compare it to typescript-v11, switch contextbench_ts.BASELINE, write its README, then launch the OpenCode eval brief.
+
+---
+
+<task-notification>
+<task-id>bj68kmwvw</task-id>
+<tool-use-id>toolu_01KmEKn1PPBuNobFEfYVokrx</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/f6ffd325-edac-4f1d-b1d4-7e80a5a558b6/tasks/bj68kmwvw.output</output-file>
+<status>completed</status>
+<summary>Background command "Relaunch OpenCode eval run" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Fix Java's `@JsonAdapter` import-resolution bug, add regression coverage, investigate the independent javac oracle discrepancies, and update the Java v1 evaluation evidence in `/docs`.
