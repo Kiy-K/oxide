@@ -1,0 +1,31 @@
+Push all commits to this branch and check the latest PR
+
+---
+
+Help me optimize the CI, it takes damned long
+
+---
+
+I mean the Github one, research first
+
+---
+
+Do your suggestion, so fix 2,3,4 too
+
+---
+
+commit and push, then check the CI run
+
+---
+
+Don't check the CI, I got someone handles it
+
+---
+
+<task-notification>
+<task-id>b39tfyjk5</task-id>
+<tool-use-id>toolu_012yx3kRxybVLzVMRMbghKzu</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/e8869425-0821-4a5e-b345-f8cbf120e5f3/tasks/b39tfyjk5.output</output-file>
+<status>completed</status>
+<summary>Background command "Run full verification before committing" completed (exit code 0)</summary>
+</task-notification>
