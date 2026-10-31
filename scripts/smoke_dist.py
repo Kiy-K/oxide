@@ -160,9 +160,10 @@ def main(fixtures: Path) -> None:
         go_context = result("context", str(root), "open", "--symbol", "Open", "--budget", "1024")
         check("func Open(mode int)" in go_context["payload"], "installed Go context unavailable")
         rust = result("search", str(root), "must get", "--symbol", "must_get")
+        # C++ fixtures also define Store::must_get, so rank among same-named symbols is a tie.
         check(
-            rust["entries"][0]["entity"]["key"]
-            == "symbol:rustlang/crates/shop/src/store/mod.rs#<impl Store>.must_get",
+            "symbol:rustlang/crates/shop/src/store/mod.rs#<impl Store>.must_get"
+            in [e["entity"]["key"] for e in rust["entries"]],
             "installed Rust extraction unavailable",
         )
         rust_context = result(

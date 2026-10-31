@@ -88,10 +88,12 @@ pinned baseline corpora hold no C++, and their baselines move by identity only
 Logs are in [verification/](verification/):
 - `mise-verify.log`: ruff clean, mypy `--strict` clean (78 files), pytest 425 passed,
   7 skipped, `test_baseline.py` against baseline-v17 included.
-- `distribution-wheel.log`, `distribution-sdist.log`: **FAILED**, open. Both artifacts
-  install and index the fixtures (82 files, 403 entities), then `scripts/smoke_dist.py`
-  stops at `installed Rust extraction unavailable`; not yet investigated. The TypeScript
-  gate was not rerun for this slice.
+- `distribution-wheel.log`, `distribution-sdist.log`: both artifacts install, index the
+  fixtures (82 files, 403 entities) and pass `scripts/smoke_dist.py` (`exit=0`). The first
+  run failed: the copied C++ fixture's two `Store::must_get` entities ranked above Rust's
+  `<impl Store>.must_get`, which the Rust check required at rank 1; it now requires the
+  Rust entity among the results (extraction unchanged). The TypeScript gate was not rerun
+  for this slice.
 
 ## Reproduce
 

@@ -1,9 +1,12 @@
 artifact: oxide-0.0.0.tar.gz sha256 819286c6de259f186f4dcc41995176f72dbc82b8befacd2cf1fd92ef52bf4209
 Using Python 3.13.17 environment at: ~/Projects/oxide-eval-data/oxide-cpp-eval/venv-sdist
-Checked 81 packages in 0.75ms
+Checked 81 packages in 1ms
 All installed packages are compatible
 ~/.cache/oxide/ladybug-extensions-0.21.0/libfts.lbug_extension
 smoke: oxide at ~/Projects/oxide-eval-data/oxide-cpp-eval/venv-sdist/lib/python3.13/site-packages/oxide/__init__.py
 smoke: indexed 82 files, 403 entities
-smoke: FAILED: installed Rust extraction unavailable
-exit=1
+smoke: search and context ok (381/400 units)
+smoke: mcp stdio ok
+smoke: store lock exclusive and released
+smoke: OK
+exit=0
