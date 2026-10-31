@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M68TCMMKBX4F9M7CMWM5B0YW",
+  "session_id": "e3ab4e98-a915-4969-99dd-e2f0f6f327b1",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-31T11:09:22.108866851Z",
+  "branch": "rewrite/v2",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "logo.png",
+    "pyproject.toml",
+    "skills-lock.json",
+    "uv.lock"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-haiku-5-5",
+  "turn_id": "6a6f5677d0a2",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}

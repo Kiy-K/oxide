@@ -3,7 +3,7 @@
   "checkpoint_id": "01M68TCMMKBX4F9M7CMWM5B0YW",
   "strategy": "manual-commit",
   "branch": "rewrite/v2",
-  "checkpoints_count": 10,
+  "checkpoints_count": 11,
   "files_touched": [
     "AGENTS.md",
     "docs/agents/workflow.md",
@@ -47,6 +47,13 @@
       "compact_transcript": "/4/transcript.jsonl",
       "content_hash": "/4/content_hash.txt",
       "prompt": "/4/prompt.txt"
+    },
+    {
+      "metadata": "/5/metadata.json",
+      "transcript": "/5/full.jsonl",
+      "compact_transcript": "/5/transcript.jsonl",
+      "content_hash": "/5/content_hash.txt",
+      "prompt": "/5/prompt.txt"
     }
   ],
   "token_usage": {
