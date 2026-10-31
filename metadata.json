@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M68Q7R67WBXPBBXE1F6CJRRG",
+  "strategy": "manual-commit",
+  "branch": "rewrite/v2",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "docs/phase-6/cpp-v1/README.md",
+    "docs/phase-6/cpp-v1/verification/distribution-sdist.log",
+    "docs/phase-6/cpp-v1/verification/distribution-wheel.log",
+    "scripts/smoke_dist.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 30,
+    "cache_creation_tokens": 103406,
+    "cache_read_tokens": 1256880,
+    "output_tokens": 5938,
+    "api_call_count": 14
+  },
+  "redaction": {
+    "replacements": 126,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 126,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
