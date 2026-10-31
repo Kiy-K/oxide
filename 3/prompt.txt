@@ -1,0 +1,13 @@
+/goal Fix Java's `@JsonAdapter` import-resolution bug, add regression coverage, investigate the independent javac oracle discrepancies, and update the Java v1 evaluation evidence in `/docs`.
+
+---
+
+Fix Java's remaining type-parameter bounds and `permits` scope-resolution issues, verify against the existing Java oracles, and finalize Java v1 documentation.
+
+---
+
+Continue
+
+---
+
+Commit the verified Java v1 implementation and evidence, preserving unrelated changes,and push
