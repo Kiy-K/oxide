@@ -1,0 +1,79 @@
+<pasted_content id="c571">
+Fix what is blocking kiy-k/oxide#45 ("refactor: promote OXIDE v2 Python rewrite to main") from merging (https://github.com/kiy-k/oxide/pull/45).
+
+Work on branch `rewrite/v2`, which targets `main`. Push your fixes to the same branch.
+
+## Open findings
+
+1. [P1] Calls target hidden callback functions
+   src/oxide/core/languages/typescript.py:107-108
+   TypeScript callback declarations can become false call targets. In `export function f() {} export function run() { queueMicrotask(() => { function f() {} }); f(); }`, the callback has no scope of its own, so its `f` becomes a child of `run`. The final call resolves to that hidden function instead of the exported `f`, and routing follows the wrong dependency. Capture callback and block boundaries for TypeScript/TSX too, rather than applying `_opaque_bindings` only to JavaScript.
+
+2. [P1] Foreign graphs pass identity checks
+   src/oxide/storage/ladybug.py:327-334
+   The foreign-store check compares only the number of `Entity` rows. Replacing `graph.lbug` with another repository's graph having the same count passes this check. The original manifest and source blobs also pass `is_current`, so `index()` reports `unchanged` while `search()` returns the other graph's entities under the original snapshot. This violates the repository requirement that foreign graphs fail closed and be rebuilt. Store the repository/snapshot identity inside the database and check it when opening.
+
+3. [P1] Re-exports can stop indexing
+   src/oxide/core/languages/python_resolve.py:447-456
+   `_from` stops repeated module/name pairs, but it does not bound a chain of distinct re-exports. A long chain of shallow files containing `from next_module import f` repeatedly enters `_from`, `in_scope`, and `_import` until Python raises `RecursionError`. Nothing catches it before it leaves `Repository.index`, so one chain prevents the whole repository from being indexed. Use an explicit work stack or a bounded lookup that leaves deeper targets unresolved.
+
+4. [P1] Deep configuration stops indexing
+   src/oxide/core/languages/tsconfig.py:119-124
+   Untrusted `tsconfig.json` content can abort indexing with `RecursionError`. `jsonc` uses `json.loads`, but this handler catches only `ValueError`; a deeply nested JSON value below the file-size limit escapes it. The recursive `extends` lookup also has a cycle check but no depth bound. Treat excessive nesting as an unreadable project and bound inheritance traversal, so these inputs leave imports unresolved instead of stopping the whole index.
+
+5. [P2] Ignore files bypass byte limits
+   src/oxide/capture.py:89-94
+   `.gitignore` is read without a size bound before normal file limits apply. An oversized ignore file is loaded and decoded on each walk even if it will later be marked `too_large`; it also bypasses the total-byte check. Check its size before reading and fail explicitly when the rules exceed a safe bound, rather than allowing one large file to exhaust memory.
+
+6. [P2] CLI bypasses public API
+   src/oxide/cli.py:20
+   The CLI imports `prepare_fts` directly from the private storage module. The repository rule requires CLI and MCP integrations to call `oxide.api` only. Expose preparation through that boundary and have the CLI delegate to it. This repository requirement must be satisfied before merging.
+
+7. [P2] Installed package loses type checks
+   src/oxide/__init__.py:3
+   The new typed package has no `py.typed` marker or stub files. After consumers install the wheel, mypy treats `oxide` as an untyped third-party package instead of using these inline annotations. Add `src/oxide/py.typed` and check that it reaches the built wheel, so argument and result checks remain usable outside this checkout.
+
+8. [P2] Branch directions become stale
+   README.md:16-18
+   The README still says the legacy implementation lives on `main` and describes `rewrite/v2` as the active branch. This PR replaces `main` with that rewrite, so those directions become wrong on merge. Point legacy readers to the pinned v1 commit and update the branch status and clone instructions for the promoted layout.
+
+9. [P2] Small requests load unbounded edges
+   src/oxide/storage/ladybug.py:444-448
+   Traversal limits do not bound these database reads. `adjacency` returns every edge for the requested nodes, and `_rows` loads all rows before routing cuts the neighbor count or navigation checks `MAX_EDGES`. A heavily imported module or widely called function can therefore load and sort its whole neighborhood for a small request. Pass an edge allowance into the store read and report when it cuts results.
+
+10. [P2] Format changes retain old consent
+   src/oxide/jev.py:65-74
+   The consent hash omits `RENDERER` and `CAPSULE_VERSION`. Changing either would leave `MANIFEST_DIGEST` unchanged, so existing authorizations would still allow source to be sent without another opt-in. This violates the requirement that consent must not carry over to a new renderer or capsule version. Include those versions in the hashed manifest and update the pinned identity before merging.
+
+> **How this was verified:** Consent checks only the stored root and `MANIFEST_DIGEST`, whose inputs omit the renderer and capsule versions.
+
+11. [P2] Inherited Java methods disappear
+   src/oxide/core/languages/java_resolve.py:222-225
+   The shared `seen` set treats a valid Java inheritance diamond as a cycle. With `A` declaring a default `m`, `B` and `C` extending `A`, and `D` implementing both, the first branch finds `A.m`. The second branch reaches the already-seen `A` and returns `None`, discarding that result. Use a path-local cycle guard or cache completed lookups so `D`'s call to `m()` keeps its known dependency.
+
+When you are done, run the tests and summarize what you changed for each item above.
+</pasted_content id="c571">
+
+---
+
+Fix and regression-test PR #45's four verified boundary issues: read-only `create=False`, malformed hint validation, `.gitignore` size limits, and persisted graph identity verification, the next task after this
+
+---
+
+<task-notification>
+<task-id>b1hz37bqm</task-id>
+<tool-use-id>toolu_0144kFdevMs5ScrzBMdLSVZT</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/3eeebbbd-50b1-46a8-bcc9-c643e0bdd18e/tasks/b1hz37bqm.output</output-file>
+<status>completed</status>
+<summary>Background command "OXIDE_CONTEXTBENCH_TS=1 timeout 2400 systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G uv run --locked pytest -q tests/python/test_contextbench_ts.py 2&gt;&amp;1 | tail -8" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bfw8s4cpo</task-id>
+<tool-use-id>toolu_01Qpy8Sm9Xvv3ofVSbfmJxUm</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/3eeebbbd-50b1-46a8-bcc9-c643e0bdd18e/tasks/bfw8s4cpo.output</output-file>
+<status>completed</status>
+<summary>Background command "timeout 1500 mise run verify 2&gt;&amp;1 | tail -2 &amp;&amp; OXIDE_CONTEXTBENCH_TS=1 timeout 2400 systemd-run --user --scope -q -p CPUQuota=200% -p MemoryMax=3G uv run --locked pytest -q tests/python/test_contextbench_ts.py 2&gt;&amp;1 | tail -2" completed (exit code 0)</summary>
+</task-notification>
