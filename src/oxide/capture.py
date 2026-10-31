@@ -73,6 +73,16 @@ def _ignored(rules: list[tuple[str, pathspec.GitIgnoreSpec]], path: str, is_dir:
     return ignored
 
 
+# Windows lacks O_NOFOLLOW/O_NONBLOCK (identity checks catch a swapped path) and needs
+# O_BINARY, or CRLF reads come back short.
+_READ_FLAGS = (
+    os.O_RDONLY
+    | getattr(os, "O_BINARY", 0)
+    | getattr(os, "O_NOFOLLOW", 0)
+    | getattr(os, "O_NONBLOCK", 0)
+)
+
+
 def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
     listing = _Listing({}, {}, [], [])
     stack: list[tuple[str, list[tuple[str, pathspec.GitIgnoreSpec]]]] = [("", [])]
@@ -90,7 +100,10 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
             path = f"{directory}/.gitignore" if directory else ".gitignore"
             # Rules that cannot be read or decoded fail the capture closed (ADR-0010).
             try:
-                data = (absolute / ".gitignore").read_bytes()
+                with os.fdopen(os.open(absolute / ".gitignore", _READ_FLAGS), "rb") as file:
+                    data = file.read(MAX_FILE_BYTES + 1)
+                if len(data) > MAX_FILE_BYTES:
+                    raise CaptureLimit(f"{path}: ignore rules exceed {MAX_FILE_BYTES} bytes")
                 lines = data.decode("utf-8").splitlines()
             except (OSError, UnicodeDecodeError) as error:
                 raise CaptureConflict(f"{path}: unreadable ignore rules ({error})") from error
@@ -141,12 +154,8 @@ def _walk(root: Path, excluded: frozenset[tuple[int, int]]) -> _Listing:
 
 def _read(root: Path, path: str, expected: StatKey) -> bytes | None:
     """The file's bytes, or None when it changed since it was listed."""
-    # Windows lacks O_NOFOLLOW/O_NONBLOCK (the identity check below catches a swapped
-    # path) and needs O_BINARY, or CRLF reads come back short.
-    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
-    flags |= getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
     try:
-        fd = os.open(root / path, flags)
+        fd = os.open(root / path, _READ_FLAGS)
     except OSError:
         return None
     with os.fdopen(fd, "rb") as handle:

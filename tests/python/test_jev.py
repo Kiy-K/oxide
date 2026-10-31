@@ -3,6 +3,7 @@ attempt killed at the deadline, every failure named, nothing sent unless authori
 
 from __future__ import annotations
 
+import hashlib
 import http.server
 import json
 import threading
@@ -16,7 +17,7 @@ from conftest import FIXTURE
 
 import oxide
 from oxide import jev
-from oxide.core.capsule import DEADLINE, Capsule, build
+from oxide.core.capsule import CAPSULE_VERSION, DEADLINE, Capsule, build
 from oxide.core.ordering import Unanswered
 from oxide.core.packing import Candidate
 from oxide.models import Entity, SourceRef
@@ -85,11 +86,16 @@ def server() -> Iterator[Server]:
     s.http.shutdown()
 
 
-def test_pinned_identity_is_decision_study_v3s() -> None:
+def test_pinned_identity_is_decision_study_v3s_with_its_formats() -> None:
     assert jev.MANIFEST_DIGEST == (
-        "sha256:d9ae934c9a6a3650a6f2ca6ef3f3ab919103cc7e9788951a7b8699c354407b1d"
+        "sha256:6fab465c0c1c2015782a0f6dd047e80520be5c7d1faaaa4fb58cf71ffad556c6"
     )
     assert jev.MANIFEST["retries"] == 0 and jev.MANIFEST["deadline_s"] == 2.0
+    study = {k: v for k, v in jev.MANIFEST.items() if k not in ("renderer", "capsule")}
+    assert hashlib.sha256(json.dumps(study, sort_keys=True).encode()).hexdigest() == (
+        "d9ae934c9a6a3650a6f2ca6ef3f3ab919103cc7e9788951a7b8699c354407b1d"
+    )
+    assert (jev.MANIFEST["renderer"], jev.MANIFEST["capsule"]) == (jev.RENDERER, CAPSULE_VERSION)
 
 
 def test_an_answer_is_judged_and_the_body_is_the_rendered_request(server: Server) -> None:

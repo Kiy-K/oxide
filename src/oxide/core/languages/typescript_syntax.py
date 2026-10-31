@@ -57,6 +57,8 @@ _COMMON = """
 (assignment_expression left: (identifier) @rebind)
 (augmented_assignment_expression left: (identifier) @rebind)
 (update_expression argument: (identifier) @rebind)
+[(arrow_function) (function_expression) (generator_function)] @anonymous_function
+[(statement_block) (switch_body) (for_statement) (for_in_statement)] @lexical_block
 """
 _JSX = """
 (jsx_opening_element) @call

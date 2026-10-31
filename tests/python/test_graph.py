@@ -164,3 +164,17 @@ def test_nested_import_roots_resolve_only_inside_packages(rooted: oxide.Reposito
         "mod.missing",
         "pkg.util.helper",
     }
+
+
+def test_long_reexport_chains_stay_unresolved_instead_of_aborting(tmp_path: Path) -> None:
+    from oxide.core.languages.python_resolve import MAX_REEXPORTS
+
+    depth = 2000  # far past the interpreter's recursion limit when followed recursively
+    files = {f"m{n}.py": f"from m{n + 1} import f\n" for n in range(depth)}
+    files[f"m{depth}.py"] = "def f(): pass\n"
+    files["near.py"] = f"from m{depth - MAX_REEXPORTS + 1} import f\n\ndef g():\n    f()\n"
+    files["far.py"] = "from m0 import f\n\ndef g():\n    f()\n"
+    with oxide.open_repository(write(tmp_path / "src", files)) as repo:
+        assert repo.index().status == "built"
+        assert [r.target for r in calls(repo, "symbol:near.py#g")] == [f"symbol:m{depth}.py#f"]
+        assert [r.target for r in calls(repo, "symbol:far.py#g")] == [None]

@@ -15,9 +15,8 @@ import json
 import sys
 from typing import Any
 
-from oxide.api import open_repository
+from oxide.api import open_repository, prepare
 from oxide.models import IndexReport, JudgeStatus, OxideError
-from oxide.storage.ladybug import prepare_fts
 
 
 def _plain(item: Any) -> Any:
@@ -130,7 +129,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "prepare":
-            print(prepare_fts())
+            print(prepare())
             return 0
         if args.command == "mcp":
             # Imported here: the MCP stack is only loaded by the server.

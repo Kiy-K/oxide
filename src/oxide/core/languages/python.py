@@ -20,7 +20,7 @@ from tree_sitter import Language, Node, Parser, Query, QueryCursor
 
 from oxide.core.languages.nesting import Nesting
 
-VERSION = "oxide-python-v6"
+VERSION = "oxide-python-v7"
 MAX_DIAGNOSTICS = 16
 # tree-sitter's query cursor keeps node depth in 16 bits: it drops matches below this
 # depth and its time turns super-linear (docs/parser-limits.md), so a file whose syntax

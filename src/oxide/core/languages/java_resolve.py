@@ -206,13 +206,19 @@ class Resolver:
 
     # --- members ---
 
-    def _methods(self, site: Site, name: str, arity: int, seen: set[Site]) -> Found:
+    def _methods(self, site: Site, name: str, arity: int, done: dict[Site, Found]) -> Found:
         """Methods ``name`` of a type accepting ``arity`` arguments, from the nearest
-        declaring type of its captured hierarchy; [] when it certainly has none."""
+        declaring type of its captured hierarchy; [] when it certainly has none. ``done``
+        memoizes each type, so a diamond reuses a finished branch and a cycle is None."""
+        if site not in done:
+            done[site] = None  # in progress: reaching it again is a cycle
+            done[site] = self._own_methods(site, name, arity, done)
+        return done[site]
+
+    def _own_methods(self, site: Site, name: str, arity: int, done: dict[Site, Found]) -> Found:
         scope = self._scope(site)
-        if scope.decl is None or site in seen:
+        if scope.decl is None:
             return None  # a local or anonymous class's members are not facts
-        seen.add(site)
         own = self._declared(site, name, _METHOD)
         fits = [s for s in own if _fits(self._scope(s), arity)]
         if fits:
@@ -220,7 +226,7 @@ class Resolver:
         supers, complete = self._supertypes(site)
         found: list[Site] = []
         for s in supers:
-            inherited = self._methods(s, name, arity, seen)
+            inherited = self._methods(s, name, arity, done)
             if inherited is None:
                 return None
             found.extend(inherited)
@@ -270,7 +276,7 @@ class Resolver:
         """Methods ``name`` of any of ``types``."""
         found: list[Site] = []
         for t in types or []:
-            methods = self._methods(t, name, arity, set())
+            methods = self._methods(t, name, arity, {})
             if methods is None:
                 return None
             found.extend(methods)
@@ -286,7 +292,7 @@ class Resolver:
             at = k
             while at:
                 if _is_type(scopes[at]):
-                    found = self._methods((i, at), name, call.arity, set())
+                    found = self._methods((i, at), name, call.arity, {})
                     if found is None or found:
                         return found
                 at = scopes[at].parent or 0

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -74,7 +75,7 @@ def test_another_store_schema_requires_a_rebuild(private_data: Path) -> None:
     oxide.index_repository(FIXTURE)
     directory = store_dir(private_data)
     (manifest,) = (directory / "generations").glob("*/MANIFEST.json")
-    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v2", "older-schema"))
+    manifest.write_text(manifest.read_text().replace("oxide-ladybug-py-v3", "older-schema"))
     with oxide.open_repository(FIXTURE) as repo:
         with pytest.raises(IncompatibleIndex):
             repo.search("x")
@@ -127,6 +128,14 @@ def test_typed_errors(tmp_path: Path) -> None:
     with pytest.raises(NotIndexed):  # a read-only open writes nothing
         oxide.open_repository(FIXTURE, data_dir=tmp_path / "reader", create=False)
     assert not (tmp_path / "reader").exists()
+    # A store directory left empty by a crash before its identity was written.
+    with oxide.open_repository(FIXTURE, data_dir=tmp_path / "torn") as created:
+        store = created._store.dir  # type: ignore[union-attr]
+    shutil.rmtree(store)
+    store.mkdir()
+    with pytest.raises(NotIndexed):
+        oxide.open_repository(FIXTURE, data_dir=tmp_path / "torn", create=False)
+    assert not any(store.iterdir())
     repo = oxide.open_repository(FIXTURE)
     with pytest.raises(NotIndexed):
         repo.search("x")

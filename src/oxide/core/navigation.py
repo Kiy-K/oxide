@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
     from oxide.storage.ladybug import Adjacent, View
 
-NAVIGATION_VERSION = "oxide-impact-bfs-v1"
+NAVIGATION_VERSION = "oxide-impact-bfs-v2"
 MAX_EDGES = 20_000  # adjacency rows examined per pass
 Direction = Literal["upstream", "downstream"]
 _CROSS = ("calls", "references", "imports")
@@ -88,14 +88,17 @@ def _bfs(
     graph: nx.DiGraph[str] = nx.DiGraph()
     layer, examined, level = roots, 0, 0
     while layer:
-        adjacency = view.adjacency(layer)
-        steps = {k: _steps(direction, k, *adjacency[k], proven_only) for k in layer}
+        # Keys the allowance cut are absent, so a pass never reads past its edge budget.
+        adjacency = view.adjacency(layer, MAX_EDGES - examined + 1)
+        steps = {k: _steps(direction, k, *adjacency[k], proven_only) for k in adjacency}
         if level == depth:
-            beyond = any(n not in seen for k in layer for n, _ in steps[k])
-            return found, graph, "depth" if beyond else None
+            beyond = any(n not in seen for k in steps for n, _ in steps[k])
+            return found, graph, "depth" if beyond else "edges" if len(steps) < len(layer) else None
         level += 1
         upcoming: list[str] = []
         for source in layer:
+            if source not in adjacency:
+                return found, graph, "edges"
             examined += sum(map(len, adjacency[source]))
             for neighbor, via in steps[source]:
                 if not graph.has_edge(source, neighbor):  # keep the first step's ``via``

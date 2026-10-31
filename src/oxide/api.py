@@ -46,13 +46,8 @@ from oxide.models import (
     Snapshot,
     StructuralResult,
 )
-from oxide.storage.ladybug import (
-    View,
-    default_data_dir,
-    fts_location,
-    fts_unavailable,
-    storage_components,
-)
+from oxide.storage.fts import fts_location, fts_unavailable, prepare_fts
+from oxide.storage.ladybug import View, default_data_dir, storage_components
 from oxide.storage.store import Store
 
 # Upper bounds of caller-chosen sizes, checked before any query is built.
@@ -69,8 +64,11 @@ def _count(name: str, value: object, high: int) -> int:
 
 
 def _texts(name: str, values: Iterable[str]) -> tuple[str, ...]:
-    out = () if isinstance(values, str) else tuple(values)
-    if isinstance(values, str) or not all(isinstance(v, str) for v in out):
+    try:
+        out = () if isinstance(values, str) else tuple(values)
+    except TypeError:
+        out = None
+    if out is None or isinstance(values, str) or not all(isinstance(v, str) for v in out):
         raise InvalidArgument(f"{name} must be an iterable of strings, got {values!r}")
     return out
 
@@ -462,3 +460,9 @@ def index_repository(
 ) -> IndexReport:
     with Repository(path, data_dir) as repo:
         return repo.index()
+
+
+def prepare() -> Path:
+    """Fetches and verifies the pinned FTS extension (``oxide prepare``); returns its
+    path. The only network access OXIDE makes, and only when called."""
+    return prepare_fts()

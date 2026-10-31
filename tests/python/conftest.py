@@ -16,7 +16,8 @@ from pathlib import Path
 
 import pytest
 
-from oxide.storage.ladybug import _fts_build, default_data_dir, fts_location, fts_unavailable
+from oxide.storage.fts import _fts_build, fts_location, fts_unavailable
+from oxide.storage.ladybug import default_data_dir
 
 REPO = Path(__file__).resolve().parents[2]
 FIXTURE = REPO / "fixtures" / "py_repo"

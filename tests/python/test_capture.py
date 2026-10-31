@@ -11,7 +11,7 @@ from conftest import write
 
 import oxide
 from oxide.capture import MAX_FILE_BYTES, capture
-from oxide.models import CaptureConflict
+from oxide.models import CaptureConflict, CaptureLimit
 
 
 def test_scope_follows_gitignore_and_reports_every_skip(tmp_path: Path) -> None:
@@ -59,6 +59,12 @@ def test_snapshot_identity_is_content_addressed(tmp_path: Path) -> None:
 def test_undecodable_ignore_rules_fail_closed(tmp_path: Path) -> None:
     root = write(tmp_path, {".gitignore": b"\xff\xfe*.log\n", "a.py": ""})
     with pytest.raises(CaptureConflict, match="unreadable ignore rules"):
+        capture(root)
+
+
+def test_oversized_ignore_rules_fail_closed_before_they_are_loaded(tmp_path: Path) -> None:
+    root = write(tmp_path, {".gitignore": b"#" * (MAX_FILE_BYTES + 1), "a.py": ""})
+    with pytest.raises(CaptureLimit, match="ignore rules exceed"):
         capture(root)
 
 

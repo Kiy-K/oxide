@@ -20,11 +20,12 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from oxide.storage.ladybug import Adjacent, View
 
-ROUTER_VERSION = "oxide-router-bfs-v2"
+ROUTER_VERSION = "oxide-router-bfs-v3"
 MAX_REGIONS = 64
 MAX_DEPTH = 2
 MAX_FANOUT = 16
 MAX_EDGES = 2048
+MAX_ROWS = 16 * MAX_EDGES  # adjacency rows read per layer and direction, before filtering
 FOLLOW = ("calls", "references", "imports", "tested_by", "contains_logical")
 
 
@@ -81,15 +82,22 @@ def route(view: View, entry_keys: list[str]) -> Route:
     stopped_by: str | None = None
     depth = 0
     while layer:
-        adjacency = view.adjacency([key for key, _ in layer[: max(0, MAX_REGIONS - regions)]])
+        keys = [key for key, _ in layer[: max(0, MAX_REGIONS - regions)]]
+        adjacency = view.adjacency(keys, MAX_ROWS)
         upcoming: list[tuple[str, str]] = []
         for key, _ in layer:
-            bound = "regions" if regions >= MAX_REGIONS else "edges" if edges >= MAX_EDGES else None
+            bound = (
+                "regions"
+                if regions >= MAX_REGIONS
+                else "edges"
+                if edges >= MAX_EDGES or key not in adjacency
+                else None
+            )
             if bound is not None:
                 stopped_by = stopped_by or bound
                 deferred += 1
                 continue
-            out, into = adjacency.get(key, ([], []))
+            out, into = adjacency[key]
             neighbors, cut, examined = _region(key, out, into)
             regions += 1
             edges += examined

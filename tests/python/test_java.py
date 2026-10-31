@@ -190,6 +190,21 @@ def test_scoping_is_conservative(tmp_path: Path) -> None:
     assert unresolved(found, "calls", f"{t}.anon") == {"new Runnable", "o.g"}
 
 
+def test_an_inheritance_diamond_keeps_the_inherited_method(tmp_path: Path) -> None:
+    found = derived(
+        write(
+            tmp_path,
+            {
+                "p/A.java": "package p;\ninterface A { default void m() {} }\n",
+                "p/B.java": "package p;\ninterface B extends A {}\n",
+                "p/C.java": "package p;\ninterface C extends A {}\n",
+                "p/D.java": "package p;\nclass D implements B, C { void run() { m(); } }\n",
+            },
+        )
+    )
+    assert resolved(found, "calls", "symbol:p/D.java#D.run") == {"symbol:p/A.java#A.m"}
+
+
 def test_type_lookup_precedence(tmp_path: Path) -> None:
     found = derived(
         write(

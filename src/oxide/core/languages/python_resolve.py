@@ -15,6 +15,8 @@ from oxide.core.languages.python import (
 from oxide.core.languages.python_dispatch import Dispatch
 from oxide.models import Basis, Entity, RelationKind, Resolution, SourceRef
 
+MAX_REEXPORTS = 32  # nested ``from m import n`` lookups one name may follow
+
 
 @dataclass(frozen=True, slots=True)
 class Edge:
@@ -446,6 +448,8 @@ class Resolver:
         resolves through that import; a cycle of such re-exports adds nothing."""
         if (module, name) in self.resolving:
             return []
+        if len(self.resolving) >= MAX_REEXPORTS:
+            return None  # a deeper re-export chain stays unresolved instead of overflowing
         self.resolving.add((module, name))
         try:
             names = self._names(module)

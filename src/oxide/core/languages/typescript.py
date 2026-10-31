@@ -41,9 +41,9 @@ from oxide.core.languages.typescript_syntax import (
     _span,
 )
 
-VERSION = "oxide-typescript-v3"
+VERSION = "oxide-typescript-v4"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
-FACTS_VERSION = "oxide-typescript-facts-v2"
+FACTS_VERSION = "oxide-typescript-facts-v3"
 
 JAVASCRIPT_VERSION = "oxide-javascript-v1"
 JAVASCRIPT_FACTS_VERSION = "oxide-javascript-facts-v1"
@@ -104,8 +104,8 @@ def parse(data: bytes, language: Dialect) -> Parsed | str:
     for node in captures.get("bind", []):
         facts.bind(facts.scope_at(node.start_byte), node)
     rebound = {facts.text(n) for n in captures.get("rebind", [])}
+    _opaque_bindings(facts, captures, list(defs.values()))
     if language == "javascript":
-        _opaque_bindings(facts, captures, list(defs.values()))
         if captures.get("import") or captures.get("export"):
             imports.append(Import(None, "esm", None, None, None, 0, 0))
         _commonjs(facts, captures, imports, rebound)

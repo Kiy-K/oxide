@@ -19,7 +19,7 @@ import contextbench as cb
 import pytest
 from conftest import FTS, write
 
-from oxide.storage.ladybug import fts_unavailable
+from oxide.storage.fts import fts_unavailable
 
 MANIFEST = cb.load("manifest.json")
 METRICS = cb.load("metrics.json")

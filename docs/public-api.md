@@ -26,7 +26,7 @@ The data location is `data_dir=`, else `$OXIDE_DATA_DIR`, else
 source, even inside the repository: the data directory and its `repos/` are
 excluded by device and inode, so symlinked or differently spelled paths to it are
 excluded too. Lexical search needs the pinned FTS extension: run `oxide prepare`
-once.
+(or `oxide.api.prepare()`) once.
 
 ## Operations
 

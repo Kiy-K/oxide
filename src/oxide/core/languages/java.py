@@ -20,7 +20,7 @@ from tree_sitter import Language, Node, Parser, Query, QueryCursor
 from oxide.core.languages.nesting import Nesting
 from oxide.core.languages.python import TOO_DEEP, Use, syntax_diagnostics, too_deep
 
-VERSION = "oxide-java-v1"
+VERSION = "oxide-java-v2"
 # The JSON shape of ``Parsed`` that generations retain for reuse; bump on any change.
 FACTS_VERSION = "oxide-java-facts-v1"
 _TYPE_KINDS = {

@@ -82,7 +82,7 @@ together with a matching FTS build.
 `oxide prepare` downloads the platform's build of the LadybugDB FTS extension 0.21.0
 from the OXIDE release `ladybug-fts-0.21.0`
 (`github.com/Kiy-K/oxide/releases/download/ladybug-fts-0.21.0/libfts-0.21.0-<platform>.lbug_extension`).
-It checks the download against the SHA-256 pinned in `ladybug.FTS_BUILDS`, and the
+It checks the download against the SHA-256 pinned in `oxide.storage.fts.FTS_BUILDS`, and the
 engine checks it again before every load. The release holds LadybugDB's own builds,
 unmodified, with LadybugDB's license and third-party notices
 ([fts-mirror/](phase-6/release-blockers/fts-mirror/RELEASE.md)). The digests were taken

@@ -18,14 +18,11 @@ generation is deleted. A crash inside a same-name rebuild is undone; any other
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import os
-import platform
 import re
 import sys
-import urllib.request
 from collections.abc import Iterable
 from importlib.metadata import version
 from pathlib import Path
@@ -47,37 +44,21 @@ from oxide.models import (
     SourceRef,
     StoreCorrupt,
 )
+from oxide.storage.fts import (
+    FTS_COMPONENT,
+    FTS_SCORER,
+    _native_path_issue,
+    fts_location,
+    fts_unavailable,
+)
 
-SCHEMA_VERSION = "oxide-ladybug-py-v2"
+SCHEMA_VERSION = "oxide-ladybug-py-v3"
 STORAGE_FORMAT = 47
 # The pool of every read view, and the floor of a load's. A load holds what it copies
 # in the pool until it commits: measured ~1.6 MiB per CSV MiB (VS Code, 554k relations,
 # needs 288 MiB), so a load gets twice its CSV bytes more (docs/large-repositories.md).
 BUFFER_POOL = 128 << 20
 LOAD_POOL_PER_BYTE = 2
-FTS_VERSION = "0.21.0"
-# (sys.platform, platform.machine()) -> the extension host's platform and the build's
-# SHA-256: LadybugDB's v0.21.0 builds, mirrored unmodified on an OXIDE release.
-FTS_BUILDS = {
-    ("linux", "x86_64"): (
-        "linux_amd64",
-        "742f2756c2f80bcd1886b6ee0446483038cff0ecf6cf47f698bc6fe855cbaef6",
-    ),
-    ("darwin", "arm64"): (
-        "osx_arm64",
-        "248332de781a7781f612a55b5397e88f58f1f1ba2a973836ada199eab0f6bf10",
-    ),
-    ("darwin", "x86_64"): (
-        "osx_amd64",
-        "c86f427503555a3ccdc55eb66a8d82793a206aac599a6092f7d1d4eb50c21403",
-    ),
-    ("win32", "AMD64"): (
-        "win_amd64",
-        "7b6132ae6a554e3eeb3c4b0da7e2eb5c483b258b31e848a0e3d6000ac29885ee",
-    ),
-}
-FTS_SCORER = "ladybug-fts-0.21.0-bm25;k1=1.2;b=0.75;stemmer=porter;disjunctive"
-FTS_COMPONENT = "ladybug-fts-0.21.0;stemmer=porter;stopwords=default"
 # (kind, other end, proven, heuristic): proven is ``resolved`` with a non-heuristic basis.
 type Adjacent = list[tuple[str, str, bool, bool]]
 _HEX64 = re.compile(r"[0-9a-f]{64}")
@@ -93,75 +74,6 @@ def default_data_dir() -> Path:
     xdg = os.environ.get("XDG_DATA_HOME", "")
     base = Path(xdg) if os.path.isabs(xdg) else Path.home() / ".local" / "share"
     return base / "oxide" / "py"
-
-
-def fts_location() -> Path:
-    if explicit := os.environ.get("OXIDE_FTS_EXTENSION"):
-        return Path(explicit)
-    xdg = os.environ.get("XDG_CACHE_HOME", "")
-    base = Path(xdg) if os.path.isabs(xdg) else Path.home() / ".cache"
-    return base / "oxide" / f"ladybug-extensions-{FTS_VERSION}" / "libfts.lbug_extension"
-
-
-def _fts_build() -> tuple[str, str] | None:
-    """The pinned extension's URL and SHA-256 for this platform, if there is one."""
-    build = FTS_BUILDS.get((sys.platform, platform.machine()))
-    if build is None:
-        return None
-    host, sha256 = build
-    release = f"https://github.com/Kiy-K/oxide/releases/download/ladybug-fts-{FTS_VERSION}"
-    return f"{release}/libfts-{FTS_VERSION}-{host}.lbug_extension", sha256
-
-
-def _native_path_issue(text: str, variable: str) -> str | None:
-    """Why LadybugDB cannot open this path, or None (docs/platforms.md). ``variable``
-    names the environment variable that moves it."""
-    if sys.platform == "win32" and not text.isascii():
-        return f"{text!r}: on Windows LadybugDB opens only ASCII paths; set {variable}"
-    return None
-
-
-def fts_unavailable(path: Path) -> str | None:
-    """Why the pinned FTS extension cannot be used, or None. Checked on every use:
-    loading native code is a trust boundary (ADR-0002 § 3)."""
-    if (build := _fts_build()) is None:
-        return f"no pinned FTS extension for {sys.platform}/{platform.machine()}"
-    if issue := _native_path_issue(str(path), "OXIDE_FTS_EXTENSION"):
-        return issue
-    try:
-        data = path.read_bytes()
-    except OSError:
-        return f"FTS extension missing at {path}; run `oxide prepare`"
-    if hashlib.sha256(data).hexdigest() != build[1]:
-        return f"FTS extension at {path} does not match its pinned digest; run `oxide prepare`"
-    return None
-
-
-def prepare_fts(path: Path | None = None) -> Path:
-    """Explicitly fetches the pinned FTS extension and verifies its digest. The only
-    network access OXIDE makes; nothing calls it implicitly."""
-    path = path or fts_location()
-    if fts_unavailable(path) is None:
-        return path
-    if (build := _fts_build()) is None:
-        raise OxideError(f"no pinned FTS extension for {sys.platform}/{platform.machine()}")
-    if issue := _native_path_issue(str(path), "OXIDE_FTS_EXTENSION"):
-        raise InvalidPath(issue)  # never download what could not be loaded
-    url, sha256 = build
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # The extension host refuses urllib's default User-Agent (HTTP 403, measured).
-    request = urllib.request.Request(url, headers={"User-Agent": f"oxide/{version('oxide')}"})
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            data = response.read()
-    except OSError as error:
-        raise OxideError(f"could not fetch {url}: {error}") from error
-    if hashlib.sha256(data).hexdigest() != sha256:
-        raise OxideError(f"downloaded FTS extension does not match {sha256}")
-    partial = path.with_suffix(".partial")
-    partial.write_bytes(data)
-    os.replace(partial, path)
-    return path
 
 
 def storage_components(lexical: bool) -> dict[str, str]:
@@ -240,6 +152,8 @@ _SCHEMA = (
     "signature STRING, path STRING, start_byte INT64, end_byte INT64, digest STRING, "
     "test BOOLEAN, terms STRING)",
     "CREATE NODE TABLE Unresolved(key STRING PRIMARY KEY, name STRING)",
+    # One row: the generation identity, so a swapped-in foreign graph fails closed.
+    "CREATE NODE TABLE Identity(key STRING PRIMARY KEY)",
     "CREATE REL TABLE Rel(FROM Entity TO Entity, kind STRING, resolution STRING, basis STRING, "
     "name STRING, site INT64, ev_path STRING, ev_start INT64, ev_end INT64)",
     "CREATE REL TABLE Opaque(FROM Entity TO Unresolved, kind STRING, basis STRING, name STRING, "
@@ -249,6 +163,11 @@ _ENTITY = (
     "e.key, e.category, e.kind, e.name, e.signature, e.path, e.start_byte, e.end_byte, "
     "e.digest, e.test"
 )
+
+
+def identity(snapshot: Snapshot) -> str:
+    """The key of the database's single ``Identity`` row."""
+    return json.dumps([snapshot.repo_id, snapshot.snapshot_id, snapshot.derivation_id])
 
 
 def unresolved_key(name: str) -> str:
@@ -326,9 +245,13 @@ class View:
             self._conn = ladybug.Connection(self._db)
             # An empty or foreign file opens as some other database: compare what was sealed.
             stored = _rows(self._conn, "MATCH (e:Entity) RETURN count(e)")[0][0]
+            owner = [r[0] for r in _rows(self._conn, "MATCH (i:Identity) RETURN i.key")]
         except RuntimeError as error:
             self.close()
             raise StoreCorrupt(f"{directory}: unreadable database ({error})") from error
+        if owner != [identity(self.snapshot)]:
+            self.close()
+            raise StoreCorrupt(f"{directory}: database belongs to another generation")
         if stored != entities:
             self.close()
             raise StoreCorrupt(f"{directory}: {stored} entities stored, {entities} sealed")
@@ -432,21 +355,30 @@ class View:
                 raise StoreCorrupt(f"invalid lexical score {score!r} for {key}")
         return [(r[0], r[1]) for r in rows[:limit]], len(rows) > limit
 
-    def adjacency(self, keys: list[str]) -> dict[str, tuple[Adjacent, Adjacent]]:
+    def adjacency(
+        self, keys: list[str], allowance: int | None = None
+    ) -> dict[str, tuple[Adjacent, Adjacent]]:
         """Resolved and ambiguous edges of every key as ``(outgoing, incoming)`` lists of
-        ``(kind, other end, proven, heuristic)``: two queries for any number of keys."""
+        ``(kind, other end, proven, heuristic)``: two queries for any number of keys.
+        With an ``allowance``, each direction reads at most that many rows in key order;
+        keys whose edges it cut are left out, so callers see the cut and never a part."""
         found: dict[str, tuple[Adjacent, Adjacent]] = {key: ([], []) for key in keys}
         if not keys:
             return found
         params = {"keys": sorted(set(keys))}
         match = "MATCH (a:Entity)-[r:Rel]->(b:Entity) WHERE "
         flags = "r.resolution = 'resolved' AND r.basis <> 'heuristic', r.basis = 'heuristic'"
-        out = match + f"a.key IN $keys RETURN a.key, r.kind, b.key, {flags}"
-        into = match + f"b.key IN $keys RETURN b.key, r.kind, a.key, {flags}"
+        bound = "" if allowance is None else f" ORDER BY k LIMIT {max(allowance, 0) + 1}"
+        out = match + f"a.key IN $keys RETURN a.key AS k, r.kind, b.key, {flags}{bound}"
+        into = match + f"b.key IN $keys RETURN b.key AS k, r.kind, a.key, {flags}{bound}"
+        cut: str | None = None  # the first key whose edges may be incomplete
         for direction, query in enumerate((out, into)):
-            for key, kind, other, certain, heuristic in self._query(query, params):
+            rows = self._query(query, params)
+            if allowance is not None and len(rows) > allowance:
+                cut = min(cut or rows[allowance][0], rows[allowance][0])
+            for key, kind, other, certain, heuristic in rows:
                 found[key][direction].append((kind, other, certain, heuristic))
-        return found
+        return found if cut is None else {k: v for k, v in found.items() if k < cut}
 
     def mentions(self, names: list[str], kinds: tuple[str, ...]) -> int:
         """Unresolved relations of ``kinds`` whose text is one of ``names`` or ends with

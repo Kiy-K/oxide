@@ -133,3 +133,19 @@ def test_unresolved_sites_share_the_key_of_every_name_they_may_target(
     # ``mentions`` reads only the Unresolved node of the name's key; the count stays exact
     assert {unresolved_key(s) for s in sites} == {unresolved_key(name)}
     assert unresolved_key("") == "u:"
+
+
+def test_store_reads_stop_at_the_edge_allowance_and_say_so(
+    repo: oxide.Repository, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from oxide.core import routing
+
+    view, low = repo._view(), "symbol:pkg/core.py#low"
+    whole = view.adjacency([low])[low]
+    rows = max(map(len, whole))
+    assert view.adjacency([low], rows) == {low: whole}
+    assert view.adjacency([low], rows - 1) == {}  # cut keys are absent, never partial
+    monkeypatch.setattr(navigation, "MAX_EDGES", 0)
+    assert repo.impact(low).stopped_by == "edges"
+    monkeypatch.setattr(routing, "MAX_ROWS", 0)
+    assert routing.route(view, [low]).stopped_by == "edges"

@@ -9,6 +9,7 @@ from __future__ import annotations
 import gc
 import json
 import os
+import shutil
 import textwrap
 import threading
 from collections.abc import Callable
@@ -82,6 +83,24 @@ def test_a_damaged_database_fails_closed_then_rebuilds(
     assert report["codes"] == ["store_corrupt", "store_corrupt"]
     assert report["status"] == "built"
     assert report["hits"] == ["symbol:oxidepy/retry.py#RetryPolicy"] and report["used"] > 0
+
+
+def test_a_foreign_graph_with_the_same_shape_fails_closed_then_rebuilds(
+    repo_copy: Path, private_data: Path, tmp_path: Path
+) -> None:
+    """Another repository's graph with identical rows must not pass as this one's."""
+    twin = tmp_path / "twin"
+    shutil.copytree(repo_copy, twin)
+    oxide.index_repository(repo_copy)
+    mine = generation(private_data) / "graph.lbug"
+    other = tmp_path / "other-data"
+    oxide.index_repository(twin, data_dir=other)
+    shutil.copyfile(generation(other) / "graph.lbug", mine)
+    with oxide.open_repository(repo_copy) as repo:
+        with pytest.raises(StoreCorrupt):
+            repo.files()
+        assert repo.index().status == "built"
+        assert repo.files()
 
 
 MANIFEST_DAMAGE: dict[str, Callable[[dict[str, Any]], str]] = {

@@ -318,6 +318,17 @@ def test_tsconfig_reading_follows_typescript() -> None:
     assert projects.options("only.ts") == tsconfig.Options(".", (), ".")
     assert projects.options("other.ts") is None  # files without include: only those
     assert projects.options("a/x.ts") is None
+    with pytest.raises(ValueError):
+        tsconfig.jsonc(b"[" * 100_000 + b"]" * 100_000)
+    depth = 5000  # an extends chain far past the interpreter's recursion limit
+    chain = {f"c{n}.json": f'{{"extends": "./c{n + 1}.json"}}'.encode() for n in range(depth)}
+    chain["tsconfig.json"] = b'{"extends": "./c0.json"}'
+    chain[f"c{depth}.json"] = b'{"compilerOptions": {"baseUrl": "."}}'
+    assert tsconfig.Projects(chain).options("x.ts") is None
+    near = {f"c{n}.json": f'{{"extends": "./c{n + 1}.json"}}'.encode() for n in range(30)}
+    near["tsconfig.json"] = b'{"extends": "./c0.json"}'
+    near["c30.json"] = b'{"compilerOptions": {"baseUrl": "."}}'
+    assert tsconfig.Projects(near).options("x.ts") == tsconfig.Options(".", (), ".")
 
 
 def test_jsx_components_are_calls_and_intrinsics_are_not(tmp_path: Path) -> None:
@@ -467,3 +478,20 @@ def test_js_bridge_does_not_expand_typescript_only_path_rules(tmp_path: Path) ->
     )
     # The pre-JS resolver does not map explicit declaration-file specifiers.
     assert not resolved(found, "calls", "symbol:use.ts#run")
+
+
+@pytest.mark.parametrize("name", ["a.ts", "a.tsx"])
+def test_callback_declarations_cannot_capture_an_outer_call(tmp_path: Path, name: str) -> None:
+    found = derived(
+        write(
+            tmp_path,
+            {
+                name: "export function f() {}\n"
+                "export function run() { queueMicrotask(() => { function f() {} }); f(); }\n"
+                "export function block() { { function f() {} } f(); }\n",
+            },
+        )
+    )
+    # Unmodeled callback and block scopes hide their declarations instead of leaking them.
+    assert f"symbol:{name}#run.f" not in resolved(found, "calls", f"symbol:{name}#run")
+    assert f"symbol:{name}#block.f" not in resolved(found, "calls", f"symbol:{name}#block")

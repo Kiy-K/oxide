@@ -41,7 +41,7 @@ its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
 `docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
-baseline `typescript-v14/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+baseline `typescript-v15/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
@@ -80,43 +80,16 @@ legacy v1 implementation until the rewrite is merged by explicit decision. Messa
 lowercase prefix plus an imperative summary: `fix:`, `feat:`, `refactor:`,
 `docs:`, `harden:`, `bench:`, `tierb:`.
 
-## Legacy v1 harnesses (reference only)
+## Historical reproduction
 
-The sections below describe tooling for the retired v1 implementation. Its
-code is no longer on this branch; these harnesses need the legacy `oxide`
-binary built from `main` / `ac985b28` and are not part of `mise run verify`.
-They remain historical reproducibility evidence per SPEC § Historical evidence;
-the current Python quality gates are described above.
-
-What stays on this branch is the reference set SPEC § Historical evidence
-names: `fixtures/benchmark.json`, `fixtures/structural_benchmark.json`, the
-language/relation conformance fixtures (`fixtures/conformance/`) with
-`tests/language_conformance.rs` and `tests/precomputed_relations_conformance.rs`,
-`tests/benchmark_gate.rs`, the embedding-staleness/recovery/parity regressions
-(the remaining `tests/*.rs`), `eval-agent/`, `scripts/agent_eval/`,
-`scripts/perf.sh` (with `scripts/gen_bench_repo.py`) and the reports under
-`docs/`. These v1 harnesses do not build here: there is no root Cargo manifest.
-Everything else from v1 and the Rust/Bun v2 runtime (sources, the other Rust tests and `examples/`,
-v1 CLI/MCP/protocol goldens, the embedder and corpus-load scripts, the Claude Code
-suggestion hook, `TELEMETRY.md`, now `docs/legacy/TELEMETRY-v1.md`) was removed
-and is recoverable at `f79808a`; reports that cite those paths refer to that tree.
-`fixtures/py_repo` and `fixtures/ts_repo` are active v2 fixtures, not legacy.
-
-### Eval harnesses (eval-agent/, scripts/agent_eval/)
-
-- `eval-agent/.venv` is Python **3.11** (`tree-sitter-languages` has no wheels
-  ≥3.12); recreate with `uv venv --python 3.11`.
-- The ContextBench evaluator is cloned to `eval-agent/third_party/ContextBench`
-  (gitignored) on first run of `scripts/agent_eval/contextbench_run.py`.
-- Tier A (`contextbench_run.py`) scores retrieval vs human gold contexts;
-  results append to `eval-agent/results/cb_results.jsonl` — resumable, keyed by
-  (task, condition). Summarize with `summarize_cb.py`.
-- Tier B (`tierb_agent_run.py`) runs headless `opencode` per condition. It pins
-  `$PWD` to the task-repo copy because opencode trusts PWD over getcwd().
-- Long background runs: launch via a script using `setsid ... &` — plain
-  backgrounded shells die with the parent. When matching processes, prefer
-  `pgrep -fa` + kill-by-PID; `pkill -f somepattern` matches your own command
-  line and kills your own shell.
+Retained `eval-agent/`, `scripts/agent_eval/`, `scripts/perf.sh` and Rust
+regression/conformance fixtures are historical evidence, not current build steps.
+Use the matching pinned tree (`ac985b28` for v1, `f79808a` for the replaced
+Rust/Bun v2 runtime), its manifests and original report commands. The legacy
+ContextBench evaluator requires Python 3.11; old TS/TSX task verification uses Bun.
+See the [infrastructure decision summary](../migration-audit/legacy-infrastructure.md)
+for the retention boundary and pinned original audit. Do not apply v1 CLI,
+embedding or SQLite contracts to the Python engine.
 
 ## LadybugDB FTS extension
 
@@ -136,9 +109,9 @@ structural retrieval and routing continue. No vector extension exists.
 oracle: `tests/python/test_baseline.py` asserts the Python engine reproduces
 it exactly. A pin or version bump that changes it is a new baseline
 directory with a recorded comparison, never a regenerated old one.
-`docs/phase-4/` and `docs/phase-5/` artifacts and the DecisionBench/JEV
-harnesses documented there were produced by the Rust runtime, which was removed
-in ADR-0011. They are evidence, reproducible only at commit `f79808a`.
+Earlier Phase 4/5 reports and DecisionBench/JEV harness instructions are in the
+[retired runtime tree](https://github.com/Kiy-K/oxide/tree/f79808a/docs), not local
+`docs/phase-4/` or `docs/phase-5/` directories. Reproduction requires that tree.
 
 JavaScript/JSX conformance runs in `mise run verify` (`test_javascript.py`). The bounded
 real-repository and ContextBench diagnostic is reproducible via

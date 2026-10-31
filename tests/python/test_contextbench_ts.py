@@ -22,7 +22,7 @@ import pytest
 from conftest import FTS, write
 
 import oxide
-from oxide.storage.ladybug import fts_unavailable
+from oxide.storage.fts import fts_unavailable
 
 GATE = os.environ.get("OXIDE_CONTEXTBENCH_TS") == "1"
 gate = pytest.mark.skipif(not GATE, reason="TypeScript gate: OXIDE_CONTEXTBENCH_TS=1")

@@ -24,6 +24,7 @@ from oxide.models import (
     NativeUnavailable,
     NotIndexed,
     OwnershipConflict,
+    Snapshot,
     SourceRef,
     StoreCorrupt,
 )
@@ -33,6 +34,7 @@ if sys.platform == "win32":
 else:
     import fcntl
 
+from oxide.storage.fts import fts_location
 from oxide.storage.ladybug import (
     _HEX64,
     _SCHEMA,
@@ -44,7 +46,7 @@ from oxide.storage.ladybug import (
     _rows,
     _write_atomic,
     _write_csv,
-    fts_location,
+    identity,
     load_pool,
     unresolved_key,
 )
@@ -86,8 +88,10 @@ class Store:
         self.data = data
         self.dir = data / "repos" / hashlib.sha256(os.fsencode(root)).hexdigest()[:32]
         _literal(self.dir)
-        if not create and not self.dir.is_dir():
-            # A reader never leaves an empty store behind for a repository never indexed.
+        if not create and not (
+            (self.dir / "repo.json").is_file() and (self.dir / "generations").is_dir()
+        ):
+            # A reader never initializes a store, even a half-created one left by a crash.
             raise NotIndexed(f"{root} has not been indexed")
         self.dir.mkdir(parents=True, exist_ok=True)
         # Not inherited by child processes (PEP 446), so only this process owns it.
@@ -222,7 +226,8 @@ class Store:
             # source blobs are written meanwhile (docs/phase-6/fts-footprint § 4).
             with ThreadPoolExecutor(1) as pool:
                 retaining = pool.submit(self._retain, staging, capture)
-                rows = self._load(staging, derived, lexical_unavailable is None)
+                snapshot = Snapshot(self.repo_id, capture.snapshot_id, derivation)
+                rows = self._load(staging, derived, lexical_unavailable is None, snapshot)
                 retaining.result()
             facts = json.dumps(derived.facts, separators=(",", ":")).encode()
             (staging / "facts.json").write_bytes(facts)
@@ -289,7 +294,9 @@ class Store:
                 _fsync(path)
         _fsync(staging)
 
-    def _load(self, staging: Path, derived: Derived, lexical: bool) -> dict[str, int]:
+    def _load(
+        self, staging: Path, derived: Derived, lexical: bool, snapshot: Snapshot
+    ) -> dict[str, int]:
         entities: list[tuple[object, ...]] = []
         for e in derived.entities:
             src = e.source or SourceRef("", -1, -1, "")
@@ -342,6 +349,7 @@ class Store:
                     options = "header=false, quote='\"', escape='\"', delim=',', parallel=false"
                     _rows(conn, f"COPY {table} FROM {_literal(csv)} ({options})")
                 csv.unlink()
+            _rows(conn, "CREATE (:Identity {key: $key})", {"key": identity(snapshot)})
             _rows(conn, "COMMIT")
             counted = {
                 "Entity": "MATCH (e:Entity) RETURN count(e)",

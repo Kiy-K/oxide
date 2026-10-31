@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from oxide.core.capsule import DEADLINE, Capsule, CapsuleJudge
+from oxide.core.capsule import CAPSULE_VERSION, DEADLINE, Capsule, CapsuleJudge
 from oxide.core.ordering import AdmittedOrder, Order, Unanswered
 from oxide.models import JudgeStatus, SourceRef
 from oxide.storage.ladybug import _write_atomic
@@ -71,13 +71,17 @@ MANIFEST: dict[str, Any] = {
     "retries": 0,
     "questions": QUESTIONS_DIGEST,
     "usd_per_million_input_tokens": 0.042,
+    # What leaves the machine: consent must not carry over to a new rendering of it.
+    "renderer": RENDERER,
+    "capsule": CAPSULE_VERSION,
 }
 MANIFEST_DIGEST = (
     "sha256:" + hashlib.sha256(json.dumps(MANIFEST, sort_keys=True).encode()).hexdigest()
 )
-# Decision Study v3's manifest: a change here is a new policy identity (ADR-0009 § 4).
+# Decision Study v3's manifest (d9ae934c…) plus the renderer and capsule versions; a
+# change here is a new policy identity (ADR-0009 § 4) and voids stored consent.
 assert MANIFEST_DIGEST == (
-    "sha256:d9ae934c9a6a3650a6f2ca6ef3f3ab919103cc7e9788951a7b8699c354407b1d"
+    "sha256:6fab465c0c1c2015782a0f6dd047e80520be5c7d1faaaa4fb58cf71ffad556c6"
 ), MANIFEST_DIGEST
 
 CHILD = """

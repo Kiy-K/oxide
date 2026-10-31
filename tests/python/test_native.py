@@ -14,7 +14,7 @@ import pytest
 from conftest import FIXTURE, python
 
 import oxide
-from oxide.storage import ladybug, store
+from oxide.storage import fts, store
 from oxide.storage.ladybug import _literal
 
 STRESS = textwrap.dedent(
@@ -98,20 +98,20 @@ def test_paths_with_quotes_and_backslashes_work_end_to_end(
 def test_fts_builds_are_pinned_per_platform_and_others_are_explicitly_unsupported(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    for (system, machine), (host, sha256) in ladybug.FTS_BUILDS.items():
+    for (system, machine), (host, sha256) in fts.FTS_BUILDS.items():
         monkeypatch.setattr(sys, "platform", system)
         monkeypatch.setattr(platform, "machine", lambda m=machine: m)
-        url, pinned = ladybug._fts_build() or ("", "")
-        release = f"github.com/Kiy-K/oxide/releases/download/ladybug-fts-{ladybug.FTS_VERSION}"
-        assert url == f"https://{release}/libfts-{ladybug.FTS_VERSION}-{host}.lbug_extension"
+        url, pinned = fts._fts_build() or ("", "")
+        release = f"github.com/Kiy-K/oxide/releases/download/ladybug-fts-{fts.FTS_VERSION}"
+        assert url == f"https://{release}/libfts-{fts.FTS_VERSION}-{host}.lbug_extension"
         assert pinned == sha256 and len(sha256) == 64
-        assert "missing" in (ladybug.fts_unavailable(tmp_path / "absent") or "")
+        assert "missing" in (fts.fts_unavailable(tmp_path / "absent") or "")
     monkeypatch.setattr(sys, "platform", "linux")
     monkeypatch.setattr(platform, "machine", lambda: "aarch64")
     reason = "no pinned FTS extension for linux/aarch64"
-    assert ladybug.fts_unavailable(tmp_path / "absent") == reason
+    assert fts.fts_unavailable(tmp_path / "absent") == reason
     with pytest.raises(oxide.OxideError, match=reason):
-        ladybug.prepare_fts(tmp_path / "absent")  # never reaches the network
+        fts.prepare_fts(tmp_path / "absent")  # never reaches the network
 
 
 def test_a_native_library_that_cannot_load_is_typed_and_touches_nothing(
@@ -142,8 +142,8 @@ def test_windows_store_and_extension_paths_must_be_ascii(
     assert not data.exists()
     assert "OXIDE_DATA_DIR" in str(caught.value)
     extension = tmp_path / "é" / "libfts.lbug_extension"
-    assert "OXIDE_FTS_EXTENSION" in (ladybug.fts_unavailable(extension) or "")
+    assert "OXIDE_FTS_EXTENSION" in (fts.fts_unavailable(extension) or "")
     with pytest.raises(oxide.OxideError, match="OXIDE_FTS_EXTENSION") as caught:
-        ladybug.prepare_fts(extension)  # never reaches the network
+        fts.prepare_fts(extension)  # never reaches the network
     assert caught.value.code == "invalid_path"
     assert not extension.parent.exists()

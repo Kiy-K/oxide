@@ -9,13 +9,15 @@ code-aware terms plus structural seeds from typed hints, then TreeRouter and
 deterministic selection and packing. No embeddings, model runners, or network access on
 the query path.
 
-Status: pre-release, on branch `rewrite/v2`. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust,
+Status: pre-release, on `main`. Python, TypeScript/TSX, JavaScript/JSX, Go, Rust,
 Java, C and C++ have parser slices ([TypeScript](docs/typescript.md), [JavaScript](docs/javascript.md),
 [Go](docs/go.md), [Rust](docs/rust.md), [Java](docs/java.md), [C](docs/c.md), [C++](docs/cpp.md)); other files are kept as
 unsupported file evidence. The public Python API is the product boundary
 ([docs/public-api.md](docs/public-api.md)). The legacy v1 implementation and its README
-live on `main`; a copy is kept as history in
-[docs/legacy/README-v1.md](docs/legacy/README-v1.md).
+are pinned at commit
+[`ac985b28`](https://github.com/Kiy-K/oxide/tree/ac985b28fcff7663aedadf2db5b40aa2dc325580);
+the original documentation remains available in
+[the pinned v1 README](https://github.com/Kiy-K/oxide/blob/ac985b28fcff7663aedadf2db5b40aa2dc325580/README.md).
 
 ## Install
 
@@ -23,7 +25,7 @@ OXIDE needs CPython 3.12-3.14. Development uses [mise](https://mise.jdx.dev) and
 [uv](https://docs.astral.sh/uv/):
 
 ```bash
-git clone https://github.com/Kiy-K/oxide && cd oxide && git checkout rewrite/v2
+git clone https://github.com/Kiy-K/oxide && cd oxide
 mise run bootstrap        # uv sync --locked + `oxide prepare`
 ```
 
@@ -107,6 +109,7 @@ Architecture: [docs/spec/SPEC.md](docs/spec/SPEC.md), [docs/BOOTSTRAP.md](docs/B
 and the decisions in [docs/adr/](docs/adr/), in particular
 [ADR-0011](docs/adr/0011-python-engine-vectorless.md) (Python engine, vectorless
 retrieval). Contributor workflow: [docs/agents/workflow.md](docs/agents/workflow.md).
+Documentation and historical evidence: [docs index](docs/README.md).
 
 ## License
 

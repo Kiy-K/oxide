@@ -20,6 +20,7 @@ _TRAILING_COMMA = re.compile(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])')
 # Inherited per key: the last config of the ``extends`` chain that sets a key wins.
 _KEYS = ("baseUrl", "paths", "files", "include", "exclude")
 _DEFAULT_EXCLUDE = ["node_modules", "bower_components", "jspm_packages"]
+MAX_EXTENDS = 32  # a deeper ``extends`` chain is unknowable, not followed recursively
 
 Merged = dict[str, tuple[Any, str]]  # key -> (value, directory of the config that set it)
 
@@ -28,7 +29,10 @@ def jsonc(data: bytes) -> Any:
     """JSON with comments and trailing commas, as tsconfig allows; ValueError if not."""
     text = data.decode("utf-8-sig")
     text = _COMMENT.sub(lambda m: m[0] if m[0][0] == '"' else " ", text)
-    return json.loads(_TRAILING_COMMA.sub(lambda m: m[0] if m[0][0] == '"' else "", text))
+    try:
+        return json.loads(_TRAILING_COMMA.sub(lambda m: m[0] if m[0][0] == '"' else "", text))
+    except RecursionError as error:
+        raise ValueError("tsconfig nests too deeply") from error
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,7 +120,7 @@ class Projects:
         return merged
 
     def _read(self, config: str, seen: frozenset[str]) -> Merged | None:
-        if config in seen or config not in self.files:
+        if config in seen or len(seen) >= MAX_EXTENDS or config not in self.files:
             return None
         try:
             value = jsonc(self.files[config])
