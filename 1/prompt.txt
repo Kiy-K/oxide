@@ -1,0 +1,29 @@
+Audit and clean up OXIDE's repository root, uncommitted changes, obsolete files and broken references, preserving intentional additions/deletions, then finalize C++ verification and assess `rewrite/v2` readiness for merging into `main`.
+
+---
+
+<task-notification>
+<task-id>bcro7xx4a</task-id>
+<tool-use-id>toolu_01Hu4tcacM4zZrHpDGH1QTRf</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/1b8b9db3-2141-4409-9029-0c7ba674de58/tasks/bcro7xx4a.output</output-file>
+<status>completed</status>
+<summary>Background command "Run TypeScript context gate under resource caps" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b8dyuytms</task-id>
+<tool-use-id>toolu_01SJkazTG4vc98ssnUMVC3ps</tool-use-id>
+<output-file>/tmp/claude-1000/-home-khoi-Projects-oxide/1b8b9db3-2141-4409-9029-0c7ba674de58/tasks/b8dyuytms.output</output-file>
+<status>failed</status>
+<summary>Background command "Run full verify and TS gate on HEAD" failed with exit code 1</summary>
+</task-notification>
+
+---
+
+Finalize the OXIDE rewrite by auditing intentional local changes, preserving referenced evidence, evaluating C++ retrieval and context quality, and verifying the complete cleaned tree before migration into `main`.
+
+---
+
+Resolve the remaining rewrite cleanup using the agreed file decisions, diagnose the C++ `exceptions.hpp` regression without tuning retrieval, commit the validated changes and evidence, and prepare `rewrite/v2` for fast-forward migration into `main`.
