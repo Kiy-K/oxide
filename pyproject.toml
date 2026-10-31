@@ -30,6 +30,14 @@ dependencies = [
 [project.scripts]
 oxide = "oxide.cli:main"
 
+[tool.pyrefly.errors]
+implicit-any = "error"
+method-assign = "error"
+unannotated-return = "error"
+implicit-any-parameter = "error"
+no-any-return = "error"
+redundant-cast = "warn"
+
 [project.optional-dependencies]
 # Explicit structural search (Repository.structural_search). Optional: it adds 46 MB to a
 # 94 MB install (docs/phase-6/astgrep-feasibility/). Pinned exactly: pre-1.0, own grammars.
@@ -41,6 +49,7 @@ structural = [
 dev = [
     "ast-grep-py==0.51.0",
     "mypy>=1.13",
+    "pyrefly>=1.4.0",
     "pytest>=8.3",
     "ruff>=0.8",
     "types-networkx>=3.6.1.20261024",
@@ -65,3 +74,16 @@ mypy_path = ["src", "tests/python"]
 [tool.pytest.ini_options]
 testpaths = ["tests/python"]
 addopts = "-ra --strict-markers"
+
+[tool.pyrefly]
+project-includes = [
+    "src",
+    "tests/python",
+]
+search-path = [
+    "src",
+    "tests/python",
+]
+preset = "legacy"
+check-unannotated-defs = true
+infer-return-types = "never"

@@ -21,6 +21,10 @@ mise run typecheck     #   mypy --strict over src/ and tests/python/
 mise run test          #   pytest (tests/python/)
 ```
 
+`uv run pyrefly check` is an optional second type checker (`[tool.pyrefly]` in
+`pyproject.toml`). It is not part of `verify` or CI; mypy `--strict` stays the gate.
+On 2026-10-31 it reported 32 errors.
+
 Use `uv run …` for anything else (`uv run oxide index <path>`, `uv run pytest -k name`).
 `uv run oxide mcp --repo <path>` serves the single `oxide_search` tool over stdio (`--http` for
 stateless HTTP on loopback); `docs/public-api.md` § MCP has the contract.
@@ -37,7 +41,7 @@ its amendments. Gold is audited (`gold-audit.json`); only verified gold is gated
 Develop on the dev split; never tune on held-out.
 `tests/python/contextbench_ts.py` is the same ruler for TypeScript (protocol in
 `docs/phase-6/typescript-v1/`, corpora amendment in `typescript-v2/`, latest frozen
-baseline `typescript-v8/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
+baseline `typescript-v14/`; corpora in `~/.cache/oxide/contextbench-ts/corpora-v2/`, and the
 sources-only `corpora/` only reproduces v1). Its scorer cases run in `verify`; the gate
 needs ~2 GB of corpora and ~15 minutes, so it is `mise run contextbench-ts`, not part of
 `verify`. Run it under the limits below before and after any TypeScript retrieval,
